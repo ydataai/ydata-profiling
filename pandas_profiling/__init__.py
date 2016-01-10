@@ -247,20 +247,19 @@ def to_html(sample_df, stats_object, formatters=None):
     overview_html = templates.overview_template.format({k: fmt(v, k) for k, v in stats_object['table'].iteritems()})
 
     # Variables
-    rows_html = ""
+    rows_html = u""
     for idx, row in stats_object['variables'].iterrows():
 
         formatted_values = {'varname': idx, 'varid': hash(idx)}
 
         for col, value in row.iteritems():
-            formatted_values[col] = fmt(value, col)
+            formatted_values[col] = unicode(fmt(value, col))
 
         if row['type'] == 'CAT':
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], stats_object['table']['n'],
                                                            templates.mini_freq_table, templates.mini_freq_table_row, 3)
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], stats_object['table']['n'],
                                                        templates.freq_table, templates.freq_table_row, 20)
-
         rows_html += templates.row_templates_dict[row['type']].format(formatted_values)
 
     # Sample

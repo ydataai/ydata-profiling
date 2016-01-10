@@ -1,4 +1,4 @@
-base_html='''
+base_html=u'''
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -52,7 +52,7 @@ base_html='''
             font-weight: 600;
         }
 
-        .stats tr{
+        .stats tr {
             border: 0;
         }
 
@@ -213,7 +213,7 @@ base_html='''
 
 '''
 
-wrapper_html = '''
+wrapper_html = u'''
 <!doctype html>
 
 <html lang="en">
@@ -240,7 +240,7 @@ wrapper_html = '''
 '''
 
 
-sample_html = '''
+sample_html = u'''
     <div class="row variablerow">
         <div class="col-md-12" style="overflow:scroll; width: 100%%; overflow-y: hidden;">
                 {sample_table_html}
@@ -289,21 +289,21 @@ overview_template='''
      </div>
 '''
 
-_row_header = '''<div class="row variablerow">
+_row_header = u'''<div class="row variablerow">
         <div class="col-md-3 namecol">
             <p class="h4">{varname}<br/><small>{vartype}</small></p>
         </div>
 '''
-_row_header_ignore = '''<div class="row variablerow ignore">
+_row_header_ignore = u'''<div class="row variablerow ignore">
         <div class="col-md-3 namecol">
             <p class="h4"><s>{varname}</s><br/><small>{vartype}</small></p>
         </div>
 '''
 
-_row_footer = '''    </div>'''
+_row_footer = u'''    </div>'''
 
 row_templates_dict = {}
-row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[varname]}") + '''
+row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[varname]}") + u'''
         <div class="col-md-6">
             <div class="row">
                 <div class="col-sm-6">
@@ -394,7 +394,7 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
       </div>
 ''' + _row_footer
 
-row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + '''
+row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + u'''
         <div class="col-md-6">
             <HEADER></HEADER>
             <div class="row">
@@ -426,7 +426,7 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
 
 row_templates_dict['DISCRETE'] = row_templates_dict['NUM']
 
-row_templates_dict['CAT'] = _row_header.format(vartype="Categorical, low cardinality", varname="{0[varname]}") + '''
+row_templates_dict['CAT'] = _row_header.format(vartype="Categorical, low cardinality", varname="{0[varname]}") + u'''
        <div class="col-md-3">
 
             <table class="stats ">
@@ -453,7 +453,7 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical, low cardina
          {0[freqtable]}
 ''' + _row_footer
 
-row_templates_dict['UNIQUE'] = _row_header.format(vartype="Unique ID", varname="{0[varname]}") + '''
+row_templates_dict['UNIQUE'] = _row_header.format(vartype="Unique ID", varname="{0[varname]}") + u'''
   <div class="col-md-6">
             <HEADER></HEADER>
             <div class="row">
@@ -470,7 +470,7 @@ row_templates_dict['UNIQUE'] = _row_header.format(vartype="Unique ID", varname="
         <div class="col-md-3">Example values</div>
 ''' + _row_footer
 
-row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varname="{0[varname]}") + '''
+row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varname="{0[varname]}") + u'''
          <div class="col-md-3">
             <p> <em>This variable is constant and should be ignored for analysis</em></p>
 
@@ -484,14 +484,14 @@ row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varn
 ''' + _row_footer
 
 
-mini_freq_table = '''
+mini_freq_table = u'''
         <div class="col-md-6 collapse in"  id="minifreqtable{varid}">
             <table class="mini freq">
                 {rows}
             </table>
         </div>
 '''
-mini_freq_table_row = '''<tr class="{extra_class}">
+mini_freq_table_row = u'''<tr class="{extra_class}">
                     <th>{label}</th>
                      <td>
                           <div class="bar" style="width:{width}%" data-toggle="tooltip" data-placement="right" data-html="true" data-delay=500 title="Count: {count} <br> Percentage: {percentage}%">
@@ -501,7 +501,7 @@ mini_freq_table_row = '''<tr class="{extra_class}">
                 </tr>
 '''
 
-freq_table = '''
+freq_table = u'''
       <div class="row extrapadding">
                  <div class="col-md-12 collapse" id="freqtable{varid}">
                     <table class="freq table table-hover">
@@ -518,7 +518,7 @@ freq_table = '''
              </div>
         </div>
 '''
-freq_table_row = '''
+freq_table_row = u'''
 <tr class="{extra_class}">
         <td class="fillremaining">{label}</td>
         <td class="number">{count}</td>
