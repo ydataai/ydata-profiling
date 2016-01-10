@@ -31,9 +31,11 @@ base_html=u'''
         .dl-horizontal dd {
             margin-left: 0;
         }
-        .variablerow.ignore {
+
+        .ignore {
             opacity: 0.4;
         }
+
         .container.pandas-profiling {
             max-width:975px;
         }
@@ -312,7 +314,7 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[count]}</td></tr>
                         <tr><th>Distinct count</th>
                         <td>{0[distinct_count]}</td></tr>
-                        <tr><th>Missing (%)</th>
+                        <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
                         <td>{0[p_missing]}</td></tr>
                         <tr><th>Unique (%)</th>
                         <td>{0[p_unique]}</td></tr>
@@ -329,6 +331,8 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[min]}</td></tr>
                         <tr><th>Maximum</th>
                         <td>{0[max]}</td></tr>
+                        <tr class="{row_classes[p_zeros]}"><th>Zeros (%)</th>
+                        <td>{0[p_zeros]}</td></tr>
                     </table>
                 </div>
             </div>
@@ -434,7 +438,7 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical, low cardina
                 <td>{0[count]}</td></tr>
                 <tr><th>Distinct count</th>
                 <td>{0[distinct_count]}</td></tr>
-                <tr><th>Missing (%)</th>
+                <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
                 <td>{0[p_missing]}</td></tr>
                 <tr><th>Unique (%)</th>
                 <td>{0[p_unique]}</td></tr>

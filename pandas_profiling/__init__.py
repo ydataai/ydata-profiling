@@ -17,8 +17,6 @@ import pandas.core.common as com
 import formatters
 import templates
 
-DEFAULT_FLOAT_FORMATTER = u'pandas_profiling.__default_float_formatter'
-
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
 
@@ -53,11 +51,8 @@ def describe(df):
         stats['sum'] = series.sum()
         stats['mad'] = series.mad()
         stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
-
-        if base_stats['distinct_count'] < 100 and base_stats['count'] > 1000:
-            stats['type'] = "DISCRETE"
-        else:
-            stats['type'] = "NUM"
+        stats['type'] = "NUM"
+        stats['p_zeros'] = (len(series) - np.count_nonzero(series)) / len(series)
 
         # Large histogram
         imgdata = StringIO.StringIO()
@@ -124,7 +119,6 @@ def describe(df):
         leng = len(data)
         distinct_count = data.nunique(dropna=False)
         if count > distinct_count > 1:
-
             mode = data.mode().iloc[0]
         else:
             mode = data[0]
@@ -174,9 +168,11 @@ def describe(df):
 # (different, value, for, each, observation), dates,, lookup, keys=discrete,, ...)
 #
 
-def to_html(sample_df, stats_object, formatters=None):
-    if formatters is None:
-        formatters = {}
+def to_html(sample_df, stats_object):
+
+    value_formatters = formatters.value_formatters
+    row_formatters = formatters.row_formatters
+
     if not isinstance(sample_df, pd.DataFrame):
         raise TypeError("sample_df must be of type pandas.DataFrame")
 
@@ -186,16 +182,13 @@ def to_html(sample_df, stats_object, formatters=None):
     if stats_object.keys() != ['table', 'variables', 'freq']:
         raise TypeError("stats_object badly formatted. Did you generate this using the pandas_profiling-eda.describe() function?")
 
-    if DEFAULT_FLOAT_FORMATTER not in formatters:
-        formatters[DEFAULT_FLOAT_FORMATTER] = lambda v: str(float('{:.5g}'.format(v))).rstrip('0').rstrip('.')
-
     def fmt(value, name):
         if pd.isnull(value):
             return ""
-        if name in formatters:
-            return formatters[name](value)
+        if name in value_formatters:
+            return value_formatters[name](value)
         elif isinstance(value, float):
-            return formatters[DEFAULT_FLOAT_FORMATTER](value)
+            return value_formatters[formatters.DEFAULT_FLOAT_FORMATTER](value)
         else:
             return str(value)
 
@@ -251,16 +244,20 @@ def to_html(sample_df, stats_object, formatters=None):
     for idx, row in stats_object['variables'].iterrows():
 
         formatted_values = {'varname': idx, 'varid': hash(idx)}
+        row_classes = {}
 
         for col, value in row.iteritems():
             formatted_values[col] = unicode(fmt(value, col))
+            if col in row_formatters:
+                row_classes[col] = row_formatters[col](value)
 
         if row['type'] == 'CAT':
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], stats_object['table']['n'],
                                                            templates.mini_freq_table, templates.mini_freq_table_row, 3)
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], stats_object['table']['n'],
                                                        templates.freq_table, templates.freq_table_row, 20)
-        rows_html += templates.row_templates_dict[row['type']].format(formatted_values)
+
+        rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
 
     # Sample
 
@@ -276,8 +273,7 @@ class ProfileReport(object):
     def __init__(self, df):
         description_set = describe(df)
         self.html = to_html(df.head(),
-                            description_set,
-                            formatters=formatters.formatters)
+                            description_set)
 
     def to_file(self, outputfile=DEFAULT_OUTPUTFILE):
         if outputfile != NO_OUTPUTFILE:
