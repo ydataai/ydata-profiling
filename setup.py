@@ -17,4 +17,6 @@ setup(
         "pandas",
         "matplotlib"
     ],
+    include_package_data = True,
+    package_data={'pandas_profiling': ['pandas_profiling.mplstyle']},
 )
