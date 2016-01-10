@@ -62,6 +62,8 @@ def describe(df):
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
         stats['histogram'] = 'data:image/png;base64,' + urllib.quote(base64.b64encode(imgdata.buf))
+        #TODO Think about writing this to disk instead of caching them in strings
+
         plt.close(plot.figure)
 
         # Small histogram
@@ -157,7 +159,7 @@ def describe(df):
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
     table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
 
-    table_stats.update({k: 0 for k in ("TEXT", "NUM", "DISCRETE", "DATE", "CONST", "CAT", "UNIQUE")})
+    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
 
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
@@ -169,6 +171,7 @@ def describe(df):
 #
 
 def to_html(sample_df, stats_object):
+    n_obs = stats_object['table']['n']
 
     value_formatters = formatters.value_formatters
     row_formatters = formatters.row_formatters
@@ -208,7 +211,7 @@ def to_html(sample_df, stats_object):
 
         def format_row(freq, label, extra_class=''):
             width = int(freq / max_freq * 99) + 1
-            if width > 30:
+            if width > 20:
                 label_in_bar = freq
                 label_after_bar = ""
             else:
@@ -241,6 +244,7 @@ def to_html(sample_df, stats_object):
 
     # Variables
     rows_html = u""
+
     for idx, row in stats_object['variables'].iterrows():
 
         formatted_values = {'varname': idx, 'varid': hash(idx)}
@@ -251,11 +255,24 @@ def to_html(sample_df, stats_object):
             if col in row_formatters:
                 row_classes[col] = row_formatters[col](value)
 
+
         if row['type'] == 'CAT':
-            formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], stats_object['table']['n'],
+            formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                            templates.mini_freq_table, templates.mini_freq_table_row, 3)
-            formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], stats_object['table']['n'],
+            formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                        templates.freq_table, templates.freq_table_row, 20)
+        if row['type'] == 'UNIQUE':
+            obs = stats_object['freq'][idx].index
+
+            formatted_values['firstn'] = pd.DataFrame(obs[0:3], columns=["First 3 values"]).to_html(classes="example_values", index=False)
+            formatted_values['lastn'] = pd.DataFrame(obs[-3:], columns=["Last 3 values"]).to_html(classes="example_values", index=False)
+
+            if n_obs > 40:
+                formatted_values['firstn_expanded'] = pd.DataFrame(obs[0:20], index=range(1, 21)).to_html(classes="sample", header=False)
+                formatted_values['lastn_expanded'] = pd.DataFrame(obs[-20:], index=range(n_obs - 20 + 1, n_obs+1)).to_html(classes="sample", header=False)
+            else:
+                formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(1, n_obs+1)).to_html(classes="sample", header=False)
+                formatted_values['lastn_expanded'] = ''
 
         rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
 

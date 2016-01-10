@@ -40,150 +40,163 @@ base_html=u'''
             max-width:975px;
         }
 
+        /* Table example_values */
+            table.example_values {
+                border: 0;
+            }
+
+            .example_values th {
+                border: 0;
+                padding: 0 ;
+                color: #555;
+                font-weight: 600;
+            }
+
+            .example_values tr, .example_values td{
+                border: 0;
+                padding: 0;
+                color: #555;
+            }
+
         /* STATS */
+            table.stats {
+                border: 0;
+            }
 
+            .stats th {
+                border: 0;
+                padding: 0 2em 0 1em;
+                color: #555;
+                font-weight: 600;
+            }
 
-        table.stats {
-            border: 0;
-        }
+            .stats tr {
+                border: 0;
+            }
 
-        .stats th {
-            border: 0;
-            padding: 0 2em 0 1em;
-            color: #555;
-            font-weight: 600;
-        }
+            .stats tr:hover{
+                text-decoration: underline;
+            }
 
-        .stats tr {
-            border: 0;
-        }
-
-        .stats tr:hover{
-            text-decoration: underline;
-        }
-
-        .stats td{
-            color: #555;
-            padding: 1px;
-            border: 0;
-        }
+            .stats td{
+                color: #555;
+                padding: 1px;
+                border: 0;
+            }
 
         /* Sample table */
-        table.sample {
-            border: 0;
-            margin-bottom: 2em;
+            table.sample {
+                border: 0;
+                margin-bottom: 2em;
+                margin-left:1em;
+            }
+            .sample tr {
+                border:0;
+            }
+            .sample td, .sample th{
+                padding: 0.5em;
+                white-space: nowrap;
+                border: none;
 
-        }
-        .sample tr {
-            border:0;
-        }
-        .sample td, .sample th{
-            width:100%%;
-            padding: 0.5em;
-            white-space: nowrap;
-            border: none;
+            }
 
-        }
-        .sample th {
-            border-top: 0;
-            border-bottom: 2px solid #ddd;
-        }
-        .sample td {
-            border-top: 1px solid #ddd;
-        }
-        .sample tr:nth-child(even) {
-           background-color: #f2f2f2;
-        }
+            .sample thead {
+                border-top: 0;
+                border-bottom: 2px solid #ddd;
+            }
+
+            .sample td {
+                width:100%%;
+            }
+            .sample tr:nth-child(even) {
+               background-color: #f2f2f2;
+            }
 
         /* There is no good solution available to make the divs equal height and then center ... */
-        .histogram {
-            margin-top: 3em;
-        }
+            .histogram {
+                margin-top: 3em;
+            }
         /* Freq table */
 
-        table.freq {
-            margin-bottom: 2em;
-            border: 0;
-        }
-        table.freq th, table.freq tr, table.freq td {
-            border: 0;
-            padding: 0;
-        }
+            table.freq {
+                margin-bottom: 2em;
+                border: 0;
+            }
+            table.freq th, table.freq tr, table.freq td {
+                border: 0;
+                padding: 0;
+            }
 
-        .freq thead {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            .freq thead {
+                font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
 
-        }
+            }
 
-        td.fillremaining{
-            width:auto;
-            max-width: none;
-        }
+            td.fillremaining{
+                width:auto;
+                max-width: none;
+            }
 
-        td.number, th.number {
-            text-align:right ;
-        }
+            td.number, th.number {
+                text-align:right ;
+            }
 
         /* Freq mini */
-        .freq.mini td{
-            width: 50%%;
-            padding: 1px;
-            font-size: 12px;
+            .freq.mini td{
+                width: 50%%;
+                padding: 1px;
+                font-size: 12px;
 
-        }
-        table.freq.mini {
-             width:100%%;
-        }
-        .freq.mini th {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 5em;
-            font-weight: 400;
-            text-align:right;
-            padding-right: 0.5em;
-        }
+            }
+            table.freq.mini {
+                 width:100%%;
+            }
+            .freq.mini th {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 5em;
+                font-weight: 400;
+                text-align:right;
+                padding-right: 0.5em;
+            }
 
-        .missing {
-            color:#FF753A;
-        }
+            .missing {
+                color:#FF753A;
+            }
 
         /* Bars in tables */
-        .freq .bar{
-            float: left;
-            width: 0;
-            height: 100%%;
-            line-height: 20px;
-            color: #fff;
-            text-align: center;
-            background-color: #337ab7;
-            border-radius: 3px;
-            margin-right: 4px;
-        }
-        .other .bar {
-            background-color: #999;
-        }
-        .missing .bar{
-            background-color: red;
-        }
-        .tooltip-inner {
-            width: 100%%;
-            white-space: nowrap;
-            text-align:left;
-        }
+            .freq .bar{
+                float: left;
+                width: 0;
+                height: 100%%;
+                line-height: 20px;
+                color: #fff;
+                text-align: center;
+                background-color: #337ab7;
+                border-radius: 3px;
+                margin-right: 4px;
+            }
+            .other .bar {
+                background-color: #999;
+            }
+            .missing .bar{
+                background-color: red;
+            }
+            .tooltip-inner {
+                width: 100%%;
+                white-space: nowrap;
+                text-align:left;
+            }
 
-        .extrapadding{
-            padding: 2em;
-        }
+            .extrapadding{
+                padding: 2em;
+            }
 
 
-        /* There is no good solution available to make the divs equal height and then center ... */
-        .histogram {
-            margin-top: 3em;
-        }
 
     </style>
 
@@ -250,7 +263,7 @@ sample_html = u'''
     </div>
 '''
 
-overview_template='''
+overview_template= u'''
     <div class="row variablerow">
         <div class="col-md-6 namecol">
             <p class="h4">Dataset info</p>
@@ -265,8 +278,6 @@ overview_template='''
                         <td>{0[memsize]}</td></tr>
                         <tr><th>Average record size in memory</th>
                         <td>{0[recordsize]}</td></tr>
-                        <tr><th>Source file path</th>
-                        <td>/tmp/jos/NOT IMPLEMENTED YET.csv</td></tr>
                         </tbody></table>
         </div>
         <div class="col-md-6 namecol">
@@ -274,15 +285,11 @@ overview_template='''
              <table class="stats ">
                         <tbody><tr><th>Numeric</th>
                         <td>{0[NUM]}</td></tr>
-                        <tr><th>Discrete numeric</th>
-                        <td>{0[DISCRETE]}</td></tr>
                         <tr><th>Categorical</th>
                         <td>{0[CAT]}</td></tr>
-                        <tr><th>Text</th>
-                        <td>{0[TEXT]}</td></tr>
                         <tr><th>Date</th>
                         <td>{0[DATE]}</td></tr>
-                        <tr><th>Unique ID</th>
+                        <tr><th>Text (Unique)</th>
                         <td>{0[UNIQUE]}</td></tr>
                         <tr><th>Constant</th>
                         <td>{0[CONST]}</td></tr>
@@ -314,11 +321,10 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[count]}</td></tr>
                         <tr><th>Distinct count</th>
                         <td>{0[distinct_count]}</td></tr>
-                        <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
-                        <td>{0[p_missing]}</td></tr>
                         <tr><th>Unique (%)</th>
                         <td>{0[p_unique]}</td></tr>
-
+                        <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
+                        <td>{0[p_missing]}</td></tr>
                     </table>
 
                 </div>
@@ -430,7 +436,7 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
 
 row_templates_dict['DISCRETE'] = row_templates_dict['NUM']
 
-row_templates_dict['CAT'] = _row_header.format(vartype="Categorical, low cardinality", varname="{0[varname]}") + u'''
+row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{0[varname]}") + u'''
        <div class="col-md-3">
 
             <table class="stats ">
@@ -457,21 +463,21 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical, low cardina
          {0[freqtable]}
 ''' + _row_footer
 
-row_templates_dict['UNIQUE'] = _row_header.format(vartype="Unique ID", varname="{0[varname]}") + u'''
-  <div class="col-md-6">
-            <HEADER></HEADER>
-            <div class="row">
-                <div class="col-sm-6">
-                    <table class="stats ">
-                        <tr><th>Count</th>
-                        <td>{0[count]}</td></tr>
-                    </table>
-                </div>
-
-            </div>
+row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique", varname="{0[varname]}") + u'''
+        <div class="col-md-4 collapse in" id="minivalues{0[varid]}">{0[firstn]}</div>
+        <div class="col-md-4 collapse in" id="minivalues{0[varid]}">{0[lastn]}</div>
+        <div class="col-md-12 text-right">
+            <a role="button" data-toggle="collapse" data-target="#values{0[varid]},#minivalues{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
+                Toggle details
+            </a>
+        </div>
+        <div class="col-md-12 collapse" id="values{0[varid]}">
+            <p class="h4">First 20 values</p>
+                {0[firstn_expanded]}
+            <p class="h4">Last 20 values</p>
+                {0[lastn_expanded]}
         </div>
 
-        <div class="col-md-3">Example values</div>
 ''' + _row_footer
 
 row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varname="{0[varname]}") + u'''
