@@ -62,7 +62,7 @@ def describe(df):
         # Large histogram
         imgdata = StringIO.StringIO()
         plot = series.plot(kind='hist', figsize=(6, 4),
-                           facecolor='#348ABD')  # TODO when running on server, send this off to a different thread
+                           facecolor='#337ab7')  # TODO when running on server, send this off to a different thread
         plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
@@ -71,7 +71,7 @@ def describe(df):
 
         # Small histogram
         imgdata = StringIO.StringIO()
-        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#999999')
+        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7')
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
         xticks = plot.xaxis.get_major_ticks()
@@ -208,7 +208,7 @@ def to_html(sample_df, stats_object, formatters=None):
         max_freq = max(freqtable.values[0], freq_other, freq_missing)
         try:
             min_freq = freqtable.values[max_number_of_items_in_table]
-        except KeyError:
+        except IndexError:
             min_freq = 0
 
         # TODO: Correctly sort missing and other
