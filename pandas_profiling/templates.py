@@ -72,17 +72,21 @@ base_html='''
             margin-bottom: 2em;
 
         }
+        .sample tr {
+            border:0;
+        }
         .sample td, .sample th{
             width:100%%;
             padding: 0.5em;
             white-space: nowrap;
+            border: none;
 
         }
         .sample th {
             border-top: 0;
             border-bottom: 2px solid #ddd;
         }
-        .sample td{
+        .sample td {
             border-top: 1px solid #ddd;
         }
         .sample tr:nth-child(even) {
@@ -239,9 +243,7 @@ wrapper_html = '''
 sample_html = '''
     <div class="row variablerow">
         <div class="col-md-12" style="overflow:scroll; width: 100%%; overflow-y: hidden;">
-            <div class="col-md-12" style="overflow:scroll; width: 100%%; overflow-y: hidden;">
                 {sample_table_html}
-            </div>
         </div>
     </div>
 '''
