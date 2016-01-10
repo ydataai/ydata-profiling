@@ -27,18 +27,25 @@ def fmt_bytesize(num, suffix='B'):
 def fmt_percent(v):
     return  "{:2.1f}%".format(v*100)
 
+def fmt_missing(v):
+    if v == 0:
+        return fmt_class(u"0%", "ignore")
+    elif v > 0.05:
+        return fmt_color(fmt_percent(v),'darkred')
+    else:
+        return fmt_percent(v)
 
 value_formatters={
         u'freq': (lambda v: gradient_format(v, 0, 62000, (30, 198, 244), (99, 200, 72))),
-        u'p_missing': lambda v: fmt_class(u"0%", "ignore") if v == 0 else "{:2.1f}%".format(v*100),
+        u'p_missing': fmt_missing,
         u'p_unique': fmt_percent,
-        u'p_zeros': lambda v: fmt_class(u"0%", "ignore") if v == 0 else fmt_percent ,
+        u'p_zeros': lambda v: fmt_class(u"0%", "ignore") if v == 0 else fmt_percent(v) ,
         u'memorysize': fmt_bytesize,
         u'total_missing': fmt_percent,
         DEFAULT_FLOAT_FORMATTER: lambda v: str(float('{:.5g}'.format(v))).rstrip('0').rstrip('.'),
         }
 
 row_formatters={
-    u'p_zeros': lambda v: "ignore" if v == 0 else "" ,
-    u'p_missing': lambda v: "ignore" if v == 0 else "" ,
+    u'p_zeros': lambda v: "ignore" if v <= 0.01 else "" ,
+    u'p_missing': lambda v: "ignore" if v <= 0.01 else "" ,
 }

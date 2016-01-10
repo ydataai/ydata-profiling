@@ -165,7 +165,7 @@ base_html=u'''
             }
 
             .missing {
-                color:#FF753A;
+                color: darkred;
             }
 
         /* Bars in tables */
@@ -184,7 +184,7 @@ base_html=u'''
                 background-color: #999;
             }
             .missing .bar{
-                background-color: red;
+                background-color: darkred;
             }
             .tooltip-inner {
                 width: 100%%;
@@ -411,10 +411,10 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
                 <td>{0[count]}</td></tr>
                 <tr><th>Distinct count</th>
                 <td>{0[distinct_count]}</td></tr>
-                <tr><th>Missing (%)</th>
-                <td>{0[p_missing]}</td></tr>
                 <tr><th>Unique (%)</th>
                 <td>{0[p_unique]}</td></tr>
+                <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
+                <td>{0[p_missing]}</td></tr>
             </table>
         </div>
         <div class="col-sm-6">
@@ -439,10 +439,10 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
                 <td>{0[count]}</td></tr>
                 <tr><th>Distinct count</th>
                 <td>{0[distinct_count]}</td></tr>
-                <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
-                <td>{0[p_missing]}</td></tr>
                 <tr><th>Unique (%)</th>
                 <td>{0[p_unique]}</td></tr>
+                <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
+                <td>{0[p_missing]}</td></tr>
             </table>
 
 
