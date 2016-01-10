@@ -405,32 +405,27 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
 ''' + _row_footer
 
 row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + u'''
-        <div class="col-md-6">
-            <HEADER></HEADER>
-            <div class="row">
-                <div class="col-sm-6">
-                    <table class="stats ">
-                        <tr><th>Count</th>
-                        <td>{0[count]}</td></tr>
-                        <tr><th>Distinct count</th>
-                        <td>{0[distinct_count]}</td></tr>
-                        <tr><th>Missing (%)</th>
-                        <td>{0[p_missing]}</td></tr>
-                        <tr><th>Unique (%)</th>
-                        <td>{0[p_unique]}</td></tr>
-                    </table>
-                </div>
-                <div class="col-sm-6">
-                    <table class="stats ">
-
-                        <tr><th>Minimum</th>
-                        <td>{0[min]}</td></tr>
-                        <tr><th>Maximum</th>
-                        <td>{0[max]}</td></tr>
-                    </table>
-                </div>
-            </div>
+        <div class="col-sm-3">
+            <table class="stats ">
+                <tr><th>Count</th>
+                <td>{0[count]}</td></tr>
+                <tr><th>Distinct count</th>
+                <td>{0[distinct_count]}</td></tr>
+                <tr><th>Missing (%)</th>
+                <td>{0[p_missing]}</td></tr>
+                <tr><th>Unique (%)</th>
+                <td>{0[p_unique]}</td></tr>
+            </table>
         </div>
+        <div class="col-sm-6">
+            <table class="stats ">
+                <tr><th>Minimum</th>
+                <td>{0[min]}</td></tr>
+                <tr><th>Maximum</th>
+                <td>{0[max]}</td></tr>
+            </table>
+        </div>
+
 
 ''' + _row_footer
 

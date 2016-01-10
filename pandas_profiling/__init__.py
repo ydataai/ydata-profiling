@@ -63,9 +63,13 @@ def describe(df):
         imgdata.seek(0)
         stats['histogram'] = 'data:image/png;base64,' + urllib.quote(base64.b64encode(imgdata.buf))
         #TODO Think about writing this to disk instead of caching them in strings
-
         plt.close(plot.figure)
 
+        stats['mini_histogram'] = mini_histogram(series)
+
+        return pd.Series(stats, name=series.name)
+
+    def mini_histogram(series):
         # Small histogram
         imgdata = StringIO.StringIO()
         plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7')
@@ -75,23 +79,23 @@ def describe(df):
         for tick in xticks[1:-1]:
             tick.set_visible(False)
             tick.label.set_visible(False)
-
         for tick in (xticks[0], xticks[-1]):
             tick.label.set_fontsize(8)
-
         plot.figure.subplots_adjust(left=0.15, right=0.85, top=1, bottom=0.35, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
-        stats['mini_histogram'] = 'data:image/png;base64,' + urllib.quote(base64.b64encode(imgdata.buf))
-
+        result_string = 'data:image/png;base64,' + urllib.quote(base64.b64encode(imgdata.buf))
         plt.close(plot.figure)
+        return result_string
 
-        return pd.Series(stats, name=series.name)
-
-    def describe_date_1d(series):
+    def describe_date_1d(series, base_stats):
         stats = {'min': series.min(), 'max': series.max()}
         stats['range'] = stats['max'] - stats['min']
         stats['type'] = "DATE"
+
+        # TODO: Matplotlib can't do dates of histograms.
+        # stats['mini_histogram'] = mini_histogram(series)
+
         return pd.Series(stats, name=series.name)
 
     def describe_categorical_1d(data):
@@ -134,7 +138,7 @@ def describe(df):
         elif com.is_numeric_dtype(data):
             result = result.append(describe_numeric_1d(data, result))
         elif com.is_datetime64_dtype(data):
-            result = result.append(describe_date_1d(data))
+            result = result.append(describe_date_1d(data, result))
         elif distinct_count == leng:
             result = result.append(describe_unique_1d(data))
         else:
