@@ -509,21 +509,21 @@ mini_freq_table_row = u'''<tr class="{extra_class}">
 '''
 
 freq_table = u'''
-      <div class="row extrapadding">
-                 <div class="col-md-12 collapse" id="freqtable{varid}">
-                    <table class="freq table table-hover">
-                        <thead><tr>
-                            <td class="fillremaining">Value</td>
-                            <td class="number">Count</td>
-                             <td class="number">Frequency (%)</td>
-                            <td style="min-width:200px">&nbsp;</td>
-                        </tr></thead>
 
-                        {rows}
-                    </table>
+         <div class="col-md-12 collapse extrapadding" id="freqtable{varid}">
+            <table class="freq table table-hover">
+                <thead><tr>
+                    <td class="fillremaining">Value</td>
+                    <td class="number">Count</td>
+                     <td class="number">Frequency (%)</td>
+                    <td style="min-width:200px">&nbsp;</td>
+                </tr></thead>
 
-             </div>
+                {rows}
+            </table>
+
         </div>
+
 '''
 freq_table_row = u'''
 <tr class="{extra_class}">
