@@ -7,6 +7,7 @@ import StringIO
 import base64
 import urllib
 import os
+import codecs
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -301,11 +302,12 @@ class ProfileReport(object):
                             description_set)
 
     def to_file(self, outputfile=DEFAULT_OUTPUTFILE):
+
         if outputfile != NO_OUTPUTFILE:
             if outputfile == DEFAULT_OUTPUTFILE:
                 outputfile = 'profile_' + str(hash(self)) + ".html"
 
-            self.file = open(outputfile, 'w+b')
+            self.file = codecs.open(outputfile, 'w+b', encoding='utf8')
             self.file.write(templates.wrapper_html % self.html)
             self.file.close()
 
