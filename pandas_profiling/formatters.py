@@ -48,4 +48,5 @@ value_formatters={
 row_formatters={
     u'p_zeros': lambda v: "ignore" if v <= 0.01 else "" ,
     u'p_missing': lambda v: "ignore" if v <= 0.01 else "" ,
+    u'n_duplicates': lambda v: "ignore" if v <= 0.01 else "",
 }

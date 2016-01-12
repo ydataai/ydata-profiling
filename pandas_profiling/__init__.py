@@ -158,6 +158,7 @@ def describe(df):
 
     table_stats = {'n': len(df), 'nvar': len(df.columns)}
     table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
+    table_stats['n_duplicates'] = sum(df.duplicated())
 
     memsize = df.memory_usage(index=True).sum()
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
@@ -243,8 +244,11 @@ def to_html(sample_df, stats_object):
 
         return table_template.format(rows=freq_rows_html, varid=hash(idx))
 
+    formatted_values = {k: fmt(v, k) for k, v in stats_object['table'].iteritems()}
+    row_classes = {k: row_formatters[k](v) if k in row_formatters.keys() else "" for k, v in stats_object['table'].iteritems()}
+
     # Overview
-    overview_html = templates.overview_template.format({k: fmt(v, k) for k, v in stats_object['table'].iteritems()})
+    overview_html = templates.overview_template.format(formatted_values, row_classes = row_classes)
 
     # Variables
     rows_html = u""

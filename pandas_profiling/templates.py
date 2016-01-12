@@ -278,6 +278,8 @@ overview_template= u'''
                         <td>{0[memsize]}</td></tr>
                         <tr><th>Average record size in memory</th>
                         <td>{0[recordsize]}</td></tr>
+                         <tr class={row_classes[n_duplicates]}><th>Duplicate observations</th>
+                        <td>{0[n_duplicates]}</td></tr>
                         </tbody></table>
         </div>
         <div class="col-md-6 namecol">
