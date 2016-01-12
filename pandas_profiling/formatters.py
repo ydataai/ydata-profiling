@@ -39,14 +39,27 @@ value_formatters={
         u'freq': (lambda v: gradient_format(v, 0, 62000, (30, 198, 244), (99, 200, 72))),
         u'p_missing': fmt_missing,
         u'p_unique': fmt_percent,
-        u'p_zeros': lambda v: fmt_class(u"0%", "ignore") if v == 0 else fmt_percent(v) ,
+        u'p_zeros': fmt_percent,
         u'memorysize': fmt_bytesize,
         u'total_missing': fmt_percent,
         DEFAULT_FLOAT_FORMATTER: lambda v: str(float('{:.5g}'.format(v))).rstrip('0').rstrip('.'),
         }
 
+def fmt_row_severity(v):
+    if v<= 0.01:
+        return "ignore"
+    else:
+        return "alert"
+
+def fmt_skewness(v):
+    if v<-20 or v>20:
+        return "alert"
+    else:
+        return ""
+
 row_formatters={
-    u'p_zeros': lambda v: "ignore" if v <= 0.01 else "" ,
-    u'p_missing': lambda v: "ignore" if v <= 0.01 else "" ,
-    u'n_duplicates': lambda v: "ignore" if v <= 0.01 else "",
+    u'p_zeros': fmt_row_severity,
+    u'p_missing': fmt_row_severity,
+    u'n_duplicates': fmt_row_severity,
+    u'skewness': fmt_skewness,
 }

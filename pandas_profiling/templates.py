@@ -40,6 +40,14 @@ base_html=u'''
             max-width:975px;
         }
 
+        .col-md-12 {
+            padding-left: 2em;
+        }
+
+        .indent {
+            margin-left: 1em;
+        }
+
         /* Table example_values */
             table.example_values {
                 border: 0;
@@ -65,7 +73,7 @@ base_html=u'''
 
             .stats th {
                 border: 0;
-                padding: 0 2em 0 1em;
+                padding: 0 2em 0 0;
                 color: #555;
                 font-weight: 600;
             }
@@ -83,6 +91,7 @@ base_html=u'''
                 padding: 1px;
                 border: 0;
             }
+
 
         /* Sample table */
             table.sample {
@@ -108,9 +117,7 @@ base_html=u'''
             .sample td {
                 width:100%%;
             }
-            .sample tr:nth-child(even) {
-               background-color: #f2f2f2;
-            }
+
 
         /* There is no good solution available to make the divs equal height and then center ... */
             .histogram {
@@ -167,6 +174,10 @@ base_html=u'''
             .missing {
                 color: darkred;
             }
+            .alert, .alert > th, .alert > td {
+                color: red;
+            }
+
 
         /* Bars in tables */
             .freq .bar{
@@ -202,25 +213,19 @@ base_html=u'''
 
 <div class="container pandas-profiling">
      <div class="row headerrow highlight">
-         <div class="col-md-12">
             <h1>Overview</h1>
-        </div>
     </div>
 
     %(overview_html)s
 
     <div class="row headerrow highlight">
-         <div class="col-md-12">
             <h1>Profile report</h1>
-        </div>
     </div>
 
     %(rows_html)s
 
     <div class="row headerrow highlight">
-         <div class="col-md-12">
             <h1>Sample <small>First 5 rows</small></h1>
-        </div>
     </div>
 
     %(sample_html)s
@@ -267,7 +272,7 @@ overview_template= u'''
     <div class="row variablerow">
         <div class="col-md-6 namecol">
             <p class="h4">Dataset info</p>
-             <table class="stats ">
+             <table class="stats  indent">
                         <tbody><tr><th>Number of variables</th>
                         <td>{0[nvar]}</td></tr>
                         <tr><th>Number of observations</th>
@@ -284,7 +289,7 @@ overview_template= u'''
         </div>
         <div class="col-md-6 namecol">
             <p class="h4">Variables types</p>
-             <table class="stats ">
+             <table class="stats  indent">
                         <tbody><tr><th>Numeric</th>
                         <td>{0[NUM]}</td></tr>
                         <tr><th>Categorical</th>
@@ -319,14 +324,14 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
             <div class="row">
                 <div class="col-sm-6">
                     <table class="stats ">
-                        <tr><th>Count</th>
-                        <td>{0[count]}</td></tr>
                         <tr><th>Distinct count</th>
                         <td>{0[distinct_count]}</td></tr>
                         <tr><th>Unique (%)</th>
                         <td>{0[p_unique]}</td></tr>
                         <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
                         <td>{0[p_missing]}</td></tr>
+                        <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
+                        <td>{0[n_missing]}</td></tr>
                     </table>
 
                 </div>
@@ -356,8 +361,8 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
         </div>
         <div class="row collapse col-md-12" id="descriptives{0[varid]}">
             <div class="col-sm-4">
-                  <table class="stats ">
-                        <tr><td colspan="2"><p class="h4">Quantile statistics</p></td></tr>
+                  <p class="h4">Quantile statistics</p>
+                  <table class="stats indent">
                         <tr><th>Minimum</th>
                         <td>{0[min]}</td></tr>
                         <tr><th>5-th percentile</th>
@@ -371,15 +376,15 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <tr><th>95-th percentile</th>
                         <td>{0[95%]}</td></tr>
                         <tr><th>Maximum</th>
-                        <td>{0[max]}</td></tr>
+                        <td>{0[max]}</td></tr>l
                         <tr><th>Range</th>
                         <td>{0[range]}</td></tr>
                         <tr><th>Interquartile range</th>
                         <td>{0[iqr]}</td></tr>
-
-                        <tr><td colspan="2"><br/><p class="h4">Descriptive statistics</p></td></tr>
+                  </table>
+                  <p class="h4">Descriptive statistics</p>
+                  <table class="stats indent">
                         <tr><th>Standard deviation</th>
-
                         <td>{0[std]}</td></tr>
                         <tr><th>Coef of variation</th>
                         <td>{0[cv]}</td></tr>
@@ -389,16 +394,15 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[mean]}</td></tr>
                         <tr><th>MAD</th>
                         <td>{0[mad]}</td></tr>
-                        <tr><th>Skewness</th>
+                        <tr class="{row_classes[skewness]}"><th>Skewness</th>
                         <td>{0[skewness]}</td></tr>
                         <tr><th>Sum</th>
                         <td>{0[sum]}</td></tr>
-
                         <tr><th>Variance</th>
                         <td>{0[variance]}</td></tr>
                         <tr><th>Memory size</th>
                         <td>{0[memorysize]}</td></tr>
-                    </table>
+                 </table>
             </div>
              <div class="col-sm-8 histogram">
                  <img src="{0[histogram]}">
@@ -409,14 +413,14 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
 row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + u'''
         <div class="col-sm-3">
             <table class="stats ">
-                <tr><th>Count</th>
-                <td>{0[count]}</td></tr>
                 <tr><th>Distinct count</th>
                 <td>{0[distinct_count]}</td></tr>
                 <tr><th>Unique (%)</th>
                 <td>{0[p_unique]}</td></tr>
                 <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
                 <td>{0[p_missing]}</td></tr>
+                <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
+                <td>{0[n_missing]}</td></tr>
             </table>
         </div>
         <div class="col-sm-6">
@@ -437,14 +441,14 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
        <div class="col-md-3">
 
             <table class="stats ">
-                <tr><th>Count</th>
-                <td>{0[count]}</td></tr>
                 <tr><th>Distinct count</th>
                 <td>{0[distinct_count]}</td></tr>
                 <tr><th>Unique (%)</th>
                 <td>{0[p_unique]}</td></tr>
                 <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
                 <td>{0[p_missing]}</td></tr>
+                <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
+                <td>{0[n_missing]}</td></tr>
             </table>
 
 
@@ -461,8 +465,8 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
 ''' + _row_footer
 
 row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique", varname="{0[varname]}") + u'''
-        <div class="col-md-4 collapse in" id="minivalues{0[varid]}">{0[firstn]}</div>
-        <div class="col-md-4 collapse in" id="minivalues{0[varid]}">{0[lastn]}</div>
+        <div class="col-md-3 collapse in" id="minivalues{0[varid]}">{0[firstn]}</div>
+        <div class="col-md-6 collapse in" id="minivalues{0[varid]}">{0[lastn]}</div>
         <div class="col-md-12 text-right">
             <a role="button" data-toggle="collapse" data-target="#values{0[varid]},#minivalues{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
                 Toggle details
@@ -501,7 +505,7 @@ mini_freq_table = u'''
 mini_freq_table_row = u'''<tr class="{extra_class}">
                     <th>{label}</th>
                      <td>
-                          <div class="bar" style="width:{width}%" data-toggle="tooltip" data-placement="right" data-html="true" data-delay=500 title="Count: {count} <br> Percentage: {percentage}%">
+                          <div class="bar" style="width:{width}%" data-toggle="tooltip" data-placement="right" data-html="true" data-delay=500 title="Percentage: {percentage}%">
 {label_in_bar}
                           </div>{label_after_bar}
                    </td>
