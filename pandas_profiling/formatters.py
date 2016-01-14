@@ -30,8 +30,6 @@ def fmt_percent(v):
 def fmt_missing(v):
     if v == 0:
         return fmt_class(u"0%", "ignore")
-    elif v > 0.05:
-        return fmt_color(fmt_percent(v),'darkred')
     else:
         return fmt_percent(v)
 

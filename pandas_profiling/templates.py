@@ -172,10 +172,10 @@ base_html=u'''
             }
 
             .missing {
-                color: darkred;
+                color: #a94442;
             }
             .alert, .alert > th, .alert > td {
-                color: red;
+                color: #a94442;
             }
 
 
@@ -195,7 +195,7 @@ base_html=u'''
                 background-color: #999;
             }
             .missing .bar{
-                background-color: darkred;
+                background-color: #a94442;
             }
             .tooltip-inner {
                 width: 100%%;
