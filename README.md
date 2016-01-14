@@ -1,5 +1,5 @@
 #pandas-profiling 
-Generates profile reports from a pandas DataFrame. The df.describe() function is great but a little basic for serious exploratory data analysis. 
+Generates profile reports from a pandas DataFrame. The *df.describe()* function is great but a little basic for serious exploratory data analysis. 
 
 For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:
 
@@ -12,8 +12,7 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Demo
 
-[See a demo report here](http://jospolfliet.blogspot.ca/2016/01/example-of-pandas-profiling-output.html) 
->Note: Finding a free hosting company for 1 webpage that contains JS but without extra markup is harder than I anticipated. Let me know if you know something better!
+[Click here](http://nbviewer.ipython.org/github/JosPolfliet/pandas-profiling/blob/master/examples/meteorites.ipynb) to see a live demo.
 
 
 ## Installation
@@ -42,6 +41,7 @@ If you want to generate a HTML report file, save the ProfileReport to an object 
     profile = pandas_profiling.ProfileReport(df)
     profile.to_file(outputfile="/tmp/myoutputfile.html")
 
+### Python
 For standard formatted CSV files that can be read immediately by pandas, you can use the **profile_csv.py** script. Run
 
 	python profile_csv.py -h
