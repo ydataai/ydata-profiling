@@ -146,6 +146,10 @@ def describe(df):
             result = result.append(describe_categorical_1d(data))
         return result
 
+    if not pd.Index(np.arange(0, len(df))).equals(df.index):
+        # Treat index as any other column
+        df = df.reset_index()
+
     ldesc = [describe_1d(s) for _, s in df.iteritems()]
     # set a convenient order for rows
     names = []
