@@ -1,3 +1,7 @@
+import os
+
+__location__ = os.path.dirname(__file__)
+
 try:
     from setuptools import setup
 except ImportError:
@@ -12,11 +16,9 @@ setup(
     url='http://github.com/jospolfliet/pandas-profiling',
     license='LICENSE',
     description='Generate profile report for pandas DataFrame',
-    long_description=open('README.md').read(),
     install_requires=[
         "pandas",
         "matplotlib"
     ],
     include_package_data = True,
-    package_data={'pandas_profiling': ['pandas_profiling.mplstyle']},
 )

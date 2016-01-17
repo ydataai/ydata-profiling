@@ -1,7 +1,16 @@
 from __future__ import division
-import StringIO
+
+try:
+    from StringIO import BytesIO
+except ImportError:
+    from io import BytesIO
+
+try:
+    from urllib import quote
+except ImportError:
+    from urllib.parse import quote
+
 import base64
-import urllib
 
 import matplotlib
 import numpy as np
@@ -10,8 +19,8 @@ import pandas as pd
 from pandas_profiling import formatters, templates
 from matplotlib import pyplot as plt
 from pandas.core import common as com
-
-
+import six
+from pkg_resources import resource_filename
 
 def describe(df):
     if not isinstance(df, pd.DataFrame):
@@ -21,7 +30,7 @@ def describe(df):
 
     # reset matplotlib style before use
     matplotlib.style.use("default")
-    matplotlib.style.use(os.path.join(os.path.dirname(os.path.abspath(__file__)), "pandas_profiling.mplstyle"))
+    matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
     def pretty_name(x):
         x *= 100
@@ -47,13 +56,13 @@ def describe(df):
         stats['p_zeros'] = (len(series) - np.count_nonzero(series)) / len(series)
 
         # Large histogram
-        imgdata = StringIO.StringIO()
+        imgdata = BytesIO()
         plot = series.plot(kind='hist', figsize=(6, 4),
                            facecolor='#337ab7')  # TODO when running on server, send this off to a different thread
         plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
-        stats['histogram'] = 'data:image/png;base64,' + urllib.quote(base64.b64encode(imgdata.buf))
+        stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
         #TODO Think about writing this to disk instead of caching them in strings
         plt.close(plot.figure)
 
@@ -63,7 +72,7 @@ def describe(df):
 
     def mini_histogram(series):
         # Small histogram
-        imgdata = StringIO.StringIO()
+        imgdata = BytesIO()
         plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7')
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
@@ -76,7 +85,7 @@ def describe(df):
         plot.figure.subplots_adjust(left=0.15, right=0.85, top=1, bottom=0.35, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
-        result_string = 'data:image/png;base64,' + urllib.quote(base64.b64encode(imgdata.buf))
+        result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
         plt.close(plot.figure)
         return result_string
 
@@ -178,7 +187,7 @@ def to_html(sample_df, stats_object):
     if not isinstance(stats_object, dict):
         raise TypeError("stats_object must be of type dict. Did you generate this using the pandas_profiling.describe() function?")
 
-    if stats_object.keys() != ['table', 'variables', 'freq']:
+    if set(stats_object.keys()) != {'table', 'variables', 'freq'}:
         raise TypeError("stats_object badly formatted. Did you generate this using the pandas_profiling-eda.describe() function?")
 
     def fmt(value, name):
@@ -222,7 +231,7 @@ def to_html(sample_df, stats_object):
                                        label_in_bar=label_in_bar,
                                        label_after_bar=label_after_bar)
 
-        for label, freq in freqtable[0:max_number_of_items_in_table].iteritems():
+        for label, freq in six.iteritems(freqtable[0:max_number_of_items_in_table]):
             freq_rows_html += format_row(freq, label)
 
         if freq_other > min_freq:
@@ -235,8 +244,8 @@ def to_html(sample_df, stats_object):
 
         return table_template.format(rows=freq_rows_html, varid=hash(idx))
 
-    formatted_values = {k: fmt(v, k) for k, v in stats_object['table'].iteritems()}
-    row_classes = {k: row_formatters[k](v) if k in row_formatters.keys() else "" for k, v in stats_object['table'].iteritems()}
+    formatted_values = {k: fmt(v, k) for k, v in six.iteritems(stats_object['table'])}
+    row_classes = {k: row_formatters[k](v) if k in row_formatters.keys() else "" for k, v in six.iteritems(stats_object['table'])}
 
     # Overview
     overview_html = templates.overview_template.format(formatted_values, row_classes = row_classes)
@@ -249,8 +258,8 @@ def to_html(sample_df, stats_object):
         formatted_values = {'varname': idx, 'varid': hash(idx)}
         row_classes = {}
 
-        for col, value in row.iteritems():
-            formatted_values[col] = unicode(fmt(value, col))
+        for col, value in six.iteritems(row):
+            formatted_values[col] = fmt(value, col)
             if col in row_formatters:
                 row_classes[col] = row_formatters[col](value)
 

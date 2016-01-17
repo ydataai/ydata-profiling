@@ -1,7 +1,6 @@
 
 import codecs
-import formatters
-import templates
+import pandas_profiling.templates as templates
 from pandas_profiling.base import describe, to_html
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
