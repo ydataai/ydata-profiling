@@ -376,7 +376,7 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <tr><th>95-th percentile</th>
                         <td>{0[95%]}</td></tr>
                         <tr><th>Maximum</th>
-                        <td>{0[max]}</td></tr>l
+                        <td>{0[max]}</td></tr>
                         <tr><th>Range</th>
                         <td>{0[range]}</td></tr>
                         <tr><th>Interquartile range</th>
