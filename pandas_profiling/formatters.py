@@ -27,6 +27,10 @@ def fmt_bytesize(num, suffix='B'):
 def fmt_percent(v):
     return  "{:2.1f}%".format(v*100)
 
+def fmt_varname(v):
+    return u'<code>{0}</code>'.format(v)
+
+
 value_formatters={
         u'freq': (lambda v: gradient_format(v, 0, 62000, (30, 198, 244), (99, 200, 72))),
         u'p_missing': fmt_percent,
@@ -35,6 +39,7 @@ value_formatters={
         u'memorysize': fmt_bytesize,
         u'total_missing': fmt_percent,
         DEFAULT_FLOAT_FORMATTER: lambda v: str(float('{:.5g}'.format(v))).rstrip('0').rstrip('.'),
+        u'correlation_var': lambda v: fmt_varname(v),
         }
 
 def fmt_row_severity(v):

@@ -150,8 +150,24 @@ def describe(df):
         # Treat index as any other column
         df = df.reset_index()
 
+    # Describe all variables in a univariate way
     ldesc = [describe_1d(s) for _, s in df.iteritems()]
-    # set a convenient order for rows
+
+    # Check correlations between variables
+    ''' TODO: corr(x,y) > 0.9 and corr(y,z) > 0.9 does not imply corr(x,z) > 0.9
+    If x~y and y~z but not x~z, it would be better to delete only y
+    Better way would be to find out which variable causes the highest increase in multicollinearity.
+    '''
+    corr = df.corr()
+    for x, corr_x in corr.iterrows():
+        for y, corr in corr_x.iteritems():
+            if x == y: break
+
+            if corr > 0.9:
+
+                ldesc += [pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)]
+
+    # Convert ldesc to a DataFrame
     names = []
     ldesc_indexes = sorted([x.index for x in ldesc], key=len)
     for idxnames in ldesc_indexes:
@@ -161,6 +177,8 @@ def describe(df):
     variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
     variable_stats.columns.names = df.columns.names
 
+
+    # General statistics
     table_stats = {'n': len(df), 'nvar': len(df.columns)}
     table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
     table_stats['n_duplicates'] = sum(df.duplicated())
@@ -169,8 +187,9 @@ def describe(df):
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
     table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
 
-    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE")})
+    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
+    table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR']
 
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
 

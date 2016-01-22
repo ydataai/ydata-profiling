@@ -298,8 +298,8 @@ overview_template= u'''
                         <td>{0[DATE]}</td></tr>
                         <tr><th>Text (Unique)</th>
                         <td>{0[UNIQUE]}</td></tr>
-                        <tr><th>Constant</th>
-                        <td>{0[CONST]}</td></tr>
+                        <tr><th>Rejected</th>
+                        <td>{0[REJECTED]}</td></tr>
                         </tbody></table>
         </div>
      </div>
@@ -494,6 +494,18 @@ row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varn
         </div>
 ''' + _row_footer
 
+row_templates_dict['CORR'] = _row_header_ignore.format(vartype="Highly correlated", varname="{0[varname]}") + u'''
+         <div class="col-md-3">
+            <p> <em>This variable is highly correlated with {0[correlation_var]} and should be ignored for analysis</em></p>
+
+        </div>
+        <div class="col-md-6">
+            <table class="stats ">
+                <tr><th>Correlation</th>
+                <td>{0[correlation]}</td></tr>
+            </table>
+        </div>
+''' + _row_footer
 
 mini_freq_table = u'''
         <div class="col-md-6 collapse in"  id="minifreqtable{varid}">
