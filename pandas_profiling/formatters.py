@@ -27,15 +27,9 @@ def fmt_bytesize(num, suffix='B'):
 def fmt_percent(v):
     return  "{:2.1f}%".format(v*100)
 
-def fmt_missing(v):
-    if v == 0:
-        return fmt_class(u"0%", "ignore")
-    else:
-        return fmt_percent(v)
-
 value_formatters={
         u'freq': (lambda v: gradient_format(v, 0, 62000, (30, 198, 244), (99, 200, 72))),
-        u'p_missing': fmt_missing,
+        u'p_missing': fmt_percent,
         u'p_unique': fmt_percent,
         u'p_zeros': fmt_percent,
         u'memorysize': fmt_bytesize,
