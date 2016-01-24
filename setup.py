@@ -9,16 +9,35 @@ except ImportError:
 
 setup(
     name='pandas-profiling',
-    version='0.1.0',
+    version='1.0.0a1',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['pandas_profiling'],
     url='http://github.com/jospolfliet/pandas-profiling',
-    license='LICENSE',
+    license='MIT',
     description='Generate profile report for pandas DataFrame',
     install_requires=[
         "pandas",
         "matplotlib"
     ],
     include_package_data = True,
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Topic :: Software Development :: Build Tools',
+        'License :: OSI Approved :: MIT License',
+        'Environment :: Console',
+        'Operating System :: OS Independent',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
+        'Topic :: Scientific/Engineering',
+        'Framework :: IPython',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5'
+
+    ],
+    keywords='pandas data-science data-analysis python jupyter ipython',
+
 )
