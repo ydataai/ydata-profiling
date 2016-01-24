@@ -1,5 +1,11 @@
+"""
+Formatters are utilities for formatting numbers by adding HTML code or CSS classes
+"""
+import numpy as np
 
+SKEWNESS_CUTOFF = 20
 DEFAULT_FLOAT_FORMATTER = u'pandas_profiling.__default_float_formatter'
+
 
 def gradient_format(value, limit1, limit2, c1, c2):
     def LerpColour(c1,c2,t):
@@ -43,13 +49,13 @@ value_formatters={
         }
 
 def fmt_row_severity(v):
-    if v<= 0.01:
+    if np.isnan(v) or v<= 0.01:
         return "ignore"
     else:
         return "alert"
 
 def fmt_skewness(v):
-    if v<-20 or v>20:
+    if not np.isnan(v) and (v<-SKEWNESS_CUTOFF or v> SKEWNESS_CUTOFF):
         return "alert"
     else:
         return ""

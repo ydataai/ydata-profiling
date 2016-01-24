@@ -22,7 +22,17 @@ from pandas.core import common as com
 import six
 from pkg_resources import resource_filename
 
+
 def describe(df):
+    """
+    Generates a object containing summary statistics for a given DataFrame
+    :param df: DataFrame to be analyzed
+    :return: Dictionary containing
+        table: general statistics on the DataFrame
+        variables: summary statistics for each variable
+        freq: frequency table
+    """
+
     if not isinstance(df, pd.DataFrame):
         raise TypeError("df must be of type pandas.DataFrame")
     if df.empty:
@@ -53,7 +63,8 @@ def describe(df):
         stats['mad'] = series.mad()
         stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
         stats['type'] = "NUM"
-        stats['p_zeros'] = (len(series) - np.count_nonzero(series)) / len(series)
+        stats['n_zeros'] = (len(series) - np.count_nonzero(series))
+        stats['p_zeros'] = stats['n_zeros'] / len(series)
 
         # Large histogram
         imgdata = BytesIO()
@@ -151,7 +162,7 @@ def describe(df):
         df = df.reset_index()
 
     # Describe all variables in a univariate way
-    ldesc = [describe_1d(s) for _, s in df.iteritems()]
+    ldesc = {col: describe_1d(s) for col, s in df.iteritems()}
 
     # Check correlations between variables
     ''' TODO: corr(x,y) > 0.9 and corr(y,z) > 0.9 does not imply corr(x,z) > 0.9
@@ -164,19 +175,17 @@ def describe(df):
             if x == y: break
 
             if corr > 0.9:
-
-                ldesc += [pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)]
+                ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)
 
     # Convert ldesc to a DataFrame
     names = []
-    ldesc_indexes = sorted([x.index for x in ldesc], key=len)
+    ldesc_indexes = sorted([x.index for x in ldesc.values()], key=len)
     for idxnames in ldesc_indexes:
         for name in idxnames:
             if name not in names:
                 names.append(name)
     variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
     variable_stats.columns.names = df.columns.names
-
 
     # General statistics
     table_stats = {'n': len(df), 'nvar': len(df.columns)}
@@ -195,6 +204,14 @@ def describe(df):
 
 
 def to_html(sample_df, stats_object):
+
+    """
+    Generate a HTML report from summary statistics and a given sample
+    :param sample_df: DataFrame containing the sample you want to print
+    :param stats_object: Dictionary containing summary statistics. Should be generated with an appropriate describe() function
+    :return: String containing profile report in HTML format
+    """
+
     n_obs = stats_object['table']['n']
 
     value_formatters = formatters.value_formatters
@@ -263,14 +280,9 @@ def to_html(sample_df, stats_object):
 
         return table_template.format(rows=freq_rows_html, varid=hash(idx))
 
-    formatted_values = {k: fmt(v, k) for k, v in six.iteritems(stats_object['table'])}
-    row_classes = {k: row_formatters[k](v) if k in row_formatters.keys() else "" for k, v in six.iteritems(stats_object['table'])}
-
-    # Overview
-    overview_html = templates.overview_template.format(formatted_values, row_classes = row_classes)
-
     # Variables
     rows_html = u""
+    messages = []
 
     for idx, row in stats_object['variables'].iterrows():
 
@@ -279,15 +291,23 @@ def to_html(sample_df, stats_object):
 
         for col, value in six.iteritems(row):
             formatted_values[col] = fmt(value, col)
-            if col in row_formatters:
-                row_classes[col] = row_formatters[col](value)
 
+        for col in set(row.index) & six.viewkeys(row_formatters):
+            row_classes[col] = row_formatters[col](row[col])
+            if row_classes[col] == "alert" and col in templates.messages:
+                messages.append(templates.messages[col].format(formatted_values, varname = formatters.fmt_varname(idx)))
 
         if row['type'] == 'CAT':
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                            templates.mini_freq_table, templates.mini_freq_table_row, 3)
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                        templates.freq_table, templates.freq_table_row, 20)
+            if row['distinct_count'] > 50:
+                messages.append(templates.messages['HIGH_CARDINALITY'].format(formatted_values, varname = formatters.fmt_varname(idx)))
+                row_classes['distinct_count'] = "alert"
+            else:
+                row_classes['distinct_count'] = ""
+
         if row['type'] == 'UNIQUE':
             obs = stats_object['freq'][idx].index
 
@@ -303,8 +323,30 @@ def to_html(sample_df, stats_object):
 
         rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
 
+        if row['type'] in {'CORR', 'CONST'}:
+            formatted_values['varname'] = formatters.fmt_varname(idx)
+            messages.append(templates.messages[row['type']].format(formatted_values))
+
+
+    # Overview
+    formatted_values = {k: fmt(v, k) for k, v in six.iteritems(stats_object['table'])}
+
+    row_classes={}
+    for col in six.viewkeys(stats_object['table']) & six.viewkeys(row_formatters):
+        row_classes[col] = row_formatters[col](stats_object['table'][col])
+        if row_classes[col] == "alert" and col in templates.messages:
+            messages.append(templates.messages[col].format(formatted_values, varname = formatters.fmt_varname(idx)))
+
+    messages_html = u''
+    for msg in messages:
+        messages_html += templates.message_row.format(message=msg)
+
+
+    overview_html = templates.overview_template.format(formatted_values, row_classes = row_classes, messages=messages_html)
+
+
     # Sample
 
-    sample_html = templates.sample_html.format(sample_table_html=sample_df.head().to_html(classes="sample"))
+    sample_html = templates.sample_html.format(sample_table_html=sample_df.to_html(classes="sample"))
 
     return templates.base_html % {'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html}

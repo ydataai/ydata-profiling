@@ -1,9 +1,18 @@
+# coding=UTF-8
+
+'''
+This file contains all templates used for generating the HTML profile report
+'''
+
+#TODO: rewrite this using Jinja template language
+
 base_html=u'''
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
           integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
           integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
     <style>
 
         .variablerow {
@@ -219,13 +228,13 @@ base_html=u'''
     %(overview_html)s
 
     <div class="row headerrow highlight">
-            <h1>Profile report</h1>
+            <h1>Variables</h1>
     </div>
 
     %(rows_html)s
 
     <div class="row headerrow highlight">
-            <h1>Sample <small>First 5 rows</small></h1>
+            <h1>Sample</h1>
     </div>
 
     %(sample_html)s
@@ -272,24 +281,22 @@ overview_template= u'''
     <div class="row variablerow">
         <div class="col-md-6 namecol">
             <p class="h4">Dataset info</p>
-             <table class="stats  indent">
+             <table class="stats" style="margin-left: 1em;" >
                         <tbody><tr><th>Number of variables</th>
                         <td>{0[nvar]}</td></tr>
                         <tr><th>Number of observations</th>
                         <td>{0[n]}</td></tr>
                         <tr><th>Total Missing (%)</th>
                         <td>{0[total_missing]}</td></tr>
-                        <tr><th>Size in memory</th>
+                        <tr><th>Total size in memory</th>
                         <td>{0[memsize]}</td></tr>
                         <tr><th>Average record size in memory</th>
                         <td>{0[recordsize]}</td></tr>
-                         <tr class={row_classes[n_duplicates]}><th>Duplicate observations</th>
-                        <td>{0[n_duplicates]}</td></tr>
                         </tbody></table>
         </div>
         <div class="col-md-6 namecol">
             <p class="h4">Variables types</p>
-             <table class="stats  indent">
+             <table class="stats" style="margin-left: 1em;">
                         <tbody><tr><th>Numeric</th>
                         <td>{0[NUM]}</td></tr>
                         <tr><th>Categorical</th>
@@ -301,6 +308,10 @@ overview_template= u'''
                         <tr><th>Rejected</th>
                         <td>{0[REJECTED]}</td></tr>
                         </tbody></table>
+        </div>
+        <div class="col-md-12" style="padding-left: 1em;">
+            <p class="h4">Warnings</p>
+            <ul class="list-unstyled">{messages}</ul>
         </div>
      </div>
 '''
@@ -441,7 +452,7 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
        <div class="col-md-3">
 
             <table class="stats ">
-                <tr><th>Distinct count</th>
+                <tr class="{row_classes[distinct_count]}"><th>Distinct count</th>
                 <td>{0[distinct_count]}</td></tr>
                 <tr><th>Unique (%)</th>
                 <td>{0[p_unique]}</td></tr>
@@ -551,3 +562,14 @@ freq_table_row = u'''
         </td>
 </tr>
 '''
+
+messages=dict()
+messages['CONST'] = u'{0[varname]} has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
+messages['CORR'] = u'{0[varname]} is highly correlated with {0[correlation_var]} (ρ = {0[correlation]}) <span class="label label-primary">Rejected</span>'
+messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
+messages['n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
+messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})'
+messages['p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'
+messages['p_zeros'] = u'{varname} has {0[n_zeros]} / {0[p_zeros]} zeros'
+
+message_row = u'<li>{message}</l>'
