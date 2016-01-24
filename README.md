@@ -16,9 +16,15 @@ For each column the following statistics - if relevant for the column type - are
 
 
 ## Installation
+### Using pip
+You can install using the pip package manager by running
+
+    pip install pandas-profiling
+
+### From source
 Download the source code by cloning the repo or by pressing 'Download ZIP' on this page. Install by navigating to the proper directory and running
 
-	python setup.py install
+    python setup.py install
 
 ## Usage
 The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
