@@ -38,8 +38,13 @@ def describe(df):
     if df.empty:
         raise ValueError("df can not be empty")
 
-    # reset matplotlib style before use
-    matplotlib.style.use("default")
+    try:
+        # reset matplotlib style before use
+        # Fails in matplotlib 1.4.x so plot might look bad
+        matplotlib.style.use("default")
+    except:
+        pass
+
     matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
     def pretty_name(x):
@@ -130,9 +135,6 @@ def describe(df):
         return pd.Series(['UNIQUE'], index=['type'], name=data.name)
 
     def describe_1d(data):
-        # Is unique
-        # Percent missing
-        names = ['count', 'distinct_count', 'p_missing', 'n_missing', 'is_unique', 'mode', 'p_unique', 'memorysize']
         count = data.count()
         leng = len(data)
         distinct_count = data.nunique(dropna=False)
@@ -141,9 +143,18 @@ def describe(df):
         else:
             mode = data[0]
 
-        results_data = [count, distinct_count, 1 - count / leng, leng - count, distinct_count == leng, mode,
-                        distinct_count / count, data.memory_usage()]
-        result = pd.Series(results_data, index=names, name=data.name)
+        results_data = {'count': count, 'distinct_count': distinct_count, 'p_missing': 1 - count / leng,
+                        'n_missing': leng - count,
+                        'is_unique': distinct_count == leng,
+                        'mode': mode,
+                        'p_unique': distinct_count / count}
+        try:
+            # pandas 0.17 onwards
+            results_data['memorysize'] = data.memory_usage()
+        except:
+            results_data['memorysize'] = 0
+
+        result = pd.Series(results_data, name=data.name)
 
         if distinct_count <= 1:
             result = result.append(describe_constant_1d(data))
