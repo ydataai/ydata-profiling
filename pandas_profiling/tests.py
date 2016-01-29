@@ -6,8 +6,8 @@ import datetime
 import numpy as np
 import pandas as pd
 import six
-from pandas_profiling.base import describe, to_html
 import pandas_profiling
+from pandas_profiling.base import describe, to_html
 import tempfile
 import shutil
 import os

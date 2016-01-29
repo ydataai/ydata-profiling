@@ -16,7 +16,7 @@ import matplotlib
 import numpy as np
 import os
 import pandas as pd
-from pandas_profiling import formatters, templates
+import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
 from matplotlib import pyplot as plt
 from pandas.core import common as com
 import six

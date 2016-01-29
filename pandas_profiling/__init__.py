@@ -1,7 +1,7 @@
 
 import codecs
-import pandas_profiling.templates as templates
-from pandas_profiling.base import describe, to_html
+from .templates import wrapper_html
+from .base import describe, to_html
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
@@ -23,7 +23,7 @@ class ProfileReport(object):
                 outputfile = 'profile_' + str(hash(self)) + ".html"
 
             self.file = codecs.open(outputfile, 'w+b', encoding='utf8')
-            self.file.write(templates.wrapper_html % self.html)
+            self.file.write(wrapper_html % self.html)
             self.file.close()
 
     def _repr_html_(self):
