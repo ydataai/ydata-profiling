@@ -11,9 +11,12 @@ class ProfileReport(object):
     html = ''
     file = None
 
-    def __init__(self, df):
-        description_set = describe(df)
-        self.html = to_html(df.head(),
+    def __init__(self, df, **kwargs):
+
+        sample = kwargs.get('sample', df.head())
+
+        description_set = describe(df, **kwargs)
+        self.html = to_html(sample,
                             description_set)
 
     def to_file(self, outputfile=DEFAULT_OUTPUTFILE):

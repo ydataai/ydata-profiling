@@ -134,10 +134,13 @@ class DataFrameTest(unittest.TestCase):
                 if pd.__version__ >= '0.17':
                     self.assertEqual(self.results['variables'].loc[col]['memorysize'], 72)
 
-
     def test_html_report(self):
         html = to_html(self.df.head(), self.results)
         self.assertLess(1000, len(html))
+
+    def test_bins(self):
+        self.results = describe(self.df, bins=100)
+        self.test_describe_df()
 
     def test_export_to_file(self):
 

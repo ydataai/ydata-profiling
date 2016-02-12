@@ -23,10 +23,11 @@ import six
 from pkg_resources import resource_filename
 
 
-def describe(df):
+def describe(df, **kwargs):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
+    :param bins: Number of bins in histogram
     :return: Dictionary containing
         table: general statistics on the DataFrame
         variables: summary statistics for each variable
@@ -37,6 +38,8 @@ def describe(df):
         raise TypeError("df must be of type pandas.DataFrame")
     if df.empty:
         raise ValueError("df can not be empty")
+
+    bins = kwargs.get('bins', 10)
 
     try:
         # reset matplotlib style before use
@@ -74,7 +77,7 @@ def describe(df):
         # Large histogram
         imgdata = BytesIO()
         plot = series.plot(kind='hist', figsize=(6, 4),
-                           facecolor='#337ab7')  # TODO when running on server, send this off to a different thread
+                           facecolor='#337ab7', bins=bins)  # TODO when running on server, send this off to a different thread
         plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
@@ -89,7 +92,7 @@ def describe(df):
     def mini_histogram(series):
         # Small histogram
         imgdata = BytesIO()
-        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7')
+        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7', bins=bins)
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
         xticks = plot.xaxis.get_major_ticks()
@@ -110,7 +113,7 @@ def describe(df):
         stats['range'] = stats['max'] - stats['min']
         stats['type'] = "DATE"
 
-        # TODO: Matplotlib can't do dates of histograms.
+        # TODO: Matplotlib can't do histograms of dates.
         # stats['mini_histogram'] = mini_histogram(series)
 
         return pd.Series(stats, name=series.name)
@@ -214,11 +217,11 @@ def describe(df):
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
 
 
-def to_html(sample_df, stats_object):
+def to_html(sample, stats_object):
 
     """
     Generate a HTML report from summary statistics and a given sample
-    :param sample_df: DataFrame containing the sample you want to print
+    :param sample: DataFrame containing the sample you want to print
     :param stats_object: Dictionary containing summary statistics. Should be generated with an appropriate describe() function
     :return: String containing profile report in HTML format
     """
@@ -228,8 +231,8 @@ def to_html(sample_df, stats_object):
     value_formatters = formatters.value_formatters
     row_formatters = formatters.row_formatters
 
-    if not isinstance(sample_df, pd.DataFrame):
-        raise TypeError("sample_df must be of type pandas.DataFrame")
+    if not isinstance(sample, pd.DataFrame):
+        raise TypeError("sample must be of type pandas.DataFrame")
 
     if not isinstance(stats_object, dict):
         raise TypeError("stats_object must be of type dict. Did you generate this using the pandas_profiling.describe() function?")
@@ -352,12 +355,10 @@ def to_html(sample_df, stats_object):
     for msg in messages:
         messages_html += templates.message_row.format(message=msg)
 
-
     overview_html = templates.overview_template.format(formatted_values, row_classes = row_classes, messages=messages_html)
-
 
     # Sample
 
-    sample_html = templates.sample_html.format(sample_table_html=sample_df.to_html(classes="sample"))
+    sample_html = templates.sample_html.format(sample_table_html=sample.to_html(classes="sample"))
 
     return templates.base_html % {'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html}
