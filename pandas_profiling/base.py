@@ -13,6 +13,8 @@ except ImportError:
 import base64
 
 import matplotlib
+matplotlib.use('Agg')
+
 import numpy as np
 import os
 import pandas as pd
