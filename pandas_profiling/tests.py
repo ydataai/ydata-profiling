@@ -131,8 +131,6 @@ class DataFrameTest(unittest.TestCase):
                 self.assertLess(200, len(self.results['variables'].loc[col]["mini_histogram"]),
                                 "Mini-histogram missing for column %s " % col)
 
-                if pd.__version__ >= '0.17':
-                    self.assertEqual(self.results['variables'].loc[col]['memorysize'], 72)
 
     def test_html_report(self):
         html = to_html(self.df.head(), self.results)
