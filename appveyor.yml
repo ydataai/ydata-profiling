@@ -14,7 +14,7 @@ environment:
 
 install:
   # Install miniconda Python
-  - "powershell ./ci/install_python.ps1"
+  - "powershell ./appveyor_install.ps1"
 
   # Prepend newly installed Python to the PATH of this build (this cannot be
   # done from inside the powershell script as it would require to restart
