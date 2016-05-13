@@ -140,16 +140,27 @@ def describe(df, **kwargs):
         return pd.Series(['UNIQUE'], index=['type'], name=data.name)
 
     def describe_1d(data):
-        count = data.count()
-        leng = len(data)
-        distinct_count = data.nunique(dropna=False)
+        leng = len(data)  # number of observations in the Series
+        count = data.count()  # number of non-NaN observations in the Series
+
+        # Replace infinite values with NaNs to avoid issues with
+        # histograms later.
+        data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
+
+        n_infinite = count - data.count()  # number of infinte observations in the Series
+        
+        distinct_count = data.nunique(dropna=False)  # number of unique elements in the Series
         if count > distinct_count > 1:
             mode = data.mode().iloc[0]
         else:
             mode = data[0]
 
-        results_data = {'count': count, 'distinct_count': distinct_count, 'p_missing': 1 - count / leng,
+        results_data = {'count': count,
+                        'distinct_count': distinct_count,
+                        'p_missing': 1 - count / leng,
                         'n_missing': leng - count,
+                        'p_infinite': n_infinite / leng,
+                        'n_infinite': n_infinite,
                         'is_unique': distinct_count == leng,
                         'mode': mode,
                         'p_unique': distinct_count / count}
