@@ -40,6 +40,7 @@ def fmt_varname(v):
 value_formatters={
         u'freq': (lambda v: gradient_format(v, 0, 62000, (30, 198, 244), (99, 200, 72))),
         u'p_missing': fmt_percent,
+        u'p_infinite': fmt_percent,
         u'p_unique': fmt_percent,
         u'p_zeros': fmt_percent,
         u'memorysize': fmt_bytesize,
@@ -63,6 +64,7 @@ def fmt_skewness(v):
 row_formatters={
     u'p_zeros': fmt_row_severity,
     u'p_missing': fmt_row_severity,
+    u'p_infinite': fmt_row_severity,
     u'n_duplicates': fmt_row_severity,
     u'skewness': fmt_skewness,
 }

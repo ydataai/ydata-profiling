@@ -343,6 +343,10 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[p_missing]}</td></tr>
                         <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
                         <td>{0[n_missing]}</td></tr>
+                        <tr class="{row_classes[p_infinite]}"><th>Infinite (%)</th>
+                        <td>{0[p_infinite]}</td></tr>
+                        <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
+                        <td>{0[n_infinite]}</td></tr>
                     </table>
 
                 </div>
@@ -432,6 +436,10 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
                 <td>{0[p_missing]}</td></tr>
                 <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
                 <td>{0[n_missing]}</td></tr>
+                <tr class="{row_classes[p_infinite]}"><th>Infinite (%)</th>
+                <td>{0[p_infinite]}</td></tr>
+                <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
+                <td>{0[n_infinite]}</td></tr>
             </table>
         </div>
         <div class="col-sm-6">
@@ -460,6 +468,10 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
                 <td>{0[p_missing]}</td></tr>
                 <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
                 <td>{0[n_missing]}</td></tr>
+                <tr class="{row_classes[p_infinite]}"><th>Infinite (%)</th>
+                <td>{0[p_infinite]}</td></tr>
+                <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
+                <td>{0[n_infinite]}</td></tr>
             </table>
 
 
@@ -570,6 +582,7 @@ messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_c
 messages['n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
 messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})'
 messages['p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'
+messages['p_infinite'] = u'{varname} has {0[n_infinite]} / {0[p_infinite]} infinite values <span class="label label-default">Infinite</span>'
 messages['p_zeros'] = u'{varname} has {0[n_zeros]} / {0[p_zeros]} zeros'
 
 message_row = u'<li>{message}</l>'
