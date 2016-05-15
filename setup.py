@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='pandas-profiling',
-    version='1.0.0a2',
+    version='1.1.0',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['pandas_profiling'],
