@@ -78,8 +78,6 @@ def describe(df, **kwargs):
         # Histograms
         stats['histogram'] = histogram(series)
         stats['mini_histogram'] = mini_histogram(series)
-
-
         return pd.Series(stats, name=series.name)
 
     def _plot_histogram(series, figsize=(6, 4), facecolor='#337ab7', bins=bins):
