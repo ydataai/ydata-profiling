@@ -443,7 +443,6 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
                         <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
                         <td>{0[n_infinite]}</td></tr>
                     </table>
-
                 </div>
                 <div class="col-sm-6">
                     <table class="stats ">
@@ -457,7 +456,6 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
         </div>
         <div class="col-md-3 collapse in" id="minihistogram{0[varid]}">
              <img src="{0[mini_histogram]}">
-
         </div>
        <div class="col-md-12 text-right">
             <a role="button" data-toggle="collapse" data-target="#descriptives{0[varid]},#minihistogram{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
