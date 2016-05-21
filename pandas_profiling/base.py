@@ -21,16 +21,21 @@ import pandas as pd
 import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
 from matplotlib import pyplot as plt
 from pandas.core import common as com
-import six
 from pkg_resources import resource_filename
+import six
 
 
 def describe(df, **kwargs):
-    """
-    Generates a object containing summary statistics for a given DataFrame
-    :param df: DataFrame to be analyzed
-    :param bins: Number of bins in histogram
-    :return: Dictionary containing
+    """Generates a object containing summary statistics for a given DataFrame
+
+    Parameters
+    ----------
+    df: DataFrame to be analyzed
+    bins: Number of bins in histogram
+
+    Returns
+    -------
+    Dictionary containing
         table: general statistics on the DataFrame
         variables: summary statistics for each variable
         freq: frequency table
@@ -83,16 +88,20 @@ def describe(df, **kwargs):
     def _plot_histogram(series, figsize=(6, 4), facecolor='#337ab7', bins=bins):
         """Plot an histogram from the data and return the AxesSubplot object.
 
-        :param series: Series, default None
+        Parameters
+        ----------
+        series: Series, default None
             The data to plot
-        :param figsize: a tuple (width, height) in inches, default (6,4)
+        figsize: a tuple (width, height) in inches, default (6,4)
             The size of the figure.
-        :param facecolor: str
+        facecolor: str
             The color code.
-        :param bins: int, default
+        bins: int, default
             The number of equal-width bins in the given range.
-        :return:  matplotlib.AxesSubplot
-            The plot.
+
+        Returns
+        -------
+        matplotlib.AxesSubplot, The plot.
         """
         if com.is_datetime64_dtype(series):
             # TODO: These calls should be merged
@@ -106,13 +115,17 @@ def describe(df, **kwargs):
                                bins=bins)  # TODO when running on server, send this off to a different thread
         return plot
 
-
     def histogram(series):
         """Plot an histogram of the data.
-        :param series: Series, default None
+
+        Parameters
+        ----------
+        series: Series, default None
             The data to plot.
-        :return: str
-            The resulting image encoded as a string.
+
+        Returns
+        -------
+        str, The resulting image encoded as a string.
         """
         imgdata = BytesIO()
         plot = _plot_histogram(series)
@@ -124,13 +137,17 @@ def describe(df, **kwargs):
         plt.close(plot.figure)
         return result_string
 
-
     def mini_histogram(series):
         """Plot a small (mini) histogram of the data.
-        :param series: Series, default None
+
+        Parameters
+        ----------
+        series: Series, default None
             The data to plot.
-        :return: str
-            The resulting image encoded as a string.
+
+        Returns
+        -------
+        str, The resulting image encoded as a string.
         """
         imgdata = BytesIO()
         plot = _plot_histogram(series)
@@ -267,13 +284,20 @@ def describe(df, **kwargs):
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
 
 
-def to_html(sample, stats_object):
 
-    """
-    Generate a HTML report from summary statistics and a given sample
-    :param sample: DataFrame containing the sample you want to print
-    :param stats_object: Dictionary containing summary statistics. Should be generated with an appropriate describe() function
-    :return: String containing profile report in HTML format
+
+
+def to_html(sample, stats_object):
+    """Generate a HTML report from summary statistics and a given sample.
+
+    Parameters
+    ----------
+    sample: DataFrame containing the sample you want to print
+    stats_object: Dictionary containing summary statistics. Should be generated with an appropriate describe() function
+
+    Returns
+    -------
+    str, containing profile report in HTML format
     """
 
     n_obs = stats_object['table']['n']
@@ -323,7 +347,7 @@ def to_html(sample, stats_object):
                 label_in_bar = "&nbsp;"
                 label_after_bar = freq
 
-            return row_template.format(label=label,
+            return row_template.render(label=label,
                                        width=width,
                                        count=freq,
                                        percentage='{:2.1f}'.format(freq / n * 100),
@@ -342,7 +366,7 @@ def to_html(sample, stats_object):
         if freq_missing > min_freq:
             freq_rows_html += format_row(freq_missing, "(Missing)", extra_class='missing')
 
-        return table_template.format(rows=freq_rows_html, varid=hash(idx))
+        return table_template.render(rows=freq_rows_html, varid=hash(idx))
 
     # Variables
     rows_html = u""
@@ -363,9 +387,9 @@ def to_html(sample, stats_object):
 
         if row['type'] == 'CAT':
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
-                                                           templates.mini_freq_table, templates.mini_freq_table_row, 3)
+                                                           templates.template('mini_freq_table'), templates.template('mini_freq_table_row'), 3)
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
-                                                       templates.freq_table, templates.freq_table_row, 20)
+                                                       templates.template('freq_table'), templates.template('freq_table_row'), 20)
             if row['distinct_count'] > 50:
                 messages.append(templates.messages['HIGH_CARDINALITY'].format(formatted_values, varname = formatters.fmt_varname(idx)))
                 row_classes['distinct_count'] = "alert"
@@ -385,7 +409,7 @@ def to_html(sample, stats_object):
                 formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
                 formatted_values['lastn_expanded'] = ''
 
-        rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
+        rows_html += templates.row_templates_dict[row['type']].render(values=formatted_values, row_classes=row_classes)
 
         if row['type'] in {'CORR', 'CONST'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)
@@ -405,10 +429,10 @@ def to_html(sample, stats_object):
     for msg in messages:
         messages_html += templates.message_row.format(message=msg)
 
-    overview_html = templates.overview_template.format(formatted_values, row_classes = row_classes, messages=messages_html)
+    overview_html = templates.template('overview').render(values=formatted_values, row_classes = row_classes, messages=messages_html)
 
     # Sample
 
-    sample_html = templates.sample_html.format(sample_table_html=sample.to_html(classes="sample"))
-
-    return templates.base_html % {'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html}
+    sample_html = templates.template('sample').render(sample_table_html=sample.to_html(classes="sample"))
+    # TODO: should be done in the template
+    return templates.template('base').render({'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html})

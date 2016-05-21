@@ -1,0 +1,151 @@
+{% include '_row_header.html' %}
+<div class="col-md-6">
+    <div class="row">
+        <div class="col-sm-6">
+            <table class="stats ">
+                <tr>
+                    <th>Distinct count</th>
+                    <td>{{ values['distinct_count'] }}</td>
+                </tr>
+                <tr>
+                    <th>Unique (%)</th>
+                    <td>{{ values['p_unique'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_missing'] }}">
+                    <th>Missing (%)</th>
+                    <td>{{ values['p_missing'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_missing'] }}">
+                    <th>Missing (n)</th>
+                    <td>{{ values['n_missing'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_infinite'] }}">
+                    <th>Infinite (%)</th>
+                    <td>{{ values['p_infinite'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_infinite'] }}">
+                    <th>Infinite (n)</th>
+                    <td>{{ values['n_infinite'] }}</td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="col-sm-6">
+            <table class="stats ">
+
+                <tr>
+                    <th>Mean</th>
+                    <td>{{ values['mean'] }}</td>
+                </tr>
+                <tr>
+                    <th>Minimum</th>
+                    <td>{{ values['min'] }}</td>
+                </tr>
+                <tr>
+                    <th>Maximum</th>
+                    <td>{{ values['max'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_zeros'] }}">
+                    <th>Zeros (%)</th>
+                    <td>{{ values['p_zeros'] }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-md-3 collapse in" id="minihistogram{{ values['varid'] }}">
+    <img src="{{ values['mini_histogram'] }}">
+
+</div>
+<div class="col-md-12 text-right">
+    <a role="button" data-toggle="collapse" data-target="#descriptives{{ values['varid'] }},#minihistogram{{ values['varid'] }}"
+       aria-expanded="false" aria-controls="collapseExample">
+        Toggle details
+    </a>
+</div>
+<div class="row collapse col-md-12" id="descriptives{{ values['varid'] }}">
+    <div class="col-sm-4">
+        <p class="h4">Quantile statistics</p>
+        <table class="stats indent">
+            <tr>
+                <th>Minimum</th>
+                <td>{{ values['min'] }}</td>
+            </tr>
+            <tr>
+                <th>5-th percentile</th>
+                <td>{{ values['5%'] }}</td>
+            </tr>
+            <tr>
+                <th>Q1</th>
+                <td>{{ values['25%'] }}</td>
+            </tr>
+            <tr>
+                <th>Median</th>
+                <td>{{ values['50%'] }}</td>
+            </tr>
+            <tr>
+                <th>Q3</th>
+                <td>{{ values['75%'] }}</td>
+            </tr>
+            <tr>
+                <th>95-th percentile</th>
+                <td>{{ values['95%'] }}</td>
+            </tr>
+            <tr>
+                <th>Maximum</th>
+                <td>{{ values['max'] }}</td>
+            </tr>
+            <tr>
+                <th>Range</th>
+                <td>{{ values['range'] }}</td>
+            </tr>
+            <tr>
+                <th>Interquartile range</th>
+                <td>{{ values['iqr'] }}</td>
+            </tr>
+        </table>
+        <p class="h4">Descriptive statistics</p>
+        <table class="stats indent">
+            <tr>
+                <th>Standard deviation</th>
+                <td>{{ values['std'] }}</td>
+            </tr>
+            <tr>
+                <th>Coef of variation</th>
+                <td>{{ values['cv'] }}</td>
+            </tr>
+            <tr>
+                <th>Kurtosis</th>
+                <td>{{ values['kurtosis'] }}</td>
+            </tr>
+            <tr>
+                <th>Mean</th>
+                <td>{{ values['mean'] }}</td>
+            </tr>
+            <tr>
+                <th>MAD</th>
+                <td>{{ values['mad'] }}</td>
+            </tr>
+            <tr class="{{ row_classes['skewness'] }}">
+                <th>Skewness</th>
+                <td>{{ values['skewness'] }}</td>
+            </tr>
+            <tr>
+                <th>Sum</th>
+                <td>{{ values['sum'] }}</td>
+            </tr>
+            <tr>
+                <th>Variance</th>
+                <td>{{ values['variance'] }}</td>
+            </tr>
+            <tr>
+                <th>Memory size</th>
+                <td>{{ values['memorysize'] }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-sm-8 histogram">
+        <img src="{{ values['histogram'] }}">
+    </div>
+</div>
+{% include '_row_footer.html' %}

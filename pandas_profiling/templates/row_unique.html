@@ -1,0 +1,16 @@
+{% include '_row_header.html' %}
+<div class="col-md-3 collapse in" id="minivalues{{ values['varid'] }}">{{ values['firstn'] }}</div>
+<div class="col-md-6 collapse in" id="minivalues{{ values['varid'] }}">{{ values['lastn'] }}</div>
+<div class="col-md-12 text-right">
+    <a role="button" data-toggle="collapse" data-target="#values{{ values['varid'] }},#minivalues{{ values['varid'] }}" aria-expanded="false"
+       aria-controls="collapseExample">
+        Toggle details
+    </a>
+</div>
+<div class="col-md-12 collapse" id="values{{ values['varid'] }}">
+    <p class="h4">First 20 values</p>
+    {{ values['firstn_expanded'] }}
+    <p class="h4">Last 20 values</p>
+    {{ values['lastn_expanded'] }}
+</div>
+{% include '_row_footer.html' %}

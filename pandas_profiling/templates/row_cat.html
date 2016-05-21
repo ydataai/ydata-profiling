@@ -1,0 +1,38 @@
+{% include '_row_header.html' %}
+<div class="col-md-3">
+    <table class="stats ">
+        <tr class="{{ row_classes['distinct_count'] }}">
+            <th>Distinct count</th>
+            <td>{{ values['distinct_count'] }}</td>
+        </tr>
+        <tr>
+            <th>Unique (%)</th>
+            <td>{{ values['p_unique'] }}</td>
+        </tr>
+        <tr class="{{ row_classes['p_missing'] }}">
+            <th>Missing (%)</th>
+            <td>{{ values['p_missing'] }}</td>
+        </tr>
+        <tr class="{{ row_classes['p_missing'] }}">
+            <th>Missing (n)</th>
+            <td>{{ values['n_missing'] }}</td>
+        </tr>
+        <tr class="{{ row_classes['p_infinite'] }}">
+            <th>Infinite (%)</th>
+            <td>{{ values['p_infinite'] }}</td>
+        </tr>
+        <tr class="{{ row_classes['p_infinite'] }}">
+            <th>Infinite (n)</th>
+            <td>{{ values['n_infinite'] }}</td>
+        </tr>
+    </table>
+</div>
+{{ values['minifreqtable'] }}
+<div class="col-md-12 text-right">
+    <a role="button" data-toggle="collapse" data-target="#freqtable{{ values['varid'] }}, #minifreqtable{{ values['varid'] }}"
+       aria-expanded="true" aria-controls="collapseExample">
+        Toggle details
+    </a>
+</div>
+{{ values['freqtable'] }}
+{% include '_row_footer.html' %}

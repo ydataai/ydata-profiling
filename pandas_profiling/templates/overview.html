@@ -1,0 +1,60 @@
+<div class="row variablerow">
+    <div class="col-md-6 namecol">
+        <p class="h4">Dataset info</p>
+        <table class="stats" style="margin-left: 1em;">
+            <tbody>
+            <tr>
+                <th>Number of variables</th>
+                <td>{{ values['nvar'] }} </td>
+            </tr>
+            <tr>
+                <th>Number of observations</th>
+                <td>{{ values['n'] }} </td>
+            </tr>
+            <tr>
+                <th>Total Missing (%)</th>
+                <td>{{ values['total_missing'] }} </td>
+            </tr>
+            <tr>
+                <th>Total size in memory</th>
+                <td>{{ values['memsize'] }} </td>
+            </tr>
+            <tr>
+                <th>Average record size in memory</th>
+                <td>{{ values['recordsize'] }} </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6 namecol">
+        <p class="h4">Variables types</p>
+        <table class="stats" style="margin-left: 1em;">
+            <tbody>
+            <tr>
+                <th>Numeric</th>
+                <td>{{ values['NUM'] }} </td>
+            </tr>
+            <tr>
+                <th>Categorical</th>
+                <td>{{ values['CAT'] }} </td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ values['DATE'] }} </td>
+            </tr>
+            <tr>
+                <th>Text (Unique)</th>
+                <td>{{ values['UNIQUE'] }} </td>
+            </tr>
+            <tr>
+                <th>Rejected</th>
+                <td>{{ values['REJECTED'] }} </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" style="padding-left: 1em;">
+        <p class="h4">Warnings</p>
+        <ul class="list-unstyled">{{ messages }} </ul>
+    </div>
+</div>

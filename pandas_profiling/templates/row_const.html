@@ -1,0 +1,13 @@
+{% include '_row_header_ignore.html' %}
+<div class="col-md-3">
+    <p><em>This variable is constant and should be ignored for analysis</em></p>
+</div>
+<div class="col-md-6">
+    <table class="stats ">
+        <tr>
+            <th>Constant value</th>
+            <td>{{ values['mode'] }}</td>
+        </tr>
+    </table>
+</div>
+{% include '_row_footer.html' %}

@@ -1,6 +1,6 @@
 
 import codecs
-from .templates import wrapper_html
+from .templates import template
 from .base import describe, to_html
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
@@ -44,7 +44,8 @@ class ProfileReport(object):
                 outputfile = 'profile_' + str(hash(self)) + ".html"
 
             self.file = codecs.open(outputfile, 'w+b', encoding='utf8')
-            self.file.write(wrapper_html % self.html)
+            # TODO: should be done in the template
+            self.file.write(templates.template('wrapper').render(content=self.html))
             self.file.close()
 
     def _repr_html_(self):

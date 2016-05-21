@@ -1,0 +1,58 @@
+{% include '_row_header.html' %}
+<div class="col-md-6">
+    <div class="row">
+        <div class="col-sm-6">
+            <table class="stats ">
+                <tr>
+                    <th>Distinct count</th>
+                    <td>{{ values['distinct_count'] }}</td>
+                </tr>
+                <tr>
+                    <th>Unique (%)</th>
+                    <td>{{ values['p_unique'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_missing'] }}">
+                    <th>Missing (%)</th>
+                    <td>{{ values['p_missing'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_missing'] }}">
+                    <th>Missing (n)</th>
+                    <td>{{ values['n_missing'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_infinite'] }}">
+                    <th>Infinite (%)</th>
+                    <td>{{ values['p_infinite'] }}</td>
+                </tr>
+                <tr class="{{ row_classes['p_infinite'] }}">
+                    <th>Infinite (n)</th>
+                    <td>{{ values['n_infinite'] }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <table class="stats ">
+                <tr>
+                    <th>Minimum</th>
+                    <td>{{ values['min'] }}</td>
+                </tr>
+                <tr>
+                    <th>Maximum</th>
+                    <td>{{ values['max'] }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-md-3 collapse in" id="minihistogram{{ values['varid'] }}">
+    <img src="{{ values['mini_histogram'] }}">
+</div>
+<div class="col-md-12 text-right">
+    <a role="button" data-toggle="collapse" data-target="#descriptives{{ values['varid'] }},#minihistogram{{ values['varid'] }}"
+       aria-expanded="false" aria-controls="collapseExample">
+        Toggle details
+    </a>
+</div>
+<div class="row collapse col-md-12" id="descriptives{{ values['varid'] }}">
+    <img src="{{ values['histogram'] }}">
+</div>
+{% include '_row_footer.html' %}
