@@ -426,30 +426,47 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
 ''' + _row_footer
 
 row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + u'''
-        <div class="col-sm-3">
-            <table class="stats ">
-                <tr><th>Distinct count</th>
-                <td>{0[distinct_count]}</td></tr>
-                <tr><th>Unique (%)</th>
-                <td>{0[p_unique]}</td></tr>
-                <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
-                <td>{0[p_missing]}</td></tr>
-                <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
-                <td>{0[n_missing]}</td></tr>
-                <tr class="{row_classes[p_infinite]}"><th>Infinite (%)</th>
-                <td>{0[p_infinite]}</td></tr>
-                <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
-                <td>{0[n_infinite]}</td></tr>
-            </table>
+         <div class="col-md-6">
+            <div class="row">
+                <div class="col-sm-6">
+                    <table class="stats ">
+                        <tr><th>Distinct count</th>
+                        <td>{0[distinct_count]}</td></tr>
+                        <tr><th>Unique (%)</th>
+                        <td>{0[p_unique]}</td></tr>
+                        <tr class="{row_classes[p_missing]}"><th>Missing (%)</th>
+                        <td>{0[p_missing]}</td></tr>
+                        <tr class="{row_classes[p_missing]}"><th>Missing (n)</th>
+                        <td>{0[n_missing]}</td></tr>
+                        <tr class="{row_classes[p_infinite]}"><th>Infinite (%)</th>
+                        <td>{0[p_infinite]}</td></tr>
+                        <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
+                        <td>{0[n_infinite]}</td></tr>
+                    </table>
+
+                </div>
+                <div class="col-sm-6">
+                    <table class="stats ">
+                        <tr><th>Minimum</th>
+                        <td>{0[min]}</td></tr>
+                        <tr><th>Maximum</th>
+                        <td>{0[max]}</td></tr>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-6">
-            <table class="stats ">
-                <tr><th>Minimum</th>
-                <td>{0[min]}</td></tr>
-                <tr><th>Maximum</th>
-                <td>{0[max]}</td></tr>
-            </table>
+        <div class="col-md-3 collapse in" id="minihistogram{0[varid]}">
+             <img src="{0[mini_histogram]}">
+
         </div>
+       <div class="col-md-12 text-right">
+            <a role="button" data-toggle="collapse" data-target="#descriptives{0[varid]},#minihistogram{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
+                Toggle details
+            </a>
+        </div>
+        <div class="row collapse col-md-12" id="descriptives{0[varid]}">
+                 <img src="{0[histogram]}">
+      </div>
 
 
 ''' + _row_footer

@@ -75,26 +75,57 @@ def describe(df, **kwargs):
         stats['type'] = "NUM"
         stats['n_zeros'] = (len(series) - np.count_nonzero(series))
         stats['p_zeros'] = stats['n_zeros'] / len(series)
-
-        # Large histogram
-        imgdata = BytesIO()
-        plot = series.plot(kind='hist', figsize=(6, 4),
-                           facecolor='#337ab7', bins=bins)  # TODO when running on server, send this off to a different thread
-        plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
-        plot.figure.savefig(imgdata)
-        imgdata.seek(0)
-        stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
-        #TODO Think about writing this to disk instead of caching them in strings
-        plt.close(plot.figure)
-
+        # Histograms
+        stats['histogram'] = histogram(series)
         stats['mini_histogram'] = mini_histogram(series)
+
 
         return pd.Series(stats, name=series.name)
 
-    def mini_histogram(series):
-        # Small histogram
+    def histogram(series):
+        """Plot an histogram of the data.
+        :param series: Series, default None
+            The data to plot.
+        :return: str
+            The resulting image encoded as a string.
+        """
         imgdata = BytesIO()
-        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7', bins=bins)
+        if com.is_datetime64_dtype(series):
+            # TODO: These calls should be merged
+            fig = plt.figure(figsize=(12, 4))
+            plot = fig.add_subplot(111)
+            plot.set_ylabel('Frequency')
+            plot.hist(series.values, facecolor='#337ab7', bins=bins)
+        else:
+            plot = series.plot(kind='hist', figsize=(6, 4),
+                               facecolor='#337ab7',
+                               bins=bins)  # TODO when running on server, send this off to a different thread
+        plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
+        plot.figure.savefig(imgdata)
+        imgdata.seek(0)
+        result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+        # TODO Think about writing this to disk instead of caching them in strings
+        plt.close(plot.figure)
+        return result_string
+
+
+    def mini_histogram(series):
+        """Plot a small (mini) histogram of the data.
+        :param series: Series, default None
+            The data to plot.
+        :return: str
+            The resulting image encoded as a string.
+        """
+        imgdata = BytesIO()
+        if com.is_datetime64_dtype(series):
+            # TODO: These calls should be merged
+            fig = plt.figure(figsize=(2, 0.75))
+            plot = fig.add_subplot(111)
+            plot.set_ylabel('Frequency')
+            # the histogram of the data
+            plot.hist(series.values, facecolor='#337ab7', bins=bins)
+        else:
+            plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7', bins=bins)
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
         xticks = plot.xaxis.get_major_ticks()
@@ -114,10 +145,8 @@ def describe(df, **kwargs):
         stats = {'min': series.min(), 'max': series.max()}
         stats['range'] = stats['max'] - stats['min']
         stats['type'] = "DATE"
-
-        # TODO: Matplotlib can't do histograms of dates.
-        # stats['mini_histogram'] = mini_histogram(series)
-
+        stats['histogram'] = histogram(series)
+        stats['mini_histogram'] = mini_histogram(series)
         return pd.Series(stats, name=series.name)
 
     def describe_categorical_1d(data):
