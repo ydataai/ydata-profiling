@@ -82,6 +82,33 @@ def describe(df, **kwargs):
 
         return pd.Series(stats, name=series.name)
 
+    def _plot_histogram(series, figsize=(6, 4), facecolor='#337ab7', bins=bins):
+        """Plot an histogram from the data and return the AxesSubplot object.
+
+        :param series: Series, default None
+            The data to plot
+        :param figsize: a tuple (width, height) in inches, default (6,4)
+            The size of the figure.
+        :param facecolor: str
+            The color code.
+        :param bins: int, default
+            The number of equal-width bins in the given range.
+        :return:  matplotlib.AxesSubplot
+            The plot.
+        """
+        if com.is_datetime64_dtype(series):
+            # TODO: These calls should be merged
+            fig = plt.figure(figsize=figsize)
+            plot = fig.add_subplot(111)
+            plot.set_ylabel('Frequency')
+            plot.hist(series.values, facecolor='#337ab7', bins=bins)
+        else:
+            plot = series.plot(kind='hist', figsize=figsize,
+                               facecolor=facecolor,
+                               bins=bins)  # TODO when running on server, send this off to a different thread
+        return plot
+
+
     def histogram(series):
         """Plot an histogram of the data.
         :param series: Series, default None
@@ -90,16 +117,7 @@ def describe(df, **kwargs):
             The resulting image encoded as a string.
         """
         imgdata = BytesIO()
-        if com.is_datetime64_dtype(series):
-            # TODO: These calls should be merged
-            fig = plt.figure(figsize=(12, 4))
-            plot = fig.add_subplot(111)
-            plot.set_ylabel('Frequency')
-            plot.hist(series.values, facecolor='#337ab7', bins=bins)
-        else:
-            plot = series.plot(kind='hist', figsize=(6, 4),
-                               facecolor='#337ab7',
-                               bins=bins)  # TODO when running on server, send this off to a different thread
+        plot = _plot_histogram(series)
         plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
@@ -117,15 +135,7 @@ def describe(df, **kwargs):
             The resulting image encoded as a string.
         """
         imgdata = BytesIO()
-        if com.is_datetime64_dtype(series):
-            # TODO: These calls should be merged
-            fig = plt.figure(figsize=(2, 0.75))
-            plot = fig.add_subplot(111)
-            plot.set_ylabel('Frequency')
-            # the histogram of the data
-            plot.hist(series.values, facecolor='#337ab7', bins=bins)
-        else:
-            plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7', bins=bins)
+        plot = _plot_histogram(series)
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
         xticks = plot.xaxis.get_major_ticks()

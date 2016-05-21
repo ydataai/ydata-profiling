@@ -466,7 +466,7 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
         </div>
         <div class="row collapse col-md-12" id="descriptives{0[varid]}">
                  <img src="{0[histogram]}">
-      </div>
+        </div>
 
 
 ''' + _row_footer
