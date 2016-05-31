@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='pandas-profiling',
-    version='1.0.0a1',
+    version='1.1.0',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['pandas_profiling'],
@@ -17,8 +17,8 @@ setup(
     license='MIT',
     description='Generate profile report for pandas DataFrame',
     install_requires=[
-        "pandas",
-        "matplotlib"
+        "pandas>=0.16",
+        "matplotlib>=1.4"
     ],
     include_package_data = True,
     classifiers=[
