@@ -150,7 +150,7 @@ def describe(df, **kwargs):
         str, The resulting image encoded as a string.
         """
         imgdata = BytesIO()
-        plot = _plot_histogram(series)
+        plot = _plot_histogram(series, figsize=(2, 0.75))
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
         xticks = plot.xaxis.get_major_ticks()
