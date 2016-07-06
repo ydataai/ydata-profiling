@@ -1,5 +1,7 @@
 from __future__ import division
 
+import sys
+
 try:
     from StringIO import BytesIO
 except ImportError:
@@ -261,7 +263,10 @@ def to_html(sample, stats_object):
         elif isinstance(value, float):
             return value_formatters[formatters.DEFAULT_FLOAT_FORMATTER](value)
         else:
-            return str(value)
+            if sys.version_info.major == 3:
+                return str(value)
+            else:
+                return unicode(value)
 
     def freq_table(freqtable, n, table_template, row_template, max_number_of_items_in_table):
 
