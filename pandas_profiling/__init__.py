@@ -12,6 +12,16 @@ class ProfileReport(object):
     file = None
 
     def __init__(self, df, **kwargs):
+        """
+        Generates a object containing summary statistics for a given DataFrame
+        :param df: DataFrame to be analyzed
+        :param bins: Number of bins in histogram
+        :param corr_threshold: Correlation threshold to exclude variables
+        :return: Dictionary containing
+            table: general statistics on the DataFrame
+            variables: summary statistics for each variable
+            freq: frequency table
+        """
 
         sample = kwargs.get('sample', df.head())
 

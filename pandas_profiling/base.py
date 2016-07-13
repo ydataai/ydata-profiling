@@ -24,12 +24,14 @@ from pandas.core import common as com
 import six
 from pkg_resources import resource_filename
 
+from .SB_Johnson import get_j_params
 
 def describe(df, **kwargs):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
     :param bins: Number of bins in histogram
+    :param corr_threshold: Correlation threshold to exclude variables
     :return: Dictionary containing
         table: general statistics on the DataFrame
         variables: summary statistics for each variable
@@ -42,6 +44,7 @@ def describe(df, **kwargs):
         raise ValueError("df can not be empty")
 
     bins = kwargs.get('bins', 10)
+    corr_threshold = kwargs.get('corr_threshold', 0.9)
 
     try:
         # reset matplotlib style before use
@@ -60,12 +63,14 @@ def describe(df, **kwargs):
             return '%.1f%%' % x
 
     def describe_numeric_1d(series, base_stats):
-        stats = {'mean': series.mean(), 'std': series.std(), 'variance': series.var(), 'min': series.min(),
+        stats = {'mean': series.mean(), 'std': series.std(),
+                'variance': series.var(), 'min': series.min(),
                 'max': series.max()}
         stats['range'] = stats['max'] - stats['min']
 
         for x in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
             stats[pretty_name(x)] = series.quantile(x)
+        #stats['mode'] = series.mode()
         stats['iqr'] = stats['75%'] - stats['25%']
         stats['kurtosis'] = series.kurt()
         stats['skewness'] = series.skew()
@@ -73,6 +78,10 @@ def describe(df, **kwargs):
         stats['mad'] = series.mad()
         stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
         stats['type'] = "NUM"
+        try:
+            stats['JohnsonGamma'], stats['JohnsonDelta'], stats['JohnsonLambda'] = get_j_params(series)
+        except RuntimeError:
+            stats['JohnsonGamma'], stats['JohnsonDelta'], stats['JohnsonLambda'] = ['OPTIMAL PARAMETER COULD NOT BE FOUND'] * 3
         stats['n_zeros'] = (len(series) - np.count_nonzero(series))
         stats['p_zeros'] = stats['n_zeros'] / len(series)
 
@@ -148,7 +157,7 @@ def describe(df, **kwargs):
         data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
 
         n_infinite = count - data.count()  # number of infinte observations in the Series
-        
+
         distinct_count = data.nunique(dropna=False)  # number of unique elements in the Series
         if count > distinct_count > 1:
             mode = data.mode().iloc[0]
@@ -201,7 +210,7 @@ def describe(df, **kwargs):
         for y, corr in corr_x.iteritems():
             if x == y: break
 
-            if corr > 0.9:
+            if corr > corr_threshold:
                 ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)
 
     # Convert ldesc to a DataFrame
@@ -211,6 +220,7 @@ def describe(df, **kwargs):
         for name in idxnames:
             if name not in names:
                 names.append(name)
+
     variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
     variable_stats.columns.names = df.columns.names
 
@@ -348,7 +358,11 @@ def to_html(sample, stats_object):
                 formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
                 formatted_values['lastn_expanded'] = ''
 
-        rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
+        from IPython.core.debugger import Tracer
+        try:
+            rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
+        except KeyError:
+            Tracer()()
 
         if row['type'] in {'CORR', 'CONST'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)

@@ -309,10 +309,14 @@ overview_template= u'''
                         <td>{0[REJECTED]}</td></tr>
                         </tbody></table>
         </div>
+        <div class="col-md-12 text-right">
+                <a role="button" data-toggle="collapse" data-target="#warnings" aria-expanded="true" aria-controls="collapseExample">
+                    Toggle Warnings
+                </a>
+        </div>
         <div class="col-md-12" style="padding-left: 1em;">
             <p class="h4">Warnings</p>
-            <ul class="list-unstyled">{messages}</ul>
-        </div>
+                <ul id="warnings" class="list-unstyled">{messages}</ul></div>
      </div>
 '''
 
@@ -403,8 +407,16 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[std]}</td></tr>
                         <tr><th>Coef of variation</th>
                         <td>{0[cv]}</td></tr>
+                        <tr><th>Johnson Gamma</th>
+                        <td>{0[JohnsonGamma]}</td></tr>
+                        <tr><th>Johnson Lambda</th>
+                        <td>{0[JohnsonLambda]}</td></tr>
+                        <tr><th>Johnson Delta</th>
+                        <td>{0[JohnsonDelta]}</td></tr>
                         <tr><th>Kurtosis</th>
                         <td>{0[kurtosis]}</td></tr>
+                        <tr><th>Mode</th>
+                        <td>{0[mode]}</td></tr>
                         <tr><th>Mean</th>
                         <td>{0[mean]}</td></tr>
                         <tr><th>MAD</th>
