@@ -309,10 +309,14 @@ overview_template= u'''
                         <td>{0[REJECTED]}</td></tr>
                         </tbody></table>
         </div>
+        <div class="col-md-12 text-right">
+                <a role="button" data-toggle="collapse" data-target="#warnings" aria-expanded="true" aria-controls="collapseExample">
+                    Toggle Warnings
+                </a>
+        </div>
         <div class="col-md-12" style="padding-left: 1em;">
             <p class="h4">Warnings</p>
-            <ul class="list-unstyled">{messages}</ul>
-        </div>
+                <ul id="warnings" class="list-unstyled">{messages}</ul></div>
      </div>
 '''
 

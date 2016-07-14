@@ -30,6 +30,7 @@ def describe(df, **kwargs):
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
     :param bins: Number of bins in histogram
+    :param corr_threshold: Correlation threshold to exclude variables
     :return: Dictionary containing
         table: general statistics on the DataFrame
         variables: summary statistics for each variable
@@ -42,6 +43,7 @@ def describe(df, **kwargs):
         raise ValueError("df can not be empty")
 
     bins = kwargs.get('bins', 10)
+    corr_threshold = kwargs.get('corr_threshold', 0.9)
 
     try:
         # reset matplotlib style before use
@@ -148,7 +150,7 @@ def describe(df, **kwargs):
         data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
 
         n_infinite = count - data.count()  # number of infinte observations in the Series
-        
+
         distinct_count = data.nunique(dropna=False)  # number of unique elements in the Series
         if count > distinct_count > 1:
             mode = data.mode().iloc[0]
@@ -201,7 +203,7 @@ def describe(df, **kwargs):
         for y, corr in corr_x.iteritems():
             if x == y: break
 
-            if corr > 0.9:
+            if corr > corr_threshold:
                 ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)
 
     # Convert ldesc to a DataFrame
