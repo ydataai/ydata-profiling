@@ -70,7 +70,7 @@ def describe(df, **kwargs):
 
         for x in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
             stats[pretty_name(x)] = series.quantile(x)
-        #stats['mode'] = series.mode()
+        stats['mode'] = series.mode()
         stats['iqr'] = stats['75%'] - stats['25%']
         stats['kurtosis'] = series.kurt()
         stats['skewness'] = series.skew()
