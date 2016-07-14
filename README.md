@@ -1,5 +1,21 @@
-#pandas-profiling 
-Generates profile reports from a pandas DataFrame. The *df.describe()* function is great but a little basic for serious exploratory data analysis. 
+# CBA Internal Release of Pandas Profiling
+This is an open source tool that I hacked to crap.
+
+The CBA internal release has a few non-basic summary statistics (notably the Johnson transformation parameters) that are, imo, out of scope for the open source release.
+
+The open source release is at
+
+https://github.com/bartlesy/pandas-profiling
+
+or
+
+https://github.com/JosPolfliet/pandas-profiling
+
+If you make any changes, feel free to submit a pull request.
+
+
+# pandas-profiling
+Generates profile reports from a pandas DataFrame. The *df.describe()* function is great but a little basic for serious exploratory data analysis.
 
 For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:
 
@@ -27,10 +43,10 @@ Download the source code by cloning the repo or by pressing 'Download ZIP' on th
     python setup.py install
 
 ## Usage
-The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
+The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser.
 
 ### Jupyter Notebook (formerly IPython)
-We recommend generating reports interactively by using the Jupyter notebook. 
+We recommend generating reports interactively by using the Jupyter notebook.
 
 Start by loading in your pandas DataFrame, e.g. by using
 
@@ -41,7 +57,7 @@ Start by loading in your pandas DataFrame, e.g. by using
 To display the report in a Jupyter notebook, run:
 
 	pandas_profiling.ProfileReport(df)
-	
+
 To retrieve the list of variables which are rejected due to high correlation:
 
     profile = pandas_profiling.ProfileReport(df)
