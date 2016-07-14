@@ -21,12 +21,17 @@ import pandas as pd
 import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
 from matplotlib import pyplot as plt
 from pandas.core import common as com
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.metrics import confusion_matrix, roc_auc_score
+from sklearn.cross_validation import train_test_split
 import six
 from pkg_resources import resource_filename
 
-from .SB_Johnson import get_j_params
+from .SB_Toolz.SB_Johnson import get_j_params
 
-def describe(df, **kwargs):
+
+
+def describe(df, y=None, bins=10, corr_threshold=0.9):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
@@ -43,8 +48,30 @@ def describe(df, **kwargs):
     if df.empty:
         raise ValueError("df can not be empty")
 
-    bins = kwargs.get('bins', 10)
-    corr_threshold = kwargs.get('corr_threshold', 0.9)
+    if isinstance(y, str):
+        y_name = y
+        y = df[y].copy().as_matrix()
+        df = df.copy()
+        del df[y_name]
+
+    if y is not None:
+        lrnr = RandomForestClassifier() if len(set(y)) <= 10 else RandomForestRegressor()
+        trn_idx, test_idx = train_test_split(range(len(y)))
+
+    def plot_confusion_matrix(cm, title='Univariate RF Confusion matrix', cmap=plt.cm.Blues):
+        plot = plt.figure(figsize=(6, 4))
+        plot.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
+        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        plt.title(title)
+        plt.colorbar()
+        tick_marks = np.arange(len(set(y)))
+        plt.xticks(tick_marks)
+        plt.yticks(tick_marks)
+        plt.tight_layout()
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+        return plot
+
 
     try:
         # reset matplotlib style before use
@@ -70,7 +97,6 @@ def describe(df, **kwargs):
 
         for x in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
             stats[pretty_name(x)] = series.quantile(x)
-        stats['mode'] = series.mode()
         stats['iqr'] = stats['75%'] - stats['25%']
         stats['kurtosis'] = series.kurt()
         stats['skewness'] = series.skew()
@@ -97,8 +123,27 @@ def describe(df, **kwargs):
         plt.close(plot.figure)
 
         stats['mini_histogram'] = mini_histogram(series)
+        series_name = series.name
 
-        return pd.Series(stats, name=series.name)
+        if y is not None:
+            lrnr.__init__()
+            series = series.fillna(-999).as_matrix()[:, None]
+            lrnr.fit(series[trn_idx], y[trn_idx])
+            preds = lrnr.predict(series[test_idx])
+
+            cm = confusion_matrix(y[test_idx], preds)
+            plot = plot_confusion_matrix(cm)
+            imgdata = BytesIO()
+            plot.savefig(imgdata)
+            imgdata.seek(0)
+            stats['AUC'] = roc_auc_score(y[test_idx], preds)
+            stats['cmatrix'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+            plt.close(plot)
+        else:
+            stats['AUC'] = 'No Dep Var'
+            stats['cmatrix'] = ''
+
+        return pd.Series(stats, name=series_name)
 
     def mini_histogram(series):
         # Small histogram

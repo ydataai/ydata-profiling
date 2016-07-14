@@ -365,6 +365,8 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[max]}</td></tr>
                         <tr class="{row_classes[p_zeros]}"><th>Zeros (%)</th>
                         <td>{0[p_zeros]}</td></tr>
+                        <tr><th>Univariate AUC</th>
+                        <td>{0[AUC]}</td></tr>
                     </table>
                 </div>
             </div>
@@ -434,7 +436,10 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
              <div class="col-sm-8 histogram">
                  <img src="{0[histogram]}">
              </div>
-      </div>
+             <div class="col-sm-8 histogram">
+                 <img src="{0[cmatrix]}">
+             </div>
+ </div>
 ''' + _row_footer
 
 row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + u'''
