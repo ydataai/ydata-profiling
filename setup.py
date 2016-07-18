@@ -1,6 +1,7 @@
 import os
 
 __location__ = os.path.dirname(__file__)
+print(__location__, __file__)
 
 try:
     from setuptools import setup
@@ -13,6 +14,7 @@ setup(
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['pandas_profiling'],
+    #package_dir={'pandas_profiling': './pandas_profiling'},
     url='http://github.com/jospolfliet/pandas-profiling',
     license='MIT',
     description='Generate profile report for pandas DataFrame',

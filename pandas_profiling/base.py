@@ -21,14 +21,18 @@ import pandas as pd
 import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
 from matplotlib import pyplot as plt
 from pandas.core import common as com
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import confusion_matrix, roc_auc_score
-from sklearn.cross_validation import train_test_split
 import six
 from pkg_resources import resource_filename
 
-from .SB_Toolz.SB_Johnson import get_j_params
+#from .sb_utils.sb_johnson import get_j_param
+#from .sb_utils.sb_univar import mdl_1d
+#from . import sb_utils
 
+from .sb_utils.sb_johnson import *
+from .sb_utils.sb_univar import *
+
+
+from IPython.core.debugger import Tracer
 
 
 def describe(df, y=None, bins=10, corr_threshold=0.9):
@@ -53,25 +57,6 @@ def describe(df, y=None, bins=10, corr_threshold=0.9):
         y = df[y].copy().as_matrix()
         df = df.copy()
         del df[y_name]
-
-    if y is not None:
-        lrnr = RandomForestClassifier() if len(set(y)) <= 10 else RandomForestRegressor()
-        trn_idx, test_idx = train_test_split(range(len(y)))
-
-    def plot_confusion_matrix(cm, title='Univariate RF Confusion matrix', cmap=plt.cm.Blues):
-        plot = plt.figure(figsize=(6, 4))
-        plot.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
-        plt.title(title)
-        plt.colorbar()
-        tick_marks = np.arange(len(set(y)))
-        plt.xticks(tick_marks)
-        plt.yticks(tick_marks)
-        plt.tight_layout()
-        plt.ylabel('True label')
-        plt.xlabel('Predicted label')
-        return plot
-
 
     try:
         # reset matplotlib style before use
@@ -126,19 +111,9 @@ def describe(df, y=None, bins=10, corr_threshold=0.9):
         series_name = series.name
 
         if y is not None:
-            lrnr.__init__()
-            series = series.fillna(-999).as_matrix()[:, None]
-            lrnr.fit(series[trn_idx], y[trn_idx])
-            preds = lrnr.predict(series[test_idx])
-
-            cm = confusion_matrix(y[test_idx], preds)
-            plot = plot_confusion_matrix(cm)
-            imgdata = BytesIO()
-            plot.savefig(imgdata)
-            imgdata.seek(0)
-            stats['AUC'] = roc_auc_score(y[test_idx], preds)
-            stats['cmatrix'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
-            plt.close(plot)
+            mdld = mdl_1d(series, y)
+            stats['AUC'] = mdld[0]
+            stats['cmatrix'] = mdld[1]
         else:
             stats['AUC'] = 'No Dep Var'
             stats['cmatrix'] = ''
@@ -184,6 +159,17 @@ def describe(df, y=None, bins=10, corr_threshold=0.9):
         if data.dtype == object or com.is_categorical_dtype(data.dtype):
             names += ['top', 'freq', 'type']
             result += [top, freq, 'CAT']
+
+        if y is not None:
+            try:
+                mdld = mdl_1d(data, y)
+                result += [mdld[0]]
+            except:
+                Tracer()()
+        else:
+            result += ['No Dep Var']
+
+        names += ['AUC']
 
         return pd.Series(result, index=names, name=data.name)
 
@@ -236,6 +222,7 @@ def describe(df, y=None, bins=10, corr_threshold=0.9):
             result = result.append(describe_unique_1d(data))
         else:
             result = result.append(describe_categorical_1d(data))
+
         return result
 
     if not pd.Index(np.arange(0, len(df))).equals(df.index):
@@ -403,7 +390,6 @@ def to_html(sample, stats_object):
                 formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
                 formatted_values['lastn_expanded'] = ''
 
-        from IPython.core.debugger import Tracer
         try:
             rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
         except KeyError:

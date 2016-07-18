@@ -489,6 +489,8 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
                 <td>{0[p_infinite]}</td></tr>
                 <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
                 <td>{0[n_infinite]}</td></tr>
+                <tr><th>Univariate AUC</th>
+                <td>{0[AUC]}</td></tr>
             </table>
 
 
