@@ -20,11 +20,14 @@ import base64
 
 import matplotlib
 from matplotlib import pyplot as plt
+from IPython.core.debugger import Tracer
 
-def sb_cutz(x, bins=3):
-    return pd.cut(x.rank(method='min', pct=True), bins=[0, .333, .666, 1])
 
-def plot_confusion_matrix(cm, y, title='Univariate RF Confusion matrix', cmap=plt.cm.Blues):
+def sb_cutz(x, bins=10):
+    return pd.cut(x.rank(method='min', pct=True), bins=np.linspace(0, 1, bins + 1))
+
+
+def plot_confusion_matrix(cm, y, title='Univariate Confusion matrix', cmap=plt.cm.Blues):
     plot = plt.figure(figsize=(6, 4))
     plot.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -40,6 +43,7 @@ def plot_confusion_matrix(cm, y, title='Univariate RF Confusion matrix', cmap=pl
 
 
 def mdl_1d(x, y):
+    """builds univariate model to calculate AUC"""
     if x.nunique() > 10 and com.is_numeric_dtype(x):
         x = sb_cutz(x)
 
@@ -47,15 +51,22 @@ def mdl_1d(x, y):
     lr = LogisticRegressionCV(scoring='roc_auc')
 
     lr.fit(series, y)
-    preds = lr.predict(series)
+    try:
+        preds = (lr.predict_proba(series)[:, -1])
+        #preds = (preds > preds.mean()).astype(int)
+    except ValueError:
+        Tracer()()
 
-    cm = confusion_matrix(y, preds)
+    try:
+        cm = confusion_matrix(y, (preds > y.mean()).astype(int))
+    except ValueError:
+        Tracer()()
     plot = plot_confusion_matrix(cm, y)
     imgdata = BytesIO()
     plot.savefig(imgdata)
     imgdata.seek(0)
 
-    aucz = lr.score(series, y)
+    aucz = roc_auc_score(y, preds)
     cmatrix = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
     plt.close()
     return aucz, cmatrix
