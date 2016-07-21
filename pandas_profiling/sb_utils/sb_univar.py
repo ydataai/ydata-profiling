@@ -29,7 +29,7 @@ def sb_cutz(x, bins=10):
 
 def plot_confusion_matrix(cm, y, title='Univariate Confusion matrix', cmap=plt.cm.Blues):
     plot = plt.figure(figsize=(6, 4))
-    plot.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
+    #plot.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -39,6 +39,8 @@ def plot_confusion_matrix(cm, y, title='Univariate Confusion matrix', cmap=plt.c
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
+    ax = plt.gca()
+    ax.grid(False, which="majorminor")
     return plot
 
 
@@ -47,7 +49,7 @@ def mdl_1d(x, y):
     if x.nunique() > 10 and com.is_numeric_dtype(x):
         x = sb_cutz(x)
 
-    series = pd.get_dummies(x)
+    series = pd.get_dummies(x, dummy_na=True)
     lr = LogisticRegressionCV(scoring='roc_auc')
 
     lr.fit(series, y)
@@ -62,6 +64,7 @@ def mdl_1d(x, y):
     except ValueError:
         Tracer()()
     plot = plot_confusion_matrix(cm, y)
+
     imgdata = BytesIO()
     plot.savefig(imgdata)
     imgdata.seek(0)

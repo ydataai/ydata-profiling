@@ -13,7 +13,7 @@ except ImportError:
 import base64
 
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 
 import numpy as np
 import os
@@ -33,7 +33,9 @@ from .sb_utils.sb_univar import *
 
 
 from IPython.core.debugger import Tracer
-
+import seaborn as sns
+sns.set_style('dark')
+sns.set_context('notebook')
 
 def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     """
@@ -67,7 +69,7 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     except:
         pass
 
-    matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+    #matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
     def pretty_name(x):
         x *= 100
@@ -100,14 +102,16 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
 
         # Large histogram
         imgdata = BytesIO()
-        plot = series.plot(kind='hist', figsize=(6, 4),
-                           facecolor='#337ab7', bins=bins)  # TODO when running on server, send this off to a different thread
-        plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
-        plot.figure.savefig(imgdata)
-        imgdata.seek(0)
-        stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
-        #TODO Think about writing this to disk instead of caching them in strings
-        plt.close(plot.figure)
+        with sns.axes_style('whitegrid'):
+            plot = series.plot(kind='hist', figsize=(6, 4),
+                               facecolor='#337ab7', bins=bins)  # TODO when running on server, send this off to a different thread
+            #sns.despine(left=True, trim=True)
+            #plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
+            plot.figure.savefig(imgdata)
+            imgdata.seek(0)
+            stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+            #TODO Think about writing this to disk instead of caching them in strings
+            plt.close(plot.figure)
 
         stats['mini_histogram'] = mini_histogram(series)
         series_name = series.name
@@ -165,13 +169,13 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
         if y is not None:
             try:
                 mdld = mdl_1d(data, y)
-                result += [mdld[0]]
+                result += [*mdld]
             except:
                 Tracer()()
         else:
-            result += ['No Dep Var']
+            result += ['No Dep Var', '']
 
-        names += ['AUC']
+        names += ['AUC', 'cmatrix']
 
         return pd.Series(result, index=names, name=data.name)
 
