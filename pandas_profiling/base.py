@@ -35,12 +35,14 @@ from .sb_utils.sb_univar import *
 from IPython.core.debugger import Tracer
 
 
-def describe(df, y=None, bins=10, corr_threshold=0.9):
+def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
     :param bins: Number of bins in histogram
     :param corr_threshold: Correlation threshold to exclude variables
+    :param ft_names: Dict of Column_Name: Feature Definitions
+
     :return: Dictionary containing
         table: general statistics on the DataFrame
         variables: summary statistics for each variable
@@ -203,7 +205,8 @@ def describe(df, y=None, bins=10, corr_threshold=0.9):
                         'n_infinite': n_infinite,
                         'is_unique': distinct_count == leng,
                         'mode': mode,
-                        'p_unique': distinct_count / count}
+                        'p_unique': distinct_count / count,
+                        'ft_dfn': ft_names.get(data.name, '')}
         try:
             # pandas 0.17 onwards
             results_data['memorysize'] = data.memory_usage()

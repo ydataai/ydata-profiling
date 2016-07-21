@@ -322,19 +322,32 @@ overview_template= u'''
 
 _row_header = u'''<div class="row variablerow">
         <div class="col-md-3 namecol">
-            <p class="h4">{varname}<br/><small>{vartype}</small></p>
+            <p class="h4">
+                {varname}
+                <br/>
+                <small>{vartype}</small>
+                <br/>
+                <div style='font-size:13px'><p class="text-capitalize">{ft_dfn}</p></div>
+            </p>
         </div>
 '''
 _row_header_ignore = u'''<div class="row variablerow ignore">
         <div class="col-md-3 namecol">
-            <p class="h4"><s>{varname}</s><br/><small>{vartype}</small></p>
+            <p class="h4">
+                <s>{varname}</s>
+                <br/>
+                <small>{vartype}</small>
+                <br/>
+                <div style='font-size:13px'><p class="text-capitalize">{ft_dfn}</p></div>
+                <br/>
+            </p>
         </div>
 '''
 
 _row_footer = u'''    </div>'''
 
 row_templates_dict = {}
-row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[varname]}") + u'''
+row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
         <div class="col-md-6">
             <div class="row">
                 <div class="col-sm-6">
@@ -442,7 +455,7 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
  </div>
 ''' + _row_footer
 
-row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + u'''
+row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
         <div class="col-sm-3">
             <table class="stats ">
                 <tr><th>Distinct count</th>
@@ -473,7 +486,7 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
 
 row_templates_dict['DISCRETE'] = row_templates_dict['NUM']
 
-row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{0[varname]}") + u'''
+row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
        <div class="col-md-3">
 
             <table class="stats ">
@@ -506,7 +519,7 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
          {0[freqtable]}
 ''' + _row_footer
 
-row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique", varname="{0[varname]}") + u'''
+row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
         <div class="col-md-3 collapse in" id="minivalues{0[varid]}">{0[firstn]}</div>
         <div class="col-md-6 collapse in" id="minivalues{0[varid]}">{0[lastn]}</div>
         <div class="col-md-12 text-right">
@@ -523,7 +536,7 @@ row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique",
 
 ''' + _row_footer
 
-row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varname="{0[varname]}") + u'''
+row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
          <div class="col-md-3">
             <p> <em>This variable is constant and should be ignored for analysis</em></p>
 
@@ -536,7 +549,7 @@ row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varn
         </div>
 ''' + _row_footer
 
-row_templates_dict['CORR'] = _row_header_ignore.format(vartype="Highly correlated", varname="{0[varname]}") + u'''
+row_templates_dict['CORR'] = _row_header_ignore.format(vartype="Highly correlated", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
          <div class="col-md-3">
             <p> <em>This variable is highly correlated with {0[correlation_var]} and should be ignored for analysis</em></p>
 
