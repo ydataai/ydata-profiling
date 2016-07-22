@@ -13,7 +13,6 @@ except ImportError:
 import base64
 
 import matplotlib
-matplotlib.use('Agg')
 
 import numpy as np
 import os
@@ -24,13 +23,22 @@ from pandas.core import common as com
 import six
 from pkg_resources import resource_filename
 
+from .sb_utils.sb_univar import *
 
-def describe(df, **kwargs):
+
+from IPython.core.debugger import Tracer
+import seaborn as sns
+sns.set_style('dark')
+sns.set_context('notebook')
+
+def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
     :param bins: Number of bins in histogram
     :param corr_threshold: Correlation threshold to exclude variables
+    :param ft_names: Dict of Column_Name: Feature Definitions
+
     :return: Dictionary containing
         table: general statistics on the DataFrame
         variables: summary statistics for each variable
@@ -42,8 +50,11 @@ def describe(df, **kwargs):
     if df.empty:
         raise ValueError("df can not be empty")
 
-    bins = kwargs.get('bins', 10)
-    corr_threshold = kwargs.get('corr_threshold', 0.9)
+    if isinstance(y, str):
+        y_name = y
+        y = df[y].copy().as_matrix()
+        df = df.copy()
+        del df[y_name]
 
     try:
         # reset matplotlib style before use
@@ -51,8 +62,6 @@ def describe(df, **kwargs):
         matplotlib.style.use("default")
     except:
         pass
-
-    matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
     def pretty_name(x):
         x *= 100
@@ -62,7 +71,8 @@ def describe(df, **kwargs):
             return '%.1f%%' % x
 
     def describe_numeric_1d(series, base_stats):
-        stats = {'mean': series.mean(), 'std': series.std(), 'variance': series.var(), 'min': series.min(),
+        stats = {'mean': series.mean(), 'std': series.std(),
+                'variance': series.var(), 'min': series.min(),
                 'max': series.max()}
         stats['range'] = stats['max'] - stats['min']
 
@@ -80,18 +90,28 @@ def describe(df, **kwargs):
 
         # Large histogram
         imgdata = BytesIO()
-        plot = series.plot(kind='hist', figsize=(6, 4),
-                           facecolor='#337ab7', bins=bins)  # TODO when running on server, send this off to a different thread
-        plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
-        plot.figure.savefig(imgdata)
-        imgdata.seek(0)
-        stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
-        #TODO Think about writing this to disk instead of caching them in strings
-        plt.close(plot.figure)
+        with sns.axes_style('whitegrid'):
+            plot = series.plot(kind='hist', figsize=(6, 4),
+                               facecolor='#337ab7', bins=bins)  # TODO when running on server, send this off to a different thread
+            #sns.despine(left=True, trim=True)
+            #plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
+            plot.figure.savefig(imgdata)
+            imgdata.seek(0)
+            stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+            plt.close(plot.figure)
 
         stats['mini_histogram'] = mini_histogram(series)
+        series_name = series.name
 
-        return pd.Series(stats, name=series.name)
+        if y is not None:
+            mdld = mdl_1d(series, y)
+            stats['AUC'] = mdld[0]
+            stats['cmatrix'] = mdld[1]
+        else:
+            stats['AUC'] = 'No Dep Var'
+            stats['cmatrix'] = ''
+
+        return pd.Series(stats, name=series_name)
 
     def mini_histogram(series):
         # Small histogram
@@ -133,6 +153,17 @@ def describe(df, **kwargs):
             names += ['top', 'freq', 'type']
             result += [top, freq, 'CAT']
 
+        if y is not None:
+            try:
+                mdld = mdl_1d(data, y)
+                result += [*mdld]
+            except:
+                Tracer()()
+        else:
+            result += ['No Dep Var', '']
+
+        names += ['AUC', 'cmatrix']
+
         return pd.Series(result, index=names, name=data.name)
 
     def describe_constant_1d(data):
@@ -165,7 +196,8 @@ def describe(df, **kwargs):
                         'n_infinite': n_infinite,
                         'is_unique': distinct_count == leng,
                         'mode': mode,
-                        'p_unique': distinct_count / count}
+                        'p_unique': distinct_count / count,
+                        'ft_dfn': ft_names.get(data.name, '')}
         try:
             # pandas 0.17 onwards
             results_data['memorysize'] = data.memory_usage()
@@ -184,6 +216,7 @@ def describe(df, **kwargs):
             result = result.append(describe_unique_1d(data))
         else:
             result = result.append(describe_categorical_1d(data))
+
         return result
 
     if not pd.Index(np.arange(0, len(df))).equals(df.index):
@@ -213,6 +246,7 @@ def describe(df, **kwargs):
         for name in idxnames:
             if name not in names:
                 names.append(name)
+
     variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
     variable_stats.columns.names = df.columns.names
 
@@ -350,7 +384,10 @@ def to_html(sample, stats_object):
                 formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
                 formatted_values['lastn_expanded'] = ''
 
-        rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
+        try:
+            rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
+        except KeyError:
+            Tracer()()
 
         if row['type'] in {'CORR', 'CONST'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)
