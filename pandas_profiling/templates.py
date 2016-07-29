@@ -262,7 +262,11 @@ wrapper_html = u'''
     </script>
     <script>
         $(document).ready( function () {
-            $('#warnButton').click(function () { $('div.ignore').toggle() })
+            function appender(index, val){
+                s = $('select')
+                $('<option />', {value: val, text: val.replace('varid_', '')}).appendTo(s);
+                };
+
 
 	    function buildDropdown(){
 		var all_vars = $('div.variablerow').map(function(index, dom) {return dom.id});
@@ -271,9 +275,6 @@ wrapper_html = u'''
 
 		var div_add_to = $('div.highlight').filter(function(index) { return this.textContent.match('Variables')});
 
-		function appender(index, val){
-		    $('<option />', {value: val, text: val.replace('varid_', '')}).appendTo(s);
-		    };
 
 		$(all_vars).each(appender)
 
@@ -282,7 +283,32 @@ wrapper_html = u'''
 		s.change(function (v) {$('#'+v.target.value).get(0).scrollIntoView()})
 	    }
 
-	buildDropdown()
+            buildDropdown()
+
+            function rebuildDropdown(){
+                s = $('select')
+                s.empty()
+
+                $('div.variablerow').each(
+                    function(idx, val){
+                    if (val.style['display'] != 'none'){
+                        if (val.id.length != 0){
+                            appender(idx, val.id)
+                            }
+                        }
+                    }
+                )
+            }
+
+            rebuildDropdown()
+
+            $('#warnButton').click(function () {
+                $('div.ignore').toggle()
+
+                rebuildDropdown()
+
+                })
+
 	}
 	)
 
@@ -341,6 +367,7 @@ overview_template= u'''
                         </tbody></table>
         </div>
         <div class="col-md-12 text-right">
+        <!-- gosh dangit bobby -->
                 <a id='warnButton' role="button">
                     Toggle Display of Ignored Variables
                 </a>

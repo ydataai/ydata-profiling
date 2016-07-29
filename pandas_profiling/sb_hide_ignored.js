@@ -40,9 +40,10 @@ function jumpToVar(div_id){
     div_id.scrollIntoView()
 }
 
+// hahah fuck all taht noise
 function buildDropdown(){
-    var all_vars = $('div.variablerow').map(function(index, dom) {return dom.id});
-	all_vars = $(all_vars).filter(function(index, val) {return val.length != 0})
+    //var all_vars = $('div.variablerow').map(function(index, dom) {return dom.id});
+	//all_vars = $(all_vars).filter(function(index, val) {return val.length != 0})
     var s = $('<select />');
 
     var div_add_to = $('div.highlight').filter(function(index) { return this.textContent.match('Variables')});
@@ -51,10 +52,40 @@ function buildDropdown(){
         $('<option />', {value: val, text: val.replace('varid_', ''}).appendTo(s);
         };
 
-    $(all_vars).each(appender)
+    //$(all_vars).each(appender)
+
+    $('div.variablerow').each(
+        function(idx, val)
+        {
+        if (val.style['display'] != 'none')
+            {
+            if (val.id.length != 0)
+                {
+                appender(idx, val.id)
+                }
+            }
+        }
+    )
 
     s.appendTo($(div_add_to))
 
 	s.change(function (v) {$('#'+v.target.value).get(0).scrollIntoView()})
 }
 
+function rebuildDropdown(){
+    s = $('select')
+    s.empty()
+
+    $('div.variablerow').each(
+        function(idx, val)
+        {
+        if (val.style['display'] != 'none')
+            {
+            if (val.id.length != 0)
+                {
+                appender(idx, val.id)
+                }
+            }
+        }
+    )
+}
