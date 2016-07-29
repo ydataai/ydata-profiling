@@ -66,3 +66,6 @@ target/
 
 SB_PUSH_INSTRUCTIONS
 *.py.swp
+
+*.swp
+*.swo

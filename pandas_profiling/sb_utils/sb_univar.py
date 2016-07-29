@@ -27,7 +27,7 @@ def sb_cutz(x, bins=10):
     return pd.cut(x.rank(method='min', pct=True), bins=np.linspace(0, 1, bins + 1))
 
 
-def plot_confusion_matrix(cm, y, title='Univariate Confusion matrix', cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm, y, title='Univariate Confusion Matrix', cmap=plt.cm.Blues):
     plot = plt.figure(figsize=(6, 4))
     #plot.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
     plt.imshow(cm, interpolation='nearest', cmap=cmap)

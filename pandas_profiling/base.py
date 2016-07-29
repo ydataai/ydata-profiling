@@ -22,7 +22,7 @@ import pandas_profiling.formatters as formatters, pandas_profiling.templates as 
 from matplotlib import pyplot as plt
 from pandas.core import common as com
 import six
-from pkg_resources import resource_filename
+#from pkg_resources import resource_filename
 
 #from .sb_utils.sb_johnson import get_j_param
 #from .sb_utils.sb_univar import mdl_1d
