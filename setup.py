@@ -20,7 +20,10 @@ setup(
     description='Generate profile report for pandas DataFrame',
     install_requires=[
         "pandas>=0.16",
-        "matplotlib>=1.4"
+        "matplotlib>=1.4",
+        "seaborn",
+        "scikit-learn",
+        "six"
     ],
     include_package_data = True,
     classifiers=[

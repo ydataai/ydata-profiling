@@ -268,24 +268,13 @@ wrapper_html = u'''
                 };
 
 
-	    function buildDropdown(){
-		var all_vars = $('div.variablerow').map(function(index, dom) {return dom.id});
-		    all_vars = $(all_vars).filter(function(index, val) {return val.length != 0})
-		var s = $('<select />');
+            var s = $('<select />');
+            var div_add_to = $('div.highlight').filter(function(index) { return this.textContent.match('Variables')});
 
-		var div_add_to = $('div.highlight').filter(function(index) { return this.textContent.match('Variables')});
+            s.appendTo($(div_add_to))
+            s.change(function (v) {$('#'+v.target.value).get(0).scrollIntoView()})
 
-
-		$(all_vars).each(appender)
-
-		s.appendTo($(div_add_to))
-
-		s.change(function (v) {$('#'+v.target.value).get(0).scrollIntoView()})
-	    }
-
-            buildDropdown()
-
-            function rebuildDropdown(){
+            function popDropdown(){
                 s = $('select')
                 s.empty()
 
@@ -300,12 +289,12 @@ wrapper_html = u'''
                 )
             }
 
-            rebuildDropdown()
+            popDropdown()
 
             $('#warnButton').click(function () {
-                $('div.ignore').toggle()
+                 $('div.ignore').toggle()
 
-                rebuildDropdown()
+                popDropdown()
 
                 })
 
