@@ -258,8 +258,54 @@ wrapper_html = u'''
     <script>
        $(function () {
               $('[data-toggle="tooltip"]').tooltip()
-        })
+        });
     </script>
+    <script>
+        $(document).ready( function () {
+            function appender(index, val){
+                s = $('select')
+                $('<option />', {value: val, text: val.replace('varid_', '')}).appendTo(s);
+                };
+
+
+            var s = $('<select />');
+            var div_add_to = $('div.highlight').filter(function(index) { return this.textContent.match('Variables')});
+
+            s.appendTo($(div_add_to))
+            s.change(function (v) {$('#'+v.target.value).get(0).scrollIntoView()})
+
+            function popDropdown(){
+                s = $('select')
+                s.empty()
+
+                $('div.variablerow').each(
+                    function(idx, val){
+                    if (val.style['display'] != 'none'){
+                        if (val.id.length != 0){
+                            appender(idx, val.id)
+                            }
+                        }
+                    }
+                )
+            }
+
+            popDropdown()
+
+            $('#warnButton').click(function () {
+                 $('div.ignore').toggle()
+
+                popDropdown()
+
+                })
+
+	}
+	)
+
+        function scrollToTop() {
+            window.scrollTo(0, 0);
+        };
+    </script>
+
 </head>
 
 <body>
@@ -309,28 +355,67 @@ overview_template= u'''
                         <td>{0[REJECTED]}</td></tr>
                         </tbody></table>
         </div>
+        <div class="col-md-12 text-right">
+        <!-- gosh dangit bobby -->
+                <a id='warnButton' role="button">
+                    Toggle Display of Ignored Variables
+                </a>
+        </div>
+
+        <div class="col-md-12 text-right">
+                <a role="button" data-toggle="collapse" data-target="#warnings" aria-expanded="true" aria-controls="collapseExample">
+                    Toggle Warnings
+                </a>
+        </div>
         <div class="col-md-12" style="padding-left: 1em;">
             <p class="h4">Warnings</p>
-            <ul class="list-unstyled">{messages}</ul>
-        </div>
+                <ul id="warnings" class="list-unstyled">{messages}</ul></div>
      </div>
 '''
 
-_row_header = u'''<div class="row variablerow">
-        <div class="col-md-3 namecol">
-            <p class="h4">{varname}<br/><small>{vartype}</small></p>
-        </div>
+_row_header = u'''
+        <div class="row variablerow" id=varid_{varname}>
+            <div class="col-md-12 text-right">
+                <a role="button" onclick=scrollToTop()>
+                    Scroll to top
+                </a>
+            </div>
+
+            <div class="col-md-3 namecol">
+                <p class="h4">
+                    {varname}
+                    <br/>
+                    <small>{vartype}</small>
+                    <br/>
+                    <div style='font-size:13px'><p class="text-capitalize">{ft_dfn}</p></div>
+                </p>
+            </div>
+
 '''
-_row_header_ignore = u'''<div class="row variablerow ignore">
+_row_header_ignore = u'''
+        <div class="row variablerow ignore" id=varid_{varname}>
+            <div class="col-md-12 text-right">
+                <a role="button" onclick=scrollToTop()>
+                    Scroll to top
+                </a>
+            </div>
+
         <div class="col-md-3 namecol">
-            <p class="h4"><s>{varname}</s><br/><small>{vartype}</small></p>
+            <p class="h4">
+                <s>{varname}</s>
+                <br/>
+                <small>{vartype}</small>
+                <br/>
+                <div style='font-size:13px'><p class="text-capitalize">{ft_dfn}</p></div>
+                <br/>
+            </p>
         </div>
 '''
 
 _row_footer = u'''    </div>'''
 
 row_templates_dict = {}
-row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[varname]}") + u'''
+row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
         <div class="col-md-6">
             <div class="row">
                 <div class="col-sm-6">
@@ -361,6 +446,8 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[max]}</td></tr>
                         <tr class="{row_classes[p_zeros]}"><th>Zeros (%)</th>
                         <td>{0[p_zeros]}</td></tr>
+                        <tr><th>Univariate AUC</th>
+                        <td>{0[AUC]}</td></tr>
                     </table>
                 </div>
             </div>
@@ -371,7 +458,7 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
         </div>
        <div class="col-md-12 text-right">
             <a role="button" data-toggle="collapse" data-target="#descriptives{0[varid]},#minihistogram{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
-                Toggle details
+                Toggle Details
             </a>
         </div>
         <div class="row collapse col-md-12" id="descriptives{0[varid]}">
@@ -405,6 +492,8 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[cv]}</td></tr>
                         <tr><th>Kurtosis</th>
                         <td>{0[kurtosis]}</td></tr>
+                        <tr><th>Mode</th>
+                        <td>{0[mode]}</td></tr>
                         <tr><th>Mean</th>
                         <td>{0[mean]}</td></tr>
                         <tr><th>MAD</th>
@@ -422,10 +511,13 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
              <div class="col-sm-8 histogram">
                  <img src="{0[histogram]}">
              </div>
-      </div>
+             <div class="col-sm-8 histogram">
+                 <img src="{0[cmatrix]}">
+             </div>
+ </div>
 ''' + _row_footer
 
-row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}") + u'''
+row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
         <div class="col-sm-3">
             <table class="stats ">
                 <tr><th>Distinct count</th>
@@ -456,7 +548,7 @@ row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varn
 
 row_templates_dict['DISCRETE'] = row_templates_dict['NUM']
 
-row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{0[varname]}") + u'''
+row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
        <div class="col-md-3">
 
             <table class="stats ">
@@ -472,6 +564,8 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
                 <td>{0[p_infinite]}</td></tr>
                 <tr class="{row_classes[p_infinite]}"><th>Infinite (n)</th>
                 <td>{0[n_infinite]}</td></tr>
+                <tr><th>Univariate AUC</th>
+                <td>{0[AUC]}</td></tr>
             </table>
 
 
@@ -481,18 +575,27 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
 
         <div class="col-md-12 text-right">
                 <a role="button" data-toggle="collapse" data-target="#freqtable{0[varid]}, #minifreqtable{0[varid]}" aria-expanded="true" aria-controls="collapseExample">
-                    Toggle details
+                    Toggle Details
                 </a>
         </div>
          {0[freqtable]}
+
+        <div class="col-md-12 text-right">
+                <a role="button" data-toggle="collapse" data-target="#cmatrix{0[varid]}" aria-expanded="true" aria-controls="collapseExample">
+                    Toggle Confusion Matrix
+                </a>
+        </div>
+        <div class="row collapse col-md-12" id="cmatrix{0[varid]}">
+            <img src="{0[cmatrix]}">
+        </div>
 ''' + _row_footer
 
-row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique", varname="{0[varname]}") + u'''
+row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
         <div class="col-md-3 collapse in" id="minivalues{0[varid]}">{0[firstn]}</div>
         <div class="col-md-6 collapse in" id="minivalues{0[varid]}">{0[lastn]}</div>
         <div class="col-md-12 text-right">
             <a role="button" data-toggle="collapse" data-target="#values{0[varid]},#minivalues{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
-                Toggle details
+                Toggle Details
             </a>
         </div>
         <div class="col-md-12 collapse" id="values{0[varid]}">
@@ -504,7 +607,7 @@ row_templates_dict['UNIQUE'] = _row_header.format(vartype="Categorical, Unique",
 
 ''' + _row_footer
 
-row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varname="{0[varname]}") + u'''
+row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
          <div class="col-md-3">
             <p> <em>This variable is constant and should be ignored for analysis</em></p>
 
@@ -517,7 +620,7 @@ row_templates_dict['CONST'] = _row_header_ignore.format(vartype="Constant", varn
         </div>
 ''' + _row_footer
 
-row_templates_dict['CORR'] = _row_header_ignore.format(vartype="Highly correlated", varname="{0[varname]}") + u'''
+row_templates_dict['CORR'] = _row_header_ignore.format(vartype="Highly correlated", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
          <div class="col-md-3">
             <p> <em>This variable is highly correlated with {0[correlation_var]} and should be ignored for analysis</em></p>
 

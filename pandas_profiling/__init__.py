@@ -1,7 +1,9 @@
 
 import codecs
 from .templates import wrapper_html
+from . import sb_utils
 from .base import describe, to_html
+
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
@@ -12,6 +14,16 @@ class ProfileReport(object):
     file = None
 
     def __init__(self, df, **kwargs):
+        """
+        Generates a object containing summary statistics for a given DataFrame
+        :param df: DataFrame to be analyzed
+        :param bins: Number of bins in histogram
+        :param corr_threshold: Correlation threshold to exclude variables
+        :return: Dictionary containing
+            table: general statistics on the DataFrame
+            variables: summary statistics for each variable
+            freq: frequency table
+        """
 
         sample = kwargs.get('sample', df.head())
 
@@ -52,6 +64,4 @@ class ProfileReport(object):
 
     def __str__(self):
         return "Output written to file " + str(self.file.name)
-
-
 

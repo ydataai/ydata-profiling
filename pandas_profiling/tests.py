@@ -19,7 +19,8 @@ class DataFrameTest(unittest.TestCase):
     def setUp(self):
         self.data = {'id': [chr(97+c) for c in range(1,10)],
                      'x': [50, 50, -10, 0, 0, 5, 15, -3, None],
-                     'y': [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
+                     'y': [0, 0, 0, 0, 1, 1, 1, 1, 0],
+                     'zz': [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
                      'cat': ['a', 'long text value', u'Élysée', '', None, 'some <b> B.s </div> </div> HTML stuff', 'c',
                              'c',
                              'c'],
