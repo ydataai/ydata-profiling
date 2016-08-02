@@ -8,7 +8,11 @@ np.random.seed(96094)
 print('BRO U DUMB AF ASK RANDY HOW TO DO THIS FOR REAL FAM')
 
 try:
-    dft = tests.DataFrameTest()
+    try:
+        dft = tests.DataFrameTest()
+    except:
+        tests.DataFrameTest.runTest = lambda x: 'fuk py2'
+        dft = tests.DataFrameTest()
 
     dft.setUp()
     dft.df['yy'] = np.random.randint(2, size=dft.df.shape[0])

@@ -13,6 +13,7 @@ except ImportError:
 import base64
 
 import matplotlib
+#matplotlib.use('Agg')
 
 import numpy as np
 import os
@@ -21,7 +22,6 @@ import pandas_profiling.formatters as formatters, pandas_profiling.templates as 
 from matplotlib import pyplot as plt
 from pandas.core import common as com
 import six
-from pkg_resources import resource_filename
 
 from .sb_utils.sb_univar import *
 
@@ -63,6 +63,8 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     except:
         pass
 
+    #matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+
     def pretty_name(x):
         x *= 100
         if x == int(x):
@@ -98,6 +100,7 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
             plot.figure.savefig(imgdata)
             imgdata.seek(0)
             stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+            #TODO Think about writing this to disk instead of caching them in strings
             plt.close(plot.figure)
 
         stats['mini_histogram'] = mini_histogram(series)
@@ -156,7 +159,7 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
         if y is not None:
             try:
                 mdld = mdl_1d(data, y)
-                result += [*mdld]
+                result += list(mdld)
             except:
                 Tracer()()
         else:

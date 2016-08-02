@@ -63,4 +63,9 @@ target/
 
 # remove pycharm boilerplate files
 .idea
+
 SB_PUSH_INSTRUCTIONS
+*.py.swp
+
+*.swp
+*.swo
