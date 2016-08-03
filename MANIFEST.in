@@ -1,1 +1,2 @@
 include pandas_profiling/*.mplstyle
+include pandas_profiling/templates/*.html

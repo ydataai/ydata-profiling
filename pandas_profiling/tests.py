@@ -26,7 +26,7 @@ class DataFrameTest(unittest.TestCase):
                      's1': np.ones(9),
                      's2': [u'some constant text $ % value {obj} ' for _ in range(1, 10)],
                      'somedate': [datetime.date(2011, 7, 4), datetime.datetime(2022, 1, 1, 13, 57),
-                                  datetime.datetime(1990, 12, 9), None,
+                                  datetime.datetime(1990, 12, 9), np.nan,
                                   datetime.datetime(1990, 12, 9), datetime.datetime(1950, 12, 9),
                                   datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9)
                          , datetime.datetime(1950, 12, 9)]}
@@ -91,14 +91,14 @@ class DataFrameTest(unittest.TestCase):
                                   'variance': check_is_NaN}
         expected_results['somedate'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN,
                                         'count': 8, 'n_infinite': 0, 'p_infinite': 0, 'cv': check_is_NaN, 'distinct_count': 6, 'freq': check_is_NaN,
-                                        'histogram': check_is_NaN, 'iqr': check_is_NaN, 'is_unique': False, 'kurtosis': check_is_NaN,
+                                        'iqr': check_is_NaN, 'is_unique': False, 'kurtosis': check_is_NaN,
                                         'mad': check_is_NaN, 'max': datetime.datetime(2022, 1, 1, 13, 57), 'mean': check_is_NaN,
                                         'min': datetime.datetime(1898, 1, 2),
-                                        'mini_histogram': check_is_NaN, 'mode': datetime.datetime(1950, 12, 9),
+                                        'mode': datetime.datetime(1950, 12, 9),
                                         'n_missing': 1, 'p_missing': 0.11111111111111116, 'p_unique': 0.75,
                                         'p_zeros': check_is_NaN, 'range': datetime.timedelta(45289, hours=13, minutes=57),
                                         'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN, 'top': check_is_NaN, 'type': 'DATE',
-                                        'variance': check_is_NaN}
+                                        }
 
         self.assertSetEqual(set(self.results.keys()), set(['table', 'variables', 'freq']))
         self.assertSetEqual(set(self.results['freq'].keys()), set(self.data.keys()))
@@ -119,13 +119,13 @@ class DataFrameTest(unittest.TestCase):
         for col in self.data.keys():
             for k,v in six.iteritems(expected_results[col]):
                 if v == check_is_NaN:
-                    self.assertTrue(np.isnan(self.results['variables'].loc[col][k]))
+                    self.assertTrue(np.isnan(self.results['variables'].loc[col][k]), msg="Value {} for key {} in column {} is not NaN".format(self.results['variables'].loc[col][k], k, col))
                 elif isinstance(v, float):
                     self.assertAlmostEqual(v, self.results['variables'].loc[col][k], 7)
                 else:
                     self.assertEqual(v, self.results['variables'].loc[col][k])
 
-            if self.results['variables'].loc[col]['type'] == 'NUM':
+            if self.results['variables'].loc[col]['type'] in ['NUM', 'DATE']:
                 self.assertLess(200, len(self.results['variables'].loc[col]["histogram"]),
                                 "Histogram missing for column %s " % col)
                 self.assertLess(200, len(self.results['variables'].loc[col]["mini_histogram"]),

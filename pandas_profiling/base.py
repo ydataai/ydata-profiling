@@ -70,7 +70,7 @@ def describe(df, **kwargs):
         stats['range'] = stats['max'] - stats['min']
 
         for x in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
-            stats[pretty_name(x)] = series.quantile(x)
+            stats[pretty_name(x)] = series.dropna().quantile(x) # The dropna() is a workaround for https://github.com/pydata/pandas/issues/13098
         stats['iqr'] = stats['75%'] - stats['25%']
         stats['kurtosis'] = series.kurt()
         stats['skewness'] = series.skew()
@@ -108,7 +108,10 @@ def describe(df, **kwargs):
             fig = plt.figure(figsize=figsize)
             plot = fig.add_subplot(111)
             plot.set_ylabel('Frequency')
-            plot.hist(series.values, facecolor='#337ab7', bins=bins)
+            try:
+                plot.hist(series.values, facecolor=facecolor, bins=bins)
+            except TypeError: # matplotlib 1.4 can't plot dates so will show empty plot instead
+                pass
         else:
             plot = series.plot(kind='hist', figsize=figsize,
                                facecolor=facecolor,
