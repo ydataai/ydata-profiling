@@ -63,3 +63,6 @@ target/
 
 # remove pycharm boilerplate files
 .idea
+
+# ipynb example stuff
+examples/.ipynb_checkpoints/
