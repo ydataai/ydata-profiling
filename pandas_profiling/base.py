@@ -13,12 +13,11 @@ except ImportError:
     from urllib.parse import quote
 
 import base64
-
+import multiprocessing
 import matplotlib
 matplotlib.use('Agg')
 
 import numpy as np
-import os
 import pandas as pd
 import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
 from matplotlib import pyplot as plt
@@ -27,43 +26,129 @@ import six
 from pkg_resources import resource_filename
 
 
-def describe(df, **kwargs):
-    """
-    Generates a object containing summary statistics for a given DataFrame
-    :param df: DataFrame to be analyzed
-    :param bins: Number of bins in histogram
-    :return: Dictionary containing
-        table: general statistics on the DataFrame
-        variables: summary statistics for each variable
-        freq: frequency table
-    """
+def _pickle_method(method):
+    func_name = method.im_func.__name__
+    obj = method.im_self
+    cls = method.im_class
+    if func_name.startswith('__') and not func_name.endswith('__'):  # deal with mangled names
+        cls_name = cls.__name__.lstrip('_')
+        func_name = '_' + cls_name + func_name
+    return _unpickle_method, (func_name, obj, cls)
 
-    if not isinstance(df, pd.DataFrame):
-        raise TypeError("df must be of type pandas.DataFrame")
-    if df.empty:
-        raise ValueError("df can not be empty")
 
-    bins = kwargs.get('bins', 10)
-
-    try:
-        # reset matplotlib style before use
-        # Fails in matplotlib 1.4.x so plot might look bad
-        matplotlib.style.use("default")
-    except:
-        pass
-
-    matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
-
-    def pretty_name(x):
-        x *= 100
-        if x == int(x):
-            return '%.0f%%' % x
+def _unpickle_method(func_name, obj, cls):
+    func = None
+    for cls in cls.__mro__:
+        try:
+            func = cls.__dict__[func_name]
+        except KeyError:
+            pass
         else:
-            return '%.1f%%' % x
+            break
+    return func.__get__(obj, cls)
 
-    def describe_numeric_1d(series, base_stats):
+
+import copy_reg
+import types
+
+copy_reg.pickle(types.MethodType, _pickle_method, _unpickle_method)
+
+
+
+def pretty_name(x):
+    x *= 100
+    if x == int(x):
+        return '%.0f%%' % x
+    else:
+        return '%.1f%%' % x
+
+class Describer(object):
+    def __init__(self, bins=10, correlation_overrides=None, pool_size=multiprocessing.cpu_count()):
+        self.__bins = bins
+        self.__correlation_overrides = correlation_overrides if correlation_overrides is not None else set()
+        self.__pool_size = pool_size
+
+    def multiprocess_func(self, x):
+        return (x[0], self.describe_1d(x[1]))
+
+    def describe(self, df):
+        """
+        Generates a object containing summary statistics for a given DataFrame
+        :param df: DataFrame to be analyzed
+        :param bins: Number of bins in histogram
+        :return: Dictionary containing
+            table: general statistics on the DataFrame
+            variables: summary statistics for each variable
+            freq: frequency table
+        """
+
+        if not isinstance(df, pd.DataFrame):
+            raise TypeError("df must be of type pandas.DataFrame")
+        if df.empty:
+            raise ValueError("df can not be empty")
+
+        try:
+            # reset matplotlib style before use
+            # Fails in matplotlib 1.4.x so plot might look bad
+            matplotlib.style.use("default")
+        except:
+            pass
+
+        matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+
+        if not pd.Index(np.arange(0, len(df))).equals(df.index):
+            # Treat index as any other column
+            df = df.reset_index()
+
+        # Describe all variables in a univariate way
+        pool = multiprocessing.Pool(self.__pool_size)
+        ldesc = {col: s for col, s in pool.map(self.multiprocess_func, df.iteritems())}
+
+        # Check correlations between variables
+        ''' TODO: corr(x,y) > 0.9 and corr(y,z) > 0.9 does not imply corr(x,z) > 0.9
+        If x~y and y~z but not x~z, it would be better to delete only y
+        Better way would be to find out which variable causes the highest increase in multicollinearity.
+        '''
+        corr = df.corr()
+
+        for x, corr_x in corr.iterrows():
+            if x in self.__correlation_overrides:
+                continue
+
+            for y, corr in corr_x.iteritems():
+                if x == y: break
+
+                if corr > 0.9:
+                    ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)
+
+        # Convert ldesc to a DataFrame
+        names = []
+        ldesc_indexes = sorted([x.index for x in ldesc.values()], key=len)
+        for idxnames in ldesc_indexes:
+            for name in idxnames:
+                if name not in names:
+                    names.append(name)
+        variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
+        variable_stats.columns.names = df.columns.names
+
+        # General statistics
+        table_stats = {'n': len(df), 'nvar': len(df.columns)}
+        table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
+        table_stats['n_duplicates'] = sum(df.duplicated())
+
+        memsize = df.memory_usage(index=True).sum()
+        table_stats['memsize'] = formatters.fmt_bytesize(memsize)
+        table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
+
+        table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR")})
+        table_stats.update(dict(variable_stats.loc['type'].value_counts()))
+        table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR']
+
+        return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
+
+    def describe_numeric_1d(self, series, base_stats):
         stats = {'mean': series.mean(), 'std': series.std(), 'variance': series.var(), 'min': series.min(),
-                'max': series.max()}
+                 'max': series.max()}
         stats['range'] = stats['max'] - stats['min']
 
         for x in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
@@ -81,22 +166,23 @@ def describe(df, **kwargs):
         # Large histogram
         imgdata = BytesIO()
         plot = series.plot(kind='hist', figsize=(6, 4),
-                           facecolor='#337ab7', bins=bins)  # TODO when running on server, send this off to a different thread
+                           facecolor='#337ab7',
+                           bins=self.__bins)  # TODO when running on server, send this off to a different thread
         plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
         stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
-        #TODO Think about writing this to disk instead of caching them in strings
+        # TODO Think about writing this to disk instead of caching them in strings
         plt.close(plot.figure)
 
-        stats['mini_histogram'] = mini_histogram(series)
+        stats['mini_histogram'] = self.mini_histogram(series)
 
         return pd.Series(stats, name=series.name)
 
-    def mini_histogram(series):
+    def mini_histogram(self, series):
         # Small histogram
         imgdata = BytesIO()
-        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7', bins=bins)
+        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7', bins=self.__bins)
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
         xticks = plot.xaxis.get_major_ticks()
@@ -112,7 +198,7 @@ def describe(df, **kwargs):
         plt.close(plot.figure)
         return result_string
 
-    def describe_date_1d(series, base_stats):
+    def describe_date_1d(self, series, base_stats):
         stats = {'min': series.min(), 'max': series.max()}
         stats['range'] = stats['max'] - stats['min']
         stats['type'] = "DATE"
@@ -122,7 +208,7 @@ def describe(df, **kwargs):
 
         return pd.Series(stats, name=series.name)
 
-    def describe_categorical_1d(data):
+    def describe_categorical_1d(self, data):
         # Only run if at least 1 non-missing value
         objcounts = data.value_counts()
         top, freq = objcounts.index[0], objcounts.iloc[0]
@@ -135,13 +221,13 @@ def describe(df, **kwargs):
 
         return pd.Series(result, index=names, name=data.name)
 
-    def describe_constant_1d(data):
+    def describe_constant_1d(self, data):
         return pd.Series(['CONST'], index=['type'], name=data.name)
 
-    def describe_unique_1d(data):
+    def describe_unique_1d(self, data):
         return pd.Series(['UNIQUE'], index=['type'], name=data.name)
 
-    def describe_1d(data):
+    def describe_1d(self, data):
         leng = len(data)  # number of observations in the Series
         count = data.count()  # number of non-NaN observations in the Series
 
@@ -150,7 +236,7 @@ def describe(df, **kwargs):
         data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
 
         n_infinite = count - data.count()  # number of infinte observations in the Series
-        
+
         distinct_count = data.nunique(dropna=False)  # number of unique elements in the Series
         if count > distinct_count > 1:
             mode = data.mode().iloc[0]
@@ -175,66 +261,21 @@ def describe(df, **kwargs):
         result = pd.Series(results_data, name=data.name)
 
         if distinct_count <= 1:
-            result = result.append(describe_constant_1d(data))
+            result = result.append(self.describe_constant_1d(data))
         elif com.is_numeric_dtype(data):
-            result = result.append(describe_numeric_1d(data, result))
+            result = result.append(self.describe_numeric_1d(data, result))
         elif com.is_datetime64_dtype(data):
-            result = result.append(describe_date_1d(data, result))
+            result = result.append(self.describe_date_1d(data, result))
         elif distinct_count == leng:
-            result = result.append(describe_unique_1d(data))
+            result = result.append(self.describe_unique_1d(data))
         else:
-            result = result.append(describe_categorical_1d(data))
+            result = result.append(self.describe_categorical_1d(data))
         return result
 
-    if not pd.Index(np.arange(0, len(df))).equals(df.index):
-        # Treat index as any other column
-        df = df.reset_index()
 
-    # Describe all variables in a univariate way
-    ldesc = {col: describe_1d(s) for col, s in df.iteritems()}
-
-    # Check correlations between variables
-    ''' TODO: corr(x,y) > 0.9 and corr(y,z) > 0.9 does not imply corr(x,z) > 0.9
-    If x~y and y~z but not x~z, it would be better to delete only y
-    Better way would be to find out which variable causes the highest increase in multicollinearity.
-    '''
-    corr = df.corr()
-    correlation_overrides = kwargs.get("correlation_overrides", set())
-    for x, corr_x in corr.iterrows():
-        if x in correlation_overrides:
-            continue
-
-        for y, corr in corr_x.iteritems():
-            if x == y: break
-
-            if corr > 0.9:
-                ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)
-
-    # Convert ldesc to a DataFrame
-    names = []
-    ldesc_indexes = sorted([x.index for x in ldesc.values()], key=len)
-    for idxnames in ldesc_indexes:
-        for name in idxnames:
-            if name not in names:
-                names.append(name)
-    variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
-    variable_stats.columns.names = df.columns.names
-
-    # General statistics
-    table_stats = {'n': len(df), 'nvar': len(df.columns)}
-    table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
-    table_stats['n_duplicates'] = sum(df.duplicated())
-
-    memsize = df.memory_usage(index=True).sum()
-    table_stats['memsize'] = formatters.fmt_bytesize(memsize)
-    table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
-
-    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR")})
-    table_stats.update(dict(variable_stats.loc['type'].value_counts()))
-    table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR']
-
-    return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
-
+def describe(df, **kwargs):
+    describer = Describer(**kwargs)
+    return describer.describe(df)
 
 def to_html(sample, stats_object):
 
