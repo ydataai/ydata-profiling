@@ -199,7 +199,11 @@ def describe(df, **kwargs):
     Better way would be to find out which variable causes the highest increase in multicollinearity.
     '''
     corr = df.corr()
+    correlation_overrides = kwargs.get("correlation_overrides", set())
     for x, corr_x in corr.iterrows():
+        if x in correlation_overrides:
+            continue
+
         for y, corr in corr_x.iteritems():
             if x == y: break
 
