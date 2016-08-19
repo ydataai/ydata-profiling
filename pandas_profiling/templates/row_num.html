@@ -64,88 +64,116 @@
     </a>
 </div>
 <div class="row collapse col-md-12" id="descriptives{{ values['varid'] }}">
-    <div class="col-sm-4">
-        <p class="h4">Quantile statistics</p>
-        <table class="stats indent">
-            <tr>
-                <th>Minimum</th>
-                <td>{{ values['min'] }}</td>
-            </tr>
-            <tr>
-                <th>5-th percentile</th>
-                <td>{{ values['5%'] }}</td>
-            </tr>
-            <tr>
-                <th>Q1</th>
-                <td>{{ values['25%'] }}</td>
-            </tr>
-            <tr>
-                <th>Median</th>
-                <td>{{ values['50%'] }}</td>
-            </tr>
-            <tr>
-                <th>Q3</th>
-                <td>{{ values['75%'] }}</td>
-            </tr>
-            <tr>
-                <th>95-th percentile</th>
-                <td>{{ values['95%'] }}</td>
-            </tr>
-            <tr>
-                <th>Maximum</th>
-                <td>{{ values['max'] }}</td>
-            </tr>
-            <tr>
-                <th>Range</th>
-                <td>{{ values['range'] }}</td>
-            </tr>
-            <tr>
-                <th>Interquartile range</th>
-                <td>{{ values['iqr'] }}</td>
-            </tr>
-        </table>
-        <p class="h4">Descriptive statistics</p>
-        <table class="stats indent">
-            <tr>
-                <th>Standard deviation</th>
-                <td>{{ values['std'] }}</td>
-            </tr>
-            <tr>
-                <th>Coef of variation</th>
-                <td>{{ values['cv'] }}</td>
-            </tr>
-            <tr>
-                <th>Kurtosis</th>
-                <td>{{ values['kurtosis'] }}</td>
-            </tr>
-            <tr>
-                <th>Mean</th>
-                <td>{{ values['mean'] }}</td>
-            </tr>
-            <tr>
-                <th>MAD</th>
-                <td>{{ values['mad'] }}</td>
-            </tr>
-            <tr class="{{ row_classes['skewness'] }}">
-                <th>Skewness</th>
-                <td>{{ values['skewness'] }}</td>
-            </tr>
-            <tr>
-                <th>Sum</th>
-                <td>{{ values['sum'] }}</td>
-            </tr>
-            <tr>
-                <th>Variance</th>
-                <td>{{ values['variance'] }}</td>
-            </tr>
-            <tr>
-                <th>Memory size</th>
-                <td>{{ values['memorysize'] }}</td>
-            </tr>
-        </table>
-    </div>
-    <div class="col-sm-8 histogram">
-        <img src="{{ values['histogram'] }}">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#quantiles{{ values['varid'] }}"
+                                                  aria-controls="quantiles{{ values['varid'] }}" role="tab"
+                                                  data-toggle="tab">Statistics</a></li>
+        <li role="presentation"><a href="#histogram{{ values['varid'] }}" aria-controls="histogram{{ values['varid'] }}"
+                                   role="tab" data-toggle="tab">Histogram</a></li>
+        <li role="presentation"><a href="#common{{ values['varid'] }}" aria-controls="common{{ values['varid'] }}"
+                                   role="tab" data-toggle="tab">Common Values</a></li>
+        <li role="presentation"><a href="#extreme{{ values['varid'] }}" aria-controls="extreme{{ values['varid'] }}"
+                                   role="tab" data-toggle="tab">Extreme Values</a></li>
+
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active row" id="quantiles{{ values['varid'] }}">
+            <div class="col-md-4 col-md-offset-1">
+                <p class="h4">Quantile statistics</p>
+                <table class="stats indent">
+                    <tr>
+                        <th>Minimum</th>
+                        <td>{{ values['min'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>5-th percentile</th>
+                        <td>{{ values['5%'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Q1</th>
+                        <td>{{ values['25%'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Median</th>
+                        <td>{{ values['50%'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Q3</th>
+                        <td>{{ values['75%'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>95-th percentile</th>
+                        <td>{{ values['95%'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Maximum</th>
+                        <td>{{ values['max'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Range</th>
+                        <td>{{ values['range'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Interquartile range</th>
+                        <td>{{ values['iqr'] }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-4 col-md-offset-2">
+                <p class="h4">Descriptive statistics</p>
+                <table class="stats indent">
+                    <tr>
+                        <th>Standard deviation</th>
+                        <td>{{ values['std'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Coef of variation</th>
+                        <td>{{ values['cv'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Kurtosis</th>
+                        <td>{{ values['kurtosis'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mean</th>
+                        <td>{{ values['mean'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>MAD</th>
+                        <td>{{ values['mad'] }}</td>
+                    </tr>
+                    <tr class="{{ row_classes['skewness'] }}">
+                        <th>Skewness</th>
+                        <td>{{ values['skewness'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sum</th>
+                        <td>{{ values['sum'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Variance</th>
+                        <td>{{ values['variance'] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Memory size</th>
+                        <td>{{ values['memorysize'] }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane col-md-8 col-md-offset-2" id="histogram{{ values['varid'] }}">
+            <img src="{{ values['histogram'] }}"/>
+        </div>
+        <div role="tabpanel" class="tab-pane col-md-12" id="common{{ values['varid'] }}">
+            {{ values['freqtable'] }}
+        </div>
+        <div role="tabpanel" class="tab-pane col-md-12"  id="extreme{{ values['varid'] }}">
+            <p class="h4">Minimum 5 values</p>
+            {{ values['firstn_expanded'] }}
+            <p class="h4">Maximum 5 values</p>
+            {{ values['lastn_expanded'] }}
+        </div>
     </div>
 </div>
 {% include '_row_footer.html' %}

@@ -185,8 +185,8 @@ def describe(df, **kwargs):
         result = []
 
         if data.dtype == object or com.is_categorical_dtype(data.dtype):
-            names += ['top', 'freq', 'type']
-            result += [top, freq, 'CAT']
+            names += ['top', 'freq']
+            result += [top, freq]
 
         return pd.Series(result, index=names, name=data.name)
 
@@ -239,6 +239,8 @@ def describe(df, **kwargs):
             result = result.append(describe_unique_1d(data))
         else:
             result = result.append(describe_categorical_1d(data))
+            result['type'] = 'CAT'
+
         return result
 
     if not pd.Index(np.arange(0, len(df))).equals(df.index):
@@ -287,9 +289,6 @@ def describe(df, **kwargs):
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
 
 
-
-
-
 def to_html(sample, stats_object):
     """Generate a HTML report from summary statistics and a given sample.
 
@@ -327,21 +326,7 @@ def to_html(sample, stats_object):
         else:
             return str(value)
 
-    def freq_table(freqtable, n, table_template, row_template, max_number_of_items_in_table):
-
-        freq_rows_html = u''
-
-        freq_other = sum(freqtable[max_number_of_items_in_table:])
-        freq_missing = n - sum(freqtable)
-        max_freq = max(freqtable.values[0], freq_other, freq_missing)
-        try:
-            min_freq = freqtable.values[max_number_of_items_in_table]
-        except IndexError:
-            min_freq = 0
-
-        # TODO: Correctly sort missing and other
-
-        def format_row(freq, label, extra_class=''):
+    def _format_row(freq, label, max_freq, row_template, n, extra_class=''):
             width = int(freq / max_freq * 99) + 1
             if width > 20:
                 label_in_bar = freq
@@ -358,18 +343,51 @@ def to_html(sample, stats_object):
                                        label_in_bar=label_in_bar,
                                        label_after_bar=label_after_bar)
 
-        for label, freq in six.iteritems(freqtable[0:max_number_of_items_in_table]):
-            freq_rows_html += format_row(freq, label)
+    def freq_table(freqtable, n, table_template, row_template, max_number_to_print):
+
+        freq_rows_html = u''
+
+        if max_number_to_print > n:
+                max_number_to_print=n
+
+        if max_number_to_print < len(freqtable):
+            freq_other = sum(freqtable.iloc[max_number_to_print:])
+            min_freq = freqtable.values[max_number_to_print]
+        else:
+            freq_other = 0
+            min_freq = 0
+
+        freq_missing = n - sum(freqtable)
+        max_freq = max(freqtable.values[0], freq_other, freq_missing)
+
+        # TODO: Correctly sort missing and other
+
+        for label, freq in six.iteritems(freqtable.iloc[0:max_number_to_print]):
+            freq_rows_html += _format_row(freq, label, max_freq, row_template, n)
 
         if freq_other > min_freq:
-            freq_rows_html += format_row(freq_other,
-                                         "Other values (%s)" % (freqtable.count() - max_number_of_items_in_table),
+            freq_rows_html += _format_row(freq_other,
+                                         "Other values (%s)" % (freqtable.count() - max_number_to_print), max_freq, row_template, n,
                                          extra_class='other')
 
         if freq_missing > min_freq:
-            freq_rows_html += format_row(freq_missing, "(Missing)", extra_class='missing')
+            freq_rows_html += _format_row(freq_missing, "(Missing)", max_freq, row_template, n, extra_class='missing')
 
         return table_template.render(rows=freq_rows_html, varid=hash(idx))
+
+    def extreme_obs_table(freqtable, table_template, row_template, number_to_print, n, ascending = True):
+        if ascending:
+            obs_to_print = freqtable.sort_index().iloc[:number_to_print]
+        else:
+            obs_to_print = freqtable.sort_index().iloc[-number_to_print:]
+
+        freq_rows_html = ''
+        max_freq = max(obs_to_print.values)
+
+        for label, freq in six.iteritems(obs_to_print):
+            freq_rows_html += _format_row(freq, label, max_freq, row_template, n)
+
+        return table_template.render(rows=freq_rows_html)
 
     # Variables
     rows_html = u""
@@ -391,8 +409,7 @@ def to_html(sample, stats_object):
         if row['type'] == 'CAT':
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                            templates.template('mini_freq_table'), templates.template('mini_freq_table_row'), 3)
-            formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
-                                                       templates.template('freq_table'), templates.template('freq_table_row'), 20)
+
             if row['distinct_count'] > 50:
                 messages.append(templates.messages['HIGH_CARDINALITY'].format(formatted_values, varname = formatters.fmt_varname(idx)))
                 row_classes['distinct_count'] = "alert"
@@ -405,19 +422,16 @@ def to_html(sample, stats_object):
             formatted_values['firstn'] = pd.DataFrame(obs[0:3], columns=["First 3 values"]).to_html(classes="example_values", index=False)
             formatted_values['lastn'] = pd.DataFrame(obs[-3:], columns=["Last 3 values"]).to_html(classes="example_values", index=False)
 
-            if n_obs > 40:
-                formatted_values['firstn_expanded'] = pd.DataFrame(obs[0:20], index=range(1, 21)).to_html(classes="sample table table-hover", header=False)
-                formatted_values['lastn_expanded'] = pd.DataFrame(obs[-20:], index=range(n_obs - 20 + 1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
-            else:
-                formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
-                formatted_values['lastn_expanded'] = ''
-
-        rows_html += templates.row_templates_dict[row['type']].render(values=formatted_values, row_classes=row_classes)
-
         if row['type'] in {'CORR', 'CONST'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)
             messages.append(templates.messages[row['type']].format(formatted_values))
+        else:
+            formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
+                                                       templates.template('freq_table'), templates.template('freq_table_row'), 10)
+            formatted_values['firstn_expanded'] = extreme_obs_table(stats_object['freq'][idx], templates.template('freq_table'), templates.template('freq_table_row'), 5, n_obs, ascending = True)
+            formatted_values['lastn_expanded'] = extreme_obs_table(stats_object['freq'][idx], templates.template('freq_table'), templates.template('freq_table_row'), 5, n_obs, ascending = False)
 
+        rows_html += templates.row_templates_dict[row['type']].render(values=formatted_values, row_classes=row_classes)
 
     # Overview
     formatted_values = {k: fmt(v, k) for k, v in six.iteritems(stats_object['table'])}

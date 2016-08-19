@@ -26,5 +26,7 @@
         Toggle details
     </a>
 </div>
-{{ values['freqtable'] }}
+<div class="col-md-12 extrapadding collapse" id="freqtable{{ values['varid']  }}">
+    {{ values['freqtable'] }}
+</div>
 {% include '_row_footer.html' %}
