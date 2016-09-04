@@ -1,0 +1,35 @@
+# CI on Windows via appveyor
+# This file was based on Olivier Grisel's python-appveyor-demo
+
+environment:
+
+  matrix:
+    - PYTHON: "C:\\Python27-conda32"
+      PYTHON_VERSION: "2.7"
+      PYTHON_ARCH: "32"
+
+    - PYTHON: "C:\\Python34-conda64"
+      PYTHON_VERSION: "3.4"
+      PYTHON_ARCH: "64"
+
+install:
+  # Install miniconda Python
+  - "powershell ./appveyor_install.ps1"
+
+  # Prepend newly installed Python to the PATH of this build (this cannot be
+  # done from inside the powershell script as it would require to restart
+  # the parent CMD process).
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+
+  # Check that we have the expected version and architecture for Python
+  - "python --version"
+  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+
+  # install xarray and depenencies
+  - "conda install --yes --quiet pandas matplotlib"
+  - "python setup.py install"
+
+build: false
+
+test_script:
+  - "python -m unittest -v pandas_profiling.tests"
