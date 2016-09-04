@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='pandas-profiling',
-    version='1.2.0',
+    version='1.3.0',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['pandas_profiling'],
@@ -19,11 +19,12 @@ setup(
     install_requires=[
         "pandas>=0.16",
         "matplotlib>=1.4",
-        "jinja2>=2.8"
+        "jinja2>=2.8",
+        "six>=1.9"
     ],
     include_package_data = True,
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: MIT License',
         'Environment :: Console',
