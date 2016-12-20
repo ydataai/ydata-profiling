@@ -63,7 +63,8 @@ for information about options and arguments.
 
 * **An internet connection.** Pandas-profiling requires an internet connection to download the Bootstrap and JQuery libraries. I might change this in the future, let me know if you want that sooner than later.
 * python (>= 2.7)
-* pandas (>=0.16)
+* pandas (>=0.19)
 * matplotlib  (>=1.4)
+* six (>=1.9)
 
 

@@ -21,11 +21,8 @@ import numpy as np
 import pandas as pd
 import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
 from matplotlib import pyplot as plt
-from pandas.core import common as com
 from pkg_resources import resource_filename
 import six
-# import copy_reg
-import types
 import multiprocessing
 from functools import partial
 
@@ -76,7 +73,7 @@ def _plot_histogram(series, bins=10, figsize=(6, 4), facecolor='#337ab7'):
     -------
     matplotlib.AxesSubplot, The plot.
     """
-    if com.is_datetime64_dtype(series):
+    if pd.api.types.is_datetime64_dtype(series):
         # TODO: These calls should be merged
         fig = plt.figure(figsize=figsize)
         plot = fig.add_subplot(111)
@@ -161,7 +158,7 @@ def describe_categorical_1d(data):
     names = []
     result = []
 
-    if data.dtype == object or com.is_categorical_dtype(data.dtype):
+    if data.dtype == object or pd.api.types.is_categorical_dtype(data.dtype):
         names += ['top', 'freq', 'type']
         result += [top, freq, 'CAT']
 
@@ -211,9 +208,9 @@ def describe_1d(data, **kwargs):
 
     if distinct_count <= 1:
         result = result.append(describe_constant_1d(data))
-    elif com.is_numeric_dtype(data):
+    elif pd.api.types.is_numeric_dtype(data):
         result = result.append(describe_numeric_1d(data, **kwargs))
-    elif com.is_datetime64_dtype(data):
+    elif pd.api.types.is_datetime64_dtype(data):
         result = result.append(describe_date_1d(data, **kwargs))
     elif distinct_count == leng:
         result = result.append(describe_unique_1d(data, **kwargs))
@@ -299,7 +296,7 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
         -------
         matplotlib.AxesSubplot, The plot.
         """
-        if com.is_datetime64_dtype(series):
+        if pd.api.types.is_datetime64_dtype(series):
             # TODO: These calls should be merged
             fig = plt.figure(figsize=figsize)
             plot = fig.add_subplot(111)
@@ -380,7 +377,7 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
         names = []
         result = []
 
-        if data.dtype == object or com.is_categorical_dtype(data.dtype):
+        if data.dtype == object or pd.api.types.is_categorical_dtype(data.dtype):
             names += ['top', 'freq']
             result += [top, freq]
 
@@ -401,7 +398,7 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
         data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
 
         n_infinite = count - data.count()  # number of infinte observations in the Series
-        
+
         distinct_count = data.nunique(dropna=False)  # number of unique elements in the Series
         if count > distinct_count > 1:
             mode = data.mode().iloc[0]
@@ -427,9 +424,9 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
 
         if distinct_count <= 1:
             result = result.append(describe_constant_1d(data))
-        elif com.is_numeric_dtype(data):
+        elif pd.api.types.is_numeric_dtype(data):
             result = result.append(describe_numeric_1d(data, result))
-        elif com.is_datetime64_dtype(data):
+        elif pd.api.types.is_datetime64_dtype(data):
             result = result.append(describe_date_1d(data, result))
         elif distinct_count == leng:
             result = result.append(describe_unique_1d(data))
