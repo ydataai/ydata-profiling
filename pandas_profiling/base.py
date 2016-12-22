@@ -13,12 +13,13 @@ except ImportError:
 import base64
 
 import matplotlib
-#matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 import numpy as np
 import os
 import pandas as pd
-import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
+import pandas_profiling.formatters as formatters
+import pandas_profiling.templates as templates
 from matplotlib import pyplot as plt
 from pandas.core import common as com
 import six
@@ -30,6 +31,7 @@ from IPython.core.debugger import Tracer
 import seaborn as sns
 sns.set_style('dark')
 sns.set_context('notebook')
+
 
 def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     """
@@ -74,8 +76,8 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
 
     def describe_numeric_1d(series, base_stats):
         stats = {'mean': series.mean(), 'std': series.std(),
-                'variance': series.var(), 'min': series.min(),
-                'max': series.max()}
+                 'variance': series.var(), 'min': series.min(),
+                 'max': series.max()}
         stats['range'] = stats['max'] - stats['min']
 
         for x in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
@@ -99,8 +101,10 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
             #plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
             plot.figure.savefig(imgdata)
             imgdata.seek(0)
-            stats['histogram'] = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
-            #TODO Think about writing this to disk instead of caching them in strings
+            stats['histogram'] = 'data:image/png;base64,' + \
+                quote(base64.b64encode(imgdata.getvalue()))
+            # TODO Think about writing this to disk instead of caching them in
+            # strings
             plt.close(plot.figure)
 
         stats['mini_histogram'] = mini_histogram(series)
@@ -119,7 +123,8 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     def mini_histogram(series):
         # Small histogram
         imgdata = BytesIO()
-        plot = series.plot(kind='hist', figsize=(2, 0.75), facecolor='#337ab7', bins=bins)
+        plot = series.plot(kind='hist', figsize=(2, 0.75),
+                           facecolor='#337ab7', bins=bins)
         plot.axes.get_yaxis().set_visible(False)
         plot.set_axis_bgcolor("w")
         xticks = plot.xaxis.get_major_ticks()
@@ -128,10 +133,12 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
             tick.label.set_visible(False)
         for tick in (xticks[0], xticks[-1]):
             tick.label.set_fontsize(8)
-        plot.figure.subplots_adjust(left=0.15, right=0.85, top=1, bottom=0.35, wspace=0, hspace=0)
+        plot.figure.subplots_adjust(
+            left=0.15, right=0.85, top=1, bottom=0.35, wspace=0, hspace=0)
         plot.figure.savefig(imgdata)
         imgdata.seek(0)
-        result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+        result_string = 'data:image/png;base64,' + \
+            quote(base64.b64encode(imgdata.getvalue()))
         plt.close(plot.figure)
         return result_string
 
@@ -181,11 +188,13 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
 
         # Replace infinite values with NaNs to avoid issues with
         # histograms later.
-        data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
+        data.replace(to_replace=[np.inf, np.NINF,
+                                 np.PINF], value=np.nan, inplace=True)
 
         n_infinite = count - data.count()  # number of infinte observations in the Series
 
-        distinct_count = data.nunique(dropna=False)  # number of unique elements in the Series
+        # number of unique elements in the Series
+        distinct_count = data.nunique(dropna=False)
         if count > distinct_count > 1:
             mode = data.mode().iloc[0]
         else:
@@ -237,10 +246,12 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
     corr = df.corr()
     for x, corr_x in corr.iterrows():
         for y, corr in corr_x.iteritems():
-            if x == y: break
+            if x == y:
+                break
 
             if corr > corr_threshold:
-                ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)
+                ldesc[x] = pd.Series(['CORR', y, corr], index=[
+                                     'type', 'correlation_var', 'correlation'], name=x)
 
     # Convert ldesc to a DataFrame
     names = []
@@ -255,14 +266,17 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
 
     # General statistics
     table_stats = {'n': len(df), 'nvar': len(df.columns)}
-    table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
+    table_stats['total_missing'] = variable_stats.loc[
+        'n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
     table_stats['n_duplicates'] = sum(df.duplicated())
 
     memsize = df.memory_usage(index=True).sum()
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
-    table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
+    table_stats['recordsize'] = formatters.fmt_bytesize(
+        memsize / table_stats['n'])
 
-    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR")})
+    table_stats.update(
+        {k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR']
 
@@ -270,7 +284,6 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
 
 
 def to_html(sample, stats_object):
-
     """
     Generate a HTML report from summary statistics and a given sample
     :param sample: DataFrame containing the sample you want to print
@@ -287,10 +300,12 @@ def to_html(sample, stats_object):
         raise TypeError("sample must be of type pandas.DataFrame")
 
     if not isinstance(stats_object, dict):
-        raise TypeError("stats_object must be of type dict. Did you generate this using the pandas_profiling.describe() function?")
+        raise TypeError(
+            "stats_object must be of type dict. Did you generate this using the pandas_profiling.describe() function?")
 
     if set(stats_object.keys()) != {'table', 'variables', 'freq'}:
-        raise TypeError("stats_object badly formatted. Did you generate this using the pandas_profiling-eda.describe() function?")
+        raise TypeError(
+            "stats_object badly formatted. Did you generate this using the pandas_profiling-eda.describe() function?")
 
     def fmt(value, name):
         if pd.isnull(value):
@@ -328,7 +343,8 @@ def to_html(sample, stats_object):
             return row_template.format(label=label,
                                        width=width,
                                        count=freq,
-                                       percentage='{:2.1f}'.format(freq / n * 100),
+                                       percentage='{:2.1f}'.format(
+                                           freq / n * 100),
                                        extra_class=extra_class,
                                        label_in_bar=label_in_bar,
                                        label_after_bar=label_after_bar)
@@ -338,11 +354,13 @@ def to_html(sample, stats_object):
 
         if freq_other > min_freq:
             freq_rows_html += format_row(freq_other,
-                                         "Other values (%s)" % (freqtable.count() - max_number_of_items_in_table),
+                                         "Other values (%s)" % (
+                                             freqtable.count() - max_number_of_items_in_table),
                                          extra_class='other')
 
         if freq_missing > min_freq:
-            freq_rows_html += format_row(freq_missing, "(Missing)", extra_class='missing')
+            freq_rows_html += format_row(freq_missing,
+                                         "(Missing)", extra_class='missing')
 
         return table_template.format(rows=freq_rows_html, varid=hash(idx))
 
@@ -361,7 +379,8 @@ def to_html(sample, stats_object):
         for col in set(row.index) & six.viewkeys(row_formatters):
             row_classes[col] = row_formatters[col](row[col])
             if row_classes[col] == "alert" and col in templates.messages:
-                messages.append(templates.messages[col].format(formatted_values, varname = formatters.fmt_varname(idx)))
+                messages.append(templates.messages[col].format(
+                    formatted_values, varname=formatters.fmt_varname(idx)))
 
         if row['type'] == 'CAT':
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
@@ -369,7 +388,8 @@ def to_html(sample, stats_object):
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                        templates.freq_table, templates.freq_table_row, 20)
             if row['distinct_count'] > 50:
-                messages.append(templates.messages['HIGH_CARDINALITY'].format(formatted_values, varname = formatters.fmt_varname(idx)))
+                messages.append(templates.messages['HIGH_CARDINALITY'].format(
+                    formatted_values, varname=formatters.fmt_varname(idx)))
                 row_classes['distinct_count'] = "alert"
             else:
                 row_classes['distinct_count'] = ""
@@ -377,43 +397,53 @@ def to_html(sample, stats_object):
         if row['type'] == 'UNIQUE':
             obs = stats_object['freq'][idx].index
 
-            formatted_values['firstn'] = pd.DataFrame(obs[0:3], columns=["First 3 values"]).to_html(classes="example_values", index=False)
-            formatted_values['lastn'] = pd.DataFrame(obs[-3:], columns=["Last 3 values"]).to_html(classes="example_values", index=False)
+            formatted_values['firstn'] = pd.DataFrame(
+                obs[0:3], columns=["First 3 values"]).to_html(classes="example_values", index=False)
+            formatted_values['lastn'] = pd.DataFrame(
+                obs[-3:], columns=["Last 3 values"]).to_html(classes="example_values", index=False)
 
             if n_obs > 40:
-                formatted_values['firstn_expanded'] = pd.DataFrame(obs[0:20], index=range(1, 21)).to_html(classes="sample table table-hover", header=False)
-                formatted_values['lastn_expanded'] = pd.DataFrame(obs[-20:], index=range(n_obs - 20 + 1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
+                formatted_values['firstn_expanded'] = pd.DataFrame(obs[0:20], index=range(
+                    1, 21)).to_html(classes="sample table table-hover", header=False)
+                formatted_values['lastn_expanded'] = pd.DataFrame(obs[-20:], index=range(
+                    n_obs - 20 + 1, n_obs + 1)).to_html(classes="sample table table-hover", header=False)
             else:
-                formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(1, n_obs+1)).to_html(classes="sample table table-hover", header=False)
+                formatted_values['firstn_expanded'] = pd.DataFrame(obs, index=range(
+                    1, n_obs + 1)).to_html(classes="sample table table-hover", header=False)
                 formatted_values['lastn_expanded'] = ''
 
         try:
-            rows_html += templates.row_templates_dict[row['type']].format(formatted_values, row_classes=row_classes)
+            rows_html += templates.row_templates_dict[row['type']].format(
+                formatted_values, row_classes=row_classes)
         except KeyError:
             Tracer()()
 
         if row['type'] in {'CORR', 'CONST'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)
-            messages.append(templates.messages[row['type']].format(formatted_values))
-
+            messages.append(templates.messages[
+                            row['type']].format(formatted_values))
 
     # Overview
-    formatted_values = {k: fmt(v, k) for k, v in six.iteritems(stats_object['table'])}
+    formatted_values = {k: fmt(v, k)
+                        for k, v in six.iteritems(stats_object['table'])}
 
-    row_classes={}
+    row_classes = {}
     for col in six.viewkeys(stats_object['table']) & six.viewkeys(row_formatters):
         row_classes[col] = row_formatters[col](stats_object['table'][col])
         if row_classes[col] == "alert" and col in templates.messages:
-            messages.append(templates.messages[col].format(formatted_values, varname = formatters.fmt_varname(idx)))
+            messages.append(templates.messages[col].format(
+                formatted_values, varname=formatters.fmt_varname(idx)))
 
     messages_html = u''
     for msg in messages:
         messages_html += templates.message_row.format(message=msg)
 
-    overview_html = templates.overview_template.format(formatted_values, row_classes = row_classes, messages=messages_html)
+    overview_html = templates.overview_template.format(
+        formatted_values, row_classes=row_classes, messages=messages_html)
 
     # Sample
 
-    sample_html = templates.sample_html.format(sample_table_html=sample.to_html(classes="sample"))
+    sample_html = templates.sample_html.format(
+        sample_table_html=sample.to_html(classes="sample"))
 
     return templates.base_html % {'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html}

@@ -4,9 +4,9 @@
 This file contains all templates used for generating the HTML profile report
 '''
 
-#TODO: rewrite this using Jinja template language
+# TODO: rewrite this using Jinja template language
 
-base_html=u'''
+base_html = u'''
     <meta charset="UTF-8">
 
     <style>
@@ -323,7 +323,7 @@ sample_html = u'''
     </div>
 '''
 
-overview_template= u'''
+overview_template = u'''
     <div class="row variablerow">
         <div class="col-md-6 namecol">
             <p class="h4">Dataset info</p>
@@ -678,14 +678,20 @@ freq_table_row = u'''
 </tr>
 '''
 
-messages=dict()
-messages['CONST'] = u'{0[varname]} has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
-messages['CORR'] = u'{0[varname]} is highly correlated with {0[correlation_var]} (ρ = {0[correlation]}) <span class="label label-primary">Rejected</span>'
-messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
-messages['n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
+messages = dict()
+messages[
+    'CONST'] = u'{0[varname]} has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
+messages[
+    'CORR'] = u'{0[varname]} is highly correlated with {0[correlation_var]} (ρ = {0[correlation]}) <span class="label label-primary">Rejected</span>'
+messages[
+    'HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
+messages[
+    'n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
 messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})'
-messages['p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'
-messages['p_infinite'] = u'{varname} has {0[n_infinite]} / {0[p_infinite]} infinite values <span class="label label-default">Infinite</span>'
+messages[
+    'p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'
+messages[
+    'p_infinite'] = u'{varname} has {0[n_infinite]} / {0[p_infinite]} infinite values <span class="label label-default">Infinite</span>'
 messages['p_zeros'] = u'{varname} has {0[n_zeros]} / {0[p_zeros]} zeros'
 
 message_row = u'<li>{message}</l>'
