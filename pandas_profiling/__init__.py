@@ -29,7 +29,8 @@ class ProfileReport(object):
 
         description_set = describe(df, **kwargs)
 
-        description_set['variables'].sort_values('AUC', ascending=False, inplace=True)
+        description_set['variables'].sort_values(
+            'AUC', ascending=False, inplace=True)
 
         self.html = to_html(sample,
                             description_set)
@@ -66,4 +67,3 @@ class ProfileReport(object):
 
     def __str__(self):
         return "Output written to file " + str(self.file.name)
-

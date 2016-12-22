@@ -17,7 +17,7 @@ check_is_NaN = "pandas_profiling.check_is_NaN"
 class DataFrameTest(unittest.TestCase):
 
     def setUp(self):
-        self.data = {'id': [chr(97+c) for c in range(1,10)],
+        self.data = {'id': [chr(97 + c) for c in range(1, 10)],
                      'x': [50, 50, -10, 0, 0, 5, 15, -3, None],
                      'y': [0, 0, 0, 0, 1, 1, 1, 1, 0],
                      'zz': [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
@@ -28,19 +28,17 @@ class DataFrameTest(unittest.TestCase):
                      's2': [u'some constant text $ % value {obj} ' for _ in range(1, 10)],
                      'somedate': [datetime.date(2011, 7, 4), datetime.datetime(2022, 1, 1, 13, 57),
                                   datetime.datetime(1990, 12, 9), None,
-                                  datetime.datetime(1990, 12, 9), datetime.datetime(1950, 12, 9),
-                                  datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9)
-                         , datetime.datetime(1950, 12, 9)]}
+                                  datetime.datetime(
+                                      1990, 12, 9), datetime.datetime(1950, 12, 9),
+                                  datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9), datetime.datetime(1950, 12, 9)]}
         self.df = pd.DataFrame(self.data)
         self.df['somedate'] = pd.to_datetime(self.df['somedate'])
 
         self.results = describe(self.df)
         self.test_dir = tempfile.mkdtemp()
 
-
     def tearDown(self):
         shutil.rmtree(self.test_dir)
-
 
     def test_describe_df(self):
 
@@ -101,28 +99,34 @@ class DataFrameTest(unittest.TestCase):
                                         'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN, 'top': check_is_NaN, 'type': 'DATE',
                                         'variance': check_is_NaN}
 
-        self.assertSetEqual(set(self.results.keys()), set(['table', 'variables', 'freq']))
-        self.assertSetEqual(set(self.results['freq'].keys()), set(self.data.keys()))
-        self.assertSetEqual(set(self.results['variables'].index), set(self.data.keys()))
+        self.assertSetEqual(set(self.results.keys()),
+                            set(['table', 'variables', 'freq']))
+        self.assertSetEqual(
+            set(self.results['freq'].keys()), set(self.data.keys()))
+        self.assertSetEqual(
+            set(self.results['variables'].index), set(self.data.keys()))
 
         self.assertTrue(set({'CAT': 1,
-                                       'CONST': 2,
-                                       'DATE': 1,
-                                       'NUM': 2,
-                                       'UNIQUE': 1,
-                                       'n': 9,
-                                       'n_duplicates': 0,
-                                       'nvar': 7,
-                                       }.items()).issubset(set(self.results['table'].items())))
+                             'CONST': 2,
+                             'DATE': 1,
+                             'NUM': 2,
+                             'UNIQUE': 1,
+                             'n': 9,
+                             'n_duplicates': 0,
+                             'nvar': 7,
+                             }.items()).issubset(set(self.results['table'].items())))
 
-        self.assertAlmostEqual(0.063492063492063489, self.results['table']['total_missing'], 7)
+        self.assertAlmostEqual(0.063492063492063489, self.results[
+                               'table']['total_missing'], 7)
         # Loop over variables
         for col in self.data.keys():
-            for k,v in six.iteritems(expected_results[col]):
+            for k, v in six.iteritems(expected_results[col]):
                 if v == check_is_NaN:
-                    self.assertTrue(np.isnan(self.results['variables'].loc[col][k]))
+                    self.assertTrue(
+                        np.isnan(self.results['variables'].loc[col][k]))
                 elif isinstance(v, float):
-                    self.assertAlmostEqual(v, self.results['variables'].loc[col][k], 7)
+                    self.assertAlmostEqual(
+                        v, self.results['variables'].loc[col][k], 7)
                 else:
                     self.assertEqual(v, self.results['variables'].loc[col][k])
 
@@ -131,7 +135,6 @@ class DataFrameTest(unittest.TestCase):
                                 "Histogram missing for column %s " % col)
                 self.assertLess(200, len(self.results['variables'].loc[col]["mini_histogram"]),
                                 "Mini-histogram missing for column %s " % col)
-
 
     def test_html_report(self):
         html = to_html(self.df.head(), self.results)
@@ -147,7 +150,7 @@ class DataFrameTest(unittest.TestCase):
         filename = os.path.join(self.test_dir, "profile_%s.html" % hash(self))
         p.to_file(outputfile=filename)
 
-        self.assertLess(200,os.path.getsize(filename))
+        self.assertLess(200, os.path.getsize(filename))
 
 if __name__ == '__main__':
     unittest.main()
