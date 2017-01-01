@@ -1,0 +1,21 @@
+updates list
+
+categorical columns
+-fix for columns with too many values, don't plot or plot top categories
+
+numeric columns
+-binning
+-binned mean plots
+-bubble plots
+-update html to toggle each plot separately
+
+date columns
+-auto parse for dates
+-timeline view?
+
+-paralell processing to speed up run time
+
+-simplify execution (to html and auc sorting)
+
+-review AUC methodology for high cardinal categoricals
+-add data sampling for large datasets when running AUC
