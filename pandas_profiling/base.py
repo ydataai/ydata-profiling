@@ -165,7 +165,7 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
 
         if y is not None:
             try:
-                mdld = mdl_1d(data, y)
+                mdld = mdl_1d_cat(data, y)
                 result += list(mdld)
             except:
                 Tracer()()
