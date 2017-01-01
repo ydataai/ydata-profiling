@@ -63,6 +63,7 @@ def mdl_1d(x, y):
         cm = confusion_matrix(y, (preds > y.mean()).astype(int))
     except ValueError:
         Tracer()()
+
     plot = plot_confusion_matrix(cm, y)
 
     imgdata = BytesIO()
@@ -74,3 +75,57 @@ def mdl_1d(x, y):
     plt.close()
     return aucz, cmatrix
 
+
+
+
+def plot_cat(series,y,title="Categorical Plot"):
+    y2=pd.Series(y)
+    tab = pd.concat([y2.groupby(series).count(),y2.groupby(series).mean()],axis=1)
+    tab.reset_index(inplace=True)
+    tab.columns = ['Value','Count','Mean(y)']
+    fign = plt.figure(figsize=(6, 4))
+    ax1 = fign.add_subplot(111)
+    ax1.bar(tab.index,tab['Count'],.5,color='b',align='center')
+    ax2 = ax1.twinx()
+    ax2.plot(tab.index,tab['Mean(y)'],'-r',linewidth=4)
+    plt.title(title)
+    #ax1.set_xlabel('Value')
+    ax1.set_xticks(tab.index)
+    ax1.set_xticklabels(tab['Value'], rotation=40, ha='right')
+    ax1.set_ylabel('Number of Observations',color='b')
+    ax2.set_ylabel('Mean(y)', color='r')
+    for t1 in ax1.get_yticklabels():
+        t1.set_color('b')  
+    for t2 in ax2.get_yticklabels():
+        t2.set_color('r')  
+    plt.tight_layout()
+    return fign
+
+
+def mdl_1d_cat(x, y):
+    """builds univariate model to calculate AUC"""
+    if x.nunique() > 10 and com.is_numeric_dtype(x):
+        x = sb_cutz(x)
+
+    series = pd.get_dummies(x, dummy_na=True)
+    lr = LogisticRegressionCV(scoring='roc_auc')
+
+    lr.fit(series, y)
+    try:
+        preds = (lr.predict_proba(series)[:, -1])
+        #preds = (preds > preds.mean()).astype(int)
+    except ValueError:
+        print "preds error"
+        Tracer()()
+
+    plot = plot_cat(x, y)
+
+    imgdata = BytesIO()
+    plot.savefig(imgdata)
+    imgdata.seek(0)
+
+    aucz = roc_auc_score(y, preds)
+    cmatrix = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+    plt.close()
+    #print aucz, plot, cmatrix
+    return aucz, cmatrix
