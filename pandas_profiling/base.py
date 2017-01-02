@@ -33,13 +33,14 @@ sns.set_style('dark')
 sns.set_context('notebook')
 
 
-def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
+def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}, to_numeric=1):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
     :param bins: Number of bins in histogram
     :param corr_threshold: Correlation threshold to exclude variables
     :param ft_names: Dict of Column_Name: Feature Definitions
+    :param to_numeric: 1 to convert numbers stored as objects to float
 
     :return: Dictionary containing
         table: general statistics on the DataFrame
@@ -64,6 +65,19 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}):
         matplotlib.style.use("default")
     except:
         pass
+
+
+    #auto parse date columns
+    df = df.apply(lambda col: pd.to_datetime(col, errors='ignore') 
+              if col.dtypes == object 
+              else col, 
+              axis=0)
+
+    #auto parse numeric columns stored as object to float
+    df = df.apply(lambda col: pd.to_numeric(col, errors='ignore') 
+              if col.dtypes == object 
+              else col, 
+              axis=0)
 
     #matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
