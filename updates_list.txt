@@ -4,10 +4,8 @@ categorical columns
 
 numeric columns
 -bubble plots
--update html to toggle each plot separately
 
 date columns
--auto parse for dates
 -timeline view?
 
 -get tight layout working so plots don't look terrible

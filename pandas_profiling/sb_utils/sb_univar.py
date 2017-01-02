@@ -95,7 +95,7 @@ def plot_cat(series,y,title="Categorical Plot",maxn = 10):
     tab.reset_index(inplace=True)
     tab.columns = ['Value','Count','Target']
     tab['Mean(y)'] = tab['Target']/tab['Count']
-    fign = plt.figure(figsize=(6, 4))
+    fign = plt.figure(figsize=(9, 6))
     ax1 = fign.add_subplot(111)
     ax1.bar(tab.index,tab['Count'],.5,color='b',align='center')
     ax2 = ax1.twinx()
@@ -142,7 +142,7 @@ def mdl_1d_cat(x, y):
 
 
 def plot_num(numstats):
-    fign = plt.figure(figsize=(6,4))
+    fign = plt.figure(figsize=(9,6))
     ax1 = fign.add_subplot(111)
     ax1.bar(numstats.index,numstats['Count'],.5,color='b',align='center')
     ax2 = ax1.twinx()

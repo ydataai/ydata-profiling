@@ -508,13 +508,20 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
                         <td>{0[memorysize]}</td></tr>
                  </table>
             </div>
-             <div class="col-sm-8 histogram">
-                 <img src="{0[histogram]}">
-             </div>
-             <div class="col-sm-8 histogram">
+            <div class="col-sm-8 histogram">
+                <img src="{0[histogram]}">
+            </div>
+        </div>
+
+             <div class="col-md-12 text-right">
+                <a role="button" data-toggle="collapse" data-target="#cmatrix{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
+                    Toggle Plot
+                </a>
+            </div>
+
+             <div class="row collapse col-md-12" id="cmatrix{0[varid]}">
                  <img src="{0[cmatrix]}">
              </div>
- </div>
 ''' + _row_footer
 
 row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''
@@ -582,7 +589,7 @@ row_templates_dict['CAT'] = _row_header.format(vartype="Categorical", varname="{
 
         <div class="col-md-12 text-right">
                 <a role="button" data-toggle="collapse" data-target="#cmatrix{0[varid]}" aria-expanded="true" aria-controls="collapseExample">
-                    Toggle Confusion Matrix
+                    Toggle Plot
                 </a>
         </div>
         <div class="row collapse col-md-12" id="cmatrix{0[varid]}">
