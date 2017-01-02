@@ -3,7 +3,7 @@ import numpy as np
 
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.metrics import confusion_matrix, roc_auc_score
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from pandas.core import common as com
 
 try:
@@ -81,19 +81,26 @@ def mdl_1d(x, y):
     return aucz, cmatrix
 
 
-
-def plot_cat(series,y,title="Categorical Plot"):
+def plot_cat(series,y,title="Categorical Plot",maxn = 10):
     y2=pd.Series(y)
     tab = pd.concat([y2.groupby(series).count(),y2.groupby(series).mean()],axis=1)
+    tab.columns = ['Count','Target']
+    tab.sort_values('Count',inplace=True,ascending=False)
+
+    if len(tab)>maxn:
+        short = tab[0:maxn].copy()
+        short.ix['Other'] = tab[maxn:len(tab)].sum()
+        tab = short.copy()
+
     tab.reset_index(inplace=True)
-    tab.columns = ['Value','Count','Mean(y)']
+    tab.columns = ['Value','Count','Target']
+    tab['Mean(y)'] = tab['Target']/tab['Count']
     fign = plt.figure(figsize=(6, 4))
     ax1 = fign.add_subplot(111)
     ax1.bar(tab.index,tab['Count'],.5,color='b',align='center')
     ax2 = ax1.twinx()
     ax2.plot(tab.index,tab['Mean(y)'],'-r',linewidth=4)
     plt.title(title)
-    #ax1.set_xlabel('Value')
     ax1.set_xticks(tab.index)
     ax1.set_xticklabels(tab['Value'], rotation=40, ha='right')
     ax1.set_ylabel('Number of Observations',color='b')
@@ -131,7 +138,6 @@ def mdl_1d_cat(x, y):
     aucz = roc_auc_score(y, preds)
     cmatrix = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
     plt.close()
-    #print aucz, plot, cmatrix
     return aucz, cmatrix
 
 
@@ -151,7 +157,6 @@ def plot_num(numstats):
         t1.set_color('b')  
     for t2 in ax2.get_yticklabels():
         t2.set_color('r')     
-    #plt.close()
     return fign
 
 
@@ -245,22 +250,16 @@ def num_bin_stats(var,target,buckets=10,target_type='binary'):
        #test to see if fewer levels than buckets
     if len(temp['var'].unique())>buckets:        
         granular=1
-        
-        #create group buckets    
         cutpoints['bin'] = num_bucket_assign(temp,'var',buckets)
         
     else:        
         granular=0
-        
-        #create group buckets
         cutpoints['bin'] = list(temp['var'].unique())
         cutpoints['bin'].loc[cutpoints['bin'].isnull()]='MISS'
         cutpoints.sort_values(by='bin',inplace=True)
         cutpoints.reset_index(drop=True,inplace=True)
 
     for i in range(0,len(cutpoints)):
-        
-        #create series of values within bucket of interest
         if cutpoints['bin'][i]=='MISS':
             temp2 = temp.loc[temp['var'].isnull()]
         elif cutpoints['bin'][i]=='ZERO':
@@ -271,7 +270,6 @@ def num_bin_stats(var,target,buckets=10,target_type='binary'):
             else:
                 temp2 = temp.loc[temp['var']==cutpoints['bin'][i]]
         
-        #calculate key stats
         cutpoints['Count'].iloc[i] = len(temp2)
         cutpoints['Mean'].iloc[i] = np.mean(temp2['var'].apply(lambda x: float(x)))
         cutpoints['Miss_Target'].iloc[i] = sum(pd.isnull(temp2['target']))

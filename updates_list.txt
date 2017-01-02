@@ -1,7 +1,6 @@
 updates list
 
 categorical columns
--fix for columns with too many values, don't plot or plot top categories
 
 numeric columns
 -bubble plots
