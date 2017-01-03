@@ -66,18 +66,17 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}, to_numeric=1)
     except:
         pass
 
+    # auto parse date columns
+    df = df.apply(lambda col: pd.to_datetime(col, errors='ignore')
+                  if col.dtypes == object
+                  else col,
+                  axis=0)
 
-    #auto parse date columns
-    df = df.apply(lambda col: pd.to_datetime(col, errors='ignore') 
-              if col.dtypes == object 
-              else col, 
-              axis=0)
-
-    #auto parse numeric columns stored as object to float
-    df = df.apply(lambda col: pd.to_numeric(col, errors='ignore') 
-              if col.dtypes == object 
-              else col, 
-              axis=0)
+    # auto parse numeric columns stored as object to float
+    df = df.apply(lambda col: pd.to_numeric(col, errors='ignore')
+                  if col.dtypes == object
+                  else col,
+                  axis=0)
 
     #matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
