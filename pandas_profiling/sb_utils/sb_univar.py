@@ -236,13 +236,10 @@ def num_bin_stats(var, target, buckets=10, target_type='binary'):
     else:
         granular = 0
         cutpoints['bin'] = list(temp['var'].unique())
-        null_ixs = cutpoints['bin'].isnull()
-        tmp_min = cutpoints.bin.min()
-        cutpoints.ix[null_ixs, 'bin'] = np.minimum(-999, tmp_min)
+        cutpoints['bin'].loc[cutpoints['bin'].isnull()] = -9999
         try:
             cutpoints.sort_values(by='bin', inplace=True)
             cutpoints.reset_index(drop=True, inplace=True)
-            cutpoints.ix[null_ixs, 'bin'] = 'MISS'
         except Exception as e:
             print(e)
             Tracer()()
