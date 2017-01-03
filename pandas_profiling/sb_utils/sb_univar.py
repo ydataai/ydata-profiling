@@ -236,7 +236,8 @@ def num_bin_stats(var, target, buckets=10, target_type='binary'):
     else:
         granular = 0
         cutpoints['bin'] = list(temp['var'].unique())
-        cutpoints['bin'].loc[cutpoints['bin'].isnull()] = -9999
+        tmp_min = cutpoints.ix[~cutpoints.bin.isnull(), 'bin'].min()
+        cutpoints['bin'].loc[cutpoints['bin'].isnull()] = np.minimum(-9999, tmp_min - 1000)
         try:
             cutpoints.sort_values(by='bin', inplace=True)
             cutpoints.reset_index(drop=True, inplace=True)
