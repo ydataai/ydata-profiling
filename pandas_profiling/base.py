@@ -128,9 +128,11 @@ def describe(df, y=None, bins=10, corr_threshold=0.9, ft_names={}, to_numeric=1)
             mdld = mdl_1d(series, y)
             stats['AUC'] = mdld[0]
             stats['cmatrix'] = mdld[1]
+            stats['bplot'] = mdld[2]
         else:
             stats['AUC'] = 'No Dep Var'
             stats['cmatrix'] = ''
+            stats['bplot'] = ''
 
         return pd.Series(stats, name=series_name)
 

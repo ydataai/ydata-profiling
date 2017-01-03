@@ -522,6 +522,16 @@ row_templates_dict['NUM'] = _row_header.format(vartype="Numeric", varname="{0[va
              <div class="row collapse col-md-12" id="cmatrix{0[varid]}">
                  <img src="{0[cmatrix]}">
              </div>
+
+             <div class="col-md-12 text-right">
+                <a role="button" data-toggle="collapse" data-target="#bplot{0[varid]}" aria-expanded="false" aria-controls="collapseExample">
+                    Toggle Bubble Plot
+                </a>
+            </div>
+
+             <div class="row collapse col-md-12" id="bplot{0[varid]}">
+                 <img src="{0[bplot]}">
+             </div>
 ''' + _row_footer
 
 row_templates_dict['DATE'] = _row_header.format(vartype="Date", varname="{0[varname]}", ft_dfn="{0[ft_dfn]}") + u'''

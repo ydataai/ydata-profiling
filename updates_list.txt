@@ -1,12 +1,6 @@
 updates list
 
-categorical columns
-
-numeric columns
--bubble plots
-
-date columns
--timeline view?
+-find a useful plot for date variables, maybe a timeline view?
 
 -get tight layout working so plots don't look terrible
 
@@ -15,5 +9,6 @@ date columns
 -simplify execution (to html and auc sorting)
 
 -review AUC methodology for high cardinal categoricals
+-try different methods for sorting ... maybe a penalized metric like AIC/BIC
 
 -add data sampling for large datasets when running AUC

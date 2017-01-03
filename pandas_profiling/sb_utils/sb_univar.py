@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 from sklearn.linear_model import LogisticRegressionCV
+from sklearn.linear_model import LassoLarsIC
 from sklearn.metrics import confusion_matrix, roc_auc_score
 from sklearn.model_selection import train_test_split
 from pandas.core import common as com
@@ -47,6 +48,7 @@ def plot_confusion_matrix(cm, y, title='Univariate Confusion Matrix', cmap=plt.c
 def mdl_1d(x, y):
     """builds univariate model to calculate AUC"""
     lr = LogisticRegressionCV(scoring='roc_auc')
+    lars = LassoLarsIC(criterion='aic')
 
     if x.nunique() > 10 and com.is_numeric_dtype(x):
         x2 = sb_cutz(x)
@@ -55,6 +57,7 @@ def mdl_1d(x, y):
         series = pd.get_dummies(x, dummy_na=True)
 
     lr.fit(series, y)
+    lars.fit(series, y)
 
     try:
         preds = (lr.predict_proba(series)[:, -1])
@@ -67,78 +70,27 @@ def mdl_1d(x, y):
     #except ValueError:
     #    Tracer()()
 
+    aucz = roc_auc_score(y, preds)
+
     ns = num_bin_stats(x,y)
+
     nplot = plot_num(ns)
     #plot = plot_confusion_matrix(cm, y)
 
     imgdata = BytesIO()
     nplot.savefig(imgdata)
     imgdata.seek(0)
-
-    aucz = roc_auc_score(y, preds)
-    cmatrix = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+    nplot = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
     plt.close()
-    return aucz, cmatrix
 
-
-def plot_cat(series,y,title="Categorical Plot",maxn = 10):
-    y2=pd.Series(y)
-    tab = pd.concat([y2.groupby(series).count(),y2.groupby(series).mean()],axis=1)
-    tab.columns = ['Count','Target']
-    tab.sort_values('Count',inplace=True,ascending=False)
-
-    if len(tab)>maxn:
-        short = tab[0:maxn].copy()
-        short.ix['Other'] = tab[maxn:len(tab)].sum()
-        tab = short.copy()
-
-    tab.reset_index(inplace=True)
-    tab.columns = ['Value','Count','Target']
-    tab['Mean(y)'] = tab['Target']/tab['Count']
-    fign = plt.figure(figsize=(9, 6))
-    ax1 = fign.add_subplot(111)
-    ax1.bar(tab.index,tab['Count'],.5,color='b',align='center')
-    ax2 = ax1.twinx()
-    ax2.plot(tab.index,tab['Mean(y)'],'-r',linewidth=4)
-    plt.title(title)
-    ax1.set_xticks(tab.index)
-    ax1.set_xticklabels(tab['Value'], rotation=40, ha='right')
-    ax1.set_ylabel('Number of Observations',color='b')
-    ax2.set_ylabel('Mean(y)', color='r')
-    for t1 in ax1.get_yticklabels():
-        t1.set_color('b')  
-    for t2 in ax2.get_yticklabels():
-        t2.set_color('r')  
-    #plt.tight_layout()
-    return fign
-
-
-def mdl_1d_cat(x, y):
-    """builds univariate model to calculate AUC"""
-    if x.nunique() > 10 and com.is_numeric_dtype(x):
-        x = sb_cutz(x)
-
-    series = pd.get_dummies(x, dummy_na=True)
-    lr = LogisticRegressionCV(scoring='roc_auc')
-
-    lr.fit(series, y)
-
-    try:
-        preds = (lr.predict_proba(series)[:, -1])
-        #preds = (preds > preds.mean()).astype(int)
-    except ValueError:
-        Tracer()()
-
-    plot = plot_cat(x, y)
-
-    imgdata = BytesIO()
-    plot.savefig(imgdata)
-    imgdata.seek(0)
-
-    aucz = roc_auc_score(y, preds)
-    cmatrix = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+    bplot = plot_bubble(ns)
+    imgdatab = BytesIO()
+    bplot.savefig(imgdatab)
+    imgdatab.seek(0)
+    bplot = 'data:image/png;base64,' + quote(base64.b64encode(imgdatab.getvalue()))
     plt.close()
-    return aucz, cmatrix
+
+    return aucz, nplot, bplot
 
 
 def plot_num(numstats):
@@ -158,6 +110,20 @@ def plot_num(numstats):
     for t2 in ax2.get_yticklabels():
         t2.set_color('r')     
     return fign
+
+
+def plot_bubble(numstats):
+    bubbles = numstats.loc[((numstats['bin'].apply(lambda x: str(x))!='MISS')&(numstats['bin'].apply(lambda x: str(x))!='ZERO'))].copy()
+    bubbles['bubsize']=bubbles['Count'].apply(lambda x: int((x/np.mean(bubbles['Count']))*200))
+    figb = plt.figure(figsize=(9,6))
+    plt.scatter(x=bubbles['Mean'],y=bubbles['Target_Rate'],s=bubbles['bubsize'],c='b',label='Pop Size')
+    plt.hold(True)
+    plt.plot(bubbles['Mean'],bubbles['Target_Rate'],'-r',linewidth=4,label='Target Rate')
+    plt.title("Relational Bubble Plot")
+    plt.xlabel('Mean Variable')
+    plt.ylabel('Target Rate',color='r')
+    plt.legend()
+    return figb
 
 
 def num_bucket_assign(data,var,bins):
@@ -282,3 +248,64 @@ def num_bin_stats(var,target,buckets=10,target_type='binary'):
             cutpoints['Mean_Target'].iloc[i] = np.mean(temp2['target'])
     
     return cutpoints
+
+
+
+def plot_cat(series,y,title="Categorical Plot",maxn = 10):
+    y2=pd.Series(y)
+    tab = pd.concat([y2.groupby(series).count(),y2.groupby(series).mean()],axis=1)
+    tab.columns = ['Count','Target']
+    tab.sort_values('Count',inplace=True,ascending=False)
+
+    if len(tab)>maxn:
+        short = tab[0:maxn].copy()
+        short.ix['Other'] = tab[maxn:len(tab)].sum()
+        tab = short.copy()
+
+    tab.reset_index(inplace=True)
+    tab.columns = ['Value','Count','Target']
+    tab['Mean(y)'] = tab['Target']/tab['Count']
+    fign = plt.figure(figsize=(9, 6))
+    ax1 = fign.add_subplot(111)
+    ax1.bar(tab.index,tab['Count'],.5,color='b',align='center')
+    ax2 = ax1.twinx()
+    ax2.plot(tab.index,tab['Mean(y)'],'-r',linewidth=4)
+    plt.title(title)
+    ax1.set_xticks(tab.index)
+    ax1.set_xticklabels(tab['Value'], rotation=40, ha='right')
+    ax1.set_ylabel('Number of Observations',color='b')
+    ax2.set_ylabel('Mean(y)', color='r')
+    for t1 in ax1.get_yticklabels():
+        t1.set_color('b')  
+    for t2 in ax2.get_yticklabels():
+        t2.set_color('r')  
+    #plt.tight_layout()
+    return fign
+
+
+def mdl_1d_cat(x, y):
+    """builds univariate model to calculate AUC"""
+    if x.nunique() > 10 and com.is_numeric_dtype(x):
+        x = sb_cutz(x)
+
+    series = pd.get_dummies(x, dummy_na=True)
+    lr = LogisticRegressionCV(scoring='roc_auc')
+
+    lr.fit(series, y)
+
+    try:
+        preds = (lr.predict_proba(series)[:, -1])
+        #preds = (preds > preds.mean()).astype(int)
+    except ValueError:
+        Tracer()()
+
+    plot = plot_cat(x, y)
+
+    imgdata = BytesIO()
+    plot.savefig(imgdata)
+    imgdata.seek(0)
+
+    aucz = roc_auc_score(y, preds)
+    cmatrix = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+    plt.close()
+    return aucz, cmatrix
