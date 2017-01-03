@@ -246,7 +246,7 @@ def num_bin_stats(var, target, buckets=10, target_type='binary'):
             Tracer()()
 
     for i in range(0, len(cutpoints)):
-        if cutpoints['bin'][i] == 'MISS':
+        if cutpoints['bin'][i] <= tmp_min:
             temp2 = temp.loc[temp['var'].isnull()]
         elif cutpoints['bin'][i] == 'ZERO':
             temp2 = temp.loc[temp['var'] == 0]
