@@ -17,8 +17,8 @@ try:
     dft.setUp()
     dft.df['yy'] = np.random.randint(2, size=dft.df.shape[0])
 
-    stupid_temp = '/var/folders/0z/p07mwyl56bs98_jv_2ddby2c0000gn/T/tmpz1b175bv/lol.html'
-    stupid_temp2 = '/var/folders/0z/p07mwyl56bs98_jv_2ddby2c0000gn/T/tmpz1b175bv/lol2.html'
+    stupid_temp = '/tmp/lol.html'
+    stupid_temp2 = '/tmp/lol2.html'
 
     # run once with all the extras
     profz = ppf.ProfileReport(dft.df, y='yy', corr_threshold=69, ft_names={'x': 'Yeezusss'})
@@ -32,5 +32,6 @@ try:
     print('=' * 50)
     print(stupid_temp)
     print(stupid_temp2)
-except:
+except Exception as e:
+    print(e)
     pdb.set_trace()
