@@ -12,3 +12,5 @@ updates list
 -try different methods for sorting ... maybe a penalized metric like AIC/BIC
 
 -add data sampling for large datasets when running AUC
+
+-plotting for 'miss' for categoricals
