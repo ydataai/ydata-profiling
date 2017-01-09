@@ -135,7 +135,7 @@ def plot_bubble(numstats):
 def num_bucket_assign(data, var, bins):
 
     # find all unique values (Non-Missing) and sort in ascending sequence
-    temp = data[[var]].loc[data[var].notnull()]
+    temp = data[[var]].loc[data[var].notnull()].copy()
 
     try:
         temp['qcut_bins'] = pd.qcut(temp[var], 10)
@@ -236,17 +236,10 @@ def num_bin_stats(var, target, buckets=10, target_type='binary'):
     else:
         granular = 0
         cutpoints['bin'] = list(temp['var'].unique())
-        tmp_min = cutpoints.ix[~cutpoints.bin.isnull(), 'bin'].min()
-        cutpoints['bin'].loc[cutpoints['bin'].isnull()] = np.minimum(-9999, tmp_min - 1000)
-        try:
-            cutpoints.sort_values(by='bin', inplace=True)
-            cutpoints.reset_index(drop=True, inplace=True)
-        except Exception as e:
-            print(e)
-            Tracer()()
+        cutpoints['bin'].loc[cutpoints['bin'].isnull()] = 'MISS'
 
     for i in range(0, len(cutpoints)):
-        if cutpoints['bin'][i] <= tmp_min:
+        if cutpoints['bin'][i] == 'MISS':
             temp2 = temp.loc[temp['var'].isnull()]
         elif cutpoints['bin'][i] == 'ZERO':
             temp2 = temp.loc[temp['var'] == 0]
@@ -258,8 +251,7 @@ def num_bin_stats(var, target, buckets=10, target_type='binary'):
                 temp2 = temp.loc[temp['var'] == cutpoints['bin'][i]]
 
         cutpoints['Count'].iloc[i] = len(temp2)
-        cutpoints['Mean'].iloc[i] = np.mean(
-            temp2['var'].apply(lambda x: float(x)))
+        cutpoints['Mean'].iloc[i] = np.mean(temp2['var'].apply(lambda x: float(x)))
         cutpoints['Miss_Target'].iloc[i] = sum(pd.isnull(temp2['target']))
 
         if target_type == 'binary':
@@ -270,7 +262,12 @@ def num_bin_stats(var, target, buckets=10, target_type='binary'):
         if target_type == 'continuous':
             cutpoints['Mean_Target'].iloc[i] = np.mean(temp2['target'])
 
-    return cutpoints
+    cutpoints['sort'] = cutpoints['Mean']
+    cutpoints['sort'].loc[cutpoints['bin'].astype(str)=='MISS'] = min(cutpoints['Mean']-2)
+    cutpoints['sort'].loc[cutpoints['bin'].astype(str)=='ZERO'] = min(cutpoints['Mean']-1)
+    cutpoints.sort_values('sort',inplace=True)
+
+    return cutpoints.drop('sort',axis=1).reset_index(drop=True)
 
 
 def plot_cat(series, y, title="Categorical Plot", maxn=10):
