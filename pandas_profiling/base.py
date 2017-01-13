@@ -363,7 +363,21 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
         imgdata.seek(0)
         result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
         plt.close(plot.figure)
-        return result_string
+        return result_string'
+
+    def scatter_function(seriesA, statsA, seriesB, statsB):
+	#function for making a 2D scatter plot. returns a list of tuples
+	maxA = seriesA.max()
+	minA = seriesA.min()
+	maxB = seriesB.max()
+	minB = seriesB.min()
+	scatterDict = {'maxA': maxA , 'minA': minA ,'maxB': maxB ,'minB': minB,'tupleList':[]}
+	if (statsA['type'] == "NUM" and statsB['type'] == "NUM"):
+		seriesSize = seriesA.size()
+		for i in range(0, seriesSize):
+			if ((pd.isnull(seriesA[i]) == False) and (pd.isnull(seriesB[i]) == False)):
+				scatterDict['tupleList'].append((seriesA[i],seriesB[i]))
+	return scatterDict
 
     def describe_date_1d(series, base_stats):
         stats = {'min': series.min(), 'max': series.max()}
