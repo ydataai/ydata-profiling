@@ -28,6 +28,7 @@ import six
 import types
 import multiprocessing
 from functools import partial
+from distutils.version import LooseVersion
 
 
 def pretty_name(x):
@@ -130,7 +131,12 @@ def mini_histogram(series, **kwargs):
     imgdata = BytesIO()
     plot = _plot_histogram(series, figsize=(2, 0.75), **kwargs)
     plot.axes.get_yaxis().set_visible(False)
-    plot.set_axis_bgcolor("w")
+
+    if LooseVersion(matplotlib.__version__) <= '1.5.9':
+        plot.set_axis_bgcolor("w")
+    else:
+        plot.set_facecolor("w")
+
     xticks = plot.xaxis.get_major_ticks()
     for tick in xticks[1:-1]:
         tick.set_visible(False)
@@ -351,7 +357,12 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
         imgdata = BytesIO()
         plot = _plot_histogram(series, figsize=(2, 0.75))
         plot.axes.get_yaxis().set_visible(False)
-        plot.set_axis_bgcolor("w")
+
+        if LooseVersion(matplotlib.__version__) <= '1.5.9':
+            plot.set_axis_bgcolor("w")
+        else:
+            plot.set_facecolor("w")
+
         xticks = plot.xaxis.get_major_ticks()
         for tick in xticks[1:-1]:
             tick.set_visible(False)
