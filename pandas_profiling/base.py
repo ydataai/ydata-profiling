@@ -307,7 +307,7 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
 
         confusion_matrix=pd.crosstab(data1,data2)
         if confusion_matrix.values.diagonal().sum() == len(df):
-            ldesc[name1] = pd.Series(['RECODED', name2, corr], index=['type', 'correlation_var', 'correlation'])
+            ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
 
     # Convert ldesc to a DataFrame
     names = []
