@@ -2,6 +2,8 @@ from __future__ import division
 
 import sys
 
+import itertools
+
 try:
     from StringIO import BytesIO
 except ImportError:
@@ -34,6 +36,21 @@ def pretty_name(x):
         return '%.0f%%' % x
     else:
         return '%.1f%%' % x
+
+
+def get_vartype(data):
+    distinct_count=data.nunique(dropna=False)
+    leng=len(data)
+    if distinct_count <=1:
+        return 'CONST'
+    elif pd.api.types.is_numeric_dtype(data):
+        return 'NUM'
+    elif pd.api.types.is_datetime64_dtype(data):
+        return 'DATE'
+    elif distinct_count==leng:
+        return 'UNIQUE'
+    else:
+        return 'CAT'
 
 
 def describe_numeric_1d(series, **kwargs):
@@ -74,7 +91,7 @@ def _plot_histogram(series, bins=10, figsize=(6, 4), facecolor='#337ab7'):
     -------
     matplotlib.AxesSubplot, The plot.
     """
-    if pd.api.types.is_datetime64_dtype(series):
+    if get_vartype(series) == 'DATE':
         # TODO: These calls should be merged
         fig = plt.figure(figsize=figsize)
         plot = fig.add_subplot(111)
@@ -164,7 +181,7 @@ def describe_categorical_1d(data):
     names = []
     result = []
 
-    if data.dtype == object or pd.api.types.is_categorical_dtype(data.dtype):
+    if get_vartype(data) == 'CAT':
         names += ['top', 'freq', 'type']
         result += [top, freq, 'CAT']
 
@@ -212,13 +229,14 @@ def describe_1d(data, **kwargs):
 
     result = pd.Series(results_data, name=data.name)
 
-    if distinct_count <= 1:
+    vartype = get_vartype(data)
+    if vartype == 'CONST':
         result = result.append(describe_constant_1d(data))
-    elif pd.api.types.is_numeric_dtype(data):
+    elif vartype == 'NUM':
         result = result.append(describe_numeric_1d(data, **kwargs))
-    elif pd.api.types.is_datetime64_dtype(data):
+    elif vartype == 'DATE':
         result = result.append(describe_date_1d(data, **kwargs))
-    elif distinct_count == leng:
+    elif vartype == 'UNIQUE':
         result = result.append(describe_unique_1d(data, **kwargs))
     else:
         result = result.append(describe_categorical_1d(data))
@@ -280,7 +298,16 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
             if x == y: break
 
             if corr > 0.9:
-                ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'], name=x)
+                ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'])
+
+    categorical_variables = [(name, data) for (name, data) in df.iteritems() if get_vartype(data)=='CAT']
+    for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
+        if correlation_overrides and name1 in correlation_overrides:
+            continue
+
+        confusion_matrix=pd.crosstab(data1,data2)
+        if confusion_matrix.values.diagonal().sum() == len(df):
+            ldesc[name1] = pd.Series(['RECODED', name2, corr], index=['type', 'correlation_var', 'correlation'])
 
     # Convert ldesc to a DataFrame
     names = []
@@ -301,9 +328,9 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
     table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
 
-    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR")})
+    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
-    table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR']
+    table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
 
@@ -444,7 +471,7 @@ def to_html(sample, stats_object):
             formatted_values['firstn'] = pd.DataFrame(obs[0:3], columns=["First 3 values"]).to_html(classes="example_values", index=False)
             formatted_values['lastn'] = pd.DataFrame(obs[-3:], columns=["Last 3 values"]).to_html(classes="example_values", index=False)
 
-        if row['type'] in {'CORR', 'CONST'}:
+        if row['type'] in {'CORR', 'CONST', 'RECODED'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)
             messages.append(templates.messages[row['type']].format(formatted_values))
         else:

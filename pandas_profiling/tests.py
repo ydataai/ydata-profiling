@@ -148,5 +148,24 @@ class DataFrameTest(unittest.TestCase):
 
         self.assertLess(200,os.path.getsize(filename))
 
+
+class CategoricalDataTest(unittest.TestCase):
+
+    def test_recoding_reject(self):
+        self.data = {
+             'x': ['chien', 'chien', 'chien', 'chien', 'chat','chat','chameaux', 'chameaux'],
+             'y': ['dog', 'dog', 'dog', 'dog', 'cat','cat','camel','camel'],
+           }
+        self.df = pd.DataFrame(self.data)
+        self.results = describe(self.df)
+
+        self.assertEqual(self.results['variables'].loc['x']['type'], 'RECODED')
+        self.assertEqual(self.results['variables'].loc['x']['correlation_var'], 'y')
+
+        expected_results = {'total_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1, 'n': 8, 'RECODED': 1, 'CORR': 0, 'DATE': 0, 'NUM': 0, 'CAT': 1, 'n_duplicates': 5}
+        for key in expected_results:
+            self.assertEqual(self.results['table'][key], expected_results[key])
+
+
 if __name__ == '__main__':
     unittest.main()

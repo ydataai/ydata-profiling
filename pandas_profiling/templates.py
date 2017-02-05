@@ -17,6 +17,7 @@ templates = {'freq_table_row': 'freq_table_row.html',
              'row_date': 'row_date.html',
              'row_cat': 'row_cat.html',
              'row_corr': 'row_corr.html',
+             'row_recoded': 'row_recoded.html',
              'row_const': 'row_const.html',
              'row_unique': 'row_unique.html',
              'overview': 'overview.html',
@@ -31,7 +32,8 @@ var_type = {'NUM': 'Numeric',
             'CAT': 'Categorical',
             'UNIQUE': 'Categorical, Unique',
             'CONST': 'Constant',
-            'CORR': 'Highly correlated'
+            'CORR': 'Highly correlated',
+            'RECODED': 'Recoded'
             }
 
 
@@ -61,12 +63,14 @@ row_templates_dict = {'NUM': template('row_num'),
                       'CAT': template('row_cat'),
                       'UNIQUE': template('row_unique'),
                       'CONST': template('row_const'),
-                      'CORR': template('row_corr')
+                      'CORR': template('row_corr'),
+                      'RECODED': template('row_recoded')
                       }
 
 messages = dict()
 messages['CONST'] = u'{0[varname]} has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
 messages['CORR'] = u'{0[varname]} is highly correlated with {0[correlation_var]} (ρ = {0[correlation]}) <span class="label label-primary">Rejected</span>'
+messages['RECODED'] = u'{0[varname]} is a recoding of {0[correlation_var]} <span class="label label-primary">Rejected</span>'
 messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
 messages['n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
 messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})'
