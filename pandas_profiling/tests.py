@@ -166,6 +166,11 @@ class CategoricalDataTest(unittest.TestCase):
         for key in expected_results:
             self.assertEqual(self.results['table'][key], expected_results[key])
 
+        # Rerun without checking for correlation
+        self.results2 = describe(self.df, check_correlation=False)
+        self.assertIsNone(self.results2['variables'].loc['x'].get('correlation_var'))
+        self.assertEqual(self.results2['table']['REJECTED'], 0)
+
 
 if __name__ == '__main__':
     unittest.main()
