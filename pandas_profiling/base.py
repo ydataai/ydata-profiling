@@ -247,11 +247,12 @@ def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
 
-def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, bins=10, check_correlation=True, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
     :param bins: Number of bins in histogram
+    :param check_correlation: Flag, set to False to skip correlation checks.
     :param correlation_overrides: Variable names not to be rejected because they are correlated
     :param pool_size: Number of workers in thread pool
     :return: Dictionary containing
@@ -284,30 +285,31 @@ def describe(df, bins=10, correlation_overrides=None, pool_size=multiprocessing.
     ldesc = {col: s for col, s in pool.map(local_multiprocess_func, df.iteritems())}
     pool.close()
 
-    # Check correlations between variables
-    ''' TODO: corr(x,y) > 0.9 and corr(y,z) > 0.9 does not imply corr(x,z) > 0.9
-    If x~y and y~z but not x~z, it would be better to delete only y
-    Better way would be to find out which variable causes the highest increase in multicollinearity.
-    '''
-    corr = df.corr()
-    for x, corr_x in corr.iterrows():
-        if correlation_overrides and x in correlation_overrides:
-            continue
+    # Check correlations between variable
+    if check_correlation is True:
+        ''' TODO: corr(x,y) > 0.9 and corr(y,z) > 0.9 does not imply corr(x,z) > 0.9
+        If x~y and y~z but not x~z, it would be better to delete only y
+        Better way would be to find out which variable causes the highest increase in multicollinearity.
+        '''
+        corr = df.corr()
+        for x, corr_x in corr.iterrows():
+            if correlation_overrides and x in correlation_overrides:
+                continue
 
-        for y, corr in corr_x.iteritems():
-            if x == y: break
+            for y, corr in corr_x.iteritems():
+                if x == y: break
 
-            if corr > 0.9:
-                ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'])
+                if corr > 0.9:
+                    ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'])
 
-    categorical_variables = [(name, data) for (name, data) in df.iteritems() if get_vartype(data)=='CAT']
-    for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
-        if correlation_overrides and name1 in correlation_overrides:
-            continue
+        categorical_variables = [(name, data) for (name, data) in df.iteritems() if get_vartype(data)=='CAT']
+        for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
+            if correlation_overrides and name1 in correlation_overrides:
+                continue
 
-        confusion_matrix=pd.crosstab(data1,data2)
-        if confusion_matrix.values.diagonal().sum() == len(df):
-            ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
+            confusion_matrix=pd.crosstab(data1,data2)
+            if confusion_matrix.values.diagonal().sum() == len(df):
+                ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
 
     # Convert ldesc to a DataFrame
     names = []
