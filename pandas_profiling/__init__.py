@@ -45,7 +45,11 @@ class ProfileReport(object):
             with codecs.open(outputfile, 'w+b', encoding='utf8') as self.file:
                 self.file.write(templates.template('wrapper').render(content=self.html))
 
-
+    def to_html(self):
+        """ return complete template as lengthy string
+            for using with frameworks
+        """
+        return templates.template('wrapper').render(content=self.html)
 
     def _repr_html_(self):
         return self.html
