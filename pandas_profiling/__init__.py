@@ -5,7 +5,6 @@ from .base import describe, to_html
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
 
-
 class ProfileReport(object):
     html = ''
     file = None
@@ -56,3 +55,10 @@ class ProfileReport(object):
 
     def __str__(self):
         return "Output written to file " + str(self.file.name)
+
+
+
+
+
+
+

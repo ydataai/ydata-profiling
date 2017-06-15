@@ -122,7 +122,7 @@ def histogram(series, **kwargs):
     imgdata = BytesIO()
     plot = _plot_histogram(series, **kwargs)
     plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
-    plot.figure.savefig(imgdata)
+    plot.figure.savefig(imgdata, bbox_inches="tight")
     imgdata.seek(0)
     result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
     # TODO Think about writing this to disk instead of caching them in strings
@@ -158,12 +158,57 @@ def mini_histogram(series, **kwargs):
     for tick in (xticks[0], xticks[-1]):
         tick.label.set_fontsize(8)
     plot.figure.subplots_adjust(left=0.15, right=0.85, top=1, bottom=0.35, wspace=0, hspace=0)
-    plot.figure.savefig(imgdata)
+    plot.figure.savefig(imgdata, bbox_inches="tight")
     imgdata.seek(0)
     result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
     plt.close(plot.figure)
     return result_string
 
+def plot_response(df,col,bootstrap_confidence=False,target_col="target"):
+    """Plot a response curve of a binary target variable."""
+    fig = plt.figure()
+    ax1 = fig.add_axes([.2,.2,.7,.7])
+    g = df.groupby(col)
+    if bootstrap_confidence:
+        ix = g.size().index
+        # print(ix)
+        n = 100
+        results = np.zeros((int(df[col].max()),n))
+        for i in range(n):
+            # h = df.ix[np.random.choice(df.index,int(df.shape[0]*.95),replace=False)].groupby("age_in_two_year_increments__1st_individual_ordinal")
+            h = df.sample(frac=.95).groupby(col)
+            x = h[target_col].aggregate(np.sum)/h.size()
+            # print(n)
+            # print(np.array(x.index,dtype=int)-1)
+            results[np.array(x.index,dtype=int)-1,i] = x.values
+        ax1.fill_between(np.arange(results.shape[0])+1,
+                         results.mean(axis=1)-3*results.std(axis=1),
+                         results.mean(axis=1)+3*results.std(axis=1),
+                        alpha=.5)
+    # ax1.plot(np.arange(results.shape[0])+17,
+    #          results.mean(axis=1))
+    ax1.plot(g.size().index,g["target"].aggregate(np.sum)/g.size(),'-')
+    # if bootstrap_confidence:
+    #     ax1.set_ylim([0,(results.mean(axis=1)+3*results.std(axis=1)).max()])
+    # else:
+    #     ax1.set_ylim([0,results.mean(axis=1).max()])
+    plt.ylabel("Fraction of target")
+    ax2 = ax1.twinx()
+    ax2.fill_between(g.size().index,g.size(),color=".5",
+                     alpha=.2,
+                    label="Num records (max {})".format(g.size().max()))
+    ax2.set_ylim([0,g.size().max()*3])
+    # ax2.set_yticks([0,g.size().max()])
+    ax2.set_yticks([])
+    # plt.ylabel("Num records (max {})".format(g.size().max()))
+    plt.xlabel("Age")
+    plt.legend(loc="best")
+    imgdata = BytesIO()
+    plt.savefig(imgdata, bbox_inches="tight")
+    imgdata.seek(0)
+    result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+    plt.close(fig)
+    return result_string    
 
 def describe_date_1d(series):
     stats = {'min': series.min(), 'max': series.max()}
@@ -242,12 +287,11 @@ def describe_1d(data, **kwargs):
         result = result.append(describe_categorical_1d(data))
     return result
 
-
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
 
-def describe(df, bins=10, check_correlation=True, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, bins=10, check_correlation=True, compute_responses = True, bootstrap_response_error = False, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
     """
     Generates a object containing summary statistics for a given DataFrame
     :param df: DataFrame to be analyzed
@@ -334,7 +378,19 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
-    return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
+    if compute_responses:
+        responses = {k: plot_response(df,k,bootstrap_confidence=bootstrap_response_error) for k in df.columns}
+        # if k not in table_stats['REJECTED']
+        # do it for every variables
+        # for k in df.columns:
+        #     ldesc["response"] = plot_response(df,k)
+    else:
+        responses = {}
+
+    return {'table': table_stats,
+            'variables': variable_stats.T,
+            'freq': {k: df[k].value_counts() for k in df.columns},
+            'responses': responses}
 
 
 def to_html(sample, stats_object):
@@ -361,7 +417,7 @@ def to_html(sample, stats_object):
     if not isinstance(stats_object, dict):
         raise TypeError("stats_object must be of type dict. Did you generate this using the pandas_profiling.describe() function?")
 
-    if set(stats_object.keys()) != {'table', 'variables', 'freq'}:
+    if set(stats_object.keys()) != {'table', 'variables', 'freq', 'responses'}:
         raise TypeError("stats_object badly formatted. Did you generate this using the pandas_profiling-eda.describe() function?")
 
     def fmt(value, name):
@@ -445,10 +501,12 @@ def to_html(sample, stats_object):
     messages = []
 
     for idx, row in stats_object['variables'].iterrows():
-
         formatted_values = {'varname': idx, 'varid': hash(idx)}
         row_classes = {}
-
+        if idx in stats_object['responses']:
+            formatted_values['response'] = stats_object['responses'][idx]
+        else:
+            formatted_values['response'] = ''
         for col, value in six.iteritems(row):
             formatted_values[col] = fmt(value, col)
 
