@@ -164,6 +164,29 @@ def mini_histogram(series, **kwargs):
     plt.close(plot.figure)
     return result_string
 
+def correlationMatrix(corrdf, **kwargs):
+    """Plot image of a matrix correlation.
+
+    Parameters
+    ----------
+    corrdf: DataFrame, default None
+        The matrix correlation to plot.
+
+    Returns
+    -------
+    str, The resulting image encoded as a string.
+    """
+    imgdata = BytesIO()
+    fig = plt.figure(figsize=(6,4))
+    plot = fig.add_subplot(111)
+    plot = plt.imshow(corrdf, interpolation='nearest')
+    plot.colorbar()
+    plot.figure.savefig(imgdata)
+    imgdata.seek(0)
+    result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
+    plt.close(plot.figure)
+    return result_string
+
 
 def describe_date_1d(series):
     stats = {'min': series.min(), 'max': series.max()}
@@ -278,6 +301,13 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     if not pd.Index(np.arange(0, len(df))).equals(df.index):
         # Treat index as any other column
         df = df.reset_index()
+        
+    ### tranform numerical column names to string
+    lstTypes = set([type(c) for c in df.columns])
+    if ( len( lstTypes )>1 ) | ( int in lstTypes ) :
+        lstCols = [str(c) for c in df.columns]
+        df.columns = lstCols
+
 
     # Describe all variables in a univariate way
     pool = multiprocessing.Pool(pool_size)
@@ -291,6 +321,11 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
         If x~y and y~z but not x~z, it would be better to delete only y
         Better way would be to find out which variable causes the highest increase in multicollinearity.
         '''
+        
+        ### Add pearson and spearman correlation matrices
+        dfcorrPear = df.corr(method="pearson")
+        dfcorrSpear = df.corr(method="spearman")
+        
         corr = df.corr()
         for x, corr_x in corr.iterrows():
             if correlation_overrides and x in correlation_overrides:
@@ -334,7 +369,8 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
-    return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
+    return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns},
+           'correlations': {'pearson':dfcorrPear, 'spearman':dfcorrSpear}}
 
 
 def to_html(sample, stats_object):
@@ -498,9 +534,13 @@ def to_html(sample, stats_object):
         messages_html += templates.message_row.format(message=msg)
 
     overview_html = templates.template('overview').render(values=formatted_values, row_classes = row_classes, messages=messages_html)
+    
+    ### Add plot of matrix correlation
+    correlations_html = templates.template('correlations').render(values=stats_object['correlations'])
 
     # Sample
 
     sample_html = templates.template('sample').render(sample_table_html=sample.to_html(classes="sample"))
     # TODO: should be done in the template
-    return templates.template('base').render({'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html})
+    return templates.template('base').render({'overview_html': overview_html, 'rows_html': rows_html,
+                                              'sample_html': sample_html, 'correlation_html':correlations_html})
