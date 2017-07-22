@@ -78,4 +78,4 @@ messages['p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing 
 messages['p_infinite'] = u'{varname} has {0[n_infinite]} / {0[p_infinite]} infinite values <span class="label label-default">Infinite</span>'
 messages['p_zeros'] = u'{varname} has {0[n_zeros]} / {0[p_zeros]} zeros'
 
-message_row = u'<li>{message}</l>'
+message_row = u'<li>{message}</li>'
