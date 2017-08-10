@@ -8,7 +8,7 @@ from
         {{ col }},
         WIDTH_BUCKET({{ col }}, {{ min }}, {{ max }}, {{ nbins }}) as bucket
     from
-        {{ schema }}.{{ table }}
+        {% if schema | len > 0 %}{{ schema }}.{% endif %}{{ table }}
     ) as bucketed
 group by bucket
 order by bucket

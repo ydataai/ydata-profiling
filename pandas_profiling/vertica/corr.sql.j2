@@ -4,4 +4,4 @@ select
         corr_{{ loop.index }}{% if not loop.last %},{% endif %}
 {% endfor %}
 from
-    {{ schema }}.{{ table }}
+    {% if schema | len > 0 %}{{ schema }}.{% endif %}{{ table }}

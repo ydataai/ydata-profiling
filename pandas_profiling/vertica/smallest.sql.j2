@@ -2,7 +2,7 @@ select
     {{ col }},
     count(*)
 from
-    {{ schema }}.{{ table }}
+    {% if schema | len > 0 %}{{ schema }}.{% endif %}{{ table }}
 group by
     {{ col }}
 order by

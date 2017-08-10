@@ -4,4 +4,4 @@ select
     max({{ col }}),
     variance({{ col }})
 from
-    {{ schema }}.{{ table }}
+    {% if schema | len > 0 %}{{ schema }}.{% endif %}{{ table }}
