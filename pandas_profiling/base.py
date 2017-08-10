@@ -27,6 +27,7 @@ import six
 import multiprocessing
 from functools import partial
 from distutils.version import LooseVersion
+from .vertica import *
 
 plt.switch_backend('Agg')
 
@@ -449,7 +450,7 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
             'responses': responses}
 
 
-def describeSQL(cur, schema, table, bins=10,
+def describeSQL(cur, table, schema="", bins=10,
                 check_correlation=True,
                 compute_responses=True,
                 bootstrap_response_error=False,
@@ -458,10 +459,17 @@ def describeSQL(cur, schema, table, bins=10,
     """Run queries over SQL database.
 
     cur: cursor object for database
-    schema:
     table:
+    schema:
     """
-    return {'table': {}, 'variables': {}, 'freq': {}, 'responses': {}}
+    # some learning about sqlite:
+    # print(cur.execute("select count(*) from test_table").fetchall())
+    # print(cur.execute("select count(*) from test_table").fetchall()[0])
+    # print(cur.execute("select * from test_table").fetchall()[0].keys())
+    # print(cur.execute("select count(*) as count from test_table").fetchall()[0]["count"])
+    # print(cur.execute(count_template.render({"schema": schema, "table": table})))
+    n_rows = cur.execute(count_template.render({"schema": schema, "table": table})).fetchall()[0]["count"]
+    return {'table': {"n": n_rows}, 'variables': {}, 'freq': {}, 'responses': {}}
 
 
 def to_html(sample, stats_object):

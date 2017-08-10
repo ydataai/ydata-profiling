@@ -111,7 +111,8 @@ class DataFrameTest(unittest.TestCase):
                              'n': 9,
                              'n_duplicates': 0,
                              'nvar': 7,
-                             }.items()).issubset(set(self.results['table'].items())))
+                             }.items()
+                            ).issubset(set(self.results['table'].items())))
 
         self.assertAlmostEqual(0.063492063492063489, self.results['table']['total_missing'], 7)
         # Loop over variables
@@ -172,7 +173,7 @@ class CategoricalDataTest(unittest.TestCase):
         self.assertEqual(self.results2['table']['REJECTED'], 0)
 
 
-class SQLTest(unittest.TestCase):
+class SQLTest(DataFrameTest):
 
     def setUp(self):
         self.data = {'id': [chr(97 + c) for c in range(1, 10)],
@@ -196,13 +197,15 @@ class SQLTest(unittest.TestCase):
         print("Getting sqlite connection and putting in dataframe.")
 
         conn = sqlite3.connect(os.path.join(self.test_dir, "test.db"))
+        conn.row_factory = sqlite3.Row
         # Once we have a Connection object, we can then create a Cursor object.
         # Cursors allow us to execute SQL queries against a database
         # cur = conn.cursor()
 
-        self.df.to_sql("test_data", conn, schema="marketing")
+        # sqlite does not do schemas
+        self.df.to_sql("test_table", conn)  # , schema="marketing")
 
-        self.results = describeSQL(conn.cursor(), "marketing", "test_table")
+        self.results = describeSQL(conn.cursor(), "test_table")
 
 
 if __name__ == '__main__':
