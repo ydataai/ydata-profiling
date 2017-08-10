@@ -20,6 +20,7 @@ import numpy as np
 import pandas as pd
 import pandas_profiling.formatters as formatters
 import pandas_profiling.templates as templates
+import matplotlib
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 import six
@@ -321,7 +322,7 @@ def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
 
-def describePandas(df, bins=10, check_correlation=True, compute_responses=True,
+def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
                    bootstrap_response_error=False, correlation_overrides=None,
                    pool_size=multiprocessing.cpu_count(), verbose=True,
                    **kwargs):

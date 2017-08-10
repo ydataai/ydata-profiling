@@ -7,17 +7,18 @@ import numpy as np
 import pandas as pd
 import six
 import pandas_profiling
-from pandas_profiling.base import describe, to_html
+from pandas_profiling.base import describePandas, describeSQL, to_html
 import tempfile
 import shutil
 import os
+import sqlite3
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
 
 class DataFrameTest(unittest.TestCase):
 
     def setUp(self):
-        self.data = {'id': [chr(97+c) for c in range(1,10)],
+        self.data = {'id': [chr(97 + c) for c in range(1, 10)],
                      'x': [50, 50, -10, 0, 0, 5, 15, -3, None],
                      'y': [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
                      'cat': ['a', 'long text value', u'Élysée', '', None, 'some <b> B.s </div> </div> HTML stuff', 'c',
@@ -28,18 +29,16 @@ class DataFrameTest(unittest.TestCase):
                      'somedate': [datetime.date(2011, 7, 4), datetime.datetime(2022, 1, 1, 13, 57),
                                   datetime.datetime(1990, 12, 9), np.nan,
                                   datetime.datetime(1990, 12, 9), datetime.datetime(1950, 12, 9),
-                                  datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9)
-                         , datetime.datetime(1950, 12, 9)]}
+                                  datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9),
+                                  datetime.datetime(1950, 12, 9)]}
         self.df = pd.DataFrame(self.data)
         self.df['somedate'] = pd.to_datetime(self.df['somedate'])
 
-        self.results = describe(self.df)
+        self.results = describePandas(self.df)
         self.test_dir = tempfile.mkdtemp()
-
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
-
 
     def test_describe_df(self):
 
@@ -100,26 +99,27 @@ class DataFrameTest(unittest.TestCase):
                                         'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN, 'top': check_is_NaN, 'type': 'DATE',
                                         }
 
-        self.assertSetEqual(set(self.results.keys()), set(['table', 'variables', 'freq']))
+        self.assertSetEqual(set(self.results.keys()), set(['table', 'variables', 'freq', 'responses']))
         self.assertSetEqual(set(self.results['freq'].keys()), set(self.data.keys()))
         self.assertSetEqual(set(self.results['variables'].index), set(self.data.keys()))
 
         self.assertTrue(set({'CAT': 1,
-                                       'CONST': 2,
-                                       'DATE': 1,
-                                       'NUM': 2,
-                                       'UNIQUE': 1,
-                                       'n': 9,
-                                       'n_duplicates': 0,
-                                       'nvar': 7,
-                                       }.items()).issubset(set(self.results['table'].items())))
+                             'CONST': 2,
+                             'DATE': 1,
+                             'NUM': 2,
+                             'UNIQUE': 1,
+                             'n': 9,
+                             'n_duplicates': 0,
+                             'nvar': 7,
+                             }.items()).issubset(set(self.results['table'].items())))
 
         self.assertAlmostEqual(0.063492063492063489, self.results['table']['total_missing'], 7)
         # Loop over variables
         for col in self.data.keys():
-            for k,v in six.iteritems(expected_results[col]):
+            for k, v in six.iteritems(expected_results[col]):
                 if v == check_is_NaN:
-                    self.assertTrue(np.isnan(self.results['variables'].loc[col][k]), msg="Value {} for key {} in column {} is not NaN".format(self.results['variables'].loc[col][k], k, col))
+                    self.assertTrue(np.isnan(self.results['variables'].loc[col][k]), msg="Value {} for key {} in column {} is not NaN".format(
+                        self.results['variables'].loc[col][k], k, col))
                 elif isinstance(v, float):
                     self.assertAlmostEqual(v, self.results['variables'].loc[col][k], 7)
                 else:
@@ -131,13 +131,12 @@ class DataFrameTest(unittest.TestCase):
                 self.assertLess(200, len(self.results['variables'].loc[col]["mini_histogram"]),
                                 "Mini-histogram missing for column %s " % col)
 
-
     def test_html_report(self):
         html = to_html(self.df.head(), self.results)
         self.assertLess(1000, len(html))
 
     def test_bins(self):
-        self.results = describe(self.df, bins=100)
+        self.results = describePandas(self.df, bins=100)
         self.test_describe_df()
 
     def test_export_to_file(self):
@@ -146,30 +145,64 @@ class DataFrameTest(unittest.TestCase):
         filename = os.path.join(self.test_dir, "profile_%s.html" % hash(self))
         p.to_file(outputfile=filename)
 
-        self.assertLess(200,os.path.getsize(filename))
+        self.assertLess(200, os.path.getsize(filename))
 
 
 class CategoricalDataTest(unittest.TestCase):
 
     def test_recoding_reject(self):
         self.data = {
-             'x': ['chien', 'chien', 'chien', 'chien', 'chat','chat','chameaux', 'chameaux'],
-             'y': ['dog', 'dog', 'dog', 'dog', 'cat','cat','camel','camel'],
-           }
+            'x': ['chien', 'chien', 'chien', 'chien', 'chat', 'chat', 'chameaux', 'chameaux'],
+            'y': ['dog', 'dog', 'dog', 'dog', 'cat', 'cat', 'camel', 'camel'],
+        }
         self.df = pd.DataFrame(self.data)
-        self.results = describe(self.df)
+        self.results = describePandas(self.df)
 
         self.assertEqual(self.results['variables'].loc['x']['type'], 'RECODED')
         self.assertEqual(self.results['variables'].loc['x']['correlation_var'], 'y')
 
-        expected_results = {'total_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1, 'n': 8, 'RECODED': 1, 'CORR': 0, 'DATE': 0, 'NUM': 0, 'CAT': 1, 'n_duplicates': 5}
+        expected_results = {'total_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1,
+                            'n': 8, 'RECODED': 1, 'CORR': 0, 'DATE': 0, 'NUM': 0, 'CAT': 1, 'n_duplicates': 5}
         for key in expected_results:
             self.assertEqual(self.results['table'][key], expected_results[key])
 
         # Rerun without checking for correlation
-        self.results2 = describe(self.df, check_correlation=False)
+        self.results2 = describePandas(self.df, check_correlation=False)
         self.assertIsNone(self.results2['variables'].loc['x'].get('correlation_var'))
         self.assertEqual(self.results2['table']['REJECTED'], 0)
+
+
+class SQLTest(unittest.TestCase):
+
+    def setUp(self):
+        self.data = {'id': [chr(97 + c) for c in range(1, 10)],
+                     'x': [50, 50, -10, 0, 0, 5, 15, -3, None],
+                     'y': [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
+                     'cat': ['a', 'long text value', u'Élysée', '', None, 'some <b> B.s </div> </div> HTML stuff', 'c',
+                             'c',
+                             'c'],
+                     's1': np.ones(9),
+                     's2': [u'some constant text $ % value {obj} ' for _ in range(1, 10)],
+                     'somedate': [datetime.date(2011, 7, 4), datetime.datetime(2022, 1, 1, 13, 57),
+                                  datetime.datetime(1990, 12, 9), np.nan,
+                                  datetime.datetime(1990, 12, 9), datetime.datetime(1950, 12, 9),
+                                  datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9),
+                                  datetime.datetime(1950, 12, 9)]}
+        self.df = pd.DataFrame(self.data)
+        self.df['somedate'] = pd.to_datetime(self.df['somedate'])
+
+        self.test_dir = tempfile.mkdtemp()
+
+        print("Getting sqlite connection and putting in dataframe.")
+
+        conn = sqlite3.connect(os.path.join(self.test_dir, "test.db"))
+        # Once we have a Connection object, we can then create a Cursor object.
+        # Cursors allow us to execute SQL queries against a database
+        # cur = conn.cursor()
+
+        self.df.to_sql("test_data", conn, schema="marketing")
+
+        self.results = describeSQL(conn.cursor(), "marketing", "test_table")
 
 
 if __name__ == '__main__':
