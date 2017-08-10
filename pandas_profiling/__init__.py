@@ -1,9 +1,11 @@
 import codecs
 from .templates import template
-from .base import describe, to_html
+from .base import describePandas, describeSQL, to_html
+import pandas as pd
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
+
 
 class ProfileReport(object):
     html = ''
@@ -13,7 +15,7 @@ class ProfileReport(object):
 
         sample = kwargs.get('sample', df.head())
 
-        description_set = describe(df, **kwargs)
+        description_set = describePandas(df, **kwargs)
 
         self.html = to_html(sample,
                             description_set)
@@ -57,8 +59,15 @@ class ProfileReport(object):
         return "Output written to file " + str(self.file.name)
 
 
+class ProfileReportSQL(object):
+    def __init__(self, cur, schema, table, **kwargs):
 
+        sample = pd.DataFrame(cur.execute("""select * from {}.{} limit 5""".format(schema, table)).fetchall())
+        # print(sample)
 
+        description_set = describeSQL(cur, schema, table, **kwargs)
 
+        self.html = to_html(sample,
+                            description_set)
 
-
+        self.description_set = description_set
