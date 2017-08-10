@@ -59,7 +59,7 @@ class ProfileReport(object):
         return "Output written to file " + str(self.file.name)
 
 
-class ProfileReportSQL(object):
+class ProfileReportSQL(ProfileReport):
     def __init__(self, cur, schema, table, **kwargs):
 
         sample = pd.DataFrame(cur.execute("""select * from {}.{} limit 5""".format(schema, table)).fetchall())
