@@ -1,0 +1,9 @@
+select
+    {{ col }},
+    count(*)
+from
+    {{ schema }}.{{ table }}
+group by
+    {{ col }}
+order by
+    count

@@ -1,0 +1,6 @@
+select
+    count(*)
+from
+    {{ schema }}.{{ table }}
+where
+    {{ col }} is null

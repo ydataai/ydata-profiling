@@ -1,0 +1,7 @@
+select
+    avg({{ col }}),
+    min({{ col }}),
+    max({{ col }}),
+    variance({{ col }})
+from
+    {{ schema }}.{{ table }}
