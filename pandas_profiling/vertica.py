@@ -104,8 +104,16 @@ def get_basic_stats(cur,
         results[count_template_names[i]] = unique
         results["p_" + count_template_names[i][2:]] = unique / float(n)
 
+    query = common_template.render({"col": col, "schema": schema, "table": table, "num": 10})
+    cur.execute(query)
+    a = cur.fetchall()
+    x = [b[col] for i, b in enumerate(a) if b[col] is not None]
+    y = [b["count"] for i, b in enumerate(a) if b[col] is not None]
+    results["common"] = pd.Series(y, index=x)  # [x, y]
+    results["common"].replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan,
+                              inplace=True)
     # string
-    if vartype in ["CAT", "CONST", "n_unique"]:
+    if vartype in ["CAT", "CONST", "UNIQUE"]:
         return results
     # datetime
     elif vartype == "DATE":
@@ -144,7 +152,7 @@ def get_ordinal_stuff(cur,
     a = cur.fetchall()
     x = [b[col] for b in a]
     y = [b["count"] for b in a]
-    results["dist"] = [x, y]
+    results["dist"] = str([x, y])
 
     return results
 
@@ -166,12 +174,6 @@ def get_continuous_stuff(cur,
     # for percentile in [5,25,50,75,95]:
     #     results["percentiles"].append([percentile,a[0][str(percentile)]])
 
-    query = common_template.render({"col": col, "schema": schema, "table": table, "num": 10})
-    cur.execute(query)
-    a = cur.fetchall()
-    x = [b[col] for b in a]
-    y = [b["count"] for b in a]
-    results["common"] = [x, y]
     query = smallest_template.render({"col": col, "schema": schema, "table": table, "num": 5})
     cur.execute(query)
     a = cur.fetchall()
@@ -197,7 +199,7 @@ def get_continuous_stuff(cur,
         a = cur.fetchall()
         x = [b["bucket"] for b in a]
         y = [b["count"] for b in a]
-        results["dist"] = [x, y]
+        results["dist"] = str([x, y])
 
     return results
 

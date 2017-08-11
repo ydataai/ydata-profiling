@@ -325,7 +325,7 @@ def multiprocess_func(x, **kwargs):
 
 def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
                    bootstrap_response_error=False, correlation_overrides=None,
-                   pool_size=multiprocessing.cpu_count(), verbose=True,
+                   pool_size=multiprocessing.cpu_count(), verbose=False,
                    **kwargs):
     """
     Generates a object containing summary statistics for a given DataFrame
@@ -476,15 +476,16 @@ def describeSQL(cur, table, schema="", bins=10,
     n_rows = cur.execute(count_template.render({"schema": schema, "table": table})).fetchall()[0]["count"]
 
     stats_object = main_vertica(cur, schema, table)
-    freq_object = {col: stats_object[col]["n_unique"] for col in stats_object}
+    freq_object = {col: stats_object[col]["common"] for col in stats_object}
     table_stats = {'total_missing': 0, 'n_duplicates': 0,
                    'memsize': 0, 'recordsize': 0,
                    "n": n_rows,
                    "nvar": len(freq_object)}
+    # the names of all of the variables
     names = list(stats_object.keys())
     if verbose:
         print(names)
-
+    # names of the stats pulled out
     names = []
     ldesc_indexes = sorted([x.index for x in stats_object.values()], key=len)
     for idxnames in ldesc_indexes:
@@ -494,8 +495,9 @@ def describeSQL(cur, table, schema="", bins=10,
     if verbose:
         print(names)
         print(pd.Index(names))
-    variable_stats = pd.concat(stats_object, join_axes=pd.Index(names), axis=1)
-    variable_stats.columns.names = names
+        print(stats_object["cat"])
+    variable_stats = pd.concat(stats_object, join_axes=pd.Index([names]), axis=1)
+    # variable_stats.columns.names = names
 
     return {'table': table_stats,
             'variables': variable_stats.T,
@@ -561,7 +563,11 @@ def to_html(sample, stats_object):
             "stats_object badly formatted. Did you generate this using the pandas_profiling-eda.describe() function?")
 
     def fmt(value, name):
-        if pd.isnull(value):
+        # make this function work with Series input...
+        if type(pd.isnull(value)) == bool:
+            if pd.isnull(value):
+                return ""
+        else:
             return ""
         if name in value_formatters:
             return value_formatters[name](value)
@@ -624,7 +630,9 @@ def to_html(sample, stats_object):
 
         return table_template.render(rows=freq_rows_html, varid=hash(idx))
 
-    def extreme_obs_table(freqtable, table_template, row_template, number_to_print, n, ascending=True):
+    def extreme_obs_table(freqtable, table_template,
+                          row_template, number_to_print,
+                          n, ascending=True):
         if ascending:
             obs_to_print = freqtable.sort_index().iloc[:number_to_print]
         else:
@@ -683,6 +691,8 @@ def to_html(sample, stats_object):
         else:
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                        templates.template('freq_table'), templates.template('freq_table_row'), 10)
+            if idx == 'cat':
+                print(stats_object['freq'][idx])
             formatted_values['firstn_expanded'] = extreme_obs_table(stats_object['freq'][idx], templates.template(
                 'freq_table'), templates.template('freq_table_row'), 5, n_obs, ascending=True)
             formatted_values['lastn_expanded'] = extreme_obs_table(stats_object['freq'][idx], templates.template(

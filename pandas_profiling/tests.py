@@ -36,9 +36,11 @@ class DataFrameTest(unittest.TestCase):
 
         self.results = describePandas(self.df, verbose=True)
         self.test_dir = tempfile.mkdtemp()
+        self.test_dir = 'test_output'
+        # print(self.test_dir)
 
-    def tearDown(self):
-        shutil.rmtree(self.test_dir)
+    # def tearDown(self):
+    #     shutil.rmtree(self.test_dir)
 
     def test_describe_df(self):
 

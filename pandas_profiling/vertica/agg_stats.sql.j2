@@ -1,7 +1,8 @@
 select
     avg({{ col }}) as avg,
     min({{ col }}) as min,
-    max({{ col }}) as max,
-    variance({{ col }}) as variance
+    max({{ col }}) as max
+    -- not for sqlite
+    -- variance({{ col }}) as variance
 from
     {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
