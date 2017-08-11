@@ -34,7 +34,7 @@ class DataFrameTest(unittest.TestCase):
         self.df = pd.DataFrame(self.data)
         self.df['somedate'] = pd.to_datetime(self.df['somedate'])
 
-        self.results = describePandas(self.df)
+        self.results = describePandas(self.df, verbose=True)
         self.test_dir = tempfile.mkdtemp()
 
     def tearDown(self):
@@ -44,13 +44,13 @@ class DataFrameTest(unittest.TestCase):
 
         expected_results = {}
         expected_results['id'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN, 'count': 9, 'n_infinite': 0, 'p_infinite': 0,
-                                  'cv': check_is_NaN, 'distinct_count': 9, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
+                                  'cv': check_is_NaN, 'n_unique': 9, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
                                   'is_unique': True, 'kurtosis': check_is_NaN, 'mad': check_is_NaN, 'max': check_is_NaN, 'mean': check_is_NaN,
                                   'min': check_is_NaN, 'mini_histogram': check_is_NaN, 'n_missing': 0, 'p_missing': 0.0,
                                   'p_unique': 1.0, 'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN,
                                   'std': check_is_NaN, 'sum': check_is_NaN, 'top': check_is_NaN, 'type': 'UNIQUE', 'variance': check_is_NaN}
         expected_results['x'] = {'25%': -0.75, '5%': -7.5499999999999989, '50%': 2.5, '75%': 23.75, '95%': 50.0,
-                                 'count': 8, 'n_infinite': 0, 'p_infinite': 0, 'cv': 1.771071190261633, 'distinct_count': 7, 'freq': check_is_NaN, 'iqr': 24.5,
+                                 'count': 8, 'n_infinite': 0, 'p_infinite': 0, 'cv': 1.771071190261633, 'n_unique': 7, 'freq': check_is_NaN, 'iqr': 24.5,
                                  'is_unique': False, 'kurtosis': -0.50292858929003803, 'mad': 18.71875, 'max': 50.0,
                                  'mean': 13.375, 'min': -10.0, 'mode': 0.0, 'n_missing': 1,
                                  'p_missing': 0.11111111111111116, 'p_unique': 0.875, 'p_zeros': 0.2222222222222222,
@@ -58,7 +58,7 @@ class DataFrameTest(unittest.TestCase):
                                  'top': check_is_NaN, 'type': 'NUM', 'variance': 561.125}
         expected_results['y'] = {'25%': 10.125000249999999, '5%': -2.0420348747749997, '50%': 15.942256,
                                  '75%': 246.78800000000001, '95%': 2258.2531999999987, 'count': 8, 'n_infinite': 0, 'p_infinite': 0,
-                                 'cv': 2.2112992878833846, 'distinct_count': 9, 'freq': check_is_NaN,
+                                 'cv': 2.2112992878833846, 'n_unique': 9, 'freq': check_is_NaN,
                                  'iqr': 236.66299975000001, 'is_unique': True, 'kurtosis': 6.974137018717359,
                                  'mad': 698.45081747834365, 'max': 3122.0, 'mean': 491.17436504331249,
                                  'min': -3.1415926535000001, 'mode': 9.9999999999999995e-07, 'n_missing': 1,
@@ -66,22 +66,23 @@ class DataFrameTest(unittest.TestCase):
                                  'range': 3125.1415926535001, 'skewness': 2.6156591135729266, 'std': 1086.1335236468506,
                                  'sum': 3929.3949203464999, 'top': check_is_NaN, 'type': 'NUM',
                                  'variance': 1179686.0311895239}
-        expected_results['cat'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN, 'count': 8, 'n_infinite': 0, 'p_infinite': 0,
-                                   'cv': check_is_NaN, 'distinct_count': 7, 'freq': 3, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
+        expected_results['cat'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN,
+                                   '75%': check_is_NaN, '95%': check_is_NaN, 'count': 8, 'n_infinite': 0, 'p_infinite': 0,
+                                   'cv': check_is_NaN, 'n_unique': 7, 'freq': 3, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
                                    'is_unique': False, 'kurtosis': check_is_NaN, 'mad': check_is_NaN, 'max': check_is_NaN, 'mean': check_is_NaN,
                                    'min': check_is_NaN, 'mini_histogram': check_is_NaN, 'mode': 'c',
                                    'n_missing': 1, 'p_missing': 0.11111111111111116, 'p_unique': 0.875,
                                    'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN,
                                    'top': 'c', 'type': 'CAT', 'variance': check_is_NaN}
         expected_results['s1'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN, 'count': 9, 'n_infinite': 0, 'p_infinite': 0,
-                                  'cv': check_is_NaN, 'distinct_count': 1, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
+                                  'cv': check_is_NaN, 'n_unique': 1, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
                                   'is_unique': False, 'kurtosis': check_is_NaN, 'mad': check_is_NaN, 'max': check_is_NaN, 'mean': check_is_NaN,
                                   'min': check_is_NaN, 'mini_histogram': check_is_NaN, 'mode': 1.0,
                                   'n_missing': 0, 'p_missing': 0.0, 'p_unique': 0.1111111111111111, 'p_zeros': check_is_NaN,
                                   'range': check_is_NaN, 'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN, 'top': check_is_NaN,
                                   'type': 'CONST', 'variance': check_is_NaN}
         expected_results['s2'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN, 'count': 9, 'n_infinite': 0, 'p_infinite': 0,
-                                  'cv': check_is_NaN, 'distinct_count': 1, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
+                                  'cv': check_is_NaN, 'n_unique': 1, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
                                   'is_unique': False, 'kurtosis': check_is_NaN, 'mad': check_is_NaN, 'max': check_is_NaN, 'mean': check_is_NaN,
                                   'min': check_is_NaN, 'mini_histogram': check_is_NaN,
                                   'mode': u'some constant text $ % value {obj} ', 'n_missing': 0, 'p_missing': 0.0,
@@ -89,7 +90,7 @@ class DataFrameTest(unittest.TestCase):
                                   'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN, 'top': check_is_NaN, 'type': 'CONST',
                                   'variance': check_is_NaN}
         expected_results['somedate'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN,
-                                        'count': 8, 'n_infinite': 0, 'p_infinite': 0, 'cv': check_is_NaN, 'distinct_count': 6, 'freq': check_is_NaN,
+                                        'count': 8, 'n_infinite': 0, 'p_infinite': 0, 'cv': check_is_NaN, 'n_unique': 6, 'freq': check_is_NaN,
                                         'iqr': check_is_NaN, 'is_unique': False, 'kurtosis': check_is_NaN,
                                         'mad': check_is_NaN, 'max': datetime.datetime(2022, 1, 1, 13, 57), 'mean': check_is_NaN,
                                         'min': datetime.datetime(1898, 1, 2),

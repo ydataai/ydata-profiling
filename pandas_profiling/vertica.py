@@ -91,10 +91,10 @@ def get_basic_stats(cur,
     # if datetime or string, don't count zeroes
     if type_code in [9, 12]:
         count_templates = [unique_template, null_template]
-        count_template_names = ["unique", "null"]
+        count_template_names = ["n_unique", "n_missing"]
     else:
         count_templates = [unique_template, null_template, zero_template]
-        count_template_names = ["unique", "null", "zero"]
+        count_template_names = ["n_unique", "n_missing", "n_zeros"]
 
     for i, t in enumerate(count_templates):
         query = t.render({"col": col,

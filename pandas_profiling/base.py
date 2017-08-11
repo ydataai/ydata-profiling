@@ -41,15 +41,15 @@ def pretty_name(x):
 
 
 def get_vartype(data):
-    distinct_count = data.nunique(dropna=False)
+    n_unique = data.nunique(dropna=False)
     leng = len(data)
-    if distinct_count <= 1:
+    if n_unique <= 1:
         return 'CONST'
     elif pd.api.types.is_numeric_dtype(data):
         return 'NUM'
     elif pd.api.types.is_datetime64_dtype(data):
         return 'DATE'
-    elif distinct_count == leng:
+    elif n_unique == leng:
         return 'UNIQUE'
     else:
         return 'CAT'
@@ -281,22 +281,22 @@ def describe_1d(data, **kwargs):
     n_infinite = count - data.count()
     # number of infinte observations in the Series
 
-    distinct_count = data.nunique(dropna=False)
+    n_unique = data.nunique(dropna=False)
     # number of unique elements in the Series
-    if count > distinct_count > 1:
+    if count > n_unique > 1:
         mode = data.mode().iloc[0]
     else:
         mode = data[0]
 
     results_data = {'count': count,
-                    'distinct_count': distinct_count,
+                    'n_unique': n_unique,
                     'p_missing': 1 - count / leng,
                     'n_missing': leng - count,
                     'p_infinite': n_infinite / leng,
                     'n_infinite': n_infinite,
-                    'is_unique': distinct_count == leng,
+                    'is_unique': n_unique == leng,
                     'mode': mode,
-                    'p_unique': distinct_count / count}
+                    'p_unique': n_unique / count}
 
     results_data['memorysize'] = data.memory_usage()
     # remove a try statement with bare except (pep8)
@@ -412,6 +412,8 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
         for name in idxnames:
             if name not in names:
                 names.append(name)
+    if verbose:
+        print(ldesc)
     variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
     variable_stats.columns.names = df.columns.names
 
@@ -491,11 +493,14 @@ def to_html(sample, stats_object):
 
     variables should have the core of the data. this should be a dict, with
     a key for each column and a
-    ['25%', '5%', '50%', '75%', '95%', 'count', 'n_infinite',
-    'p_infinite', 'cv', 'distinct_count', 'freq', 'histogram', 'iqr',
-    'is_unique', 'kurtosis', 'mad', 'max', 'mean', 'min', 'mini_histogram',
-    'n_missing', 'p_missing', 'p_unique', 'p_zeros', 'range', 'skewness',
-    'std', 'sum', 'top', 'type', 'variance', 'mode']
+    ['25%', '5%', '50%', '75%', '95%', 'count',
+    'n_infinite', 'p_infinite',
+    'n_unique', 'p_unique', 'is_unique',
+    'n_missing', 'p_missing',
+    'p_zeros',
+    'freq', 'histogram', 'iqr',
+    'kurtosis', 'mad', 'max', 'mean', 'min', 'mini_histogram', 'cv',
+    'range', 'skewness', 'std', 'sum', 'top', 'type', 'variance', 'mode']
 
     freq should have the unique counts of each column:
     'freq': {k: df[k].value_counts() for k in df.columns}
@@ -628,12 +633,12 @@ def to_html(sample, stats_object):
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                            templates.template('mini_freq_table'), templates.template('mini_freq_table_row'), 3)
 
-            if row['distinct_count'] > 50:
+            if row['n_unique'] > 50:
                 messages.append(templates.messages['HIGH_CARDINALITY'].format(
                     formatted_values, varname=formatters.fmt_varname(idx)))
-                row_classes['distinct_count'] = "alert"
+                row_classes['n_unique'] = "alert"
             else:
-                row_classes['distinct_count'] = ""
+                row_classes['n_unique'] = ""
 
         if row['type'] == 'UNIQUE':
             obs = stats_object['freq'][idx].index
