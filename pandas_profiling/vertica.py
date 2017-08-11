@@ -47,6 +47,7 @@ type_template = open_template("type.sql.j2")
 unique_template = open_template("unique.sql.j2")
 null_template = open_template("null.sql.j2")
 zero_template = open_template("zero.sql.j2")
+inf_template = open_template("inf.sql.j2")
 dist_template = open_template("dist.sql.j2")
 response_template = open_template("response.sql.j2")
 common_template = open_template("common.sql.j2")
@@ -65,6 +66,8 @@ corr_template = open_template("corr.sql.j2")
 def get_basic_stats(cur,
                     results: dict,
                     col: str,
+                    n: int = 100,
+                    vartype: str = "NUM",
                     schema: str = "marketing",
                     table: str = "test_table") -> dict:
     """Get the basic statistics for the given column.
@@ -76,25 +79,16 @@ def get_basic_stats(cur,
     Ref for column types:
     https://github.com/uber/vertica-python/blob/edd8ccba72ffdf076888a85eea43b7b11a050077/vertica_python/datatypes.py"""
 
-    query = type_template.render({"col": col,
-                                  "schema": schema,
-                                  "table": table})
-    cur.execute(query)
-    # x = cur.fetchall()
-    # print(cur.description)
-    type_code = cur.description[0].type_code
-    # print(type_code)
-    # print(x)
-    # val = x[0][col]
-    # print(type(val))
-
     # if datetime or string, don't count zeroes
-    if type_code in [9, 12]:
+    if vartype in ["CAT"]:
         count_templates = [unique_template, null_template]
         count_template_names = ["n_unique", "n_missing"]
+    elif vartype in ["DATE"]:
+        count_templates = [unique_template, null_template, inf_template]
+        count_template_names = ["n_unique", "n_missing", "n_infinite"]
     else:
-        count_templates = [unique_template, null_template, zero_template]
-        count_template_names = ["n_unique", "n_missing", "n_zeros"]
+        count_templates = [unique_template, null_template, zero_template, inf_template]
+        count_template_names = ["n_unique", "n_missing", "n_zeros", "n_infinite"]
 
     for i, t in enumerate(count_templates):
         query = t.render({"col": col,
@@ -104,12 +98,13 @@ def get_basic_stats(cur,
         x = cur.fetchall()
         unique = x[0]["count"]
         results[count_template_names[i]] = unique
+        results["p_" + count_template_names[i][2:]] = unique / float(n)
 
     # string
-    if type_code == 9:
+    if vartype in ["CAT", "CONST", "UNIQUE"]:
         return results
     # datetime
-    elif type_code == 12:
+    elif vartype == "DATE":
         query = agg_stats_date_template.render({"col": col,
                                                 "schema": schema,
                                                 "table": table})
@@ -134,15 +129,18 @@ def get_ordinal_stuff(cur,
     """Get the ordinal stuff."""
 
     # sanity check that we don't run this on the primary key or something
-    if results["unique"] < 500:
-        query = dist_template.render({"col": col,
-                                      "schema": schema,
-                                      "table": table})
-        cur.execute(query)
-        a = cur.fetchall()
-        x = [b[col] for b in a]
-        y = [b["count"] for b in a]
-        results["dist"] = [x, y]
+    if results["unique"] > 500:
+        print("Too many records to run the raw distribution!")
+        return results
+
+    query = dist_template.render({"col": col,
+                                  "schema": schema,
+                                  "table": table})
+    cur.execute(query)
+    a = cur.fetchall()
+    x = [b[col] for b in a]
+    y = [b["count"] for b in a]
+    results["dist"] = [x, y]
 
     return results
 
@@ -202,33 +200,62 @@ def get_continuous_stuff(cur,
 
 def infer_coltype(col,
                   results,
-                  infertype=False,
-                  table_size=0,
+                  n: int = 0,
+                  verbose: bool = True,
                   schema: str = "marketing",
                   table: str = "test_table"):
-    # infer from col name if blank
+    # infer from col name
     coltype = ""
-    coltypes = {"ordinal": "ordinal",
-                "flat": "ordinal",
-                "interval": "ordinal",
-                "passthrough": "passthrough",
-                "continuous": "continuous",
+    coltypes = {"ordinal": "CAT",
+                "flat": "CAT",
+                "interval": "CAT",
+                "passthrough": "ignore",
+                "continuous": "NUM",
                 "ignore": "ignore",
-                "nominal": "nominal"}
+                "nominal": "CAT"}
     for x in coltypes:
         if x in col:
             coltype = coltypes[x]
+
     # infer col type from stats
     # this could use a lot of improvment
     # 1) get the column type in vertica
     # 2) attempt to cast as an int/float
-    if coltype == "" and infertype:
-        if results["unique"] / float(table_size) < 0.5:
-            coltype = "continuous"
+    if coltype == "":
+        # infer from vertica
+        query = type_template.render({"col": col,
+                                      "schema": schema,
+                                      "table": table})
+        cur.execute(query)
+        if verbose:
+            x = cur.fetchall()
+            print(cur.description)
+        type_code = cur.description[0].type_code
+        if verbose:
+            print(type_code)
+            print(x)
+            val = x[0][col]
+            print(type(val))
+
+        query = unique_template.render({"col": col,
+                                        "schema": schema,
+                                        "table": table})
+        cur.execute(query)
+        x = cur.fetchall()
+        unique = x[0]["count"]
+        results["n_unique"] = unique
+        if results["n_unique"] == n:
+            coltype = "UNIQUE"
+        elif results["n_unique"] == 1:
+            coltype = "CONST"
+        elif results["n_unique"] / float(table_size) < 0.5:
+            coltype = "NUM"
         # how to distinguish nominal and ordinal?
         # use the col type in Vertica: strings -> nominal, numeric -> ordinal
-        if results["unique"] < 500:
-            coltype = "nominal"
+        elif results["n_unique"] < 500:
+            coltype = "CAT"
+        else:
+            coltype = "NUM"
 
     return coltype
 
