@@ -1,5 +1,5 @@
 select
-    count(*),
+    count(*) as count,
     bucket,
     ({{ max }} / {{ nbins }}) * bucket as left
 from

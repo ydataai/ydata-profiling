@@ -1,7 +1,7 @@
 select
-    avg({{ col }}),
-    min({{ col }}),
-    max({{ col }}),
-    variance({{ col }})
+    avg({{ col }}) as avg,
+    min({{ col }}) as min,
+    max({{ col }}) as max,
+    variance({{ col }}) as variance
 from
     {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}

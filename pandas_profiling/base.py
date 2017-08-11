@@ -413,6 +413,8 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
             if name not in names:
                 names.append(name)
     if verbose:
+        print(names)
+        print(pd.Index(names))
         print(ldesc)
     variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
     variable_stats.columns.names = df.columns.names
@@ -453,6 +455,7 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
 
 
 def describeSQL(cur, table, schema="", bins=10,
+                verbose=True,
                 check_correlation=True,
                 compute_responses=True,
                 bootstrap_response_error=False,
@@ -471,7 +474,33 @@ def describeSQL(cur, table, schema="", bins=10,
     # print(cur.execute("select count(*) as count from test_table").fetchall()[0]["count"])
     # print(cur.execute(count_template.render({"schema": schema, "table": table})))
     n_rows = cur.execute(count_template.render({"schema": schema, "table": table})).fetchall()[0]["count"]
-    return {'table': {"n": n_rows}, 'variables': {}, 'freq': {}, 'responses': {}}
+
+    stats_object = main_vertica(cur, schema, table)
+    freq_object = {col: stats_object[col]["n_unique"] for col in stats_object}
+    table_stats = {'total_missing': 0, 'n_duplicates': 0,
+                   'memsize': 0, 'recordsize': 0,
+                   "n": n_rows,
+                   "nvar": len(freq_object)}
+    names = list(stats_object.keys())
+    if verbose:
+        print(names)
+
+    names = []
+    ldesc_indexes = sorted([x.index for x in stats_object.values()], key=len)
+    for idxnames in ldesc_indexes:
+        for name in idxnames:
+            if name not in names:
+                names.append(name)
+    if verbose:
+        print(names)
+        print(pd.Index(names))
+    variable_stats = pd.concat(stats_object, join_axes=pd.Index(names), axis=1)
+    variable_stats.columns.names = names
+
+    return {'table': table_stats,
+            'variables': variable_stats.T,
+            'freq': freq_object,
+            'responses': {}}
 
 
 def to_html(sample, stats_object):

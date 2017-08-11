@@ -1,5 +1,5 @@
 select
-    count(*)
+    count(*) as count
 from
     {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
 where

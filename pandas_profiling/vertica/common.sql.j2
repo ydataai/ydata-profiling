@@ -1,6 +1,6 @@
 select
     {{ col }},
-    count(*)
+    count(*) as count
 from
     {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
 group by

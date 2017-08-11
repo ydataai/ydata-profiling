@@ -7,6 +7,8 @@ import json
 from datetime import datetime
 import numpy as np
 import ssl
+from collections import OrderedDict
+import pandas as pd
 
 
 def get_vertica_python_conn(cfg=None):
@@ -67,7 +69,6 @@ def get_basic_stats(cur,
                     results: dict,
                     col: str,
                     n: int = 100,
-                    vartype: str = "NUM",
                     schema: str = "marketing",
                     table: str = "test_table") -> dict:
     """Get the basic statistics for the given column.
@@ -77,7 +78,10 @@ def get_basic_stats(cur,
     and the column to be analyzed.
 
     Ref for column types:
-    https://github.com/uber/vertica-python/blob/edd8ccba72ffdf076888a85eea43b7b11a050077/vertica_python/datatypes.py"""
+    https://github.com/uber/vertica-python/blob/edd8ccba72ffdf076888a85eea43b7b11a050077/vertica_python/datatypes.py
+    """
+
+    vartype = results["type"]
 
     # if datetime or string, don't count zeroes
     if vartype in ["CAT"]:
@@ -101,7 +105,7 @@ def get_basic_stats(cur,
         results["p_" + count_template_names[i][2:]] = unique / float(n)
 
     # string
-    if vartype in ["CAT", "CONST", "UNIQUE"]:
+    if vartype in ["CAT", "CONST", "n_unique"]:
         return results
     # datetime
     elif vartype == "DATE":
@@ -129,7 +133,7 @@ def get_ordinal_stuff(cur,
     """Get the ordinal stuff."""
 
     # sanity check that we don't run this on the primary key or something
-    if results["unique"] > 500:
+    if results["n_unique"] > 500:
         print("Too many records to run the raw distribution!")
         return results
 
@@ -199,11 +203,13 @@ def get_continuous_stuff(cur,
 
 
 def infer_coltype(col,
-                  results,
-                  n: int = 0,
-                  verbose: bool = True,
-                  schema: str = "marketing",
-                  table: str = "test_table"):
+                  cur,
+                  n: int,
+                  schema: str,
+                  table: str,
+                  verbose: bool = True):
+    if verbose:
+        print("Inferring coltype for col={}".format(col))
     # infer from col name
     coltype = ""
     coltypes = {"ordinal": "CAT",
@@ -227,15 +233,19 @@ def infer_coltype(col,
                                       "schema": schema,
                                       "table": table})
         cur.execute(query)
+        x = cur.fetchall()
         if verbose:
-            x = cur.fetchall()
-            print(cur.description)
-        type_code = cur.description[0].type_code
-        if verbose:
-            print(type_code)
             print(x)
-            val = x[0][col]
-            print(type(val))
+            print(cur.description)
+            print(cur.description[0])
+            print(type(cur.description[0]))
+        if type(cur.description[0]) != tuple:
+            # "type_code" in cur.description[0]:
+            type_code = cur.description[0].type_code
+            if verbose:
+                print(type_code)
+        val = x[0][col]
+        print(type(val))
 
         query = unique_template.render({"col": col,
                                         "schema": schema,
@@ -243,12 +253,13 @@ def infer_coltype(col,
         cur.execute(query)
         x = cur.fetchall()
         unique = x[0]["count"]
-        results["n_unique"] = unique
+        # just define a local results object here...
+        results = {"n_unique": unique}
         if results["n_unique"] == n:
-            coltype = "UNIQUE"
+            coltype = "n_unique"
         elif results["n_unique"] == 1:
             coltype = "CONST"
-        elif results["n_unique"] / float(table_size) < 0.5:
+        elif results["n_unique"] / float(n) < 0.5:
             coltype = "NUM"
         # how to distinguish nominal and ordinal?
         # use the col type in Vertica: strings -> nominal, numeric -> ordinal
@@ -263,20 +274,20 @@ def infer_coltype(col,
 def get_col_stuff(cur,
                   col: str,
                   coltype: str = "",
-                  infertype: bool = False,
-                  table_size: int = 0,
-                  schema: str = "marketing",
+                  table_size: int = 100,
+                  schema: str = "",
                   table: str = "test_table"):
     print("Getting info for col={}".format(col))
-    results = {}
+
+    # first get the column type
+    coltype = infer_coltype(col, cur, table_size, schema, table)
+    results = {"type": coltype}
+    # now get basic stats
+    # some branching based on the coltype in basic_stats
     results = get_basic_stats(cur, results, col, schema=schema, table=table)
-
-    if coltype == "":
-        coltype = infer_coltype(col, results, infertype=infertype, table_size=table_size)
-
-    if coltype == "ordinal" or coltype == "nominal":
+    if coltype == "CAT":
         results = get_ordinal_stuff(cur, results, col, schema=schema, table=table)
-    elif coltype == "continuous":
+    elif coltype == "NUM":
         results = get_continuous_stuff(cur, results, col, schema=schema, table=table)
     else:
         print("skipping details for col={}".format(col))
@@ -300,10 +311,23 @@ def test(cur):
 
 
 def get_all_cols(cur,
-                 schema: str = "marketing",
+                 schema: str = "",
                  table: str = "test_table") -> list:
-    cur.execute("select * from {}.{} limit 1".format(schema, table))
-    keys = list(cur.fetchall()[0].keys())
+    """Get all of the column names.
+
+    Does this provide a reliable order?"""
+
+    cur.execute(Template("""select *
+    from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
+    limit 1""").render({"schema": schema, "table": table}))
+    dict_keys = cur.fetchall()[0].keys()
+    keys = list(dict_keys)
+    print(keys)
+    # for sqlite, need to remove the index explicitly...
+    if "index" in keys:
+        keys = [x for x in dict_keys if x not in ["index"]]
+        print(keys)
     return keys
 
 # @click.command()
@@ -311,7 +335,8 @@ def get_all_cols(cur,
 # @click.argument('table', type=str)
 
 
-def main(cur, schema, table):
+def main_vertica(cur, schema, table,
+                 cache_results=False):
     """
     """
     # get the size of the table
@@ -329,17 +354,26 @@ def main(cur, schema, table):
     print(datetime.now())
 
     fname = "data/processed/{}_{}_col_info.json".format(schema, table)
-    if os.path.isfile(fname):
+    if os.path.isfile(fname) and cache_results:
         with open(fname, "r") as f:
             all_results = json.loads(f.read())
     else:
-        all_results = [get_col_stuff(cur, col, schema=schema,
-                                     table=table) for col in cols]
+        all_results = OrderedDict([(col,
+                                    pd.Series(get_col_stuff(cur, col, schema=schema,
+                                                            table_size=count,
+                                                            table=table), name=col))
+                                   for col in cols])
         print("Col info run complete")
-    for i in range(len(all_results)):
-        all_results[i]["col"] = cols[i]
-    with open(fname, "w") as f:
-        f.write(json.dumps(all_results, indent=4))
+        print(all_results)
+
+    # for i in range(len(all_results)):
+    #     all_results[i]["col"] = cols[i]
+
+    if cache_results:
+        with open(fname, "w") as f:
+            f.write(json.dumps(all_results, indent=4))
+
+    return all_results
 
     print(datetime.now())
 
@@ -375,8 +409,11 @@ def main(cur, schema, table):
     # print([y["corr_{0}".format(i+1)] for i,y in enumerate(x)])
     # corr_mat[i+1,:] = [y["corr_{0}".format(i+1)] for i,y in enumerate(x)]
     # print(datetime.now())
-    fname = "data/processed/{}_{}_col_corr.csv".format(schema, table)
-    np.savetxt(fname, corr_mat, delimeter=",")
+
+    if cache_results:
+        fname = "data/processed/{}_{}_col_corr.csv".format(schema, table)
+        np.savetxt(fname, corr_mat, delimeter=",")
+    return all_results
 
 
 def write_var_codes(cur):
@@ -420,6 +457,6 @@ if __name__ == "__main__":
 
     # schema = sys.argv[1]
     # table = sys.argv[2]
-    # main(cur, schema,table)
+    # main_vertica(cur, schema,table)
 
-    write_var_codes(cur)
+    # write_var_codes(cur)

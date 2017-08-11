@@ -1,4 +1,4 @@
 select
-    count(distinct {{ col }})
+    count(distinct {{ col }}) as count
 from
     {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
