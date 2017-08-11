@@ -209,7 +209,7 @@ def infer_coltype(col,
                   n: int,
                   schema: str,
                   table: str,
-                  verbose: bool = True):
+                  verbose: bool = False):
     if verbose:
         print("Inferring coltype for col={}".format(col))
     # infer from col name
@@ -247,7 +247,8 @@ def infer_coltype(col,
             if verbose:
                 print(type_code)
         val = x[0][col]
-        print(type(val))
+        if verbose:
+            print(type(val))
 
         query = unique_template.render({"col": col,
                                         "schema": schema,
@@ -258,7 +259,7 @@ def infer_coltype(col,
         # just define a local results object here...
         results = {"n_unique": unique}
         if results["n_unique"] == n:
-            coltype = "n_unique"
+            coltype = "UNIQUE"
         elif results["n_unique"] == 1:
             coltype = "CONST"
         elif results["n_unique"] / float(n) < 0.5:
@@ -293,6 +294,16 @@ def get_col_stuff(cur,
         results = get_continuous_stuff(cur, results, col, schema=schema, table=table)
     else:
         print("skipping details for col={}".format(col))
+    for key in ['25%', '5%', '50%', '75%', '95%', 'count',
+                'n_infinite', 'p_infinite',
+                'n_unique', 'p_unique', 'is_unique',
+                'n_missing', 'p_missing',
+                'p_zeros',
+                'freq', 'histogram', 'iqr',
+                'kurtosis', 'mad', 'max', 'mean', 'min', 'mini_histogram', 'cv',
+                'range', 'skewness', 'std', 'sum', 'top', 'type', 'variance', 'mode']:
+        if key not in results:
+            results[key] = np.nan
     return results
 
 
@@ -366,7 +377,7 @@ def main_vertica(cur, schema, table,
                                                             table=table), name=col))
                                    for col in cols])
         print("Col info run complete")
-        print(all_results)
+        # print(all_results)
 
     # for i in range(len(all_results)):
     #     all_results[i]["col"] = cols[i]

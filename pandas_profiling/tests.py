@@ -36,11 +36,10 @@ class DataFrameTest(unittest.TestCase):
 
         self.results = describePandas(self.df, verbose=True)
         self.test_dir = tempfile.mkdtemp()
-        self.test_dir = 'test_output'
-        # print(self.test_dir)
+        # self.test_dir = 'test_output'
 
-    # def tearDown(self):
-    #     shutil.rmtree(self.test_dir)
+    def tearDown(self):
+        shutil.rmtree(self.test_dir)
 
     def test_describe_df(self):
 
@@ -106,6 +105,18 @@ class DataFrameTest(unittest.TestCase):
         self.assertSetEqual(set(self.results['freq'].keys()), set(self.data.keys()))
         self.assertSetEqual(set(self.results['variables'].index), set(self.data.keys()))
 
+        print(set(self.results['table'].items()))
+        print(set({'CAT': 1,
+                   'CONST': 2,
+                   'DATE': 1,
+                   'NUM': 2,
+                   'UNIQUE': 1,
+                   'n': 9,
+                   'n_duplicates': 0,
+                   'nvar': 7,
+                   }.items()
+                  ))
+
         self.assertTrue(set({'CAT': 1,
                              'CONST': 2,
                              'DATE': 1,
@@ -139,9 +150,10 @@ class DataFrameTest(unittest.TestCase):
         html = to_html(self.df.head(), self.results)
         self.assertLess(1000, len(html))
 
-    def test_bins(self):
-        self.results = describePandas(self.df, bins=100)
-        self.test_describe_df()
+    # redundant
+    # def test_bins(self):
+    #     self.results = describePandas(self.df, bins=100)
+    #     self.test_describe_df()
 
     def test_export_to_file(self):
 
@@ -176,7 +188,7 @@ class CategoricalDataTest(unittest.TestCase):
         self.assertEqual(self.results2['table']['REJECTED'], 0)
 
 
-class SQLTest(DataFrameTest):
+class SQLTest(unittest.TestCase):
 
     def setUp(self):
         self.data = {'id': [chr(97 + c) for c in range(1, 10)],
@@ -209,6 +221,23 @@ class SQLTest(DataFrameTest):
         self.df.to_sql("test_table", conn)  # , schema="marketing")
 
         self.results = describeSQL(conn.cursor(), "test_table")
+        self.test_dir = tempfile.mkdtemp()
+        # self.test_dir = 'test_output'
+
+    def tearDown(self):
+        shutil.rmtree(self.test_dir)
+
+    def test_html_report(self):
+        html = to_html(self.df.head(), self.results)
+        self.assertLess(1000, len(html))
+
+    def test_export_to_file(self):
+
+        p = pandas_profiling.ProfileReport(self.df)
+        filename = os.path.join(self.test_dir, "profile_%s.html" % hash(self))
+        p.to_file(outputfile=filename)
+
+        self.assertLess(200, os.path.getsize(filename))
 
 
 if __name__ == '__main__':

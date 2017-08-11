@@ -455,7 +455,7 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
 
 
 def describeSQL(cur, table, schema="", bins=10,
-                verbose=True,
+                verbose=False,
                 check_correlation=True,
                 compute_responses=True,
                 bootstrap_response_error=False,
@@ -498,6 +498,14 @@ def describeSQL(cur, table, schema="", bins=10,
         print(stats_object["cat"])
     variable_stats = pd.concat(stats_object, join_axes=pd.Index([names]), axis=1)
     # variable_stats.columns.names = names
+
+    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT",
+                                       "UNIQUE", "CORR", "RECODED")})
+    table_stats.update(dict(variable_stats.loc['type'].value_counts()))
+    table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + \
+        table_stats['RECODED']
+
+    print(table_stats)
 
     return {'table': table_stats,
             'variables': variable_stats.T,
@@ -691,13 +699,13 @@ def to_html(sample, stats_object):
         else:
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                        templates.template('freq_table'), templates.template('freq_table_row'), 10)
-            if idx == 'cat':
-                print(stats_object['freq'][idx])
+            # if idx == 'cat':
+            #     print(stats_object['freq'][idx])
             formatted_values['firstn_expanded'] = extreme_obs_table(stats_object['freq'][idx], templates.template(
                 'freq_table'), templates.template('freq_table_row'), 5, n_obs, ascending=True)
             formatted_values['lastn_expanded'] = extreme_obs_table(stats_object['freq'][idx], templates.template(
                 'freq_table'), templates.template('freq_table_row'), 5, n_obs, ascending=False)
-
+        print(row['type'], idx)
         rows_html += templates.row_templates_dict[row['type']
                                                   ].render(values=formatted_values, row_classes=row_classes)
 
@@ -716,7 +724,8 @@ def to_html(sample, stats_object):
         messages_html += templates.message_row.format(message=msg)
 
     overview_html = templates.template('overview').render(
-        values=formatted_values, row_classes=row_classes, messages=messages_html)
+        values=formatted_values, row_classes=row_classes,
+        messages=messages_html)
 
     # Sample
 
