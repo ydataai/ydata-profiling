@@ -473,7 +473,8 @@ def describeSQL(cur, table, schema="", bins=10,
     # print(cur.execute("select * from test_table").fetchall()[0].keys())
     # print(cur.execute("select count(*) as count from test_table").fetchall()[0]["count"])
     # print(cur.execute(count_template.render({"schema": schema, "table": table})))
-    n_rows = cur.execute(count_template.render({"schema": schema, "table": table})).fetchall()[0]["count"]
+    cur.execute(count_template.render({"schema": schema, "table": table}))
+    n_rows = cur.fetchall()[0]["count"]
 
     stats_object = main_vertica(cur, schema, table)
     freq_object = {col: stats_object[col]["common"] for col in stats_object}

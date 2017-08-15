@@ -1,7 +1,8 @@
 select
     count(*) as count,
-    bucket,
-    ({{ max }} / {{ nbins }}) * bucket as left
+    bucket
+    -- this doesn't work with dates:
+    -- ({{ max }} / {{ nbins }}) * bucket as left
 from
     (
     select

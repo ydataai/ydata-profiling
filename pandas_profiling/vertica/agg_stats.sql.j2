@@ -1,8 +1,9 @@
 select
-    avg({{ col }}) as avg,
+    -- dates are sneaking through to this query
+    -- not for sqlite
+    {% if analytic|default(true,true) %}variance({{ col }}) as variance,{% endif %}
+    {% if analytic|default(true,true) %}avg({{ col }}) as avg,{% endif %}
     min({{ col }}) as min,
     max({{ col }}) as max
-    -- not for sqlite
-    -- variance({{ col }}) as variance
 from
     {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}

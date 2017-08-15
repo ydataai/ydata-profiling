@@ -84,7 +84,8 @@ def get_basic_stats(cur,
     vartype = results["type"]
 
     # if datetime or string, don't count zeroes
-    if vartype in ["CAT"]:
+    # if vartype in ["CAT"]:
+    if True:
         count_templates = [unique_template, null_template]
         count_template_names = ["n_unique", "n_missing"]
     elif vartype in ["DATE"]:
@@ -94,10 +95,13 @@ def get_basic_stats(cur,
         count_templates = [unique_template, null_template, zero_template, inf_template]
         count_template_names = ["n_unique", "n_missing", "n_zeros", "n_infinite"]
 
+    # only use analytic functions if on Vertica
+    analytic = (type(cur) == vertica_python.vertica.cursor.Cursor)
     for i, t in enumerate(count_templates):
         query = t.render({"col": col,
                           "schema": schema,
-                          "table": table})
+                          "table": table,
+                          "analytic": analytic})
         cur.execute(query)
         x = cur.fetchall()
         unique = x[0]["count"]
@@ -119,11 +123,13 @@ def get_basic_stats(cur,
     elif vartype == "DATE":
         query = agg_stats_date_template.render({"col": col,
                                                 "schema": schema,
-                                                "table": table})
+                                                "table": table,
+                                                "analytic": analytic})
     else:
         query = agg_stats_template.render({"col": col,
                                            "schema": schema,
-                                           "table": table})
+                                           "table": table,
+                                           "analytic": analytic})
 
     cur.execute(query)
     a = cur.fetchall()
@@ -210,10 +216,20 @@ def infer_coltype(col,
                   schema: str,
                   table: str,
                   verbose: bool = False):
+    """Infer col type!
+
+    There are four checks for the column type:
+    1) Look to see if it is explicit in the col name.
+    If it is, done! Else:
+    2a) Check for a type_code with the database.
+    2b) Check the type of the variable as returned to python from database.
+    If it's a date or string, done! Else, it's a number:
+    3a) Check how many distinct values, decide.
+    """
+
     if verbose:
         print("Inferring coltype for col={}".format(col))
     # infer from col name
-    coltype = ""
     coltypes = {"ordinal": "CAT",
                 "flat": "CAT",
                 "interval": "CAT",
@@ -223,55 +239,57 @@ def infer_coltype(col,
                 "nominal": "CAT"}
     for x in coltypes:
         if x in col:
-            coltype = coltypes[x]
+            return coltypes[x]
 
-    # infer col type from stats
-    # this could use a lot of improvment
-    # 1) get the column type in vertica
-    # 2) attempt to cast as an int/float
-    if coltype == "":
-        # infer from vertica
-        query = type_template.render({"col": col,
-                                      "schema": schema,
-                                      "table": table})
-        cur.execute(query)
-        x = cur.fetchall()
+    # get a sample
+    query = type_template.render({"col": col,
+                                  "schema": schema,
+                                  "table": table})
+    cur.execute(query)
+    x = cur.fetchall()
+    if verbose:
+        print(x)
+        print(cur.description)
+        print(cur.description[0])
+        print(type(cur.description[0]))
+
+    # infer from vertica type code
+    if type(cur) == vertica_python.vertica.cursor.Cursor or type(cur.description[0]) != tuple:
+        type_code = cur.description[0].type_code
         if verbose:
-            print(x)
-            print(cur.description)
-            print(cur.description[0])
-            print(type(cur.description[0]))
-        if type(cur.description[0]) != tuple:
-            # "type_code" in cur.description[0]:
-            type_code = cur.description[0].type_code
-            if verbose:
-                print(type_code)
+            print(type_code)
+        if type_code in [8, 9]:
+            return "STRING"
+        elif type_code in [10, 11, 12, 13, 14, 15]:
+            return "DATE"
+    # infer from the type
+    else:
         val = x[0][col]
         if verbose:
             print(type(val))
+        if type(val) == str:
+            return "STRING"
 
-        query = unique_template.render({"col": col,
-                                        "schema": schema,
-                                        "table": table})
-        cur.execute(query)
-        x = cur.fetchall()
-        unique = x[0]["count"]
-        # just define a local results object here...
-        results = {"n_unique": unique}
-        if results["n_unique"] == n:
-            coltype = "UNIQUE"
-        elif results["n_unique"] == 1:
-            coltype = "CONST"
-        elif results["n_unique"] / float(n) < 0.5:
-            coltype = "NUM"
-        # how to distinguish nominal and ordinal?
-        # use the col type in Vertica: strings -> nominal, numeric -> ordinal
-        elif results["n_unique"] < 500:
-            coltype = "CAT"
-        else:
-            coltype = "NUM"
-
-    return coltype
+    query = unique_template.render({"col": col,
+                                    "schema": schema,
+                                    "table": table})
+    cur.execute(query)
+    x = cur.fetchall()
+    unique = x[0]["count"]
+    # just define a local results object here...
+    results = {"n_unique": unique}
+    if results["n_unique"] == n:
+        return "UNIQUE"
+    elif results["n_unique"] == 1:
+        return "CONST"
+    elif results["n_unique"] / float(n) < 0.5:
+        return "NUM"
+    # how to distinguish nominal and ordinal?
+    # use the col type in Vertica: strings -> nominal, numeric -> ordinal
+    elif results["n_unique"] < 500:
+        return "CAT"
+    else:
+        return "NUM"
 
 
 def get_col_stuff(cur,
@@ -361,7 +379,7 @@ def main_vertica(cur, schema, table,
     # use this when inferring col type
     print(datetime.now())
 
-    cols = get_all_cols(cur)
+    cols = get_all_cols(cur, schema=schema)
     print(len(cols))
 
     print(datetime.now())
