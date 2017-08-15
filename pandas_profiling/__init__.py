@@ -2,6 +2,7 @@ import codecs
 from .templates import template
 from .base import describePandas, describeSQL, to_html
 import pandas as pd
+from jinja2 import Template
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
@@ -60,12 +61,17 @@ class ProfileReport(object):
 
 
 class ProfileReportSQL(ProfileReport):
-    def __init__(self, cur, schema, table, **kwargs):
-
-        sample = pd.DataFrame(cur.execute("""select * from {}.{} limit 5""".format(schema, table)).fetchall())
+    def __init__(self, cur, table, schema="", **kwargs):
+        sample_template = Template("""select
+            *
+        from
+            {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
+        limit 5""")
+        cur.execute(sample_template.render({"table": table, "schema": schema}))
+        sample = pd.DataFrame(cur.fetchall())
         # print(sample)
 
-        description_set = describeSQL(cur, schema, table, **kwargs)
+        description_set = describeSQL(cur, table, schema=schema, **kwargs)
 
         self.html = to_html(sample,
                             description_set)
