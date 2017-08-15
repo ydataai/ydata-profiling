@@ -1,0 +1,16 @@
+select
+    count(*) as count,
+    bucket,
+    avg({{ target_col }}) as target,
+    ({{ max }} / {{ nbins }}) * bucket as left
+from
+    (
+    select
+        {{ col }},
+        {{ target_col }},
+        WIDTH_BUCKET({{ col }}, {{ min }}, {{ max }}, {{ nbins }}) as bucket
+    from
+        {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
+    ) as bucketed
+group by bucket
+order by bucket

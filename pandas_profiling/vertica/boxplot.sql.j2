@@ -1,0 +1,9 @@
+select
+    PERCENTILE_DISC(.05) WITHIN GROUP (ORDER BY {{ col }}) OVER () as '5',
+    PERCENTILE_DISC(.25) WITHIN GROUP (ORDER BY {{ col }}) OVER () as '25',
+    PERCENTILE_DISC(.5) WITHIN GROUP (ORDER BY {{ col }}) OVER () as '50',
+    PERCENTILE_DISC(.75) WITHIN GROUP (ORDER BY {{ col }}) OVER () as '75',
+    PERCENTILE_DISC(.95) WITHIN GROUP (ORDER BY {{ col }}) OVER () as '95'
+from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
+limit 1

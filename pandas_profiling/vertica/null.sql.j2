@@ -1,0 +1,9 @@
+select
+    count(*) as count
+from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
+where
+    {{ col }} is null
+-- https://my.vertica.com/docs/7.0.x/HTML/Content/Authoring/SQLReferenceManual/DataTypes/Numeric/DOUBLEPRECISIONFLOAT.htm
+or
+    {{ col }} != {{ col }}

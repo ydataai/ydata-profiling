@@ -1,0 +1,10 @@
+select
+    count(*) as count
+from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
+where
+    -- {{ col }} == 1/0
+    {{ col }} == 'infinity'
+or
+    -- {{ col }} == -1/0
+    {{ col }} == '-infinity'

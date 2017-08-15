@@ -5,7 +5,7 @@
             <table class="stats ">
                 <tr>
                     <th>Distinct count</th>
-                    <td>{{ values['distinct_count'] }}</td>
+                    <td>{{ values['n_unique'] }}</td>
                 </tr>
                 <tr>
                     <th>Unique (%)</th>
@@ -70,6 +70,10 @@
                                                   data-toggle="tab">Statistics</a></li>
         <li role="presentation"><a href="#histogram{{ values['varid'] }}" aria-controls="histogram{{ values['varid'] }}"
                                    role="tab" data-toggle="tab">Histogram</a></li>
+
+{% if values['response'] | length > 0 %}                <li role="presentation"><a href="#response{{ values['varid'] }}" aria-controls="response{{ values['varid'] }}"
+                                           role="tab" data-toggle="tab">Response</a></li>{% endif %}
+
         <li role="presentation"><a href="#common{{ values['varid'] }}" aria-controls="common{{ values['varid'] }}"
                                    role="tab" data-toggle="tab">Common Values</a></li>
         <li role="presentation"><a href="#extreme{{ values['varid'] }}" aria-controls="extreme{{ values['varid'] }}"
@@ -164,6 +168,9 @@
         </div>
         <div role="tabpanel" class="tab-pane col-md-8 col-md-offset-2" id="histogram{{ values['varid'] }}">
             <img src="{{ values['histogram'] }}"/>
+        </div>
+        <div role="tabpanel" class="tab-pane col-md-8 col-md-offset-2" id="response{{ values['varid'] }}">
+            <img src="{{ values['response'] }}"/>
         </div>
         <div role="tabpanel" class="tab-pane col-md-12" id="common{{ values['varid'] }}">
             {{ values['freqtable'] }}

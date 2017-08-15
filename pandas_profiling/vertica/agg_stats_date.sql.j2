@@ -1,0 +1,5 @@
+select
+    min({{ col }}) as min,
+    max({{ col }}) as max
+from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}

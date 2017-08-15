@@ -1,0 +1,63 @@
+{
+    "0": [
+        "BINARY",
+        "LONG VARBINARY",
+        "INTERVAL YTM"
+    ],
+    "17": [
+        "VARBINARY",
+        "BYTEA",
+        "RAW"
+    ],
+    "5": [
+        "BOOLEAN"
+    ],
+    "8": [
+        "CHAR"
+    ],
+    "9": [
+        "VARCHAR",
+        "LONG VARCHAR"
+    ],
+    "10": [
+        "DATE"
+    ],
+    "12": [
+        "DATETIME",
+        "SMALLDATETIME",
+        "TIMESTAMP"
+    ],
+    "11": [
+        "TIME"
+    ],
+    "15": [
+        "TIME WITHTIMEZONE"
+    ],
+    "13": [
+        "TIMESTAMP WITHTIMEZONE"
+    ],
+    "14": [
+        "INTERVAL DTM"
+    ],
+    "7": [
+        "DOUBLE PRECISION",
+        "FLOAT",
+        "FLOAT8",
+        "FLOAT16",
+        "REAL"
+    ],
+    "6": [
+        "INTEGER",
+        "INT",
+        "BIGINT",
+        "INT8",
+        "SMALLINT",
+        "TINYINT"
+    ],
+    "16": [
+        "DECIMAL",
+        "NUMERIC",
+        "NUMBER",
+        "MONEY"
+    ]
+}

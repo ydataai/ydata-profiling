@@ -1,0 +1,9 @@
+select
+    -- dates are sneaking through to this query
+    -- not for sqlite
+    {% if analytic|default(true,true) %}variance({{ col }}) as variance,{% endif %}
+    {% if analytic|default(true,true) %}avg({{ col }}) as avg,{% endif %}
+    min({{ col }}) as min,
+    max({{ col }}) as max
+from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}

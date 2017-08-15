@@ -1,0 +1,7 @@
+select
+{% for col1,col2 in cols %}    corr({{ col1 }},{{ col2 }})
+    as
+        corr_{{ loop.index }}{% if not loop.last %},{% endif %}
+{% endfor %}
+from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}

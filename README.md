@@ -1,5 +1,5 @@
-#pandas-profiling 
-Generates profile reports from a pandas DataFrame. The *df.describe()* function is great but a little basic for serious exploratory data analysis. 
+#pandas-profiling
+Generates profile reports from a pandas DataFrame. The *df.describe()* function is great but a little basic for serious exploratory data analysis.
 
 For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:
 
@@ -20,7 +20,7 @@ For each column the following statistics - if relevant for the column type - are
 You can install using the pip package manager by running
 
     pip install pandas-profiling
-    
+
 ### Using conda
 You can install using the conda package manager by running
 
@@ -34,10 +34,10 @@ Download the source code by cloning the repo or by pressing 'Download ZIP' on th
     python setup.py install
 
 ## Usage
-The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
+The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser.
 
 ### Jupyter Notebook (formerly IPython)
-We recommend generating reports interactively by using the Jupyter notebook. 
+We recommend generating reports interactively by using the Jupyter notebook.
 
 Start by loading in your pandas DataFrame, e.g. by using
 
@@ -48,7 +48,7 @@ Start by loading in your pandas DataFrame, e.g. by using
 To display the report in a Jupyter notebook, run:
 
 	pandas_profiling.ProfileReport(df)
-	
+
 To retrieve the list of variables which are rejected due to high correlation:
 
     profile = pandas_profiling.ProfileReport(df)
@@ -74,4 +74,13 @@ for information about options and arguments.
 * matplotlib  (>=1.4)
 * six (>=1.9)
 
+### Key differences between SQL backends
 
+The SQL backend implementation was originally intention to work with HP's Vertica database engine.
+For testing purposes, Python's sqlite module is used.
+There are some differences that have necessitated a (mostly unnecessary) generality to the code:
+
+- SQLite does not support "schemas": schema is optional on all functions and in the templates
+- SQLite does not support "analytic" functions, such as AVG, PARTITION_BY, etc: these computations are avoided by the analytic option in the templates
+- SQLite names the column from `select count(*) ...` as `count(*)`: these statements are changed to `select count(*) as count, ...`
+- The variable type as stored in the database is unclear in SQLite: the `infer_datatype()` function wraps this code in a `try` clause

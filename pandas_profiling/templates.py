@@ -71,7 +71,7 @@ messages = dict()
 messages['CONST'] = u'{0[varname]} has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
 messages['CORR'] = u'{0[varname]} is highly correlated with {0[correlation_var]} (ρ = {0[correlation]}) <span class="label label-primary">Rejected</span>'
 messages['RECODED'] = u'{0[varname]} is a recoding of {0[correlation_var]} <span class="label label-primary">Rejected</span>'
-messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
+messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[n_unique]} distinct values  <span class="label label-warning">Warning</span>'
 messages['n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
 messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})'
 messages['p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'

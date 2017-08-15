@@ -1,0 +1,4 @@
+select
+    count(*) as count
+from
+    {% if schema | length > 0 %}{{ schema }}.{% endif %}{{ table }}
