@@ -70,12 +70,16 @@ def get_basic_stats(cur,
                     col: str,
                     n: int = 100,
                     schema: str = "marketing",
-                    table: str = "test_table") -> dict:
+                    table: str = "test_table",
+                    analytic: bool = True) -> dict:
     """Get the basic statistics for the given column.
 
     Needs a vertica_python cursor,
     the dictionary of results,
     and the column to be analyzed.
+
+    If analytic is true, try to get the analytic functions.
+    Will check database compat.
 
     Ref for column types:
     https://github.com/uber/vertica-python/blob/edd8ccba72ffdf076888a85eea43b7b11a050077/vertica_python/datatypes.py
@@ -85,6 +89,7 @@ def get_basic_stats(cur,
 
     # if datetime or string, don't count zeroes
     # if vartype in ["CAT"]:
+    # TODO
     if True:
         count_templates = [unique_template, null_template]
         count_template_names = ["n_unique", "n_missing"]
@@ -96,7 +101,9 @@ def get_basic_stats(cur,
         count_template_names = ["n_unique", "n_missing", "n_zeros", "n_infinite"]
 
     # only use analytic functions if on Vertica
-    analytic = (type(cur) == vertica_python.vertica.cursor.Cursor)
+    # if analytic is passed to be true, try it
+    if analytic:
+        analytic = (type(cur) == vertica_python.vertica.cursor.Cursor)
     for i, t in enumerate(count_templates):
         query = t.render({"col": col,
                           "schema": schema,
@@ -117,7 +124,7 @@ def get_basic_stats(cur,
     results["common"].replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan,
                               inplace=True)
     # string
-    if vartype in ["CAT", "CONST", "UNIQUE"]:
+    if vartype in ["CONST", "UNIQUE", "IGNORE", "STRING"]:
         return results
     # datetime
     elif vartype == "DATE":
@@ -233,9 +240,9 @@ def infer_coltype(col,
     coltypes = {"ordinal": "CAT",
                 "flat": "CAT",
                 "interval": "CAT",
-                "passthrough": "ignore",
+                "passthrough": "IGNORE",
                 "continuous": "NUM",
-                "ignore": "ignore",
+                "ignore": "IGNORE",
                 "nominal": "CAT"}
     for x in coltypes:
         if x in col:
@@ -253,22 +260,28 @@ def infer_coltype(col,
         print(cur.description[0])
         print(type(cur.description[0]))
 
+    # use this flag to check for unique, constant within string
+    str_type = False
     # infer from vertica type code
     if type(cur) == vertica_python.vertica.cursor.Cursor or type(cur.description[0]) != tuple:
         type_code = cur.description[0].type_code
         if verbose:
             print(type_code)
         if type_code in [8, 9]:
-            return "STRING"
+            str_type = True
         elif type_code in [10, 11, 12, 13, 14, 15]:
             return "DATE"
+        # ignore booleans...
+        # TODO
+        elif type_code in [5]:
+            return "IGNORE"
     # infer from the type
     else:
         val = x[0][col]
         if verbose:
             print(type(val))
         if type(val) == str:
-            return "STRING"
+            str_type = True
 
     query = unique_template.render({"col": col,
                                     "schema": schema,
@@ -282,8 +295,10 @@ def infer_coltype(col,
         return "UNIQUE"
     elif results["n_unique"] == 1:
         return "CONST"
-    elif results["n_unique"] / float(n) < 0.5:
-        return "NUM"
+    elif str_type:
+        return "STRING"
+    # elif results["n_unique"] / float(n) < 0.5:
+    #     return "NUM"
     # how to distinguish nominal and ordinal?
     # use the col type in Vertica: strings -> nominal, numeric -> ordinal
     elif results["n_unique"] < 500:
@@ -302,10 +317,17 @@ def get_col_stuff(cur,
 
     # first get the column type
     coltype = infer_coltype(col, cur, table_size, schema, table)
+    # map these onto something that pandas_profiling already knows
+    if coltype in ["IGNORE", "STRING"]:
+        coltype = "UNIQUE"
     results = {"type": coltype}
     # now get basic stats
     # some branching based on the coltype in basic_stats
-    results = get_basic_stats(cur, results, col, schema=schema, table=table)
+    # if coltype not in ["STRING", "IGNORE", "UNIQUE", "CONST"]:
+    results = get_basic_stats(cur, results, col,
+                              schema=schema,
+                              table=table,
+                              n=table_size)
     if coltype == "CAT":
         results = get_ordinal_stuff(cur, results, col, schema=schema, table=table)
     elif coltype == "NUM":
