@@ -39,10 +39,13 @@ def pretty_name(x):
 
 
 def get_vartype(data):
+    # TODO: Shall not be computed several times
     distinct_count=data.nunique(dropna=False)
     leng=len(data)
     if distinct_count <=1:
         return 'CONST'
+    elif pd.api.types.is_bool_dtype(data):
+        return 'BOOL'
     elif pd.api.types.is_numeric_dtype(data):
         return 'NUM'
     elif pd.api.types.is_datetime64_dtype(data):
@@ -187,6 +190,17 @@ def describe_categorical_1d(data):
 
     return pd.Series(result, index=names, name=data.name)
 
+def describe_boolean_1d(data):
+    # Only run if at least 1 non-missing value
+    objcounts = data.value_counts()
+    top, freq = objcounts.index[0], objcounts.iloc[0]
+    mean = data.mean()
+    names = []
+    result = []
+    names += ['top', 'freq', 'type', 'mean']
+    result += [top, freq, 'BOOL', mean]
+
+    return pd.Series(result, index=names, name=data.name)
 
 def describe_constant_1d(data):
     return pd.Series(['CONST'], index=['type'], name=data.name)
@@ -230,8 +244,11 @@ def describe_1d(data, **kwargs):
     result = pd.Series(results_data, name=data.name)
 
     vartype = get_vartype(data)
+    # TODO: replace by a more compact notation
     if vartype == 'CONST':
         result = result.append(describe_constant_1d(data))
+    elif vartype == 'BOOL':
+        result = result.append(describe_boolean_1d(data, **kwargs))
     elif vartype == 'NUM':
         result = result.append(describe_numeric_1d(data, **kwargs))
     elif vartype == 'DATE':
@@ -330,7 +347,7 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
     table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
 
-    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED")})
+    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED", "BOOL")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
@@ -394,7 +411,7 @@ def to_html(sample, stats_object):
                                        label_in_bar=label_in_bar,
                                        label_after_bar=label_after_bar)
 
-    def freq_table(freqtable, n, table_template, row_template, max_number_to_print):
+    def freq_table(freqtable, n, table_template, row_template, max_number_to_print, nb_col=6):
 
         freq_rows_html = u''
 
@@ -424,7 +441,7 @@ def to_html(sample, stats_object):
         if freq_missing > min_freq:
             freq_rows_html += _format_row(freq_missing, "(Missing)", max_freq, row_template, n, extra_class='missing')
 
-        return table_template.render(rows=freq_rows_html, varid=hash(idx))
+        return table_template.render(rows=freq_rows_html, varid=hash(idx), nb_col=nb_col)
 
     def extreme_obs_table(freqtable, table_template, row_template, number_to_print, n, ascending = True):
         if ascending:
@@ -457,9 +474,12 @@ def to_html(sample, stats_object):
             if row_classes[col] == "alert" and col in templates.messages:
                 messages.append(templates.messages[col].format(formatted_values, varname = formatters.fmt_varname(idx)))
 
-        if row['type'] == 'CAT':
+        if row['type'] in {'CAT', 'BOOL'}:
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
-                                                           templates.template('mini_freq_table'), templates.template('mini_freq_table_row'), 3)
+                                                           templates.template('mini_freq_table'), 
+                                                           templates.template('mini_freq_table_row'), 
+                                                           3, 
+                                                           templates.mini_freq_table_nb_col[row['type']])
 
             if row['distinct_count'] > 50:
                 messages.append(templates.messages['HIGH_CARDINALITY'].format(formatted_values, varname = formatters.fmt_varname(idx)))

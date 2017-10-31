@@ -31,7 +31,9 @@ class DataFrameTest(unittest.TestCase):
                                   datetime.datetime(1990, 12, 9), np.nan,
                                   datetime.datetime(
                                       1990, 12, 9), datetime.datetime(1950, 12, 9),
-                                  datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9), datetime.datetime(1950, 12, 9)]}
+                                  datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9), datetime.datetime(1950, 12, 9)],
+                     'bool': [True, True, False, True, False, True, True, False, True]
+                     }
         self.df = pd.DataFrame(self.data)
         self.df['somedate'] = pd.to_datetime(self.df['somedate'])
 
@@ -74,6 +76,13 @@ class DataFrameTest(unittest.TestCase):
                                    'n_missing': 1, 'p_missing': 0.11111111111111116, 'p_unique': 7/9,
                                    'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN,
                                    'top': 'c', 'type': 'CAT', 'variance': check_is_NaN}
+        expected_results['bool'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN, 'count': 9, 'n_infinite': 0, 'p_infinite': 0,
+                                   'cv': check_is_NaN, 'distinct_count': 2, 'freq': 6, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
+                                   'is_unique': False, 'kurtosis': check_is_NaN, 'mad': check_is_NaN, 'max': check_is_NaN, 'mean': 2/3,
+                                   'min': check_is_NaN, 'mini_histogram': check_is_NaN, 'mode': True,
+                                   'n_missing': 0, 'p_missing': 0, 'p_unique': 2/9,
+                                   'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN,
+                                   'top': True, 'type': 'BOOL', 'variance': check_is_NaN}
         expected_results['s1'] = {'25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN, 'count': 9, 'n_infinite': 0, 'p_infinite': 0,
                                   'cv': check_is_NaN, 'distinct_count': 1, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
                                   'is_unique': False, 'kurtosis': check_is_NaN, 'mad': check_is_NaN, 'max': check_is_NaN, 'mean': check_is_NaN,
@@ -106,18 +115,19 @@ class DataFrameTest(unittest.TestCase):
             set(self.results['freq'].keys()), set(self.data.keys()))
         self.assertSetEqual(
             set(self.results['variables'].index), set(self.data.keys()))
-
+        print((self.results['table'].items()))
         self.assertTrue(set({'CAT': 1,
                                        'CONST': 2,
                                        'DATE': 1,
                                        'NUM': 2,
                                        'UNIQUE': 1,
+                                       'BOOL': 1,
                                        'n': 9,
                                        'n_duplicates': 0,
-                                       'nvar': 7,
+                                       'nvar': 8
                                        }.items()).issubset(set(self.results['table'].items())))
 
-        self.assertAlmostEqual(0.063492063492063489,
+        self.assertAlmostEqual(0.055555555555555552,
                                self.results['table']['total_missing'], 7)
         # Loop over variables
         for col in self.data.keys():
