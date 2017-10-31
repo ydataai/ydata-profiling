@@ -220,7 +220,7 @@ def describe_1d(data, **kwargs):
                     'n_infinite': n_infinite,
                     'is_unique': distinct_count == leng,
                     'mode': mode,
-                    'p_unique': distinct_count / count}
+                    'p_unique': distinct_count / leng}
     try:
         # pandas 0.17 onwards
         results_data['memorysize'] = data.memory_usage()
