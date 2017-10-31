@@ -244,11 +244,6 @@ def describe_1d(data, **kwargs):
     result = pd.Series(results_data, name=data.name)
 
     vartype = get_vartype(data)
-<<<<<<< HEAD
-
-=======
-    # TODO: replace by a more compact notation
->>>>>>> 2bccafb390fd6bc19597fd314cd8d8816a70a56d
     if vartype == 'CONST':
         result = result.append(describe_constant_1d(data))
     elif vartype == 'BOOL':
