@@ -39,6 +39,10 @@
                 <td>{{ values['CAT'] }} </td>
             </tr>
             <tr>
+                <th>Boolean</th>
+                <td>{{ values['BOOL'] }} </td>
+            </tr>
+            <tr>
                 <th>Date</th>
                 <td>{{ values['DATE'] }} </td>
             </tr>
@@ -53,8 +57,11 @@
             </tbody>
         </table>
     </div>
+    {% if messages %}
     <div class="col-md-12" style="padding-left: 1em;">
+        
         <p class="h4">Warnings</p>
         <ul class="list-unstyled">{{ messages }} </ul>
     </div>
+    {% endif %}
 </div>

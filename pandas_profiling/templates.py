@@ -16,6 +16,7 @@ templates = {'freq_table_row': 'freq_table_row.html',
              'row_num': 'row_num.html',
              'row_date': 'row_date.html',
              'row_cat': 'row_cat.html',
+             'row_bool': 'row_bool.html',
              'row_corr': 'row_corr.html',
              'row_recoded': 'row_recoded.html',
              'row_const': 'row_const.html',
@@ -31,6 +32,7 @@ var_type = {'NUM': 'Numeric',
             'DATE': 'Date',
             'CAT': 'Categorical',
             'UNIQUE': 'Categorical, Unique',
+            'BOOL': 'Boolean',
             'CONST': 'Constant',
             'CORR': 'Highly correlated',
             'RECODED': 'Recoded'
@@ -61,11 +63,15 @@ row_templates_dict = {'NUM': template('row_num'),
                       'DATE': template('row_date'),
                       'DISCRETE': template('row_num'),
                       'CAT': template('row_cat'),
+                      'BOOL': template('row_bool'),
                       'UNIQUE': template('row_unique'),
                       'CONST': template('row_const'),
                       'CORR': template('row_corr'),
                       'RECODED': template('row_recoded')
                       }
+
+# The number of column to use in the display of the frequency table according to the category
+mini_freq_table_nb_col = {'CAT': 6, 'BOOL': 3}
 
 messages = dict()
 messages['CONST'] = u'{0[varname]} has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
