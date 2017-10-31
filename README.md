@@ -1,4 +1,5 @@
-#pandas-profiling 
+# pandas-profiling 
+
 Generates profile reports from a pandas DataFrame. The *df.describe()* function is great but a little basic for serious exploratory data analysis. 
 
 For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:
@@ -9,19 +10,20 @@ For each column the following statistics - if relevant for the column type - are
 * **Most frequent values**
 * **Histogram**
 
-
 ## Demo
 
 [Click here](http://nbviewer.ipython.org/github/JosPolfliet/pandas-profiling/blob/master/examples/meteorites.ipynb) to see a live demo.
 
-
 ## Installation
+
 ### Using pip
+
 You can install using the pip package manager by running
 
     pip install pandas-profiling
     
 ### Using conda
+
 You can install using the conda package manager by running
 
     conda install -c jos_pol pandas-profiling
@@ -29,19 +31,23 @@ You can install using the conda package manager by running
 I haven't found yet if it is possible to upload it to the main repo (to just be able to type 'conda install pandas-profiling'). Please give me a ping if you have done this.
 
 ### From source
+
 Download the source code by cloning the repo or by pressing 'Download ZIP' on this page. Install by navigating to the proper directory and running
 
     python setup.py install
 
 ## Usage
+
 The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
 
 ### Jupyter Notebook (formerly IPython)
+
 We recommend generating reports interactively by using the Jupyter notebook. 
 
 Start by loading in your pandas DataFrame, e.g. by using
 
 	import pandas as pd
+    import pandas_profiling
 
 	df=pd.read_csv("/myfilepath/myfile.csv", parse_dates=True, encoding='UTF-8')
 
@@ -60,6 +66,7 @@ If you want to generate a HTML report file, save the ProfileReport to an object 
     profile.to_file(outputfile="/tmp/myoutputfile.html")
 
 ### Python
+
 For standard formatted CSV files that can be read immediately by pandas, you can use the **profile_csv.py** script. Run
 
 	python profile_csv.py -h
