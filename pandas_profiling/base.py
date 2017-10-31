@@ -191,15 +191,9 @@ def describe_categorical_1d(data):
     return pd.Series(result, index=names, name=data.name)
 
 def describe_boolean_1d(data):
-<<<<<<< HEAD
     objcounts = data.value_counts()
     top, freq = objcounts.index[0], objcounts.iloc[0]
     # The mean of boolean is an interesting information
-=======
-    # Only run if at least 1 non-missing value
-    objcounts = data.value_counts()
-    top, freq = objcounts.index[0], objcounts.iloc[0]
->>>>>>> 2bccafb390fd6bc19597fd314cd8d8816a70a56d
     mean = data.mean()
     names = []
     result = []
