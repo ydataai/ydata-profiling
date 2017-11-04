@@ -79,9 +79,9 @@ messages['CORR'] = u'{0[varname]} is highly correlated with {0[correlation_var]}
 messages['RECODED'] = u'{0[varname]} is a recoding of {0[correlation_var]} <span class="label label-primary">Rejected</span>'
 messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
 messages['n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
-messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})'
+messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})  <span class="label label-info">Skewed</span>'
 messages['p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'
 messages['p_infinite'] = u'{varname} has {0[n_infinite]} / {0[p_infinite]} infinite values <span class="label label-default">Infinite</span>'
-messages['p_zeros'] = u'{varname} has {0[n_zeros]} / {0[p_zeros]} zeros'
+messages['p_zeros'] = u'{varname} has {0[n_zeros]} / {0[p_zeros]} zeros <span class="label label-info">Zeros</span>'
 
 message_row = u'<li>{message}</li>'
