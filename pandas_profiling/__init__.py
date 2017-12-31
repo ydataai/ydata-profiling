@@ -33,8 +33,8 @@ class ProfileReport(object):
             threshold: float (optional)
                 correlation value which is above the threshold are rejected
         """
-        variable_profile = self.description_set['variables']
-        return variable_profile.index[variable_profile.correlation > threshold].tolist()
+        variable_profile = self.description_set['variables']        
+        return variable_profile.index[variable_profile.correlation > threshold].tolist() if hasattr(variable_profile, 'correlation') else []
 
     def to_file(self, outputfile=DEFAULT_OUTPUTFILE):
 
