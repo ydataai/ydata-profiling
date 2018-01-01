@@ -1,6 +1,7 @@
 import codecs
-from .templates import template
-from .base import describe, to_html
+import pandas_profiling.templates as templates
+from .describe import describe
+from .report import to_html
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
@@ -33,8 +34,8 @@ class ProfileReport(object):
             threshold: float (optional)
                 correlation value which is above the threshold are rejected
         """
-        variable_profile = self.description_set['variables']        
-        return variable_profile.index[variable_profile.correlation > threshold].tolist() if hasattr(variable_profile, 'correlation') else []
+        variable_profile = self.description_set['variables']
+        return variable_profile.index[variable_profile.correlation > threshold].tolist()
 
     def to_file(self, outputfile=DEFAULT_OUTPUTFILE):
 
