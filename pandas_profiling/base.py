@@ -17,7 +17,8 @@ except ImportError:
 import base64
 
 import matplotlib
-matplotlib.use('Agg')
+# Fix #68, this call is not needed and brings side effects in some use cases
+# matplotlib.use('Agg')
 
 import numpy as np
 import pandas as pd
