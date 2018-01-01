@@ -1,6 +1,5 @@
 # coding=UTF-8
-
-'''This file contains all templates used for generating the HTML profile report'''
+"""Contains all templates used for generating the HTML profile report"""
 
 from jinja2 import Environment, PackageLoader
 
