@@ -18,12 +18,17 @@ import base64
 
 import matplotlib
 # Fix #68, this call is not needed and brings side effects in some use cases
-# matplotlib.use('Agg')
+# Backend name specifications are not case-sensitive; e.g., ‘GTKAgg’ and ‘gtkagg’ are equivalent.
+# See https://matplotlib.org/faq/usage_faq.html#what-is-a-backend
+BACKEND = 'Agg'
+if matplotlib.get_backend().lower() != BACKEND.lower():
+    # If backend is not set properly a call to describe will hang
+    matplotlib.use(BACKEND)
+from matplotlib import pyplot as plt
 
 import numpy as np
 import pandas as pd
 import pandas_profiling.formatters as formatters, pandas_profiling.templates as templates
-from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 import six
 import multiprocessing
