@@ -1,37 +1,53 @@
 # -*- coding: utf-8 -*-
-from pandas_profiling.plot import histogram, mini_histogram
+"""Compute statistical description of datasets"""
+import multiprocessing
+import itertools
+from functools import partial
 import numpy as np
 import pandas as pd
 import matplotlib
-from pandas_profiling.base import get_vartype
-import pandas_profiling.formatters as formatters
-import six
-import multiprocessing
-import itertools
-from pkg_resources import resource_filename
-from functools import partial
 
-def pretty_name(x):
-    x *= 100
-    if x == int(x):
-        return '%.0f%%' % x
-    else:
-        return '%.1f%%' % x
+from pkg_resources import resource_filename
+import pandas_profiling.formatters as formatters
+import pandas_profiling.base as base
+from pandas_profiling.plot import histogram, mini_histogram
 
 def describe_numeric_1d(series, **kwargs):
-    stats = {'mean': series.mean(), 'std': series.std(), 'variance': series.var(), 'min': series.min(),
-            'max': series.max()}
-    stats['range'] = stats['max'] - stats['min']
+    """Compute summary statistics of a numerical (`TYPE_NUM`) variable (a Series).
 
-    for x in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
-        stats[pretty_name(x)] = series.dropna().quantile(x) # The dropna() is a workaround for https://github.com/pydata/pandas/issues/13098
+    Also create histograms (mini an full) of its distribution.
+
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
+    # Format a number as a percentage. For example 0.25 will be turned to 25%.
+    _percentile_format = "{:.0%}"
+    stats = dict()
+    stats['type'] = base.TYPE_NUM
+    stats['mean'] = series.mean()
+    stats['std'] = series.std()
+    stats['variance'] = series.var()
+    stats['min'] = series.min()
+    stats['max'] = series.max()
+    stats['range'] = stats['max'] - stats['min']
+    # To avoid to compute it several times
+    _series_no_na = series.dropna()
+    for percentile in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
+        # The dropna() is a workaround for https://github.com/pydata/pandas/issues/13098
+        stats[_percentile_format.format(percentile)] = _series_no_na.quantile(percentile)
     stats['iqr'] = stats['75%'] - stats['25%']
     stats['kurtosis'] = series.kurt()
     stats['skewness'] = series.skew()
     stats['sum'] = series.sum()
     stats['mad'] = series.mad()
     stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
-    stats['type'] = "NUM"
     stats['n_zeros'] = (len(series) - np.count_nonzero(series))
     stats['p_zeros'] = stats['n_zeros'] / len(series)
     # Histograms
@@ -41,48 +57,125 @@ def describe_numeric_1d(series, **kwargs):
 
 
 def describe_date_1d(series):
-    stats = {'min': series.min(), 'max': series.max()}
+    """Compute summary statistics of a date (`TYPE_DATE`) variable (a Series).
+
+    Also create histograms (mini an full) of its distribution.
+
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
+    stats = dict()
+    stats['type'] = base.TYPE_DATE
+    stats['min'] = series.min()
+    stats['max'] = series.max()
     stats['range'] = stats['max'] - stats['min']
-    stats['type'] = "DATE"
+    # Histograms
     stats['histogram'] = histogram(series)
     stats['mini_histogram'] = mini_histogram(series)
     return pd.Series(stats, name=series.name)
 
+def describe_categorical_1d(series):
+    """Compute summary statistics of a categorical (`TYPE_CAT`) variable (a Series).
 
-def describe_categorical_1d(data):
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
     # Only run if at least 1 non-missing value
-    objcounts = data.value_counts()
+    objcounts = series.value_counts()
     top, freq = objcounts.index[0], objcounts.iloc[0]
     names = []
     result = []
 
-    if get_vartype(data) == 'CAT':
+    if base.get_vartype(series) == base.TYPE_CAT:
         names += ['top', 'freq', 'type']
-        result += [top, freq, 'CAT']
+        result += [top, freq, base.TYPE_CAT]
 
-    return pd.Series(result, index=names, name=data.name)
+    return pd.Series(result, index=names, name=series.name)
 
-def describe_boolean_1d(data):
-    objcounts = data.value_counts()
+def describe_boolean_1d(series):
+    """Compute summary statistics of a boolean (`TYPE_BOOL`) variable (a Series).
+
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
+    objcounts = series.value_counts()
     top, freq = objcounts.index[0], objcounts.iloc[0]
     # The mean of boolean is an interesting information
-    mean = data.mean()
+    mean = series.mean()
     names = []
     result = []
     names += ['top', 'freq', 'type', 'mean']
-    result += [top, freq, 'BOOL', mean]
+    result += [top, freq, base.TYPE_BOOL, mean]
 
-    return pd.Series(result, index=names, name=data.name)
+    return pd.Series(result, index=names, name=series.name)
 
-def describe_constant_1d(data):
-    return pd.Series(['CONST'], index=['type'], name=data.name)
+def describe_constant_1d(series):
+    """Compute summary statistics of a constant (`S_TYPE_CONST`) variable (a Series).
 
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
 
-def describe_unique_1d(data):
-    return pd.Series(['UNIQUE'], index=['type'], name=data.name)
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
+    return pd.Series([base.S_TYPE_CONST], index=['type'], name=series.name)
 
+def describe_unique_1d(series):
+    """Compute summary statistics of a unique (`S_TYPE_UNIQUE`) variable (a Series).
+
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
+    return pd.Series([base.S_TYPE_UNIQUE], index=['type'], name=series.name)
 
 def describe_1d(data, **kwargs):
+    """Compute summary statistics of a variable (a Series).
+
+    The description is different according to the type of the variable.
+    However a set of common stats is also computed.
+
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
     leng = len(data)  # number of observations in the Series
     count = data.count()  # number of non-NaN observations in the Series
 
@@ -115,38 +208,53 @@ def describe_1d(data, **kwargs):
 
     result = pd.Series(results_data, name=data.name)
 
-    vartype = get_vartype(data)
-    if vartype == 'CONST':
+    vartype = base.get_vartype(data)
+    if vartype == base.S_TYPE_CONST:
         result = result.append(describe_constant_1d(data))
-    elif vartype == 'BOOL':
+    elif vartype == base.TYPE_BOOL:
         result = result.append(describe_boolean_1d(data, **kwargs))
-    elif vartype == 'NUM':
+    elif vartype == base.TYPE_NUM:
         result = result.append(describe_numeric_1d(data, **kwargs))
-    elif vartype == 'DATE':
+    elif vartype == base.TYPE_DATE:
         result = result.append(describe_date_1d(data, **kwargs))
-    elif vartype == 'UNIQUE':
+    elif vartype == base.S_TYPE_UNIQUE:
         result = result.append(describe_unique_1d(data, **kwargs))
     else:
+        # TYPE_CAT
         result = result.append(describe_categorical_1d(data))
     return result
-
 
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
-
 def describe(df, bins=10, check_correlation=True, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
-    """
-    Generates a object containing summary statistics for a given DataFrame
-    :param df: DataFrame to be analyzed
-    :param bins: Number of bins in histogram
-    :param check_correlation: Flag, set to False to skip correlation checks.
-    :param correlation_overrides: Variable names not to be rejected because they are correlated
-    :param pool_size: Number of workers in thread pool
-    :return: Dictionary containing
-        table: general statistics on the DataFrame
-        variables: summary statistics for each variable
-        freq: frequency table
+    """Generates a dict containing summary statistics for a given dataset (a DataFrame).
+
+    Parameters
+    ----------
+    df : DataFrame
+        Data to be analyzed
+    bins : int
+        Number of bins in histogram
+    check_correlation : boolean
+        Whether or not to check correlation.
+    correlation_overrides : list
+        Variable names not to be rejected because they are correlated
+    pool_size: int
+        Number of workers in thread pool
+    
+    Returns
+    -------
+    dict
+        Containing:
+            * table: general statistics on the dataset
+            * variables: summary statistics for each variable
+            * freq: frequency table
+
+
+    Notes:
+    ------
+        * The section dedicated to check the correlation should be externalized
     """
 
     if not isinstance(df, pd.DataFrame):
@@ -190,7 +298,7 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
                 if corr > 0.9:
                     ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'])
 
-        categorical_variables = [(name, data) for (name, data) in df.iteritems() if get_vartype(data)=='CAT']
+        categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
         for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
             if correlation_overrides and name1 in correlation_overrides:
                 continue

@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""Main module of pandas-profiling.
+
+
+Docstring is compliant with NumPy/SciPy documentation standard:
+https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
+See also for a short description of docstring:
+https://stackoverflow.com/questions/3898572/what-is-the-standard-python-docstring-format
+"""
 import codecs
 import pandas_profiling.templates as templates
 from .describe import describe
