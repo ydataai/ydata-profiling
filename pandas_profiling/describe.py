@@ -331,4 +331,6 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
+    base.clear_cache()
+
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}

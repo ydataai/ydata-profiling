@@ -21,6 +21,7 @@ S_TYPE_CONST = 'CONST'
 S_TYPE_UNIQUE = 'UNIQUE'
 """String: A unique variable"""
 
+memo = {}
 def get_vartype(data):
     """Infer the type of a variable (technically a Series).
 
@@ -48,21 +49,32 @@ def get_vartype(data):
 
     Notes
     ----
-        * distinct_count shall not be computed several times since it can be time consuming
         * Boolean type could be infered also for other pairs of binaries values (1/0, Y/N, etc.)
         * #72: Numeric with low Distinct count should be treated as "Categorical"
     """
+    if data.name in memo and data.name is not None:
+        return memo[data.name]
+
     distinct_count = data.nunique(dropna=False)
     leng = len(data)
+    type = None
     if distinct_count <= 1:
-        return S_TYPE_CONST
+        type = S_TYPE_CONST
     elif pd.api.types.is_bool_dtype(data):
-        return TYPE_BOOL
+        type = TYPE_BOOL
     elif pd.api.types.is_numeric_dtype(data):
-        return TYPE_NUM
+        type = TYPE_NUM
     elif pd.api.types.is_datetime64_dtype(data):
-        return TYPE_DATE
+        type = TYPE_DATE
     elif distinct_count == leng:
-        return S_TYPE_UNIQUE
+        type = S_TYPE_UNIQUE
     else:
-        return TYPE_CAT
+        type = TYPE_CAT
+
+    if data.name is not None:
+    memo[data.name] = type
+
+    return type
+
+def clear_cache():
+    memo = {}
