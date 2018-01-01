@@ -228,7 +228,9 @@ def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
 def describe(df, bins=10, check_correlation=True, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
-    """Generates a dict containing summary statistics for a given dataset (a DataFrame).
+    """Generates a dict containing summary statistics for a given dataset stored as a pandas `DataFrame`.
+
+    Used has is it will output its content as an HTML report in a Jupyter notebook.
 
     Parameters
     ----------
@@ -242,15 +244,14 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
         Variable names not to be rejected because they are correlated
     pool_size: int
         Number of workers in thread pool
-    
+
     Returns
     -------
     dict
-        Containing:
+        Containing the following keys:
             * table: general statistics on the dataset
             * variables: summary statistics for each variable
             * freq: frequency table
-
 
     Notes:
     ------

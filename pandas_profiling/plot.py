@@ -1,4 +1,9 @@
-from pandas_profiling.base import get_vartype
+# -*- coding: utf-8 -*-
+"""Plot distribution of datasets"""
+
+import base64
+from distutils.version import LooseVersion
+import pandas_profiling.base as base
 import matplotlib
 # Fix #68, this call is not needed and brings side effects in some use cases
 # Backend name specifications are not case-sensitive; e.g., ‘GTKAgg’ and ‘gtkagg’ are equivalent.
@@ -12,30 +17,29 @@ try:
     from StringIO import BytesIO
 except ImportError:
     from io import BytesIO
-from distutils.version import LooseVersion
 try:
     from urllib import quote
 except ImportError:
     from urllib.parse import quote
-import base64
 
 def _plot_histogram(series, bins=10, figsize=(6, 4), facecolor='#337ab7'):
     """Plot an histogram from the data and return the AxesSubplot object.
 
     Parameters
     ----------
-    series: Series, default None
+    series : Series
         The data to plot
-    figsize: a tuple (width, height) in inches, default (6,4)
-        The size of the figure.
-    facecolor: str
+    figsize : tuple
+        The size of the figure (width, height) in inches, default (6,4)
+    facecolor : str
         The color code.
 
     Returns
     -------
-    matplotlib.AxesSubplot, The plot.
+    matplotlib.AxesSubplot
+        The plot.
     """
-    if get_vartype(series) == 'DATE':
+    if base.get_vartype(series) == base.TYPE_DATE:
         # TODO: These calls should be merged
         fig = plt.figure(figsize=figsize)
         plot = fig.add_subplot(111)
@@ -56,12 +60,13 @@ def histogram(series, **kwargs):
 
     Parameters
     ----------
-    series: Series, default None
+    series: Series
         The data to plot.
 
     Returns
     -------
-    str, The resulting image encoded as a string.
+    str
+        The resulting image encoded as a string.
     """
     imgdata = BytesIO()
     plot = _plot_histogram(series, **kwargs)
@@ -79,12 +84,13 @@ def mini_histogram(series, **kwargs):
 
     Parameters
     ----------
-    series: Series, default None
+    series: Series
         The data to plot.
 
     Returns
     -------
-    str, The resulting image encoded as a string.
+    str
+        The resulting image encoded as a string.
     """
     imgdata = BytesIO()
     plot = _plot_histogram(series, figsize=(2, 0.75), **kwargs)

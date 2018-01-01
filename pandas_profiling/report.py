@@ -1,8 +1,10 @@
-import pandas_profiling.formatters as formatters
-import pandas_profiling.templates as templates
-import pandas as pd
+# -*- coding: utf-8 -*-
+"""Generate reports"""
 import sys
 import six
+import pandas as pd
+import pandas_profiling.formatters as formatters
+import pandas_profiling.templates as templates
 
 
 def to_html(sample, stats_object):
@@ -10,12 +12,19 @@ def to_html(sample, stats_object):
 
     Parameters
     ----------
-    sample: DataFrame containing the sample you want to print
-    stats_object: Dictionary containing summary statistics. Should be generated with an appropriate describe() function
+    sample : DataFrame
+        the sample you want to print
+    stats_object : dict
+        Summary statistics. Should be generated with an appropriate describe() function
 
     Returns
     -------
-    str, containing profile report in HTML format
+    str
+        containing profile report in HTML format
+
+    Notes
+    -----
+        * This function as to be refactored since it's huge and it contains inner functions
     """
 
     n_obs = stats_object['table']['n']
