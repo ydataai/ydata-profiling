@@ -8,8 +8,8 @@ import pandas as pd
 from pandas import Series
 import six
 import pandas_profiling
-from pandas_profiling.base import describe, to_html
-import base
+from pandas_profiling.describe import describe, describe_1d
+from pandas_profiling.report import to_html
 import tempfile
 import shutil
 import os
@@ -210,7 +210,7 @@ class Describe1dTest(unittest.TestCase):
         self._assert_unique(pd.Series([1, 2, 2, np.nan, np.nan]), False, 3/5)
 
     def _assert_unique(self, data, is_unique, p_unique):
-        desc_1d = base.describe_1d(data)
+        desc_1d = describe_1d(data)
         self.assertEqual(desc_1d['is_unique'], is_unique)
         self.assertEqual(desc_1d['p_unique'], p_unique)
 
