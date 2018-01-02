@@ -21,9 +21,43 @@ S_TYPE_CONST = 'CONST'
 S_TYPE_UNIQUE = 'UNIQUE'
 """String: A unique variable"""
 
+S_TYPE_UNSUPPORTED = 'UNSUPPORTED'
+"""String: An unsupported variable"""
+
+value_counts_memo = {}
+def get_groupby_statistic(data):
+    """Calculate value counts and distinct count of a variable (technically a Series) caching the results by column name.
+    Parameters
+    ----------
+    data : Series
+        The data type of the Series.
+
+    Returns
+    -------
+    str
+        The data type of the Series.
+    """
+    if data.name is not None and data.name in value_counts_memo:
+        return value_counts_memo[data.name]
+
+    value_counts_with_nan = data.value_counts(dropna=False)
+    value_counts_without_nan = value_counts_with_nan.loc[value_counts_with_nan.index.dropna()]
+    distinct_count_with_nan = value_counts_with_nan.count()
+
+    # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict, list and so on...
+    if value_counts_without_nan.index.inferred_type == "mixed":
+        raise TypeError('Not supported mixed type')
+
+    result = [value_counts_without_nan, distinct_count_with_nan]
+
+    if data.name is not None:
+        value_counts_memo[data.name] = result
+
+    return result
+
 memo = {}
 def get_vartype(data):
-    """Infer the type of a variable (technically a Series).
+    """Infer the type of a variable (technically a Series) caching the results by column name.
 
     The types supported are split in standard types and special types.
 
@@ -36,6 +70,7 @@ def get_vartype(data):
     Special types:
         * Constant (`S_TYPE_CONST`): if all values in the variable are equal
         * Unique (`S_TYPE_UNIQUE`): if all values in the variable are different
+        * Unsupported (`S_TYPE_UNSUPPORTED`): if the variable is unsupported
 
     Parameters
     ----------
@@ -56,21 +91,25 @@ def get_vartype(data):
     if data.name is not None and data.name in memo:
         return memo[data.name]
 
-    distinct_count = data.nunique(dropna=False)
-    leng = len(data)
     type = None
-    if distinct_count <= 1:
-        type = S_TYPE_CONST
-    elif pd.api.types.is_bool_dtype(data) or (distinct_count == 2 and pd.api.types.is_numeric_dtype(data)):
-        type = TYPE_BOOL
-    elif pd.api.types.is_numeric_dtype(data):
-        type = TYPE_NUM
-    elif pd.api.types.is_datetime64_dtype(data):
-        type = TYPE_DATE
-    elif distinct_count == leng:
-        type = S_TYPE_UNIQUE
-    else:
-        type = TYPE_CAT
+    try:
+        value_counts, distinct_count = get_groupby_statistic(data)
+        leng = len(data)
+
+        if distinct_count <= 1:
+            type = S_TYPE_CONST
+        elif pd.api.types.is_bool_dtype(data) or (distinct_count == 2 and pd.api.types.is_numeric_dtype(data)):
+            type = TYPE_BOOL
+        elif pd.api.types.is_numeric_dtype(data):
+            type = TYPE_NUM
+        elif pd.api.types.is_datetime64_dtype(data):
+            type = TYPE_DATE
+        elif distinct_count == leng:
+            type = S_TYPE_UNIQUE
+        else:
+            type = TYPE_CAT
+    except:
+        type = S_TYPE_UNSUPPORTED
 
     if data.name is not None:
         memo[data.name] = type
@@ -78,4 +117,6 @@ def get_vartype(data):
     return type
 
 def clear_cache():
+    global memo, value_counts_memo
     memo = {}
+    value_counts_memo = {}

@@ -104,10 +104,17 @@ def to_html(sample, stats_object):
         return table_template.render(rows=freq_rows_html, varid=hash(idx), nb_col=nb_col)
 
     def extreme_obs_table(freqtable, table_template, row_template, number_to_print, n, ascending = True):
+
+        # If it's mixed between base types (str, int) convert to str. Pure "mixed" types are filtered during type discovery
+        if "mixed" in freqtable.index.inferred_type:
+            freqtable.index = freqtable.index.astype(str)
+
+        sorted_freqTable = freqtable.sort_index()
+
         if ascending:
-            obs_to_print = freqtable.sort_index().iloc[:number_to_print]
+            obs_to_print = sorted_freqTable.iloc[:number_to_print]
         else:
-            obs_to_print = freqtable.sort_index().iloc[-number_to_print:]
+            obs_to_print = sorted_freqTable.iloc[-number_to_print:]
 
         freq_rows_html = ''
         max_freq = max(obs_to_print.values)
@@ -152,8 +159,10 @@ def to_html(sample, stats_object):
 
             formatted_values['firstn'] = pd.DataFrame(obs[0:3], columns=["First 3 values"]).to_html(classes="example_values", index=False)
             formatted_values['lastn'] = pd.DataFrame(obs[-3:], columns=["Last 3 values"]).to_html(classes="example_values", index=False)
-
-        if row['type'] in {'CORR', 'CONST', 'RECODED'}:
+        if row['type'] == 'UNSUPPORTED':
+            formatted_values['varname'] = formatters.fmt_varname(idx)
+            messages.append(templates.messages[row['type']].format(formatted_values))
+        elif row['type'] in {'CORR', 'CONST', 'RECODED'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)
             messages.append(templates.messages[row['type']].format(formatted_values))
         else:
