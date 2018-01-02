@@ -49,10 +49,11 @@ def get_vartype(data):
 
     Notes
     ----
-        * Boolean type could be infered also for other pairs of binaries values (1/0, Y/N, etc.)
+        * Should improve verification when a categorical or numeric field has 3 values, it could be a categorical field
+        or just a boolean with NaN values
         * #72: Numeric with low Distinct count should be treated as "Categorical"
     """
-    if data.name in memo and data.name is not None:
+    if data.name is not None and data.name in memo:
         return memo[data.name]
 
     distinct_count = data.nunique(dropna=False)
@@ -60,7 +61,7 @@ def get_vartype(data):
     type = None
     if distinct_count <= 1:
         type = S_TYPE_CONST
-    elif pd.api.types.is_bool_dtype(data):
+    elif pd.api.types.is_bool_dtype(data) or (distinct_count == 2 and pd.api.types.is_numeric_dtype(data)):
         type = TYPE_BOOL
     elif pd.api.types.is_numeric_dtype(data):
         type = TYPE_NUM
@@ -72,7 +73,7 @@ def get_vartype(data):
         type = TYPE_CAT
 
     if data.name is not None:
-    memo[data.name] = type
+        memo[data.name] = type
 
     return type
 
