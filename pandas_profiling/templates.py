@@ -76,15 +76,15 @@ row_templates_dict = {'NUM': template('row_num'),
 mini_freq_table_nb_col = {'CAT': 6, 'BOOL': 3}
 
 messages = dict()
-messages['CONST'] = u'{0[varname]} has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
-messages['CORR'] = u'{0[varname]} is highly correlated with {0[correlation_var]} (ρ = {0[correlation]}) <span class="label label-primary">Rejected</span>'
-messages['RECODED'] = u'{0[varname]} is a recoding of {0[correlation_var]} <span class="label label-primary">Rejected</span>'
-messages['HIGH_CARDINALITY'] = u'{varname} has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
-messages['UNSUPPORTED'] = u'{0[varname]} is an unsupported type, check if it needs cleaning or further analysis <span class="label label-warning">Warning</span>'
+messages['CONST'] = u'<a href="#pp_var_{0[varname]}"><code>{0[varname]}</code></a> has constant value {0[mode]} <span class="label label-primary">Rejected</span>'
+messages['CORR'] = u'<a href="#pp_var_{0[varname]}"><code>{0[varname]}</code></a> is highly correlated with <a href="#pp_var_{0[correlation_var]}"><code>{0[correlation_var]}</code></a> (ρ = {0[correlation]}) <span class="label label-primary">Rejected</span>'
+messages['RECODED'] = u'<a href="#pp_var_{0[varname]}"><code>{0[varname]}</code></a> is a recoding of <a href="#pp_var_{0[correlation_var]}"><code>{0[correlation_var]}</code></a> <span class="label label-primary">Rejected</span>'
+messages['HIGH_CARDINALITY'] = u'<a href="#pp_var_{0[varname]}"><code>{varname}</code></a> has a high cardinality: {0[distinct_count]} distinct values  <span class="label label-warning">Warning</span>'
+messages['UNSUPPORTED'] = u'<a href="#pp_var_{0[varname]}"><code>{0[varname]}</code></a> is an unsupported type, check if it needs cleaning or further analysis <span class="label label-warning">Warning</span>'
 messages['n_duplicates'] = u'Dataset has {0[n_duplicates]} duplicate rows <span class="label label-warning">Warning</span>'
-messages['skewness'] = u'{varname} is highly skewed (γ1 = {0[skewness]})  <span class="label label-info">Skewed</span>'
-messages['p_missing'] = u'{varname} has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'
-messages['p_infinite'] = u'{varname} has {0[n_infinite]} / {0[p_infinite]} infinite values <span class="label label-default">Infinite</span>'
-messages['p_zeros'] = u'{varname} has {0[n_zeros]} / {0[p_zeros]} zeros <span class="label label-info">Zeros</span>'
+messages['skewness'] = u'<a href="#pp_var_{0[varname]}"><code>{varname}</code></a> is highly skewed (γ1 = {0[skewness]})  <span class="label label-info">Skewed</span>'
+messages['p_missing'] = u'<a href="#pp_var_{0[varname]}"><code>{varname}</code></a> has {0[n_missing]} / {0[p_missing]} missing values <span class="label label-default">Missing</span>'
+messages['p_infinite'] = u'<a href="#pp_var_{0[varname]}"><code>{varname}</code></a> has {0[n_infinite]} / {0[p_infinite]} infinite values <span class="label label-default">Infinite</span>'
+messages['p_zeros'] = u'<a href="#pp_var_{0[varname]}"><code>{varname}</code></a> has {0[n_zeros]} / {0[p_zeros]} zeros <span class="label label-info">Zeros</span>'
 
 message_row = u'<li>{message}</li>'
