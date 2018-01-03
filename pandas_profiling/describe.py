@@ -281,7 +281,7 @@ def describe_1d(data, **kwargs):
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
-def describe(df, bins=10, check_correlation=True, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, bins=10, check_correlation=True, check_recoded=True, correlation_threshold=0.9, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
     """Generates a dict containing summary statistics for a given dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -293,7 +293,11 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     bins : int
         Number of bins in histogram
     check_correlation : boolean
-        Whether or not to check correlation.
+        Whether or not to check correlation
+    check_recoded : boolean
+        Whether or not to check recoded correlation (memory heavy feature) (check_correlation must be true to disable this check)
+    correlation_threshold: float
+        Threshold to determine if the variable pair is correlated
     correlation_overrides : list
         Variable names not to be rejected because they are correlated
     pool_size: int
@@ -350,17 +354,18 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
             for y, corr in corr_x.iteritems():
                 if x == y: break
 
-                if corr > 0.9:
+                if corr > correlation_threshold:
                     ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'])
 
-        categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
-        for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
-            if correlation_overrides and name1 in correlation_overrides:
-                continue
+        if check_recoded:
+            categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
+            for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
+                if correlation_overrides and name1 in correlation_overrides:
+                    continue
 
-            confusion_matrix=pd.crosstab(data1,data2)
-            if confusion_matrix.values.diagonal().sum() == len(df):
-                ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
+                confusion_matrix=pd.crosstab(data1,data2)
+                if confusion_matrix.values.diagonal().sum() == len(df):
+                    ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
 
     # Convert ldesc to a DataFrame
     names = []
