@@ -24,9 +24,13 @@ S_TYPE_UNIQUE = 'UNIQUE'
 S_TYPE_UNSUPPORTED = 'UNSUPPORTED'
 """String: An unsupported variable"""
 
-value_counts_memo = {}
+_VALUE_COUNTS_MEMO = {}
+
 def get_groupby_statistic(data):
-    """Calculate value counts and distinct count of a variable (technically a Series) caching the results by column name.
+    """Calculate value counts and distinct count of a variable (technically a Series).
+
+    The result is cached by column name in a global variable to avoid recomputing.
+
     Parameters
     ----------
     data : Series
@@ -34,11 +38,11 @@ def get_groupby_statistic(data):
 
     Returns
     -------
-    str
-        The data type of the Series.
+    list
+        value count and distinct count
     """
-    if data.name is not None and data.name in value_counts_memo:
-        return value_counts_memo[data.name]
+    if data.name is not None and data.name in _VALUE_COUNTS_MEMO:
+        return _VALUE_COUNTS_MEMO[data.name]
 
     value_counts_with_nan = data.value_counts(dropna=False)
     value_counts_without_nan = value_counts_with_nan.loc[value_counts_with_nan.index.dropna()]
@@ -51,13 +55,13 @@ def get_groupby_statistic(data):
     result = [value_counts_without_nan, distinct_count_with_nan]
 
     if data.name is not None:
-        value_counts_memo[data.name] = result
+        _VALUE_COUNTS_MEMO[data.name] = result
 
     return result
 
-memo = {}
+_MEMO = {}
 def get_vartype(data):
-    """Infer the type of a variable (technically a Series) caching the results by column name.
+    """Infer the type of a variable (technically a Series).
 
     The types supported are split in standard types and special types.
 
@@ -71,6 +75,8 @@ def get_vartype(data):
         * Constant (`S_TYPE_CONST`): if all values in the variable are equal
         * Unique (`S_TYPE_UNIQUE`): if all values in the variable are different
         * Unsupported (`S_TYPE_UNSUPPORTED`): if the variable is unsupported
+
+     The result is cached by column name in a global variable to avoid recomputing.
 
     Parameters
     ----------
@@ -88,35 +94,36 @@ def get_vartype(data):
         or just a boolean with NaN values
         * #72: Numeric with low Distinct count should be treated as "Categorical"
     """
-    if data.name is not None and data.name in memo:
-        return memo[data.name]
+    if data.name is not None and data.name in _MEMO:
+        return _MEMO[data.name]
 
-    type = None
+    vartype = None
     try:
-        value_counts, distinct_count = get_groupby_statistic(data)
+        distinct_count = get_groupby_statistic(data)[1]
         leng = len(data)
 
         if distinct_count <= 1:
-            type = S_TYPE_CONST
+            vartype = S_TYPE_CONST
         elif pd.api.types.is_bool_dtype(data) or (distinct_count == 2 and pd.api.types.is_numeric_dtype(data)):
-            type = TYPE_BOOL
+            vartype = TYPE_BOOL
         elif pd.api.types.is_numeric_dtype(data):
-            type = TYPE_NUM
+            vartype = TYPE_NUM
         elif pd.api.types.is_datetime64_dtype(data):
-            type = TYPE_DATE
+            vartype = TYPE_DATE
         elif distinct_count == leng:
-            type = S_TYPE_UNIQUE
+            vartype = S_TYPE_UNIQUE
         else:
-            type = TYPE_CAT
+            vartype = TYPE_CAT
     except:
-        type = S_TYPE_UNSUPPORTED
+        vartype = S_TYPE_UNSUPPORTED
 
     if data.name is not None:
-        memo[data.name] = type
+        _MEMO[data.name] = vartype
 
-    return type
+    return vartype
 
 def clear_cache():
-    global memo, value_counts_memo
-    memo = {}
-    value_counts_memo = {}
+    """Clear the cache stored as global variables"""
+    global _MEMO, _VALUE_COUNTS_MEMO
+    _MEMO = {}
+    _VALUE_COUNTS_MEMO = {}

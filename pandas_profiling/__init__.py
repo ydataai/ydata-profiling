@@ -24,19 +24,36 @@ class ProfileReport(object):
     df : DataFrame
         Data to be analyzed
     bins : int
-        Number of bins in histogram
+        Number of bins in histogram.
+        The default is 10.
     check_correlation : boolean
         Whether or not to check correlation.
         Since it's an expensive computation it can be deactivated for big datasets.
+        It's `True` by default.
+    correlation_threshold: float
+        Threshold to determine if the variable pair is correlated.
+        The default is 0.9.
     correlation_overrides : list
-        Variable names not to be rejected because they are correlated
+        Variable names not to be rejected because they are correlated.
+        There is no variable in the list (`None`) by default.
+    check_recoded : boolean
+        Whether or not to check recoded correlation (memory heavy feature).
+        `check_correlation` must be true to disable this check.
+        It's `True` by default.
     pool_size : int
         Number of workers in thread pool
+        The default is equal to the number of CPU.
 
     Methods
     -------
     get_description
         Return the description (a raw statistical summary) of the dataset.
+    get_rejected_variables
+        Return the list of rejected variable or an empty list if there is no rejected variables.
+    to_file
+        Write the report to a file.
+    to_html
+        Return the report as an HTML string.
     """
     html = ''
     file = None
@@ -106,7 +123,7 @@ class ProfileReport(object):
 
     def to_html(self):
         """Generate and return complete template as lengthy string
-            for using with frameworks
+            for using with frameworks.
         
         Returns
         -------

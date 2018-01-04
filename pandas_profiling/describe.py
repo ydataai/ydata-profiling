@@ -329,6 +329,9 @@ def describe(df, bins=10, check_correlation=True, check_recoded=True, correlatio
         pass
 
     matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+    
+    # Clearing the cache before computing stats
+    base.clear_cache()
 
     if not pd.Index(np.arange(0, len(df))).equals(df.index):
         # Treat index as any other column
@@ -393,7 +396,5 @@ def describe(df, bins=10, check_correlation=True, check_recoded=True, correlatio
     table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED", "BOOL", "UNSUPPORTED")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
-
-    base.clear_cache()
 
     return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: (base.get_groupby_statistic(df[k])[0] if variable_stats[k].type != base.S_TYPE_UNSUPPORTED else None) for k in df.columns}}
