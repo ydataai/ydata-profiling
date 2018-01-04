@@ -95,8 +95,8 @@ def describe_categorical_1d(series):
         The description of the variable as a Series with index being stats keys.
     """
     # Only run if at least 1 non-missing value
-    objcounts = series.value_counts()
-    top, freq = objcounts.index[0], objcounts.iloc[0]
+    value_counts, distinct_count = base.get_groupby_statistic(series)
+    top, freq = value_counts.index[0], value_counts.iloc[0]
     names = []
     result = []
 
@@ -119,8 +119,8 @@ def describe_boolean_1d(series):
     Series
         The description of the variable as a Series with index being stats keys.
     """
-    objcounts = series.value_counts()
-    top, freq = objcounts.index[0], objcounts.iloc[0]
+    value_counts, distinct_count = base.get_groupby_statistic(series)
+    top, freq = value_counts.index[0], value_counts.iloc[0]
     # The mean of boolean is an interesting information
     mean = series.mean()
     names = []
@@ -160,6 +160,78 @@ def describe_unique_1d(series):
     """
     return pd.Series([base.S_TYPE_UNIQUE], index=['type'], name=series.name)
 
+def describe_supported(series, **kwargs):
+    """Compute summary statistics of a supported variable (a Series).
+
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
+    leng = len(series)  # number of observations in the Series
+    count = series.count()  # number of non-NaN observations in the Series
+    n_infinite = count - series.count()  # number of infinte observations in the Series
+
+    value_counts, distinct_count = base.get_groupby_statistic(series)
+    if count > distinct_count > 1:
+        mode = series.mode().iloc[0]
+    else:
+        mode = series[0]
+
+    results_data = {'count': count,
+                    'distinct_count': distinct_count,
+                    'p_missing': 1 - count / leng,
+                    'n_missing': leng - count,
+                    'p_infinite': n_infinite / leng,
+                    'n_infinite': n_infinite,
+                    'is_unique': distinct_count == leng,
+                    'mode': mode,
+                    'p_unique': distinct_count / leng}
+    try:
+        # pandas 0.17 onwards
+        results_data['memorysize'] = series.memory_usage()
+    except:
+        results_data['memorysize'] = 0
+
+    return pd.Series(results_data, name=series.name)
+
+def describe_unsupported(series, **kwargs):
+    """Compute summary statistics of a unsupported (`S_TYPE_UNSUPPORTED`) variable (a Series).
+
+    Parameters
+    ----------
+    series : Series
+        The variable to describe.
+
+    Returns
+    -------
+    Series
+        The description of the variable as a Series with index being stats keys.
+    """
+    leng = len(series)  # number of observations in the Series
+    count = series.count()  # number of non-NaN observations in the Series
+    n_infinite = count - series.count()  # number of infinte observations in the Series
+
+    results_data = {'count': count,
+                    'p_missing': 1 - count / leng,
+                    'n_missing': leng - count,
+                    'p_infinite': n_infinite / leng,
+                    'n_infinite': n_infinite,
+                    'type': base.S_TYPE_UNSUPPORTED}
+
+    try:
+        # pandas 0.17 onwards
+        results_data['memorysize'] = series.memory_usage()
+    except:
+        results_data['memorysize'] = 0
+
+    return pd.Series(results_data, name=series.name)
+
 def describe_1d(data, **kwargs):
     """Compute summary statistics of a variable (a Series).
 
@@ -176,58 +248,40 @@ def describe_1d(data, **kwargs):
     Series
         The description of the variable as a Series with index being stats keys.
     """
-    leng = len(data)  # number of observations in the Series
-    count = data.count()  # number of non-NaN observations in the Series
 
     # Replace infinite values with NaNs to avoid issues with
     # histograms later.
     data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
 
-    n_infinite = count - data.count()  # number of infinte observations in the Series
-
-    distinct_count = data.nunique(dropna=False)  # number of unique elements in the Series
-    if count > distinct_count > 1:
-        mode = data.mode().iloc[0]
-    else:
-        mode = data[0]
-
-    results_data = {'count': count,
-                    'distinct_count': distinct_count,
-                    'p_missing': 1 - count / leng,
-                    'n_missing': leng - count,
-                    'p_infinite': n_infinite / leng,
-                    'n_infinite': n_infinite,
-                    'is_unique': distinct_count == leng,
-                    'mode': mode,
-                    'p_unique': distinct_count / leng}
-    try:
-        # pandas 0.17 onwards
-        results_data['memorysize'] = data.memory_usage()
-    except:
-        results_data['memorysize'] = 0
-
-    result = pd.Series(results_data, name=data.name)
+    result = pd.Series({}, name=data.name)
 
     vartype = base.get_vartype(data)
-    if vartype == base.S_TYPE_CONST:
-        result = result.append(describe_constant_1d(data))
-    elif vartype == base.TYPE_BOOL:
-        result = result.append(describe_boolean_1d(data, **kwargs))
-    elif vartype == base.TYPE_NUM:
-        result = result.append(describe_numeric_1d(data, **kwargs))
-    elif vartype == base.TYPE_DATE:
-        result = result.append(describe_date_1d(data, **kwargs))
-    elif vartype == base.S_TYPE_UNIQUE:
-        result = result.append(describe_unique_1d(data, **kwargs))
+
+    if vartype == base.S_TYPE_UNSUPPORTED:
+        result = result.append(describe_unsupported(data))
     else:
-        # TYPE_CAT
-        result = result.append(describe_categorical_1d(data))
+        result = result.append(describe_supported(data))
+
+        if vartype == base.S_TYPE_CONST:
+            result = result.append(describe_constant_1d(data))
+        elif vartype == base.TYPE_BOOL:
+            result = result.append(describe_boolean_1d(data, **kwargs))
+        elif vartype == base.TYPE_NUM:
+            result = result.append(describe_numeric_1d(data, **kwargs))
+        elif vartype == base.TYPE_DATE:
+            result = result.append(describe_date_1d(data, **kwargs))
+        elif vartype == base.S_TYPE_UNIQUE:
+            result = result.append(describe_unique_1d(data, **kwargs))
+        else:
+            # TYPE_CAT
+            result = result.append(describe_categorical_1d(data))
+
     return result
 
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
-def describe(df, bins=10, check_correlation=True, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, bins=10, check_correlation=True, check_recoded=True, correlation_threshold=0.9, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
     """Generates a dict containing summary statistics for a given dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -239,7 +293,11 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     bins : int
         Number of bins in histogram
     check_correlation : boolean
-        Whether or not to check correlation.
+        Whether or not to check correlation
+    check_recoded : boolean
+        Whether or not to check recoded correlation (memory heavy feature) (check_correlation must be true to disable this check)
+    correlation_threshold: float
+        Threshold to determine if the variable pair is correlated
     correlation_overrides : list
         Variable names not to be rejected because they are correlated
     pool_size: int
@@ -296,17 +354,18 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
             for y, corr in corr_x.iteritems():
                 if x == y: break
 
-                if corr > 0.9:
+                if corr > correlation_threshold:
                     ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'])
 
-        categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
-        for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
-            if correlation_overrides and name1 in correlation_overrides:
-                continue
+        if check_recoded:
+            categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
+            for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
+                if correlation_overrides and name1 in correlation_overrides:
+                    continue
 
-            confusion_matrix=pd.crosstab(data1,data2)
-            if confusion_matrix.values.diagonal().sum() == len(df):
-                ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
+                confusion_matrix=pd.crosstab(data1,data2)
+                if confusion_matrix.values.diagonal().sum() == len(df):
+                    ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
 
     # Convert ldesc to a DataFrame
     names = []
@@ -319,16 +378,22 @@ def describe(df, bins=10, check_correlation=True, correlation_overrides=None, po
     variable_stats.columns.names = df.columns.names
 
     # General statistics
-    table_stats = {'n': len(df), 'nvar': len(df.columns)}
+    table_stats = {}
+
+    table_stats['n'] = len(df)
+    table_stats['nvar'] = len(df.columns)
     table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
-    table_stats['n_duplicates'] = sum(df.duplicated())
+    unsupported_columns = variable_stats.transpose()[variable_stats.transpose().type != base.S_TYPE_UNSUPPORTED].index.tolist()
+    table_stats['n_duplicates'] = sum(df.duplicated(subset=unsupported_columns)) if len(unsupported_columns) > 0 else 0
 
     memsize = df.memory_usage(index=True).sum()
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
     table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
 
-    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED", "BOOL")})
+    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED", "BOOL", "UNSUPPORTED")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
-    return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: df[k].value_counts() for k in df.columns}}
+    base.clear_cache()
+
+    return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: (base.get_groupby_statistic(df[k])[0] if variable_stats[k].type != base.S_TYPE_UNSUPPORTED else None) for k in df.columns}}

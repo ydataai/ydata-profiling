@@ -104,10 +104,17 @@ def to_html(sample, stats_object):
         return table_template.render(rows=freq_rows_html, varid=hash(idx), nb_col=nb_col)
 
     def extreme_obs_table(freqtable, table_template, row_template, number_to_print, n, ascending = True):
+
+        # If it's mixed between base types (str, int) convert to str. Pure "mixed" types are filtered during type discovery
+        if "mixed" in freqtable.index.inferred_type:
+            freqtable.index = freqtable.index.astype(str)
+
+        sorted_freqTable = freqtable.sort_index()
+
         if ascending:
-            obs_to_print = freqtable.sort_index().iloc[:number_to_print]
+            obs_to_print = sorted_freqTable.iloc[:number_to_print]
         else:
-            obs_to_print = freqtable.sort_index().iloc[-number_to_print:]
+            obs_to_print = sorted_freqTable.iloc[-number_to_print:]
 
         freq_rows_html = ''
         max_freq = max(obs_to_print.values)
@@ -132,7 +139,7 @@ def to_html(sample, stats_object):
         for col in set(row.index) & six.viewkeys(row_formatters):
             row_classes[col] = row_formatters[col](row[col])
             if row_classes[col] == "alert" and col in templates.messages:
-                messages.append(templates.messages[col].format(formatted_values, varname = formatters.fmt_varname(idx)))
+                messages.append(templates.messages[col].format(formatted_values, varname = idx))
 
         if row['type'] in {'CAT', 'BOOL'}:
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
@@ -142,7 +149,7 @@ def to_html(sample, stats_object):
                                                            templates.mini_freq_table_nb_col[row['type']])
 
             if row['distinct_count'] > 50:
-                messages.append(templates.messages['HIGH_CARDINALITY'].format(formatted_values, varname = formatters.fmt_varname(idx)))
+                messages.append(templates.messages['HIGH_CARDINALITY'].format(formatted_values, varname = idx))
                 row_classes['distinct_count'] = "alert"
             else:
                 row_classes['distinct_count'] = ""
@@ -152,9 +159,11 @@ def to_html(sample, stats_object):
 
             formatted_values['firstn'] = pd.DataFrame(obs[0:3], columns=["First 3 values"]).to_html(classes="example_values", index=False)
             formatted_values['lastn'] = pd.DataFrame(obs[-3:], columns=["Last 3 values"]).to_html(classes="example_values", index=False)
-
-        if row['type'] in {'CORR', 'CONST', 'RECODED'}:
-            formatted_values['varname'] = formatters.fmt_varname(idx)
+        if row['type'] == 'UNSUPPORTED':
+            formatted_values['varname'] = idx
+            messages.append(templates.messages[row['type']].format(formatted_values))
+        elif row['type'] in {'CORR', 'CONST', 'RECODED'}:
+            formatted_values['varname'] = idx
             messages.append(templates.messages[row['type']].format(formatted_values))
         else:
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
@@ -171,7 +180,7 @@ def to_html(sample, stats_object):
     for col in six.viewkeys(stats_object['table']) & six.viewkeys(row_formatters):
         row_classes[col] = row_formatters[col](stats_object['table'][col])
         if row_classes[col] == "alert" and col in templates.messages:
-            messages.append(templates.messages[col].format(formatted_values, varname = formatters.fmt_varname(idx)))
+            messages.append(templates.messages[col].format(formatted_values, varname = idx))
 
     messages_html = u''
     for msg in messages:
