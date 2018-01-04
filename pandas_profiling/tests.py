@@ -204,8 +204,7 @@ class DataFrameTest(unittest.TestCase):
             'type': 'UNSUPPORTED',
         }
 
-        self.assertSetEqual(set(self.results.keys()),
-                            set(['table', 'variables', 'freq']))
+        self.assertTrue(set({'table', 'variables', 'freq', 'correlations'}).issubset(set(self.results.keys())))
         self.assertSetEqual(
             set(self.results['freq'].keys()), set(self.data.keys()))
         self.assertSetEqual(

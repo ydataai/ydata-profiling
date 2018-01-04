@@ -343,13 +343,17 @@ def describe(df, bins=10, check_correlation=True, check_recoded=True, correlatio
     ldesc = {col: s for col, s in pool.map(local_multiprocess_func, df.iteritems())}
     pool.close()
 
+    # Get correlations
+    dfcorrPear = df.corr(method="pearson")
+    dfcorrSpear = df.corr(method="spearman")
+
     # Check correlations between variable
     if check_correlation is True:
         ''' TODO: corr(x,y) > 0.9 and corr(y,z) > 0.9 does not imply corr(x,z) > 0.9
         If x~y and y~z but not x~z, it would be better to delete only y
         Better way would be to find out which variable causes the highest increase in multicollinearity.
         '''
-        corr = df.corr()
+        corr = dfcorrPear.copy()
         for x, corr_x in corr.iterrows():
             if correlation_overrides and x in correlation_overrides:
                 continue
@@ -397,4 +401,9 @@ def describe(df, bins=10, check_correlation=True, check_recoded=True, correlatio
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
-    return {'table': table_stats, 'variables': variable_stats.T, 'freq': {k: (base.get_groupby_statistic(df[k])[0] if variable_stats[k].type != base.S_TYPE_UNSUPPORTED else None) for k in df.columns}}
+    return {
+        'table': table_stats,
+        'variables': variable_stats.T,
+        'freq': {k: (base.get_groupby_statistic(df[k])[0] if variable_stats[k].type != base.S_TYPE_UNSUPPORTED else None) for k in df.columns},
+        'correlations': {'pearson': dfcorrPear, 'spearman': dfcorrSpear}
+    }
