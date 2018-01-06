@@ -253,7 +253,12 @@ class DataFrameTest(unittest.TestCase):
                                 "Mini-histogram missing for column %s " % col)
 
     def test_html_report(self):
-        html = to_html(self.df.head(), self.results)
+        sample = {
+            'head': self.df.head(),
+            'tail': self.df.tail()
+        }
+
+        html = to_html(sample, self.results)
         self.assertLess(1000, len(html))
 
     def test_bins(self):

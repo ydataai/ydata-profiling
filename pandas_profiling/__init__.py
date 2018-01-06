@@ -61,9 +61,14 @@ class ProfileReport(object):
     def __init__(self, df, **kwargs):
         """Constructor see class documentation
         """
-        sample = kwargs.get('sample', df.head())
 
         description_set = describe(df, **kwargs)
+
+        sample = {
+            'head': df.head(),
+            'tail': df.tail(),
+            'types': description_set['variables'].type.to_frame()
+        }
 
         self.html = to_html(sample,
                             description_set)
