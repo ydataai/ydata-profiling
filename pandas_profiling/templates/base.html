@@ -47,6 +47,12 @@
             margin-left: 1em;
         }
 
+        .center-img {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            display: block;
+        }
+
         /* Table example_values */
             table.example_values {
                 border: 0;
@@ -217,6 +223,10 @@
         <h1>Variables</h1>
     </div>
     {{ rows_html }}
+    <div class="row headerrow highlight">
+        <h1>Correlations</h1>
+    </div>
+    {{ correlation_html }}
     <div class="row headerrow highlight">
         <h1>Sample</h1>
     </div>

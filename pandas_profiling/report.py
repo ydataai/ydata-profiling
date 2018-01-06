@@ -5,6 +5,7 @@ import six
 import pandas as pd
 import pandas_profiling.formatters as formatters
 import pandas_profiling.templates as templates
+import pandas_profiling.plot as plot
 
 
 def to_html(sample, stats_object):
@@ -38,8 +39,9 @@ def to_html(sample, stats_object):
     if not isinstance(stats_object, dict):
         raise TypeError("stats_object must be of type dict. Did you generate this using the pandas_profiling.describe() function?")
 
-    if set(stats_object.keys()) != {'table', 'variables', 'freq'}:
-        raise TypeError("stats_object badly formatted. Did you generate this using the pandas_profiling-eda.describe() function?")
+    if not set({'table', 'variables', 'freq', 'correlations'}).issubset(set(stats_object.keys())):
+        raise TypeError(
+            "stats_object badly formatted. Did you generate this using the pandas_profiling.describe() function?")
 
     def fmt(value, name):
         if pd.isnull(value):
@@ -188,8 +190,18 @@ def to_html(sample, stats_object):
 
     overview_html = templates.template('overview').render(values=formatted_values, row_classes = row_classes, messages=messages_html)
 
-    # Sample
+    # Add plot of matrix correlation
+    pearson_matrix = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
+    spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
+    correlations_html = templates.template('correlations').render(
+        values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix})
 
+    # Add sample
     sample_html = templates.template('sample').render(sample_table_html=sample.to_html(classes="sample"))
     # TODO: should be done in the template
-    return templates.template('base').render({'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html})
+    return templates.template('base').render({
+        'overview_html': overview_html,
+        'rows_html': rows_html,
+        'sample_html': sample_html,
+        'correlation_html': correlations_html
+    })
