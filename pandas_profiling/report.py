@@ -33,7 +33,7 @@ def to_html(sample, stats_object):
     value_formatters = formatters.value_formatters
     row_formatters = formatters.row_formatters
 
-    if not isinstance(sample, pd.DataFrame):
+    if not isinstance(sample, dict):
         raise TypeError("sample must be of type pandas.DataFrame")
 
     if not isinstance(stats_object, dict):
@@ -197,7 +197,12 @@ def to_html(sample, stats_object):
         values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix})
 
     # Add sample
-    sample_html = templates.template('sample').render(sample_table_html=sample.to_html(classes="sample"))
+    formatted_samples = {}
+    for key in sample:
+        formatted_samples[key] = sample[key].to_html(classes="sample")
+
+    sample_html = templates.template('sample').render(values=formatted_samples)
+
     # TODO: should be done in the template
     return templates.template('base').render({
         'overview_html': overview_html,

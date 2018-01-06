@@ -12,8 +12,12 @@
                 <td>{{ values['n'] }} </td>
             </tr>
             <tr>
-                <th>Total Missing (%)</th>
-                <td>{{ values['total_missing'] }} </td>
+                <th>Missing cells</th>
+                <td>{{ values['n_cells_missing'] }}  ({{ values['p_cells_missing']}})</td>
+            </tr>
+             <tr>
+                <th>Duplicate rows</th>
+                <td>{{ values['n_duplicates'] }} ({{ values['p_duplicates']}})</td>
             </tr>
             <tr>
                 <th>Total size in memory</th>

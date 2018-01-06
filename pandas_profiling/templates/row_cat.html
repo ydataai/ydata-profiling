@@ -17,6 +17,32 @@
             <th>Missing (n)</th>
             <td>{{ values['n_missing'] }}</td>
         </tr>
+        <tr class="{{ row_classes['max_length'] }}">
+            <th>Max length</th>
+            <td>{{ values['max_length'] }}</td>
+        </tr>
+        <tr class="{{ row_classes['mean_length'] }}">
+            <th>Mean length</th>
+            <td>{{ values['mean_length'] }}</td>
+        </tr>
+        <tr class="{{ row_classes['min_length'] }}">
+            <th>Min length</th>
+            <td>{{ values['min_length'] }}</td>
+        </tr>
+        <tr class="{{ row_classes['composition'] }}">
+            <th>Composition</th>
+            <td>
+                <ul class="small list-unstyled">
+                    {% for key in values['composition'] %}
+                    <li>
+                        <small>
+                            <strong>{{ key }}:</strong> {{ values['composition'][key] }}
+                        </small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
     </table>
 </div>
 {{ values['minifreqtable'] }}

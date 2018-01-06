@@ -29,7 +29,9 @@ def describe_numeric_1d(series, **kwargs):
     """
     # Format a number as a percentage. For example 0.25 will be turned to 25%.
     _percentile_format = "{:.0%}"
-    stats = dict()
+
+    stats = {}
+
     stats['type'] = base.TYPE_NUM
     stats['mean'] = series.mean()
     stats['std'] = series.std()
@@ -53,8 +55,8 @@ def describe_numeric_1d(series, **kwargs):
     # Histograms
     stats['histogram'] = histogram(series, **kwargs)
     stats['mini_histogram'] = mini_histogram(series, **kwargs)
-    return pd.Series(stats, name=series.name)
 
+    return pd.Series(stats, name=series.name)
 
 def describe_date_1d(series):
     """Compute summary statistics of a date (`TYPE_DATE`) variable (a Series).
@@ -71,14 +73,15 @@ def describe_date_1d(series):
     Series
         The description of the variable as a Series with index being stats keys.
     """
-    stats = dict()
-    stats['type'] = base.TYPE_DATE
+    stats = {}
+
     stats['min'] = series.min()
     stats['max'] = series.max()
     stats['range'] = stats['max'] - stats['min']
-    # Histograms
     stats['histogram'] = histogram(series)
     stats['mini_histogram'] = mini_histogram(series)
+    stats['type'] = base.TYPE_DATE
+
     return pd.Series(stats, name=series.name)
 
 def describe_categorical_1d(series):
@@ -96,15 +99,26 @@ def describe_categorical_1d(series):
     """
     # Only run if at least 1 non-missing value
     value_counts, distinct_count = base.get_groupby_statistic(series)
-    top, freq = value_counts.index[0], value_counts.iloc[0]
-    names = []
-    result = []
+
+    stats = {}
 
     if base.get_vartype(series) == base.TYPE_CAT:
-        names += ['top', 'freq', 'type']
-        result += [top, freq, base.TYPE_CAT]
+        contains = {
+            'chars': series.str.contains(r'[a-zA-Z]', case=False, regex=True).any(),
+            'digits': series.str.contains(r'[0-9]', case=False, regex=True).any(),
+            'spaces': series.str.contains(r'\s', case=False, regex=True).any(),
+            'non-words': series.str.contains(r'\W', case=False, regex=True).any(),
+        }
 
-    return pd.Series(result, index=names, name=series.name)
+        stats['top'] = value_counts.index[0]
+        stats['freq'] = value_counts.iloc[0]
+        stats['max_length'] =  series.str.len().max()
+        stats['mean_length'] = series.str.len().mean()
+        stats['min_length'] =  series.str.len().min()
+        stats['composition'] = contains
+        stats['type'] = base.TYPE_CAT
+
+    return pd.Series(stats, name=series.name)
 
 def describe_boolean_1d(series):
     """Compute summary statistics of a boolean (`TYPE_BOOL`) variable (a Series).
@@ -120,15 +134,15 @@ def describe_boolean_1d(series):
         The description of the variable as a Series with index being stats keys.
     """
     value_counts, distinct_count = base.get_groupby_statistic(series)
-    top, freq = value_counts.index[0], value_counts.iloc[0]
-    # The mean of boolean is an interesting information
-    mean = series.mean()
-    names = []
-    result = []
-    names += ['top', 'freq', 'type', 'mean']
-    result += [top, freq, base.TYPE_BOOL, mean]
 
-    return pd.Series(result, index=names, name=series.name)
+    stats = {}
+
+    stats['top'] = value_counts.index[0]
+    stats['freq'] = value_counts.iloc[0]
+    stats['mean'] = series.mean()
+    stats['type'] = base.TYPE_BOOL
+
+    return pd.Series(stats, name=series.name)
 
 def describe_constant_1d(series):
     """Compute summary statistics of a constant (`S_TYPE_CONST`) variable (a Series).
@@ -173,32 +187,29 @@ def describe_supported(series, **kwargs):
     Series
         The description of the variable as a Series with index being stats keys.
     """
-    leng = len(series)  # number of observations in the Series
-    count = series.count()  # number of non-NaN observations in the Series
-    n_infinite = count - series.count()  # number of infinte observations in the Series
+    length = len(series)  # number of observations in the Series
 
     value_counts, distinct_count = base.get_groupby_statistic(series)
-    if count > distinct_count > 1:
-        mode = series.mode().iloc[0]
-    else:
-        mode = series[0]
 
-    results_data = {'count': count,
-                    'distinct_count': distinct_count,
-                    'p_missing': 1 - count / leng,
-                    'n_missing': leng - count,
-                    'p_infinite': n_infinite / leng,
-                    'n_infinite': n_infinite,
-                    'is_unique': distinct_count == leng,
-                    'mode': mode,
-                    'p_unique': distinct_count / leng}
+    stats = {}
+
+    stats['count'] = series.count()  # number of non-NaN observations in the Series
+    stats['distinct_count'] = distinct_count
+    stats['p_missing'] = 1 - stats['count'] / length
+    stats['n_missing'] = length - stats['count']
+    stats['n_infinite'] = stats['count'] - series.count()  # number of infinte observations in the Series
+    stats['p_infinite'] = stats['n_infinite'] / length
+    stats['is_unique'] = distinct_count == length
+    stats['mode'] = series.mode().iloc[0] if stats['count'] > distinct_count > 1 else series[0]
+    stats['p_unique'] = distinct_count / length
+
     try:
         # pandas 0.17 onwards
-        results_data['memorysize'] = series.memory_usage()
+        stats['memorysize'] = series.memory_usage()
     except:
-        results_data['memorysize'] = 0
+        stats['memorysize'] = 0
 
-    return pd.Series(results_data, name=series.name)
+    return pd.Series(stats, name=series.name)
 
 def describe_unsupported(series, **kwargs):
     """Compute summary statistics of a unsupported (`S_TYPE_UNSUPPORTED`) variable (a Series).
@@ -213,24 +224,24 @@ def describe_unsupported(series, **kwargs):
     Series
         The description of the variable as a Series with index being stats keys.
     """
-    leng = len(series)  # number of observations in the Series
-    count = series.count()  # number of non-NaN observations in the Series
-    n_infinite = count - series.count()  # number of infinte observations in the Series
+    length = len(series)  # number of observations in the Series
 
-    results_data = {'count': count,
-                    'p_missing': 1 - count / leng,
-                    'n_missing': leng - count,
-                    'p_infinite': n_infinite / leng,
-                    'n_infinite': n_infinite,
-                    'type': base.S_TYPE_UNSUPPORTED}
+    stats = {}
+
+    stats['count'] = series.count()
+    stats['p_missing'] = 1 - stats['count'] / length
+    stats['n_missing'] = length - stats['count']
+    stats['n_infinite'] = stats['count'] - series.count()  # number of infinte observations in the Series
+    stats['p_infinite'] = stats['n_infinite'] / length
+    stats['type'] = base.S_TYPE_UNSUPPORTED
 
     try:
         # pandas 0.17 onwards
-        results_data['memorysize'] = series.memory_usage()
+        stats['memorysize'] = series.memory_usage()
     except:
-        results_data['memorysize'] = 0
+        stats['memorysize'] = 0
 
-    return pd.Series(results_data, name=series.name)
+    return pd.Series(stats, name=series.name)
 
 def describe_1d(data, **kwargs):
     """Compute summary statistics of a variable (a Series).
@@ -397,9 +408,12 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
 
     table_stats['n'] = len(df)
     table_stats['nvar'] = len(df.columns)
-    table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
-    unsupported_columns = variable_stats.transpose()[variable_stats.transpose().type != base.S_TYPE_UNSUPPORTED].index.tolist()
-    table_stats['n_duplicates'] = sum(df.duplicated(subset=unsupported_columns)) if len(unsupported_columns) > 0 else 0
+    table_stats['n_cells_missing'] = variable_stats.loc['n_missing'].sum()
+    table_stats['p_cells_missing'] = table_stats['n_cells_missing'] / (table_stats['n'] * table_stats['nvar'])
+
+    supported_columns = variable_stats.transpose()[variable_stats.transpose().type != base.S_TYPE_UNSUPPORTED].index.tolist()
+    table_stats['n_duplicates'] = sum(df.duplicated(subset=supported_columns)) if len(supported_columns) > 0 else 0
+    table_stats['p_duplicates'] = (table_stats['n_duplicates'] / len(df)) if (len(supported_columns) > 0 and len(df) > 0) else 0
 
     memsize = df.memory_usage(index=True).sum()
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
