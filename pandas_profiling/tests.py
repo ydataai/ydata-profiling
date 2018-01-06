@@ -88,7 +88,7 @@ class DataFrameTest(unittest.TestCase):
             'min': check_is_NaN, 'mini_histogram': check_is_NaN, 'mode': 'c',
             'n_missing': 1, 'p_missing': 0.11111111111111116, 'p_unique': 7/9,
             'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN,
-            'top': 'c', 'type': 'CAT', 'variance': check_is_NaN
+            'top': 'c', 'type': 'CAT', 'variance': check_is_NaN, 'max_length': 37, 'mean_length': 7.75, 'min_length': 0
         }
 
         expected_results['s1'] = {
@@ -150,7 +150,7 @@ class DataFrameTest(unittest.TestCase):
             'n_missing': 1, 'p_missing': 0.11111111111111116, 'p_unique': 3 / 9,
             'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN,
             'std': check_is_NaN, 'sum': check_is_NaN,
-            'top': False, 'type': 'CAT', 'variance': check_is_NaN
+            'top': False, 'type': 'CAT', 'variance': check_is_NaN, 'max_length': check_is_NaN, 'mean_length': check_is_NaN, 'min_length': check_is_NaN
         }
 
         expected_results['bool_01'] = {
@@ -223,11 +223,15 @@ class DataFrameTest(unittest.TestCase):
                                 'UNSUPPORTED': 3,
                                 'n': 9,
                                 'nvar': 15,
-                                'n_duplicates': 0
+                                'n_duplicates': 0,
+                                'n_cells_missing': 6
                                }.items()).issubset(set(self.results['table'].items())))
 
         self.assertAlmostEqual(0.044444444444444446,
-                               self.results['table']['total_missing'], 7)
+                               self.results['table']['p_cells_missing'], 7)
+        self.assertAlmostEqual(0,
+                               self.results['table']['p_duplicates'], 7)
+
         # Loop over variables
         for col in self.data.keys():
             for k, v in six.iteritems(expected_results[col]):
@@ -279,7 +283,7 @@ class CategoricalDataTest(unittest.TestCase):
         self.assertEqual(
             self.results['variables'].loc['x']['correlation_var'], 'y')
 
-        expected_results = {'total_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1,
+        expected_results = {'n_cells_missing': 0.0, 'p_cells_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1,
             'n': 8, 'RECODED': 1, 'CORR': 0, 'DATE': 0, 'NUM': 0, 'CAT': 1, 'n_duplicates': 5}
         for key in expected_results:
             self.assertEqual(self.results['table'][key], expected_results[key])
