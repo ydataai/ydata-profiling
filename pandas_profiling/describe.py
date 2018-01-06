@@ -281,7 +281,7 @@ def describe_1d(data, **kwargs):
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
-def describe(df, bins=10, check_correlation=True, check_recoded=True, correlation_threshold=0.9, correlation_overrides=None, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, correlation_overrides=None, check_recoded=False, pool_size=multiprocessing.cpu_count(), **kwargs):
     """Generates a dict containing summary statistics for a given dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -291,17 +291,25 @@ def describe(df, bins=10, check_correlation=True, check_recoded=True, correlatio
     df : DataFrame
         Data to be analyzed
     bins : int
-        Number of bins in histogram
+        Number of bins in histogram.
+        The default is 10.
     check_correlation : boolean
-        Whether or not to check correlation
-    check_recoded : boolean
-        Whether or not to check recoded correlation (memory heavy feature) (check_correlation must be true to disable this check)
+        Whether or not to check correlation.
+        It's `True` by default.
     correlation_threshold: float
-        Threshold to determine if the variable pair is correlated
+        Threshold to determine if the variable pair is correlated.
+        The default is 0.9.
     correlation_overrides : list
-        Variable names not to be rejected because they are correlated
-    pool_size: int
+        Variable names not to be rejected because they are correlated.
+        There is no variable in the list (`None`) by default.
+    check_recoded : boolean
+        Whether or not to check recoded correlation (memory heavy feature).
+        Since it's an expensive computation it can be activated for small datasets.
+        `check_correlation` must be true to disable this check.
+        It's `False` by default.
+    pool_size : int
         Number of workers in thread pool
+        The default is equal to the number of CPU.
 
     Returns
     -------
