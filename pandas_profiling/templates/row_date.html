@@ -44,7 +44,7 @@
     </div>
 </div>
 <div class="col-md-3 collapse in" id="minihistogram{{ values['varid'] }}">
-    <img src="{{ values['mini_histogram'] }}">
+    <img src="{{ values['mini_histogram'] }}" class="center-img">
 </div>
 <div class="col-md-12 text-right">
     <a role="button" data-toggle="collapse" data-target="#descriptives{{ values['varid'] }},#minihistogram{{ values['varid'] }}"
@@ -53,6 +53,6 @@
     </a>
 </div>
 <div class="row collapse col-md-12" id="descriptives{{ values['varid'] }}">
-    <img src="{{ values['histogram'] }}">
+    <img src="{{ values['histogram'] }}" class="center-img">
 </div>
 {% include '_row_footer.html' %}
