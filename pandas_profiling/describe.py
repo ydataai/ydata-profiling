@@ -58,7 +58,7 @@ def describe_numeric_1d(series, **kwargs):
 
     return pd.Series(stats, name=series.name)
 
-def describe_date_1d(series):
+def describe_date_1d(series, **kwargs):
     """Compute summary statistics of a date (`TYPE_DATE`) variable (a Series).
 
     Also create histograms (mini an full) of its distribution.
@@ -78,13 +78,13 @@ def describe_date_1d(series):
     stats['min'] = series.min()
     stats['max'] = series.max()
     stats['range'] = stats['max'] - stats['min']
-    stats['histogram'] = histogram(series)
-    stats['mini_histogram'] = mini_histogram(series)
+    stats['histogram'] = histogram(series, **kwargs)
+    stats['mini_histogram'] = mini_histogram(series, **kwargs)
     stats['type'] = base.TYPE_DATE
 
     return pd.Series(stats, name=series.name)
 
-def describe_categorical_1d(series):
+def describe_categorical_1d(series, **kwargs):
     """Compute summary statistics of a categorical (`TYPE_CAT`) variable (a Series).
 
     Parameters
@@ -120,7 +120,7 @@ def describe_categorical_1d(series):
 
     return pd.Series(stats, name=series.name)
 
-def describe_boolean_1d(series):
+def describe_boolean_1d(series, **kwargs):
     """Compute summary statistics of a boolean (`TYPE_BOOL`) variable (a Series).
 
     Parameters
@@ -144,7 +144,7 @@ def describe_boolean_1d(series):
 
     return pd.Series(stats, name=series.name)
 
-def describe_constant_1d(series):
+def describe_constant_1d(series, **kwargs):
     """Compute summary statistics of a constant (`S_TYPE_CONST`) variable (a Series).
 
     Parameters
@@ -159,7 +159,7 @@ def describe_constant_1d(series):
     """
     return pd.Series([base.S_TYPE_CONST], index=['type'], name=series.name)
 
-def describe_unique_1d(series):
+def describe_unique_1d(series, **kwargs):
     """Compute summary statistics of a unique (`S_TYPE_UNIQUE`) variable (a Series).
 
     Parameters
@@ -274,7 +274,7 @@ def describe_1d(data, **kwargs):
         result = result.append(describe_supported(data))
 
         if vartype == base.S_TYPE_CONST:
-            result = result.append(describe_constant_1d(data))
+            result = result.append(describe_constant_1d(data, **kwargs))
         elif vartype == base.TYPE_BOOL:
             result = result.append(describe_boolean_1d(data, **kwargs))
         elif vartype == base.TYPE_NUM:
@@ -285,14 +285,14 @@ def describe_1d(data, **kwargs):
             result = result.append(describe_unique_1d(data, **kwargs))
         else:
             # TYPE_CAT
-            result = result.append(describe_categorical_1d(data))
+            result = result.append(describe_categorical_1d(data, **kwargs))
 
     return result
 
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
-def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, correlation_overrides=None, check_recoded=False, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_overrides=None, check_recoded=False, pool_size=multiprocessing.cpu_count(), **kwargs):
     """Generates a dict containing summary statistics for a given dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.

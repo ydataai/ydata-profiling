@@ -40,23 +40,16 @@ def _plot_histogram(series, bins=10, figsize=(6, 4), facecolor='#337ab7'):
     matplotlib.AxesSubplot
         The plot.
     """
-    if base.get_vartype(series) == base.TYPE_DATE:
-        # TODO: These calls should be merged
-        fig = plt.figure(figsize=figsize)
-        plot = fig.add_subplot(111)
-        plot.set_ylabel('Frequency')
-        try:
-            plot.hist(series.values, facecolor=facecolor, bins=bins)
-        except TypeError: # matplotlib 1.4 can't plot dates so will show empty plot instead
-            pass
-    else:
-        plot = series.plot(kind='hist', figsize=figsize,
+    try:
+        plot = series.hist(figsize=figsize,
                            facecolor=facecolor,
                            bins=bins)  # TODO when running on server, send this off to a different thread
+    except TypeError:  # matplotlib 1.4 can't plot dates so will show empty plot instead
+        pass
     return plot
 
 
-def histogram(series, **kwargs):
+def histogram(series, bins=10, **kwargs):
     """Plot an histogram of the data.
 
     Parameters
@@ -70,8 +63,9 @@ def histogram(series, **kwargs):
         The resulting image encoded as a string.
     """
     imgdata = BytesIO()
-    plot = _plot_histogram(series, **kwargs)
-    plot.figure.subplots_adjust(left=0.15, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
+    plot = _plot_histogram(series, bins=bins)
+    plot.xaxis.set_tick_params(rotation=45)
+    plot.figure.tight_layout()
     plot.figure.savefig(imgdata)
     imgdata.seek(0)
     result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
@@ -80,7 +74,7 @@ def histogram(series, **kwargs):
     return result_string
 
 
-def mini_histogram(series, **kwargs):
+def mini_histogram(series, bins=10, **kwargs):
     """Plot a small (mini) histogram of the data.
 
     Parameters
@@ -94,7 +88,7 @@ def mini_histogram(series, **kwargs):
         The resulting image encoded as a string.
     """
     imgdata = BytesIO()
-    plot = _plot_histogram(series, figsize=(2, 0.75), **kwargs)
+    plot = _plot_histogram(series, bins=bins, figsize=(2, 1.5), **kwargs)
     plot.axes.get_yaxis().set_visible(False)
 
     if LooseVersion(matplotlib.__version__) <= '1.5.9':
@@ -103,12 +97,10 @@ def mini_histogram(series, **kwargs):
         plot.set_facecolor("w")
 
     xticks = plot.xaxis.get_major_ticks()
-    for tick in xticks[1:-1]:
-        tick.set_visible(False)
-        tick.label.set_visible(False)
-    for tick in (xticks[0], xticks[-1]):
+    for tick in xticks:
         tick.label.set_fontsize(8)
-    plot.figure.subplots_adjust(left=0.15, right=0.85, top=1, bottom=0.35, wspace=0, hspace=0)
+    plot.xaxis.set_tick_params(rotation=45)
+    plot.figure.tight_layout()
     plot.figure.savefig(imgdata)
     imgdata.seek(0)
     result_string = 'data:image/png;base64,' + quote(base64.b64encode(imgdata.getvalue()))
@@ -135,7 +127,7 @@ def correlation_matrix(corrdf, title, **kwargs):
     plt.colorbar(matrix_image)
     axes_cor.set_xticks(np.arange(0, corrdf.shape[0], corrdf.shape[0] * 1.0 / len(labels)))
     axes_cor.set_yticks(np.arange(0, corrdf.shape[1], corrdf.shape[1] * 1.0 / len(labels)))
-    axes_cor.set_xticklabels(labels, rotation=90)
+    axes_cor.set_xticklabels(labels, rotation=45)
     axes_cor.set_yticklabels(labels)
 
     matrix_image.figure.savefig(imgdata, bbox_inches='tight')
