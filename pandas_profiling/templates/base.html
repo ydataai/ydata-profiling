@@ -228,10 +228,12 @@
         <h1>Variables</h1>
     </div>
     {{ rows_html }}
-    <div class="row headerrow highlight">
-        <h1>Correlations</h1>
-    </div>
-    {{ correlation_html }}
+    {% if correlation_html %}
+        <div class="row headerrow highlight">
+            <h1>Correlations</h1>
+        </div>
+        {{ correlation_html }}
+    {% endif %}
     <div class="row headerrow highlight">
         <h1>Sample</h1>
     </div>

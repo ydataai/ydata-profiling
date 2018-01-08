@@ -191,10 +191,18 @@ def to_html(sample, stats_object):
     overview_html = templates.template('overview').render(values=formatted_values, row_classes = row_classes, messages=messages_html)
 
     # Add plot of matrix correlation
-    pearson_matrix = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
-    spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
-    correlations_html = templates.template('correlations').render(
-        values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix})
+    if stats_object['correlations']:
+        pearson_matrix = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
+        spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
+        cramers_matrix = plot.correlation_matrix(stats_object['correlations']['cramers'], 'Cramers')
+        if stats_object['correlations']['recoded']:
+            recoded_matrix = plot.correlation_matrix(stats_object['correlations']['recoded'], 'Recoded')
+        else:
+            recoded_matrix = None
+        correlations_html = templates.template('correlations').render(
+            values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix, 'cramers_matrix': cramers_matrix, 'recoded_matrix': recoded_matrix})
+    else:
+        correlations_html = None
 
     # Add sample
     formatted_samples = {}

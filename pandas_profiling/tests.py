@@ -24,6 +24,7 @@ class DataFrameTest(unittest.TestCase):
             'x': [50, 50, -10, 0, 0, 5, 15, -3, None],
             'y': [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
             'cat': ['a', 'long text value', u'Élysée', '', None, 'some <b> B.s </div> </div> HTML stuff', 'c', 'c', 'c'],
+            'cat_corr': ['a', 'long text value', u'Élysée', '', None, 'some <b> B.s </div> </div> HTML stuff', 'c', 'c', 'c'],
             's1': np.ones(9),
             's2': [u'some constant text $ % value {obj} ' for _ in range(1, 10)],
             'somedate': [datetime.date(2011, 7, 4), datetime.datetime(2022, 1, 1, 13, 57), datetime.datetime(1990, 12, 9), np.nan, datetime.datetime(1990, 12, 9), datetime.datetime(1950, 12, 9), datetime.datetime(1898, 1, 2), datetime.datetime(1950, 12, 9), datetime.datetime(1950, 12, 9)],
@@ -89,6 +90,16 @@ class DataFrameTest(unittest.TestCase):
             'n_missing': 1, 'p_missing': 0.11111111111111116, 'p_unique': 7/9,
             'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN,
             'top': 'c', 'type': 'CAT', 'variance': check_is_NaN, 'max_length': 37, 'mean_length': 7.75, 'min_length': 0
+        }
+
+        expected_results['cat_corr'] = {
+            '25%': check_is_NaN, '5%': check_is_NaN, '50%': check_is_NaN, '75%': check_is_NaN, '95%': check_is_NaN, 'count': check_is_NaN, 'n_infinite': check_is_NaN, 'p_infinite': check_is_NaN,
+            'cv': check_is_NaN, 'distinct_count': check_is_NaN, 'freq': check_is_NaN, 'histogram': check_is_NaN, 'iqr': check_is_NaN,
+            'is_unique': check_is_NaN, 'kurtosis': check_is_NaN, 'mad': check_is_NaN, 'max': check_is_NaN, 'mean': check_is_NaN,
+            'min': check_is_NaN, 'mini_histogram': check_is_NaN, 'mode': check_is_NaN,
+            'n_missing': check_is_NaN, 'p_missing': check_is_NaN, 'p_unique': check_is_NaN,
+            'p_zeros': check_is_NaN, 'range': check_is_NaN, 'skewness': check_is_NaN, 'std': check_is_NaN, 'sum': check_is_NaN,
+            'top': check_is_NaN, 'type': 'CORR', 'variance': check_is_NaN, 'max_length': check_is_NaN, 'mean_length': check_is_NaN, 'min_length': check_is_NaN
         }
 
         expected_results['s1'] = {
@@ -209,7 +220,6 @@ class DataFrameTest(unittest.TestCase):
             set(self.results['freq'].keys()), set(self.data.keys()))
         self.assertSetEqual(
             set(self.results['variables'].index), set(self.data.keys()))
-        print((self.results['table'].items()))
         self.assertTrue(set({
                                 'CAT': 2,
                                 'CONST': 2,
@@ -217,17 +227,17 @@ class DataFrameTest(unittest.TestCase):
                                 'NUM': 3,
                                 'UNIQUE': 2,
                                 'BOOL': 2,
-                                'REJECTED': 2,
+                                'REJECTED': 3,
                                 'RECODED': 0,
-                                'CORR': 0,
+                                'CORR': 1,
                                 'UNSUPPORTED': 3,
                                 'n': 9,
-                                'nvar': 15,
+                                'nvar': 16,
                                 'n_duplicates': 0,
                                 'n_cells_missing': 6
                                }.items()).issubset(set(self.results['table'].items())))
 
-        self.assertAlmostEqual(0.044444444444444446,
+        self.assertAlmostEqual(0.041666666666666664,
                                self.results['table']['p_cells_missing'], 7)
         self.assertAlmostEqual(0,
                                self.results['table']['p_duplicates'], 7)
@@ -282,11 +292,11 @@ class CategoricalDataTest(unittest.TestCase):
              'y': ['dog', 'dog', 'dog', 'dog', 'cat', 'cat', 'camel', 'camel'],
            }
         self.df = pd.DataFrame(self.data)
-        self.results = describe(self.df)
+        self.results = describe(self.df, check_recoded=True)
 
-        self.assertEqual(self.results['variables'].loc['x']['type'], 'RECODED')
+        self.assertEqual(self.results['variables'].loc['y']['type'], 'RECODED')
         self.assertEqual(
-            self.results['variables'].loc['x']['correlation_var'], 'y')
+            self.results['variables'].loc['y']['correlation_var'], 'x')
 
         expected_results = {'n_cells_missing': 0.0, 'p_cells_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1,
             'n': 8, 'RECODED': 1, 'CORR': 0, 'DATE': 0, 'NUM': 0, 'CAT': 1, 'n_duplicates': 5}

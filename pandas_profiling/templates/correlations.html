@@ -1,4 +1,8 @@
 <div class="row variablerow">
     <img src="{{ values['pearson_matrix'] }}" class="center-img">
     <img src="{{ values['spearman_matrix'] }}" class="center-img">
+    <img src="{{ values['cramers_matrix'] }}" class="center-img">
+    {% if values['recoded_matrix'] %}
+    <img src="{{ values['recoded_matrix'] }}" class="center-img">
+    {% endif %}
 </div>
