@@ -290,10 +290,61 @@ def describe_1d(data, **kwargs):
 
     return result
 
+def describe_table(df, variable_stats):
+    table_stats = {}
+    table_stats['n'] = len(df)
+    table_stats['nvar'] = len(df.columns)
+    table_stats['n_cells_missing'] = variable_stats.loc['n_missing'].sum()
+    table_stats['p_cells_missing'] = table_stats['n_cells_missing'] / (table_stats['n'] * table_stats['nvar'])
+
+    supported_columns = variable_stats.transpose()[
+        variable_stats.transpose().type != base.S_TYPE_UNSUPPORTED].index.tolist()
+    table_stats['n_duplicates'] = sum(df.duplicated(subset=supported_columns)) if len(supported_columns) > 0 else 0
+    table_stats['p_duplicates'] = (table_stats['n_duplicates'] / len(df)) if (
+            len(supported_columns) > 0 and len(df) > 0) else 0
+
+    memsize = df.memory_usage(index=True).sum()
+    table_stats['memsize'] = formatters.fmt_bytesize(memsize)
+    table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
+
+    table_stats.update(
+        {k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED", "BOOL", "UNSUPPORTED")})
+    table_stats.update(dict(variable_stats.loc['type'].value_counts()))
+    table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
+
+    return table_stats
+
+def describe_correlations(df, ldesc, check_cramers, check_recoded, correlation_threshold):
+    corrMatrixPear = correlation.pearson_corr(df)
+    corrThresPear = correlation.overthreshold_corr(corrMatrixPear, "CORR",
+                                                   lambda corr: corr > correlation_threshold)
+
+    corrMatrixSpear = correlation.spearman_cor(df)
+
+    corrMatrixCramers = correlation.cramers_corr(df) if check_cramers else None
+    corrThresCramers = correlation.overthreshold_corr(corrMatrixCramers, "CORR",
+                                                      lambda
+                                                          corr: corr > correlation_threshold) if check_cramers else {}
+
+    corrMatrixRecoded = correlation.recoded_corr(df) if check_recoded else None
+    corrThresRecoded = correlation.overthreshold_corr(corrMatrixRecoded, "RECODED",
+                                                      lambda corr: corr) if check_recoded else {}
+
+    ldesc.update(corrThresPear)
+    ldesc.update(corrThresCramers)
+    ldesc.update(corrThresRecoded)
+    correlation_stats = {
+        'pearson': corrMatrixPear,
+        'spearman': corrMatrixSpear,
+        'cramers': corrMatrixCramers,
+        'recoded': corrMatrixRecoded
+    }
+    return correlation_stats, ldesc
+
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
-def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_overrides=None, check_recoded=False, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_overrides=None, check_recoded=False, check_cramers=False, pool_size=multiprocessing.cpu_count(), **kwargs):
     """Generates a dict containing summary statistics for a given dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -316,6 +367,11 @@ def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_
         There is no variable in the list (`None`) by default.
     check_recoded : boolean
         Whether or not to check recoded correlation (memory heavy feature).
+        Since it's an expensive computation it can be activated for small datasets.
+        `check_correlation` must be true to disable this check.
+        It's `False` by default.
+    check_cramers : boolean
+        Whether or not to check cramers correlation (memory heavy feature).
         Since it's an expensive computation it can be activated for small datasets.
         `check_correlation` must be true to disable this check.
         It's `False` by default.
@@ -364,25 +420,7 @@ def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_
     pool.close()
 
     if check_correlation:
-        corrMatrixPear = correlation.pearson_corr(df)
-        corrMatrixSpear = correlation.spearman_cor(df)
-        corrMatrixCramers = correlation.cramers_corr(df)
-        corrMatrixRecoded = correlation.recoded_corr(df) if check_recoded else None
-
-        corrThresPear = correlation.overthreshold_corr(corrMatrixPear, "CORR", lambda corr: corr > correlation_threshold)
-        corrThresCramers = correlation.overthreshold_corr(corrMatrixCramers, "CORR", lambda corr: corr > correlation_threshold)
-        corrThresRecoded = correlation.overthreshold_corr(corrMatrixRecoded, "RECODED", lambda corr: corr) if check_recoded else {}
-
-        ldesc.update(corrThresPear)
-        ldesc.update(corrThresCramers)
-        ldesc.update(corrThresRecoded)
-
-        correlation_stats = {
-            'pearson': corrMatrixPear,
-            'spearman': corrMatrixSpear,
-            'cramers': corrMatrixCramers,
-            'recoded': corrMatrixRecoded
-        }
+        correlation_stats, ldesc = describe_correlations(df, ldesc, check_cramers, check_recoded, correlation_threshold)
     else:
         correlation_stats = None
 
@@ -397,24 +435,7 @@ def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_
     variable_stats.columns.names = df.columns.names
 
     # General statistics
-    table_stats = {}
-
-    table_stats['n'] = len(df)
-    table_stats['nvar'] = len(df.columns)
-    table_stats['n_cells_missing'] = variable_stats.loc['n_missing'].sum()
-    table_stats['p_cells_missing'] = table_stats['n_cells_missing'] / (table_stats['n'] * table_stats['nvar'])
-
-    supported_columns = variable_stats.transpose()[variable_stats.transpose().type != base.S_TYPE_UNSUPPORTED].index.tolist()
-    table_stats['n_duplicates'] = sum(df.duplicated(subset=supported_columns)) if len(supported_columns) > 0 else 0
-    table_stats['p_duplicates'] = (table_stats['n_duplicates'] / len(df)) if (len(supported_columns) > 0 and len(df) > 0) else 0
-
-    memsize = df.memory_usage(index=True).sum()
-    table_stats['memsize'] = formatters.fmt_bytesize(memsize)
-    table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
-
-    table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED", "BOOL", "UNSUPPORTED")})
-    table_stats.update(dict(variable_stats.loc['type'].value_counts()))
-    table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
+    table_stats = describe_table(df, variable_stats)
 
     return {
         'table': table_stats,

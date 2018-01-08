@@ -194,11 +194,8 @@ def to_html(sample, stats_object):
     if stats_object['correlations']:
         pearson_matrix = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
         spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
-        cramers_matrix = plot.correlation_matrix(stats_object['correlations']['cramers'], 'Cramers')
-        if stats_object['correlations']['recoded']:
-            recoded_matrix = plot.correlation_matrix(stats_object['correlations']['recoded'], 'Recoded')
-        else:
-            recoded_matrix = None
+        cramers_matrix = plot.correlation_matrix(stats_object['correlations']['cramers'], 'Cramers') if stats_object['correlations']['cramers'] is not None else None
+        recoded_matrix = plot.correlation_matrix(stats_object['correlations']['recoded'], 'Recoded') if stats_object['correlations']['recoded'] is not None else None
         correlations_html = templates.template('correlations').render(
             values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix, 'cramers_matrix': cramers_matrix, 'recoded_matrix': recoded_matrix})
     else:

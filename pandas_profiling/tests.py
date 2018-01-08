@@ -40,7 +40,7 @@ class DataFrameTest(unittest.TestCase):
         self.df = pd.DataFrame(self.data)
         self.df['somedate'] = pd.to_datetime(self.df['somedate'])
 
-        self.results = describe(self.df)
+        self.results = describe(self.df, check_recoded=True, check_cramers=True)
         self.test_dir = tempfile.mkdtemp()
 
     def tearDown(self):
@@ -272,7 +272,7 @@ class DataFrameTest(unittest.TestCase):
         self.assertLess(1000, len(html))
 
     def test_bins(self):
-        self.results = describe(self.df, bins=100)
+        self.results = describe(self.df, bins=100, check_cramers=True)
         self.test_describe_df()
 
     def test_export_to_file(self):
@@ -300,6 +300,29 @@ class CategoricalDataTest(unittest.TestCase):
 
         expected_results = {'n_cells_missing': 0.0, 'p_cells_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1,
             'n': 8, 'RECODED': 1, 'CORR': 0, 'DATE': 0, 'NUM': 0, 'CAT': 1, 'n_duplicates': 5}
+        for key in expected_results:
+            self.assertEqual(self.results['table'][key], expected_results[key])
+
+        # Rerun without checking for correlation
+        self.results2 = describe(self.df, check_correlation=False)
+        self.assertIsNone(
+            self.results2['variables'].loc['x'].get('correlation_var'))
+        self.assertEqual(self.results2['table']['REJECTED'], 0)
+
+    def test_cramers_reject(self):
+        self.data = {
+             'x': ['chien', 'chien', 'chien', 'chien', 'chat', 'chat', 'chameaux', 'chameaux'],
+             'y': ['chien', 'chien', 'chien', 'chien', 'chat', 'chat', 'chameaux', 'chameaux'],
+           }
+        self.df = pd.DataFrame(self.data)
+        self.results = describe(self.df, check_cramers=True)
+
+        self.assertEqual(self.results['variables'].loc['y']['type'], 'CORR')
+        self.assertEqual(
+            self.results['variables'].loc['y']['correlation_var'], 'x')
+
+        expected_results = {'n_cells_missing': 0.0, 'p_cells_missing': 0.0, 'UNIQUE': 0, 'CONST': 0, 'nvar': 2, 'REJECTED': 1,
+            'n': 8, 'RECODED': 0, 'CORR': 1, 'DATE': 0, 'NUM': 0, 'CAT': 1, 'n_duplicates': 5}
         for key in expected_results:
             self.assertEqual(self.results['table'][key], expected_results[key])
 

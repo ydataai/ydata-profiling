@@ -40,6 +40,11 @@ class ProfileReport(object):
         Since it's an expensive computation it can be activated for small datasets.
         `check_correlation` must be true to disable this check.
         It's `False` by default.
+    check_cramers : boolean
+        Whether or not to check cramers correlation (memory heavy feature).
+        Since it's an expensive computation it can be activated for small datasets.
+        `check_correlation` must be true to disable this check.
+        It's `False` by default.
     pool_size : int
         Number of workers in thread pool
         The default is equal to the number of CPU.
