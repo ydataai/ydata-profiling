@@ -51,10 +51,11 @@ def to_html(sample, stats_object):
         elif isinstance(value, float):
             return value_formatters[formatters.DEFAULT_FLOAT_FORMATTER](value)
         else:
-            if sys.version_info.major == 3:
-                return str(value)
-            else:
-                return unicode(value)
+            try:
+                return unicode(value)  # Python 2
+            except NameError:
+                return str(value)      # Python 3
+                
 
     def _format_row(freq, label, max_freq, row_template, n, extra_class=''):
             width = int(freq / max_freq * 99) + 1
