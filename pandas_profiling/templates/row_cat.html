@@ -17,42 +17,64 @@
             <th>Missing (n)</th>
             <td>{{ values['n_missing'] }}</td>
         </tr>
-        <tr class="{{ row_classes['max_length'] }}">
-            <th>Max length</th>
-            <td>{{ values['max_length'] }}</td>
-        </tr>
-        <tr class="{{ row_classes['mean_length'] }}">
-            <th>Mean length</th>
-            <td>{{ values['mean_length'] }}</td>
-        </tr>
-        <tr class="{{ row_classes['min_length'] }}">
-            <th>Min length</th>
-            <td>{{ values['min_length'] }}</td>
-        </tr>
-        <tr class="{{ row_classes['composition'] }}">
-            <th>Composition</th>
-            <td>
-                <ul class="small list-unstyled">
-                    {% for key in values['composition'] %}
-                    <li>
-                        <small>
-                            <strong>{{ key }}:</strong> {{ values['composition'][key] }}
-                        </small>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </td>
-        </tr>
     </table>
 </div>
 {{ values['minifreqtable'] }}
 <div class="col-md-12 text-right">
-    <a role="button" data-toggle="collapse" data-target="#freqtable{{ values['varid'] }}, #minifreqtable{{ values['varid'] }}"
+    <a role="button" data-toggle="collapse" data-target="#descriptives{{ values['varid'] }}, #minifreqtable{{ values['varid'] }}"
        aria-expanded="true" aria-controls="collapseExample">
         Toggle details
     </a>
 </div>
-<div class="col-md-12 extrapadding collapse" id="freqtable{{ values['varid']  }}">
-    {{ values['freqtable'] }}
+<div class="row collapse col-md-12" id="descriptives{{ values['varid'] }}">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#freqtable{{ values['varid'] }}" aria-controls="freqtable{{ values['varid'] }}"
+                                   role="tab" data-toggle="tab">Frequency</a></li>
+        {% if values['composition']: %}
+            <li role="presentation"><a href="#composition{{ values['varid'] }}"
+                                                      aria-controls="composition{{ values['varid'] }}" role="tab"
+                                                      data-toggle="tab">Composition</a></li>
+        {% endif %}
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active col-md-12" id="freqtable{{ values['varid'] }}">
+            {{ values['freqtable'] }}
+        </div>
+        {% if values['composition']: %}
+            <div role="tabpanel" class="tab-pane extrapadding row" id="composition{{ values['varid'] }}">
+                <div class="col-md-4 col-md-offset-1">
+                    <table class="stats indent">
+                        <tr class="{{ row_classes['max_length'] }}">
+                            <th>Max length</th>
+                            <td>{{ values['max_length'] }}</td>
+                        </tr>
+                        <tr class="{{ row_classes['mean_length'] }}">
+                            <th>Mean length</th>
+                            <td>{{ values['mean_length'] }}</td>
+                        </tr>
+                        <tr class="{{ row_classes['min_length'] }}">
+                            <th>Min length</th>
+                            <td>{{ values['min_length'] }}</td>
+                        </tr>
+                        <tr>
+                            <th>Contains</th>
+                            <td>
+                                <ul class="list-unstyled">
+                                    {% for key in values['composition'] %}
+                                    <li>
+                                        <small>
+                                            <strong>{{ key }}:</strong> {{ values['composition'][key] }}
+                                        </small>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 </div>
 {% include '_row_footer.html' %}
