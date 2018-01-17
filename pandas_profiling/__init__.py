@@ -10,6 +10,7 @@ import codecs
 import pandas_profiling.templates as templates
 from .describe import describe
 from .report import to_html
+import pandas as pd
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
@@ -45,6 +46,10 @@ class ProfileReport(object):
         Since it's an expensive computation it can be activated for small datasets.
         `check_correlation` must be true to disable this check.
         It's `False` by default.
+    check_composition : boolean
+        Whether or not to check the composition of a categorical variable (processor heavy feature).
+        Since it's an expensive computation it can be activated for small datasets.
+        It's `False` by default.
     pool_size : int
         Number of workers in thread pool
         The default is equal to the number of CPU.
@@ -72,7 +77,7 @@ class ProfileReport(object):
         sample = {
             'head': df.head(),
             'tail': df.tail(),
-            'types': description_set['variables'].type.to_frame()
+            'types': description_set['variables'].type.to_frame().T
         }
 
         self.html = to_html(sample,

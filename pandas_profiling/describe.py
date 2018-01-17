@@ -13,7 +13,7 @@ import pandas_profiling.base as base
 import pandas_profiling.correlation as correlation
 from pandas_profiling.plot import histogram, mini_histogram
 
-def describe_numeric_1d(series, **kwargs):
+def describe_numeric_1d(series, config, **kwargs):
     """Compute summary statistics of a numerical (`TYPE_NUM`) variable (a Series).
 
     Also create histograms (mini an full) of its distribution.
@@ -59,7 +59,7 @@ def describe_numeric_1d(series, **kwargs):
 
     return pd.Series(stats, name=series.name)
 
-def describe_date_1d(series, **kwargs):
+def describe_date_1d(series, config, **kwargs):
     """Compute summary statistics of a date (`TYPE_DATE`) variable (a Series).
 
     Also create histograms (mini an full) of its distribution.
@@ -85,7 +85,7 @@ def describe_date_1d(series, **kwargs):
 
     return pd.Series(stats, name=series.name)
 
-def describe_categorical_1d(series, **kwargs):
+def describe_categorical_1d(series, config, **kwargs):
     """Compute summary statistics of a categorical (`TYPE_CAT`) variable (a Series).
 
     Parameters
@@ -104,24 +104,25 @@ def describe_categorical_1d(series, **kwargs):
     stats = {}
 
     if base.get_vartype(series) == base.TYPE_CAT:
-        contains = {
-            'chars': series.str.contains(r'[a-zA-Z]', case=False, regex=True).any(),
-            'digits': series.str.contains(r'[0-9]', case=False, regex=True).any(),
-            'spaces': series.str.contains(r'\s', case=False, regex=True).any(),
-            'non-words': series.str.contains(r'\W', case=False, regex=True).any(),
-        }
+        if config['checks']['check_composition']:
+            contains = {
+                'chars': series.str.contains(r'[a-zA-Z]', case=False, regex=True).any(),
+                'digits': series.str.contains(r'[0-9]', case=False, regex=True).any(),
+                'spaces': series.str.contains(r'\s', case=False, regex=True).any(),
+                'non-words': series.str.contains(r'\W', case=False, regex=True).any(),
+            }
+            stats['composition'] = contains
+            stats['max_length'] = series.str.len().max()
+            stats['mean_length'] = series.str.len().mean()
+            stats['min_length'] = series.str.len().min()
 
         stats['top'] = value_counts.index[0]
         stats['freq'] = value_counts.iloc[0]
-        stats['max_length'] =  series.str.len().max()
-        stats['mean_length'] = series.str.len().mean()
-        stats['min_length'] =  series.str.len().min()
-        stats['composition'] = contains
         stats['type'] = base.TYPE_CAT
 
     return pd.Series(stats, name=series.name)
 
-def describe_boolean_1d(series, **kwargs):
+def describe_boolean_1d(series, config, **kwargs):
     """Compute summary statistics of a boolean (`TYPE_BOOL`) variable (a Series).
 
     Parameters
@@ -145,7 +146,7 @@ def describe_boolean_1d(series, **kwargs):
 
     return pd.Series(stats, name=series.name)
 
-def describe_constant_1d(series, **kwargs):
+def describe_constant_1d(series, config, **kwargs):
     """Compute summary statistics of a constant (`S_TYPE_CONST`) variable (a Series).
 
     Parameters
@@ -160,7 +161,7 @@ def describe_constant_1d(series, **kwargs):
     """
     return pd.Series([base.S_TYPE_CONST], index=['type'], name=series.name)
 
-def describe_unique_1d(series, **kwargs):
+def describe_unique_1d(series, config, **kwargs):
     """Compute summary statistics of a unique (`S_TYPE_UNIQUE`) variable (a Series).
 
     Parameters
@@ -175,7 +176,7 @@ def describe_unique_1d(series, **kwargs):
     """
     return pd.Series([base.S_TYPE_UNIQUE], index=['type'], name=series.name)
 
-def describe_supported(series, **kwargs):
+def describe_supported(series, config, **kwargs):
     """Compute summary statistics of a supported variable (a Series).
 
     Parameters
@@ -212,7 +213,7 @@ def describe_supported(series, **kwargs):
 
     return pd.Series(stats, name=series.name)
 
-def describe_unsupported(series, **kwargs):
+def describe_unsupported(series, config, **kwargs):
     """Compute summary statistics of a unsupported (`S_TYPE_UNSUPPORTED`) variable (a Series).
 
     Parameters
@@ -244,7 +245,7 @@ def describe_unsupported(series, **kwargs):
 
     return pd.Series(stats, name=series.name)
 
-def describe_1d(data, **kwargs):
+def describe_1d(data, config, **kwargs):
     """Compute summary statistics of a variable (a Series).
 
     The description is different according to the type of the variable.
@@ -270,23 +271,23 @@ def describe_1d(data, **kwargs):
     vartype = base.get_vartype(data)
 
     if vartype == base.S_TYPE_UNSUPPORTED:
-        result = result.append(describe_unsupported(data))
+        result = result.append(describe_unsupported(data, config))
     else:
-        result = result.append(describe_supported(data))
+        result = result.append(describe_supported(data, config))
 
         if vartype == base.S_TYPE_CONST:
-            result = result.append(describe_constant_1d(data, **kwargs))
+            result = result.append(describe_constant_1d(data, config, **kwargs))
         elif vartype == base.TYPE_BOOL:
-            result = result.append(describe_boolean_1d(data, **kwargs))
+            result = result.append(describe_boolean_1d(data, config, **kwargs))
         elif vartype == base.TYPE_NUM:
-            result = result.append(describe_numeric_1d(data, **kwargs))
+            result = result.append(describe_numeric_1d(data, config, **kwargs))
         elif vartype == base.TYPE_DATE:
-            result = result.append(describe_date_1d(data, **kwargs))
+            result = result.append(describe_date_1d(data, config, **kwargs))
         elif vartype == base.S_TYPE_UNIQUE:
-            result = result.append(describe_unique_1d(data, **kwargs))
+            result = result.append(describe_unique_1d(data, config, **kwargs))
         else:
             # TYPE_CAT
-            result = result.append(describe_categorical_1d(data, **kwargs))
+            result = result.append(describe_categorical_1d(data, config, **kwargs))
 
     return result
 
@@ -341,10 +342,10 @@ def describe_correlations(df, ldesc, check_cramers, check_recoded, correlation_t
     }
     return correlation_stats, ldesc
 
-def multiprocess_func(x, **kwargs):
-    return x[0], describe_1d(x[1], **kwargs)
+def multiprocess_func(config, x, **kwargs):
+    return x[0], describe_1d(x[1], config, **kwargs)
 
-def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_overrides=None, check_recoded=False, check_cramers=False, pool_size=multiprocessing.cpu_count(), **kwargs):
+def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_overrides=None, check_recoded=False, check_cramers=False, check_composition=False, pool_size=multiprocessing.cpu_count(), **kwargs):
     """Generates a dict containing summary statistics for a given dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -374,6 +375,9 @@ def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_
         Whether or not to check cramers correlation (memory heavy feature).
         Since it's an expensive computation it can be activated for small datasets.
         `check_correlation` must be true to disable this check.
+    check_composition : boolean
+        Whether or not to check the composition of a categorical variable (processor heavy feature).
+        Since it's an expensive computation it can be activated for small datasets.
         It's `False` by default.
     pool_size : int
         Number of workers in thread pool
@@ -404,6 +408,12 @@ def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_
     except:
         pass
 
+    config = {
+        'checks': {
+            'check_composition': check_composition
+        }
+    }
+
     matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
     
     # Clearing the cache before computing stats
@@ -415,7 +425,7 @@ def describe(df, check_correlation=True, correlation_threshold=0.9, correlation_
 
     # Describe all variables in a univariate way
     pool = multiprocessing.Pool(pool_size)
-    local_multiprocess_func = partial(multiprocess_func, **kwargs)
+    local_multiprocess_func = partial(multiprocess_func, config, **kwargs)
     ldesc = {col: s for col, s in pool.map(local_multiprocess_func, df.iteritems())}
     pool.close()
 
