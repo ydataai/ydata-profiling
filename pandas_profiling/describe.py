@@ -319,7 +319,7 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
         Since it's an expensive computation it can be activated for small datasets.
         `check_correlation` must be true to disable this check.
         It's `False` by default.
-    check_recoded : boolean
+    check_composition : boolean
         Whether or not to check the composition of a categorical variable (processor heavy feature).
         Since it's an expensive computation it can be activated for small datasets.
         It's `False` by default.
