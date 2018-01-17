@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='pandas-profiling',
-    version='1.4.0',
+    version='1.4.1',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['pandas_profiling'],
@@ -37,7 +37,8 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5'
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6'
 
     ],
     keywords='pandas data-science data-analysis python jupyter ipython',
