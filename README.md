@@ -29,8 +29,6 @@ You can install using the conda package manager by running
 
     conda install pandas-profiling
 
-I haven't found yet if it is possible to upload it to the main repo (to just be able to type 'conda install pandas-profiling'). Please give me a ping if you have done this.
-
 ### From source
 
 Download the source code by cloning the repo or by pressing 'Download ZIP' on this page. Install by navigating to the proper directory and running
