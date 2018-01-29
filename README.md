@@ -46,26 +46,26 @@ The profile report is written in HTML5 and CSS3, which means pandas-profiling re
 We recommend generating reports interactively by using the Jupyter notebook. 
 
 Start by loading in your pandas DataFrame, e.g. by using
+```python
+import pandas as pd
+import pandas_profiling
 
-	import pandas as pd
-    import pandas_profiling
-
-	df=pd.read_csv("/myfilepath/myfile.csv", parse_dates=True, encoding='UTF-8')
-
+df=pd.read_csv("/myfilepath/myfile.csv", parse_dates=True, encoding='UTF-8')
+```
 To display the report in a Jupyter notebook, run:
-
-	pandas_profiling.ProfileReport(df)
-	
+```python
+pandas_profiling.ProfileReport(df)
+```
 To retrieve the list of variables which are rejected due to high correlation:
-
-    profile = pandas_profiling.ProfileReport(df)
-    rejected_variables = profile.get_rejected_variables(threshold=0.9)
-
+```python
+profile = pandas_profiling.ProfileReport(df)
+rejected_variables = profile.get_rejected_variables(threshold=0.9)
+```
 If you want to generate a HTML report file, save the `ProfileReport` to an object and use the `to_file()` function:
-
-    profile = pandas_profiling.ProfileReport(df)
-    profile.to_file(outputfile="/tmp/myoutputfile.html")
-
+```python
+profile = pandas_profiling.ProfileReport(df)
+profile.to_file(outputfile="/tmp/myoutputfile.html")
+```
 ### Python
 
 For standard formatted CSV files that can be read immediately by pandas, you can use the `profile_csv.py` script. Run
