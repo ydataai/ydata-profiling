@@ -27,7 +27,7 @@ You can install using the pip package manager by running
 
 You can install using the conda package manager by running
 
-    conda install -c jos_pol pandas-profiling
+    conda install pandas-profiling
 
 I haven't found yet if it is possible to upload it to the main repo (to just be able to type 'conda install pandas-profiling'). Please give me a ping if you have done this.
 
