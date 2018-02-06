@@ -192,9 +192,9 @@ def to_html(sample, stats_object):
 
     # Add plot of matrix correlation
     correlations = {}
-    if len(stats_object['correlations']['pearson'].columns) > 10:
+    if len(stats_object['correlations']['pearson'].columns) > 1:
         correlations['pearson_matrix'] = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
-    if len(stats_object['correlations']['spearman'].columns) > 10:
+    if len(stats_object['correlations']['spearman'].columns) > 1:
         correlations['spearman_matrix'] = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
     
     correlations_html = templates.template('correlations').render(values=correlations)
