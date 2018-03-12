@@ -185,7 +185,7 @@ def describe_supported(series, **kwargs):
 
     results_data = {'count': count,
                     'distinct_count': distinct_count,
-                    'p_missing': 1 - count / leng,
+                    'p_missing': 1 - count * 1.0 / leng,
                     'n_missing': leng - count,
                     'p_infinite': n_infinite / leng,
                     'n_infinite': n_infinite,
@@ -218,7 +218,7 @@ def describe_unsupported(series, **kwargs):
     n_infinite = count - series.count()  # number of infinte observations in the Series
 
     results_data = {'count': count,
-                    'p_missing': 1 - count / leng,
+                    'p_missing': 1 - count * 1.0 / leng,
                     'n_missing': leng - count,
                     'p_infinite': n_infinite / leng,
                     'n_infinite': n_infinite,
@@ -337,7 +337,7 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
         pass
 
     matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
-    
+
     # Clearing the cache before computing stats
     base.clear_cache()
 
