@@ -49,7 +49,7 @@ def describe_numeric_1d(series, **kwargs):
     stats['mad'] = series.mad()
     stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
     stats['n_zeros'] = (len(series) - np.count_nonzero(series))
-    stats['p_zeros'] = stats['n_zeros'] / len(series)
+    stats['p_zeros'] = stats['n_zeros'] * 1.0 / len(series)
     # Histograms
     stats['histogram'] = histogram(series, **kwargs)
     stats['mini_histogram'] = mini_histogram(series, **kwargs)
@@ -187,11 +187,11 @@ def describe_supported(series, **kwargs):
                     'distinct_count': distinct_count,
                     'p_missing': 1 - count * 1.0 / leng,
                     'n_missing': leng - count,
-                    'p_infinite': n_infinite / leng,
+                    'p_infinite': n_infinite * 1.0 / leng,
                     'n_infinite': n_infinite,
                     'is_unique': distinct_count == leng,
                     'mode': mode,
-                    'p_unique': distinct_count / leng}
+                    'p_unique': distinct_count * 1.0 / leng}
     try:
         # pandas 0.17 onwards
         results_data['memorysize'] = series.memory_usage()
@@ -220,7 +220,7 @@ def describe_unsupported(series, **kwargs):
     results_data = {'count': count,
                     'p_missing': 1 - count * 1.0 / leng,
                     'n_missing': leng - count,
-                    'p_infinite': n_infinite / leng,
+                    'p_infinite': n_infinite * 1.0 / leng,
                     'n_infinite': n_infinite,
                     'type': base.S_TYPE_UNSUPPORTED}
 
