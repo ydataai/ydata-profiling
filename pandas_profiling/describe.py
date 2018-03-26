@@ -346,10 +346,14 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
         df = df.reset_index()
 
     # Describe all variables in a univariate way
-    pool = multiprocessing.Pool(pool_size)
-    local_multiprocess_func = partial(multiprocess_func, **kwargs)
-    ldesc = {col: s for col, s in pool.map(local_multiprocess_func, df.iteritems())}
-    pool.close()
+    if pool_size == 1:
+        local_multiprocess_func = partial(multiprocess_func, **kwargs)
+        ldesc = {col: s for col, s in map(local_multiprocess_func, df.iteritems())}
+    else:
+        pool = multiprocessing.Pool(pool_size)
+        local_multiprocess_func = partial(multiprocess_func, **kwargs)
+        ldesc = {col: s for col, s in pool.map(local_multiprocess_func, df.iteritems())}
+        pool.close()
 
     # Get correlations
     dfcorrPear = df.corr(method="pearson")
