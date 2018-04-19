@@ -80,7 +80,29 @@ The SQL backend implementation was originally intention to work with HP's Vertic
 For testing purposes, Python's sqlite module is used.
 There are some differences that have necessitated a (mostly unnecessary) generality to the code:
 
-- SQLite does not support "schemas": schema is optional on all functions and in the templates
-- SQLite does not support "analytic" functions, such as AVG, PARTITION_BY, etc: these computations are avoided by the analytic option in the templates
-- SQLite names the column from `select count(*) ...` as `count(*)`: these statements are changed to `select count(*) as count, ...`
-- The variable type as stored in the database is unclear in SQLite: the `infer_datatype()` function wraps this code in a `try` clause
+- SQLite does not support "schemas": schema is optional on all functions and in the templates.
+- SQLite does not support "analytic" functions, such as AVG, PARTITION_BY, etc: these computations are avoided by the analytic option in the templates.
+- SQLite names the column from `select count(*) ...` as `count(*)`: these statements are changed to `select count(*) as count, ...`.
+- The variable type as stored in the database is unclear in SQLite: the `infer_datatype()` function wraps this code in a `try` clause.
+
+
+### Variable types
+
+We recognize the pure types of variables as:
+
+- Constant.
+- Unique.
+- Date.
+- Categorical (nominal).
+- Ordinal.
+- Numeric.
+- Binary.
+- Other.
+
+Constant and unique can have computer encoding (float, string, integer, date),
+but are characterized simply by their distribution.
+Similarly, binary and "other" variable types can have many software encodings,
+where binary have two distinct values of any encoding and "other" variables are non-numeric with more than 500 distinct values.
+Dates are any type of date, and this is relatively straightforward.
+Ordinal, categorical, and "other" are similar: they are all categorical types, where the "other" have more than 500 values and the ordinal have a natural ordering.
+Finally, numeric variables are perhaps the most simple: any type of number (we make no distinction between ratio and interval).

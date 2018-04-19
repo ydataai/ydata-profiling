@@ -237,13 +237,14 @@ def infer_coltype(col,
     if verbose:
         print("Inferring coltype for col={}".format(col))
     # infer from col name
-    coltypes = {"ordinal": "CAT",
-                "flat": "CAT",
-                "interval": "CAT",
-                "passthrough": "IGNORE",
+    coltypes = {"ordinal": "ORD",
+                "interval": "ORD",
+                "binary": "BNRY",
                 "continuous": "NUM",
-                "ignore": "IGNORE",
-                "nominal": "CAT"}
+                "nominal": "CAT",
+                "date": "DATE",
+                "passthrough": "OTH",
+                "ignore": "OTH"}
     for x in coltypes:
         if x in col:
             return coltypes[x]
@@ -260,7 +261,7 @@ def infer_coltype(col,
         print(cur.description[0])
         print(type(cur.description[0]))
 
-    # use this flag to check for unique, constant within string
+    # use this flag to check for unique, constant, categorical within string
     str_type = False
     # infer from vertica type code
     if type(cur) == vertica_python.vertica.cursor.Cursor or type(cur.description[0]) != tuple:
@@ -272,9 +273,9 @@ def infer_coltype(col,
         elif type_code in [10, 11, 12, 13, 14, 15]:
             return "DATE"
         # ignore booleans...
-        # TODO
+        # TODO: map boolean to binary type (map to 0/1)
         elif type_code in [5]:
-            return "IGNORE"
+            return "OTH"
     # infer from the type
     else:
         val = x[0][col]
@@ -288,21 +289,23 @@ def infer_coltype(col,
                                     "table": table})
     cur.execute(query)
     x = cur.fetchall()
-    unique = x[0]["count"]
+    n_unique = x[0]["count"]
     # just define a local results object here...
-    results = {"n_unique": unique}
+    results = {"n_unique": n_unique}
     if results["n_unique"] == n:
         return "UNIQUE"
     elif results["n_unique"] == 1:
         return "CONST"
-    elif str_type:
-        return "STRING"
     # elif results["n_unique"] / float(n) < 0.5:
     #     return "NUM"
-    # how to distinguish nominal and ordinal?
+    # how to distinguish nominal and ordinal? not really a way here
     # use the col type in Vertica: strings -> nominal, numeric -> ordinal
+    elif results["n_unique"] == 2:
+        return "BNRY"
     elif results["n_unique"] < 500:
         return "CAT"
+    elif str_type:
+        return "OTH"
     else:
         return "NUM"
 
@@ -317,9 +320,9 @@ def get_col_stuff(cur,
 
     # first get the column type
     coltype = infer_coltype(col, cur, table_size, schema, table)
-    # map these onto something that pandas_profiling already knows
-    if coltype in ["IGNORE", "STRING"]:
-        coltype = "UNIQUE"
+    # # map these onto something that pandas_profiling already knows
+    # if coltype in ["IGNORE", "STRING"]:
+    #     coltype = "UNIQUE"
     results = {"type": coltype}
     # now get basic stats
     # some branching based on the coltype in basic_stats
@@ -401,10 +404,11 @@ def main_vertica(cur, schema, table,
     # use this when inferring col type
     print(datetime.now())
 
-    cols = get_all_cols(cur, schema=schema)
+    cols = get_all_cols(cur, table=table, schema=schema)
     print(len(cols))
 
     print(datetime.now())
+    print(table)
 
     fname = "data/processed/{}_{}_col_info.json".format(schema, table)
     if os.path.isfile(fname) and cache_results:

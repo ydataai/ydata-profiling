@@ -1,7 +1,7 @@
 from __future__ import division
 
 import sys
-
+from collections import OrderedDict
 import itertools
 
 try:
@@ -28,7 +28,7 @@ import multiprocessing
 from functools import partial
 from distutils.version import LooseVersion
 from .vertica import *
-
+from sklearn.feature_selection import chi2
 plt.switch_backend('Agg')
 
 
@@ -185,7 +185,17 @@ def mini_histogram(series, **kwargs):
 
 def plot_response(df, col, bootstrap_confidence=False,
                   target_col="target", **kwargs):
-    """Plot a response curve of a binary target variable."""
+    """Plot a response curve of a binary target variable.
+
+    inputs:
+        df:
+        col:
+        bootstrap_confidence:
+        target_col:
+
+    returns:
+        PNG image as a string
+    """
     fig = plt.figure()
     ax1 = fig.add_axes([.2, .2, .7, .7])
     g = df.groupby(col)
@@ -213,7 +223,7 @@ def plot_response(df, col, bootstrap_confidence=False,
                          alpha=.5)
     # ax1.plot(np.arange(results.shape[0])+17,
     #          results.mean(axis=1))
-    ax1.plot(g.size().index, g["target"].aggregate(np.sum) / g.size(), '-')
+    ax1.plot(g.size().index, g[target_col].aggregate(np.sum) / g.size(), '-')
     # if bootstrap_confidence:
     #     ax1.set_ylim([0,(results.mean(axis=1)+3*results.std(axis=1)).max()])
     # else:
@@ -323,7 +333,8 @@ def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
 
 
-def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
+def describePandas(df, bins=10, check_correlation=True, check_recoded=False,
+                   compute_responses=False, target_col="target",
                    bootstrap_response_error=False, correlation_overrides=None,
                    pool_size=multiprocessing.cpu_count(), verbose=False,
                    **kwargs):
@@ -345,6 +356,9 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
         raise TypeError("df must be of type pandas.DataFrame")
     if df.empty:
         raise ValueError("df can not be empty")
+    # check before we get too far into things..
+    if target_col not in df.columns and compute_responses:
+        raise ValueError("need the actual target column for responses!")
 
     matplotlib.style.use("default")
 
@@ -377,31 +391,34 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
         if verbose:
             print("Checking correlations.")
         corr = df.corr()
-        for x, corr_x in corr.iterrows():
-            if correlation_overrides and x in correlation_overrides:
+        for name_1, corr_name_1 in corr.iterrows():
+            if correlation_overrides and name_1 in correlation_overrides:
                 continue
 
-            for y, corr in corr_x.iteritems():
-                if x == y:
+            for name_2, corr in corr_name_1.iteritems():
+                if name_1 == name_2:
                     break
 
                 if corr > 0.9:
-                    ldesc[x] = pd.Series(['CORR', y, corr], index=[
-                                         'type', 'correlation_var',
-                                         'correlation'])
+                    ldesc[name_1] = pd.Series(['CORR', name_2, corr], index=[
+                        'type', 'correlation_var',
+                        'correlation'])
 
         categorical_variables = [(name, data)
                                  for (name, data) in df.iteritems()
                                  if get_vartype(data) == 'CAT']
-        for (name1, data1), (name2, data2) in itertools.combinations(
-                categorical_variables, 2):
-            if correlation_overrides and name1 in correlation_overrides:
-                continue
 
-            confusion_matrix = pd.crosstab(data1, data2)
-            if confusion_matrix.values.diagonal().sum() == len(df):
-                ldesc[name1] = pd.Series(['RECODED', name2],
-                                         index=['type', 'correlation_var'])
+        # check if two categoricals are, in fact, identical
+        if check_recoded:
+            for (name1, data1), (name2, data2) in itertools.combinations(
+                    categorical_variables, 2):
+                if correlation_overrides and name1 in correlation_overrides:
+                    continue
+
+                confusion_matrix = pd.crosstab(data1, data2)
+                if confusion_matrix.values.diagonal().sum() == len(df):
+                    ldesc[name1] = pd.Series(['RECODED', name2],
+                                             index=['type', 'correlation_var'])
 
     if verbose:
         print("Done with correlations. Building out stats object.")
@@ -437,10 +454,17 @@ def describePandas(df, bins=10, check_correlation=True, compute_responses=False,
 
     if compute_responses:
         if verbose:
+            print("Getting univariate chi^2 tests.")
+
+        chi2(df.drop([target_col], axis=1), df.loc[[target_col], :])
+
+        if verbose:
             print("Computing responses.")
-        responses = {k: plot_response(
-            df, k, bootstrap_confidence=bootstrap_response_error, **kwargs)
-            for k in df.columns}
+        responses = {k: plot_response(df, k,
+                                      bootstrap_confidence=bootstrap_response_error,
+                                      target_col=target_col)
+                     for k in df.columns
+                     if get_vartype(df[k]) == 'NUM'}
         # if k not in table_stats['REJECTED']
         # do it for every variables
         # for k in df.columns:
@@ -477,7 +501,7 @@ def describeSQL(cur, table, schema="", bins=10,
     n_rows = cur.fetchall()[0]["count"]
 
     stats_object = main_vertica(cur, schema, table)
-    freq_object = {col: stats_object[col]["common"] for col in stats_object}
+    freq_object = OrderedDict([(col, stats_object[col]["common"]) for col in stats_object])
     table_stats = {'total_missing': 0, 'n_duplicates': 0,
                    'memsize': 0, 'recordsize': 0,
                    "n": n_rows,
@@ -487,16 +511,17 @@ def describeSQL(cur, table, schema="", bins=10,
     if verbose:
         print(names)
     # names of the stats pulled out
+    # this list will have all of the columns of each series from main_vertica
     names = []
-    ldesc_indexes = sorted([x.index for x in stats_object.values()], key=len)
+    # this sort is unnecessary
+    # ldesc_indexes = sorted([x.index for x in stats_object.values()], key=len)
+    ldesc_indexes = [x.index for x in stats_object.values()]
     for idxnames in ldesc_indexes:
         for name in idxnames:
             if name not in names:
                 names.append(name)
     if verbose:
         print(names)
-        print(pd.Index(names))
-        print(stats_object["cat"])
     variable_stats = pd.concat(stats_object, join_axes=pd.Index([names]), axis=1)
     # variable_stats.columns.names = names
 
@@ -549,6 +574,11 @@ def to_html(sample, stats_object):
     responses = {k: plot_response(
         df, k, bootstrap_confidence=bootstrap_response_error, **kwargs)
         for k in df.columns}
+
+    Logic
+    -----
+    Checks input, defines formatting functions.
+
 
     Returns
     -------
@@ -661,7 +691,7 @@ def to_html(sample, stats_object):
 
     for idx, row in stats_object['variables'].iterrows():
         formatted_values = {'varname': idx, 'varid': hash(idx)}
-        row_classes = {}
+        row_classes = OrderedDict()
         if idx in stats_object['responses']:
             formatted_values['response'] = stats_object['responses'][idx]
         else:
@@ -733,4 +763,6 @@ def to_html(sample, stats_object):
     sample_html = templates.template('sample').render(
         sample_table_html=sample.to_html(classes="sample"))
     # TODO: should be done in the template
-    return templates.template('base').render({'overview_html': overview_html, 'rows_html': rows_html, 'sample_html': sample_html})
+    return templates.template('base').render({'overview_html': overview_html,
+                                              'rows_html': rows_html,
+                                              'sample_html': sample_html})
