@@ -57,7 +57,11 @@ def to_html(sample, stats_object):
                 return unicode(value)
 
     def _format_row(freq, label, max_freq, row_template, n, extra_class=''):
-            width = int(freq / max_freq * 99) + 1
+            if max_freq != 0:
+                width = int(freq / max_freq * 99) + 1
+            else:
+                width = 1
+
             if width > 20:
                 label_in_bar = freq
                 label_after_bar = ""
