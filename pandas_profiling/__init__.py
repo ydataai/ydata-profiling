@@ -61,6 +61,10 @@ class ProfileReport(object):
     def __init__(self, df, **kwargs):
         """Constructor see class documentation
         """
+
+        if ("target_name" in kwargs.keys()):
+            kwargs['target_series'] = df[kwargs['target_name']]
+
         sample = kwargs.get('sample', df.head())
 
         description_set = describe_df(df, **kwargs)
@@ -101,7 +105,7 @@ class ProfileReport(object):
         result = []
         if hasattr(variable_profile, 'correlation'):
             result = variable_profile.index[variable_profile.correlation > threshold].tolist()
-        return  result
+        return result
 
     def to_file(self, outputfile=DEFAULT_OUTPUTFILE):
         """Write the report to a file.

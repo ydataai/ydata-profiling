@@ -9,7 +9,7 @@ DEFAULT_FLOAT_FORMATTER = u'pandas_profiling.__default_float_formatter'
 def gradient_format(value, limit1, limit2, c1, c2):
     def LerpColour(c1,c2,t):
         return (int(c1[0]+(c2[0]-c1[0])*t),int(c1[1]+(c2[1]-c1[1])*t),int(c1[2]+(c2[2]-c1[2])*t))
-    c = LerpColour(c1, c2, (value-limit1)/(limit2-limit1))
+    c = LerpColour(c1, c2, float(value-limit1)/(limit2-limit1))
     return fmt_color(value,"rgb{}".format(str(c)))
 
 

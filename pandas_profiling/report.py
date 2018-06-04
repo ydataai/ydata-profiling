@@ -55,11 +55,11 @@ def to_html(sample, stats_object):
                 return unicode(value)  # Python 2
             except NameError:
                 return str(value)      # Python 3
-                
+
 
     def _format_row(freq, label, max_freq, row_template, n, extra_class=''):
             if max_freq != 0:
-                width = int(freq / max_freq * 99) + 1
+                width = int(float(freq) / max_freq * 99) + 1
             else:
                 width = 1
 
@@ -73,7 +73,7 @@ def to_html(sample, stats_object):
             return row_template.render(label=label,
                                        width=width,
                                        count=freq,
-                                       percentage='{:2.1f}'.format(freq / n * 100),
+                                       percentage='{:2.1f}'.format(float(freq) / n * 100),
                                        extra_class=extra_class,
                                        label_in_bar=label_in_bar,
                                        label_after_bar=label_after_bar)
@@ -151,9 +151,9 @@ def to_html(sample, stats_object):
 
         if row['type'] in {'CAT', 'BOOL'}:
             formatted_values['minifreqtable'] = freq_table(stats_object['freq'][idx], n_obs,
-                                                           templates.template('mini_freq_table'), 
-                                                           templates.template('mini_freq_table_row'), 
-                                                           3, 
+                                                           templates.template('mini_freq_table'),
+                                                           templates.template('mini_freq_table_row'),
+                                                           3,
                                                            templates.mini_freq_table_nb_col[row['type']])
 
             if row['distinct_count'] > 50:

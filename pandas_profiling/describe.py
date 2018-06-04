@@ -49,7 +49,7 @@ def describe_numeric_1d(series, **kwargs):
     stats['mad'] = series.mad()
     stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
     stats['n_zeros'] = (len(series) - np.count_nonzero(series))
-    stats['p_zeros'] = stats['n_zeros'] * 1.0 / len(series)
+    stats['p_zeros'] = float(stats['n_zeros']) / len(series)
     # Histograms
     stats['histogram'] = histogram(series, **kwargs)
     stats['mini_histogram'] = mini_histogram(series, **kwargs)
@@ -81,7 +81,7 @@ def describe_date_1d(series):
     stats['mini_histogram'] = mini_histogram(series)
     return pd.Series(stats, name=series.name)
 
-def describe_categorical_1d(series):
+def describe_categorical_1d(series, **kwargs):
     """Compute summary statistics of a categorical (`TYPE_CAT`) variable (a Series).
 
     Parameters
@@ -106,7 +106,7 @@ def describe_categorical_1d(series):
 
     return pd.Series(result, index=names, name=series.name)
 
-def describe_boolean_1d(series):
+def describe_boolean_1d(series, **kwargs):
     """Compute summary statistics of a boolean (`TYPE_BOOL`) variable (a Series).
 
     Parameters
@@ -130,7 +130,7 @@ def describe_boolean_1d(series):
 
     return pd.Series(result, index=names, name=series.name)
 
-def describe_constant_1d(series):
+def describe_constant_1d(series, **kwargs):
     """Compute summary statistics of a constant (`S_TYPE_CONST`) variable (a Series).
 
     Parameters
@@ -145,7 +145,7 @@ def describe_constant_1d(series):
     """
     return pd.Series([base.S_TYPE_CONST], index=['type'], name=series.name)
 
-def describe_unique_1d(series):
+def describe_unique_1d(series, **kwargs):
     """Compute summary statistics of a unique (`S_TYPE_UNIQUE`) variable (a Series).
 
     Parameters
@@ -251,6 +251,7 @@ def describe_1d(data, **kwargs):
 
     # Replace infinite values with NaNs to avoid issues with
     # histograms later.
+
     data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
 
     result = pd.Series({}, name=data.name)
@@ -274,8 +275,7 @@ def describe_1d(data, **kwargs):
             result = result.append(describe_unique_1d(data))
         else:
             # TYPE_CAT
-            result = result.append(describe_categorical_1d(data))
-
+            result = result.append(describe_categorical_1d(data, **kwargs))
     return result
 
 def multiprocess_func(x, **kwargs):
@@ -409,13 +409,13 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
 
     table_stats['n'] = len(df)
     table_stats['nvar'] = len(df.columns)
-    table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
+    table_stats['total_missing'] = float(variable_stats.loc['n_missing'].sum()) / (table_stats['n'] * table_stats['nvar'])
     unsupported_columns = variable_stats.transpose()[variable_stats.transpose().type != base.S_TYPE_UNSUPPORTED].index.tolist()
     table_stats['n_duplicates'] = sum(df.duplicated(subset=unsupported_columns)) if len(unsupported_columns) > 0 else 0
 
     memsize = df.memory_usage(index=True).sum()
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
-    table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
+    table_stats['recordsize'] = formatters.fmt_bytesize(float(memsize) / table_stats['n'])
 
     table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT", "UNIQUE", "CORR", "RECODED", "BOOL", "UNSUPPORTED")})
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
