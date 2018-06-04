@@ -310,6 +310,9 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
     pool_size : int
         Number of workers in thread pool
         The default is equal to the number of CPU.
+    target_name : str
+        Name of the target column to plot.
+        By default nothing will be plotted.
 
     Returns
     -------
