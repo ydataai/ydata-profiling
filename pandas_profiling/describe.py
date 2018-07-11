@@ -265,13 +265,13 @@ def describe_1d(data, **kwargs):
         if vartype == base.S_TYPE_CONST:
             result = result.append(describe_constant_1d(data))
         elif vartype == base.TYPE_BOOL:
-            result = result.append(describe_boolean_1d(data, **kwargs))
+            result = result.append(describe_boolean_1d(data))
         elif vartype == base.TYPE_NUM:
             result = result.append(describe_numeric_1d(data, **kwargs))
         elif vartype == base.TYPE_DATE:
-            result = result.append(describe_date_1d(data, **kwargs))
+            result = result.append(describe_date_1d(data))
         elif vartype == base.S_TYPE_UNIQUE:
-            result = result.append(describe_unique_1d(data, **kwargs))
+            result = result.append(describe_unique_1d(data))
         else:
             # TYPE_CAT
             result = result.append(describe_categorical_1d(data))
@@ -345,6 +345,7 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
         # Treat index as any other column
         df = df.reset_index()
 
+    kwargs.update({'bins': bins})
     # Describe all variables in a univariate way
     if pool_size == 1:
         local_multiprocess_func = partial(multiprocess_func, **kwargs)
