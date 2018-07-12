@@ -444,7 +444,8 @@ def describePandas(df, bins=10, check_correlation=True, check_recoded=False,
 
     memsize = df.memory_usage(index=True).sum()
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
-    table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
+    table_stats['recordsize'] = formatters.fmt_bytesize(
+        memsize / table_stats['n'])
 
     table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT",
                                        "UNIQUE", "CORR", "RECODED")})
@@ -456,7 +457,8 @@ def describePandas(df, bins=10, check_correlation=True, check_recoded=False,
         if verbose:
             print("Getting univariate chi^2 tests.")
 
-        chi2(df.drop([target_col], axis=1), df.loc[[target_col], :])
+        # chi2(df.loc[:, [x for x in df.columns if x != target_col]],
+        #      df.loc[:, target_col])
 
         if verbose:
             print("Computing responses.")
@@ -501,7 +503,8 @@ def describeSQL(cur, table, schema="", bins=10,
     n_rows = cur.fetchall()[0]["count"]
 
     stats_object = main_vertica(cur, schema, table)
-    freq_object = OrderedDict([(col, stats_object[col]["common"]) for col in stats_object])
+    freq_object = OrderedDict(
+        [(col, stats_object[col]["common"]) for col in stats_object])
     table_stats = {'total_missing': 0, 'n_duplicates': 0,
                    'memsize': 0, 'recordsize': 0,
                    "n": n_rows,
@@ -522,7 +525,8 @@ def describeSQL(cur, table, schema="", bins=10,
                 names.append(name)
     if verbose:
         print(names)
-    variable_stats = pd.concat(stats_object, join_axes=pd.Index([names]), axis=1)
+    variable_stats = pd.concat(
+        stats_object, join_axes=pd.Index([names]), axis=1)
     # variable_stats.columns.names = names
 
     table_stats.update({k: 0 for k in ("NUM", "DATE", "CONST", "CAT",
@@ -655,7 +659,8 @@ def to_html(sample, stats_object):
         # TODO: Correctly sort missing and other
 
         for label, freq in six.iteritems(freqtable.iloc[0:max_number_to_print]):
-            freq_rows_html += _format_row(freq, label, max_freq, row_template, n)
+            freq_rows_html += _format_row(freq,
+                                          label, max_freq, row_template, n)
 
         if freq_other > min_freq:
             freq_rows_html += _format_row(freq_other,
@@ -681,7 +686,8 @@ def to_html(sample, stats_object):
         max_freq = max(obs_to_print.values)
 
         for label, freq in six.iteritems(obs_to_print):
-            freq_rows_html += _format_row(freq, label, max_freq, row_template, n)
+            freq_rows_html += _format_row(freq,
+                                          label, max_freq, row_template, n)
 
         return table_template.render(rows=freq_rows_html)
 
@@ -726,7 +732,8 @@ def to_html(sample, stats_object):
 
         if row['type'] in {'CORR', 'CONST', 'RECODED'}:
             formatted_values['varname'] = formatters.fmt_varname(idx)
-            messages.append(templates.messages[row['type']].format(formatted_values))
+            messages.append(
+                templates.messages[row['type']].format(formatted_values))
         else:
             formatted_values['freqtable'] = freq_table(stats_object['freq'][idx], n_obs,
                                                        templates.template('freq_table'), templates.template('freq_table_row'), 10)
@@ -741,7 +748,8 @@ def to_html(sample, stats_object):
                                                   ].render(values=formatted_values, row_classes=row_classes)
 
     # Overview
-    formatted_values = {k: fmt(v, k) for k, v in six.iteritems(stats_object['table'])}
+    formatted_values = {k: fmt(v, k)
+                        for k, v in six.iteritems(stats_object['table'])}
 
     row_classes = {}
     for col in six.viewkeys(stats_object['table']) & six.viewkeys(row_formatters):
