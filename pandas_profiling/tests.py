@@ -273,7 +273,7 @@ class CategoricalDataTest(unittest.TestCase):
              'y': ['dog', 'dog', 'dog', 'dog', 'cat', 'cat', 'camel', 'camel'],
            }
         self.df = pd.DataFrame(self.data)
-        self.results = describe(self.df)
+        self.results = describe(self.df, check_recoded=True)
 
         self.assertEqual(self.results['variables'].loc['x']['type'], 'RECODED')
         self.assertEqual(
