@@ -4,15 +4,21 @@
 import base64
 from distutils.version import LooseVersion
 import pandas_profiling.base as base
-import matplotlib
 import numpy as np
-# Fix #68, this call is not needed and brings side effects in some use cases
-# Backend name specifications are not case-sensitive; e.g., ‘GTKAgg’ and ‘gtkagg’ are equivalent.
-# See https://matplotlib.org/faq/usage_faq.html#what-is-a-backend
-BACKEND = matplotlib.get_backend()
-if matplotlib.get_backend().lower() != BACKEND.lower():
-    # If backend is not set properly a call to describe will hang
-    matplotlib.use(BACKEND)
+import warnings
+import matplotlib
+# style usage: https://stackoverflow.com/a/50218526/
+import matplotlib.style
+from pkg_resources import resource_filename
+matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+# The backend cannot be interactive if processing is parallel
+# because of pickling issues https://stackoverflow.com/a/15578386/
+# list of non-interactive backends taken from:
+# https://matplotlib.org/tutorials/introductory/usage.html#backends
+if matplotlib.get_backend().lower() in [b.lower() for b in matplotlib.rcsetup.interactive_bk]:
+    warnings.warn('Interactive Matplotlib backend (%s) will hang when run in parallel'
+                  % matplotlib.get_backend(), RuntimeWarning)
+
 from matplotlib import pyplot as plt
 try:
     from StringIO import BytesIO

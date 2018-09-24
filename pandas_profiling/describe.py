@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import matplotlib
 
-from pkg_resources import resource_filename
 import pandas_profiling.formatters as formatters
 import pandas_profiling.base as base
 from pandas_profiling.plot import histogram, mini_histogram
@@ -328,15 +327,6 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
         raise TypeError("df must be of type pandas.DataFrame")
     if df.empty:
         raise ValueError("df can not be empty")
-
-    try:
-        # reset matplotlib style before use
-        # Fails in matplotlib 1.4.x so plot might look bad
-        matplotlib.style.use("default")
-    except:
-        pass
-
-    matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
     # Clearing the cache before computing stats
     base.clear_cache()
