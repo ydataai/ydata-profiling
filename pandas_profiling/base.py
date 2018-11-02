@@ -45,7 +45,7 @@ def get_groupby_statistic(data):
         return _VALUE_COUNTS_MEMO[data.name]
 
     value_counts_with_nan = data.value_counts(dropna=False)
-    value_counts_without_nan = value_counts_with_nan.loc[value_counts_with_nan.index.dropna()]
+    value_counts_without_nan = pd.Series(value_counts_with_nan.reset_index().dropna().set_index('index'))
     distinct_count_with_nan = value_counts_with_nan.count()
 
     # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict, list and so on...
