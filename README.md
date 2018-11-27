@@ -1,4 +1,7 @@
-# pandas-profiling 
+# MAINTAINERS WANTED - Notice of neglect
+This package does not have a current active maintainer. If you are interested to take on the role of main developer, feel free to reach out to @JosPolfliet.
+
+# pandas-profiling
 
 Generates profile reports from a pandas `DataFrame`. The pandas `df.describe()` function is great but a little basic for serious exploratory data analysis.
 
