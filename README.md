@@ -48,10 +48,14 @@ We recommend generating reports interactively by using the Jupyter notebook.
 
 Start by loading in your pandas DataFrame, e.g. by using
 ```python
+import numpy as np
 import pandas as pd
 import pandas_profiling
 
-df=pd.read_csv("/myfilepath/myfile.csv", parse_dates=True, encoding='UTF-8')
+df=pd.DataFrame(
+    np.random.rand(100, 5),
+    columns=['a', 'b', 'c', 'd', 'e']
+)
 ```
 To display the report in a Jupyter notebook, run:
 ```python
@@ -65,7 +69,7 @@ rejected_variables = profile.get_rejected_variables(threshold=0.9)
 If you want to generate a HTML report file, save the `ProfileReport` to an object and use the `to_file()` function:
 ```python
 profile = pandas_profiling.ProfileReport(df)
-profile.to_file(outputfile="/tmp/myoutputfile.html")
+profile.to_file(outputfile="output.html")
 ```
 ### Python
 
