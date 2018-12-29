@@ -46,7 +46,7 @@ def _plot_histogram(series, bins=10, figsize=(6, 4), facecolor='#337ab7'):
         plot = fig.add_subplot(111)
         plot.set_ylabel('Frequency')
         try:
-            plot.hist(series.values, facecolor=facecolor, bins=bins)
+            plot.hist(series.dropna().values, facecolor=facecolor, bins=bins)
         except TypeError: # matplotlib 1.4 can't plot dates so will show empty plot instead
             pass
     else:
