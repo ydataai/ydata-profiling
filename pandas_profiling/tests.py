@@ -209,7 +209,6 @@ class DataFrameTest(unittest.TestCase):
             set(self.results['freq'].keys()), set(self.data.keys()))
         self.assertSetEqual(
             set(self.results['variables'].index), set(self.data.keys()))
-        print((self.results['table'].items()))
         self.assertTrue(set({
                                 'CAT': 2,
                                 'CONST': 2,
@@ -273,8 +272,7 @@ class CategoricalDataTest(unittest.TestCase):
              'y': ['dog', 'dog', 'dog', 'dog', 'cat', 'cat', 'camel', 'camel'],
            }
         self.df = pd.DataFrame(self.data)
-        self.results = describe(self.df)
-
+        self.results = describe(self.df, check_recoded=True)
         self.assertEqual(self.results['variables'].loc['x']['type'], 'RECODED')
         self.assertEqual(
             self.results['variables'].loc['x']['correlation_var'], 'y')
