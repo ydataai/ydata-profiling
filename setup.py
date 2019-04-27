@@ -7,13 +7,19 @@ try:
 except ImportError:
     from distutils.core import setup
 
+# read the contents of README file
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(
     name='pandas-profiling',
-    version='1.4.1',
+    version='1.4.2',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['pandas_profiling'],
-    url='http://github.com/jospolfliet/pandas-profiling',
+    url='https://github.com/pandas-profiling/pandas-profiling',
     license='MIT',
     description='Generate profile report for pandas DataFrame',
     install_requires=[
@@ -36,9 +42,12 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7'
 
     ],
     keywords='pandas data-science data-analysis python jupyter ipython',
+    long_description=long_description,
+    long_description_content_type='text/markdown'
 
 )
