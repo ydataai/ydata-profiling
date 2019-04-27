@@ -336,6 +336,13 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
     except:
         pass
 
+    try:
+        # Ignore FutureWarning
+        from pandas.plotting import register_matplotlib_converters
+        register_matplotlib_converters()
+    except:
+        pass
+
     matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
     # Clearing the cache before computing stats
