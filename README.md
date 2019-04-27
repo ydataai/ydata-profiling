@@ -32,7 +32,7 @@ You can install using the pip package manager by running
 
 You can install using the conda package manager by running
 
-    conda install pandas-profiling
+    conda install -c anaconda pandas-profiling
 
 ### From source
 
