@@ -8,8 +8,8 @@ https://stackoverflow.com/questions/3898572/what-is-the-standard-python-docstrin
 """
 import codecs
 import pandas_profiling.templates as templates
-from .describe import describe
-from .report import to_html
+from pandas_profiling.describe import describe as describe_df
+from pandas_profiling.report import to_html
 
 NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
 DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
@@ -63,7 +63,7 @@ class ProfileReport(object):
         """
         sample = kwargs.get('sample', df.head())
 
-        description_set = describe(df, **kwargs)
+        description_set = describe_df(df, **kwargs)
 
         self.html = to_html(sample,
                             description_set)
