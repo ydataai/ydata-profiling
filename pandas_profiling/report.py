@@ -134,6 +134,7 @@ def to_html(sample, stats_object):
     # Variables
     rows_html = u""
     messages = []
+    render_htmls = {}
 
     for idx, row in stats_object['variables'].iterrows():
 
@@ -179,6 +180,7 @@ def to_html(sample, stats_object):
             formatted_values['lastn_expanded'] = extreme_obs_table(stats_object['freq'][idx], templates.template('freq_table'), templates.template('freq_table_row'), 5, n_obs, ascending = False)
 
         rows_html += templates.row_templates_dict[row['type']].render(values=formatted_values, row_classes=row_classes)
+    render_htmls['rows_html'] = rows_html
 
     # Overview
     formatted_values = {k: fmt(v, k) for k, v in six.iteritems(stats_object['table'])}
@@ -194,19 +196,19 @@ def to_html(sample, stats_object):
         messages_html += templates.message_row.format(message=msg)
 
     overview_html = templates.template('overview').render(values=formatted_values, row_classes = row_classes, messages=messages_html)
+    render_htmls['overview_html'] = overview_html
 
-    # Add plot of matrix correlation
-    pearson_matrix = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
-    spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
-    correlations_html = templates.template('correlations').render(
-        values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix})
+    # Add plot of matrix correlation if the dataframe is not empty
+    if len(stats_object['correlations']['pearson']) > 0:
+        pearson_matrix = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
+        spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
+        correlations_html = templates.template('correlations').render(
+            values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix})
+        render_htmls['correlations_html'] = correlations_html
 
     # Add sample
     sample_html = templates.template('sample').render(sample_table_html=sample.to_html(classes="sample"))
+    render_htmls['sample_html'] = sample_html
+
     # TODO: should be done in the template
-    return templates.template('base').render({
-        'overview_html': overview_html,
-        'rows_html': rows_html,
-        'sample_html': sample_html,
-        'correlation_html': correlations_html
-    })
+    return templates.template('base').render(render_htmls)
