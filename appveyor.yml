@@ -28,4 +28,4 @@ install:
 build: false
 
 test_script:
-  - "python -m unittest -v pandas_profiling.tests"
+  - "python -m unittest -v dask_profiling.tests"

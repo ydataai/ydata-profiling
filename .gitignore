@@ -65,4 +65,16 @@ target/
 .idea
 
 # ipynb example stuff
-examples/.ipynb_checkpoints/
+examples/
+.ipynb_checkpoints/
+*.ipynb
+
+# VS Code
+.vscode/
+
+# Dask
+dask-worker-space/
+
+# Testing
+reports/
+test notebooks/

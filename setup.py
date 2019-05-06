@@ -18,7 +18,7 @@ setup(
     version='1.4.2',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
-    packages=['pandas_profiling'],
+    packages=['dask_profiling'],
     url='https://github.com/pandas-profiling/pandas-profiling',
     license='MIT',
     description='Generate profile report for pandas DataFrame',

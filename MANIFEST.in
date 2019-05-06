@@ -1,4 +1,4 @@
 include LICENSE
-include pandas_profiling/*.mplstyle
-include pandas_profiling/templates/*.html
+include dask_profiling/*.mplstyle
+include dask_profiling/templates/*.html
 include README.md

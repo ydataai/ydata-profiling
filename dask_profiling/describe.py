@@ -5,12 +5,15 @@ import itertools
 from functools import partial
 import numpy as np
 import pandas as pd
+import scipy as sp
+import dask.dataframe as dd
+from dask import delayed, compute
+from dask.array import stats as dask_stats
 import matplotlib
-
 from pkg_resources import resource_filename
-import pandas_profiling.formatters as formatters
-import pandas_profiling.base as base
-from pandas_profiling.plot import histogram, mini_histogram
+import dask_profiling.formatters as formatters
+import dask_profiling.base as base
+from dask_profiling.plot import histogram, mini_histogram
 
 def describe_numeric_1d(series, **kwargs):
     """Compute summary statistics of a numerical (`TYPE_NUM`) variable (a Series).
@@ -30,6 +33,7 @@ def describe_numeric_1d(series, **kwargs):
     # Format a number as a percentage. For example 0.25 will be turned to 25%.
     _percentile_format = "{:.0%}"
     stats = dict()
+
     stats['type'] = base.TYPE_NUM
     stats['mean'] = series.mean()
     stats['std'] = series.std()
@@ -37,23 +41,27 @@ def describe_numeric_1d(series, **kwargs):
     stats['min'] = series.min()
     stats['max'] = series.max()
     stats['range'] = stats['max'] - stats['min']
-    # To avoid to compute it several times
+    # TODO: Remove this "lazy" operation
     _series_no_na = series.dropna()
     for percentile in np.array([0.05, 0.25, 0.5, 0.75, 0.95]):
         # The dropna() is a workaround for https://github.com/pydata/pandas/issues/13098
         stats[_percentile_format.format(percentile)] = _series_no_na.quantile(percentile)
     stats['iqr'] = stats['75%'] - stats['25%']
-    stats['kurtosis'] = series.kurt()
-    stats['skewness'] = series.skew()
+    stats['kurtosis'] = delayed(sp.stats.kurtosis)(series)
+    stats['skewness'] = delayed(float)(dask_stats.skew(series.to_dask_array()))
     stats['sum'] = series.sum()
-    stats['mad'] = series.mad()
-    stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
-    stats['n_zeros'] = (len(series) - np.count_nonzero(series))
-    stats['p_zeros'] = stats['n_zeros'] * 1.0 / len(series)
+    stats['mad'] = series.sub(series.mean()).abs().mean()
+    # removed conditional for testing (no purpose was seen)
+    # stats['cv'] = stats['std'] / stats['mean'] if stats['mean'] else np.NaN
+    stats['cv'] = stats['std'] / stats['mean']
+    stats['n_zeros'] = (series.size - delayed(np.count_nonzero)(series))
+    stats['p_zeros'] = stats['n_zeros'] * 1.0 / series.size
     # Histograms
+    # TODO: optimize histogram and mini_histogram calls (a big overlap in computation)
     stats['histogram'] = histogram(series, **kwargs)
     stats['mini_histogram'] = mini_histogram(series, **kwargs)
-    return pd.Series(stats, name=series.name)
+
+    return stats
 
 
 def describe_date_1d(series):
@@ -68,8 +76,8 @@ def describe_date_1d(series):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    dict
+        The description of the variable as a dict with keys being stats.
     """
     stats = dict()
     stats['type'] = base.TYPE_DATE
@@ -77,9 +85,11 @@ def describe_date_1d(series):
     stats['max'] = series.max()
     stats['range'] = stats['max'] - stats['min']
     # Histograms
+    # TODO: optimize histogram and mini_histogram calls (a big overlap in computation)
     stats['histogram'] = histogram(series)
     stats['mini_histogram'] = mini_histogram(series)
-    return pd.Series(stats, name=series.name)
+    
+    return stats
 
 def describe_categorical_1d(series):
     """Compute summary statistics of a categorical (`TYPE_CAT`) variable (a Series).
@@ -91,20 +101,19 @@ def describe_categorical_1d(series):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    dict
+        The description of the variable as a dict with keys being stats.
     """
     # Only run if at least 1 non-missing value
-    value_counts, distinct_count = base.get_groupby_statistic(series)
-    top, freq = value_counts.index[0], value_counts.iloc[0]
-    names = []
-    result = []
+    value_counts, _ = base.get_groupby_statistic(series)
+    top, freq = value_counts.index.head(1).values[0], value_counts.head(1).values[0]
+    result = {
+        'top': top,
+        'freq': freq,
+        'type': base.TYPE_CAT
+    }
 
-    if base.get_vartype(series) == base.TYPE_CAT:
-        names += ['top', 'freq', 'type']
-        result += [top, freq, base.TYPE_CAT]
-
-    return pd.Series(result, index=names, name=series.name)
+    return result
 
 def describe_boolean_1d(series):
     """Compute summary statistics of a boolean (`TYPE_BOOL`) variable (a Series).
@@ -116,19 +125,21 @@ def describe_boolean_1d(series):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    dict
+        The description of the variable as a dict with keys being stats.
     """
     value_counts, distinct_count = base.get_groupby_statistic(series)
     top, freq = value_counts.index[0], value_counts.iloc[0]
     # The mean of boolean is an interesting information
     mean = series.mean()
-    names = []
-    result = []
-    names += ['top', 'freq', 'type', 'mean']
-    result += [top, freq, base.TYPE_BOOL, mean]
+    result = {
+        'top': top,
+        'freq': freq,
+        'type': base.TYPE_BOOL,
+        'mean': mean
+    }
 
-    return pd.Series(result, index=names, name=series.name)
+    return result
 
 def describe_constant_1d(series):
     """Compute summary statistics of a constant (`S_TYPE_CONST`) variable (a Series).
@@ -140,10 +151,10 @@ def describe_constant_1d(series):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    dict
+        The description of the variable as a dict with keys being stats.
     """
-    return pd.Series([base.S_TYPE_CONST], index=['type'], name=series.name)
+    return {'type': base.S_TYPE_CONST}
 
 def describe_unique_1d(series):
     """Compute summary statistics of a unique (`S_TYPE_UNIQUE`) variable (a Series).
@@ -155,10 +166,10 @@ def describe_unique_1d(series):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    dict
+        The description of the variable as a dict with keys being stats.
     """
-    return pd.Series([base.S_TYPE_UNIQUE], index=['type'], name=series.name)
+    return {'type': base.S_TYPE_UNIQUE}
 
 def describe_supported(series, **kwargs):
     """Compute summary statistics of a supported variable (a Series).
@@ -170,18 +181,20 @@ def describe_supported(series, **kwargs):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    dict
+        The description of the variable as a dict with keys being stats.
     """
-    leng = len(series)  # number of observations in the Series
+    leng = series.size  # number of observations in the Series
     count = series.count()  # number of non-NaN observations in the Series
     n_infinite = count - series.count()  # number of infinte observations in the Series
 
     value_counts, distinct_count = base.get_groupby_statistic(series)
+    count, distinct_count = compute(count, distinct_count)
+    # if all(compute(count > distinct_count, distinct_count > 1)): # Logical AND over the two comparisons
     if count > distinct_count > 1:
-        mode = series.mode().iloc[0]
+        mode = value_counts.index.head(1).values[0] # TODO: lazy mode
     else:
-        mode = series[0]
+        mode = series.head(1, npartitions=-1).values[0]
 
     results_data = {'count': count,
                     'distinct_count': distinct_count,
@@ -198,7 +211,7 @@ def describe_supported(series, **kwargs):
     except:
         results_data['memorysize'] = 0
 
-    return pd.Series(results_data, name=series.name)
+    return results_data
 
 def describe_unsupported(series, **kwargs):
     """Compute summary statistics of a unsupported (`S_TYPE_UNSUPPORTED`) variable (a Series).
@@ -210,10 +223,10 @@ def describe_unsupported(series, **kwargs):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    dict
+        The description of the variable as a dict with keys being stats.
     """
-    leng = len(series)  # number of observations in the Series
+    leng = series.size  # number of observations in the Series
     count = series.count()  # number of non-NaN observations in the Series
     n_infinite = count - series.count()  # number of infinte observations in the Series
 
@@ -230,7 +243,7 @@ def describe_unsupported(series, **kwargs):
     except:
         results_data['memorysize'] = 0
 
-    return pd.Series(results_data, name=series.name)
+    return results_data
 
 def describe_1d(data, **kwargs):
     """Compute summary statistics of a variable (a Series).
@@ -245,38 +258,42 @@ def describe_1d(data, **kwargs):
 
     Returns
     -------
-    Series
-        The description of the variable as a Series with index being stats keys.
+    string
+        The name of the variable (data).
+    dict
+        The description of the variable as a dict.
     """
 
     # Replace infinite values with NaNs to avoid issues with
     # histograms later.
-    data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
+    #data = data.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan)
+    #data.map_partitions(pandas.DataFrame.replace, to_replace=[np.inf, np.NINF, np.PINF], value=np.nan)
 
-    result = pd.Series({}, name=data.name)
+
+    result = dict()
 
     vartype = base.get_vartype(data)
 
     if vartype == base.S_TYPE_UNSUPPORTED:
-        result = result.append(describe_unsupported(data))
+        result.update(describe_unsupported(data))
     else:
-        result = result.append(describe_supported(data))
+        result.update(describe_supported(data))
 
         if vartype == base.S_TYPE_CONST:
-            result = result.append(describe_constant_1d(data))
+            result.update(describe_constant_1d(data))
         elif vartype == base.TYPE_BOOL:
-            result = result.append(describe_boolean_1d(data))
+            result.update(describe_boolean_1d(data))
         elif vartype == base.TYPE_NUM:
-            result = result.append(describe_numeric_1d(data, **kwargs))
+            result.update(describe_numeric_1d(data, **kwargs))
         elif vartype == base.TYPE_DATE:
-            result = result.append(describe_date_1d(data))
+            result.update(describe_date_1d(data))
         elif vartype == base.S_TYPE_UNIQUE:
-            result = result.append(describe_unique_1d(data))
+            result.update(describe_unique_1d(data))
         else:
             # TYPE_CAT
-            result = result.append(describe_categorical_1d(data))
+            result.update(describe_categorical_1d(data))
 
-    return result
+    return data.name, result
 
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
@@ -324,10 +341,11 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
         * The section dedicated to check the correlation should be externalized
     """
 
-    if not isinstance(df, pd.DataFrame):
-        raise TypeError("df must be of type pandas.DataFrame")
-    if df.empty:
-        raise ValueError("df can not be empty")
+    if not isinstance(df, dd.DataFrame):
+        raise TypeError("df must be of type dask.dataframe.DataFrame")
+    # too expensive. TODO: workaround
+    # if (len(df) == 0):
+    #     raise ValueError("df can not be empty")
 
     try:
         # reset matplotlib style before use
@@ -343,29 +361,37 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
     except:
         pass
 
-    matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+    matplotlib.style.use(resource_filename(__name__, "dask_profiling.mplstyle"))
 
     # Clearing the cache before computing stats
     base.clear_cache()
 
-    if not pd.Index(np.arange(0, len(df))).equals(df.index):
-        # Treat index as any other column
-        df = df.reset_index()
+    # TODO: Improve this check, it'll take a LONG time this way
+    # if not pd.Index(np.arange(0, len(df))).equals(df.index.compute()):
+    #     # Treat index as any other column
+    #     df = df.reset_index()
+    df = df.reset_index()
 
     kwargs.update({'bins': bins})
     # Describe all variables in a univariate way
-    if pool_size == 1:
-        local_multiprocess_func = partial(multiprocess_func, **kwargs)
-        ldesc = {col: s for col, s in map(local_multiprocess_func, df.iteritems())}
-    else:
-        pool = multiprocessing.Pool(pool_size)
-        local_multiprocess_func = partial(multiprocess_func, **kwargs)
-        ldesc = {col: s for col, s in pool.map(local_multiprocess_func, df.iteritems())}
-        pool.close()
+    # if pool_size == 1:
+    #     local_multiprocess_func = partial(multiprocess_func, **kwargs)
+    #     ldesc = {col: s for col, s in map(local_multiprocess_func, df.iteritems())}
+    # else:
+    #     pool = multiprocessing.Pool(pool_size)
+    #     local_multiprocess_func = partial(multiprocess_func, **kwargs)
+    #     ldesc = {col: s for col, s in pool.map(local_multiprocess_func, df.iteritems())}
+    #     pool.close()
+
+    ldesc = dict()
+    for col in df.columns:
+        _, desc = describe_1d(df[col])
+        ldesc[col] = desc
 
     # Get correlations
     dfcorrPear = df.corr(method="pearson")
-    dfcorrSpear = df.corr(method="spearman")
+    # Spearman's correlation has not been implemented yet
+    # dfcorrSpear = df.corr(method="spearman")
 
     # Check correlations between variable
     if check_correlation is True:
@@ -382,38 +408,46 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
                 if x == y: break
 
                 if corr > correlation_threshold:
-                    ldesc[x] = pd.Series(['CORR', y, corr], index=['type', 'correlation_var', 'correlation'])
+                    ldesc[x] = {
+                        'type': 'CORR',
+                        'correlation_var': y,
+                        'correlation': corr
+                    }
 
-        if check_recoded:
-            categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
-            for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
-                if correlation_overrides and name1 in correlation_overrides:
-                    continue
+        # TODO:
+        # if check_recoded:
+        #     categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
+        #     for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
+        #         if correlation_overrides and name1 in correlation_overrides:
+        #             continue
 
-                confusion_matrix=pd.crosstab(data1,data2)
-                if confusion_matrix.values.diagonal().sum() == len(df):
-                    ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
+        #         confusion_matrix=pd.crosstab(data1,data2)
+        #         if confusion_matrix.values.diagonal().sum() == len(df):
+        #             ldesc[name1] = pd.Series(['RECODED', name2], index=['type', 'correlation_var'])
 
     # Convert ldesc to a DataFrame
-    names = []
-    ldesc_indexes = sorted([x.index for x in ldesc.values()], key=len)
-    for idxnames in ldesc_indexes:
-        for name in idxnames:
-            if name not in names:
-                names.append(name)
-    variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
-    variable_stats.columns.names = df.columns.names
+    # TODO: Beautify, as above
+    # names = []
+    # ldesc_indexes = sorted([x.index for x in ldesc.values()], key=len)
+    # for idxnames in ldesc_indexes:
+    #     for name in idxnames:
+    #         if name not in names:
+    #             names.append(name)
+    # variable_stats = pd.concat(ldesc, join_axes=pd.Index([names]), axis=1)
+    # variable_stats.columns.names = df.columns.names
+    variable_stats = pd.DataFrame.from_dict(compute(ldesc)[0])
 
     # General statistics
     table_stats = {}
 
-    table_stats['n'] = len(df)
-    table_stats['nvar'] = len(df.columns)
+    table_stats['n'] = delayed(len)(df)
+    table_stats['nvar'] = delayed(len)(df.columns)
     table_stats['total_missing'] = variable_stats.loc['n_missing'].sum() / (table_stats['n'] * table_stats['nvar'])
     unsupported_columns = variable_stats.transpose()[variable_stats.transpose().type != base.S_TYPE_UNSUPPORTED].index.tolist()
-    table_stats['n_duplicates'] = sum(df.duplicated(subset=unsupported_columns)) if len(unsupported_columns) > 0 else 0
+    table_stats['n_duplicates'] = (delayed(len)(df[unsupported_columns].drop_duplicates()) - delayed(len)(df)) if len(unsupported_columns) > 0 else 0
 
     memsize = df.memory_usage(index=True).sum()
+    table_stats, memsize = compute(table_stats, memsize)
     table_stats['memsize'] = formatters.fmt_bytesize(memsize)
     table_stats['recordsize'] = formatters.fmt_bytesize(memsize / table_stats['n'])
 
@@ -421,9 +455,10 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
     table_stats.update(dict(variable_stats.loc['type'].value_counts()))
     table_stats['REJECTED'] = table_stats['CONST'] + table_stats['CORR'] + table_stats['RECODED']
 
-    return {
+    return compute({
         'table': table_stats,
         'variables': variable_stats.T,
         'freq': {k: (base.get_groupby_statistic(df[k])[0] if variable_stats[k].type != base.S_TYPE_UNSUPPORTED else None) for k in df.columns},
-        'correlations': {'pearson': dfcorrPear, 'spearman': dfcorrSpear}
-    }
+        # 'correlations': {'pearson': dfcorrPear, 'spearman': dfcorrSpear}
+        'correlations': {'pearson': dfcorrPear}
+    })[0]

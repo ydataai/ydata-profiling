@@ -10,4 +10,4 @@ python:
 install:
   - pip install -e .
 script:
-  - python -m unittest -v pandas_profiling.tests
+  - python -m unittest -v dask_profiling.tests

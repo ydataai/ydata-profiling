@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Main module of pandas-profiling.
+"""Main module of dask-profiling.
 
 Docstring is compliant with NumPy/SciPy documentation standard:
 https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
@@ -7,15 +7,16 @@ See also for a short description of docstring:
 https://stackoverflow.com/questions/3898572/what-is-the-standard-python-docstring-format
 """
 import codecs
-import pandas_profiling.templates as templates
-from pandas_profiling.describe import describe as describe_df
-from pandas_profiling.report import to_html
+import dask_profiling.templates as templates
+from dask_profiling.describe import describe as describe_df
+from dask_profiling.report import to_html
 
-NO_OUTPUTFILE = "pandas_profiling.no_outputfile"
-DEFAULT_OUTPUTFILE = "pandas_profiling.default_outputfile"
+
+NO_OUTPUTFILE = "dask_profiling.no_outputfile"
+DEFAULT_OUTPUTFILE = "dask_profiling.default_outputfile"
 
 class ProfileReport(object):
-    """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
+    """Generate a profile report from a Dataset stored as a dask `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
 

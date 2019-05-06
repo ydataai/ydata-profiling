@@ -7,13 +7,13 @@ import numpy as np
 import pandas as pd
 from pandas import Series
 import six
-import pandas_profiling
-from pandas_profiling.describe import describe, describe_1d
-from pandas_profiling.report import to_html
+import dask_profiling
+from dask_profiling.describe import describe, describe_1d
+from dask_profiling.report import to_html
 import tempfile
 import shutil
 import os
-check_is_NaN = "pandas_profiling.check_is_NaN"
+check_is_NaN = "dask_profiling.check_is_NaN"
 
 
 class DataFrameTest(unittest.TestCase):
@@ -257,7 +257,7 @@ class DataFrameTest(unittest.TestCase):
 
     def test_export_to_file(self):
 
-        p = pandas_profiling.ProfileReport(self.df)
+        p = dask_profiling.ProfileReport(self.df)
         filename = os.path.join(self.test_dir, "profile_%s.html" % hash(self))
         p.to_file(outputfile=filename)
 

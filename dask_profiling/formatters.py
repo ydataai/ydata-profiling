@@ -3,7 +3,7 @@
 import numpy as np
 
 SKEWNESS_CUTOFF = 20
-DEFAULT_FLOAT_FORMATTER = u'pandas_profiling.__default_float_formatter'
+DEFAULT_FLOAT_FORMATTER = u'dask_profiling.__default_float_formatter'
 
 
 def gradient_format(value, limit1, limit2, c1, c2):

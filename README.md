@@ -1,11 +1,6 @@
-[![Build Status](https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master)](https://travis-ci.com/pandas-profiling/pandas-profiling)
+# dask-profiling
 
-# MAINTAINERS WANTED - Notice of neglect
-This package does not have a current active maintainer. If you are interested to take on the role of main developer, feel free to reach out to @JosPolfliet.
-
-# pandas-profiling
-
-Generates profile reports from a pandas `DataFrame`. The pandas `df.describe()` function is great but a little basic for serious exploratory data analysis.
+A fork of [pandas-profiling](https://github.com/pandas-profiling/pandas-profiling), aimed to generate profile reports from a **dask** `DataFrame`. The pandas `df.describe()` function is great but a little basic for serious exploratory data analysis.
 
 For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:
 
@@ -16,11 +11,13 @@ For each column the following statistics - if relevant for the column type - are
 * **Histogram**
 * **Correlations** highlighting of highly correlated variables, Spearman and Pearson matrixes
 
-## Demo
+This is a very rough "translation", so there is a lot of space for improvement, mainly in the performance/parallelization of the operations.
+
+## Demo [TODO]
 
 [Click here](http://nbviewer.ipython.org/github/JosPolfliet/pandas-profiling/blob/master/examples/meteorites.ipynb) to see a live demo.
 
-## Installation
+## Installation [TODO]
 
 ### Using pip
 
@@ -40,7 +37,7 @@ Download the source code by cloning the repo or by pressing 'Download ZIP' on th
 
     python setup.py install
 
-## Usage
+## Usage [TODO]
 
 The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
 
@@ -52,7 +49,7 @@ Start by loading in your pandas DataFrame, e.g. by using
 ```python
 import numpy as np
 import pandas as pd
-import pandas_profiling
+import dask_profiling
 
 df=pd.DataFrame(
     np.random.rand(100, 5),
@@ -61,16 +58,16 @@ df=pd.DataFrame(
 ```
 To display the report in a Jupyter notebook, run:
 ```python
-pandas_profiling.ProfileReport(df)
+dask_profiling.ProfileReport(df)
 ```
 To retrieve the list of variables which are rejected due to high correlation:
 ```python
-profile = pandas_profiling.ProfileReport(df)
+profile = dask_profiling.ProfileReport(df)
 rejected_variables = profile.get_rejected_variables(threshold=0.9)
 ```
 If you want to generate a HTML report file, save the `ProfileReport` to an object and use the `to_file()` function:
 ```python
-profile = pandas_profiling.ProfileReport(df)
+profile = dask_profiling.ProfileReport(df)
 profile.to_file(outputfile="output.html")
 ```
 ### Python
@@ -93,7 +90,7 @@ A set of options are available in order to adapt the report generated.
     * `check_recoded` (`boolean`): Whether or not to check recoded correlation (`False` by default). Since it's an expensive computation it can be activated for small datasets.
 * `pool_size` (`int`): Number of workers in thread pool. The default is equal to the number of CPU.
 
-## Dependencies
+## Dependencies [TODO]
 
 * **An internet connection.** Pandas-profiling requires an internet connection to download the Bootstrap and JQuery libraries. I might change this in the future, let me know if you want that sooner than later.
 * python (>= 2.7)

@@ -4,7 +4,7 @@
 from jinja2 import Environment, PackageLoader
 
 # Initializing Jinja
-pl = PackageLoader('pandas_profiling', 'templates')
+pl = PackageLoader('dask_profiling', 'templates')
 jinja2_env = Environment(lstrip_blocks=True, trim_blocks=True, loader=pl)
 
 # Mapping between template name and file

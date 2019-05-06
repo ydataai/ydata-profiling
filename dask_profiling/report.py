@@ -3,9 +3,9 @@
 import sys
 import six
 import pandas as pd
-import pandas_profiling.formatters as formatters
-import pandas_profiling.templates as templates
-import pandas_profiling.plot as plot
+import dask_profiling.formatters as formatters
+import dask_profiling.templates as templates
+import dask_profiling.plot as plot
 
 
 def to_html(sample, stats_object):
@@ -37,11 +37,11 @@ def to_html(sample, stats_object):
         raise TypeError("sample must be of type pandas.DataFrame")
 
     if not isinstance(stats_object, dict):
-        raise TypeError("stats_object must be of type dict. Did you generate this using the pandas_profiling.describe() function?")
+        raise TypeError("stats_object must be of type dict. Did you generate this using the dask_profiling.describe() function?")
 
     if not set({'table', 'variables', 'freq', 'correlations'}).issubset(set(stats_object.keys())):
         raise TypeError(
-            "stats_object badly formatted. Did you generate this using the pandas_profiling.describe() function?")
+            "stats_object badly formatted. Did you generate this using the dask_profiling.describe() function?")
 
     def fmt(value, name):
         if pd.isnull(value):
@@ -201,9 +201,10 @@ def to_html(sample, stats_object):
     # Add plot of matrix correlation if the dataframe is not empty
     if len(stats_object['correlations']['pearson']) > 0:
         pearson_matrix = plot.correlation_matrix(stats_object['correlations']['pearson'], 'Pearson')
-        spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
+        # spearman_matrix = plot.correlation_matrix(stats_object['correlations']['spearman'], 'Spearman')
         correlations_html = templates.template('correlations').render(
-            values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix})
+            # values={'pearson_matrix': pearson_matrix, 'spearman_matrix': spearman_matrix})
+            values={'pearson_matrix': pearson_matrix})
         render_htmls['correlations_html'] = correlations_html
 
     # Add sample

@@ -41,24 +41,26 @@ def get_groupby_statistic(data):
     list
         value count and distinct count
     """
-    if data.name is not None and data.name in _VALUE_COUNTS_MEMO:
-        return _VALUE_COUNTS_MEMO[data.name]
+    if data._name is not None and data._name in _VALUE_COUNTS_MEMO:
+        return _VALUE_COUNTS_MEMO[data._name]
 
-    value_counts_with_nan = data.value_counts(dropna=False)
-    value_counts_without_nan = value_counts_with_nan.reset_index().dropna().set_index('index').iloc[:,0]
+    value_counts_with_nan = data.value_counts()
+    value_counts_without_nan = data.dropna().value_counts()
     distinct_count_with_nan = value_counts_with_nan.count()
 
+    # DEACTIVATED (for now) BECAUSE OF .compute() COSTS
     # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict, list and so on...
-    if value_counts_without_nan.index.inferred_type == "mixed":
-        raise TypeError('Not supported mixed type')
+    # if value_counts_without_nan.index.compute().inferred_type == "mixed":
+    #     raise TypeError('Not supported mixed type')
 
     result = [value_counts_without_nan, distinct_count_with_nan]
 
-    if data.name is not None:
-        _VALUE_COUNTS_MEMO[data.name] = result
+    if data._name is not None:
+        _VALUE_COUNTS_MEMO[data._name] = result
 
     return result
 
+# TODO: Speed this up, it's too slow
 _MEMO = {}
 def get_vartype(data):
     """Infer the type of a variable (technically a Series).
@@ -94,13 +96,13 @@ def get_vartype(data):
         or just a boolean with NaN values
         * #72: Numeric with low Distinct count should be treated as "Categorical"
     """
-    if data.name is not None and data.name in _MEMO:
-        return _MEMO[data.name]
+    if data._name is not None and data._name in _MEMO:
+        return _MEMO[data._name]
 
     vartype = None
     try:
-        distinct_count = get_groupby_statistic(data)[1]
-        leng = len(data)
+        distinct_count = get_groupby_statistic(data)[1].compute()
+        leng = data.size
 
         if distinct_count <= 1:
             vartype = S_TYPE_CONST
@@ -117,8 +119,8 @@ def get_vartype(data):
     except:
         vartype = S_TYPE_UNSUPPORTED
 
-    if data.name is not None:
-        _MEMO[data.name] = vartype
+    if data._name is not None:
+        _MEMO[data._name] = vartype
 
     return vartype
 
