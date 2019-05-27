@@ -1,0 +1,28 @@
+<table class="freq table table-hover">
+    <thead>
+        <tr>
+            <td class="fillremaining">Value</td>
+            <td class="number">Count</td>
+            <td class="number">Frequency (%)</td>
+            <td class="frequency-percentage">&nbsp;</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in rows %}
+        <tr class="{{ row['extra_class'] }}">
+            <td class="fillremaining">
+                {{ row['label'] | fmt }}
+            </td>
+            <td class="number">
+                {{ row['count'] }}
+            </td>
+            <td class="number">
+                {{ row['percentage'] | fmt_percent }}
+            </td>
+            <td>
+                <div class="bar" style="width:{{ row['width'] | fmt_percent }}">&nbsp;</div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

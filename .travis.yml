@@ -3,11 +3,16 @@ dist: xenial
 language: python
 cache: pip
 python:
-  - "3.5"
+#  - "3.5"
   - "3.6"
   - "3.7"
-  # TODO add 3.8-dev
+
 install:
+  - pip install -r requirements.txt
   - pip install -e .
+
 script:
-  - python -m unittest -v pandas_profiling.tests
+  - pytest --cov=./
+
+after_success:
+  - codecov

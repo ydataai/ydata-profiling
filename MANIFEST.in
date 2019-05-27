@@ -1,4 +1,7 @@
 include LICENSE
-include pandas_profiling/*.mplstyle
-include pandas_profiling/templates/*.html
+include pandas_profiling/view/*.mplstyle
+include pandas_profiling/view/templates/*.html
+include pandas_profiling/view/templates/variables/*.html
+include pandas_profiling/view/templates/*.css
+include pandas_profiling/config_default.yaml
 include README.md

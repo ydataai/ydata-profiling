@@ -1,0 +1,15 @@
+import pandas as pd
+import pandas_profiling
+
+
+def test_decorator():
+    df = pd.read_csv(
+        "https://raw.githubusercontent.com/oncletom/coursera-ml/master/week-1/people-example.csv"
+    )
+    report = df.profile_report(
+        title="Coursera Test Report",
+        samples={"head": 20},
+        missing_diagrams={"heatmap": False, "dendrogram": False},
+    )
+    assert len(report._repr_html_()) > 0, "Report should exist"
+    assert "Coursera Test Report" in report.to_html(), "Title is not found"
