@@ -22,7 +22,7 @@
 <section id="section-intro">
 <p>Main module of pandas-profiling.</p>
 <h1 id="pandas-profiling">Pandas Profiling</h1>
-<p><a href="https://travis-ci.com/sbrugman/pptest"><img alt="Build Status" src="https://travis-ci.com/sbrugman/pptest.svg?token=zcnQdAoDrPucSesNAxNv&amp;branch=master"></a>
+<p><a href="https://travis-ci.com/pandas-profiling/pandas-profiling"><img alt="Build Status" src="https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=v2.0.0-beta"></a>
 <a href="https://codecov.io/gh/sbrugman/pptest"><img alt="Code Coverage" src="https://codecov.io/gh/sbrugman/pptest/branch/master/graph/badge.svg?token=VHjSMxJUhl"></a>
 <a href="https://github.com/pandas-profiling/pandas-profiling/releases"><img alt="Release Version" src="https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg"></a>
 <a href="https://github.com/python/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a></p>
@@ -98,7 +98,7 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <li><code>pool_size</code> (<code>int</code>): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).</li>
 <li><code>minify_html</code> (<code>boolean</code>): Whether to minify the output HTML.</li>
 </ul>
-<p>More settings can be found in the <a href="https://github.com/sbrugman/pptest/blob/master/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
+<p>More settings can be found in the <a href="pandas_profiling/config_default.yaml">default configuration file</a>.</p>
 <p><strong>Example</strong></p>
 <pre><code class="python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file(output_file=&quot;output.html&quot;)
@@ -118,14 +118,17 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <li>htmlmin (optional)</li>
 <li>phik (optional)</li>
 </ul>
-<p>For development we use additional packages as noted in the <a href="https://github.com/sbrugman/pptest/blob/master/requirements.txt">requirements.txt</a>.</p>
+<p>For development we use additional packages as noted in the <a href="requirements-dev.txt">requirements-dev.txt</a>.</p>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;Main module of pandas-profiling.
 
 .. include:: ../README.md
 &#34;&#34;&#34;
+__version__ = &#34;2.0.0&#34;
+
 from pathlib import Path
+import numpy as np
 
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
@@ -198,18 +201,11 @@ class ProfileReport(object):
         Args:
             output_file: The name or the path of the file to generate including the extension (.html).        
         &#34;&#34;&#34;
-        # outputfile = Path(&#39;profile_&#39; + str(hash(self)) + &#34;.html&#34;)
         if type(output_file) == str:
             output_file = Path(output_file)
 
         with output_file.open(&#34;w&#34;, encoding=&#34;utf8&#34;) as f:
-            wrapped_html = templates.template(&#34;wrapper.html&#34;).render(
-                content=self.html,
-                title=self.title,
-                correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
-                missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
-                sample=len(self.sample) &gt; 0,
-            )
+            wrapped_html = self.to_html()
             if self.minify_html:
                 from htmlmin.main import minify
 
@@ -234,18 +230,34 @@ class ProfileReport(object):
             sample=len(self.sample) &gt; 0,
         )
 
-    def _repr_html_(self) -&gt; str:
-        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook&#34;&#34;&#34;
-        return self.html
+    def get_unique_file_name(self):
+        &#34;&#34;&#34;Generate a unique file name.&#34;&#34;&#34;
+        return &#34;profile_&#34; + str(np.random.randint(1000000000, 9999999999, dtype=np.int64)) + &#34;.html&#34;
 
-    def get_style(self):
-        &#34;&#34;&#34;
-        In Notebooks, we do not need the wrapper HTML, but we need the style.
+    def _repr_html_(self):
+        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook. This function creates a temporary HTML file
+        in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
 
-        Returns:
-            style for the profiling report, wrapped in `&lt;style&gt;` tag.
+        Notes:
+            This constructions solves problems with conflicting stylesheets and navigation links.
         &#34;&#34;&#34;
-        return templates.template(&#34;style.html&#34;).render()</code></pre>
+        tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
+        tmp_file.parent.mkdir(exist_ok=True)
+        self.to_file(tmp_file)
+        from IPython.lib.display import IFrame
+        from IPython.core.display import display
+
+        display(
+            IFrame(
+                str(tmp_file),
+                width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
+                height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+            )
+        )
+
+    def __repr__(self):
+        &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
+        return &#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -352,18 +364,11 @@ class ProfileReport(object):
         Args:
             output_file: The name or the path of the file to generate including the extension (.html).        
         &#34;&#34;&#34;
-        # outputfile = Path(&#39;profile_&#39; + str(hash(self)) + &#34;.html&#34;)
         if type(output_file) == str:
             output_file = Path(output_file)
 
         with output_file.open(&#34;w&#34;, encoding=&#34;utf8&#34;) as f:
-            wrapped_html = templates.template(&#34;wrapper.html&#34;).render(
-                content=self.html,
-                title=self.title,
-                correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
-                missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
-                sample=len(self.sample) &gt; 0,
-            )
+            wrapped_html = self.to_html()
             if self.minify_html:
                 from htmlmin.main import minify
 
@@ -388,18 +393,34 @@ class ProfileReport(object):
             sample=len(self.sample) &gt; 0,
         )
 
-    def _repr_html_(self) -&gt; str:
-        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook&#34;&#34;&#34;
-        return self.html
+    def get_unique_file_name(self):
+        &#34;&#34;&#34;Generate a unique file name.&#34;&#34;&#34;
+        return &#34;profile_&#34; + str(np.random.randint(1000000000, 9999999999, dtype=np.int64)) + &#34;.html&#34;
 
-    def get_style(self):
-        &#34;&#34;&#34;
-        In Notebooks, we do not need the wrapper HTML, but we need the style.
+    def _repr_html_(self):
+        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook. This function creates a temporary HTML file
+        in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
 
-        Returns:
-            style for the profiling report, wrapped in `&lt;style&gt;` tag.
+        Notes:
+            This constructions solves problems with conflicting stylesheets and navigation links.
         &#34;&#34;&#34;
-        return templates.template(&#34;style.html&#34;).render()</code></pre>
+        tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
+        tmp_file.parent.mkdir(exist_ok=True)
+        self.to_file(tmp_file)
+        from IPython.lib.display import IFrame
+        from IPython.core.display import display
+
+        display(
+            IFrame(
+                str(tmp_file),
+                width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
+                height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+            )
+        )
+
+    def __repr__(self):
+        &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
+        return &#34;&#34;</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -462,23 +483,16 @@ correlation with one of remaining variables.</p>
     return result</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.get_style"><code class="name flex">
-<span>def <span class="ident">get_style</span></span>(<span>self)</span>
+<dt id="pandas_profiling.ProfileReport.get_unique_file_name"><code class="name flex">
+<span>def <span class="ident">get_unique_file_name</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>In Notebooks, we do not need the wrapper HTML, but we need the style.</p>
-<h2 id="returns">Returns</h2>
-<p>style for the profiling report, wrapped in <code>&lt;style&gt;</code> tag.</p></section>
+<section class="desc"><p>Generate a unique file name.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def get_style(self):
-    &#34;&#34;&#34;
-    In Notebooks, we do not need the wrapper HTML, but we need the style.
-
-    Returns:
-        style for the profiling report, wrapped in `&lt;style&gt;` tag.
-    &#34;&#34;&#34;
-    return templates.template(&#34;style.html&#34;).render()</code></pre>
+<pre><code class="python">def get_unique_file_name(self):
+    &#34;&#34;&#34;Generate a unique file name.&#34;&#34;&#34;
+    return &#34;profile_&#34; + str(np.random.randint(1000000000, 9999999999, dtype=np.int64)) + &#34;.html&#34;</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_file"><code class="name flex">
@@ -502,18 +516,11 @@ correlation with one of remaining variables.</p>
     Args:
         output_file: The name or the path of the file to generate including the extension (.html).        
     &#34;&#34;&#34;
-    # outputfile = Path(&#39;profile_&#39; + str(hash(self)) + &#34;.html&#34;)
     if type(output_file) == str:
         output_file = Path(output_file)
 
     with output_file.open(&#34;w&#34;, encoding=&#34;utf8&#34;) as f:
-        wrapped_html = templates.template(&#34;wrapper.html&#34;).render(
-            content=self.html,
-            title=self.title,
-            correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
-            missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
-            sample=len(self.sample) &gt; 0,
-        )
+        wrapped_html = self.to_html()
         if self.minify_html:
             from htmlmin.main import minify
 
@@ -596,7 +603,7 @@ for using with frameworks.</p>
 <ul class="">
 <li><code><a title="pandas_profiling.ProfileReport.get_description" href="#pandas_profiling.ProfileReport.get_description">get_description</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.get_rejected_variables" href="#pandas_profiling.ProfileReport.get_rejected_variables">get_rejected_variables</a></code></li>
-<li><code><a title="pandas_profiling.ProfileReport.get_style" href="#pandas_profiling.ProfileReport.get_style">get_style</a></code></li>
+<li><code><a title="pandas_profiling.ProfileReport.get_unique_file_name" href="#pandas_profiling.ProfileReport.get_unique_file_name">get_unique_file_name</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.html" href="#pandas_profiling.ProfileReport.html">html</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_file" href="#pandas_profiling.ProfileReport.to_file">to_file</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_html" href="#pandas_profiling.ProfileReport.to_html">to_html</a></code></li>

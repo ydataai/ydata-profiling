@@ -65,6 +65,7 @@ target/
 .idea
 
 # ipynb example stuff
-examples/*/.ipynb_checkpoints/
+.ipynb_checkpoints/
+ipynb_tmp/
 examples/*/*.csv
 examples/*/*.html

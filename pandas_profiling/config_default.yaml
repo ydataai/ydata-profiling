@@ -31,8 +31,8 @@ check_recoded: True
 missing_diagrams:
     bar: True
     matrix: True
-    heatmap: True
-    dendrogram: True
+    heatmap: False
+    dendrogram: False
 
 correlations:
     pearson: True
@@ -64,3 +64,9 @@ n_freq_table_max: 10
 samples:
     head: 10
     tail: 10
+
+# When in a Jupyter notebook
+notebook:
+    iframe:
+        height: '800px'
+        width: '100%'

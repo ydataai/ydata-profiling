@@ -1,3 +1,4 @@
+import pandas_profiling
 from pandas_profiling.utils.paths import get_project_root
 from setuptools import setup, find_packages
 
@@ -8,7 +9,7 @@ with (source_root / "README.md").open(encoding="utf-8") as f:
 
 setup(
     name="pandas-profiling",
-    version="2.0.0",
+    version=pandas_profiling.__version__,
     author="Jos Polfliet, Simon Brugman",
     author_email="simon@graphkite.nl",
     packages=find_packages(),
@@ -45,7 +46,7 @@ setup(
     long_description_content_type="text/markdown",
     entry_points={
         "console_scripts": [
-            "pandas_profiling = pandas_profiling.entry.profile_csv:main"
+            "pandas_profiling = pandas_profiling.controller.console:main"
         ]
     },
 )

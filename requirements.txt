@@ -7,11 +7,3 @@ pandas
 htmlmin
 phik
 confuse
-
-pytest
-codecov
-pytest-cov
-nbval
-black
-pre-commit
-pdoc3

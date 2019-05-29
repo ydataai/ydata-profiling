@@ -40,4 +40,3 @@ def test_example(tmpdir):
     assert set(profile.get_rejected_variables(0.9)) == {
         "reclat_city"
     }, "rejected variables not correct"
-    # assert 'Output written to file ' in str(profile) and str(output_file) in str(profile), '__str__ invalid'

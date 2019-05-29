@@ -3,7 +3,6 @@ import itertools
 import warnings
 
 import pandas as pd
-import phik
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
@@ -33,6 +32,8 @@ def calculate_correlations(df: pd.DataFrame) -> dict:
         if len(correlation) > 0:
             correlations["kendall"] = correlation
     if config["correlations"]["phi_k"]:
+        import phik
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             # Phi_k does not filter non-numerical with high cardinality

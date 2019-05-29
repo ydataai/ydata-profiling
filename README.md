@@ -1,5 +1,5 @@
 # Pandas Profiling
-[![Build Status](https://travis-ci.com/sbrugman/pptest.svg?token=zcnQdAoDrPucSesNAxNv&branch=master)](https://travis-ci.com/sbrugman/pptest)
+[![Build Status](https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=v2.0.0-beta)](https://travis-ci.com/pandas-profiling/pandas-profiling)
 [![Code Coverage](https://codecov.io/gh/sbrugman/pptest/branch/master/graph/badge.svg?token=VHjSMxJUhl)](https://codecov.io/gh/sbrugman/pptest)
 [![Release Version](https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg)](https://github.com/pandas-profiling/pandas-profiling/releases)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
@@ -100,7 +100,7 @@ A set of options is available in order to adapt the report generated.
 * `pool_size` (`int`): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).
 * `minify_html` (`boolean`): Whether to minify the output HTML.
 
-More settings can be found in the [default configuration file](https://github.com/sbrugman/pptest/blob/master/pandas_profiling/config_default.yaml).
+More settings can be found in the [default configuration file](pandas_profiling/config_default.yaml).
 
 __Example__
 ```python
@@ -122,4 +122,4 @@ profile.to_file(output_file="output.html")
 * htmlmin (optional)
 * phik (optional)
 
-For development we use additional packages as noted in the [requirements.txt](https://github.com/sbrugman/pptest/blob/master/requirements.txt).
+For development we use additional packages as noted in the [requirements-dev.txt](requirements-dev.txt).

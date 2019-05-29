@@ -2,7 +2,10 @@
 
 .. include:: ../README.md
 """
+__version__ = "2.0.0"
+
 from pathlib import Path
+import numpy as np
 
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
@@ -75,18 +78,11 @@ class ProfileReport(object):
         Args:
             output_file: The name or the path of the file to generate including the extension (.html).        
         """
-        # outputfile = Path('profile_' + str(hash(self)) + ".html")
         if type(output_file) == str:
             output_file = Path(output_file)
 
         with output_file.open("w", encoding="utf8") as f:
-            wrapped_html = templates.template("wrapper.html").render(
-                content=self.html,
-                title=self.title,
-                correlation=len(self.description_set["correlations"]) > 0,
-                missing=len(self.description_set["missing"]) > 0,
-                sample=len(self.sample) > 0,
-            )
+            wrapped_html = self.to_html()
             if self.minify_html:
                 from htmlmin.main import minify
 
@@ -111,15 +107,35 @@ class ProfileReport(object):
             sample=len(self.sample) > 0,
         )
 
-    def _repr_html_(self) -> str:
-        """Used to output the HTML representation to a Jupyter notebook"""
-        return self.html
+    def get_unique_file_name(self):
+        """Generate a unique file name."""
+        return (
+            "profile_"
+            + str(np.random.randint(1000000000, 9999999999, dtype=np.int64))
+            + ".html"
+        )
 
-    def get_style(self):
-        """
-        In Notebooks, we do not need the wrapper HTML, but we need the style.
+    def _repr_html_(self):
+        """Used to output the HTML representation to a Jupyter notebook. This function creates a temporary HTML file
+        in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
 
-        Returns:
-            style for the profiling report, wrapped in `<style>` tag.
+        Notes:
+            This constructions solves problems with conflicting stylesheets and navigation links.
         """
-        return templates.template("style.html").render()
+        tmp_file = Path("./ipynb_tmp") / self.get_unique_file_name()
+        tmp_file.parent.mkdir(exist_ok=True)
+        self.to_file(tmp_file)
+        from IPython.lib.display import IFrame
+        from IPython.core.display import display
+
+        display(
+            IFrame(
+                str(tmp_file),
+                width=config["notebook"]["iframe"]["width"].get(str),
+                height=config["notebook"]["iframe"]["height"].get(str),
+            )
+        )
+
+    def __repr__(self):
+        """Override so that Jupyter Notebook does not print the object."""
+        return ""

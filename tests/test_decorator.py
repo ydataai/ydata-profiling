@@ -1,4 +1,6 @@
 import pandas as pd
+from IPython.lib.display import IFrame
+
 import pandas_profiling
 
 
@@ -11,5 +13,4 @@ def test_decorator():
         samples={"head": 20},
         missing_diagrams={"heatmap": False, "dendrogram": False},
     )
-    assert len(report._repr_html_()) > 0, "Report should exist"
     assert "Coursera Test Report" in report.to_html(), "Title is not found"

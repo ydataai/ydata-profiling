@@ -28,7 +28,6 @@ import itertools
 import warnings
 
 import pandas as pd
-import phik
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
@@ -58,6 +57,8 @@ def calculate_correlations(df: pd.DataFrame) -&gt; dict:
         if len(correlation) &gt; 0:
             correlations[&#34;kendall&#34;] = correlation
     if config[&#34;correlations&#34;][&#34;phi_k&#34;]:
+        import phik
+
         with warnings.catch_warnings():
             warnings.simplefilter(&#34;ignore&#34;)
             # Phi_k does not filter non-numerical with high cardinality
@@ -209,6 +210,8 @@ def perform_check_recoded(df: pd.DataFrame, types: dict) -&gt; dict:
         if len(correlation) &gt; 0:
             correlations[&#34;kendall&#34;] = correlation
     if config[&#34;correlations&#34;][&#34;phi_k&#34;]:
+        import phik
+
         with warnings.catch_warnings():
             warnings.simplefilter(&#34;ignore&#34;)
             # Phi_k does not filter non-numerical with high cardinality
