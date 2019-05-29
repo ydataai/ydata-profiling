@@ -3,7 +3,7 @@ import numpy as np
 import datetime
 import pytest
 
-from pandas_profiling.config import config
+from pandas_profiling import config
 from pandas_profiling.model.base import Variable
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
@@ -449,7 +449,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": False,
-            "type": Variable.TYPE_CAT,
+            "type": Variable.TYPE_BOOL,
             "variance": check_is_NaN,
         },
         "bool_01": {
@@ -486,35 +486,35 @@ def expected_results():
             "variance": check_is_NaN,
         },
         "bool_01_with_nan": {
-            "25%": 0.0,
-            "5%": 0.0,
-            "50%": 0.5,
-            "75%": 1,
-            "95%": 1,
+            "25%": check_is_NaN,
+            "5%": check_is_NaN,
+            "50%": check_is_NaN,
+            "75%": check_is_NaN,
+            "95%": check_is_NaN,
             "count": 8,
             "n_infinite": 0,
             "p_infinite": 0,
-            "cv": 1.0690449676496976,
+            "cv": check_is_NaN,
             "distinct_count": 3,
-            "freq": check_is_NaN,
-            "iqr": 1,
+            "freq": 4,
+            "iqr": check_is_NaN,
             "is_unique": False,
-            "kurtosis": -2.8000000000000003,
-            "mad": 0.5,
-            "max": 1,
-            "min": 0,
-            "mode": 0.0,
+            "kurtosis": check_is_NaN,
+            "mad": check_is_NaN,
+            "max": check_is_NaN,
+            "min": check_is_NaN,
+            "mode": False,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 3 / 9,
-            "p_zeros": 4 / 9,
-            "range": 1,
-            "skewness": 0,
-            "std": 0.5345224838248488,
-            "sum": 4,
-            "top": check_is_NaN,
-            "type": Variable.TYPE_NUM,
-            "variance": 0.2857142857142857,
+            "p_zeros": check_is_NaN,
+            "range": check_is_NaN,
+            "skewness": check_is_NaN,
+            "std": check_is_NaN,
+            "sum": check_is_NaN,
+            "top": 0,
+            "type": Variable.TYPE_BOOL,
+            "variance": check_is_NaN,
         },
         "list": {
             "count": 9,
@@ -552,6 +552,7 @@ def expected_results():
 
 
 def test_describe_df(describe_data, expected_results):
+    config["low_categorical_threshold"].set(0)
     describe_data_frame = pd.DataFrame(describe_data)
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
 
@@ -562,12 +563,12 @@ def test_describe_df(describe_data, expected_results):
     ), "Not in results"
     assert set(
         {
-            "CAT": 2,
+            "CAT": 1,
             "CONST": 2,
             "DATE": 1,
-            "NUM": 3,
+            "NUM": 2,
             "UNIQUE": 2,
-            "BOOL": 2,
+            "BOOL": 4,
             "REJECTED": 2,
             "RECODED": 0,
             "CORR": 0,

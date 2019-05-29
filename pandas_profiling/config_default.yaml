@@ -19,6 +19,7 @@ vars:
           skewness_threshold: 20
     cat:
         check_composition: True
+low_categorical_threshold: 5
 
 # Settings regarding warnings
 cardinality_threshold: 50
@@ -31,8 +32,8 @@ check_recoded: True
 missing_diagrams:
     bar: True
     matrix: True
-    heatmap: False
-    dendrogram: False
+    heatmap: True
+    dendrogram: True
 
 correlations:
     pearson: True

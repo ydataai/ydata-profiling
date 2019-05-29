@@ -305,6 +305,7 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
         "memsize": formatters.fmt_bytesize(memory_size),
         "recordsize": formatters.fmt_bytesize(record_size),
         "n_cells_missing": variable_stats.loc["n_missing"].sum(),
+        "n_vars_with_missing": sum((variable_stats.loc["n_missing"] > 0).astype(int)),
     }
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
@@ -338,26 +339,30 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     return table_stats
 
 
-def get_missing_diagrams(df: pd.DataFrame):
+def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
     Args:
+        table_stats: The overall statistics for the DataFrame.
         df: The DataFrame on which to calculate the missing values.
 
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
     missing_map = {
-        "matrix": plot.missing_matrix,
-        "bar": plot.missing_bar,
-        "heatmap": plot.missing_heatmap,
-        "dendrogram": plot.missing_dendrogram,
+        "matrix": {"func": plot.missing_matrix, "min_missing": 0},
+        "bar": {"func": plot.missing_bar, "min_missing": 0},
+        "heatmap": {"func": plot.missing_heatmap, "min_missing": 2},
+        "dendrogram": {"func": plot.missing_dendrogram, "min_missing": 1},
     }
 
     missing = {}
-    for name, func in missing_map.items():
-        if config["missing_diagrams"][name].get(bool):
-            missing[name] = func(df)
+    for name, settings in missing_map.items():
+        if (
+            config["missing_diagrams"][name].get(bool)
+            and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+        ):
+            missing[name] = settings["func"](df)
     return missing
 
 
@@ -428,7 +433,7 @@ def describe(df: pd.DataFrame) -> dict:
     table_stats = describe_table(df, variable_stats)
 
     # missing diagrams
-    missing = get_missing_diagrams(df)
+    missing = get_missing_diagrams(df, table_stats)
 
     # Messages
     messages = check_table_messages(table_stats)

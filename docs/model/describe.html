@@ -330,6 +330,7 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
         &#34;memsize&#34;: formatters.fmt_bytesize(memory_size),
         &#34;recordsize&#34;: formatters.fmt_bytesize(record_size),
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
+        &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
     }
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
@@ -363,26 +364,30 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
     return table_stats
 
 
-def get_missing_diagrams(df: pd.DataFrame):
+def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     &#34;&#34;&#34;Gets the rendered diagrams for missing values.
 
     Args:
+        table_stats: The overall statistics for the DataFrame.
         df: The DataFrame on which to calculate the missing values.
 
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
     missing_map = {
-        &#34;matrix&#34;: plot.missing_matrix,
-        &#34;bar&#34;: plot.missing_bar,
-        &#34;heatmap&#34;: plot.missing_heatmap,
-        &#34;dendrogram&#34;: plot.missing_dendrogram,
+        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0},
+        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0},
+        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2},
+        &#34;dendrogram&#34;: {&#34;func&#34;: plot.missing_dendrogram, &#34;min_missing&#34;: 1},
     }
 
     missing = {}
-    for name, func in missing_map.items():
-        if config[&#34;missing_diagrams&#34;][name].get(bool):
-            missing[name] = func(df)
+    for name, settings in missing_map.items():
+        if (
+            config[&#34;missing_diagrams&#34;][name].get(bool)
+            and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
+        ):
+            missing[name] = settings[&#34;func&#34;](df)
     return missing
 
 
@@ -453,7 +458,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
     table_stats = describe_table(df, variable_stats)
 
     # missing diagrams
-    missing = get_missing_diagrams(df)
+    missing = get_missing_diagrams(df, table_stats)
 
     # Messages
     messages = check_table_messages(table_stats)
@@ -573,7 +578,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
     table_stats = describe_table(df, variable_stats)
 
     # missing diagrams
-    missing = get_missing_diagrams(df)
+    missing = get_missing_diagrams(df, table_stats)
 
     # Messages
     messages = check_table_messages(table_stats)
@@ -945,6 +950,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
         &#34;memsize&#34;: formatters.fmt_bytesize(memory_size),
         &#34;recordsize&#34;: formatters.fmt_bytesize(record_size),
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
+        &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
     }
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
@@ -1054,12 +1060,14 @@ def describe(df: pd.DataFrame) -&gt; dict:
 </details>
 </dd>
 <dt id="pandas_profiling.model.describe.get_missing_diagrams"><code class="name flex">
-<span>def <span class="ident">get_missing_diagrams</span></span>(<span>df)</span>
+<span>def <span class="ident">get_missing_diagrams</span></span>(<span>df, table_stats)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Gets the rendered diagrams for missing values.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>table_stats</code></strong></dt>
+<dd>The overall statistics for the DataFrame.</dd>
 <dt><strong><code>df</code></strong></dt>
 <dd>The DataFrame on which to calculate the missing values.</dd>
 </dl>
@@ -1067,26 +1075,30 @@ def describe(df: pd.DataFrame) -&gt; dict:
 <p>A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def get_missing_diagrams(df: pd.DataFrame):
+<pre><code class="python">def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     &#34;&#34;&#34;Gets the rendered diagrams for missing values.
 
     Args:
+        table_stats: The overall statistics for the DataFrame.
         df: The DataFrame on which to calculate the missing values.
 
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
     missing_map = {
-        &#34;matrix&#34;: plot.missing_matrix,
-        &#34;bar&#34;: plot.missing_bar,
-        &#34;heatmap&#34;: plot.missing_heatmap,
-        &#34;dendrogram&#34;: plot.missing_dendrogram,
+        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0},
+        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0},
+        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2},
+        &#34;dendrogram&#34;: {&#34;func&#34;: plot.missing_dendrogram, &#34;min_missing&#34;: 1},
     }
 
     missing = {}
-    for name, func in missing_map.items():
-        if config[&#34;missing_diagrams&#34;][name].get(bool):
-            missing[name] = func(df)
+    for name, settings in missing_map.items():
+        if (
+            config[&#34;missing_diagrams&#34;][name].get(bool)
+            and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
+        ):
+            missing[name] = settings[&#34;func&#34;](df)
     return missing</code></pre>
 </details>
 </dd>

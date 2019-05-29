@@ -27,6 +27,8 @@
 import pandas as pd
 from enum import Enum, unique
 
+from pandas_profiling.config import config
+
 
 @unique
 class Variable(Enum):
@@ -76,9 +78,9 @@ def get_counts(series: pd.Series) -&gt; dict:
     value_counts_without_nan = (
         value_counts_with_nan.reset_index().dropna().set_index(&#34;index&#34;).iloc[:, 0]
     )
-    # value_counts_without_nan = (pd.Series(value_counts_without_nan.index.values, index=value_counts_without_nan))
 
     distinct_count_with_nan = value_counts_with_nan.count()
+    distinct_count_without_nan = value_counts_without_nan.count()
 
     # When the inferred type of the index is just &#34;mixed&#34; probably the types within the series are tuple, dict,
     # list and so on...
@@ -89,7 +91,34 @@ def get_counts(series: pd.Series) -&gt; dict:
         &#34;value_counts_with_nan&#34;: value_counts_with_nan,
         &#34;value_counts_without_nan&#34;: value_counts_without_nan,
         &#34;distinct_count_with_nan&#34;: distinct_count_with_nan,
+        &#34;distinct_count_without_nan&#34;: distinct_count_without_nan,
     }
+
+
+def is_boolean(series: pd.Series, series_description: dict) -&gt; bool:
+    keys = series_description[&#34;value_counts_without_nan&#34;].keys()
+    if pd.api.types.is_bool_dtype(keys):
+        return True
+    elif series_description[
+        &#34;distinct_count_without_nan&#34;
+    ] &lt;= 2 and pd.api.types.is_numeric_dtype(series):
+        return True
+    elif series_description[&#34;distinct_count_without_nan&#34;] &lt;= 4:
+        unique_values = set([str(value).lower() for value in keys.values])
+        accepted_combinations = [[&#34;y&#34;, &#34;n&#34;], [&#34;yes&#34;, &#34;no&#34;], [&#34;true&#34;, &#34;false&#34;]]
+
+        if len(unique_values) == 2 and any(
+            [unique_values == set(bools) for bools in accepted_combinations]
+        ):
+            return True
+
+    return False
+
+
+def is_numeric(series: pd.Series, series_description: dict) -&gt; bool:
+    return pd.api.types.is_numeric_dtype(series) and series_description[
+        &#34;distinct_count_without_nan&#34;
+    ] &gt;= config[&#34;low_categorical_threshold&#34;].get(int)
 
 
 def get_var_type(series: pd.Series) -&gt; dict:
@@ -101,23 +130,17 @@ def get_var_type(series: pd.Series) -&gt; dict:
     Returns:
         The series updated with the variable type included.
     &#34;&#34;&#34;
-    # TODO: Should improve verification when a categorical or numeric field has 3 values, it could be a categorical
-    #  field or just a boolean with NaN values
-    # TODO: Numeric with low Distinct count should be treated as &#34;Categorical&#34;
-    # TODO: distinct count without NaN
 
     try:
         series_description = get_counts(series)
-        # TODO: check if we prefer with or without nan
-        distinct_count_without_nan = series_description[&#34;distinct_count_with_nan&#34;]
+
+        distinct_count_without_nan = series_description[&#34;distinct_count_without_nan&#34;]
 
         if distinct_count_without_nan &lt;= 1:
             var_type = Variable.S_TYPE_CONST
-        elif pd.api.types.is_bool_dtype(series) or (
-            distinct_count_without_nan == 2 and pd.api.types.is_numeric_dtype(series)
-        ):
+        elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
-        elif pd.api.types.is_numeric_dtype(series):
+        elif is_numeric(series, series_description):
             var_type = Variable.TYPE_NUM
         elif pd.api.types.is_datetime64_dtype(series):
             var_type = Variable.TYPE_DATE
@@ -168,9 +191,9 @@ def get_var_type(series: pd.Series) -&gt; dict:
     value_counts_without_nan = (
         value_counts_with_nan.reset_index().dropna().set_index(&#34;index&#34;).iloc[:, 0]
     )
-    # value_counts_without_nan = (pd.Series(value_counts_without_nan.index.values, index=value_counts_without_nan))
 
     distinct_count_with_nan = value_counts_with_nan.count()
+    distinct_count_without_nan = value_counts_without_nan.count()
 
     # When the inferred type of the index is just &#34;mixed&#34; probably the types within the series are tuple, dict,
     # list and so on...
@@ -181,6 +204,7 @@ def get_var_type(series: pd.Series) -&gt; dict:
         &#34;value_counts_with_nan&#34;: value_counts_with_nan,
         &#34;value_counts_without_nan&#34;: value_counts_without_nan,
         &#34;distinct_count_with_nan&#34;: distinct_count_with_nan,
+        &#34;distinct_count_without_nan&#34;: distinct_count_without_nan,
     }</code></pre>
 </details>
 </dd>
@@ -207,23 +231,17 @@ def get_var_type(series: pd.Series) -&gt; dict:
     Returns:
         The series updated with the variable type included.
     &#34;&#34;&#34;
-    # TODO: Should improve verification when a categorical or numeric field has 3 values, it could be a categorical
-    #  field or just a boolean with NaN values
-    # TODO: Numeric with low Distinct count should be treated as &#34;Categorical&#34;
-    # TODO: distinct count without NaN
 
     try:
         series_description = get_counts(series)
-        # TODO: check if we prefer with or without nan
-        distinct_count_without_nan = series_description[&#34;distinct_count_with_nan&#34;]
+
+        distinct_count_without_nan = series_description[&#34;distinct_count_without_nan&#34;]
 
         if distinct_count_without_nan &lt;= 1:
             var_type = Variable.S_TYPE_CONST
-        elif pd.api.types.is_bool_dtype(series) or (
-            distinct_count_without_nan == 2 and pd.api.types.is_numeric_dtype(series)
-        ):
+        elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
-        elif pd.api.types.is_numeric_dtype(series):
+        elif is_numeric(series, series_description):
             var_type = Variable.TYPE_NUM
         elif pd.api.types.is_datetime64_dtype(series):
             var_type = Variable.TYPE_DATE
@@ -238,6 +256,46 @@ def get_var_type(series: pd.Series) -&gt; dict:
     series_description.update({&#34;type&#34;: var_type})
 
     return series_description</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.base.is_boolean"><code class="name flex">
+<span>def <span class="ident">is_boolean</span></span>(<span>series, series_description)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def is_boolean(series: pd.Series, series_description: dict) -&gt; bool:
+    keys = series_description[&#34;value_counts_without_nan&#34;].keys()
+    if pd.api.types.is_bool_dtype(keys):
+        return True
+    elif series_description[
+        &#34;distinct_count_without_nan&#34;
+    ] &lt;= 2 and pd.api.types.is_numeric_dtype(series):
+        return True
+    elif series_description[&#34;distinct_count_without_nan&#34;] &lt;= 4:
+        unique_values = set([str(value).lower() for value in keys.values])
+        accepted_combinations = [[&#34;y&#34;, &#34;n&#34;], [&#34;yes&#34;, &#34;no&#34;], [&#34;true&#34;, &#34;false&#34;]]
+
+        if len(unique_values) == 2 and any(
+            [unique_values == set(bools) for bools in accepted_combinations]
+        ):
+            return True
+
+    return False</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.base.is_numeric"><code class="name flex">
+<span>def <span class="ident">is_numeric</span></span>(<span>series, series_description)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def is_numeric(series: pd.Series, series_description: dict) -&gt; bool:
+    return pd.api.types.is_numeric_dtype(series) and series_description[
+        &#34;distinct_count_without_nan&#34;
+    ] &gt;= config[&#34;low_categorical_threshold&#34;].get(int)</code></pre>
 </details>
 </dd>
 </dl>
@@ -352,6 +410,8 @@ def get_var_type(series: pd.Series) -&gt; dict:
 <ul class="">
 <li><code><a title="pandas_profiling.model.base.get_counts" href="#pandas_profiling.model.base.get_counts">get_counts</a></code></li>
 <li><code><a title="pandas_profiling.model.base.get_var_type" href="#pandas_profiling.model.base.get_var_type">get_var_type</a></code></li>
+<li><code><a title="pandas_profiling.model.base.is_boolean" href="#pandas_profiling.model.base.is_boolean">is_boolean</a></code></li>
+<li><code><a title="pandas_profiling.model.base.is_numeric" href="#pandas_profiling.model.base.is_numeric">is_numeric</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
