@@ -95,6 +95,8 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
     Returns:
         A dict containing calculated series description values.
     """
+    # Make sure we deal with strings (Issue #100)
+    series = series.astype(str)
 
     # Only run if at least 1 non-missing value
     value_counts = series_description["value_counts_without_nan"]

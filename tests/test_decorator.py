@@ -1,5 +1,4 @@
 import pandas as pd
-from IPython.lib.display import IFrame
 
 import pandas_profiling
 

@@ -120,6 +120,8 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; d
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
+    # Make sure we deal with strings (Issue #100)
+    series = series.astype(str)
 
     # Only run if at least 1 non-missing value
     value_counts = series_description[&#34;value_counts_without_nan&#34;]
@@ -707,6 +709,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
+    # Make sure we deal with strings (Issue #100)
+    series = series.astype(str)
 
     # Only run if at least 1 non-missing value
     value_counts = series_description[&#34;value_counts_without_nan&#34;]
