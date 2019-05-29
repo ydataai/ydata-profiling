@@ -12,14 +12,9 @@ install:
   - pip install -r requirements-dev.txt
   - pip install -e .
 
-jobs:
-  include:
-    - stage: "Tests"
-      name: "Unit tests"
-      script: pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg
-    - stage: "Tests"
-      name: "Console tests"
-      script: pandas_profiling -h
+script:
+  - pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg
+  - pandas_profiling -h
 
 after_success:
   - codecov
