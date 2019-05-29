@@ -14,6 +14,7 @@ install:
 
 script:
   - pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg
+  # Our well-behaved Unix-style command-line tool exits with code 0 unless an internal error occurred
   - pandas_profiling -h
 
 after_success:
