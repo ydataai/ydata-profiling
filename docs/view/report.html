@@ -282,24 +282,25 @@ def render_variables_html(stats_object: dict) -&gt; str:
             Variable.S_TYPE_CONST,
             Variable.S_TYPE_RECODED,
         }:
+
             formatted_values[&#34;freqtable&#34;] = freq_table(
-                stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
-                stats_object[&#34;table&#34;][&#34;n&#34;],
-                &#34;freq_table.html&#34;,
+                freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
+                n=stats_object[&#34;table&#34;][&#34;n&#34;],
+                table_template=&#34;freq_table.html&#34;,
                 idx=idx,
                 max_number_to_print=n_freq_table_max,
             )
 
             formatted_values[&#34;firstn_expanded&#34;] = extreme_obs_table(
-                stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
-                n_extreme_obs,
-                stats_object[&#34;table&#34;][&#34;n&#34;],
+                freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
+                number_to_print=n_extreme_obs,
+                n=stats_object[&#34;table&#34;][&#34;n&#34;],
                 ascending=True,
             )
             formatted_values[&#34;lastn_expanded&#34;] = extreme_obs_table(
-                stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
-                n_extreme_obs,
-                stats_object[&#34;table&#34;][&#34;n&#34;],
+                freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
+                number_to_print=n_extreme_obs,
+                n=stats_object[&#34;table&#34;][&#34;n&#34;],
                 ascending=False,
             )
         # if row[&#39;type&#39;] in [Variable.TYPE_NUM, Variable.TYPE_DATE]:
@@ -751,24 +752,25 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
             Variable.S_TYPE_CONST,
             Variable.S_TYPE_RECODED,
         }:
+
             formatted_values[&#34;freqtable&#34;] = freq_table(
-                stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
-                stats_object[&#34;table&#34;][&#34;n&#34;],
-                &#34;freq_table.html&#34;,
+                freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
+                n=stats_object[&#34;table&#34;][&#34;n&#34;],
+                table_template=&#34;freq_table.html&#34;,
                 idx=idx,
                 max_number_to_print=n_freq_table_max,
             )
 
             formatted_values[&#34;firstn_expanded&#34;] = extreme_obs_table(
-                stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
-                n_extreme_obs,
-                stats_object[&#34;table&#34;][&#34;n&#34;],
+                freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
+                number_to_print=n_extreme_obs,
+                n=stats_object[&#34;table&#34;][&#34;n&#34;],
                 ascending=True,
             )
             formatted_values[&#34;lastn_expanded&#34;] = extreme_obs_table(
-                stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
-                n_extreme_obs,
-                stats_object[&#34;table&#34;][&#34;n&#34;],
+                freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
+                number_to_print=n_extreme_obs,
+                n=stats_object[&#34;table&#34;][&#34;n&#34;],
                 ascending=False,
             )
         # if row[&#39;type&#39;] in [Variable.TYPE_NUM, Variable.TYPE_DATE]:

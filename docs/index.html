@@ -125,6 +125,8 @@ profile.to_file(output_file=&quot;output.html&quot;)
 
 .. include:: ../README.md
 &#34;&#34;&#34;
+from pandas_profiling.utils.dataframe import clean_column_names, rename_index
+
 __version__ = &#34;2.0.0&#34;
 
 from pathlib import Path
@@ -149,6 +151,12 @@ class ProfileReport(object):
 
     def __init__(self, df, **kwargs):
         config.set_kwargs(kwargs)
+
+        # Rename reserved column names
+        df = rename_index(df)
+
+        # Remove spaces and colons from column names
+        df = clean_column_names(df)
 
         # Get dataset statistics
         description_set = describe_df(df)
@@ -232,7 +240,11 @@ class ProfileReport(object):
 
     def get_unique_file_name(self):
         &#34;&#34;&#34;Generate a unique file name.&#34;&#34;&#34;
-        return &#34;profile_&#34; + str(np.random.randint(1000000000, 9999999999, dtype=np.int64)) + &#34;.html&#34;
+        return (
+            &#34;profile_&#34;
+            + str(np.random.randint(1000000000, 9999999999, dtype=np.int64))
+            + &#34;.html&#34;
+        )
 
     def _repr_html_(self):
         &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook. This function creates a temporary HTML file
@@ -313,6 +325,12 @@ class ProfileReport(object):
     def __init__(self, df, **kwargs):
         config.set_kwargs(kwargs)
 
+        # Rename reserved column names
+        df = rename_index(df)
+
+        # Remove spaces and colons from column names
+        df = clean_column_names(df)
+
         # Get dataset statistics
         description_set = describe_df(df)
 
@@ -395,7 +413,11 @@ class ProfileReport(object):
 
     def get_unique_file_name(self):
         &#34;&#34;&#34;Generate a unique file name.&#34;&#34;&#34;
-        return &#34;profile_&#34; + str(np.random.randint(1000000000, 9999999999, dtype=np.int64)) + &#34;.html&#34;
+        return (
+            &#34;profile_&#34;
+            + str(np.random.randint(1000000000, 9999999999, dtype=np.int64))
+            + &#34;.html&#34;
+        )
 
     def _repr_html_(self):
         &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook. This function creates a temporary HTML file
@@ -492,7 +514,11 @@ correlation with one of remaining variables.</p>
 <summary>Source code</summary>
 <pre><code class="python">def get_unique_file_name(self):
     &#34;&#34;&#34;Generate a unique file name.&#34;&#34;&#34;
-    return &#34;profile_&#34; + str(np.random.randint(1000000000, 9999999999, dtype=np.int64)) + &#34;.html&#34;</code></pre>
+    return (
+        &#34;profile_&#34;
+        + str(np.random.randint(1000000000, 9999999999, dtype=np.int64))
+        + &#34;.html&#34;
+    )</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_file"><code class="name flex">

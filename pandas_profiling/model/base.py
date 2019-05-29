@@ -51,6 +51,8 @@ def get_counts(series: pd.Series) -> dict:
     value_counts_without_nan = (
         value_counts_with_nan.reset_index().dropna().set_index("index").iloc[:, 0]
     )
+    # value_counts_without_nan = (pd.Series(value_counts_without_nan.index.values, index=value_counts_without_nan))
+
     distinct_count_with_nan = value_counts_with_nan.count()
 
     # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,

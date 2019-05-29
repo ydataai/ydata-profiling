@@ -2,6 +2,8 @@
 
 .. include:: ../README.md
 """
+from pandas_profiling.utils.dataframe import clean_column_names, rename_index
+
 __version__ = "2.0.0"
 
 from pathlib import Path
@@ -26,6 +28,12 @@ class ProfileReport(object):
 
     def __init__(self, df, **kwargs):
         config.set_kwargs(kwargs)
+
+        # Rename reserved column names
+        df = rename_index(df)
+
+        # Remove spaces and colons from column names
+        df = clean_column_names(df)
 
         # Get dataset statistics
         description_set = describe_df(df)

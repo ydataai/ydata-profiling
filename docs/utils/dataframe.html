@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
-<title>pandas_profiling.utils API documentation</title>
-<meta name="description" content="Utility functions for the complete package." />
+<title>pandas_profiling.utils.dataframe API documentation</title>
+<meta name="description" content="Utils for pandas DataFrames." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,31 +17,114 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.utils</code></h1>
+<h1 class="title">Module <code>pandas_profiling.utils.dataframe</code></h1>
 </header>
 <section id="section-intro">
-<p>Utility functions for the complete package.</p>
+<p>Utils for pandas DataFrames.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">&#34;&#34;&#34;Utility functions for the complete package.&#34;&#34;&#34;</code></pre>
+<pre><code class="python">&#34;&#34;&#34;Utils for pandas DataFrames.&#34;&#34;&#34;
+
+
+def clean_column_names(df):
+    &#34;&#34;&#34;Removes spaces and colons from pandas DataFrame column names
+
+    Args:
+        df: DataFrame
+
+    Returns:
+        DataFrame with spaces in column names replaced by underscores, colons removed.
+    &#34;&#34;&#34;
+    df.columns = df.columns.str.replace(&#34; &#34;, &#34;_&#34;)
+    df.columns = df.columns.str.replace(&#34;:&#34;, &#34;&#34;)
+    return df
+
+
+def rename_index(df):
+    &#34;&#34;&#34;If the DataFrame contains a column or index named `index`, this will produce errors. We rename the {index,column}
+    to be `df_index`.
+
+    Args:
+        df: DataFrame to process.
+
+    Returns:
+        The DataFrame with {index,column} `index` replaced by `df_index`, unchanged if the DataFrame does not contain such a string.
+    &#34;&#34;&#34;
+    df.rename(columns={&#34;index&#34;: &#34;df_index&#34;}, inplace=True)
+
+    if &#34;index&#34; in df.index.names:
+        df.index.names = [x if x != &#34;index&#34; else &#34;df_index&#34; for x in df.index.names]
+    return df</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="pandas_profiling.utils.dataframe" href="dataframe.html">pandas_profiling.utils.dataframe</a></code></dt>
+<dt id="pandas_profiling.utils.dataframe.clean_column_names"><code class="name flex">
+<span>def <span class="ident">clean_column_names</span></span>(<span>df)</span>
+</code></dt>
 <dd>
-<section class="desc"><p>Utils for pandas DataFrames.</p></section>
+<section class="desc"><p>Removes spaces and colons from pandas DataFrame column names</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong></dt>
+<dd>DataFrame</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>DataFrame with spaces in column names replaced by underscores, colons removed.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def clean_column_names(df):
+    &#34;&#34;&#34;Removes spaces and colons from pandas DataFrame column names
+
+    Args:
+        df: DataFrame
+
+    Returns:
+        DataFrame with spaces in column names replaced by underscores, colons removed.
+    &#34;&#34;&#34;
+    df.columns = df.columns.str.replace(&#34; &#34;, &#34;_&#34;)
+    df.columns = df.columns.str.replace(&#34;:&#34;, &#34;&#34;)
+    return df</code></pre>
+</details>
 </dd>
-<dt><code class="name"><a title="pandas_profiling.utils.paths" href="paths.html">pandas_profiling.utils.paths</a></code></dt>
+<dt id="pandas_profiling.utils.dataframe.rename_index"><code class="name flex">
+<span>def <span class="ident">rename_index</span></span>(<span>df)</span>
+</code></dt>
 <dd>
-<section class="desc"><p>Paths that are useful throughout the project.</p></section>
+<section class="desc"><p>If the DataFrame contains a column or index named <code>index</code>, this will produce errors. We rename the {index,column}
+to be <code>df_index</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong></dt>
+<dd>DataFrame to process.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The DataFrame with {index,column} <code>index</code> replaced by <code>df_index</code>, unchanged if the DataFrame does not contain such a string.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def rename_index(df):
+    &#34;&#34;&#34;If the DataFrame contains a column or index named `index`, this will produce errors. We rename the {index,column}
+    to be `df_index`.
+
+    Args:
+        df: DataFrame to process.
+
+    Returns:
+        The DataFrame with {index,column} `index` replaced by `df_index`, unchanged if the DataFrame does not contain such a string.
+    &#34;&#34;&#34;
+    df.rename(columns={&#34;index&#34;: &#34;df_index&#34;}, inplace=True)
+
+    if &#34;index&#34; in df.index.names:
+        df.index.names = [x if x != &#34;index&#34; else &#34;df_index&#34; for x in df.index.names]
+    return df</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 </section>
@@ -54,13 +137,13 @@
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pandas_profiling" href="../index.html">pandas_profiling</a></code></li>
+<li><code><a title="pandas_profiling.utils" href="index.html">pandas_profiling.utils</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
-<ul>
-<li><code><a title="pandas_profiling.utils.dataframe" href="dataframe.html">pandas_profiling.utils.dataframe</a></code></li>
-<li><code><a title="pandas_profiling.utils.paths" href="paths.html">pandas_profiling.utils.paths</a></code></li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.utils.dataframe.clean_column_names" href="#pandas_profiling.utils.dataframe.clean_column_names">clean_column_names</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.rename_index" href="#pandas_profiling.utils.dataframe.rename_index">rename_index</a></code></li>
 </ul>
 </li>
 </ul>
