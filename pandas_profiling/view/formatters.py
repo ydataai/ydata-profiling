@@ -1,4 +1,5 @@
 """Formatters are utilities for formatting numbers and certain strings"""
+from jinja2.utils import escape
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -82,7 +83,7 @@ def fmt(value) -> str:
     if type(value) in [float, int]:
         return fmt_numeric(value)
     else:
-        return str(value)
+        return str(escape(value))
 
 
 def hex_to_rgb(hex):

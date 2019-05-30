@@ -24,6 +24,7 @@
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;Formatters are utilities for formatting numbers and certain strings&#34;&#34;&#34;
+from jinja2.utils import escape
 
 
 def fmt_color(text: str, color: str) -&gt; str:
@@ -107,7 +108,7 @@ def fmt(value) -&gt; str:
     if type(value) in [float, int]:
         return fmt_numeric(value)
     else:
-        return str(value)
+        return str(escape(value))
 
 
 def hex_to_rgb(hex):
@@ -159,7 +160,7 @@ def hex_to_rgb(hex):
     if type(value) in [float, int]:
         return fmt_numeric(value)
     else:
-        return str(value)</code></pre>
+        return str(escape(value))</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.view.formatters.fmt_bytesize"><code class="name flex">

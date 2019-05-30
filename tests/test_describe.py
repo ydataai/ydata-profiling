@@ -59,8 +59,20 @@ def recoding_data():
 
 def test_recoding_reject(recoding_data):
     results = describe(recoding_data)
-    assert results["variables"]["y"]["type"] == Variable.S_TYPE_RECODED, "Type is wrong"
-    assert results["variables"]["y"]["correlation_var"] == "x", "Values should be equal"
+    assert (
+        results["variables"]["y"]["type"] == Variable.S_TYPE_RECODED
+        and results["variables"]["x"]["type"] == Variable.TYPE_CAT
+    ) or (
+        results["variables"]["x"]["type"] == Variable.S_TYPE_RECODED
+        and results["variables"]["y"]["type"] == Variable.TYPE_CAT
+    ), "Type is wrong"
+    assert (
+        "correlation_var" in results["variables"]["y"]
+        and results["variables"]["y"]["correlation_var"] == "x"
+    ) or (
+        "correlation_var" in results["variables"]["x"]
+        and results["variables"]["x"]["correlation_var"] == "y"
+    ), "Values should be equal"
 
     expected_results = {
         "n_cells_missing": 0.0,
@@ -89,8 +101,21 @@ def test_cramers_reject(recoding_data):
     config["correlations"]["cramers"].set(True)
     results = describe(recoding_data)
 
-    assert results["variables"]["y"]["type"] == Variable.S_TYPE_CORR, "Type is wrong"
-    assert results["variables"]["y"]["correlation_var"] == "x", "Values should be equal"
+    # The order of dicts is not preserved in Python 3.5 and not guaranteed in Python 3.6
+    assert (
+        results["variables"]["y"]["type"] == Variable.S_TYPE_CORR
+        and results["variables"]["x"]["type"] == Variable.TYPE_CAT
+    ) or (
+        results["variables"]["x"]["type"] == Variable.S_TYPE_CORR
+        and results["variables"]["y"]["type"] == Variable.TYPE_CAT
+    ), "Type is wrong"
+    assert (
+        "correlation_var" in results["variables"]["y"]
+        and results["variables"]["y"]["correlation_var"] == "x"
+    ) or (
+        "correlation_var" in results["variables"]["x"]
+        and results["variables"]["x"]["correlation_var"] == "y"
+    ), "Values should be equal"
 
     expected_results = {
         "n_cells_missing": 0.0,

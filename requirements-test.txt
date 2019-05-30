@@ -2,3 +2,4 @@ pytest
 codecov
 pytest-cov
 nbval
+pyarrow

@@ -69,3 +69,4 @@ target/
 ipynb_tmp/
 examples/*/*.csv
 examples/*/*.html
+*.parquet
