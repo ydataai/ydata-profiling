@@ -124,4 +124,4 @@ profile.to_file(output_file="output.html")
 * htmlmin (optional)
 * phik (optional)
 
-For development we use additional packages as noted in the [requirements-dev.txt](requirements-dev.txt).
+For development and testing we use additional packages which you can find in the [requirements-dev.txt](requirements-dev.txt) and [requirements-test.txt](requirements-test.txt).
