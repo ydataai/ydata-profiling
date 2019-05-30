@@ -23,7 +23,7 @@ class ProfileReport(object):
     Used has is it will output its content as an HTML report in a Jupyter notebook.
     """
 
-    html: str = ""
+    html = ""
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
     def __init__(self, df, **kwargs):

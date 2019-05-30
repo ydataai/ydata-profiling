@@ -34,34 +34,34 @@ from pandas_profiling.config import config
 class Variable(Enum):
     &#34;&#34;&#34;The possible types of variables in the Profiling Report.&#34;&#34;&#34;
 
-    TYPE_CAT: str = &#34;CAT&#34;
+    TYPE_CAT = &#34;CAT&#34;
     &#34;&#34;&#34;A categorical variable&#34;&#34;&#34;
 
-    TYPE_BOOL: str = &#34;BOOL&#34;
+    TYPE_BOOL = &#34;BOOL&#34;
     &#34;&#34;&#34;A boolean variable&#34;&#34;&#34;
 
-    TYPE_NUM: str = &#34;NUM&#34;
+    TYPE_NUM = &#34;NUM&#34;
     &#34;&#34;&#34;A numeric variable&#34;&#34;&#34;
 
-    TYPE_DATE: str = &#34;DATE&#34;
+    TYPE_DATE = &#34;DATE&#34;
     &#34;&#34;&#34;A date variable&#34;&#34;&#34;
 
-    S_TYPE_CONST: str = &#34;CONST&#34;
+    S_TYPE_CONST = &#34;CONST&#34;
     &#34;&#34;&#34;A constant variable&#34;&#34;&#34;
 
-    S_TYPE_UNIQUE: str = &#34;UNIQUE&#34;
+    S_TYPE_UNIQUE = &#34;UNIQUE&#34;
     &#34;&#34;&#34;An unique variable&#34;&#34;&#34;
 
-    S_TYPE_UNSUPPORTED: str = &#34;UNSUPPORTED&#34;
+    S_TYPE_UNSUPPORTED = &#34;UNSUPPORTED&#34;
     &#34;&#34;&#34;An unsupported variable&#34;&#34;&#34;
 
-    S_TYPE_CORR: str = &#34;CORR&#34;
+    S_TYPE_CORR = &#34;CORR&#34;
     &#34;&#34;&#34;A highly correlated variable&#34;&#34;&#34;
 
-    S_TYPE_RECODED: str = &#34;RECODED&#34;
+    S_TYPE_RECODED = &#34;RECODED&#34;
     &#34;&#34;&#34;A recorded variable&#34;&#34;&#34;
 
-    S_TYPE_REJECTED: str = &#34;REJECTED&#34;
+    S_TYPE_REJECTED = &#34;REJECTED&#34;
     &#34;&#34;&#34;A rejected variable&#34;&#34;&#34;
 
 
@@ -314,34 +314,34 @@ def get_var_type(series: pd.Series) -&gt; dict:
 <pre><code class="python">class Variable(Enum):
     &#34;&#34;&#34;The possible types of variables in the Profiling Report.&#34;&#34;&#34;
 
-    TYPE_CAT: str = &#34;CAT&#34;
+    TYPE_CAT = &#34;CAT&#34;
     &#34;&#34;&#34;A categorical variable&#34;&#34;&#34;
 
-    TYPE_BOOL: str = &#34;BOOL&#34;
+    TYPE_BOOL = &#34;BOOL&#34;
     &#34;&#34;&#34;A boolean variable&#34;&#34;&#34;
 
-    TYPE_NUM: str = &#34;NUM&#34;
+    TYPE_NUM = &#34;NUM&#34;
     &#34;&#34;&#34;A numeric variable&#34;&#34;&#34;
 
-    TYPE_DATE: str = &#34;DATE&#34;
+    TYPE_DATE = &#34;DATE&#34;
     &#34;&#34;&#34;A date variable&#34;&#34;&#34;
 
-    S_TYPE_CONST: str = &#34;CONST&#34;
+    S_TYPE_CONST = &#34;CONST&#34;
     &#34;&#34;&#34;A constant variable&#34;&#34;&#34;
 
-    S_TYPE_UNIQUE: str = &#34;UNIQUE&#34;
+    S_TYPE_UNIQUE = &#34;UNIQUE&#34;
     &#34;&#34;&#34;An unique variable&#34;&#34;&#34;
 
-    S_TYPE_UNSUPPORTED: str = &#34;UNSUPPORTED&#34;
+    S_TYPE_UNSUPPORTED = &#34;UNSUPPORTED&#34;
     &#34;&#34;&#34;An unsupported variable&#34;&#34;&#34;
 
-    S_TYPE_CORR: str = &#34;CORR&#34;
+    S_TYPE_CORR = &#34;CORR&#34;
     &#34;&#34;&#34;A highly correlated variable&#34;&#34;&#34;
 
-    S_TYPE_RECODED: str = &#34;RECODED&#34;
+    S_TYPE_RECODED = &#34;RECODED&#34;
     &#34;&#34;&#34;A recorded variable&#34;&#34;&#34;
 
-    S_TYPE_REJECTED: str = &#34;REJECTED&#34;
+    S_TYPE_REJECTED = &#34;REJECTED&#34;
     &#34;&#34;&#34;A rejected variable&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>

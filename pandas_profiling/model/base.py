@@ -9,34 +9,34 @@ from pandas_profiling.config import config
 class Variable(Enum):
     """The possible types of variables in the Profiling Report."""
 
-    TYPE_CAT: str = "CAT"
+    TYPE_CAT = "CAT"
     """A categorical variable"""
 
-    TYPE_BOOL: str = "BOOL"
+    TYPE_BOOL = "BOOL"
     """A boolean variable"""
 
-    TYPE_NUM: str = "NUM"
+    TYPE_NUM = "NUM"
     """A numeric variable"""
 
-    TYPE_DATE: str = "DATE"
+    TYPE_DATE = "DATE"
     """A date variable"""
 
-    S_TYPE_CONST: str = "CONST"
+    S_TYPE_CONST = "CONST"
     """A constant variable"""
 
-    S_TYPE_UNIQUE: str = "UNIQUE"
+    S_TYPE_UNIQUE = "UNIQUE"
     """An unique variable"""
 
-    S_TYPE_UNSUPPORTED: str = "UNSUPPORTED"
+    S_TYPE_UNSUPPORTED = "UNSUPPORTED"
     """An unsupported variable"""
 
-    S_TYPE_CORR: str = "CORR"
+    S_TYPE_CORR = "CORR"
     """A highly correlated variable"""
 
-    S_TYPE_RECODED: str = "RECODED"
+    S_TYPE_RECODED = "RECODED"
     """A recorded variable"""
 
-    S_TYPE_REJECTED: str = "REJECTED"
+    S_TYPE_REJECTED = "REJECTED"
     """A rejected variable"""
 
 
