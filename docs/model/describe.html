@@ -38,14 +38,13 @@ from pandas_profiling.model.messages import (
     check_table_messages,
 )
 
-import pandas_profiling.view.formatters as formatters
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import (
     calculate_correlations,
     perform_check_correlation,
-    perform_check_recoded,
 )
+from pandas_profiling.utils.common import update
 from pandas_profiling.view import plot
 
 
@@ -327,8 +326,8 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
     table_stats = {
         &#34;n&#34;: n,
         &#34;nvar&#34;: len(df.columns),
-        &#34;memsize&#34;: formatters.fmt_bytesize(memory_size),
-        &#34;recordsize&#34;: formatters.fmt_bytesize(record_size),
+        &#34;memsize&#34;: memory_size,
+        &#34;recordsize&#34;: record_size,
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
         &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
     }
@@ -433,23 +432,56 @@ def describe(df: pd.DataFrame) -&gt; dict:
             for col, description in results:
                 series_description[col] = description
 
+    # Mapping from column name to variable type
     variables = {
         column: description[&#34;type&#34;]
         for column, description in series_description.items()
     }
 
     # Get correlations
-    correlations = calculate_correlations(df)
+    correlations = calculate_correlations(df, variables)
 
-    # Check correlations between variable
-    if config[&#34;check_correlation&#34;].get(bool) is True and &#34;pearson&#34; in correlations:
+    # Check correlations between numerical variables
+    if (
+        config[&#34;check_correlation_pearson&#34;].get(bool) is True
+        and &#34;pearson&#34; in correlations
+    ):
         # Overwrites the description with &#34;CORR&#34; series
-        series_description.update(perform_check_correlation(correlations[&#34;pearson&#34;]))
+        correlation_threshold = config[&#34;correlation_threshold_pearson&#34;].get(float)
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations[&#34;pearson&#34;],
+                lambda x: x &gt; correlation_threshold,
+                Variable.S_TYPE_CORR,
+            ),
+        )
+
+    # Check correlations between categorical variables
+    if (
+        config[&#34;check_correlation_cramers&#34;].get(bool) is True
+        and &#34;cramers&#34; in correlations
+    ):
+        # Overwrites the description with &#34;CORR&#34; series
+        correlation_threshold = config[&#34;correlation_threshold_cramers&#34;].get(float)
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations[&#34;cramers&#34;],
+                lambda x: x &gt; correlation_threshold,
+                Variable.S_TYPE_CORR,
+            ),
+        )
 
     # Check recoded
-    if config[&#34;check_recoded&#34;].get(bool) is True:
+    if config[&#34;check_recoded&#34;].get(bool) is True and &#34;recoded&#34; in correlations:
         # Overwrites the description with &#34;RECORDED&#34; series
-        series_description.update(perform_check_recoded(df, variables))
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations[&#34;recoded&#34;], lambda x: x == 1, Variable.S_TYPE_RECODED
+            ),
+        )
 
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
@@ -553,23 +585,56 @@ def describe(df: pd.DataFrame) -&gt; dict:
             for col, description in results:
                 series_description[col] = description
 
+    # Mapping from column name to variable type
     variables = {
         column: description[&#34;type&#34;]
         for column, description in series_description.items()
     }
 
     # Get correlations
-    correlations = calculate_correlations(df)
+    correlations = calculate_correlations(df, variables)
 
-    # Check correlations between variable
-    if config[&#34;check_correlation&#34;].get(bool) is True and &#34;pearson&#34; in correlations:
+    # Check correlations between numerical variables
+    if (
+        config[&#34;check_correlation_pearson&#34;].get(bool) is True
+        and &#34;pearson&#34; in correlations
+    ):
         # Overwrites the description with &#34;CORR&#34; series
-        series_description.update(perform_check_correlation(correlations[&#34;pearson&#34;]))
+        correlation_threshold = config[&#34;correlation_threshold_pearson&#34;].get(float)
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations[&#34;pearson&#34;],
+                lambda x: x &gt; correlation_threshold,
+                Variable.S_TYPE_CORR,
+            ),
+        )
+
+    # Check correlations between categorical variables
+    if (
+        config[&#34;check_correlation_cramers&#34;].get(bool) is True
+        and &#34;cramers&#34; in correlations
+    ):
+        # Overwrites the description with &#34;CORR&#34; series
+        correlation_threshold = config[&#34;correlation_threshold_cramers&#34;].get(float)
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations[&#34;cramers&#34;],
+                lambda x: x &gt; correlation_threshold,
+                Variable.S_TYPE_CORR,
+            ),
+        )
 
     # Check recoded
-    if config[&#34;check_recoded&#34;].get(bool) is True:
+    if config[&#34;check_recoded&#34;].get(bool) is True and &#34;recoded&#34; in correlations:
         # Overwrites the description with &#34;RECORDED&#34; series
-        series_description.update(perform_check_recoded(df, variables))
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations[&#34;recoded&#34;], lambda x: x == 1, Variable.S_TYPE_RECODED
+            ),
+        )
 
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
@@ -947,8 +1012,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
     table_stats = {
         &#34;n&#34;: n,
         &#34;nvar&#34;: len(df.columns),
-        &#34;memsize&#34;: formatters.fmt_bytesize(memory_size),
-        &#34;recordsize&#34;: formatters.fmt_bytesize(record_size),
+        &#34;memsize&#34;: memory_size,
+        &#34;recordsize&#34;: record_size,
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
         &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
     }

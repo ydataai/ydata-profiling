@@ -57,18 +57,59 @@ def recoding_data():
     return df
 
 
-# def test_recoding_reject(recoding_data):
-#     results = describe(recoding_data)
-#     assert results['variables']['x']['type'] == Variable.S_TYPE_RECODED, "Type is wrong"
-#     assert results['variables']['x']['correlation_var'] == 'y', 'Values should be equal'
-#
-#     expected_results = {'n_cells_missing': 0.0, Variable.S_TYPE_UNIQUE.value: 0, Variable.S_TYPE_CONST.value: 0,
-#                         'nvar': 2, Variable.S_TYPE_REJECTED.value: 1,
-#                         'n': 8, Variable.S_TYPE_RECODED.value: 1, Variable.S_TYPE_CORR.value: 0,
-#                         Variable.TYPE_DATE.value: 0, Variable.TYPE_NUM.value: 0, Variable.TYPE_CAT.value: 1,
-#                         'n_duplicates': 5}
-#     for key in expected_results:
-#         assert results['table'][key] == expected_results[key], 'recoding error'
+def test_recoding_reject(recoding_data):
+    results = describe(recoding_data)
+    assert results["variables"]["y"]["type"] == Variable.S_TYPE_RECODED, "Type is wrong"
+    assert results["variables"]["y"]["correlation_var"] == "x", "Values should be equal"
+
+    expected_results = {
+        "n_cells_missing": 0.0,
+        Variable.S_TYPE_UNIQUE.value: 0,
+        Variable.S_TYPE_CONST.value: 0,
+        "nvar": 2,
+        Variable.S_TYPE_REJECTED.value: 1,
+        "n": 8,
+        Variable.S_TYPE_RECODED.value: 1,
+        Variable.S_TYPE_CORR.value: 0,
+        Variable.TYPE_DATE.value: 0,
+        Variable.TYPE_NUM.value: 0,
+        Variable.TYPE_CAT.value: 1,
+        "n_duplicates": 5,
+    }
+    for key in expected_results:
+        assert (
+            results["table"][key] == expected_results[key]
+        ), "recoding error {}".format(key)
+
+
+def test_cramers_reject(recoding_data):
+    recoding_data.loc[len(recoding_data)] = {"x": "chat", "y": "dog"}
+    config["check_correlation_cramers"].set(True)
+    config["correlation_threshold_cramers"].set(0.5)
+    config["correlations"]["cramers"].set(True)
+    results = describe(recoding_data)
+
+    assert results["variables"]["y"]["type"] == Variable.S_TYPE_CORR, "Type is wrong"
+    assert results["variables"]["y"]["correlation_var"] == "x", "Values should be equal"
+
+    expected_results = {
+        "n_cells_missing": 0.0,
+        Variable.S_TYPE_UNIQUE.value: 0,
+        Variable.S_TYPE_CONST.value: 0,
+        "nvar": 2,
+        Variable.S_TYPE_REJECTED.value: 1,
+        "n": 9,
+        Variable.S_TYPE_RECODED.value: 0,
+        Variable.S_TYPE_CORR.value: 1,
+        Variable.TYPE_DATE.value: 0,
+        Variable.TYPE_NUM.value: 0,
+        Variable.TYPE_CAT.value: 1,
+        "n_duplicates": 5,
+    }
+    for key in expected_results:
+        assert (
+            results["table"][key] == expected_results[key]
+        ), "recoding error {}".format(key)
 
 
 @pytest.fixture

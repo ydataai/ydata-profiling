@@ -5,61 +5,22 @@
 </div>
 <div class="row variable">
     <ul class="nav nav-tabs" role="tablist">
-        {% if 'pearson_matrix' in values %}
-        <li role="presentation" class="active">
-            <a href="#correlation-pearson"
-               aria-controls="correlation-pearson"
-               role="tab"
-               data-toggle="tab">Pearson</a>
-        </li>
-        {% endif %}
-        {% if 'spearman_matrix' in values %}
-        <li role="presentation">
-            <a href="#correlation-spearman"
-               aria-controls="correlation-spearman"
-               role="tab"
-               data-toggle="tab">Spearman</a>
-        </li>
-        {% endif %}
-        {% if 'kendall_matrix' in values %}
-        <li role="presentation">
-            <a href="#correlation-kendall"
-               aria-controls="correlation-kendall"
-               role="tab"
-               data-toggle="tab">Kendall</a>
-        </li>
-        {% endif %}
-        {% if 'phik_matrix' in values %}
-        <li role="presentation">
-            <a href="#correlation-phi-k"
-               aria-controls="correlation-phi-k"
-               role="tab"
-               data-toggle="tab">Phi<sub>k</sub></a>
-        </li>
-        {% endif %}
+        {% for key, correlation in values.items() %}
+            <li role="presentation"{% if key == 'pearson' %} class="active"{% endif %}>
+                <a href="#correlation-{{ key }}"
+                   aria-controls="correlation-{{ key }}"
+                   role="tab"
+                   data-toggle="tab">{{ correlation['name'] }}</a>
+            </li>
+        {% endfor %}
     </ul>
 
     <div class="tab-content">
-        {% if 'pearson_matrix' in values %}
-        <div role="tabpanel" class="tab-pane active row" id="correlation-pearson">
-            <img src="{{ values['pearson_matrix'] }}" class="img-responsive center-img" alt="Pearson matrix">
+        {% for key, correlation in values.items() %}
+        <div role="tabpanel" class="tab-pane row{% if key == 'pearson' %} active{% endif %}" id="correlation-{{ key }}">
+            <img src="{{ correlation['matrix'] }}" class="img-responsive center-img" alt="{{ correlation['name'] }} matrix">
         </div>
-        {% endif %}
-        {% if 'spearman_matrix' in values %}
-        <div role="tabpanel" class="tab-pane row" id="correlation-spearman">
-            <img src="{{ values['spearman_matrix'] }}" class="img-responsive center-img" alt="Spearman matrix">
-        </div>
-        {% endif %}
-        {% if 'kendall_matrix' in values %}
-        <div role="tabpanel" class="tab-pane row" id="correlation-kendall">
-            <img src="{{ values['kendall_matrix'] }}" class="img-responsive center-img" alt="Kendall matrix">
-        </div>
-        {% endif %}
-        {% if 'phik_matrix' in values %}
-        <div role="tabpanel" class="tab-pane row" id="correlation-phi-k">
-            <img src="{{ values['phik_matrix'] }}" class="img-responsive center-img" alt="Phi_k matrix">
-        </div>
-        {% endif %}
+        {% endfor %}
     </div>
 </div>
 {% endif %}

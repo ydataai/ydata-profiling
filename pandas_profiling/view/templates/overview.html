@@ -25,11 +25,11 @@
             </tr>
             <tr>
                 <th>Total size in memory</th>
-                <td>{{ values['memsize'] }} </td>
+                <td>{{ values['memsize'] | fmt_bytesize }} </td>
             </tr>
             <tr>
                 <th>Average record size in memory</th>
-                <td>{{ values['recordsize'] }} </td>
+                <td>{{ values['recordsize'] | fmt_bytesize }} </td>
             </tr>
             </tbody>
         </table>

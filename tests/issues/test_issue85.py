@@ -25,9 +25,10 @@ def test_issue85():
 
     report = df.profile_report(
         pool_size=1,
-        title="Dataset with <em>Boolean</em> Categories",
+        title="Dataset with <em>Boolean</em> Variables",
         samples={"head": 20},
-        check_correlation=False,
+        check_correlation_cramers=False,
+        check_correlation_pearson=False,
     )
     for col, variable_stats in report.get_description()["variables"].items():
         assert (

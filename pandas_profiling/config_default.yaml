@@ -23,10 +23,6 @@ low_categorical_threshold: 5
 
 # Settings regarding warnings
 cardinality_threshold: 50
-check_correlation: True
-correlation_overrides: []
-correlation_threshold: 0.9
-check_recoded: True
 
 # which diagrams to show
 missing_diagrams:
@@ -40,6 +36,20 @@ correlations:
     spearman: True
     kendall: True
     phi_k: True
+    cramers: False
+    recoded: True
+
+# For numeric
+check_correlation_pearson: True
+correlation_threshold_pearson: 0.9
+
+# For categorical
+check_correlation_cramers: False
+correlation_threshold_cramers: 0.9
+
+# These variables are not rejected in the correlation checks
+correlation_overrides: []
+check_recoded: True
 
 # Plot-specific settings
 plot:

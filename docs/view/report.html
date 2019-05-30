@@ -175,21 +175,36 @@ def render_correlations_html(stats_object: dict) -&gt; str:
     &#34;&#34;&#34;
     values = {}
     if &#34;pearson&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;pearson_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;pearson&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;pearson&#34;]
-        )
+        ), &#39;name&#39;: &#39;Pearson&#39;
+        }
     if &#34;spearman&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;spearman_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;spearman&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;spearman&#34;]
-        )
+        ), &#39;name&#39;: &#39;Spearman&#39;
+        }
     if &#34;kendall&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;kendall_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;kendall&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;kendall&#34;]
-        )
+        ), &#39;name&#39;: &#39;Kendall&#39;
+        }
     if &#34;phi_k&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;phik_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;phik&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
-        )
+        ), &#39;name&#39;: &#39;Phi&lt;sub&gt;k&lt;/sub&gt;&#39;
+        }
+    if &#34;cramers&#34; in stats_object[&#34;correlations&#34;]:
+        values[&#34;cramers&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
+            stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
+        ), &#39;name&#39;: &#39;Cramér\&#39;s V&#39;
+        }
+
+    if &#34;recoded&#34; in stats_object[&#34;correlations&#34;]:
+        values[&#34;recoded&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
+            stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
+        ), &#39;name&#39;: &#39;Recoded&#39;
+        }
 
     return templates.template(&#34;correlations.html&#34;).render(values=values)
 
@@ -276,13 +291,13 @@ def render_variables_html(stats_object: dict) -&gt; str:
                 list(obs[-n_obs_unique:]),
                 columns=[&#34;Last {} values&#34;.format(n_obs_unique)],
             ).to_html(classes=&#34;example_values&#34;, index=False)
+
         if row[&#34;type&#34;] not in {
             Variable.S_TYPE_UNSUPPORTED,
             Variable.S_TYPE_CORR,
             Variable.S_TYPE_CONST,
             Variable.S_TYPE_RECODED,
         }:
-
             formatted_values[&#34;freqtable&#34;] = freq_table(
                 freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
                 n=stats_object[&#34;table&#34;][&#34;n&#34;],
@@ -554,21 +569,36 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     &#34;&#34;&#34;
     values = {}
     if &#34;pearson&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;pearson_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;pearson&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;pearson&#34;]
-        )
+        ), &#39;name&#39;: &#39;Pearson&#39;
+        }
     if &#34;spearman&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;spearman_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;spearman&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;spearman&#34;]
-        )
+        ), &#39;name&#39;: &#39;Spearman&#39;
+        }
     if &#34;kendall&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;kendall_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;kendall&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;kendall&#34;]
-        )
+        ), &#39;name&#39;: &#39;Kendall&#39;
+        }
     if &#34;phi_k&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;phik_matrix&#34;] = plot.correlation_matrix(
+        values[&#34;phik&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
             stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
-        )
+        ), &#39;name&#39;: &#39;Phi&lt;sub&gt;k&lt;/sub&gt;&#39;
+        }
+    if &#34;cramers&#34; in stats_object[&#34;correlations&#34;]:
+        values[&#34;cramers&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
+            stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
+        ), &#39;name&#39;: &#39;Cramér\&#39;s V&#39;
+        }
+
+    if &#34;recoded&#34; in stats_object[&#34;correlations&#34;]:
+        values[&#34;recoded&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
+            stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
+        ), &#39;name&#39;: &#39;Recoded&#39;
+        }
 
     return templates.template(&#34;correlations.html&#34;).render(values=values)</code></pre>
 </details>
@@ -746,13 +776,13 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                 list(obs[-n_obs_unique:]),
                 columns=[&#34;Last {} values&#34;.format(n_obs_unique)],
             ).to_html(classes=&#34;example_values&#34;, index=False)
+
         if row[&#34;type&#34;] not in {
             Variable.S_TYPE_UNSUPPORTED,
             Variable.S_TYPE_CORR,
             Variable.S_TYPE_CONST,
             Variable.S_TYPE_RECODED,
         }:
-
             formatted_values[&#34;freqtable&#34;] = freq_table(
                 freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
                 n=stats_object[&#34;table&#34;][&#34;n&#34;],

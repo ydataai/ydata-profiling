@@ -13,14 +13,13 @@ from pandas_profiling.model.messages import (
     check_table_messages,
 )
 
-import pandas_profiling.view.formatters as formatters
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import (
     calculate_correlations,
     perform_check_correlation,
-    perform_check_recoded,
 )
+from pandas_profiling.utils.common import update
 from pandas_profiling.view import plot
 
 
@@ -302,8 +301,8 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     table_stats = {
         "n": n,
         "nvar": len(df.columns),
-        "memsize": formatters.fmt_bytesize(memory_size),
-        "recordsize": formatters.fmt_bytesize(record_size),
+        "memsize": memory_size,
+        "recordsize": record_size,
         "n_cells_missing": variable_stats.loc["n_missing"].sum(),
         "n_vars_with_missing": sum((variable_stats.loc["n_missing"] > 0).astype(int)),
     }
@@ -408,23 +407,56 @@ def describe(df: pd.DataFrame) -> dict:
             for col, description in results:
                 series_description[col] = description
 
+    # Mapping from column name to variable type
     variables = {
         column: description["type"]
         for column, description in series_description.items()
     }
 
     # Get correlations
-    correlations = calculate_correlations(df)
+    correlations = calculate_correlations(df, variables)
 
-    # Check correlations between variable
-    if config["check_correlation"].get(bool) is True and "pearson" in correlations:
+    # Check correlations between numerical variables
+    if (
+        config["check_correlation_pearson"].get(bool) is True
+        and "pearson" in correlations
+    ):
         # Overwrites the description with "CORR" series
-        series_description.update(perform_check_correlation(correlations["pearson"]))
+        correlation_threshold = config["correlation_threshold_pearson"].get(float)
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations["pearson"],
+                lambda x: x > correlation_threshold,
+                Variable.S_TYPE_CORR,
+            ),
+        )
+
+    # Check correlations between categorical variables
+    if (
+        config["check_correlation_cramers"].get(bool) is True
+        and "cramers" in correlations
+    ):
+        # Overwrites the description with "CORR" series
+        correlation_threshold = config["correlation_threshold_cramers"].get(float)
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations["cramers"],
+                lambda x: x > correlation_threshold,
+                Variable.S_TYPE_CORR,
+            ),
+        )
 
     # Check recoded
-    if config["check_recoded"].get(bool) is True:
+    if config["check_recoded"].get(bool) is True and "recoded" in correlations:
         # Overwrites the description with "RECORDED" series
-        series_description.update(perform_check_recoded(df, variables))
+        update(
+            series_description,
+            perform_check_correlation(
+                correlations["recoded"], lambda x: x == 1, Variable.S_TYPE_RECODED
+            ),
+        )
 
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)

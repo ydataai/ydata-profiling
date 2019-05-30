@@ -26,37 +26,141 @@
 <pre><code class="python">&#34;&#34;&#34;Correlations between variables.&#34;&#34;&#34;
 import itertools
 import warnings
+from functools import partial
 
 import pandas as pd
+import numpy as np
+from scipy import stats
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 
 
-def calculate_correlations(df: pd.DataFrame) -&gt; dict:
+def cramers_corrected_stat(confusion_matrix, correction: bool) -&gt; float:
+    &#34;&#34;&#34;Calculate the Cramers V corrected stat for two variables.
+
+    Args:
+        confusion_matrix: Crosstab between two variables.
+        correction: Should the correction be applied?
+
+    Returns:
+        The Cramers V corrected stat for the two variables.
+    &#34;&#34;&#34;
+    chi2 = stats.chi2_contingency(confusion_matrix, correction=correction)[0]
+    n = confusion_matrix.sum().sum()
+    phi2 = chi2 / n
+    r, k = confusion_matrix.shape
+    phi2corr = max(0., phi2 - ((k - 1.) * (r - 1.)) / (n - 1.))
+    rcorr = r - ((r - 1.) ** 2.) / (n - 1.)
+    kcorr = k - ((k - 1.) ** 2.) / (n - 1.)
+    return np.sqrt(phi2corr / min((kcorr - 1.), (rcorr - 1.)))
+
+
+def check_recoded(confusion_matrix, count: int) -&gt; int:
+    &#34;&#34;&#34;Check if two variables are recoded based on their crosstab.
+
+    Args:
+        confusion_matrix: Crosstab between two variables.
+        count:  The number of variables.
+
+    Returns:
+        Whether the variables are recoded.
+    &#34;&#34;&#34;
+    return int(confusion_matrix.values.diagonal().sum() == count)
+
+
+def cramers_matrix(df: pd.DataFrame, variables: dict):
+    &#34;&#34;&#34;Calculate the Cramers v correlation matrix.
+
+    Args:
+        df: The pandas DataFrame.
+        variables: A dict with column names mapped to variable type.
+
+    Returns:
+        A cramers v matrix for categorical variables.
+    &#34;&#34;&#34;
+    return categorical_matrix(
+        df, variables, partial(cramers_corrected_stat, correction=True)
+    )
+
+
+def recoded_matrix(df: pd.DataFrame, variables: dict):
+    &#34;&#34;&#34;Calculate the recoded correlation matrix.
+
+    Args:
+        df: The pandas DataFrame.
+        variables: A dict with column names mapped to variable type.
+
+    Returns:
+        A recoded matrix for categorical variables.
+    &#34;&#34;&#34;
+    return categorical_matrix(df, variables, partial(check_recoded, count=len(df)))
+
+
+def categorical_matrix(
+    df: pd.DataFrame, variables: dict, correlation_function: callable
+):
+    &#34;&#34;&#34;Calculate a correlation matrix for categorical variables.
+
+    Args:
+        df: The pandas DataFrame.
+        variables: A dict with column names mapped to variable type.
+        correlation_function: A function to calculate the correlation between two variables.
+
+    Returns:
+        A correlation matrix for categorical variables.
+    &#34;&#34;&#34;
+    categoricals = {
+        column_name: df[column_name]
+        for column_name, variable_type in variables.items()
+        if variable_type == Variable.TYPE_CAT
+    }
+
+    correlation_matrix = pd.DataFrame(
+        np.ones((len(categoricals), len(categoricals))),
+        index=categoricals.keys(),
+        columns=categoricals.keys(),
+    )
+
+    for (name1, data1), (name2, data2) in itertools.combinations(
+        categoricals.items(), 2
+    ):
+        confusion_matrix = pd.crosstab(data1, data2)
+        correlation_matrix.loc[name2, name1] = correlation_matrix.loc[
+            name1, name2
+        ] = correlation_function(confusion_matrix)
+
+    return correlation_matrix
+
+
+def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, Phi_k).
 
     Args:
+        variables: A dict with column names and variable types.
         df: The DataFrame with variables.
 
     Returns:
         A dictionary containing the correlation matrices for each of the active correlation measures.
     &#34;&#34;&#34;
     correlations = {}
-    if config[&#34;correlations&#34;][&#34;pearson&#34;]:
+    if config[&#34;correlations&#34;][&#34;pearson&#34;].get(bool):
         correlation = df.corr(method=&#34;pearson&#34;)
         if len(correlation) &gt; 0:
             correlations[&#34;pearson&#34;] = correlation
-    if config[&#34;correlations&#34;][&#34;spearman&#34;]:
+
+    if config[&#34;correlations&#34;][&#34;spearman&#34;].get(bool):
         correlation = df.corr(method=&#34;spearman&#34;)
         if len(correlation) &gt; 0:
             correlations[&#34;spearman&#34;] = correlation
-    if config[&#34;correlations&#34;][&#34;kendall&#34;]:
+
+    if config[&#34;correlations&#34;][&#34;kendall&#34;].get(bool):
         correlation = df.corr(method=&#34;kendall&#34;)
         if len(correlation) &gt; 0:
             correlations[&#34;kendall&#34;] = correlation
-    if config[&#34;correlations&#34;][&#34;phi_k&#34;]:
+
+    if config[&#34;correlations&#34;][&#34;phi_k&#34;].get(bool):
         import phik
 
         with warnings.catch_warnings():
@@ -89,18 +193,31 @@ def calculate_correlations(df: pd.DataFrame) -&gt; dict:
 
             correlations[&#34;phi_k&#34;] = df[selcols].phik_matrix(interval_cols=intcols)
 
+    if config[&#34;correlations&#34;][&#34;cramers&#34;].get(bool):
+        correlation = cramers_matrix(df, variables)
+        if len(correlation) &gt; 0:
+            correlations[&#34;cramers&#34;] = correlation
+
+    if config[&#34;correlations&#34;][&#34;recoded&#34;].get(bool):
+        correlation = recoded_matrix(df, variables)
+        if len(correlation) &gt; 0:
+            correlations[&#34;recoded&#34;] = correlation
+
     return correlations
 
 
-def perform_check_correlation(df_correlation_pearson):
-    &#34;&#34;&#34;
-    Check for highly correlated values in the pearson correlation matrix and if found, reject them.
+def perform_check_correlation(
+    correlation_matrix, criterion: callable, special_type: Variable
+):
+    &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.
 
     Args:
-        df_correlation_pearson: The pearson correlation matrix for the DataFrame.
+        correlation_matrix: The correlation matrix for the DataFrame.
+        criterion: a mapping function from the correlation function to a bool
+        special_type: which type to return when the criterion is True (CORR, RECODED).
 
     Returns:
-        The variables that are highly correlated.
+        The variables that are highly correlated or recoded.
 
     Notes:
         If x~y and y~z but not x~z, it would be better to delete only y
@@ -110,10 +227,9 @@ def perform_check_correlation(df_correlation_pearson):
     # TODO: find a more reliable way to find highly correlated variables, as corr(x,y) &gt; 0.9 and corr(y,z) &gt; 0.9 does
     #  not imply corr(x,z) &gt; 0.9
     variables = {}
-    corr = df_correlation_pearson.copy()
+    corr = correlation_matrix.copy()
 
     correlation_overrides = config[&#34;correlation_overrides&#34;].get(list)
-    correlation_threshold = config[&#34;correlation_threshold&#34;].get(float)
 
     for x, corr_x in corr.iterrows():
         if correlation_overrides and x in correlation_overrides:
@@ -123,44 +239,12 @@ def perform_check_correlation(df_correlation_pearson):
             if x == y:
                 break
 
-            if corr &gt; correlation_threshold:
+            if criterion(corr):
                 variables[x] = {
-                    &#34;type&#34;: Variable.S_TYPE_CORR,
+                    &#34;type&#34;: special_type,
                     &#34;correlation_var&#34;: y,
                     &#34;correlation&#34;: corr,
                 }
-    return variables
-
-
-def perform_check_recoded(df: pd.DataFrame, types: dict) -&gt; dict:
-    &#34;&#34;&#34;Check whether categorical variables are recoded (categorical version of correlation).
-
-    Args:
-        df: The DataFrame.
-        types: A dict of types for each variable.
-
-    Returns:
-        The variables that are recoded.
-    &#34;&#34;&#34;
-    variables = {}
-    categorical_variables = [
-        (name, data)
-        for (name, data) in df.iteritems()
-        if types[name] == Variable.TYPE_CAT
-    ]
-    correlation_overrides = config[&#34;correlation_overrides&#34;].get(list)
-    for (name1, data1), (name2, data2) in itertools.combinations(
-        categorical_variables, 2
-    ):
-        if correlation_overrides and name1 in correlation_overrides:
-            continue
-
-        confusion_matrix = pd.crosstab(data1, data2)
-        if confusion_matrix.values.diagonal().sum() == len(df):
-            variables[name1] = {
-                &#34;type&#34;: Variable.S_TYPE_RECODED,
-                &#34;correlation_var&#34;: name2,
-            }
     return variables</code></pre>
 </details>
 </section>
@@ -172,13 +256,15 @@ def perform_check_recoded(df: pd.DataFrame, types: dict) -&gt; dict:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.correlations.calculate_correlations"><code class="name flex">
-<span>def <span class="ident">calculate_correlations</span></span>(<span>df)</span>
+<span>def <span class="ident">calculate_correlations</span></span>(<span>df, variables)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Calculate the correlation coefficients between variables for the correlation types selected in the config
 (pearson, spearman, kendall, Phi_k).</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>variables</code></strong></dt>
+<dd>A dict with column names and variable types.</dd>
 <dt><strong><code>df</code></strong></dt>
 <dd>The DataFrame with variables.</dd>
 </dl>
@@ -186,30 +272,34 @@ def perform_check_recoded(df: pd.DataFrame, types: dict) -&gt; dict:
 <p>A dictionary containing the correlation matrices for each of the active correlation measures.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def calculate_correlations(df: pd.DataFrame) -&gt; dict:
+<pre><code class="python">def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, Phi_k).
 
     Args:
+        variables: A dict with column names and variable types.
         df: The DataFrame with variables.
 
     Returns:
         A dictionary containing the correlation matrices for each of the active correlation measures.
     &#34;&#34;&#34;
     correlations = {}
-    if config[&#34;correlations&#34;][&#34;pearson&#34;]:
+    if config[&#34;correlations&#34;][&#34;pearson&#34;].get(bool):
         correlation = df.corr(method=&#34;pearson&#34;)
         if len(correlation) &gt; 0:
             correlations[&#34;pearson&#34;] = correlation
-    if config[&#34;correlations&#34;][&#34;spearman&#34;]:
+
+    if config[&#34;correlations&#34;][&#34;spearman&#34;].get(bool):
         correlation = df.corr(method=&#34;spearman&#34;)
         if len(correlation) &gt; 0:
             correlations[&#34;spearman&#34;] = correlation
-    if config[&#34;correlations&#34;][&#34;kendall&#34;]:
+
+    if config[&#34;correlations&#34;][&#34;kendall&#34;].get(bool):
         correlation = df.corr(method=&#34;kendall&#34;)
         if len(correlation) &gt; 0:
             correlations[&#34;kendall&#34;] = correlation
-    if config[&#34;correlations&#34;][&#34;phi_k&#34;]:
+
+    if config[&#34;correlations&#34;][&#34;phi_k&#34;].get(bool):
         import phik
 
         with warnings.catch_warnings():
@@ -242,35 +332,202 @@ def perform_check_recoded(df: pd.DataFrame, types: dict) -&gt; dict:
 
             correlations[&#34;phi_k&#34;] = df[selcols].phik_matrix(interval_cols=intcols)
 
+    if config[&#34;correlations&#34;][&#34;cramers&#34;].get(bool):
+        correlation = cramers_matrix(df, variables)
+        if len(correlation) &gt; 0:
+            correlations[&#34;cramers&#34;] = correlation
+
+    if config[&#34;correlations&#34;][&#34;recoded&#34;].get(bool):
+        correlation = recoded_matrix(df, variables)
+        if len(correlation) &gt; 0:
+            correlations[&#34;recoded&#34;] = correlation
+
     return correlations</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.model.correlations.perform_check_correlation"><code class="name flex">
-<span>def <span class="ident">perform_check_correlation</span></span>(<span>df_correlation_pearson)</span>
+<dt id="pandas_profiling.model.correlations.categorical_matrix"><code class="name flex">
+<span>def <span class="ident">categorical_matrix</span></span>(<span>df, variables, correlation_function)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Check for highly correlated values in the pearson correlation matrix and if found, reject them.</p>
+<section class="desc"><p>Calculate a correlation matrix for categorical variables.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>df_correlation_pearson</code></strong></dt>
-<dd>The pearson correlation matrix for the DataFrame.</dd>
+<dt><strong><code>df</code></strong></dt>
+<dd>The pandas DataFrame.</dd>
+<dt><strong><code>variables</code></strong></dt>
+<dd>A dict with column names mapped to variable type.</dd>
+<dt><strong><code>correlation_function</code></strong></dt>
+<dd>A function to calculate the correlation between two variables.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>The variables that are highly correlated.</p>
+<p>A correlation matrix for categorical variables.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def categorical_matrix(
+    df: pd.DataFrame, variables: dict, correlation_function: callable
+):
+    &#34;&#34;&#34;Calculate a correlation matrix for categorical variables.
+
+    Args:
+        df: The pandas DataFrame.
+        variables: A dict with column names mapped to variable type.
+        correlation_function: A function to calculate the correlation between two variables.
+
+    Returns:
+        A correlation matrix for categorical variables.
+    &#34;&#34;&#34;
+    categoricals = {
+        column_name: df[column_name]
+        for column_name, variable_type in variables.items()
+        if variable_type == Variable.TYPE_CAT
+    }
+
+    correlation_matrix = pd.DataFrame(
+        np.ones((len(categoricals), len(categoricals))),
+        index=categoricals.keys(),
+        columns=categoricals.keys(),
+    )
+
+    for (name1, data1), (name2, data2) in itertools.combinations(
+        categoricals.items(), 2
+    ):
+        confusion_matrix = pd.crosstab(data1, data2)
+        correlation_matrix.loc[name2, name1] = correlation_matrix.loc[
+            name1, name2
+        ] = correlation_function(confusion_matrix)
+
+    return correlation_matrix</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.correlations.check_recoded"><code class="name flex">
+<span>def <span class="ident">check_recoded</span></span>(<span>confusion_matrix, count)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Check if two variables are recoded based on their crosstab.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>confusion_matrix</code></strong></dt>
+<dd>Crosstab between two variables.</dd>
+<dt><strong><code>count</code></strong></dt>
+<dd>The number of variables.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Whether the variables are recoded.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def check_recoded(confusion_matrix, count: int) -&gt; int:
+    &#34;&#34;&#34;Check if two variables are recoded based on their crosstab.
+
+    Args:
+        confusion_matrix: Crosstab between two variables.
+        count:  The number of variables.
+
+    Returns:
+        Whether the variables are recoded.
+    &#34;&#34;&#34;
+    return int(confusion_matrix.values.diagonal().sum() == count)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.correlations.cramers_corrected_stat"><code class="name flex">
+<span>def <span class="ident">cramers_corrected_stat</span></span>(<span>confusion_matrix, correction)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calculate the Cramers V corrected stat for two variables.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>confusion_matrix</code></strong></dt>
+<dd>Crosstab between two variables.</dd>
+<dt><strong><code>correction</code></strong></dt>
+<dd>Should the correction be applied?</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The Cramers V corrected stat for the two variables.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def cramers_corrected_stat(confusion_matrix, correction: bool) -&gt; float:
+    &#34;&#34;&#34;Calculate the Cramers V corrected stat for two variables.
+
+    Args:
+        confusion_matrix: Crosstab between two variables.
+        correction: Should the correction be applied?
+
+    Returns:
+        The Cramers V corrected stat for the two variables.
+    &#34;&#34;&#34;
+    chi2 = stats.chi2_contingency(confusion_matrix, correction=correction)[0]
+    n = confusion_matrix.sum().sum()
+    phi2 = chi2 / n
+    r, k = confusion_matrix.shape
+    phi2corr = max(0., phi2 - ((k - 1.) * (r - 1.)) / (n - 1.))
+    rcorr = r - ((r - 1.) ** 2.) / (n - 1.)
+    kcorr = k - ((k - 1.) ** 2.) / (n - 1.)
+    return np.sqrt(phi2corr / min((kcorr - 1.), (rcorr - 1.)))</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.correlations.cramers_matrix"><code class="name flex">
+<span>def <span class="ident">cramers_matrix</span></span>(<span>df, variables)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calculate the Cramers v correlation matrix.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong></dt>
+<dd>The pandas DataFrame.</dd>
+<dt><strong><code>variables</code></strong></dt>
+<dd>A dict with column names mapped to variable type.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A cramers v matrix for categorical variables.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def cramers_matrix(df: pd.DataFrame, variables: dict):
+    &#34;&#34;&#34;Calculate the Cramers v correlation matrix.
+
+    Args:
+        df: The pandas DataFrame.
+        variables: A dict with column names mapped to variable type.
+
+    Returns:
+        A cramers v matrix for categorical variables.
+    &#34;&#34;&#34;
+    return categorical_matrix(
+        df, variables, partial(cramers_corrected_stat, correction=True)
+    )</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.correlations.perform_check_correlation"><code class="name flex">
+<span>def <span class="ident">perform_check_correlation</span></span>(<span>correlation_matrix, criterion, special_type)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>correlation_matrix</code></strong></dt>
+<dd>The correlation matrix for the DataFrame.</dd>
+<dt><strong><code>criterion</code></strong></dt>
+<dd>a mapping function from the correlation function to a bool</dd>
+<dt><strong><code>special_type</code></strong></dt>
+<dd>which type to return when the criterion is True (CORR, RECODED).</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The variables that are highly correlated or recoded.</p>
 <h2 id="notes">Notes</h2>
 <p>If x~y and y~z but not x~z, it would be better to delete only y
 Better way would be to find out which variable causes the highest increase in multicollinearity.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def perform_check_correlation(df_correlation_pearson):
-    &#34;&#34;&#34;
-    Check for highly correlated values in the pearson correlation matrix and if found, reject them.
+<pre><code class="python">def perform_check_correlation(
+    correlation_matrix, criterion: callable, special_type: Variable
+):
+    &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.
 
     Args:
-        df_correlation_pearson: The pearson correlation matrix for the DataFrame.
+        correlation_matrix: The correlation matrix for the DataFrame.
+        criterion: a mapping function from the correlation function to a bool
+        special_type: which type to return when the criterion is True (CORR, RECODED).
 
     Returns:
-        The variables that are highly correlated.
+        The variables that are highly correlated or recoded.
 
     Notes:
         If x~y and y~z but not x~z, it would be better to delete only y
@@ -280,10 +537,9 @@ Better way would be to find out which variable causes the highest increase in mu
     # TODO: find a more reliable way to find highly correlated variables, as corr(x,y) &gt; 0.9 and corr(y,z) &gt; 0.9 does
     #  not imply corr(x,z) &gt; 0.9
     variables = {}
-    corr = df_correlation_pearson.copy()
+    corr = correlation_matrix.copy()
 
     correlation_overrides = config[&#34;correlation_overrides&#34;].get(list)
-    correlation_threshold = config[&#34;correlation_threshold&#34;].get(float)
 
     for x, corr_x in corr.iterrows():
         if correlation_overrides and x in correlation_overrides:
@@ -293,61 +549,42 @@ Better way would be to find out which variable causes the highest increase in mu
             if x == y:
                 break
 
-            if corr &gt; correlation_threshold:
+            if criterion(corr):
                 variables[x] = {
-                    &#34;type&#34;: Variable.S_TYPE_CORR,
+                    &#34;type&#34;: special_type,
                     &#34;correlation_var&#34;: y,
                     &#34;correlation&#34;: corr,
                 }
     return variables</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.model.correlations.perform_check_recoded"><code class="name flex">
-<span>def <span class="ident">perform_check_recoded</span></span>(<span>df, types)</span>
+<dt id="pandas_profiling.model.correlations.recoded_matrix"><code class="name flex">
+<span>def <span class="ident">recoded_matrix</span></span>(<span>df, variables)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Check whether categorical variables are recoded (categorical version of correlation).</p>
+<section class="desc"><p>Calculate the recoded correlation matrix.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>df</code></strong></dt>
-<dd>The DataFrame.</dd>
-<dt><strong><code>types</code></strong></dt>
-<dd>A dict of types for each variable.</dd>
+<dd>The pandas DataFrame.</dd>
+<dt><strong><code>variables</code></strong></dt>
+<dd>A dict with column names mapped to variable type.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>The variables that are recoded.</p></section>
+<p>A recoded matrix for categorical variables.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def perform_check_recoded(df: pd.DataFrame, types: dict) -&gt; dict:
-    &#34;&#34;&#34;Check whether categorical variables are recoded (categorical version of correlation).
+<pre><code class="python">def recoded_matrix(df: pd.DataFrame, variables: dict):
+    &#34;&#34;&#34;Calculate the recoded correlation matrix.
 
     Args:
-        df: The DataFrame.
-        types: A dict of types for each variable.
+        df: The pandas DataFrame.
+        variables: A dict with column names mapped to variable type.
 
     Returns:
-        The variables that are recoded.
+        A recoded matrix for categorical variables.
     &#34;&#34;&#34;
-    variables = {}
-    categorical_variables = [
-        (name, data)
-        for (name, data) in df.iteritems()
-        if types[name] == Variable.TYPE_CAT
-    ]
-    correlation_overrides = config[&#34;correlation_overrides&#34;].get(list)
-    for (name1, data1), (name2, data2) in itertools.combinations(
-        categorical_variables, 2
-    ):
-        if correlation_overrides and name1 in correlation_overrides:
-            continue
-
-        confusion_matrix = pd.crosstab(data1, data2)
-        if confusion_matrix.values.diagonal().sum() == len(df):
-            variables[name1] = {
-                &#34;type&#34;: Variable.S_TYPE_RECODED,
-                &#34;correlation_var&#34;: name2,
-            }
-    return variables</code></pre>
+    return categorical_matrix(df, variables, partial(check_recoded, count=len(df)))</code></pre>
 </details>
 </dd>
 </dl>
@@ -369,8 +606,12 @@ Better way would be to find out which variable causes the highest increase in mu
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.model.correlations.calculate_correlations" href="#pandas_profiling.model.correlations.calculate_correlations">calculate_correlations</a></code></li>
+<li><code><a title="pandas_profiling.model.correlations.categorical_matrix" href="#pandas_profiling.model.correlations.categorical_matrix">categorical_matrix</a></code></li>
+<li><code><a title="pandas_profiling.model.correlations.check_recoded" href="#pandas_profiling.model.correlations.check_recoded">check_recoded</a></code></li>
+<li><code><a title="pandas_profiling.model.correlations.cramers_corrected_stat" href="#pandas_profiling.model.correlations.cramers_corrected_stat">cramers_corrected_stat</a></code></li>
+<li><code><a title="pandas_profiling.model.correlations.cramers_matrix" href="#pandas_profiling.model.correlations.cramers_matrix">cramers_matrix</a></code></li>
 <li><code><a title="pandas_profiling.model.correlations.perform_check_correlation" href="#pandas_profiling.model.correlations.perform_check_correlation">perform_check_correlation</a></code></li>
-<li><code><a title="pandas_profiling.model.correlations.perform_check_recoded" href="#pandas_profiling.model.correlations.perform_check_recoded">perform_check_recoded</a></code></li>
+<li><code><a title="pandas_profiling.model.correlations.recoded_matrix" href="#pandas_profiling.model.correlations.recoded_matrix">recoded_matrix</a></code></li>
 </ul>
 </li>
 </ul>

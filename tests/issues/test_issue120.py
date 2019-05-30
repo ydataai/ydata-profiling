@@ -8,6 +8,8 @@ def test_issue_120():
         "https://github.com/pandas-profiling/pandas-profiling/files/2386812/pandas_profiling_bug.txt"
     )
 
-    report = df.profile_report()
+    report = df.profile_report(
+        correlations={"cramers": False}, check_correlation_cramers=False
+    )
     html = report.to_html()
     assert type(html) == str and '<p class="h2">Dataset info</p>' in html

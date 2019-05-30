@@ -150,21 +150,42 @@ def render_correlations_html(stats_object: dict) -> str:
     """
     values = {}
     if "pearson" in stats_object["correlations"]:
-        values["pearson_matrix"] = plot.correlation_matrix(
-            stats_object["correlations"]["pearson"]
-        )
+        values["pearson"] = {
+            "matrix": plot.correlation_matrix(stats_object["correlations"]["pearson"]),
+            "name": "Pearson",
+        }
     if "spearman" in stats_object["correlations"]:
-        values["spearman_matrix"] = plot.correlation_matrix(
-            stats_object["correlations"]["spearman"]
-        )
+        values["spearman"] = {
+            "matrix": plot.correlation_matrix(stats_object["correlations"]["spearman"]),
+            "name": "Spearman",
+        }
     if "kendall" in stats_object["correlations"]:
-        values["kendall_matrix"] = plot.correlation_matrix(
-            stats_object["correlations"]["kendall"]
-        )
+        values["kendall"] = {
+            "matrix": plot.correlation_matrix(stats_object["correlations"]["kendall"]),
+            "name": "Kendall",
+        }
     if "phi_k" in stats_object["correlations"]:
-        values["phik_matrix"] = plot.correlation_matrix(
-            stats_object["correlations"]["phi_k"], vmin=0
-        )
+        values["phik"] = {
+            "matrix": plot.correlation_matrix(
+                stats_object["correlations"]["phi_k"], vmin=0
+            ),
+            "name": "Phi<sub>k</sub>",
+        }
+    if "cramers" in stats_object["correlations"]:
+        values["cramers"] = {
+            "matrix": plot.correlation_matrix(
+                stats_object["correlations"]["cramers"], vmin=0
+            ),
+            "name": "Cramér's V",
+        }
+
+    if "recoded" in stats_object["correlations"]:
+        values["recoded"] = {
+            "matrix": plot.correlation_matrix(
+                stats_object["correlations"]["recoded"], vmin=0
+            ),
+            "name": "Recoded",
+        }
 
     return templates.template("correlations.html").render(values=values)
 
@@ -251,13 +272,13 @@ def render_variables_html(stats_object: dict) -> str:
                 list(obs[-n_obs_unique:]),
                 columns=["Last {} values".format(n_obs_unique)],
             ).to_html(classes="example_values", index=False)
+
         if row["type"] not in {
             Variable.S_TYPE_UNSUPPORTED,
             Variable.S_TYPE_CORR,
             Variable.S_TYPE_CONST,
             Variable.S_TYPE_RECODED,
         }:
-
             formatted_values["freqtable"] = freq_table(
                 freqtable=stats_object["variables"][idx]["value_counts_without_nan"],
                 n=stats_object["table"]["n"],

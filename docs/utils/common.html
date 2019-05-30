@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
-<title>pandas_profiling.utils API documentation</title>
-<meta name="description" content="Utility functions for the complete package." />
+<title>pandas_profiling.utils.common API documentation</title>
+<meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,35 +17,74 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.utils</code></h1>
+<h1 class="title">Module <code>pandas_profiling.utils.common</code></h1>
 </header>
 <section id="section-intro">
-<p>Utility functions for the complete package.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">&#34;&#34;&#34;Utility functions for the complete package.&#34;&#34;&#34;</code></pre>
+<pre><code class="python">import collections
+
+
+def update(d: dict, u: dict) -&gt; dict:
+    &#34;&#34;&#34; Recursively update a dict.
+
+    Args:
+        d: Dictionary to update.
+        u: Dictionary with values to use.
+
+    Returns:
+        The merged dictionairy.
+    &#34;&#34;&#34;
+    for k, v in u.items():
+        if isinstance(v, collections.Mapping):
+            d[k] = update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="pandas_profiling.utils.common" href="common.html">pandas_profiling.utils.common</a></code></dt>
+<dt id="pandas_profiling.utils.common.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>d, u)</span>
+</code></dt>
 <dd>
-<section class="desc"></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.utils.dataframe" href="dataframe.html">pandas_profiling.utils.dataframe</a></code></dt>
-<dd>
-<section class="desc"><p>Utils for pandas DataFrames.</p></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.utils.paths" href="paths.html">pandas_profiling.utils.paths</a></code></dt>
-<dd>
-<section class="desc"><p>Paths that are useful throughout the project.</p></section>
+<section class="desc"><p>Recursively update a dict.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>d</code></strong></dt>
+<dd>Dictionary to update.</dd>
+<dt><strong><code>u</code></strong></dt>
+<dd>Dictionary with values to use.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The merged dictionairy.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def update(d: dict, u: dict) -&gt; dict:
+    &#34;&#34;&#34; Recursively update a dict.
+
+    Args:
+        d: Dictionary to update.
+        u: Dictionary with values to use.
+
+    Returns:
+        The merged dictionairy.
+    &#34;&#34;&#34;
+    for k, v in u.items():
+        if isinstance(v, collections.Mapping):
+            d[k] = update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 </section>
@@ -58,14 +97,12 @@
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pandas_profiling" href="../index.html">pandas_profiling</a></code></li>
+<li><code><a title="pandas_profiling.utils" href="index.html">pandas_profiling.utils</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
-<ul>
-<li><code><a title="pandas_profiling.utils.common" href="common.html">pandas_profiling.utils.common</a></code></li>
-<li><code><a title="pandas_profiling.utils.dataframe" href="dataframe.html">pandas_profiling.utils.dataframe</a></code></li>
-<li><code><a title="pandas_profiling.utils.paths" href="paths.html">pandas_profiling.utils.paths</a></code></li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.utils.common.update" href="#pandas_profiling.utils.common.update">update</a></code></li>
 </ul>
 </li>
 </ul>
