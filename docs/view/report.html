@@ -175,35 +175,41 @@ def render_correlations_html(stats_object: dict) -&gt; str:
     &#34;&#34;&#34;
     values = {}
     if &#34;pearson&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;pearson&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;pearson&#34;]
-        ), &#39;name&#39;: &#39;Pearson&#39;
+        values[&#34;pearson&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;pearson&#34;]),
+            &#34;name&#34;: &#34;Pearson&#34;,
         }
     if &#34;spearman&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;spearman&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;spearman&#34;]
-        ), &#39;name&#39;: &#39;Spearman&#39;
+        values[&#34;spearman&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;spearman&#34;]),
+            &#34;name&#34;: &#34;Spearman&#34;,
         }
     if &#34;kendall&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;kendall&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;kendall&#34;]
-        ), &#39;name&#39;: &#39;Kendall&#39;
+        values[&#34;kendall&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;kendall&#34;]),
+            &#34;name&#34;: &#34;Kendall&#34;,
         }
     if &#34;phi_k&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;phik&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
-        ), &#39;name&#39;: &#39;Phi&lt;sub&gt;k&lt;/sub&gt;&#39;
+        values[&#34;phik&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(
+                stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
+            ),
+            &#34;name&#34;: &#34;Phi&lt;sub&gt;k&lt;/sub&gt;&#34;,
         }
     if &#34;cramers&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;cramers&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
-        ), &#39;name&#39;: &#39;Cramér\&#39;s V&#39;
+        values[&#34;cramers&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(
+                stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
+            ),
+            &#34;name&#34;: &#34;Cramér&#39;s V&#34;,
         }
 
     if &#34;recoded&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;recoded&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
-        ), &#39;name&#39;: &#39;Recoded&#39;
+        values[&#34;recoded&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(
+                stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
+            ),
+            &#34;name&#34;: &#34;Recoded&#34;,
         }
 
     return templates.template(&#34;correlations.html&#34;).render(values=values)
@@ -569,35 +575,41 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     &#34;&#34;&#34;
     values = {}
     if &#34;pearson&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;pearson&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;pearson&#34;]
-        ), &#39;name&#39;: &#39;Pearson&#39;
+        values[&#34;pearson&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;pearson&#34;]),
+            &#34;name&#34;: &#34;Pearson&#34;,
         }
     if &#34;spearman&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;spearman&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;spearman&#34;]
-        ), &#39;name&#39;: &#39;Spearman&#39;
+        values[&#34;spearman&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;spearman&#34;]),
+            &#34;name&#34;: &#34;Spearman&#34;,
         }
     if &#34;kendall&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;kendall&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;kendall&#34;]
-        ), &#39;name&#39;: &#39;Kendall&#39;
+        values[&#34;kendall&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;kendall&#34;]),
+            &#34;name&#34;: &#34;Kendall&#34;,
         }
     if &#34;phi_k&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;phik&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
-        ), &#39;name&#39;: &#39;Phi&lt;sub&gt;k&lt;/sub&gt;&#39;
+        values[&#34;phik&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(
+                stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
+            ),
+            &#34;name&#34;: &#34;Phi&lt;sub&gt;k&lt;/sub&gt;&#34;,
         }
     if &#34;cramers&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;cramers&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
-        ), &#39;name&#39;: &#39;Cramér\&#39;s V&#39;
+        values[&#34;cramers&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(
+                stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
+            ),
+            &#34;name&#34;: &#34;Cramér&#39;s V&#34;,
         }
 
     if &#34;recoded&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;recoded&#34;] = {&#39;matrix&#39;: plot.correlation_matrix(
-            stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
-        ), &#39;name&#39;: &#39;Recoded&#39;
+        values[&#34;recoded&#34;] = {
+            &#34;matrix&#34;: plot.correlation_matrix(
+                stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
+            ),
+            &#34;name&#34;: &#34;Recoded&#34;,
         }
 
     return templates.template(&#34;correlations.html&#34;).render(values=values)</code></pre>

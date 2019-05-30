@@ -50,10 +50,10 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -&gt; float:
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
     r, k = confusion_matrix.shape
-    phi2corr = max(0., phi2 - ((k - 1.) * (r - 1.)) / (n - 1.))
-    rcorr = r - ((r - 1.) ** 2.) / (n - 1.)
-    kcorr = k - ((k - 1.) ** 2.) / (n - 1.)
-    return np.sqrt(phi2corr / min((kcorr - 1.), (rcorr - 1.)))
+    phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
+    rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
+    kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
+    return np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
 
 
 def check_recoded(confusion_matrix, count: int) -&gt; int:
@@ -458,10 +458,10 @@ def perform_check_correlation(
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
     r, k = confusion_matrix.shape
-    phi2corr = max(0., phi2 - ((k - 1.) * (r - 1.)) / (n - 1.))
-    rcorr = r - ((r - 1.) ** 2.) / (n - 1.)
-    kcorr = k - ((k - 1.) ** 2.) / (n - 1.)
-    return np.sqrt(phi2corr / min((kcorr - 1.), (rcorr - 1.)))</code></pre>
+    phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
+    rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
+    kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
+    return np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.correlations.cramers_matrix"><code class="name flex">
