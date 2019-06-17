@@ -3,6 +3,7 @@ import multiprocessing.pool
 import multiprocessing
 import itertools
 from typing import Tuple
+from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
@@ -114,6 +115,38 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
         stats["mean_length"] = series.str.len().mean()
         stats["min_length"] = series.str.len().min()
         stats["composition"] = contains
+
+    return stats
+
+
+def describe_url_1d(series: pd.Series, series_description: dict) -> dict:
+    """Describe a url series.
+
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    """
+    # Make sure we deal with strings (Issue #100)
+    series = series[~series.isnull()].astype(str)
+
+    stats = {}
+
+    # Create separate columns for each URL part
+    keys = ["scheme", "netloc", "path", "query", "fragment"]
+    url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
+    for name, part in url_parts.items():
+        stats["{}_counts".format(name.lower())] = pd.Series(
+            part, name=name
+        ).value_counts()
+
+    # Only run if at least 1 non-missing value
+    value_counts = series_description["value_counts_without_nan"]
+
+    stats["top"] = value_counts.index[0]
+    stats["freq"] = value_counts.iloc[0]
 
     return stats
 
@@ -258,6 +291,7 @@ def describe_1d(series: pd.Series) -> dict:
             Variable.TYPE_DATE: describe_date_1d,
             Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
+            Variable.TYPE_URL: describe_url_1d,
         }
 
         if series_description["type"] in type_to_func:
@@ -305,6 +339,7 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
         "recordsize": record_size,
         "n_cells_missing": variable_stats.loc["n_missing"].sum(),
         "n_vars_with_missing": sum((variable_stats.loc["n_missing"] > 0).astype(int)),
+        "n_vars_all_missing": sum((variable_stats.loc["n_missing"] == n).astype(int)),
     }
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
@@ -361,7 +396,11 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
             config["missing_diagrams"][name].get(bool)
             and table_stats["n_vars_with_missing"] >= settings["min_missing"]
         ):
-            missing[name] = settings["func"](df)
+            if name != "heatmap" or (
+                table_stats["n_vars_with_missing"] - table_stats["n_vars_all_missing"]
+                >= settings["min_missing"]
+            ):
+                missing[name] = settings["func"](df)
     return missing
 
 
@@ -473,7 +512,7 @@ def describe(df: pd.DataFrame) -> dict:
         messages += check_variable_messages(col, description)
 
     return {
-        # Overall desription
+        # Overall description
         "table": table_stats,
         # Per variable descriptions
         "variables": series_description,

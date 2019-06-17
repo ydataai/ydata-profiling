@@ -46,6 +46,7 @@ correlation_threshold_pearson: 0.9
 # For categorical
 check_correlation_cramers: False
 correlation_threshold_cramers: 0.9
+categorical_maximum_correlation_distinct: 100
 
 # These variables are not rejected in the correlation checks
 correlation_overrides: []

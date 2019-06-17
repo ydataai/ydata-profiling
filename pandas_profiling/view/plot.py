@@ -128,6 +128,26 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+def get_font_size(data):
+    """Calculate font size based on number of columns
+
+    Args:
+        data: DataFrame
+
+    Returns:
+        Font size for missing values plots.
+    """
+    if len(data.columns) < 20:
+        font_size = 13
+    elif 20 <= len(data.columns) < 40:
+        font_size = 12
+    elif 40 <= len(data.columns) < 60:
+        font_size = 10
+    else:
+        font_size = 8
+    return font_size
+
+
 def missing_matrix(data: pd.DataFrame) -> str:
     """Generate missing values matrix plot
 
@@ -139,9 +159,9 @@ def missing_matrix(data: pd.DataFrame) -> str:
     """
     missingno.matrix(
         data,
-        figsize=(10, 4),
+        figsize=(10, 5),
         color=hex_to_rgb(config["plot"]["face_color"].get(str)),
-        fontsize=14,
+        fontsize=get_font_size(data),
         sparkline=False,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
@@ -159,9 +179,9 @@ def missing_bar(data: pd.DataFrame) -> str:
     """
     missingno.bar(
         data,
-        figsize=(10, 4),
+        figsize=(10, 5),
         color=hex_to_rgb(config["plot"]["face_color"].get(str)),
-        fontsize=14,
+        fontsize=get_font_size(data),
     )
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
@@ -181,7 +201,7 @@ def missing_heatmap(data: pd.DataFrame) -> str:
     missingno.heatmap(
         data,
         figsize=(10, 4),
-        fontsize=14,
+        fontsize=get_font_size(data),
         cmap=config["plot"]["missing"]["cmap"].get(str),
     )
     plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
@@ -198,24 +218,24 @@ def missing_dendrogram(data: pd.DataFrame) -> str:
       The resulting missing values dendrogram plot encoded as a string.
 
     """
-    missingno.dendrogram(data, figsize=(10, 4), fontsize=14)
+    missingno.dendrogram(data, fontsize=get_font_size(data))
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(plt)
 
 
-def plot_360_n0sc0pe(plt) -> str:
+def plot_360_n0sc0pe(plt, attempts=0) -> str:
     """Quickscope the plot to a base64 encoded string.
 
     Args:
         plt: The pyplot module.
-        img_format: The format in which to store the image: 'svg' or 'png'. (Default value = 'svg')
+        attempts: number to tries
 
     Returns:
         A base64 encoded version of the plot in the specified image format.
     """
     img_format = config["plot"]["image_format"].get(str)
     if img_format not in ["svg", "png"]:
-        raise ValueError('Can only 360 n0sc0pe "png" or "svg" format')
+        raise ValueError('Can only 360 n0sc0pe "png" or "svg" format.')
 
     mime_types = {"png": "image/png", "svg": "image/svg+xml"}
 
@@ -229,7 +249,11 @@ def plot_360_n0sc0pe(plt) -> str:
         )
         plt.close()
     except RuntimeError:
+        plt.close()
         # Hack https://stackoverflow.com/questions/44666207/matplotlib-error-when-running-plotting-in-multiprocess
         # #comment79373127_44666207
-        return plot_360_n0sc0pe(plt)
+        if attempts > 10:
+            return ""
+        else:
+            return plot_360_n0sc0pe(plt, attempts + 1)
     return result_string

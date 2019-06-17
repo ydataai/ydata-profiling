@@ -5,14 +5,14 @@
 </div>
 <div class="row variable">
     {% if 'head' in values %}
+    <h2>First rows</h2>
     <div id="sample-head" class="col-md-12">
-        <h2>First rows</h2>
         {{ values['head'] }}
     </div>
     {% endif %}
     {% if 'tail' in values %}
+    <h2>Last rows</h2>
     <div id="sample-tail" class="col-md-12">
-        <h2>Last rows</h2>
         {{ values['tail'] }}
     </div>
     {% endif %}

@@ -5,7 +5,7 @@
                 <th>{{ row['label'] }}</th>
                 <td>
                     <div class="bar"
-                         style="width:{{ row['width'] | fmt_percent }}"
+                         style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}"
                          data-toggle="tooltip"
                          data-placement="right"
                          data-html="true"

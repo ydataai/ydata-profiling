@@ -90,7 +90,7 @@ def freq_table(
                 ),
                 &#34;width&#34;: freq_other / max_freq,
                 &#34;count&#34;: freq_other,
-                &#34;percentage&#34;: float(freq_other) / max_freq,
+                &#34;percentage&#34;: float(freq_other) / n,
                 &#34;extra_class&#34;: &#34;other&#34;,
             }
         )
@@ -101,7 +101,7 @@ def freq_table(
                 &#34;label&#34;: &#34;(Missing)&#34;,
                 &#34;width&#34;: freq_missing / max_freq,
                 &#34;count&#34;: freq_missing,
-                &#34;percentage&#34;: float(freq_missing) / max_freq,
+                &#34;percentage&#34;: float(freq_missing) / n,
                 &#34;extra_class&#34;: &#34;missing&#34;,
             }
         )
@@ -174,29 +174,44 @@ def render_correlations_html(stats_object: dict) -&gt; str:
         The rendered HTML of the correlations component of the profile.
     &#34;&#34;&#34;
     values = {}
+    active = &#34;&#34;
     if &#34;pearson&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;pearson&#34;
         values[&#34;pearson&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;pearson&#34;]),
             &#34;name&#34;: &#34;Pearson&#34;,
         }
+
     if &#34;spearman&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;spearman&#34;
         values[&#34;spearman&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;spearman&#34;]),
             &#34;name&#34;: &#34;Spearman&#34;,
         }
+
     if &#34;kendall&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;kendall&#34;
         values[&#34;kendall&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;kendall&#34;]),
             &#34;name&#34;: &#34;Kendall&#34;,
         }
+
     if &#34;phi_k&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;phik&#34;] = {
+        if active == &#34;&#34;:
+            active = &#34;phi_k&#34;
+        values[&#34;phi_k&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(
                 stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
             ),
             &#34;name&#34;: &#34;Phi&lt;sub&gt;k&lt;/sub&gt;&#34;,
         }
+
     if &#34;cramers&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;cramers&#34;
         values[&#34;cramers&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(
                 stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
@@ -205,6 +220,8 @@ def render_correlations_html(stats_object: dict) -&gt; str:
         }
 
     if &#34;recoded&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;recoded&#34;
         values[&#34;recoded&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(
                 stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
@@ -212,7 +229,7 @@ def render_correlations_html(stats_object: dict) -&gt; str:
             &#34;name&#34;: &#34;Recoded&#34;,
         }
 
-    return templates.template(&#34;correlations.html&#34;).render(values=values)
+    return templates.template(&#34;correlations.html&#34;).render(values=values, active=active)
 
 
 def render_missing_html(stats_object: dict) -&gt; str:
@@ -282,6 +299,20 @@ def render_variables_html(stats_object: dict) -&gt; str:
                 idx=idx,
                 nb_col=mini_freq_table_nb_col[row[&#34;type&#34;]],
             )
+
+        if row[&#34;type&#34;] in {Variable.TYPE_URL}:
+            keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
+            for url_part in keys:
+                formatted_values[&#34;freqtable_{}&#34;.format(url_part)] = freq_table(
+                    freqtable=stats_object[&#34;variables&#34;][idx][
+                        &#34;{}_counts&#34;.format(url_part)
+                    ],
+                    # TODO: n - missing
+                    n=stats_object[&#34;table&#34;][&#34;n&#34;],
+                    table_template=&#34;freq_table.html&#34;,
+                    idx=idx,
+                    max_number_to_print=n_freq_table_max,
+                )
 
         if row[&#34;type&#34;] == Variable.S_TYPE_UNIQUE:
             table = stats_object[&#34;variables&#34;][idx][
@@ -529,7 +560,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                 ),
                 &#34;width&#34;: freq_other / max_freq,
                 &#34;count&#34;: freq_other,
-                &#34;percentage&#34;: float(freq_other) / max_freq,
+                &#34;percentage&#34;: float(freq_other) / n,
                 &#34;extra_class&#34;: &#34;other&#34;,
             }
         )
@@ -540,7 +571,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                 &#34;label&#34;: &#34;(Missing)&#34;,
                 &#34;width&#34;: freq_missing / max_freq,
                 &#34;count&#34;: freq_missing,
-                &#34;percentage&#34;: float(freq_missing) / max_freq,
+                &#34;percentage&#34;: float(freq_missing) / n,
                 &#34;extra_class&#34;: &#34;missing&#34;,
             }
         )
@@ -574,29 +605,44 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
         The rendered HTML of the correlations component of the profile.
     &#34;&#34;&#34;
     values = {}
+    active = &#34;&#34;
     if &#34;pearson&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;pearson&#34;
         values[&#34;pearson&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;pearson&#34;]),
             &#34;name&#34;: &#34;Pearson&#34;,
         }
+
     if &#34;spearman&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;spearman&#34;
         values[&#34;spearman&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;spearman&#34;]),
             &#34;name&#34;: &#34;Spearman&#34;,
         }
+
     if &#34;kendall&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;kendall&#34;
         values[&#34;kendall&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(stats_object[&#34;correlations&#34;][&#34;kendall&#34;]),
             &#34;name&#34;: &#34;Kendall&#34;,
         }
+
     if &#34;phi_k&#34; in stats_object[&#34;correlations&#34;]:
-        values[&#34;phik&#34;] = {
+        if active == &#34;&#34;:
+            active = &#34;phi_k&#34;
+        values[&#34;phi_k&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(
                 stats_object[&#34;correlations&#34;][&#34;phi_k&#34;], vmin=0
             ),
             &#34;name&#34;: &#34;Phi&lt;sub&gt;k&lt;/sub&gt;&#34;,
         }
+
     if &#34;cramers&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;cramers&#34;
         values[&#34;cramers&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(
                 stats_object[&#34;correlations&#34;][&#34;cramers&#34;], vmin=0
@@ -605,6 +651,8 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
         }
 
     if &#34;recoded&#34; in stats_object[&#34;correlations&#34;]:
+        if active == &#34;&#34;:
+            active = &#34;recoded&#34;
         values[&#34;recoded&#34;] = {
             &#34;matrix&#34;: plot.correlation_matrix(
                 stats_object[&#34;correlations&#34;][&#34;recoded&#34;], vmin=0
@@ -612,7 +660,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
             &#34;name&#34;: &#34;Recoded&#34;,
         }
 
-    return templates.template(&#34;correlations.html&#34;).render(values=values)</code></pre>
+    return templates.template(&#34;correlations.html&#34;).render(values=values, active=active)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.view.report.render_missing_html"><code class="name flex">
@@ -773,6 +821,20 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                 idx=idx,
                 nb_col=mini_freq_table_nb_col[row[&#34;type&#34;]],
             )
+
+        if row[&#34;type&#34;] in {Variable.TYPE_URL}:
+            keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
+            for url_part in keys:
+                formatted_values[&#34;freqtable_{}&#34;.format(url_part)] = freq_table(
+                    freqtable=stats_object[&#34;variables&#34;][idx][
+                        &#34;{}_counts&#34;.format(url_part)
+                    ],
+                    # TODO: n - missing
+                    n=stats_object[&#34;table&#34;][&#34;n&#34;],
+                    table_template=&#34;freq_table.html&#34;,
+                    idx=idx,
+                    max_number_to_print=n_freq_table_max,
+                )
 
         if row[&#34;type&#34;] == Variable.S_TYPE_UNIQUE:
             table = stats_object[&#34;variables&#34;][idx][

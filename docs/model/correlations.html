@@ -114,6 +114,8 @@ def categorical_matrix(
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
+        and df[column_name].nunique()
+        &lt;= config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
     }
 
     correlation_matrix = pd.DataFrame(
@@ -184,7 +186,9 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
                     if pd.api.types.is_numeric_dtype(df[col]):
                         intcols.append(col)
                         selcols.append(col)
-                    elif df[col].nunique() &lt; 100:
+                    elif df[col].nunique() &lt;= config[
+                        &#34;categorical_maximum_correlation_distinct&#34;
+                    ].get(int):
                         selcols.append(col)
                 except TypeError:
                     continue
@@ -323,7 +327,9 @@ def perform_check_correlation(
                     if pd.api.types.is_numeric_dtype(df[col]):
                         intcols.append(col)
                         selcols.append(col)
-                    elif df[col].nunique() &lt; 100:
+                    elif df[col].nunique() &lt;= config[
+                        &#34;categorical_maximum_correlation_distinct&#34;
+                    ].get(int):
                         selcols.append(col)
                 except TypeError:
                     continue
@@ -380,6 +386,8 @@ def perform_check_correlation(
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
+        and df[column_name].nunique()
+        &lt;= config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
     }
 
     correlation_matrix = pd.DataFrame(

@@ -1,6 +1,12 @@
 """Common parts to all other modules, mainly utility functions."""
+import re
+import warnings
+
 import pandas as pd
 from enum import Enum, unique
+from urllib.parse import urlparse
+
+from dateutil.parser import parse
 
 from pandas_profiling.config import config
 
@@ -20,6 +26,9 @@ class Variable(Enum):
 
     TYPE_DATE = "DATE"
     """A date variable"""
+
+    TYPE_URL = "URL"
+    """A URL variable"""
 
     S_TYPE_CONST = "CONST"
     """A constant variable"""
@@ -71,6 +80,15 @@ def get_counts(series: pd.Series) -> dict:
 
 
 def is_boolean(series: pd.Series, series_description: dict) -> bool:
+    """Is the series boolean type?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is boolean type in the broad sense (e.g. including yes/no, NaNs allowed).
+    """
     keys = series_description["value_counts_without_nan"].keys()
     if pd.api.types.is_bool_dtype(keys):
         return True
@@ -91,9 +109,81 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
 
 
 def is_numeric(series: pd.Series, series_description: dict) -> bool:
+    """Is the series numeric type?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is numeric type (NaNs allowed).
+    """
     return pd.api.types.is_numeric_dtype(series) and series_description[
         "distinct_count_without_nan"
     ] >= config["low_categorical_threshold"].get(int)
+
+
+def is_url(series: pd.Series, series_description: dict) -> bool:
+    """Is the series url type?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is url type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] > 0:
+        try:
+            result = series[~series.isnull()].astype(str).apply(urlparse)
+            return result.apply(lambda x: all([x.scheme, x.netloc, x.path])).all()
+        except ValueError:
+            return False
+    else:
+        return False
+
+
+# def is_path(x):
+#     try:
+#         Path(x).is_file()
+#         return True
+#     except OSError:
+#         return False
+
+
+def _date_parser(date_string):
+    pattern = re.compile(r"[.\-:]")
+    pieces = re.split(pattern, date_string)
+
+    if len(pieces) < 3:
+        raise ValueError("Must have at least year, month and date passed")
+
+    return parse(date_string)
+
+
+def is_date(series) -> bool:
+    """Is the variable of type datetime? Throws a warning if the series looks like a datetime, but is not typed as
+    datetime64.
+
+    Args:
+        series: Series
+
+    Returns:
+        True if the variable is of type datetime.
+    """
+    is_date_value = pd.api.types.is_datetime64_dtype(series)
+    try:
+        series.apply(_date_parser)
+        warnings.warn(
+            'Column "{}" appears to be containing only date/datetime values. You might consider '
+            "changing the type to datetime (pd.to_datetime())".format(series.name)
+        )
+    except ValueError:
+        pass
+    except TypeError:
+        pass
+
+    return is_date_value
 
 
 def get_var_type(series: pd.Series) -> dict:
@@ -117,8 +207,10 @@ def get_var_type(series: pd.Series) -> dict:
             var_type = Variable.TYPE_BOOL
         elif is_numeric(series, series_description):
             var_type = Variable.TYPE_NUM
-        elif pd.api.types.is_datetime64_dtype(series):
+        elif is_date(series):
             var_type = Variable.TYPE_DATE
+        elif is_url(series, series_description):
+            var_type = Variable.TYPE_URL
         elif distinct_count_without_nan == len(series):
             var_type = Variable.S_TYPE_UNIQUE
         else:

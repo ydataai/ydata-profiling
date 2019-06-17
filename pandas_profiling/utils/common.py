@@ -1,3 +1,4 @@
+"""Common util functions (e.g. missing in Python)."""
 import collections
 
 
@@ -9,7 +10,7 @@ def update(d: dict, u: dict) -> dict:
         u: Dictionary with values to use.
 
     Returns:
-        The merged dictionairy.
+        The merged dictionary.
     """
     for k, v in u.items():
         if isinstance(v, collections.Mapping):

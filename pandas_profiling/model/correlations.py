@@ -89,6 +89,8 @@ def categorical_matrix(
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
+        and df[column_name].nunique()
+        <= config["categorical_maximum_correlation_distinct"].get(int)
     }
 
     correlation_matrix = pd.DataFrame(
@@ -159,7 +161,9 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                     if pd.api.types.is_numeric_dtype(df[col]):
                         intcols.append(col)
                         selcols.append(col)
-                    elif df[col].nunique() < 100:
+                    elif df[col].nunique() <= config[
+                        "categorical_maximum_correlation_distinct"
+                    ].get(int):
                         selcols.append(col)
                 except TypeError:
                     continue

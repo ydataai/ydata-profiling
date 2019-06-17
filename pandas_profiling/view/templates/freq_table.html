@@ -10,7 +10,7 @@
     <tbody>
     {% for row in rows %}
         <tr class="{{ row['extra_class'] }}">
-            <td class="fillremaining">
+            <td class="fillremaining" title="{{ row['label'] | fmt }}">
                 {{ row['label'] | fmt }}
             </td>
             <td class="number">
@@ -20,7 +20,7 @@
                 {{ row['percentage'] | fmt_percent }}
             </td>
             <td>
-                <div class="bar" style="width:{{ row['width'] | fmt_percent }}">&nbsp;</div>
+                <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">&nbsp;</div>
             </td>
         </tr>
     {% endfor %}

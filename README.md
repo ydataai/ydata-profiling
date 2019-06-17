@@ -10,7 +10,7 @@ The pandas `df.describe()` function is great but a little basic for serious expl
 
 For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:
 
-* **Essentials**:  type, unique values, missing values
+* **Essentials**: type, unique values, missing values
 * **Quantile statistics** like minimum value, Q1, median, Q3, maximum, range, interquartile range
 * **Descriptive statistics** like mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
 * **Most frequent values**
@@ -113,7 +113,7 @@ profile.to_file(output_file="output.html")
 ## Dependencies
 
 * **An internet connection.** Pandas-profiling requires an internet connection to download the Bootstrap and JQuery libraries. I might change this in the future, let me know if you want that sooner than later.
-* python (>= 3.5)
+* python ([>= 3.5](https://python3statement.org/))
 * pandas (>=0.19)
 * matplotlib  (>=1.4)
 * missingno

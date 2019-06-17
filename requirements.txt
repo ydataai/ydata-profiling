@@ -1,3 +1,4 @@
+scipy
 requests
 missingno
 matplotlib

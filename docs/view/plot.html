@@ -153,6 +153,26 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
     return plot_360_n0sc0pe(plt)
 
 
+def get_font_size(data):
+    &#34;&#34;&#34;Calculate font size based on number of columns
+
+    Args:
+        data: DataFrame
+
+    Returns:
+        Font size for missing values plots.
+    &#34;&#34;&#34;
+    if len(data.columns) &lt; 20:
+        font_size = 13
+    elif 20 &lt;= len(data.columns) &lt; 40:
+        font_size = 12
+    elif 40 &lt;= len(data.columns) &lt; 60:
+        font_size = 10
+    else:
+        font_size = 8
+    return font_size
+
+
 def missing_matrix(data: pd.DataFrame) -&gt; str:
     &#34;&#34;&#34;Generate missing values matrix plot
 
@@ -164,9 +184,9 @@ def missing_matrix(data: pd.DataFrame) -&gt; str:
     &#34;&#34;&#34;
     missingno.matrix(
         data,
-        figsize=(10, 4),
+        figsize=(10, 5),
         color=hex_to_rgb(config[&#34;plot&#34;][&#34;face_color&#34;].get(str)),
-        fontsize=14,
+        fontsize=get_font_size(data),
         sparkline=False,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
@@ -184,9 +204,9 @@ def missing_bar(data: pd.DataFrame) -&gt; str:
     &#34;&#34;&#34;
     missingno.bar(
         data,
-        figsize=(10, 4),
+        figsize=(10, 5),
         color=hex_to_rgb(config[&#34;plot&#34;][&#34;face_color&#34;].get(str)),
-        fontsize=14,
+        fontsize=get_font_size(data),
     )
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
@@ -206,7 +226,7 @@ def missing_heatmap(data: pd.DataFrame) -&gt; str:
     missingno.heatmap(
         data,
         figsize=(10, 4),
-        fontsize=14,
+        fontsize=get_font_size(data),
         cmap=config[&#34;plot&#34;][&#34;missing&#34;][&#34;cmap&#34;].get(str),
     )
     plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
@@ -223,24 +243,24 @@ def missing_dendrogram(data: pd.DataFrame) -&gt; str:
       The resulting missing values dendrogram plot encoded as a string.
 
     &#34;&#34;&#34;
-    missingno.dendrogram(data, figsize=(10, 4), fontsize=14)
+    missingno.dendrogram(data, fontsize=get_font_size(data))
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(plt)
 
 
-def plot_360_n0sc0pe(plt) -&gt; str:
+def plot_360_n0sc0pe(plt, attempts=0) -&gt; str:
     &#34;&#34;&#34;Quickscope the plot to a base64 encoded string.
 
     Args:
         plt: The pyplot module.
-        img_format: The format in which to store the image: &#39;svg&#39; or &#39;png&#39;. (Default value = &#39;svg&#39;)
+        attempts: number to tries
 
     Returns:
         A base64 encoded version of the plot in the specified image format.
     &#34;&#34;&#34;
     img_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     if img_format not in [&#34;svg&#34;, &#34;png&#34;]:
-        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format&#39;)
+        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
 
     mime_types = {&#34;png&#34;: &#34;image/png&#34;, &#34;svg&#34;: &#34;image/svg+xml&#34;}
 
@@ -254,9 +274,13 @@ def plot_360_n0sc0pe(plt) -&gt; str:
         )
         plt.close()
     except RuntimeError:
+        plt.close()
         # Hack https://stackoverflow.com/questions/44666207/matplotlib-error-when-running-plotting-in-multiprocess
         # #comment79373127_44666207
-        return plot_360_n0sc0pe(plt)
+        if attempts &gt; 10:
+            return &#34;&#34;
+        else:
+            return plot_360_n0sc0pe(plt, attempts + 1)
     return result_string</code></pre>
 </details>
 </section>
@@ -310,6 +334,40 @@ def plot_360_n0sc0pe(plt) -&gt; str:
     plt.subplots_adjust(bottom=0.2)
 
     return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.view.plot.get_font_size"><code class="name flex">
+<span>def <span class="ident">get_font_size</span></span>(<span>data)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calculate font size based on number of columns</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong></dt>
+<dd>DataFrame</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Font size for missing values plots.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def get_font_size(data):
+    &#34;&#34;&#34;Calculate font size based on number of columns
+
+    Args:
+        data: DataFrame
+
+    Returns:
+        Font size for missing values plots.
+    &#34;&#34;&#34;
+    if len(data.columns) &lt; 20:
+        font_size = 13
+    elif 20 &lt;= len(data.columns) &lt; 40:
+        font_size = 12
+    elif 40 &lt;= len(data.columns) &lt; 60:
+        font_size = 10
+    else:
+        font_size = 8
+    return font_size</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.view.plot.histogram"><code class="name flex">
@@ -408,9 +466,9 @@ def plot_360_n0sc0pe(plt) -&gt; str:
     &#34;&#34;&#34;
     missingno.bar(
         data,
-        figsize=(10, 4),
+        figsize=(10, 5),
         color=hex_to_rgb(config[&#34;plot&#34;][&#34;face_color&#34;].get(str)),
-        fontsize=14,
+        fontsize=get_font_size(data),
     )
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
@@ -442,7 +500,7 @@ def plot_360_n0sc0pe(plt) -&gt; str:
       The resulting missing values dendrogram plot encoded as a string.
 
     &#34;&#34;&#34;
-    missingno.dendrogram(data, figsize=(10, 4), fontsize=14)
+    missingno.dendrogram(data, fontsize=get_font_size(data))
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
@@ -473,7 +531,7 @@ def plot_360_n0sc0pe(plt) -&gt; str:
     missingno.heatmap(
         data,
         figsize=(10, 4),
-        fontsize=14,
+        fontsize=get_font_size(data),
         cmap=config[&#34;plot&#34;][&#34;missing&#34;][&#34;cmap&#34;].get(str),
     )
     plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
@@ -505,9 +563,9 @@ def plot_360_n0sc0pe(plt) -&gt; str:
     &#34;&#34;&#34;
     missingno.matrix(
         data,
-        figsize=(10, 4),
+        figsize=(10, 5),
         color=hex_to_rgb(config[&#34;plot&#34;][&#34;face_color&#34;].get(str)),
-        fontsize=14,
+        fontsize=get_font_size(data),
         sparkline=False,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
@@ -515,7 +573,7 @@ def plot_360_n0sc0pe(plt) -&gt; str:
 </details>
 </dd>
 <dt id="pandas_profiling.view.plot.plot_360_n0sc0pe"><code class="name flex">
-<span>def <span class="ident">plot_360_n0sc0pe</span></span>(<span>plt)</span>
+<span>def <span class="ident">plot_360_n0sc0pe</span></span>(<span>plt, attempts=0)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Quickscope the plot to a base64 encoded string.</p>
@@ -523,26 +581,26 @@ def plot_360_n0sc0pe(plt) -&gt; str:
 <dl>
 <dt><strong><code>plt</code></strong></dt>
 <dd>The pyplot module.</dd>
-<dt><strong><code>img_format</code></strong></dt>
-<dd>The format in which to store the image: 'svg' or 'png'. (Default value = 'svg')</dd>
+<dt><strong><code>attempts</code></strong></dt>
+<dd>number to tries</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A base64 encoded version of the plot in the specified image format.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def plot_360_n0sc0pe(plt) -&gt; str:
+<pre><code class="python">def plot_360_n0sc0pe(plt, attempts=0) -&gt; str:
     &#34;&#34;&#34;Quickscope the plot to a base64 encoded string.
 
     Args:
         plt: The pyplot module.
-        img_format: The format in which to store the image: &#39;svg&#39; or &#39;png&#39;. (Default value = &#39;svg&#39;)
+        attempts: number to tries
 
     Returns:
         A base64 encoded version of the plot in the specified image format.
     &#34;&#34;&#34;
     img_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     if img_format not in [&#34;svg&#34;, &#34;png&#34;]:
-        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format&#39;)
+        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
 
     mime_types = {&#34;png&#34;: &#34;image/png&#34;, &#34;svg&#34;: &#34;image/svg+xml&#34;}
 
@@ -556,9 +614,13 @@ def plot_360_n0sc0pe(plt) -&gt; str:
         )
         plt.close()
     except RuntimeError:
+        plt.close()
         # Hack https://stackoverflow.com/questions/44666207/matplotlib-error-when-running-plotting-in-multiprocess
         # #comment79373127_44666207
-        return plot_360_n0sc0pe(plt)
+        if attempts &gt; 10:
+            return &#34;&#34;
+        else:
+            return plot_360_n0sc0pe(plt, attempts + 1)
     return result_string</code></pre>
 </details>
 </dd>
@@ -581,6 +643,7 @@ def plot_360_n0sc0pe(plt) -&gt; str:
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
 <li><code><a title="pandas_profiling.view.plot.correlation_matrix" href="#pandas_profiling.view.plot.correlation_matrix">correlation_matrix</a></code></li>
+<li><code><a title="pandas_profiling.view.plot.get_font_size" href="#pandas_profiling.view.plot.get_font_size">get_font_size</a></code></li>
 <li><code><a title="pandas_profiling.view.plot.histogram" href="#pandas_profiling.view.plot.histogram">histogram</a></code></li>
 <li><code><a title="pandas_profiling.view.plot.mini_histogram" href="#pandas_profiling.view.plot.mini_histogram">mini_histogram</a></code></li>
 <li><code><a title="pandas_profiling.view.plot.missing_bar" href="#pandas_profiling.view.plot.missing_bar">missing_bar</a></code></li>

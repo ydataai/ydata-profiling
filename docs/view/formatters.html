@@ -72,15 +72,21 @@ def fmt_bytesize(num: float, suffix: str = &#34;B&#34;) -&gt; str:
     return &#34;{:.1f} {}{}&#34;.format(num, &#34;Yi&#34;, suffix)
 
 
-def fmt_percent(value: float) -&gt; str:
+def fmt_percent(value: float, edge_cases: bool = True) -&gt; str:
     &#34;&#34;&#34;Format a ratio as a percentage.
 
     Args:
+        edge_cases: Check for edge cases?
         value: The ratio.
 
     Returns:
         The percentage with 1 point precision.
     &#34;&#34;&#34;
+    if edge_cases and round(value, 1) == 0 and value &gt; 0:
+        return &#34;&lt; 0.1%&#34;
+    if edge_cases and round(value, 1) == 1 and value &lt; 1:
+        return &#34;&gt; 99.9%&#34;
+
     return &#34;{:2.1f}%&#34;.format(value * 100)
 
 
@@ -283,12 +289,14 @@ def hex_to_rgb(hex):
 </details>
 </dd>
 <dt id="pandas_profiling.view.formatters.fmt_percent"><code class="name flex">
-<span>def <span class="ident">fmt_percent</span></span>(<span>value)</span>
+<span>def <span class="ident">fmt_percent</span></span>(<span>value, edge_cases=True)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Format a ratio as a percentage.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>edge_cases</code></strong></dt>
+<dd>Check for edge cases?</dd>
 <dt><strong><code>value</code></strong></dt>
 <dd>The ratio.</dd>
 </dl>
@@ -296,15 +304,21 @@ def hex_to_rgb(hex):
 <p>The percentage with 1 point precision.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def fmt_percent(value: float) -&gt; str:
+<pre><code class="python">def fmt_percent(value: float, edge_cases: bool = True) -&gt; str:
     &#34;&#34;&#34;Format a ratio as a percentage.
 
     Args:
+        edge_cases: Check for edge cases?
         value: The ratio.
 
     Returns:
         The percentage with 1 point precision.
     &#34;&#34;&#34;
+    if edge_cases and round(value, 1) == 0 and value &gt; 0:
+        return &#34;&lt; 0.1%&#34;
+    if edge_cases and round(value, 1) == 1 and value &lt; 1:
+        return &#34;&gt; 99.9%&#34;
+
     return &#34;{:2.1f}%&#34;.format(value * 100)</code></pre>
 </details>
 </dd>

@@ -31,8 +31,7 @@ The pandas <code>df.describe()</code> function is great but a little basic for s
 <a title="pandas_profiling" href="#pandas_profiling"><code>pandas_profiling</code></a> extends the pandas DataFrame with <code>df.profile_report()</code> for quick data analysis.</p>
 <p>For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:</p>
 <ul>
-<li><strong>Essentials</strong>:
-type, unique values, missing values</li>
+<li><strong>Essentials</strong>: type, unique values, missing values</li>
 <li><strong>Quantile statistics</strong> like minimum value, Q1, median, Q3, maximum, range, interquartile range</li>
 <li><strong>Descriptive statistics</strong> like mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness</li>
 <li><strong>Most frequent values</strong></li>
@@ -108,7 +107,7 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <h2 id="dependencies">Dependencies</h2>
 <ul>
 <li><strong>An internet connection.</strong> Pandas-profiling requires an internet connection to download the Bootstrap and JQuery libraries. I might change this in the future, let me know if you want that sooner than later.</li>
-<li>python (&gt;= 3.5)</li>
+<li>python (<a href="https://python3statement.org/">&gt;= 3.5</a>)</li>
 <li>pandas (&gt;=0.19)</li>
 <li>matplotlib
 (&gt;=1.4)</li>
@@ -165,10 +164,13 @@ class ProfileReport(object):
 
         # Get sample
         sample = {}
-        if config[&#34;samples&#34;][&#34;head&#34;].get(int) &gt; 0:
-            sample[&#34;head&#34;] = df.head(config[&#34;samples&#34;][&#34;head&#34;].get(int))
-        if config[&#34;samples&#34;][&#34;tail&#34;].get(int) &gt; 0:
-            sample[&#34;tail&#34;] = df.tail(config[&#34;samples&#34;][&#34;tail&#34;].get(int))
+        n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
+        if n_head &gt; 0:
+            sample[&#34;head&#34;] = df.head(n=n_head)
+
+        n_tail = config[&#34;samples&#34;][&#34;tail&#34;].get(int)
+        if n_tail &gt; 0:
+            sample[&#34;tail&#34;] = df.tail(n=n_tail)
 
         # Render HTML
         self.html = to_html(sample, description_set)
@@ -238,6 +240,7 @@ class ProfileReport(object):
             correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
+            version=__version__,
         )
 
     def get_unique_file_name(self):
@@ -338,10 +341,13 @@ class ProfileReport(object):
 
         # Get sample
         sample = {}
-        if config[&#34;samples&#34;][&#34;head&#34;].get(int) &gt; 0:
-            sample[&#34;head&#34;] = df.head(config[&#34;samples&#34;][&#34;head&#34;].get(int))
-        if config[&#34;samples&#34;][&#34;tail&#34;].get(int) &gt; 0:
-            sample[&#34;tail&#34;] = df.tail(config[&#34;samples&#34;][&#34;tail&#34;].get(int))
+        n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
+        if n_head &gt; 0:
+            sample[&#34;head&#34;] = df.head(n=n_head)
+
+        n_tail = config[&#34;samples&#34;][&#34;tail&#34;].get(int)
+        if n_tail &gt; 0:
+            sample[&#34;tail&#34;] = df.tail(n=n_tail)
 
         # Render HTML
         self.html = to_html(sample, description_set)
@@ -411,6 +417,7 @@ class ProfileReport(object):
             correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
+            version=__version__,
         )
 
     def get_unique_file_name(self):
@@ -582,6 +589,7 @@ for using with frameworks.</p>
         correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
         missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
         sample=len(self.sample) &gt; 0,
+        version=__version__,
     )</code></pre>
 </details>
 </dd>

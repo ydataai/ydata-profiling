@@ -65,7 +65,7 @@ def freq_table(
                 ),
                 "width": freq_other / max_freq,
                 "count": freq_other,
-                "percentage": float(freq_other) / max_freq,
+                "percentage": float(freq_other) / n,
                 "extra_class": "other",
             }
         )
@@ -76,7 +76,7 @@ def freq_table(
                 "label": "(Missing)",
                 "width": freq_missing / max_freq,
                 "count": freq_missing,
-                "percentage": float(freq_missing) / max_freq,
+                "percentage": float(freq_missing) / n,
                 "extra_class": "missing",
             }
         )
@@ -149,29 +149,44 @@ def render_correlations_html(stats_object: dict) -> str:
         The rendered HTML of the correlations component of the profile.
     """
     values = {}
+    active = ""
     if "pearson" in stats_object["correlations"]:
+        if active == "":
+            active = "pearson"
         values["pearson"] = {
             "matrix": plot.correlation_matrix(stats_object["correlations"]["pearson"]),
             "name": "Pearson",
         }
+
     if "spearman" in stats_object["correlations"]:
+        if active == "":
+            active = "spearman"
         values["spearman"] = {
             "matrix": plot.correlation_matrix(stats_object["correlations"]["spearman"]),
             "name": "Spearman",
         }
+
     if "kendall" in stats_object["correlations"]:
+        if active == "":
+            active = "kendall"
         values["kendall"] = {
             "matrix": plot.correlation_matrix(stats_object["correlations"]["kendall"]),
             "name": "Kendall",
         }
+
     if "phi_k" in stats_object["correlations"]:
-        values["phik"] = {
+        if active == "":
+            active = "phi_k"
+        values["phi_k"] = {
             "matrix": plot.correlation_matrix(
                 stats_object["correlations"]["phi_k"], vmin=0
             ),
             "name": "Phi<sub>k</sub>",
         }
+
     if "cramers" in stats_object["correlations"]:
+        if active == "":
+            active = "cramers"
         values["cramers"] = {
             "matrix": plot.correlation_matrix(
                 stats_object["correlations"]["cramers"], vmin=0
@@ -180,6 +195,8 @@ def render_correlations_html(stats_object: dict) -> str:
         }
 
     if "recoded" in stats_object["correlations"]:
+        if active == "":
+            active = "recoded"
         values["recoded"] = {
             "matrix": plot.correlation_matrix(
                 stats_object["correlations"]["recoded"], vmin=0
@@ -187,7 +204,7 @@ def render_correlations_html(stats_object: dict) -> str:
             "name": "Recoded",
         }
 
-    return templates.template("correlations.html").render(values=values)
+    return templates.template("correlations.html").render(values=values, active=active)
 
 
 def render_missing_html(stats_object: dict) -> str:
@@ -257,6 +274,20 @@ def render_variables_html(stats_object: dict) -> str:
                 idx=idx,
                 nb_col=mini_freq_table_nb_col[row["type"]],
             )
+
+        if row["type"] in {Variable.TYPE_URL}:
+            keys = ["scheme", "netloc", "path", "query", "fragment"]
+            for url_part in keys:
+                formatted_values["freqtable_{}".format(url_part)] = freq_table(
+                    freqtable=stats_object["variables"][idx][
+                        "{}_counts".format(url_part)
+                    ],
+                    # TODO: n - missing
+                    n=stats_object["table"]["n"],
+                    table_template="freq_table.html",
+                    idx=idx,
+                    max_number_to_print=n_freq_table_max,
+                )
 
         if row["type"] == Variable.S_TYPE_UNIQUE:
             table = stats_object["variables"][idx][

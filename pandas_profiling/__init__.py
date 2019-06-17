@@ -40,10 +40,13 @@ class ProfileReport(object):
 
         # Get sample
         sample = {}
-        if config["samples"]["head"].get(int) > 0:
-            sample["head"] = df.head(config["samples"]["head"].get(int))
-        if config["samples"]["tail"].get(int) > 0:
-            sample["tail"] = df.tail(config["samples"]["tail"].get(int))
+        n_head = config["samples"]["head"].get(int)
+        if n_head > 0:
+            sample["head"] = df.head(n=n_head)
+
+        n_tail = config["samples"]["tail"].get(int)
+        if n_tail > 0:
+            sample["tail"] = df.tail(n=n_tail)
 
         # Render HTML
         self.html = to_html(sample, description_set)
@@ -113,6 +116,7 @@ class ProfileReport(object):
             correlation=len(self.description_set["correlations"]) > 0,
             missing=len(self.description_set["missing"]) > 0,
             sample=len(self.sample) > 0,
+            version=__version__,
         )
 
     def get_unique_file_name(self):

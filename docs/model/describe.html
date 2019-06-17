@@ -28,6 +28,7 @@ import multiprocessing.pool
 import multiprocessing
 import itertools
 from typing import Tuple
+from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
@@ -139,6 +140,38 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; d
         stats[&#34;mean_length&#34;] = series.str.len().mean()
         stats[&#34;min_length&#34;] = series.str.len().min()
         stats[&#34;composition&#34;] = contains
+
+    return stats
+
+
+def describe_url_1d(series: pd.Series, series_description: dict) -&gt; dict:
+    &#34;&#34;&#34;Describe a url series.
+
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    &#34;&#34;&#34;
+    # Make sure we deal with strings (Issue #100)
+    series = series[~series.isnull()].astype(str)
+
+    stats = {}
+
+    # Create separate columns for each URL part
+    keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
+    url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
+    for name, part in url_parts.items():
+        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
+            part, name=name
+        ).value_counts()
+
+    # Only run if at least 1 non-missing value
+    value_counts = series_description[&#34;value_counts_without_nan&#34;]
+
+    stats[&#34;top&#34;] = value_counts.index[0]
+    stats[&#34;freq&#34;] = value_counts.iloc[0]
 
     return stats
 
@@ -283,6 +316,7 @@ def describe_1d(series: pd.Series) -&gt; dict:
             Variable.TYPE_DATE: describe_date_1d,
             Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
+            Variable.TYPE_URL: describe_url_1d,
         }
 
         if series_description[&#34;type&#34;] in type_to_func:
@@ -330,6 +364,7 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
         &#34;recordsize&#34;: record_size,
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
         &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
+        &#34;n_vars_all_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] == n).astype(int)),
     }
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
@@ -386,7 +421,11 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
             config[&#34;missing_diagrams&#34;][name].get(bool)
             and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
         ):
-            missing[name] = settings[&#34;func&#34;](df)
+            if name != &#34;heatmap&#34; or (
+                table_stats[&#34;n_vars_with_missing&#34;] - table_stats[&#34;n_vars_all_missing&#34;]
+                &gt;= settings[&#34;min_missing&#34;]
+            ):
+                missing[name] = settings[&#34;func&#34;](df)
     return missing
 
 
@@ -498,7 +537,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
         messages += check_variable_messages(col, description)
 
     return {
-        # Overall desription
+        # Overall description
         &#34;table&#34;: table_stats,
         # Per variable descriptions
         &#34;variables&#34;: series_description,
@@ -651,7 +690,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
         messages += check_variable_messages(col, description)
 
     return {
-        # Overall desription
+        # Overall description
         &#34;table&#34;: table_stats,
         # Per variable descriptions
         &#34;variables&#34;: series_description,
@@ -707,6 +746,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
             Variable.TYPE_DATE: describe_date_1d,
             Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
+            Variable.TYPE_URL: describe_url_1d,
         }
 
         if series_description[&#34;type&#34;] in type_to_func:
@@ -1016,6 +1056,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
         &#34;recordsize&#34;: record_size,
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
         &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
+        &#34;n_vars_all_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] == n).astype(int)),
     }
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
@@ -1124,6 +1165,54 @@ def describe(df: pd.DataFrame) -&gt; dict:
     return results_data</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.model.describe.describe_url_1d"><code class="name flex">
+<span>def <span class="ident">describe_url_1d</span></span>(<span>series, series_description)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Describe a url series.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>The Series to describe.</dd>
+<dt><strong><code>series_description</code></strong></dt>
+<dd>The dict containing the series description so far.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A dict containing calculated series description values.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def describe_url_1d(series: pd.Series, series_description: dict) -&gt; dict:
+    &#34;&#34;&#34;Describe a url series.
+
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    &#34;&#34;&#34;
+    # Make sure we deal with strings (Issue #100)
+    series = series[~series.isnull()].astype(str)
+
+    stats = {}
+
+    # Create separate columns for each URL part
+    keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
+    url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
+    for name, part in url_parts.items():
+        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
+            part, name=name
+        ).value_counts()
+
+    # Only run if at least 1 non-missing value
+    value_counts = series_description[&#34;value_counts_without_nan&#34;]
+
+    stats[&#34;top&#34;] = value_counts.index[0]
+    stats[&#34;freq&#34;] = value_counts.iloc[0]
+
+    return stats</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.describe.get_missing_diagrams"><code class="name flex">
 <span>def <span class="ident">get_missing_diagrams</span></span>(<span>df, table_stats)</span>
 </code></dt>
@@ -1163,7 +1252,11 @@ def describe(df: pd.DataFrame) -&gt; dict:
             config[&#34;missing_diagrams&#34;][name].get(bool)
             and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
         ):
-            missing[name] = settings[&#34;func&#34;](df)
+            if name != &#34;heatmap&#34; or (
+                table_stats[&#34;n_vars_with_missing&#34;] - table_stats[&#34;n_vars_all_missing&#34;]
+                &gt;= settings[&#34;min_missing&#34;]
+            ):
+                missing[name] = settings[&#34;func&#34;](df)
     return missing</code></pre>
 </details>
 </dd>
@@ -1225,6 +1318,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
 <li><code><a title="pandas_profiling.model.describe.describe_table" href="#pandas_profiling.model.describe.describe_table">describe_table</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_unique_1d" href="#pandas_profiling.model.describe.describe_unique_1d">describe_unique_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_unsupported" href="#pandas_profiling.model.describe.describe_unsupported">describe_unsupported</a></code></li>
+<li><code><a title="pandas_profiling.model.describe.describe_url_1d" href="#pandas_profiling.model.describe.describe_url_1d">describe_url_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.get_missing_diagrams" href="#pandas_profiling.model.describe.get_missing_diagrams">get_missing_diagrams</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.multiprocess_1d" href="#pandas_profiling.model.describe.multiprocess_1d">multiprocess_1d</a></code></li>
 </ul>

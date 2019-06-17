@@ -47,15 +47,21 @@ def fmt_bytesize(num: float, suffix: str = "B") -> str:
     return "{:.1f} {}{}".format(num, "Yi", suffix)
 
 
-def fmt_percent(value: float) -> str:
+def fmt_percent(value: float, edge_cases: bool = True) -> str:
     """Format a ratio as a percentage.
 
     Args:
+        edge_cases: Check for edge cases?
         value: The ratio.
 
     Returns:
         The percentage with 1 point precision.
     """
+    if edge_cases and round(value, 1) == 0 and value > 0:
+        return "< 0.1%"
+    if edge_cases and round(value, 1) == 1 and value < 1:
+        return "> 99.9%"
+
     return "{:2.1f}%".format(value * 100)
 
 

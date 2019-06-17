@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
 <title>pandas_profiling.utils.common API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Common util functions (e.g. missing in Python)." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,9 +20,11 @@
 <h1 class="title">Module <code>pandas_profiling.utils.common</code></h1>
 </header>
 <section id="section-intro">
+<p>Common util functions (e.g. missing in Python).</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import collections
+<pre><code class="python">&#34;&#34;&#34;Common util functions (e.g. missing in Python).&#34;&#34;&#34;
+import collections
 
 
 def update(d: dict, u: dict) -&gt; dict:
@@ -33,7 +35,7 @@ def update(d: dict, u: dict) -&gt; dict:
         u: Dictionary with values to use.
 
     Returns:
-        The merged dictionairy.
+        The merged dictionary.
     &#34;&#34;&#34;
     for k, v in u.items():
         if isinstance(v, collections.Mapping):
@@ -63,7 +65,7 @@ def update(d: dict, u: dict) -&gt; dict:
 <dd>Dictionary with values to use.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>The merged dictionairy.</p></section>
+<p>The merged dictionary.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def update(d: dict, u: dict) -&gt; dict:
@@ -74,7 +76,7 @@ def update(d: dict, u: dict) -&gt; dict:
         u: Dictionary with values to use.
 
     Returns:
-        The merged dictionairy.
+        The merged dictionary.
     &#34;&#34;&#34;
     for k, v in u.items():
         if isinstance(v, collections.Mapping):

@@ -136,6 +136,10 @@ table.freq th, table.freq tr, table.freq td {
 td.fillremaining {
     width: auto;
     max-width: none;
+
+    /*white-space: nowrap;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
 }
 
 td.number, th.number {
