@@ -165,7 +165,7 @@ class ProfileReport(object):
         # Sort column names
         sort = config[&#34;sort&#34;].get(str)
         if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
-            warnings.warn(&#34;Sorting is supported from Python 3.6+bl&#34;)
+            warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
 
         if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
             df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
@@ -359,7 +359,7 @@ class ProfileReport(object):
         # Sort column names
         sort = config[&#34;sort&#34;].get(str)
         if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
-            warnings.warn(&#34;Sorting is supported from Python 3.6+bl&#34;)
+            warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
 
         if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
             df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
