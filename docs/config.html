@@ -81,6 +81,9 @@ class Config(object):
     def __getitem__(self, item):
         return self.config[item]
 
+    def __setitem__(self, key, value):
+        self.config[key].set(value)
+
 
 config = Config()</code></pre>
 </details>
@@ -150,7 +153,10 @@ various ways (notably via argparse and kwargs).</p></section>
         self._set_kwargs(self.config, kwargs)
 
     def __getitem__(self, item):
-        return self.config[item]</code></pre>
+        return self.config[item]
+
+    def __setitem__(self, key, value):
+        self.config[key].set(value)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>

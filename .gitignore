@@ -68,5 +68,5 @@ target/
 .ipynb_checkpoints/
 ipynb_tmp/
 examples/*/*.csv
-examples/*/*.html
 *.parquet
+playground/

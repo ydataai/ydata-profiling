@@ -58,7 +58,10 @@ def recoding_data():
 
 
 def test_recoding_reject(recoding_data):
+    config["check_recoded"] = True
+    config["correlations"]["recoded"] = True
     results = describe(recoding_data)
+
     assert (
         results["variables"]["y"]["type"] == Variable.S_TYPE_RECODED
         and results["variables"]["x"]["type"] == Variable.TYPE_CAT
@@ -96,9 +99,9 @@ def test_recoding_reject(recoding_data):
 
 def test_cramers_reject(recoding_data):
     recoding_data.loc[len(recoding_data)] = {"x": "chat", "y": "dog"}
-    config["check_correlation_cramers"].set(True)
-    config["correlation_threshold_cramers"].set(0.5)
-    config["correlations"]["cramers"].set(True)
+    config["check_correlation_cramers"] = True
+    config["correlation_threshold_cramers"] = 0.1
+    config["correlations"]["cramers"] = True
     results = describe(recoding_data)
 
     # The order of dicts is not preserved in Python 3.5 and not guaranteed in Python 3.6

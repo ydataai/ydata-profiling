@@ -1,4 +1,5 @@
 """Utils for pandas DataFrames."""
+import pandas as pd
 
 
 def clean_column_names(df):
@@ -29,4 +30,44 @@ def rename_index(df):
 
     if "index" in df.index.names:
         df.index.names = [x if x != "index" else "df_index" for x in df.index.names]
+    return df
+
+
+def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
+    """Expand non-nested lists, dicts and tuples in a DataFrame into columns with a prefix.
+
+    Args:
+        types: list of types to expand (Default: list, dict, tuple)
+        df: DataFrame
+
+    Returns:
+        DataFrame with the dict values as series, identifier by the combination of the series and dict keys.
+
+    Notes:
+        TODO: allow for list expansion by duplicating rows.
+        TODO: allow for expansion of nested data structures.
+    """
+    if types is None:
+        types = [list, dict, tuple]
+
+    for column_name in df.columns:
+        # All
+        non_nested_enumeration = (
+            df[column_name]
+            .dropna()
+            .map(lambda x: type(x) in types and not any(type(y) in types for y in x))
+        )
+
+        if non_nested_enumeration.all():
+            # Expand and prefix
+            expanded = pd.DataFrame(df[column_name].dropna().tolist())
+            expanded = expanded.add_prefix(column_name + "_")
+
+            # Add recursion
+            expanded = expand_mixed(expanded)
+
+            # Drop te expanded
+            df.drop(columns=[column_name], inplace=True)
+
+            df = pd.concat([df, expanded], axis=1)
     return df

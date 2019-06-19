@@ -159,6 +159,20 @@ class ProfileReport(object):
         # Remove spaces and colons from column names
         df = clean_column_names(df)
 
+        # Sort column names
+        sort = config[&#34;sort&#34;].get(str)
+        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
+            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
+        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
+            df = df.reindex(
+                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+            )
+        elif sort != &#34;None&#34;:
+            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+
+        # Store column order
+        config[&#34;column_order&#34;] = df.columns.tolist()
+
         # Get dataset statistics
         description_set = describe_df(df)
 
@@ -335,6 +349,20 @@ class ProfileReport(object):
 
         # Remove spaces and colons from column names
         df = clean_column_names(df)
+
+        # Sort column names
+        sort = config[&#34;sort&#34;].get(str)
+        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
+            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
+        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
+            df = df.reindex(
+                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+            )
+        elif sort != &#34;None&#34;:
+            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+
+        # Store column order
+        config[&#34;column_order&#34;] = df.columns.tolist()
 
         # Get dataset statistics
         description_set = describe_df(df)

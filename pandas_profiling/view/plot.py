@@ -159,13 +159,14 @@ def missing_matrix(data: pd.DataFrame) -> str:
     """
     missingno.matrix(
         data,
-        figsize=(10, 5),
+        figsize=(10, 4),
         color=hex_to_rgb(config["plot"]["face_color"].get(str)),
         fontsize=get_font_size(data),
         sparkline=False,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
-    return plot_360_n0sc0pe(plt)
+    # Note: override image format, svg contains bug for missingno.matrix
+    return plot_360_n0sc0pe(plt, image_format="png")
 
 
 def missing_bar(data: pd.DataFrame) -> str:
@@ -223,28 +224,32 @@ def missing_dendrogram(data: pd.DataFrame) -> str:
     return plot_360_n0sc0pe(plt)
 
 
-def plot_360_n0sc0pe(plt, attempts=0) -> str:
+def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -> str:
     """Quickscope the plot to a base64 encoded string.
 
     Args:
+        image_format: png or svg, overrides config.
         plt: The pyplot module.
         attempts: number to tries
 
     Returns:
         A base64 encoded version of the plot in the specified image format.
     """
-    img_format = config["plot"]["image_format"].get(str)
-    if img_format not in ["svg", "png"]:
+    if image_format is None:
+        image_format = config["plot"]["image_format"].get(str)
+    dpi = config["plot"]["dpi"].get(int)
+
+    if image_format not in ["svg", "png"]:
         raise ValueError('Can only 360 n0sc0pe "png" or "svg" format.')
 
     mime_types = {"png": "image/png", "svg": "image/svg+xml"}
 
     try:
         image_data = BytesIO()
-        plt.savefig(image_data, format=img_format)
+        plt.savefig(image_data, dpi=dpi, format=image_format)
         image_data.seek(0)
         result_string = "data:{mime_type};base64,{image_data}".format(
-            mime_type=mime_types[img_format],
+            mime_type=mime_types[image_format],
             image_data=quote(base64.b64encode(image_data.getvalue())),
         )
         plt.close()

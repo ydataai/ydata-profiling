@@ -56,5 +56,8 @@ class Config(object):
     def __getitem__(self, item):
         return self.config[item]
 
+    def __setitem__(self, key, value):
+        self.config[key].set(value)
+
 
 config = Config()

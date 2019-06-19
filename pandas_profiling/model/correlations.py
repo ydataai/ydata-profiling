@@ -1,10 +1,12 @@
 """Correlations between variables."""
 import itertools
 import warnings
+from contextlib import suppress
 from functools import partial
 
 import pandas as pd
 import numpy as np
+from confuse import NotFoundError
 from scipy import stats
 
 from pandas_profiling.config import config
@@ -122,20 +124,11 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
         A dictionary containing the correlation matrices for each of the active correlation measures.
     """
     correlations = {}
-    if config["correlations"]["pearson"].get(bool):
-        correlation = df.corr(method="pearson")
-        if len(correlation) > 0:
-            correlations["pearson"] = correlation
-
-    if config["correlations"]["spearman"].get(bool):
-        correlation = df.corr(method="spearman")
-        if len(correlation) > 0:
-            correlations["spearman"] = correlation
-
-    if config["correlations"]["kendall"].get(bool):
-        correlation = df.corr(method="kendall")
-        if len(correlation) > 0:
-            correlations["kendall"] = correlation
+    for correlation_name in ["pearson", "spearman", "kendall"]:
+        if config["correlations"][correlation_name].get(bool):
+            correlation = df.corr(method=correlation_name)
+            if len(correlation) > 0:
+                correlations[correlation_name] = correlation
 
     if config["correlations"]["phi_k"].get(bool):
         import phik
@@ -172,15 +165,30 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
 
             correlations["phi_k"] = df[selcols].phik_matrix(interval_cols=intcols)
 
-    if config["correlations"]["cramers"].get(bool):
-        correlation = cramers_matrix(df, variables)
-        if len(correlation) > 0:
-            correlations["cramers"] = correlation
+            # Only do this if the column_order is set
+            with suppress(NotFoundError):
+                # Get the preferred order
+                column_order = config["column_order"].get(list)
 
-    if config["correlations"]["recoded"].get(bool):
-        correlation = recoded_matrix(df, variables)
-        if len(correlation) > 0:
-            correlations["recoded"] = correlation
+                # Get the Phi_k sorted order
+                current_order = (
+                    correlations["phi_k"].index.get_level_values("var1").tolist()
+                )
+
+                # Intersection (some columns are not used in correlation)
+                column_order = [x for x in column_order if x in current_order]
+
+                # Override the Phi_k sorting
+                correlations["phi_k"] = correlations["phi_k"].reindex(
+                    index=column_order, columns=column_order
+                )
+
+    categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}
+    for correlation_name, get_matrix in categorical_correlations.items():
+        if config["correlations"][correlation_name].get(bool):
+            correlation = get_matrix(df, variables)
+            if len(correlation) > 0:
+                correlations[correlation_name] = correlation
 
     return correlations
 

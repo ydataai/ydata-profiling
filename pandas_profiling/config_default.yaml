@@ -19,6 +19,9 @@ vars:
           skewness_threshold: 20
     cat:
         check_composition: True
+# Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
+sort: ascending
+
 low_categorical_threshold: 5
 
 # Settings regarding warnings
@@ -56,6 +59,7 @@ check_recoded: True
 plot:
     # Image format (svg or png)
     image_format: "svg"
+    dpi: 800
     face_color: "#337ab7"
 
     correlation:

@@ -35,6 +35,20 @@ class ProfileReport(object):
         # Remove spaces and colons from column names
         df = clean_column_names(df)
 
+        # Sort column names
+        sort = config["sort"].get(str)
+        if sort in ["asc", "ascending"]:
+            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
+        elif sort in ["desc", "descending"]:
+            df = df.reindex(
+                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+            )
+        elif sort != "None":
+            raise ValueError('"sort" should be "ascending", "descending" or None.')
+
+        # Store column order
+        config["column_order"] = df.columns.tolist()
+
         # Get dataset statistics
         description_set = describe_df(df)
 

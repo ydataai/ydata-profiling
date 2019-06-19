@@ -137,9 +137,9 @@ td.fillremaining {
     width: auto;
     max-width: none;
 
-    /*white-space: nowrap;*/
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 td.number, th.number {
@@ -182,6 +182,17 @@ table.freq.mini {
 }
 
 /* Bars in tables */
+.freq.table{
+    table-layout: fixed;
+}
+
+.freq td.number{
+    width: 100px;
+}
+.freq td.bartd, .frequency-percentage{
+    width:200px;
+}
+
 .freq .bar {
     float: left;
     width: 0;
@@ -235,10 +246,6 @@ table.freq.mini {
 
 table.list-warnings td{
     padding-right:10px;
-}
-
-.frequency-percentage{
-    min-width: 200px
 }
 
 a.anchor-pos {

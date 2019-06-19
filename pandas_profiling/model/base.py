@@ -1,6 +1,7 @@
 """Common parts to all other modules, mainly utility functions."""
 import re
 import warnings
+from contextlib import suppress
 
 import pandas as pd
 from enum import Enum, unique
@@ -143,14 +144,6 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
         return False
 
 
-# def is_path(x):
-#     try:
-#         Path(x).is_file()
-#         return True
-#     except OSError:
-#         return False
-
-
 def _date_parser(date_string):
     pattern = re.compile(r"[.\-:]")
     pieces = re.split(pattern, date_string)
@@ -172,16 +165,13 @@ def is_date(series) -> bool:
         True if the variable is of type datetime.
     """
     is_date_value = pd.api.types.is_datetime64_dtype(series)
-    try:
-        series.apply(_date_parser)
-        warnings.warn(
-            'Column "{}" appears to be containing only date/datetime values. You might consider '
-            "changing the type to datetime (pd.to_datetime())".format(series.name)
-        )
-    except ValueError:
-        pass
-    except TypeError:
-        pass
+    with suppress(ValueError):
+        with suppress(TypeError):
+            series.apply(_date_parser)
+            warnings.warn(
+                'Column "{}" appears to be containing only date/datetime values. You might consider '
+                "changing the type to datetime (pd.to_datetime())".format(series.name)
+            )
 
     return is_date_value
 

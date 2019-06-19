@@ -34,6 +34,7 @@ def test_example(tmpdir):
         title="NASA Meteorites",
         samples={"head": 5, "tail": 5},
         correlations={"cramers": False},
+        sort="ascending",
     )
     profile.to_file(output_file=output_file)
     assert (tmpdir / "profile.html").exists(), "Output file does not exist"
@@ -44,3 +45,21 @@ def test_example(tmpdir):
     assert set(profile.get_rejected_variables(0.9)) == {
         "reclat_city"
     }, "rejected variables not correct"
+    assert [*profile.get_description()["variables"]] == [
+        "boolean",
+        "Counties",
+        "fall",
+        "GeoLocation",
+        "id",
+        "mass_(g)",
+        "mixed",
+        "name",
+        "nametype",
+        "recclass",
+        "reclat",
+        "reclat_city",
+        "reclong",
+        "source",
+        "States",
+        "year",
+    ], "Ascending sort did not work"
