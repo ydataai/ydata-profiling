@@ -1,0 +1,30 @@
+{% if values | length > 0 %}
+<div class="row header">
+    <a class="anchor-pos" id="missing"></a>
+    <h1 class="page-header">Missing values</h1>
+</div>
+{% if 'matrix' in values %}
+<div class="row variable">
+    <h2 class="indent">Matrix</h2>
+    <img class="img-responsive center-img" src="{{ values['matrix'] }}" alt="Matrix">
+</div>
+{% endif %}
+{% if 'bar' in values %}
+<div class="row variable">
+    <h2 class="indent">Count</h2>
+    <img class="img-responsive center-img" src="{{ values['bar'] }}" alt="Bar">
+</div>
+{% endif %}
+{% if 'heatmap' in values %}
+    <div class="row variable">
+        <h2 class="indent">Heatmap</h2>
+        <img class="img-responsive center-img" src="{{ values['heatmap'] }}" alt="Heatmap">
+    </div>
+{% endif %}
+{% if 'dendrogram' in values %}
+    <div class="row variable">
+        <h2 class="indent">Dendrogram</h2>
+        <img class="img-responsive center-img" src="{{ values['dendrogram'] }}" alt="Dendrogram">
+    </div>
+{% endif %}
+{% endif %}

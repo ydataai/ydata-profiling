@@ -1,0 +1,20 @@
+{% if values | length > 0 %}
+<div class="row header">
+    <a class="anchor-pos" id="sample"></a>
+    <h1 class="page-header">Sample</h1>
+</div>
+<div class="row variable">
+    {% if 'head' in values %}
+    <h2>First rows</h2>
+    <div id="sample-head" class="col-md-12">
+        {{ values['head'] }}
+    </div>
+    {% endif %}
+    {% if 'tail' in values %}
+    <h2>Last rows</h2>
+    <div id="sample-tail" class="col-md-12">
+        {{ values['tail'] }}
+    </div>
+    {% endif %}
+</div>
+{% endif %}

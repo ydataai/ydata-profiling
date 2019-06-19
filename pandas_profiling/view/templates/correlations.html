@@ -1,0 +1,26 @@
+{% if values | length > 0 %}
+<div class="row header">
+    <a class="anchor-pos" id="correlations"></a>
+    <h1 class="page-header">Correlations</h1>
+</div>
+<div class="row variable">
+    <ul class="nav nav-tabs" role="tablist">
+        {% for key, correlation in values.items() %}
+            <li role="presentation"{% if key == active %} class="active"{% endif %}>
+                <a href="#correlation-{{ key }}"
+                   aria-controls="correlation-{{ key }}"
+                   role="tab"
+                   data-toggle="tab">{{ correlation['name'] }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="tab-content">
+        {% for key, correlation in values.items() %}
+        <div role="tabpanel" class="tab-pane row{% if key == active %} active{% endif %}" id="correlation-{{ key }}">
+            <img src="{{ correlation['matrix'] }}" class="img-responsive center-img" alt="{{ correlation['name'] }} matrix">
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

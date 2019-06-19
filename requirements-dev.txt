@@ -1,0 +1,3 @@
+black
+pre-commit
+pdoc3

@@ -6,8 +6,16 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
-  # TODO add 3.8-dev
+
 install:
+  - pip install -r requirements.txt
+  - pip install -r requirements-test.txt
   - pip install -e .
+
 script:
-  - python -m unittest -v pandas_profiling.tests
+  - pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg
+  # Our well-behaved Unix-style command-line tool exits with code 0 unless an internal error occurred
+  - pandas_profiling -h
+
+after_success:
+  - codecov
