@@ -45,7 +45,7 @@ def test_example(tmpdir):
     assert set(profile.get_rejected_variables(0.9)) == {
         "reclat_city"
     }, "rejected variables not correct"
-    assert [*profile.get_description()["variables"]] == [
+    assert list(profile.get_description()["variables"].keys()) == [
         "boolean",
         "Counties",
         "fall",
