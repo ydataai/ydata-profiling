@@ -16,7 +16,7 @@ We would need to reproduce your scenario before being able to resolve it.
 Please share your dataframe. 
 If the data is confidential, for example when it contains company-sensitive information, provide us with a synthetic or open dataset that produces the same error. 
 You should provide the DataFrame structure, for example by reporting the output of `df.info()`. 
-You can anonymize the column names if nessecary.
+You can anonymize the column names if necessary.
 
 **Version information:**
 Please run `pip freeze` in your environment and report the results.
