@@ -1,3 +1,5 @@
+import sys
+
 import pandas as pd
 import numpy as np
 
@@ -45,21 +47,22 @@ def test_example(tmpdir):
     assert set(profile.get_rejected_variables(0.9)) == {
         "reclat_city"
     }, "rejected variables not correct"
-    assert list(profile.get_description()["variables"].keys()) == [
-        "boolean",
-        "Counties",
-        "fall",
-        "GeoLocation",
-        "id",
-        "mass_(g)",
-        "mixed",
-        "name",
-        "nametype",
-        "recclass",
-        "reclat",
-        "reclat_city",
-        "reclong",
-        "source",
-        "States",
-        "year",
-    ], "Ascending sort did not work"
+    if sys.version_info[1] >= 6:
+        assert list(profile.get_description()["variables"].keys()) == [
+            "boolean",
+            "Counties",
+            "fall",
+            "GeoLocation",
+            "id",
+            "mass_(g)",
+            "mixed",
+            "name",
+            "nametype",
+            "recclass",
+            "reclat",
+            "reclat_city",
+            "reclong",
+            "source",
+            "States",
+            "year",
+        ], "Ascending sort did not work"

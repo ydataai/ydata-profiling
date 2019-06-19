@@ -126,6 +126,9 @@ profile.to_file(output_file=&quot;output.html&quot;)
 
 .. include:: ../README.md
 &#34;&#34;&#34;
+import sys
+import warnings
+
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
 
 __version__ = &#34;2.0.0&#34;
@@ -161,6 +164,9 @@ class ProfileReport(object):
 
         # Sort column names
         sort = config[&#34;sort&#34;].get(str)
+        if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
+            warnings.warn(&#34;Sorting is supported from Python 3.6+bl&#34;)
+
         if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
             df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
         elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
@@ -352,6 +358,9 @@ class ProfileReport(object):
 
         # Sort column names
         sort = config[&#34;sort&#34;].get(str)
+        if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
+            warnings.warn(&#34;Sorting is supported from Python 3.6+bl&#34;)
+
         if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
             df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
         elif sort in [&#34;desc&#34;, &#34;descending&#34;]:

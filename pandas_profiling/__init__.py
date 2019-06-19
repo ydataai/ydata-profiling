@@ -2,6 +2,9 @@
 
 .. include:: ../README.md
 """
+import sys
+import warnings
+
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
 
 __version__ = "2.0.0"
@@ -37,6 +40,9 @@ class ProfileReport(object):
 
         # Sort column names
         sort = config["sort"].get(str)
+        if sys.version_info[1] <= 5 and sort != "None":
+            warnings.warn("Sorting is supported from Python 3.6+bl")
+
         if sort in ["asc", "ascending"]:
             df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
         elif sort in ["desc", "descending"]:
