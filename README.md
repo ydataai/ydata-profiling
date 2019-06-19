@@ -41,7 +41,7 @@ You can install using the conda package manager by running
 
 ### From source
 
-Download the source code by cloning the repository or by pressing 'Download ZIP' on this page. 
+Download the source code by cloning the repository or by pressing ['Download ZIP'](https://github.com/pandas-profiling/pandas-profiling/archive/master.zip) on this page. 
 Install by navigating to the proper directory and running
 
     python setup.py install
