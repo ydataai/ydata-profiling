@@ -21,6 +21,7 @@ For each column the following statistics - if relevant for the column type - are
 ## Examples
 
 The following examples can give you an impression of what the package can do:
+
 - [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html)
 - [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html)
 - [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html)
