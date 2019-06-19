@@ -15,13 +15,15 @@ For each column the following statistics - if relevant for the column type - are
 * **Descriptive statistics** like mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
 * **Most frequent values**
 * **Histogram**
-* **Correlations** highlighting of highly correlated variables, Spearman, Pearson and Kendall matrixes
+* **Correlations** highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices
 * **Missing values** matrix, count, heatmap and dendrogram of missing values
 
 ## Examples
 
-[Click here](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html) to see a live demo.
-More examples can be found in the [examples directory](examples/).
+The following examples can give you an impression of what the package can do:
+- [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html)
+- [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html)
+- [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html)
 
 ## Installation
 
@@ -55,6 +57,10 @@ The documentaion is generated using [`pdoc3`](https://github.com/pdoc3/pdoc).
 If you are contribution to this project, you can rebuild the documentation using:
 ```
 make docs
+```
+or on Windows:
+```
+make.bat docs
 ```
 
 ### Jupyter Notebook
@@ -102,7 +108,7 @@ A set of options is available in order to adapt the report generated.
 * `pool_size` (`int`): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).
 * `minify_html` (`boolean`): Whether to minify the output HTML.
 
-More settings can be found in the [default configuration file](pandas_profiling/config_default.yaml).
+More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_default.yaml).
 
 __Example__
 ```python
@@ -124,4 +130,4 @@ profile.to_file(output_file="output.html")
 * htmlmin (optional)
 * phik (optional)
 
-For development and testing we use additional packages which you can find in the [requirements-dev.txt](requirements-dev.txt) and [requirements-test.txt](requirements-test.txt).
+For development and testing we use additional packages which you can find in the [requirements-dev.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt) and [requirements-test.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt).
