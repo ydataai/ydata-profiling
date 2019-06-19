@@ -36,12 +36,14 @@ The pandas <code>df.describe()</code> function is great but a little basic for s
 <li><strong>Descriptive statistics</strong> like mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness</li>
 <li><strong>Most frequent values</strong></li>
 <li><strong>Histogram</strong></li>
-<li><strong>Correlations</strong> highlighting of highly correlated variables, Spearman, Pearson and Kendall matrixes</li>
+<li><strong>Correlations</strong> highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices</li>
 <li><strong>Missing values</strong> matrix, count, heatmap and dendrogram of missing values</li>
 </ul>
 <h2 id="examples">Examples</h2>
-<p><a href="http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html">Click here</a> to see a live demo.
-More examples can be found in the <a href="examples/">examples directory</a>.</p>
+<p>The following examples can give you an impression of what the package can do:
+- <a href="http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html">NASA Meteorites</a>
+- <a href="http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html">Titanic</a>
+- <a href="http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html">NZA</a></p>
 <h2 id="installation">Installation</h2>
 <h3 id="using-pip">Using pip</h3>
 <p>You can install using the pip package manager by running</p>
@@ -63,6 +65,9 @@ Install by navigating to the proper directory and running</p>
 The documentaion is generated using <a href="https://github.com/pdoc3/pdoc"><code>pdoc3</code></a>.
 If you are contribution to this project, you can rebuild the documentation using:</p>
 <pre><code>make docs
+</code></pre>
+<p>or on Windows:</p>
+<pre><code>make.bat docs
 </code></pre>
 <h3 id="jupyter-notebook">Jupyter Notebook</h3>
 <p>We recommend generating reports interactively by using the Jupyter notebook. </p>
@@ -99,7 +104,7 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <li><code>pool_size</code> (<code>int</code>): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).</li>
 <li><code>minify_html</code> (<code>boolean</code>): Whether to minify the output HTML.</li>
 </ul>
-<p>More settings can be found in the <a href="pandas_profiling/config_default.yaml">default configuration file</a>.</p>
+<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
 <p><strong>Example</strong></p>
 <pre><code class="python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file(output_file=&quot;output.html&quot;)
@@ -119,7 +124,7 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <li>htmlmin (optional)</li>
 <li>phik (optional)</li>
 </ul>
-<p>For development and testing we use additional packages which you can find in the <a href="requirements-dev.txt">requirements-dev.txt</a> and <a href="requirements-test.txt">requirements-test.txt</a>.</p>
+<p>For development and testing we use additional packages which you can find in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt">requirements-dev.txt</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt">requirements-test.txt</a>.</p>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;Main module of pandas-profiling.
