@@ -93,6 +93,25 @@ A set of options are available in order to adapt the report generated.
     * `check_recoded` (`boolean`): Whether or not to check recoded correlation (`False` by default). Since it's an expensive computation it can be activated for small datasets.
 * `pool_size` (`int`): Number of workers in thread pool. The default is equal to the number of CPU.
 
+## Package with pyinstaller
+
+To use pandas-profiling within a pyinstaller packaged application, you need to follow these steps:
+* Add paths to templates and matplotlib style in pyinstaller's `.spec` file:
+```
+a = Analysis(
+    ...
+    datas=[('<path-to-pandas-profiling-package>\\templates\\*', '.'),
+           ('<path-to-pandas-profiling-package>\\pandas_profiling.mplstyle', '.')]
+    ...)
+```
+* (On windows) Add `multiprocessing.freeze_support()` to main script file:
+```
+import multiprocessing
+if __name__ == '__main__':
+    multiprocessing.freeze_support() # add this line to support multiprocessing in pyinstaller executable
+```
+
+
 ## Dependencies
 
 * **An internet connection.** Pandas-profiling requires an internet connection to download the Bootstrap and JQuery libraries. I might change this in the future, let me know if you want that sooner than later.

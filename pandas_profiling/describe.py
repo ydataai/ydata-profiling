@@ -343,7 +343,10 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
     except:
         pass
 
-    matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+    if getattr(sys, 'frozen', False):
+        matplotlib.style.use(os.path.join(os.path.dirname(sys.executable),"pandas_profiling.mplstyle"))
+    else:
+        matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
     # Clearing the cache before computing stats
     base.clear_cache()
