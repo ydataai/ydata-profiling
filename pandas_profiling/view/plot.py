@@ -199,9 +199,15 @@ def missing_heatmap(data: pd.DataFrame) -> str:
     Returns:
       The resulting missing values heatmap plot encoded as a string.
     """
+
+    height = 4
+    if len(data.columns) > 10:
+        height += int((len(data.columns) - 10) / 5)
+    height = max(height, 10)
+
     missingno.heatmap(
         data,
-        figsize=(10, 4),
+        figsize=(10, height),
         fontsize=get_font_size(data),
         cmap=config["plot"]["missing"]["cmap"].get(str),
     )

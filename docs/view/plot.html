@@ -224,9 +224,15 @@ def missing_heatmap(data: pd.DataFrame) -&gt; str:
     Returns:
       The resulting missing values heatmap plot encoded as a string.
     &#34;&#34;&#34;
+
+    height = 4
+    if len(data.columns) &gt; 10:
+        height += int((len(data.columns) - 10) / 5)
+    height = max(height, 10)
+
     missingno.heatmap(
         data,
-        figsize=(10, 4),
+        figsize=(10, height),
         fontsize=get_font_size(data),
         cmap=config[&#34;plot&#34;][&#34;missing&#34;][&#34;cmap&#34;].get(str),
     )
@@ -533,9 +539,15 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     Returns:
       The resulting missing values heatmap plot encoded as a string.
     &#34;&#34;&#34;
+
+    height = 4
+    if len(data.columns) &gt; 10:
+        height += int((len(data.columns) - 10) / 5)
+    height = max(height, 10)
+
     missingno.heatmap(
         data,
-        figsize=(10, 4),
+        figsize=(10, height),
         fontsize=get_font_size(data),
         cmap=config[&#34;plot&#34;][&#34;missing&#34;][&#34;cmap&#34;].get(str),
     )
