@@ -119,7 +119,6 @@ profile.to_file(output_file="output.html")
 
 ## Dependencies
 
-* **An internet connection.** Pandas-profiling requires an internet connection to download the Bootstrap and JQuery libraries. I might change this in the future, let me know if you want that sooner than later.
 * python ([>= 3.5](https://python3statement.org/))
 * pandas (>=0.19)
 * matplotlib  (>=1.4)

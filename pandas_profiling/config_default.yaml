@@ -7,6 +7,9 @@ pool_size: 0
 # Minify the html
 minify_html: True
 
+# Offline support
+use_local_assets: True
+
 # Per variable type description settings
 vars:
     num:
