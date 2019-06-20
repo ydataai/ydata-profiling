@@ -113,7 +113,6 @@ profile.to_file(output_file=&quot;output.html&quot;)
 </code></pre>
 <h2 id="dependencies">Dependencies</h2>
 <ul>
-<li><strong>An internet connection.</strong> Pandas-profiling requires an internet connection to download the Bootstrap and JQuery libraries. I might change this in the future, let me know if you want that sooner than later.</li>
 <li>python (<a href="https://python3statement.org/">&gt;= 3.5</a>)</li>
 <li>pandas (&gt;=0.19)</li>
 <li>matplotlib
@@ -202,6 +201,7 @@ class ProfileReport(object):
         # Render HTML
         self.html = to_html(sample, description_set)
         self.minify_html = config[&#34;minify_html&#34;].get(bool)
+        self.use_local_assets = config[&#34;use_local_assets&#34;].get(bool)
         self.title = config[&#34;title&#34;].get(str)
         self.description_set = description_set
         self.sample = sample
@@ -268,6 +268,7 @@ class ProfileReport(object):
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
             version=__version__,
+            offline=self.use_local_assets,
         )
 
     def get_unique_file_name(self):
@@ -396,6 +397,7 @@ class ProfileReport(object):
         # Render HTML
         self.html = to_html(sample, description_set)
         self.minify_html = config[&#34;minify_html&#34;].get(bool)
+        self.use_local_assets = config[&#34;use_local_assets&#34;].get(bool)
         self.title = config[&#34;title&#34;].get(str)
         self.description_set = description_set
         self.sample = sample
@@ -462,6 +464,7 @@ class ProfileReport(object):
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
             version=__version__,
+            offline=self.use_local_assets,
         )
 
     def get_unique_file_name(self):
@@ -634,6 +637,7 @@ for using with frameworks.</p>
         missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
         sample=len(self.sample) &gt; 0,
         version=__version__,
+        offline=self.use_local_assets,
     )</code></pre>
 </details>
 </dd>

@@ -71,6 +71,7 @@ class ProfileReport(object):
         # Render HTML
         self.html = to_html(sample, description_set)
         self.minify_html = config["minify_html"].get(bool)
+        self.use_local_assets = config["use_local_assets"].get(bool)
         self.title = config["title"].get(str)
         self.description_set = description_set
         self.sample = sample
@@ -137,6 +138,7 @@ class ProfileReport(object):
             missing=len(self.description_set["missing"]) > 0,
             sample=len(self.sample) > 0,
             version=__version__,
+            offline=self.use_local_assets,
         )
 
     def get_unique_file_name(self):
