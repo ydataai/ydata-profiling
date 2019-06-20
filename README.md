@@ -22,9 +22,9 @@ For each column the following statistics - if relevant for the column type - are
 
 The following examples can give you an impression of what the package can do:
 
-- [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html)
-- [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html)
-- [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html)
+* [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html)
+* [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html)
+* [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html)
 
 ## Installation
 
@@ -42,7 +42,7 @@ You can install using the conda package manager by running
 
 ### From source
 
-Download the source code by cloning the repository or by pressing 'Download ZIP' on this page. 
+Download the source code by cloning the repository or by pressing ['Download ZIP'](https://github.com/pandas-profiling/pandas-profiling/archive/master.zip) on this page. 
 Install by navigating to the proper directory and running
 
     python setup.py install
