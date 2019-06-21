@@ -4,7 +4,7 @@ import numpy as np
 import pandas_profiling
 
 
-def test_urls(tmpdir):
+def test_urls():
     df = pd.read_csv(
         "https://raw.githubusercontent.com/openeventdata/scraper/master/whitelist_urls.csv",
         header=None,

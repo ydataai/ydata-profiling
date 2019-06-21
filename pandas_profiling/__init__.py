@@ -7,7 +7,7 @@ import warnings
 
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 from pathlib import Path
 import numpy as np
