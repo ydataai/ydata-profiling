@@ -1,15 +1,18 @@
-import pandas_profiling
-from pandas_profiling.utils.paths import get_project_root
+from pathlib import Path
+
 from setuptools import setup, find_packages
 
 # Read the contents of README file
-source_root = get_project_root()
+source_root = Path(".")
 with (source_root / "README.md").open(encoding="utf-8") as f:
     long_description = f.read()
 
+with (source_root / "VERSION").open() as f:
+    version = f.read()
+
 setup(
     name="pandas-profiling",
-    version=pandas_profiling.__version__,
+    version=version,
     author="Jos Polfliet, Simon Brugman",
     author_email="simon@graphkite.nl",
     packages=find_packages(),
@@ -20,10 +23,10 @@ setup(
         "pandas>=0.19",
         "matplotlib>=1.4",
         "jinja2>=2.8",
-        "missingno",
-        "htmlmin",
-        "phik",
-        "confuse",
+        "missingno>=0.4.1",
+        "htmlmin>=0.1.12",
+        "phik>=0.9.8",
+        "confuse>=1.0.0",
     ],
     include_package_data=True,
     classifiers=[
