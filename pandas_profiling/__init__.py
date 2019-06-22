@@ -6,8 +6,7 @@ import sys
 import warnings
 
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
-
-__version__ = "2.0.1"
+from pandas_profiling.utils.paths import get_config_default, get_project_root
 
 from pathlib import Path
 import numpy as np
@@ -16,8 +15,12 @@ from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 import pandas_profiling.view.templates as templates
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.utils.paths import get_config_default
 from pandas_profiling.view.report import to_html
+
+
+source_root = get_project_root()
+with (source_root / "VERSION").open() as f:
+    __version__ = f.read()
 
 
 class ProfileReport(object):
