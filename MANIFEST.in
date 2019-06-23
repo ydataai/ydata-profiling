@@ -1,5 +1,4 @@
 include LICENSE
-include VERSION
 include pandas_profiling/view/*.mplstyle
 include pandas_profiling/view/templates/*.html
 include pandas_profiling/view/templates/variables/*.html
