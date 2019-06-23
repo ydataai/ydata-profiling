@@ -39,6 +39,15 @@ You can install using the pip package manager by running
 You can install using the conda package manager by running
 
     conda install -c anaconda pandas-profiling
+    
+### Using pipenv 
+
+You can install using the pipenv environment and package manager from the github repository or from PyPI repository :
+
+	pipenv install git+https://github.com/pandas-profiling/pandas-profiling.git#egg=pandas-profiling
+or
+
+	pipenv install pandas_profiling
 
 ### From source
 
