@@ -54,8 +54,8 @@ The profile report is written in HTML5 and CSS3, which means pandas-profiling re
 ## Documentation
 
 The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
-The documentaion is generated using [`pdoc3`](https://github.com/pdoc3/pdoc). 
-If you are contribution to this project, you can rebuild the documentation using:
+The documentation is generated using [`pdoc3`](https://github.com/pdoc3/pdoc). 
+If you are contributing to this project, you can rebuild the documentation using:
 ```
 make docs
 ```
