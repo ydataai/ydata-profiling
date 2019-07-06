@@ -1,3 +1,7 @@
+"""
+Test for issue 147:
+https://github.com/pandas-profiling/pandas-profiling/issues/147
+"""
 from pathlib import Path
 
 import pandas as pd
@@ -6,7 +10,6 @@ import requests
 from pandas_profiling import ProfileReport
 
 
-# https://github.com/pandas-profiling/pandas-profiling/issues/147
 def test_issue147(tmpdir):
     file_name = Path(str(tmpdir)) / "userdata1.parquet"
     data = requests.get(

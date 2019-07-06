@@ -44,7 +44,7 @@ def _plot_histogram(
         plot.set_ylabel("Frequency")
         plot.hist(
             series.dropna().values,
-            facecolor=config["plot"]["face_color"].get(str),
+            facecolor=config["style"]["primary_color"].get(str),
             bins=bins,
         )
 
@@ -52,7 +52,7 @@ def _plot_histogram(
         plot = series.plot(
             kind="hist",
             figsize=figsize,
-            facecolor=config["plot"]["face_color"].get(str),
+            facecolor=config["style"]["primary_color"].get(str),
             bins=bins,
         )
     return plot
@@ -160,7 +160,7 @@ def missing_matrix(data: pd.DataFrame) -> str:
     missingno.matrix(
         data,
         figsize=(10, 4),
-        color=hex_to_rgb(config["plot"]["face_color"].get(str)),
+        color=hex_to_rgb(config["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data),
         sparkline=False,
     )
@@ -181,7 +181,7 @@ def missing_bar(data: pd.DataFrame) -> str:
     missingno.bar(
         data,
         figsize=(10, 5),
-        color=hex_to_rgb(config["plot"]["face_color"].get(str)),
+        color=hex_to_rgb(config["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data),
     )
     for ax0 in plt.gcf().get_axes():

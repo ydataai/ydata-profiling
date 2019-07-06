@@ -42,16 +42,26 @@ The pandas <code>df.describe()</code> function is great but a little basic for s
 <h2 id="examples">Examples</h2>
 <p>The following examples can give you an impression of what the package can do:</p>
 <ul>
-<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html">NASA Meteorites</a></li>
-<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html">Titanic</a></li>
-<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html">NZA</a></li>
+<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html">NASA Meteorites</a> (comprehensive set of meteorite landings)</li>
+<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html">Titanic</a> (the "Wonderwall" of datasets)</li>
+<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html">NZA</a> (open data from the Dutch Healthcare Authority)</li>
+<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/stata_auto/stata_auto_report.html">Stata Auto</a> (1978 Automobile data)</li>
+<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html">Website Inaccessibility</a> (demonstrates the URL type)</li>
 </ul>
 <h2 id="installation">Installation</h2>
 <h3 id="using-pip">Using pip</h3>
+<p><a href="https://pepy.tech/project/pandas-profiling"><img alt="PyPi Downloads" src="https://pepy.tech/badge/pandas-profiling"></a>
+<a href="https://pepy.tech/project/pandas-profiling/month"><img alt="PyPi Monthly Downloads" src="https://pepy.tech/badge/pandas-profiling/month"></a>
+<a href="https://pypi.org/project/pandas-profiling/"><img alt="PyPi Version" src="https://badge.fury.io/py/pandas-profiling.svg"></a></p>
 <p>You can install using the pip package manager by running</p>
 <pre><code>pip install pandas-profiling
 </code></pre>
+<p>Alternatively, you could install directly from Github:</p>
+<pre><code>pip install &lt;https://github.com/pandas-profiling/pandas-profiling/archive/master.zip&gt;
+</code></pre>
 <h3 id="using-conda">Using conda</h3>
+<p><a href="https://anaconda.org/conda-forge/pandas-profiling/"><img alt="Conda Downloads" src="https://anaconda.org/conda-forge/pandas-profiling/badges/downloads.svg"></a>
+<a href="https://anaconda.org/conda-forge/pandas-profiling"><img alt="Conda Version" src="https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg"></a> </p>
 <p>You can install using the conda package manager by running</p>
 <pre><code>conda install -c anaconda pandas-profiling
 </code></pre>
@@ -64,8 +74,8 @@ Install by navigating to the proper directory and running</p>
 <p>The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. </p>
 <h2 id="documentation">Documentation</h2>
 <p>The documentation for <a title="pandas_profiling" href="#pandas_profiling"><code>pandas_profiling</code></a> can be found <a href="https://pandas-profiling.github.io/pandas-profiling/docs/">here</a>.
-The documentaion is generated using <a href="https://github.com/pdoc3/pdoc"><code>pdoc3</code></a>.
-If you are contribution to this project, you can rebuild the documentation using:</p>
+The documentation is generated using <a href="https://github.com/pdoc3/pdoc"><code>pdoc3</code></a>.
+If you are contributing to this project, you can rebuild the documentation using:</p>
 <pre><code>make docs
 </code></pre>
 <p>or on Windows:</p>
@@ -84,7 +94,7 @@ df = pd.DataFrame(
 )
 </code></pre>
 <p>To display the report in a Jupyter notebook, run:</p>
-<pre><code class="python">df.profile_report()
+<pre><code class="python">df.profile_report(style={'full_width':True})
 </code></pre>
 <p>To retrieve the list of variables which are rejected due to high correlation:</p>
 <pre><code class="python">profile = df.profile_report()
@@ -111,29 +121,47 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <pre><code class="python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file(output_file=&quot;output.html&quot;)
 </code></pre>
+<h2 id="how-to-contribute">How to contribute</h2>
+<p>The package is actively maintained and developed as open-source software.
+If <code>pandas-profiling</code> was helpful or interesting to you, you might want to get involved.
+There are several ways of contributing and helping our thousands of users.
+If you would like to be a industry partner or sponsor, please <a href="mailto:pandasprofiling@gmail.com">drop us a line</a>.</p>
+<p>Read more on getting involved in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md">Contribution Guide</a>.</p>
 <h2 id="dependencies">Dependencies</h2>
-<ul>
-<li>python (<a href="https://python3statement.org/">&gt;= 3.5</a>)</li>
-<li>pandas (&gt;=0.19)</li>
-<li>matplotlib
-(&gt;=1.4)</li>
-<li>missingno</li>
-<li>confuse</li>
-<li>requests</li>
-<li>jinja2</li>
-<li>numpy</li>
-<li>htmlmin (optional)</li>
-<li>phik (optional)</li>
-</ul>
-<p>For development and testing we use additional packages which you can find in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt">requirements-dev.txt</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt">requirements-test.txt</a>.</p>
+<p>You need Python 3 to run this package. Other dependencies can be found in the requirements files:</p>
+<table>
+<thead>
+<tr>
+<th>Filename</th>
+<th>Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements.txt">requirements.txt</a></td>
+<td>Package requirements</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt">requirements-dev.txt</a></td>
+<td>Requirements for development</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt">requirements-test.txt</a></td>
+<td>Requirements for testing</td>
+</tr>
+</tbody>
+</table>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;Main module of pandas-profiling.
 
 .. include:: ../README.md
 &#34;&#34;&#34;
+import html
 import sys
 import warnings
+
+import pandas as pd
 
 from pandas_profiling.version import __version__
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
@@ -160,6 +188,13 @@ class ProfileReport(object):
 
     def __init__(self, df, **kwargs):
         config.set_kwargs(kwargs)
+
+        # Treat index as any other column
+        if (
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
+        ):
+            df = df.reset_index()
 
         # Rename reserved column names
         df = rename_index(df)
@@ -268,6 +303,8 @@ class ProfileReport(object):
             sample=len(self.sample) &gt; 0,
             version=__version__,
             offline=self.use_local_assets,
+            primary_color=config[&#34;style&#34;][&#34;primary_color&#34;].get(str),
+            theme=config[&#34;style&#34;][&#34;theme&#34;].get(str),
         )
 
     def get_unique_file_name(self):
@@ -279,25 +316,53 @@ class ProfileReport(object):
         )
 
     def _repr_html_(self):
-        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook. This function creates a temporary HTML file
+        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook.
+        When config.notebook.iframe.attribute is &#34;src&#34;, this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
+        When config.notebook.iframe.attribute is &#34;srco&#34;, the same HTML is injected in the &#34;srcdoc&#34; attribute of
+        the Iframe.
 
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         &#34;&#34;&#34;
-        tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
-        tmp_file.parent.mkdir(exist_ok=True)
-        self.to_file(tmp_file)
-        from IPython.lib.display import IFrame
-        from IPython.core.display import display
+        attribute = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;attribute&#34;].get(str)
+        if attribute == &#34;src&#34;:
+            tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
+            tmp_file.parent.mkdir(exist_ok=True)
+            self.to_file(tmp_file)
+            from IPython.lib.display import IFrame, display
 
-        display(
-            IFrame(
-                str(tmp_file),
+            display(
+                IFrame(
+                    str(tmp_file),
+                    width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
+                    height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+                )
+            )
+        elif attribute:
+            from IPython.core.display import HTML, display
+
+            iframe = &#34;&#34;&#34;
+                &lt;iframe
+                    width=&#34;{width}&#34;
+                    height=&#34;{height}&#34;
+                    srcdoc=&#34;{src}&#34;
+                    frameborder=&#34;0&#34;
+                    allowfullscreen
+                &gt;&lt;/iframe&gt;
+                &#34;&#34;&#34;
+            iframe = iframe.format(
                 width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
                 height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+                src=html.escape(self.to_html()),
             )
-        )
+            display(HTML(iframe))
+        else:
+            raise ValueError(
+                &#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {}).&#39;.format(
+                    attribute
+                )
+            )
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
@@ -325,7 +390,7 @@ class ProfileReport(object):
 </dd>
 <dt><code class="name"><a title="pandas_profiling.version" href="version.html">pandas_profiling.version</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>This file is auto-generated by setup.py, please do not alter.</p></section>
 </dd>
 <dt><code class="name"><a title="pandas_profiling.view" href="view/index.html">pandas_profiling.view</a></code></dt>
 <dd>
@@ -361,6 +426,13 @@ class ProfileReport(object):
     def __init__(self, df, **kwargs):
         config.set_kwargs(kwargs)
 
+        # Treat index as any other column
+        if (
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
+        ):
+            df = df.reset_index()
+
         # Rename reserved column names
         df = rename_index(df)
 
@@ -468,6 +540,8 @@ class ProfileReport(object):
             sample=len(self.sample) &gt; 0,
             version=__version__,
             offline=self.use_local_assets,
+            primary_color=config[&#34;style&#34;][&#34;primary_color&#34;].get(str),
+            theme=config[&#34;style&#34;][&#34;theme&#34;].get(str),
         )
 
     def get_unique_file_name(self):
@@ -479,25 +553,53 @@ class ProfileReport(object):
         )
 
     def _repr_html_(self):
-        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook. This function creates a temporary HTML file
+        &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook.
+        When config.notebook.iframe.attribute is &#34;src&#34;, this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
+        When config.notebook.iframe.attribute is &#34;srco&#34;, the same HTML is injected in the &#34;srcdoc&#34; attribute of
+        the Iframe.
 
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         &#34;&#34;&#34;
-        tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
-        tmp_file.parent.mkdir(exist_ok=True)
-        self.to_file(tmp_file)
-        from IPython.lib.display import IFrame
-        from IPython.core.display import display
+        attribute = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;attribute&#34;].get(str)
+        if attribute == &#34;src&#34;:
+            tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
+            tmp_file.parent.mkdir(exist_ok=True)
+            self.to_file(tmp_file)
+            from IPython.lib.display import IFrame, display
 
-        display(
-            IFrame(
-                str(tmp_file),
+            display(
+                IFrame(
+                    str(tmp_file),
+                    width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
+                    height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+                )
+            )
+        elif attribute:
+            from IPython.core.display import HTML, display
+
+            iframe = &#34;&#34;&#34;
+                &lt;iframe
+                    width=&#34;{width}&#34;
+                    height=&#34;{height}&#34;
+                    srcdoc=&#34;{src}&#34;
+                    frameborder=&#34;0&#34;
+                    allowfullscreen
+                &gt;&lt;/iframe&gt;
+                &#34;&#34;&#34;
+            iframe = iframe.format(
                 width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
                 height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+                src=html.escape(self.to_html()),
             )
-        )
+            display(HTML(iframe))
+        else:
+            raise ValueError(
+                &#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {}).&#39;.format(
+                    attribute
+                )
+            )
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
@@ -641,6 +743,8 @@ for using with frameworks.</p>
         sample=len(self.sample) &gt; 0,
         version=__version__,
         offline=self.use_local_assets,
+        primary_color=config[&#34;style&#34;][&#34;primary_color&#34;].get(str),
+        theme=config[&#34;style&#34;][&#34;theme&#34;].get(str),
     )</code></pre>
 </details>
 </dd>
@@ -668,6 +772,7 @@ for using with frameworks.</p>
 <li><a href="#advanced-usage">Advanced usage</a></li>
 </ul>
 </li>
+<li><a href="#how-to-contribute">How to contribute</a></li>
 <li><a href="#dependencies">Dependencies</a></li>
 </ul>
 </li>

@@ -1,10 +1,13 @@
+"""
+Test for issue 100:
+https://github.com/pandas-profiling/pandas-profiling/issues/100
+"""
 import pandas as pd
 import numpy as np
 
 import pandas_profiling
 
 
-# https://github.com/pandas-profiling/pandas-profiling/issues/100
 def test_issue100():
     df = pd.DataFrame(np.random.randint(0, 1000, size=(1000, 4)), columns=list("ABCD"))
     df[["B", "C"]] = df[["B", "C"]].astype("category")

@@ -22,20 +22,34 @@ For each column the following statistics - if relevant for the column type - are
 
 The following examples can give you an impression of what the package can do:
 
-* [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html)
-* [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html)
-* [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html)
+* [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html) (comprehensive set of meteorite landings)
+* [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html) (the "Wonderwall" of datasets)
+* [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
+* [Stata Auto](http://pandas-profiling.github.io/pandas-profiling/examples/stata_auto/stata_auto_report.html) (1978 Automobile data)
+* [Website Inaccessibility](http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
 
 ## Installation
 
 ### Using pip
 
+[![PyPi Downloads](https://pepy.tech/badge/pandas-profiling)](https://pepy.tech/project/pandas-profiling)
+[![PyPi Monthly Downloads](https://pepy.tech/badge/pandas-profiling/month)](https://pepy.tech/project/pandas-profiling/month)
+[![PyPi Version](https://badge.fury.io/py/pandas-profiling.svg)](https://pypi.org/project/pandas-profiling/)
+
 You can install using the pip package manager by running
 
     pip install pandas-profiling
     
+Alternatively, you could install directly from Github:
+
+    pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
+
+    
 ### Using conda
 
+[![Conda Downloads](https://anaconda.org/conda-forge/pandas-profiling/badges/downloads.svg)](https://anaconda.org/conda-forge/pandas-profiling/)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling) 
+ 
 You can install using the conda package manager by running
 
     conda install -c anaconda pandas-profiling
@@ -46,7 +60,7 @@ Download the source code by cloning the repository or by pressing ['Download ZIP
 Install by navigating to the proper directory and running
 
     python setup.py install
-
+    
 ## Usage
 
 The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
@@ -54,8 +68,8 @@ The profile report is written in HTML5 and CSS3, which means pandas-profiling re
 ## Documentation
 
 The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
-The documentaion is generated using [`pdoc3`](https://github.com/pdoc3/pdoc). 
-If you are contribution to this project, you can rebuild the documentation using:
+The documentation is generated using [`pdoc3`](https://github.com/pdoc3/pdoc). 
+If you are contributing to this project, you can rebuild the documentation using:
 ```
 make docs
 ```
@@ -81,7 +95,7 @@ df = pd.DataFrame(
 ```
 To display the report in a Jupyter notebook, run:
 ```python
-df.profile_report()
+df.profile_report(style={'full_width':True})
 ```
 To retrieve the list of variables which are rejected due to high correlation:
 ```python
@@ -117,17 +131,21 @@ profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': 
 profile.to_file(output_file="output.html")
 ```
 
+## How to contribute
+
+The package is actively maintained and developed as open-source software. 
+If `pandas-profiling` was helpful or interesting to you, you might want to get involved. 
+There are several ways of contributing and helping our thousands of users.
+If you would like to be a industry partner or sponsor, please [drop us a line](mailto:pandasprofiling@gmail.com).
+
+Read more on getting involved in the [Contribution Guide](https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md).
+
 ## Dependencies
 
-* python ([>= 3.5](https://python3statement.org/))
-* pandas (>=0.19)
-* matplotlib  (>=1.4)
-* missingno
-* confuse
-* requests
-* jinja2
-* numpy
-* htmlmin (optional)
-* phik (optional)
+You need Python 3 to run this package. Other dependencies can be found in the requirements files:
 
-For development and testing we use additional packages which you can find in the [requirements-dev.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt) and [requirements-test.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt).
+| Filename | Requirements|
+|----------|-------------|
+| [requirements.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements.txt) | Package requirements|
+| [requirements-dev.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt)  |  Requirements for development|
+| [requirements-test.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt) | Requirements for testing|

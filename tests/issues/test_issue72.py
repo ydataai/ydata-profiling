@@ -1,3 +1,7 @@
+"""
+Test for issue 72:
+https://github.com/pandas-profiling/pandas-profiling/issues/72
+"""
 import pandas as pd
 import numpy as np
 
@@ -8,7 +12,6 @@ from pandas_profiling.model.base import Variable
 from pandas_profiling.config import config
 
 
-# https://github.com/pandas-profiling/pandas-profiling/issues/72
 def test_issue72_higher():
     # Showcase (and test) different ways of interfacing with config/profiling report
     config["low_categorical_threshold"].set(2)

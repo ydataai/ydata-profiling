@@ -7,6 +7,7 @@ from functools import partial
 import pandas as pd
 import numpy as np
 from confuse import NotFoundError
+from pandas.core.base import DataError
 from scipy import stats
 
 from pandas_profiling.config import config
@@ -14,14 +15,14 @@ from pandas_profiling.model.base import Variable
 
 
 def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
-    """Calculate the Cramers V corrected stat for two variables.
+    """Calculate the Cramer's V corrected stat for two variables.
 
     Args:
         confusion_matrix: Crosstab between two variables.
         correction: Should the correction be applied?
 
     Returns:
-        The Cramers V corrected stat for the two variables.
+        The Cramer's V corrected stat for the two variables.
     """
     chi2 = stats.chi2_contingency(confusion_matrix, correction=correction)[0]
     n = confusion_matrix.sum().sum()
@@ -47,14 +48,14 @@ def check_recoded(confusion_matrix, count: int) -> int:
 
 
 def cramers_matrix(df: pd.DataFrame, variables: dict):
-    """Calculate the Cramers v correlation matrix.
+    """Calculate the Cramer's V correlation matrix.
 
     Args:
         df: The pandas DataFrame.
         variables: A dict with column names mapped to variable type.
 
     Returns:
-        A cramers v matrix for categorical variables.
+        A Cramer's V matrix for categorical variables.
     """
     return categorical_matrix(
         df, variables, partial(cramers_corrected_stat, correction=True)
@@ -104,7 +105,7 @@ def categorical_matrix(
     for (name1, data1), (name2, data2) in itertools.combinations(
         categoricals.items(), 2
     ):
-        confusion_matrix = pd.crosstab(data1, data2)
+        confusion_matrix = pd.crosstab(data1, data2, dropna=False)
         correlation_matrix.loc[name2, name1] = correlation_matrix.loc[
             name1, name2
         ] = correlation_function(confusion_matrix)
@@ -112,9 +113,22 @@ def categorical_matrix(
     return correlation_matrix
 
 
+def warn_correlation(correlation_name, error):
+    warnings.warn(
+        "There was an attempt to calculate the {correlation_name} correlation, but this failed.\n"
+        "To hide this warning, disable the calculation\n"
+        '(using `df.profile_report(correlations={{"{correlation_name}": False}}`)\n'
+        "If this is problematic for your use case, please report this as an issue:\n"
+        "https://github.com/pandas-profiling/pandas-profiling/issues\n"
+        "(include the error message: '{error}')".format(
+            correlation_name=correlation_name, error=error
+        )
+    )
+
+
 def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, Phi_k).
+    (pearson, spearman, kendall, phi_k, cramer).
 
     Args:
         variables: A dict with column names and variable types.
@@ -126,9 +140,12 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     correlations = {}
     for correlation_name in ["pearson", "spearman", "kendall"]:
         if config["correlations"][correlation_name].get(bool):
-            correlation = df.corr(method=correlation_name)
-            if len(correlation) > 0:
-                correlations[correlation_name] = correlation
+            try:
+                correlation = df.corr(method=correlation_name)
+                if len(correlation) > 0:
+                    correlations[correlation_name] = correlation
+            except ValueError as e:
+                warn_correlation(correlation_name, e)
 
     if config["correlations"]["phi_k"].get(bool):
         import phik
@@ -163,32 +180,40 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                 except ValueError:
                     continue
 
-            correlations["phi_k"] = df[selcols].phik_matrix(interval_cols=intcols)
+            try:
+                correlations["phi_k"] = df[selcols].phik_matrix(interval_cols=intcols)
 
-            # Only do this if the column_order is set
-            with suppress(NotFoundError):
-                # Get the preferred order
-                column_order = config["column_order"].get(list)
+                # Only do this if the column_order is set
+                with suppress(NotFoundError):
+                    # Get the preferred order
+                    column_order = config["column_order"].get(list)
 
-                # Get the Phi_k sorted order
-                current_order = (
-                    correlations["phi_k"].index.get_level_values("var1").tolist()
-                )
+                    # Get the Phi_k sorted order
+                    current_order = (
+                        correlations["phi_k"].index.get_level_values("var1").tolist()
+                    )
 
-                # Intersection (some columns are not used in correlation)
-                column_order = [x for x in column_order if x in current_order]
+                    # Intersection (some columns are not used in correlation)
+                    column_order = [x for x in column_order if x in current_order]
 
-                # Override the Phi_k sorting
-                correlations["phi_k"] = correlations["phi_k"].reindex(
-                    index=column_order, columns=column_order
-                )
+                    # Override the Phi_k sorting
+                    correlations["phi_k"] = correlations["phi_k"].reindex(
+                        index=column_order, columns=column_order
+                    )
+            except ValueError as e:
+                warn_correlation("phi_k", e)
+            except DataError as e:
+                warn_correlation("phi_k", e)
 
     categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}
     for correlation_name, get_matrix in categorical_correlations.items():
         if config["correlations"][correlation_name].get(bool):
-            correlation = get_matrix(df, variables)
-            if len(correlation) > 0:
-                correlations[correlation_name] = correlation
+            try:
+                correlation = get_matrix(df, variables)
+                if len(correlation) > 0:
+                    correlations[correlation_name] = correlation
+            except ValueError as e:
+                warn_correlation(correlation_name, e)
 
     return correlations
 

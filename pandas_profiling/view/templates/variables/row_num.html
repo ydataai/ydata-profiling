@@ -1,7 +1,7 @@
 {% with vartype='Numeric' %}
     {% include '_row_header.html' %}
 {% endwith %}
-<div class="col-md-6">
+<div class="col-sm-6">
     <div class="row">
         <div class="col-sm-6">
             <table class="stats">
@@ -54,17 +54,17 @@
         </div>
     </div>
 </div>
-<div class="col-md-3 collapse in" id="minihistogram{{ values['varid'] }}">
+<div class="col-sm-3 collapse in" id="minihistogram{{ values['varid'] }}">
     <img src="{{ values['mini_histogram'] }}" alt="Mini histogram">
 </div>
-<div class="col-md-12 text-right">
+<div class="col-sm-12 text-right">
     <a role="button" data-toggle="collapse"
        data-target="#descriptives{{ values['varid'] }},#minihistogram{{ values['varid'] }}"
        aria-expanded="false" aria-controls="collapseExample">
         Toggle details
     </a>
 </div>
-<div class="row collapse col-md-12" id="descriptives{{ values['varid'] }}">
+<div class="row collapse col-sm-12" id="descriptives{{ values['varid'] }}">
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
             <a href="#quantiles{{ values['varid'] }}"
@@ -87,7 +87,7 @@
 
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active row" id="quantiles{{ values['varid'] }}">
-            <div class="col-md-4 col-md-offset-1">
+            <div class="col-sm-4 col-sm-offset-1">
                 <p class="h4">Quantile statistics</p>
                 <table class="stats indent">
                     <tr>
@@ -128,7 +128,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-md-4 col-md-offset-2">
+            <div class="col-sm-4 col-sm-offset-2">
                 <p class="h4">Descriptive statistics</p>
                 <table class="stats indent">
                     <tr>
@@ -170,13 +170,13 @@
                 </table>
             </div>
         </div>
-        <div role="tabpanel" class="tab-pane col-md-8 col-md-offset-2" id="histogram{{ values['varid'] }}">
+        <div role="tabpanel" class="tab-pane col-sm-8 col-sm-offset-2" id="histogram{{ values['varid'] }}">
             <img src="{{ values['histogram'] }}" class="center-img img-responsive" alt="Histogram" />
         </div>
-        <div role="tabpanel" class="tab-pane col-md-12" id="common{{ values['varid'] }}">
+        <div role="tabpanel" class="tab-pane col-sm-12" id="common{{ values['varid'] }}">
             {{ values['freqtable'] }}
         </div>
-        <div role="tabpanel" class="tab-pane col-md-12" id="extreme{{ values['varid'] }}">
+        <div role="tabpanel" class="tab-pane col-sm-12" id="extreme{{ values['varid'] }}">
             <p class="h4">Minimum 5 values</p>
             {{ values['firstn_expanded'] }}
             <p class="h4">Maximum 5 values</p>

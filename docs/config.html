@@ -25,7 +25,6 @@
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;Configuration for the package is handled in this wrapper for confuse.&#34;&#34;&#34;
 import argparse
-import logging
 
 import confuse
 from pandas_profiling.utils.paths import get_config_default
@@ -40,12 +39,10 @@ class Config(object):
     &#34;&#34;&#34;The confuse.Configuration object.&#34;&#34;&#34;
 
     def __init__(self):
+        &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
             self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__)
             self.config.set_file(str(get_config_default()))
-            logging.debug(
-                &#34;The config constructor should be called only once, you should see this message only once.&#34;
-            )
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
         &#34;&#34;&#34;
@@ -102,7 +99,8 @@ config = Config()</code></pre>
 </code></dt>
 <dd>
 <section class="desc"><p>This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-various ways (notably via argparse and kwargs).</p></section>
+various ways (notably via argparse and kwargs).</p>
+<p>The config constructor should be called only once.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Config(object):
@@ -114,12 +112,10 @@ various ways (notably via argparse and kwargs).</p></section>
     &#34;&#34;&#34;The confuse.Configuration object.&#34;&#34;&#34;
 
     def __init__(self):
+        &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
             self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__)
             self.config.set_file(str(get_config_default()))
-            logging.debug(
-                &#34;The config constructor should be called only once, you should see this message only once.&#34;
-            )
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
         &#34;&#34;&#34;

@@ -1,3 +1,7 @@
+"""
+Test for issue 169:
+https://github.com/pandas-profiling/pandas-profiling/issues/169
+"""
 from io import StringIO
 
 import pandas as pd
@@ -18,7 +22,6 @@ def issue_169_data() -> StringIO:
     return data
 
 
-# https://github.com/pandas-profiling/pandas-profiling/issues/169
 def test_issue_169_column(issue_169_data):
     df = pd.read_csv(issue_169_data, sep=",")
     report = df.profile_report(missing_diagrams={"dendrogram": True, "heatmap": True})

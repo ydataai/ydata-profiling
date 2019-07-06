@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 import pandas_profiling
+from pandas_profiling import __version__
 from pandas_profiling.config import config
 import argparse
 
@@ -20,6 +21,14 @@ def parse_args(args: list or None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Profile the variables in a CSV file and generate a HTML report."
     )
+
+    # Version
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s {version}".format(version=__version__),
+    )
+
     # Console specific
     parser.add_argument(
         "-s",

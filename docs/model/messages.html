@@ -29,8 +29,11 @@ values, high correlations).</p>
 values, high correlations).&#34;&#34;&#34;
 from enum import Enum, unique
 from typing import List
-
+import warnings
+from contextlib import suppress
 import numpy as np
+import re
+from dateutil.parser import parse
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
@@ -69,6 +72,9 @@ class MessageType(Enum):
 
     INFINITE = 10
     &#34;&#34;&#34;This variable contains infinite values.&#34;&#34;&#34;
+
+    TYPE_DATE = 11
+    &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
 
 
 class Message(object):
@@ -122,6 +128,12 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 values=description,
             )
         )
+
+    if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.S_TYPE_UNIQUE}:
+        if description[&#34;date_warning&#34;]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
+            )
 
     if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.TYPE_BOOL}:
         # High cardinality
@@ -186,7 +198,26 @@ def warning_skewness(v: np.nan or float) -&gt; bool:
     return not np.isnan(v) and (
         v &lt; -config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
         or v &gt; config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
-    )</code></pre>
+    )
+
+
+def _date_parser(date_string):
+    pattern = re.compile(r&#34;[.\-:]&#34;)
+    pieces = re.split(pattern, date_string)
+
+    if len(pieces) &lt; 3:
+        raise ValueError(&#34;Must have at least year, month and date passed&#34;)
+
+    return parse(date_string)
+
+
+def warning_type_date(series):
+    with suppress(ValueError):
+        with suppress(TypeError):
+            series.apply(_date_parser)
+            return True
+
+    return False</code></pre>
 </details>
 </section>
 <section>
@@ -267,6 +298,12 @@ def warning_skewness(v: np.nan or float) -&gt; bool:
             )
         )
 
+    if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.S_TYPE_UNIQUE}:
+        if description[&#34;date_warning&#34;]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
+            )
+
     if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.TYPE_BOOL}:
         # High cardinality
         if description[&#34;distinct_count&#34;] &gt; config[&#34;cardinality_threshold&#34;].get(int):
@@ -334,6 +371,22 @@ def warning_skewness(v: np.nan or float) -&gt; bool:
         v &lt; -config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
         or v &gt; config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
     )</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.messages.warning_type_date"><code class="name flex">
+<span>def <span class="ident">warning_type_date</span></span>(<span>series)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def warning_type_date(series):
+    with suppress(ValueError):
+        with suppress(TypeError):
+            series.apply(_date_parser)
+            return True
+
+    return False</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.warning_value"><code class="name flex">
@@ -410,7 +463,10 @@ def warning_skewness(v: np.nan or float) -&gt; bool:
     &#34;&#34;&#34;THis variable contains missing values.&#34;&#34;&#34;
 
     INFINITE = 10
-    &#34;&#34;&#34;This variable contains infinite values.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;This variable contains infinite values.&#34;&#34;&#34;
+
+    TYPE_DATE = 11
+    &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -450,6 +506,10 @@ def warning_skewness(v: np.nan or float) -&gt; bool:
 <dd>
 <section class="desc"><p>This variable is highly skewed.</p></section>
 </dd>
+<dt id="pandas_profiling.model.messages.MessageType.TYPE_DATE"><code class="name">var <span class="ident">TYPE_DATE</span></code></dt>
+<dd>
+<section class="desc"><p>This variable is likely a datetime, but treated as categorical.</p></section>
+</dd>
 <dt id="pandas_profiling.model.messages.MessageType.UNSUPPORTED"><code class="name">var <span class="ident">UNSUPPORTED</span></code></dt>
 <dd>
 <section class="desc"><p>This variable is unsupported.</p></section>
@@ -479,6 +539,7 @@ def warning_skewness(v: np.nan or float) -&gt; bool:
 <li><code><a title="pandas_profiling.model.messages.check_table_messages" href="#pandas_profiling.model.messages.check_table_messages">check_table_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.check_variable_messages" href="#pandas_profiling.model.messages.check_variable_messages">check_variable_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.warning_skewness" href="#pandas_profiling.model.messages.warning_skewness">warning_skewness</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.warning_type_date" href="#pandas_profiling.model.messages.warning_type_date">warning_type_date</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.warning_value" href="#pandas_profiling.model.messages.warning_value">warning_value</a></code></li>
 </ul>
 </li>
@@ -498,6 +559,7 @@ def warning_skewness(v: np.nan or float) -&gt; bool:
 <li><code><a title="pandas_profiling.model.messages.MessageType.MISSING" href="#pandas_profiling.model.messages.MessageType.MISSING">MISSING</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.RECODED" href="#pandas_profiling.model.messages.MessageType.RECODED">RECODED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.SKEWED" href="#pandas_profiling.model.messages.MessageType.SKEWED">SKEWED</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.TYPE_DATE" href="#pandas_profiling.model.messages.MessageType.TYPE_DATE">TYPE_DATE</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.UNSUPPORTED" href="#pandas_profiling.model.messages.MessageType.UNSUPPORTED">UNSUPPORTED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.ZEROS" href="#pandas_profiling.model.messages.MessageType.ZEROS">ZEROS</a></code></li>
 </ul>

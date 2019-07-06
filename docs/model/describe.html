@@ -37,6 +37,7 @@ from pandas_profiling.config import config as config
 from pandas_profiling.model.messages import (
     check_variable_messages,
     check_table_messages,
+    warning_type_date,
 )
 
 from pandas_profiling.model import base
@@ -141,6 +142,8 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; d
         stats[&#34;min_length&#34;] = series.str.len().min()
         stats[&#34;composition&#34;] = contains
 
+    stats[&#34;date_warning&#34;] = warning_type_date(series)
+
     return stats
 
 
@@ -216,7 +219,9 @@ def describe_unique_1d(series: pd.Series, series_description: dict) -&gt; dict:
     Returns:
         An empty dict.
     &#34;&#34;&#34;
-    return {}
+    stats = {&#34;date_warning&#34;: warning_type_date(series)}
+
+    return stats
 
 
 def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
@@ -449,10 +454,6 @@ def describe(df: pd.DataFrame) -&gt; dict:
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
 
-    # Treat index as any other column
-    if not pd.Index(np.arange(0, len(df))).equals(df.index):
-        df = df.reset_index()
-
     # Multiprocessing of Describe 1D for each column
     pool_size = config[&#34;pool_size&#34;].get(int)
     if pool_size &lt;= 0:
@@ -601,10 +602,6 @@ def describe(df: pd.DataFrame) -&gt; dict:
 
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
-
-    # Treat index as any other column
-    if not pd.Index(np.arange(0, len(df))).equals(df.index):
-        df = df.reset_index()
 
     # Multiprocessing of Describe 1D for each column
     pool_size = config[&#34;pool_size&#34;].get(int)
@@ -839,6 +836,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
         stats[&#34;mean_length&#34;] = series.str.len().mean()
         stats[&#34;min_length&#34;] = series.str.len().min()
         stats[&#34;composition&#34;] = contains
+
+    stats[&#34;date_warning&#34;] = warning_type_date(series)
 
     return stats</code></pre>
 </details>
@@ -1116,7 +1115,9 @@ def describe(df: pd.DataFrame) -&gt; dict:
     Returns:
         An empty dict.
     &#34;&#34;&#34;
-    return {}</code></pre>
+    stats = {&#34;date_warning&#34;: warning_type_date(series)}
+
+    return stats</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.describe.describe_unsupported"><code class="name flex">

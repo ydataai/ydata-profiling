@@ -1,8 +1,8 @@
-<div class="col-md-{{ nb_col }} collapse in" id="minifreqtable{{ varid }}">
+<div class="col-sm-{{ nb_col }} collapse in" id="minifreqtable{{ varid }}">
     <table class="mini freq">
         {% for row in rows %}
             <tr class="{{ row['extra_class'] }}">
-                <th>{{ row['label'] }}</th>
+                <th>{{ row['label'] | fmt }}</th>
                 <td>
                     <div class="bar"
                          style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}"

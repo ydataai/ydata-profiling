@@ -1,13 +1,8 @@
 """Common parts to all other modules, mainly utility functions."""
-import re
-import warnings
-from contextlib import suppress
-
 import pandas as pd
 from enum import Enum, unique
 from urllib.parse import urlparse
 
-from dateutil.parser import parse
 
 from pandas_profiling.config import config
 
@@ -144,16 +139,6 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
         return False
 
 
-def _date_parser(date_string):
-    pattern = re.compile(r"[.\-:]")
-    pieces = re.split(pattern, date_string)
-
-    if len(pieces) < 3:
-        raise ValueError("Must have at least year, month and date passed")
-
-    return parse(date_string)
-
-
 def is_date(series) -> bool:
     """Is the variable of type datetime? Throws a warning if the series looks like a datetime, but is not typed as
     datetime64.
@@ -165,13 +150,6 @@ def is_date(series) -> bool:
         True if the variable is of type datetime.
     """
     is_date_value = pd.api.types.is_datetime64_dtype(series)
-    with suppress(ValueError):
-        with suppress(TypeError):
-            series.apply(_date_parser)
-            warnings.warn(
-                'Column "{}" appears to be containing only date/datetime values. You might consider '
-                "changing the type to datetime (pd.to_datetime())".format(series.name)
-            )
 
     return is_date_value
 

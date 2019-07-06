@@ -155,7 +155,7 @@ def render_correlations_html(stats_object: dict) -> str:
             active = "pearson"
         values["pearson"] = {
             "matrix": plot.correlation_matrix(stats_object["correlations"]["pearson"]),
-            "name": "Pearson",
+            "name": "Pearson's r",
         }
 
     if "spearman" in stats_object["correlations"]:
@@ -163,7 +163,7 @@ def render_correlations_html(stats_object: dict) -> str:
             active = "spearman"
         values["spearman"] = {
             "matrix": plot.correlation_matrix(stats_object["correlations"]["spearman"]),
-            "name": "Spearman",
+            "name": "Spearman's &rho;",
         }
 
     if "kendall" in stats_object["correlations"]:
@@ -171,7 +171,7 @@ def render_correlations_html(stats_object: dict) -> str:
             active = "kendall"
         values["kendall"] = {
             "matrix": plot.correlation_matrix(stats_object["correlations"]["kendall"]),
-            "name": "Kendall",
+            "name": "Kendall's &tau;",
         }
 
     if "phi_k" in stats_object["correlations"]:
@@ -181,7 +181,7 @@ def render_correlations_html(stats_object: dict) -> str:
             "matrix": plot.correlation_matrix(
                 stats_object["correlations"]["phi_k"], vmin=0
             ),
-            "name": "Phi<sub>k</sub>",
+            "name": "Phik (&phi;<sub><em>k</em></sub>)",
         }
 
     if "cramers" in stats_object["correlations"]:
@@ -191,7 +191,7 @@ def render_correlations_html(stats_object: dict) -> str:
             "matrix": plot.correlation_matrix(
                 stats_object["correlations"]["cramers"], vmin=0
             ),
-            "name": "Cramér's V",
+            "name": "Cramér's V (&phi;<sub><em>c</em></sub>)",
         }
 
     if "recoded" in stats_object["correlations"]:
@@ -350,7 +350,7 @@ def render_sample_html(sample: dict) -> str:
     """
     formatted_samples = {}
     for key in sample:
-        formatted_samples[key] = sample[key].to_html(classes="sample")
+        formatted_samples[key] = sample[key].to_html(classes="sample table-striped")
     sample_html = templates.template("sample.html").render(values=formatted_samples)
     # Previously, we only displayed the first samples.
     # sample_html = templates.template('sample.html').render(sample_table_html=sample.to_html(classes="sample"))
@@ -388,6 +388,7 @@ def to_html(sample: dict, stats_object: dict) -> str:
         "correlations_html": render_correlations_html(stats_object),
         "missing_html": render_missing_html(stats_object),
         "sample_html": render_sample_html(sample),
+        "full_width": config["style"]["full_width"].get(bool),
     }
 
     # TODO: should be done in the template

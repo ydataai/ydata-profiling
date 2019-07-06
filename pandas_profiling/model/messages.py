@@ -2,8 +2,11 @@
 values, high correlations)."""
 from enum import Enum, unique
 from typing import List
-
+import warnings
+from contextlib import suppress
 import numpy as np
+import re
+from dateutil.parser import parse
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
@@ -42,6 +45,9 @@ class MessageType(Enum):
 
     INFINITE = 10
     """This variable contains infinite values."""
+
+    TYPE_DATE = 11
+    """This variable is likely a datetime, but treated as categorical."""
 
 
 class Message(object):
@@ -95,6 +101,12 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 values=description,
             )
         )
+
+    if description["type"] in {Variable.TYPE_CAT, Variable.S_TYPE_UNIQUE}:
+        if description["date_warning"]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
+            )
 
     if description["type"] in {Variable.TYPE_CAT, Variable.TYPE_BOOL}:
         # High cardinality
@@ -160,3 +172,22 @@ def warning_skewness(v: np.nan or float) -> bool:
         v < -config["vars"]["num"]["skewness_threshold"].get(int)
         or v > config["vars"]["num"]["skewness_threshold"].get(int)
     )
+
+
+def _date_parser(date_string):
+    pattern = re.compile(r"[.\-:]")
+    pieces = re.split(pattern, date_string)
+
+    if len(pieces) < 3:
+        raise ValueError("Must have at least year, month and date passed")
+
+    return parse(date_string)
+
+
+def warning_type_date(series):
+    with suppress(ValueError):
+        with suppress(TypeError):
+            series.apply(_date_parser)
+            return True
+
+    return False

@@ -1,3 +1,4 @@
 black
 pre-commit
 pdoc3
+twine

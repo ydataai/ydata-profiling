@@ -1,6 +1,5 @@
 """Configuration for the package is handled in this wrapper for confuse."""
 import argparse
-import logging
 
 import confuse
 from pandas_profiling.utils.paths import get_config_default
@@ -15,12 +14,10 @@ class Config(object):
     """The confuse.Configuration object."""
 
     def __init__(self):
+        """The config constructor should be called only once."""
         if self.config is None:
             self.config = confuse.Configuration("PandasProfiling", __name__)
             self.config.set_file(str(get_config_default()))
-            logging.debug(
-                "The config constructor should be called only once, you should see this message only once."
-            )
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -> None:
         """

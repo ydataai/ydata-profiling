@@ -42,7 +42,7 @@ correlations:
     spearman: True
     kendall: True
     phi_k: True
-    cramers: False
+    cramers: True
     recoded: True
 
 # For numeric
@@ -63,7 +63,6 @@ plot:
     # Image format (svg or png)
     image_format: "svg"
     dpi: 800
-    face_color: "#337ab7"
 
     correlation:
         cmap: 'bwr'
@@ -89,3 +88,13 @@ notebook:
     iframe:
         height: '800px'
         width: '100%'
+        attribute: 'srcdoc' # or 'src'
+
+# Styling options for the HTML report
+style:
+  full_width: False
+  theme: None
+  primary_color: "#337ab7"
+#  full_width: True
+#  theme: "flatly"
+#  primary_color: "#2c3e50"

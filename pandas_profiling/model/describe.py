@@ -12,6 +12,7 @@ from pandas_profiling.config import config as config
 from pandas_profiling.model.messages import (
     check_variable_messages,
     check_table_messages,
+    warning_type_date,
 )
 
 from pandas_profiling.model import base
@@ -116,6 +117,8 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
         stats["min_length"] = series.str.len().min()
         stats["composition"] = contains
 
+    stats["date_warning"] = warning_type_date(series)
+
     return stats
 
 
@@ -191,7 +194,9 @@ def describe_unique_1d(series: pd.Series, series_description: dict) -> dict:
     Returns:
         An empty dict.
     """
-    return {}
+    stats = {"date_warning": warning_type_date(series)}
+
+    return stats
 
 
 def describe_supported(series: pd.Series, series_description: dict) -> dict:
@@ -423,10 +428,6 @@ def describe(df: pd.DataFrame) -> dict:
 
     if df.empty:
         raise ValueError("df can not be empty")
-
-    # Treat index as any other column
-    if not pd.Index(np.arange(0, len(df))).equals(df.index):
-        df = df.reset_index()
 
     # Multiprocessing of Describe 1D for each column
     pool_size = config["pool_size"].get(int)

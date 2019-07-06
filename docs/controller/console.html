@@ -28,6 +28,7 @@ from pathlib import Path
 
 import pandas as pd
 import pandas_profiling
+from pandas_profiling import __version__
 from pandas_profiling.config import config
 import argparse
 
@@ -45,6 +46,14 @@ def parse_args(args: list or None = None) -&gt; argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=&#34;Profile the variables in a CSV file and generate a HTML report.&#34;
     )
+
+    # Version
+    parser.add_argument(
+        &#34;--version&#34;,
+        action=&#34;version&#34;,
+        version=&#34;%(prog)s {version}&#34;.format(version=__version__),
+    )
+
     # Console specific
     parser.add_argument(
         &#34;-s&#34;,
@@ -165,6 +174,14 @@ def main(args=None) -&gt; None:
     parser = argparse.ArgumentParser(
         description=&#34;Profile the variables in a CSV file and generate a HTML report.&#34;
     )
+
+    # Version
+    parser.add_argument(
+        &#34;--version&#34;,
+        action=&#34;version&#34;,
+        version=&#34;%(prog)s {version}&#34;.format(version=__version__),
+    )
+
     # Console specific
     parser.add_argument(
         &#34;-s&#34;,
