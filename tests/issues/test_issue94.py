@@ -27,6 +27,6 @@ CHEM
 CHEM
 CHEM"""
     )
-    df = pd.read_csv(file_path, parse_dates=True)
+    df = pd.read_csv(str(file_path), parse_dates=True)
     profile = pandas_profiling.ProfileReport(df, title="Pandas Profiling Report")
     assert "<title>Pandas Profiling Report</title>" in profile.to_html()

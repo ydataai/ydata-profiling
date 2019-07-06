@@ -19,7 +19,7 @@ def test_issue51(tmpdir):
     pkl_file = Path(tmpdir) / "buggy1.pkl"
     pkl_file.write_bytes(response.content)
 
-    df = pd.read_pickle(pkl_file)
+    df = pd.read_pickle(str(pkl_file))
 
     report = df.profile_report(title="Pandas Profiling Report")
     assert (
@@ -36,7 +36,8 @@ def test_issue51_similar():
         }
     )
 
-    report = df.profile_report()
+    report = df.profile_report(title="Pandas Profiling Report")
+
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
     ), "Profile report should be generated."
@@ -50,7 +51,8 @@ def test_issue51_mixed():
             "bert": ["snor", "", np.nan],
         }
     )
-    report = df.profile_report()
+    report = df.profile_report(title="Pandas Profiling Report")
+
     assert (
         'data-toggle="tab">Recoded</a>' in report.to_html()
     ), "Recoded should be present"
@@ -61,7 +63,7 @@ def test_issue51_empty():
         {"test": ["", "", ""], "blest": ["", "", ""], "bert": ["", "", ""]}
     )
 
-    report = df.profile_report()
+    report = df.profile_report(title="Pandas Profiling Report")
 
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
