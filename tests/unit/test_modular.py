@@ -65,7 +65,7 @@ def test_modular_present(df):
         correlations={
             "pearson": True,
             "spearman": True,
-            "kendall": True,
+            "kendall": False,
             "phi_k": True,
             "recoded": True,
         },
