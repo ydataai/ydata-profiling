@@ -13,7 +13,7 @@ import pandas_profiling
 
 
 def test_issue94(tmpdir):
-    file_path = Path(tmpdir) / "issue94.csv"
+    file_path = Path(str(tmpdir)) / "issue94.csv"
     file_path.write_text(
         """CourseName
 PHY

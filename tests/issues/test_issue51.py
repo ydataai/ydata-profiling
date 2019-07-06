@@ -16,7 +16,7 @@ def test_issue51(tmpdir):
     response = requests.get(
         "https://raw.githubusercontent.com/adamrossnelson/HelloWorld/master/sparefiles/buggy1.pkl"
     )
-    pkl_file = Path(tmpdir) / "buggy1.pkl"
+    pkl_file = Path(str(tmpdir)) / "buggy1.pkl"
     pkl_file.write_bytes(response.content)
 
     df = pd.read_pickle(str(pkl_file))
