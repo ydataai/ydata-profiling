@@ -21,5 +21,18 @@ You can anonymize the column names if necessary.
 **Version information:**
 Please run `pip freeze` in your environment and report the results.
 
+The list of packages can be rather long, you can use the snippet below to collapse the output.
+
+<details><summary>Click to expand <strong><em>Version information</em></strong></summary>
+<p>
+
+```
+<<< Put your version information here >>>
+```
+
+</p>
+</details>
+
+
 **Additional context**
 Add any other context about the problem here.
