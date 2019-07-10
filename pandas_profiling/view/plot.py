@@ -203,7 +203,7 @@ def missing_heatmap(data: pd.DataFrame) -> str:
     height = 4
     if len(data.columns) > 10:
         height += int((len(data.columns) - 10) / 5)
-    height = max(height, 10)
+    height = min(height, 10)
 
     missingno.heatmap(
         data,

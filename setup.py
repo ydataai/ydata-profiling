@@ -8,7 +8,7 @@ with (source_root / "README.md").open(encoding="utf-8") as f:
     long_description = f.read()
 
 
-version = "2.1.0"
+version = "2.1.1"
 
 with (source_root / "pandas_profiling" / "version.py").open("w", encoding="utf-8") as f:
     f.writelines(

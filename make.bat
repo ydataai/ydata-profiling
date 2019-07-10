@@ -30,8 +30,6 @@ IF "%1" == "examples" (
 )
 
 IF "%1" == "pypi_package" (
-    SET /P AREYOUSURE="Are you sure (Y/[N])?"
-    IF /I "%AREYOUSURE%" NEQ "Y" GOTO END
     python setup.py sdist
     twine upload dist/*
     ECHO "PyPi package completed"

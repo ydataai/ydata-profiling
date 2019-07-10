@@ -414,10 +414,14 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
     missing_map = {
-        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0},
-        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0},
-        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2},
-        &#34;dendrogram&#34;: {&#34;func&#34;: plot.missing_dendrogram, &#34;min_missing&#34;: 1},
+        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
+        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
+        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
+        &#34;dendrogram&#34;: {
+            &#34;func&#34;: plot.missing_dendrogram,
+            &#34;min_missing&#34;: 1,
+            &#34;name&#34;: &#34;Dendrogram&#34;,
+        },
     }
 
     missing = {}
@@ -430,7 +434,10 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
                 table_stats[&#34;n_vars_with_missing&#34;] - table_stats[&#34;n_vars_all_missing&#34;]
                 &gt;= settings[&#34;min_missing&#34;]
             ):
-                missing[name] = settings[&#34;func&#34;](df)
+                missing[name] = {
+                    &#34;name&#34;: settings[&#34;name&#34;],
+                    &#34;matrix&#34;: settings[&#34;func&#34;](df),
+                }
     return missing
 
 
@@ -1241,10 +1248,14 @@ def describe(df: pd.DataFrame) -&gt; dict:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
     missing_map = {
-        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0},
-        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0},
-        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2},
-        &#34;dendrogram&#34;: {&#34;func&#34;: plot.missing_dendrogram, &#34;min_missing&#34;: 1},
+        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
+        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
+        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
+        &#34;dendrogram&#34;: {
+            &#34;func&#34;: plot.missing_dendrogram,
+            &#34;min_missing&#34;: 1,
+            &#34;name&#34;: &#34;Dendrogram&#34;,
+        },
     }
 
     missing = {}
@@ -1257,7 +1268,10 @@ def describe(df: pd.DataFrame) -&gt; dict:
                 table_stats[&#34;n_vars_with_missing&#34;] - table_stats[&#34;n_vars_all_missing&#34;]
                 &gt;= settings[&#34;min_missing&#34;]
             ):
-                missing[name] = settings[&#34;func&#34;](df)
+                missing[name] = {
+                    &#34;name&#34;: settings[&#34;name&#34;],
+                    &#34;matrix&#34;: settings[&#34;func&#34;](df),
+                }
     return missing</code></pre>
 </details>
 </dd>

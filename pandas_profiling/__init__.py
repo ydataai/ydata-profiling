@@ -2,7 +2,6 @@
 
 .. include:: ../README.md
 """
-import html
 import sys
 import warnings
 
@@ -19,6 +18,7 @@ from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 import pandas_profiling.view.templates as templates
 from pandas_profiling.model.describe import describe as describe_df
+from pandas_profiling.view.notebook import display_notebook_iframe
 from pandas_profiling.view.report import to_html
 
 
@@ -164,50 +164,13 @@ class ProfileReport(object):
         """Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is "src", this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
-        When config.notebook.iframe.attribute is "srco", the same HTML is injected in the "srcdoc" attribute of
+        When config.notebook.iframe.attribute is "srcdoc", the same HTML is injected in the "srcdoc" attribute of
         the Iframe.
 
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
-        attribute = config["notebook"]["iframe"]["attribute"].get(str)
-        if attribute == "src":
-            tmp_file = Path("./ipynb_tmp") / self.get_unique_file_name()
-            tmp_file.parent.mkdir(exist_ok=True)
-            self.to_file(tmp_file)
-            from IPython.lib.display import IFrame, display
-
-            display(
-                IFrame(
-                    str(tmp_file),
-                    width=config["notebook"]["iframe"]["width"].get(str),
-                    height=config["notebook"]["iframe"]["height"].get(str),
-                )
-            )
-        elif attribute:
-            from IPython.core.display import HTML, display
-
-            iframe = """
-                <iframe
-                    width="{width}"
-                    height="{height}"
-                    srcdoc="{src}"
-                    frameborder="0"
-                    allowfullscreen
-                ></iframe>
-                """
-            iframe = iframe.format(
-                width=config["notebook"]["iframe"]["width"].get(str),
-                height=config["notebook"]["iframe"]["height"].get(str),
-                src=html.escape(self.to_html()),
-            )
-            display(HTML(iframe))
-        else:
-            raise ValueError(
-                'Iframe Attribute can be "src" or "srcdoc" (current: {}).'.format(
-                    attribute
-                )
-            )
+        display_notebook_iframe(self)
 
     def __repr__(self):
         """Override so that Jupyter Notebook does not print the object."""

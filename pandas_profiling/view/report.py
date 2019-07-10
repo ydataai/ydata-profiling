@@ -21,7 +21,7 @@ def freq_table(
       freqtable: The frequency table.
       n: The total number of values.
       table_template: The name of the template.
-      max_number_to_print: The maximum number of observatios to print.
+      max_number_to_print: The maximum number of observations to print.
       nb_col: The number of columns in the grid. (Default value = 6)
 
     Returns:
@@ -122,7 +122,7 @@ def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -> str:
     return templates.template("freq_table.html").render(rows=rows)
 
 
-def render_overview_html(stats_object: dict) -> str:
+def render_overview_section(stats_object: dict) -> str:
     """Render the overview HTML.
 
     Args:
@@ -139,7 +139,62 @@ def render_overview_html(stats_object: dict) -> str:
     )
 
 
-def render_correlations_html(stats_object: dict) -> str:
+def get_correlation_items(stats_object) -> dict:
+    """Create the list of correlation items
+
+    Args:
+        stats_object: dict of correlations
+
+    Returns:
+        List of correlation items to show in the interface.
+    """
+    items = {}
+    if "pearson" in stats_object["correlations"]:
+        items["pearson"] = {
+            "matrix": plot.correlation_matrix(stats_object["correlations"]["pearson"]),
+            "name": "Pearson's r",
+        }
+
+    if "spearman" in stats_object["correlations"]:
+        items["spearman"] = {
+            "matrix": plot.correlation_matrix(stats_object["correlations"]["spearman"]),
+            "name": "Spearman's &rho;",
+        }
+
+    if "kendall" in stats_object["correlations"]:
+        items["kendall"] = {
+            "matrix": plot.correlation_matrix(stats_object["correlations"]["kendall"]),
+            "name": "Kendall's &tau;",
+        }
+
+    if "phi_k" in stats_object["correlations"]:
+        items["phi_k"] = {
+            "matrix": plot.correlation_matrix(
+                stats_object["correlations"]["phi_k"], vmin=0
+            ),
+            "name": "Phik (&phi;<sub><em>k</em></sub>)",
+        }
+
+    if "cramers" in stats_object["correlations"]:
+        items["cramers"] = {
+            "matrix": plot.correlation_matrix(
+                stats_object["correlations"]["cramers"], vmin=0
+            ),
+            "name": "Cramér's V (&phi;<sub><em>c</em></sub>)",
+        }
+
+    if "recoded" in stats_object["correlations"]:
+        items["recoded"] = {
+            "matrix": plot.correlation_matrix(
+                stats_object["correlations"]["recoded"], vmin=0
+            ),
+            "name": "Recoded",
+        }
+
+    return items
+
+
+def render_correlations_section(stats_object: dict) -> str:
     """Render the correlations HTML.
 
     Args:
@@ -148,66 +203,12 @@ def render_correlations_html(stats_object: dict) -> str:
     Returns:
         The rendered HTML of the correlations component of the profile.
     """
-    values = {}
-    active = ""
-    if "pearson" in stats_object["correlations"]:
-        if active == "":
-            active = "pearson"
-        values["pearson"] = {
-            "matrix": plot.correlation_matrix(stats_object["correlations"]["pearson"]),
-            "name": "Pearson's r",
-        }
+    items = get_correlation_items(stats_object)
 
-    if "spearman" in stats_object["correlations"]:
-        if active == "":
-            active = "spearman"
-        values["spearman"] = {
-            "matrix": plot.correlation_matrix(stats_object["correlations"]["spearman"]),
-            "name": "Spearman's &rho;",
-        }
-
-    if "kendall" in stats_object["correlations"]:
-        if active == "":
-            active = "kendall"
-        values["kendall"] = {
-            "matrix": plot.correlation_matrix(stats_object["correlations"]["kendall"]),
-            "name": "Kendall's &tau;",
-        }
-
-    if "phi_k" in stats_object["correlations"]:
-        if active == "":
-            active = "phi_k"
-        values["phi_k"] = {
-            "matrix": plot.correlation_matrix(
-                stats_object["correlations"]["phi_k"], vmin=0
-            ),
-            "name": "Phik (&phi;<sub><em>k</em></sub>)",
-        }
-
-    if "cramers" in stats_object["correlations"]:
-        if active == "":
-            active = "cramers"
-        values["cramers"] = {
-            "matrix": plot.correlation_matrix(
-                stats_object["correlations"]["cramers"], vmin=0
-            ),
-            "name": "Cramér's V (&phi;<sub><em>c</em></sub>)",
-        }
-
-    if "recoded" in stats_object["correlations"]:
-        if active == "":
-            active = "recoded"
-        values["recoded"] = {
-            "matrix": plot.correlation_matrix(
-                stats_object["correlations"]["recoded"], vmin=0
-            ),
-            "name": "Recoded",
-        }
-
-    return templates.template("correlations.html").render(values=values, active=active)
+    return templates.template("components/tabs.html").render(values=items)
 
 
-def render_missing_html(stats_object: dict) -> str:
+def render_missing_section(stats_object: dict) -> str:
     """Render the missing values HTML.
 
     Args:
@@ -216,10 +217,12 @@ def render_missing_html(stats_object: dict) -> str:
     Returns:
         The missing values component HTML.
     """
-    return templates.template("missing.html").render(values=stats_object["missing"])
+    return templates.template("components/tabs.html").render(
+        values=stats_object["missing"]
+    )
 
 
-def render_variables_html(stats_object: dict) -> str:
+def render_variables_section(stats_object: dict) -> str:
     """Render the HTML for each of the variables in the DataFrame.
 
     Args:
@@ -256,7 +259,6 @@ def render_variables_html(stats_object: dict) -> str:
                     formatted_values["row_classes"]["missing"] = "alert"
 
         if row["type"] in {Variable.TYPE_NUM, Variable.TYPE_DATE}:
-
             formatted_values["histogram"] = histogram(row["histogramdata"], row)
             formatted_values["mini_histogram"] = mini_histogram(
                 row["histogramdata"], row
@@ -339,7 +341,28 @@ def render_variables_html(stats_object: dict) -> str:
     return rows_html
 
 
-def render_sample_html(sample: dict) -> str:
+def get_sample_items(sample: dict):
+    """Create the list of sample items
+
+    Args:
+        sample: dict of samples
+
+    Returns:
+        List of sample items to show in the interface.
+    """
+    items = {}
+    names = {"head": "First rows", "tail": "Last rows"}
+    for key in sample:
+        items[key] = {
+            "name": names[key],
+            "value": '<div id="sample-container" class="col-sm-12">{}</div>'.format(
+                sample[key].to_html(classes="sample table table-striped")
+            ),
+        }
+    return items
+
+
+def render_sample_section(sample: dict) -> str:
     """Render the sample HTML
 
     Args:
@@ -348,13 +371,9 @@ def render_sample_html(sample: dict) -> str:
     Returns:
         The HTML rendering of the samples.
     """
-    formatted_samples = {}
-    for key in sample:
-        formatted_samples[key] = sample[key].to_html(classes="sample table-striped")
-    sample_html = templates.template("sample.html").render(values=formatted_samples)
-    # Previously, we only displayed the first samples.
-    # sample_html = templates.template('sample.html').render(sample_table_html=sample.to_html(classes="sample"))
-    return sample_html
+    items = get_sample_items(sample)
+
+    return templates.template("components/list.html").render(values=items)
 
 
 def to_html(sample: dict, stats_object: dict) -> str:
@@ -382,14 +401,34 @@ def to_html(sample: dict, stats_object: dict) -> str:
             "stats_object badly formatted. Did you generate this using the pandas_profiling.describe() function?"
         )
 
-    render_htmls = {
-        "overview_html": render_overview_html(stats_object),
-        "rows_html": render_variables_html(stats_object),
-        "correlations_html": render_correlations_html(stats_object),
-        "missing_html": render_missing_html(stats_object),
-        "sample_html": render_sample_html(sample),
-        "full_width": config["style"]["full_width"].get(bool),
-    }
+    sections = [
+        {
+            "title": "Overview",
+            "anchor_id": "overview",
+            "content": render_overview_section(stats_object),
+        },
+        {
+            "title": "Variables",
+            "anchor_id": "variables",
+            "content": render_variables_section(stats_object),
+        },
+        {
+            "title": "Correlations",
+            "anchor_id": "correlations",
+            "content": render_correlations_section(stats_object),
+        },
+        {
+            "title": "Missing values",
+            "anchor_id": "missing",
+            "content": render_missing_section(stats_object),
+        },
+        {
+            "title": "Sample",
+            "anchor_id": "sample",
+            "content": render_sample_section(sample),
+        },
+    ]
 
-    # TODO: should be done in the template
-    return templates.template("base.html").render(render_htmls)
+    return templates.template("base.html").render(
+        sections=sections, full_width=config["style"]["full_width"].get(bool)
+    )

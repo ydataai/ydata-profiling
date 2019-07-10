@@ -228,7 +228,7 @@ def missing_heatmap(data: pd.DataFrame) -&gt; str:
     height = 4
     if len(data.columns) &gt; 10:
         height += int((len(data.columns) - 10) / 5)
-    height = max(height, 10)
+    height = min(height, 10)
 
     missingno.heatmap(
         data,
@@ -543,7 +543,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     height = 4
     if len(data.columns) &gt; 10:
         height += int((len(data.columns) - 10) / 5)
-    height = max(height, 10)
+    height = min(height, 10)
 
     missingno.heatmap(
         data,

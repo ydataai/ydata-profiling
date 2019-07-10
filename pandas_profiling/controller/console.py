@@ -75,4 +75,4 @@ def main(args=None) -> None:
     if not args.silent:
         import webbrowser
 
-        webbrowser.open_new_tab(p.file.name)
+        webbrowser.open_new_tab(args.output_file)
