@@ -142,7 +142,7 @@ Read more on getting involved in the [Contribution Guide](https://github.com/pan
 
 ## Dependencies
 
-You need Python 3 to run this package. Other dependencies can be found in the requirements files:
+You need [Python 3](https://python3statement.org/) to run this package. Other dependencies can be found in the requirements files:
 
 | Filename | Requirements|
 |----------|-------------|
