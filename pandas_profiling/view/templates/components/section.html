@@ -1,0 +1,7 @@
+{% if section['content'] | length > 0 %}
+    <div class="row header">
+        <a class="anchor-pos" id="{{ section['anchor_id'] }}"></a>
+        <h1 class="page-header">{{ section['title'] }}</h1>
+    </div>
+    {{ section['content'] }}
+{% endif %}

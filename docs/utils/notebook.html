@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
-<title>pandas_profiling.view API documentation</title>
-<meta name="description" content="All functionality concerned with presentation to the user." />
+<title>pandas_profiling.utils.notebook API documentation</title>
+<meta name="description" content="Utility functions that come in handy when working with Jupyter notebooks" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,43 +17,44 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.view</code></h1>
+<h1 class="title">Module <code>pandas_profiling.utils.notebook</code></h1>
 </header>
 <section id="section-intro">
-<p>All functionality concerned with presentation to the user.</p>
+<p>Utility functions that come in handy when working with Jupyter notebooks</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">&#34;&#34;&#34;All functionality concerned with presentation to the user.&#34;&#34;&#34;</code></pre>
+<pre><code class="python">&#34;&#34;&#34;Utility functions that come in handy when working with Jupyter notebooks&#34;&#34;&#34;
+
+
+def full_width():
+    &#34;&#34;&#34;Resize the notebook to use it&#39;s full width&#34;&#34;&#34;
+    from IPython.core.display import display, HTML
+
+    display(HTML(&#34;&lt;style&gt;.container { width:100% !important; }&lt;/style&gt;&#34;))</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="pandas_profiling.view.formatters" href="formatters.html">pandas_profiling.view.formatters</a></code></dt>
+<dt id="pandas_profiling.utils.notebook.full_width"><code class="name flex">
+<span>def <span class="ident">full_width</span></span>(<span>)</span>
+</code></dt>
 <dd>
-<section class="desc"><p>Formatters are utilities for formatting numbers and certain strings</p></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.view.notebook" href="notebook.html">pandas_profiling.view.notebook</a></code></dt>
-<dd>
-<section class="desc"><p>Functionality related to displaying the profile report in Jupyter notebooks.</p></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.view.plot" href="plot.html">pandas_profiling.view.plot</a></code></dt>
-<dd>
-<section class="desc"><p>Plot functions for the profiling report.</p></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.view.report" href="report.html">pandas_profiling.view.report</a></code></dt>
-<dd>
-<section class="desc"><p>Generate the report.</p></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.view.templates" href="templates.html">pandas_profiling.view.templates</a></code></dt>
-<dd>
-<section class="desc"><p>Contains all templates used for generating the HTML profile report</p></section>
+<section class="desc"><p>Resize the notebook to use it's full width</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def full_width():
+    &#34;&#34;&#34;Resize the notebook to use it&#39;s full width&#34;&#34;&#34;
+    from IPython.core.display import display, HTML
+
+    display(HTML(&#34;&lt;style&gt;.container { width:100% !important; }&lt;/style&gt;&#34;))</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 </section>
@@ -66,16 +67,12 @@
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pandas_profiling" href="../index.html">pandas_profiling</a></code></li>
+<li><code><a title="pandas_profiling.utils" href="index.html">pandas_profiling.utils</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
-<ul>
-<li><code><a title="pandas_profiling.view.formatters" href="formatters.html">pandas_profiling.view.formatters</a></code></li>
-<li><code><a title="pandas_profiling.view.notebook" href="notebook.html">pandas_profiling.view.notebook</a></code></li>
-<li><code><a title="pandas_profiling.view.plot" href="plot.html">pandas_profiling.view.plot</a></code></li>
-<li><code><a title="pandas_profiling.view.report" href="report.html">pandas_profiling.view.report</a></code></li>
-<li><code><a title="pandas_profiling.view.templates" href="templates.html">pandas_profiling.view.templates</a></code></li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.utils.notebook.full_width" href="#pandas_profiling.utils.notebook.full_width">full_width</a></code></li>
 </ul>
 </li>
 </ul>

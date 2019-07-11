@@ -157,7 +157,6 @@ If you would like to be a industry partner or sponsor, please <a href="mailto:pa
 
 .. include:: ../README.md
 &#34;&#34;&#34;
-import html
 import sys
 import warnings
 
@@ -174,6 +173,7 @@ from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 import pandas_profiling.view.templates as templates
 from pandas_profiling.model.describe import describe as describe_df
+from pandas_profiling.view.notebook import display_notebook_iframe
 from pandas_profiling.view.report import to_html
 
 
@@ -319,50 +319,13 @@ class ProfileReport(object):
         &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is &#34;src&#34;, this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
-        When config.notebook.iframe.attribute is &#34;srco&#34;, the same HTML is injected in the &#34;srcdoc&#34; attribute of
+        When config.notebook.iframe.attribute is &#34;srcdoc&#34;, the same HTML is injected in the &#34;srcdoc&#34; attribute of
         the Iframe.
 
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         &#34;&#34;&#34;
-        attribute = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;attribute&#34;].get(str)
-        if attribute == &#34;src&#34;:
-            tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
-            tmp_file.parent.mkdir(exist_ok=True)
-            self.to_file(tmp_file)
-            from IPython.lib.display import IFrame, display
-
-            display(
-                IFrame(
-                    str(tmp_file),
-                    width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-                    height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
-                )
-            )
-        elif attribute:
-            from IPython.core.display import HTML, display
-
-            iframe = &#34;&#34;&#34;
-                &lt;iframe
-                    width=&#34;{width}&#34;
-                    height=&#34;{height}&#34;
-                    srcdoc=&#34;{src}&#34;
-                    frameborder=&#34;0&#34;
-                    allowfullscreen
-                &gt;&lt;/iframe&gt;
-                &#34;&#34;&#34;
-            iframe = iframe.format(
-                width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-                height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
-                src=html.escape(self.to_html()),
-            )
-            display(HTML(iframe))
-        else:
-            raise ValueError(
-                &#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {}).&#39;.format(
-                    attribute
-                )
-            )
+        display_notebook_iframe(self)
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
@@ -556,50 +519,13 @@ class ProfileReport(object):
         &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is &#34;src&#34;, this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
-        When config.notebook.iframe.attribute is &#34;srco&#34;, the same HTML is injected in the &#34;srcdoc&#34; attribute of
+        When config.notebook.iframe.attribute is &#34;srcdoc&#34;, the same HTML is injected in the &#34;srcdoc&#34; attribute of
         the Iframe.
 
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         &#34;&#34;&#34;
-        attribute = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;attribute&#34;].get(str)
-        if attribute == &#34;src&#34;:
-            tmp_file = Path(&#34;./ipynb_tmp&#34;) / self.get_unique_file_name()
-            tmp_file.parent.mkdir(exist_ok=True)
-            self.to_file(tmp_file)
-            from IPython.lib.display import IFrame, display
-
-            display(
-                IFrame(
-                    str(tmp_file),
-                    width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-                    height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
-                )
-            )
-        elif attribute:
-            from IPython.core.display import HTML, display
-
-            iframe = &#34;&#34;&#34;
-                &lt;iframe
-                    width=&#34;{width}&#34;
-                    height=&#34;{height}&#34;
-                    srcdoc=&#34;{src}&#34;
-                    frameborder=&#34;0&#34;
-                    allowfullscreen
-                &gt;&lt;/iframe&gt;
-                &#34;&#34;&#34;
-            iframe = iframe.format(
-                width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-                height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
-                src=html.escape(self.to_html()),
-            )
-            display(HTML(iframe))
-        else:
-            raise ValueError(
-                &#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {}).&#39;.format(
-                    attribute
-                )
-            )
+        display_notebook_iframe(self)
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;

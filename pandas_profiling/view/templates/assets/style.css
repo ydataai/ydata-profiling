@@ -245,7 +245,9 @@ table.freq.mini {
     width: 100%;
     overflow-y: hidden;
 }
-
+.img-responsive{
+    max-width: 99%;
+}
 .footer-text{
     padding:20px;
 }
@@ -265,8 +267,13 @@ a.anchor-pos-variable{
     /*top: -70px;*/
 }
 
-#sample-head, #sample-tail{
+#sample-container{
     overflow: auto;
     width: 100%;
     overflow-y: hidden;
+}
+
+#overview-content td, #overview-content th{
+    border-top: 0;
+    line-height: 1;
 }

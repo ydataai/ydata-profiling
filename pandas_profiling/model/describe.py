@@ -389,10 +389,14 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
     missing_map = {
-        "matrix": {"func": plot.missing_matrix, "min_missing": 0},
-        "bar": {"func": plot.missing_bar, "min_missing": 0},
-        "heatmap": {"func": plot.missing_heatmap, "min_missing": 2},
-        "dendrogram": {"func": plot.missing_dendrogram, "min_missing": 1},
+        "bar": {"func": plot.missing_bar, "min_missing": 0, "name": "Count"},
+        "matrix": {"func": plot.missing_matrix, "min_missing": 0, "name": "Matrix"},
+        "heatmap": {"func": plot.missing_heatmap, "min_missing": 2, "name": "Heatmap"},
+        "dendrogram": {
+            "func": plot.missing_dendrogram,
+            "min_missing": 1,
+            "name": "Dendrogram",
+        },
     }
 
     missing = {}
@@ -405,7 +409,10 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
                 table_stats["n_vars_with_missing"] - table_stats["n_vars_all_missing"]
                 >= settings["min_missing"]
             ):
-                missing[name] = settings["func"](df)
+                missing[name] = {
+                    "name": settings["name"],
+                    "matrix": settings["func"](df),
+                }
     return missing
 
 

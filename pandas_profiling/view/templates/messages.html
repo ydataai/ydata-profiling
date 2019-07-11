@@ -1,7 +1,7 @@
 {% if messages %}
 <div class="col-sm-12" style="padding-left: 1em;">
     <p class="h4">Warnings</p>
-    <table class="list-warnings">
+    <table class="table table-condensed list-warnings">
         {% for message in messages %}
             <tr>
             {% if message.message_type == MessageType.CONST %}
