@@ -127,6 +127,38 @@ If <code>pandas-profiling</code> was helpful or interesting to you, you might wa
 There are several ways of contributing and helping our thousands of users.
 If you would like to be a industry partner or sponsor, please <a href="mailto:pandasprofiling@gmail.com">drop us a line</a>.</p>
 <p>Read more on getting involved in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md">Contribution Guide</a>.</p>
+<h2 id="editor-integration">Editor integration</h2>
+<h3 id="pycharm-integration">PyCharm integration</h3>
+<ol>
+<li>Install <code>pandas-profiling</code> via the instructions above</li>
+<li>
+<p>Locate your <code>pandas-profiling</code> executable.</p>
+<p>On macOS / Linux / BSD:</p>
+<p><code>console
+$ which pandas_profiling
+(example) /usr/local/bin/pandas_profiling</code></p>
+<p>On Windows:</p>
+<p><code>console
+$ where pandas_profiling
+(example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe</code></p>
+</li>
+<li>
+<p>In Pycharm, go to <em>Settings</em> (or <em>Preferences</em> on macOS) &gt; <em>Tools</em> &gt; <em>External tools</em></p>
+</li>
+<li>Click the <em>+</em> icon to add a new external tool</li>
+<li>Insert the following values<ul>
+<li>Name: Pandas Profiling</li>
+<li>Program: <em><strong>The location obtained in step 2</strong></em></li>
+<li>Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"</li>
+<li>Working Directory: $ProjectFileDir$</li>
+</ul>
+</li>
+</ol>
+<p><img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png"></p>
+<p>To use the PyCharm Integration, right click on any dataset file:
+<em>External Tools</em> &gt; <em>Pandas Profiling</em>.</p>
+<h3 id="other-integrations">Other integrations</h3>
+<p>Other editor integrations may be contributed via pull requests.</p>
 <h2 id="dependencies">Dependencies</h2>
 <p>You need <a href="https://python3statement.org/">Python 3</a> to run this package. Other dependencies can be found in the requirements files:</p>
 <table>
@@ -699,6 +731,11 @@ for using with frameworks.</p>
 </ul>
 </li>
 <li><a href="#how-to-contribute">How to contribute</a></li>
+<li><a href="#editor-integration">Editor integration</a><ul>
+<li><a href="#pycharm-integration">PyCharm integration</a></li>
+<li><a href="#other-integrations">Other integrations</a></li>
+</ul>
+</li>
 <li><a href="#dependencies">Dependencies</a></li>
 </ul>
 </li>

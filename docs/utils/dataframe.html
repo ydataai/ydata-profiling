@@ -24,7 +24,73 @@
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;Utils for pandas DataFrames.&#34;&#34;&#34;
+import warnings
+from pathlib import Path
+
 import pandas as pd
+
+
+def warn_read(extension):
+    &#34;&#34;&#34;Warn the user when an extension is not supported.
+
+    Args:
+        extension: The extension that is not supported.
+    &#34;&#34;&#34;
+    warnings.warn(
+        &#34;There was an attempt to read a file with extension {extension}, we assume it to be in CSV format.\n&#34;
+        &#34;To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas\n&#34;
+        &#34;(docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)\n&#34;
+        &#34;If you think this extension should be supported, please report this as an issue:\n&#34;
+        &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;.format(
+            extension=extension
+        )
+    )
+
+
+def read_pandas(file_name: Path) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Read DataFrame based on the file extension. This function is used when the file is in a standard format.
+    Various file types are supported (.csv, .json, .jsonl, .data, .tsv, .xls, .xlsx, .xpt, .sas7bdat, .parquet)
+
+    Args:
+        file_name: the file to read
+
+    Returns:
+        DataFrame
+
+    Notes:
+        This function is based on pandas IO tools:
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html
+        https://pandas.pydata.org/pandas-docs/stable/reference/io.html
+
+        This function is not intended to be flexible or complete. The main use case is to be able to read files without
+        user input, which is currently used in the editor integration. For more advanced use cases, the user should load
+        the DataFrame in code.
+    &#34;&#34;&#34;
+    extension = file_name.suffix.lower()
+    if extension == &#34;.json&#34;:
+        df = pd.read_json(str(file_name))
+    elif extension == &#34;.jsonl&#34;:
+        df = pd.read_json(str(file_name), lines=True)
+    elif extension == &#34;.dta&#34;:
+        df = pd.read_stata(str(file_name))
+    elif extension == &#34;.tsv&#34;:
+        df = pd.read_csv(str(file_name), sep=&#34;\t&#34;)
+    elif extension in [&#34;.xls&#34;, &#34;.xlsx&#34;]:
+        df = pd.read_excel(str(file_name))
+    elif extension in [&#34;.hdf&#34;, &#34;.h5&#34;]:
+        df = pd.read_hdf(str(file_name))
+    elif extension in [&#34;.sas7bdat&#34;, &#34;.xpt&#34;]:
+        df = pd.read_sas(str(file_name))
+    elif extension == &#34;.parquet&#34;:
+        df = pd.read_parquet(str(file_name))
+    elif extension in [&#34;.pkl&#34;, &#34;.pickle&#34;]:
+        df = pd.read_pickle(str(file_name))
+    else:
+        if extension != &#34;.csv&#34;:
+            warn_read(extension)
+
+        df = pd.read_csv(str(file_name))
+    return df
 
 
 def clean_column_names(df):
@@ -196,6 +262,77 @@ def expand_mixed(df: pd.DataFrame, types=None) -&gt; pd.DataFrame:
     return df</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.utils.dataframe.read_pandas"><code class="name flex">
+<span>def <span class="ident">read_pandas</span></span>(<span>file_name)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Read DataFrame based on the file extension. This function is used when the file is in a standard format.
+Various file types are supported (.csv, .json, .jsonl, .data, .tsv, .xls, .xlsx, .xpt, .sas7bdat, .parquet)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_name</code></strong></dt>
+<dd>the file to read</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>This function is based on pandas IO tools:
+<a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html">https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html</a>
+<a href="https://pandas.pydata.org/pandas-docs/stable/reference/io.html">https://pandas.pydata.org/pandas-docs/stable/reference/io.html</a></p>
+<p>This function is not intended to be flexible or complete. The main use case is to be able to read files without
+user input, which is currently used in the editor integration. For more advanced use cases, the user should load
+the DataFrame in code.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def read_pandas(file_name: Path) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Read DataFrame based on the file extension. This function is used when the file is in a standard format.
+    Various file types are supported (.csv, .json, .jsonl, .data, .tsv, .xls, .xlsx, .xpt, .sas7bdat, .parquet)
+
+    Args:
+        file_name: the file to read
+
+    Returns:
+        DataFrame
+
+    Notes:
+        This function is based on pandas IO tools:
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html
+        https://pandas.pydata.org/pandas-docs/stable/reference/io.html
+
+        This function is not intended to be flexible or complete. The main use case is to be able to read files without
+        user input, which is currently used in the editor integration. For more advanced use cases, the user should load
+        the DataFrame in code.
+    &#34;&#34;&#34;
+    extension = file_name.suffix.lower()
+    if extension == &#34;.json&#34;:
+        df = pd.read_json(str(file_name))
+    elif extension == &#34;.jsonl&#34;:
+        df = pd.read_json(str(file_name), lines=True)
+    elif extension == &#34;.dta&#34;:
+        df = pd.read_stata(str(file_name))
+    elif extension == &#34;.tsv&#34;:
+        df = pd.read_csv(str(file_name), sep=&#34;\t&#34;)
+    elif extension in [&#34;.xls&#34;, &#34;.xlsx&#34;]:
+        df = pd.read_excel(str(file_name))
+    elif extension in [&#34;.hdf&#34;, &#34;.h5&#34;]:
+        df = pd.read_hdf(str(file_name))
+    elif extension in [&#34;.sas7bdat&#34;, &#34;.xpt&#34;]:
+        df = pd.read_sas(str(file_name))
+    elif extension == &#34;.parquet&#34;:
+        df = pd.read_parquet(str(file_name))
+    elif extension in [&#34;.pkl&#34;, &#34;.pickle&#34;]:
+        df = pd.read_pickle(str(file_name))
+    else:
+        if extension != &#34;.csv&#34;:
+            warn_read(extension)
+
+        df = pd.read_csv(str(file_name))
+    return df</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.utils.dataframe.rename_index"><code class="name flex">
 <span>def <span class="ident">rename_index</span></span>(<span>df)</span>
 </code></dt>
@@ -228,6 +365,35 @@ to be <code>df_index</code>.</p>
     return df</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.utils.dataframe.warn_read"><code class="name flex">
+<span>def <span class="ident">warn_read</span></span>(<span>extension)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Warn the user when an extension is not supported.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>extension</code></strong></dt>
+<dd>The extension that is not supported.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def warn_read(extension):
+    &#34;&#34;&#34;Warn the user when an extension is not supported.
+
+    Args:
+        extension: The extension that is not supported.
+    &#34;&#34;&#34;
+    warnings.warn(
+        &#34;There was an attempt to read a file with extension {extension}, we assume it to be in CSV format.\n&#34;
+        &#34;To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas\n&#34;
+        &#34;(docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)\n&#34;
+        &#34;If you think this extension should be supported, please report this as an issue:\n&#34;
+        &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;.format(
+            extension=extension
+        )
+    )</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -248,7 +414,9 @@ to be <code>df_index</code>.</p>
 <ul class="">
 <li><code><a title="pandas_profiling.utils.dataframe.clean_column_names" href="#pandas_profiling.utils.dataframe.clean_column_names">clean_column_names</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.expand_mixed" href="#pandas_profiling.utils.dataframe.expand_mixed">expand_mixed</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.read_pandas" href="#pandas_profiling.utils.dataframe.read_pandas">read_pandas</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.rename_index" href="#pandas_profiling.utils.dataframe.rename_index">rename_index</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.warn_read" href="#pandas_profiling.utils.dataframe.warn_read">warn_read</a></code></li>
 </ul>
 </li>
 </ul>

@@ -29,53 +29,8 @@
         Toggle details
     </a>
 </div>
-<div class="row collapse col-sm-12" id="descriptives{{ values['varid'] }}">
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active">
-            <a href="#freqtable{{ values['varid'] }}"
-                                                  aria-controls="freqtable{{ values['varid'] }}"
-                                                  role="tab" data-toggle="tab">Frequency</a>
-        </li>
-        {% if values['composition'] %}
-            <li role="presentation">
-                <a href="#composition{{ values['varid'] }}"
-                                       aria-controls="composition{{ values['varid'] }}" role="tab"
-                                       data-toggle="tab">Composition</a>
-            </li>
-        {% endif %}
-    </ul>
-
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active col-sm-12" id="freqtable{{ values['varid'] }}">
-            {{ values['freqtable'] }}
-        </div>
-        {% if values['composition'] %}
-            <div role="tabpanel" class="tab-pane extrapadding row" id="composition{{ values['varid'] }}">
-                <div class="col-sm-4">
-                    <table class="stats indent">
-                        <tr class="{{ values['row_classes']['max_length'] }}">
-                            <th>Max length</th>
-                            <td>{{ values['max_length'] | fmt_numeric }}</td>
-                        </tr>
-                        <tr class="{{ values['row_classes']['mean_length'] }}">
-                            <th>Mean length</th>
-                            <td>{{ values['mean_length'] | fmt_numeric }}</td>
-                        </tr>
-                        <tr class="{{ values['row_classes']['min_length'] }}">
-                            <th>Min length</th>
-                            <td>{{ values['min_length'] | fmt_numeric }}</td>
-                        </tr>
-                        {% for key in values['composition'] %}
-                            <tr>
-                                <th>Contains {{ key }}</th>
-                                <td>{{ values['composition'][key] }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-</div>
+{% with values=values['sections'], anchor_id=values['varid'], classes='collapse col-sm-12', id='descriptives' ~ values['varid']|string %}
+    {% include "components/tabs.html" %}
+{% endwith %}
 
 {% include '_row_footer.html' %}

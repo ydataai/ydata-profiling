@@ -8,7 +8,7 @@ with (source_root / "README.md").open(encoding="utf-8") as f:
     long_description = f.read()
 
 
-version = "2.1.2"
+version = "2.2.0"
 
 with (source_root / "pandas_profiling" / "version.py").open("w", encoding="utf-8") as f:
     f.writelines(
@@ -32,10 +32,14 @@ setup(
         "pandas>=0.19",
         "matplotlib>=1.4",
         "jinja2>=2.8",
-        "missingno>=0.4.1",
+        "missingno>=0.4.2",  # Could be optional
         "htmlmin>=0.1.12",
-        "phik>=0.9.8",
+        "phik>=0.9.8",  # Could be optional
         "confuse>=1.0.0",
+        "astropy",  # Could be optional
+    ],
+    extras_requires=[
+        # {"variable_bins": ["astropy"]}
     ],
     include_package_data=True,
     classifiers=[

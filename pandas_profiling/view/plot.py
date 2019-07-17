@@ -2,6 +2,7 @@
 
 import base64
 from io import BytesIO
+from typing import Union
 from urllib.parse import quote
 
 import matplotlib
@@ -21,22 +22,23 @@ matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
 
 
 def _plot_histogram(
-    series: pd.Series, series_description: dict, figsize: tuple = (6, 4)
+    series: pd.Series,
+    series_description: dict,
+    bins: Union[int, np.ndarray],
+    figsize: tuple = (6, 4),
 ):
     """Plot an histogram from the data and return the AxesSubplot object.
 
     Args:
         series: The data to plot
         figsize: The size of the figure (width, height) in inches, default (6,4)
+        bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
         The histogram plot.
+
+
     """
-
-    # Bins should never be larger than the number of distinct values
-    bins = config["plot"]["histogram"]["bins"].get(int)
-    bins = min(series_description["distinct_count_with_nan"], bins)
-
     if series_description["type"] == Variable.TYPE_DATE:
         # Workaround for https://github.com/pandas-dev/pandas/issues/17372
         fig = plt.figure(figsize=figsize)
@@ -58,35 +60,41 @@ def _plot_histogram(
     return plot
 
 
-def histogram(series: pd.Series, series_description: dict) -> str:
+def histogram(
+    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+) -> str:
     """Plot an histogram of the data.
 
     Args:
       series_description:
       series: The data to plot.
+      bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
       The resulting histogram encoded as a string.
 
     """
-    plot = _plot_histogram(series, series_description)
+    plot = _plot_histogram(series, series_description, bins)
     plot.xaxis.set_tick_params(rotation=45)
     plot.figure.tight_layout()
 
     return plot_360_n0sc0pe(plt)
 
 
-def mini_histogram(series: pd.Series, series_description: dict) -> str:
+def mini_histogram(
+    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+) -> str:
     """Plot a small (mini) histogram of the data.
 
     Args:
       series_description:
       series: The data to plot.
+      bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
       The resulting mini histogram encoded as a string.
     """
-    plot = _plot_histogram(series, series_description, figsize=(2, 1.5))
+    plot = _plot_histogram(series, series_description, bins, figsize=(2, 1.5))
     plot.axes.get_yaxis().set_visible(False)
     plot.set_facecolor("w")
 
@@ -137,6 +145,8 @@ def get_font_size(data):
     Returns:
         Font size for missing values plots.
     """
+    max_label_length = max([len(label) for label in data.columns])
+
     if len(data.columns) < 20:
         font_size = 13
     elif 20 <= len(data.columns) < 40:
@@ -145,6 +155,8 @@ def get_font_size(data):
         font_size = 10
     else:
         font_size = 8
+
+    font_size *= min(1.0, 20.0 / max_label_length)
     return font_size
 
 
@@ -161,7 +173,7 @@ def missing_matrix(data: pd.DataFrame) -> str:
         data,
         figsize=(10, 4),
         color=hex_to_rgb(config["style"]["primary_color"].get(str)),
-        fontsize=get_font_size(data),
+        fontsize=get_font_size(data) / 20 * 16,
         sparkline=False,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
@@ -225,7 +237,7 @@ def missing_dendrogram(data: pd.DataFrame) -> str:
       The resulting missing values dendrogram plot encoded as a string.
 
     """
-    missingno.dendrogram(data, fontsize=get_font_size(data))
+    missingno.dendrogram(data, fontsize=get_font_size(data) * 2.0)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(plt)
 

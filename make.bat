@@ -9,7 +9,7 @@ IF "%1%" == "docs" (
 )
 
 IF "%1" == "test" (
-    pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg
+    pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg tests/
     ECHO "Tests completed!"
     GOTO end
 )
@@ -41,8 +41,14 @@ IF "%1" == "lint" (
     GOTO end
 )
 
+IF "%1" == "install" (
+	pip install -e .
+	GOTO end
+)
+
 IF "%1%" == "all" (
     make lint
+    make install
     make examples
     make docs
     make test

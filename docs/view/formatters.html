@@ -82,9 +82,11 @@ def fmt_percent(value: float, edge_cases: bool = True) -&gt; str:
     Returns:
         The percentage with 1 point precision.
     &#34;&#34;&#34;
-    if edge_cases and round(value, 1) == 0 and value &gt; 0:
+    if not (1.0 &gt;= value &gt;= 0.0):
+        raise ValueError(&#34;Value &#39;{}&#39; should be a ratio between 1 and 0.&#34;.format(value))
+    if edge_cases and round(value, 3) == 0 and value &gt; 0:
         return &#34;&lt; 0.1%&#34;
-    if edge_cases and round(value, 1) == 1 and value &lt; 1:
+    if edge_cases and round(value, 3) == 1 and value &lt; 1:
         return &#34;&gt; 99.9%&#34;
 
     return &#34;{:2.1f}%&#34;.format(value * 100)
@@ -314,9 +316,11 @@ def hex_to_rgb(hex):
     Returns:
         The percentage with 1 point precision.
     &#34;&#34;&#34;
-    if edge_cases and round(value, 1) == 0 and value &gt; 0:
+    if not (1.0 &gt;= value &gt;= 0.0):
+        raise ValueError(&#34;Value &#39;{}&#39; should be a ratio between 1 and 0.&#34;.format(value))
+    if edge_cases and round(value, 3) == 0 and value &gt; 0:
         return &#34;&lt; 0.1%&#34;
-    if edge_cases and round(value, 1) == 1 and value &lt; 1:
+    if edge_cases and round(value, 3) == 1 and value &lt; 1:
         return &#34;&gt; 99.9%&#34;
 
     return &#34;{:2.1f}%&#34;.format(value * 100)</code></pre>

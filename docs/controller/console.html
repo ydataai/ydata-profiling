@@ -32,6 +32,8 @@ from pandas_profiling import __version__
 from pandas_profiling.config import config
 import argparse
 
+from pandas_profiling.utils.dataframe import read_pandas
+
 
 def parse_args(args: list or None = None) -&gt; argparse.Namespace:
     &#34;&#34;&#34;Parse the command line arguments for the `pandas_profiling` binary.
@@ -72,7 +74,11 @@ def parse_args(args: list or None = None) -&gt; argparse.Namespace:
         default=&#34;Pandas Profiling Report&#34;,
         help=&#34;Title for the report&#34;,
     )
-    parser.add_argument(&#34;input_file&#34;, type=str, help=&#34;CSV file to profile&#34;)
+    parser.add_argument(
+        &#34;input_file&#34;,
+        type=Path,
+        help=&#34;CSV file (or other file type supported by pandas) to profile&#34;,
+    )
     parser.add_argument(&#34;output_file&#34;, type=Path, help=&#34;Output report file&#34;)
 
     return parser.parse_args(args)
@@ -90,7 +96,7 @@ def main(args=None) -&gt; None:
     config.set_args(args, dots=True)
 
     # read the DataFrame
-    df = pd.read_csv(str(args.input_file))
+    df = read_pandas(args.input_file)
 
     # Generate the profiling report
     p = df.profile_report()
@@ -134,7 +140,7 @@ def main(args=None) -&gt; None:
     config.set_args(args, dots=True)
 
     # read the DataFrame
-    df = pd.read_csv(str(args.input_file))
+    df = read_pandas(args.input_file)
 
     # Generate the profiling report
     p = df.profile_report()
@@ -200,7 +206,11 @@ def main(args=None) -&gt; None:
         default=&#34;Pandas Profiling Report&#34;,
         help=&#34;Title for the report&#34;,
     )
-    parser.add_argument(&#34;input_file&#34;, type=str, help=&#34;CSV file to profile&#34;)
+    parser.add_argument(
+        &#34;input_file&#34;,
+        type=Path,
+        help=&#34;CSV file (or other file type supported by pandas) to profile&#34;,
+    )
     parser.add_argument(&#34;output_file&#34;, type=Path, help=&#34;Output report file&#34;)
 
     return parser.parse_args(args)</code></pre>
