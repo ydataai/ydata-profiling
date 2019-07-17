@@ -675,3 +675,14 @@ def test_describe_df(describe_data, expected_results):
             assert (
                 "histogramdata" in results["variables"][col]
             ), "Mini-histogram missing for column {} ".format(col)
+
+
+def test_describe_empty():
+    empty_frame = pd.DataFrame()
+    with pytest.raises(ValueError):
+        describe(empty_frame)
+
+
+def test_describe_list():
+    with pytest.raises(TypeError):
+        describe([1, 2, 3])

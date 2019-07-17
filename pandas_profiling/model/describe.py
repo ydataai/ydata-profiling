@@ -40,7 +40,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     Notes:
         When 'bins_type' is set to 'bayesian_blocks', astropy.stats.bayesian_blocks is used to determine the number of
         bins. Read the docs:
-
+        https://docs.astropy.org/en/stable/visualization/histogram.html
         https://docs.astropy.org/en/stable/api/astropy.stats.bayesian_blocks.html
 
         This method might print warnings, which we suppress.
