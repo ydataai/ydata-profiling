@@ -27,7 +27,13 @@
 import jinja2
 from jinja2 import Environment, PackageLoader
 
-from pandas_profiling.view.formatters import fmt_percent, fmt_bytesize, fmt_numeric, fmt
+from pandas_profiling.view.formatters import (
+    fmt_percent,
+    fmt_bytesize,
+    fmt_numeric,
+    fmt_array,
+    fmt,
+)
 
 # Initializing Jinja
 package_loader = PackageLoader(&#34;pandas_profiling&#34;, &#34;view/templates&#34;)
@@ -35,6 +41,7 @@ jinja2_env = Environment(lstrip_blocks=True, trim_blocks=True, loader=package_lo
 jinja2_env.filters[&#34;fmt_percent&#34;] = fmt_percent
 jinja2_env.filters[&#34;fmt_bytesize&#34;] = fmt_bytesize
 jinja2_env.filters[&#34;fmt_numeric&#34;] = fmt_numeric
+jinja2_env.filters[&#34;fmt_array&#34;] = fmt_array
 jinja2_env.filters[&#34;fmt&#34;] = fmt
 
 

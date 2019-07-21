@@ -1,6 +1,12 @@
 import pytest
+import numpy as np
 
-from pandas_profiling.view.formatters import fmt_color, fmt_class, fmt_bytesize
+from pandas_profiling.view.formatters import (
+    fmt_color,
+    fmt_class,
+    fmt_bytesize,
+    fmt_array,
+)
 
 
 @pytest.mark.parametrize(
@@ -42,3 +48,23 @@ def test_fmt_bytesize(num, fmt, expected):
         assert fmt_bytesize(num) == expected
     else:
         assert fmt_bytesize(num, fmt) == expected
+
+
+@pytest.mark.parametrize(
+    "array, threshold, expected",
+    [
+        (np.array([1, 2, 3], dtype=np.int16), 3, "[1 2 3]"),
+        (
+            np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float32),
+            1,
+            "[ 1. ... 10.]",
+        ),
+        (
+            np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float32),
+            3,
+            "[ 1.  2.  3....  8.  9. 10.]",
+        ),
+    ],
+)
+def test_fmt_array(array, threshold, expected):
+    assert fmt_array(array, threshold) == expected

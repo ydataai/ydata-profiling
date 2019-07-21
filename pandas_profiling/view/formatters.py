@@ -1,5 +1,6 @@
 """Formatters are utilities for formatting numbers and certain strings"""
 from jinja2.utils import escape
+import numpy as np
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -77,6 +78,22 @@ def fmt_numeric(value: float) -> str:
         The numeric value with 5 point precision.
     """
     return "{:.5g}".format(value)
+
+
+def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
+    """Format numpy arrays.
+
+    Args:
+        value: Array to format.
+        threshold: Threshold at which to show ellipsis
+
+    Returns:
+        The string representation of the numpy array.
+    """
+    with np.printoptions(threshold=3, edgeitems=threshold):
+        value = str(value)
+
+    return value
 
 
 def fmt(value) -> str:

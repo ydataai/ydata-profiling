@@ -16,7 +16,7 @@ def warn_read(extension):
         "To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas\n"
         "(docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)\n"
         "If you think this extension should be supported, please report this as an issue:\n"
-        "https://github.com/pandas-profiling/pandas-profiling/issues\n".format(
+        "https://github.com/pandas-profiling/pandas-profiling/issues".format(
             extension=extension
         )
     )
