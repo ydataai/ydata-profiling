@@ -25,6 +25,7 @@
 <summary>Source code</summary>
 <pre><code class="python">&#34;&#34;&#34;Formatters are utilities for formatting numbers and certain strings&#34;&#34;&#34;
 from jinja2.utils import escape
+import numpy as np
 
 
 def fmt_color(text: str, color: str) -&gt; str:
@@ -104,6 +105,22 @@ def fmt_numeric(value: float) -&gt; str:
     return &#34;{:.5g}&#34;.format(value)
 
 
+def fmt_array(value: np.ndarray, threshold=np.nan) -&gt; str:
+    &#34;&#34;&#34;Format numpy arrays.
+
+    Args:
+        value: Array to format.
+        threshold: Threshold at which to show ellipsis
+
+    Returns:
+        The string representation of the numpy array.
+    &#34;&#34;&#34;
+    with np.printoptions(threshold=3, edgeitems=threshold):
+        value = str(value)
+
+    return value
+
+
 def fmt(value) -&gt; str:
     &#34;&#34;&#34;Format any value.
 
@@ -169,6 +186,38 @@ def hex_to_rgb(hex):
         return fmt_numeric(value)
     else:
         return str(escape(value))</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.view.formatters.fmt_array"><code class="name flex">
+<span>def <span class="ident">fmt_array</span></span>(<span>value, threshold=nan)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Format numpy arrays.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>value</code></strong></dt>
+<dd>Array to format.</dd>
+<dt><strong><code>threshold</code></strong></dt>
+<dd>Threshold at which to show ellipsis</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The string representation of the numpy array.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def fmt_array(value: np.ndarray, threshold=np.nan) -&gt; str:
+    &#34;&#34;&#34;Format numpy arrays.
+
+    Args:
+        value: Array to format.
+        threshold: Threshold at which to show ellipsis
+
+    Returns:
+        The string representation of the numpy array.
+    &#34;&#34;&#34;
+    with np.printoptions(threshold=3, edgeitems=threshold):
+        value = str(value)
+
+    return value</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.view.formatters.fmt_bytesize"><code class="name flex">
@@ -375,6 +424,7 @@ def hex_to_rgb(hex):
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
 <li><code><a title="pandas_profiling.view.formatters.fmt" href="#pandas_profiling.view.formatters.fmt">fmt</a></code></li>
+<li><code><a title="pandas_profiling.view.formatters.fmt_array" href="#pandas_profiling.view.formatters.fmt_array">fmt_array</a></code></li>
 <li><code><a title="pandas_profiling.view.formatters.fmt_bytesize" href="#pandas_profiling.view.formatters.fmt_bytesize">fmt_bytesize</a></code></li>
 <li><code><a title="pandas_profiling.view.formatters.fmt_class" href="#pandas_profiling.view.formatters.fmt_class">fmt_class</a></code></li>
 <li><code><a title="pandas_profiling.view.formatters.fmt_color" href="#pandas_profiling.view.formatters.fmt_color">fmt_color</a></code></li>

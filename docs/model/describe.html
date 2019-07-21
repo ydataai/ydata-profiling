@@ -110,7 +110,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
             ret = bayesian_blocks(stats[&#34;histogramdata&#34;])
 
             # Sanity check
-            if not np.isnan(ret).any():
+            if not np.isnan(ret).any() and ret.size &gt; 1:
                 stats[&#34;histogram_bins_bayesian_blocks&#34;] = ret
 
     return stats
@@ -386,6 +386,7 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
         A dictionary that contains the table statistics.
     &#34;&#34;&#34;
     n = len(df)
+    # TODO: deep=True?
     memory_size = df.memory_usage(index=True).sum()
     record_size = float(memory_size) / n
 
@@ -1041,7 +1042,7 @@ bins. Read the docs:
             ret = bayesian_blocks(stats[&#34;histogramdata&#34;])
 
             # Sanity check
-            if not np.isnan(ret).any():
+            if not np.isnan(ret).any() and ret.size &gt; 1:
                 stats[&#34;histogram_bins_bayesian_blocks&#34;] = ret
 
     return stats</code></pre>
@@ -1128,6 +1129,7 @@ bins. Read the docs:
         A dictionary that contains the table statistics.
     &#34;&#34;&#34;
     n = len(df)
+    # TODO: deep=True?
     memory_size = df.memory_usage(index=True).sum()
     record_size = float(memory_size) / n
 
