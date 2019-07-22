@@ -2,11 +2,13 @@
 import multiprocessing.pool
 import multiprocessing
 import itertools
+import warnings
 from typing import Tuple
 from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
+from astropy.stats import bayesian_blocks
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model.messages import (
@@ -34,6 +36,15 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
 
     Returns:
         A dict containing calculated series description values.
+
+    Notes:
+        When 'bins_type' is set to 'bayesian_blocks', astropy.stats.bayesian_blocks is used to determine the number of
+        bins. Read the docs:
+        https://docs.astropy.org/en/stable/visualization/histogram.html
+        https://docs.astropy.org/en/stable/api/astropy.stats.bayesian_blocks.html
+
+        This method might print warnings, which we suppress.
+        https://github.com/astropy/astropy/issues/4927
     """
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
@@ -62,6 +73,21 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
     stats["p_zeros"] = float(stats["n_zeros"]) / len(series)
 
+    bins = config["plot"]["histogram"]["bins"].get(int)
+    # Bins should never be larger than the number of distinct values
+    bins = min(series_description["distinct_count_with_nan"], bins)
+    stats["histogram_bins"] = bins
+
+    bayesian_blocks_bins = config["plot"]["histogram"]["bayesian_blocks_bins"].get(bool)
+    if bayesian_blocks_bins:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            ret = bayesian_blocks(stats["histogramdata"])
+
+            # Sanity check
+            if not np.isnan(ret).any() and ret.size > 1:
+                stats["histogram_bins_bayesian_blocks"] = ret
+
     return stats
 
 
@@ -75,11 +101,12 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
     Returns:
         A dict containing calculated series description values.
     """
-    stats = {
-        "min": series.min(),
-        "max": series.max(),
-        "histogramdata": series,  # TODO: calc histogram here?
-    }
+    stats = {"min": series.min(), "max": series.max(), "histogramdata": series}
+
+    bins = config["plot"]["histogram"]["bins"].get(int)
+    # Bins should never be larger than the number of distinct values
+    bins = min(series_description["distinct_count_with_nan"], bins)
+    stats["histogram_bins"] = bins
 
     stats["range"] = stats["max"] - stats["min"]
 
@@ -331,9 +358,10 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
       variable_stats: Previously calculated statistic on the DataFrame.
 
     Returns:
-        A dictionary containg the table statistics.
+        A dictionary that contains the table statistics.
     """
     n = len(df)
+    # TODO: deep=True?
     memory_size = df.memory_usage(index=True).sum()
     record_size = float(memory_size) / n
 
@@ -378,6 +406,19 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     return table_stats
 
 
+def warn_missing(missing_name, error):
+    warnings.warn(
+        "There was an attempt to generate the {missing_name} missing values diagrams, but this failed.\n"
+        "To hide this warning, disable the calculation\n"
+        '(using `df.profile_report(missing_diagrams={{"{missing_name}": False}}`)\n'
+        "If this is problematic for your use case, please report this as an issue:\n"
+        "https://github.com/pandas-profiling/pandas-profiling/issues\n"
+        "(include the error message: '{error}')".format(
+            missing_name=missing_name, error=error
+        )
+    )
+
+
 def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
@@ -405,14 +446,18 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
             config["missing_diagrams"][name].get(bool)
             and table_stats["n_vars_with_missing"] >= settings["min_missing"]
         ):
-            if name != "heatmap" or (
-                table_stats["n_vars_with_missing"] - table_stats["n_vars_all_missing"]
-                >= settings["min_missing"]
-            ):
-                missing[name] = {
-                    "name": settings["name"],
-                    "matrix": settings["func"](df),
-                }
+            try:
+                if name != "heatmap" or (
+                    table_stats["n_vars_with_missing"]
+                    - table_stats["n_vars_all_missing"]
+                    >= settings["min_missing"]
+                ):
+                    missing[name] = {
+                        "name": settings["name"],
+                        "matrix": settings["func"](df),
+                    }
+            except ValueError as e:
+                warn_missing(name, e)
     return missing
 
 

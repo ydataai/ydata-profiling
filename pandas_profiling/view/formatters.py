@@ -1,5 +1,6 @@
 """Formatters are utilities for formatting numbers and certain strings"""
 from jinja2.utils import escape
+import numpy as np
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -57,9 +58,11 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
     Returns:
         The percentage with 1 point precision.
     """
-    if edge_cases and round(value, 1) == 0 and value > 0:
+    if not (1.0 >= value >= 0.0):
+        raise ValueError("Value '{}' should be a ratio between 1 and 0.".format(value))
+    if edge_cases and round(value, 3) == 0 and value > 0:
         return "< 0.1%"
-    if edge_cases and round(value, 1) == 1 and value < 1:
+    if edge_cases and round(value, 3) == 1 and value < 1:
         return "> 99.9%"
 
     return "{:2.1f}%".format(value * 100)
@@ -75,6 +78,22 @@ def fmt_numeric(value: float) -> str:
         The numeric value with 5 point precision.
     """
     return "{:.5g}".format(value)
+
+
+def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
+    """Format numpy arrays.
+
+    Args:
+        value: Array to format.
+        threshold: Threshold at which to show ellipsis
+
+    Returns:
+        The string representation of the numpy array.
+    """
+    with np.printoptions(threshold=3, edgeitems=threshold):
+        value = str(value)
+
+    return value
 
 
 def fmt(value) -> str:

@@ -140,6 +140,43 @@ If you would like to be a industry partner or sponsor, please [drop us a line](m
 
 Read more on getting involved in the [Contribution Guide](https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md).
 
+
+## Editor integration
+### PyCharm integration 
+1. Install `pandas-profiling` via the instructions above
+2. Locate your `pandas-profiling` executable.
+
+	  On macOS / Linux / BSD:
+	
+	```console
+	$ which pandas_profiling
+	(example) /usr/local/bin/pandas_profiling
+	```
+	
+	  On Windows:
+	
+	```console
+	$ where pandas_profiling
+	(example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe
+	```
+
+2. In Pycharm, go to _Settings_ (or _Preferences_ on macOS) > _Tools_ > _External tools_
+3. Click the _+_ icon to add a new external tool
+4. Insert the following values
+	- Name: Pandas Profiling
+    - Program: *__The location obtained in step 2__*
+    - Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"
+    - Working Directory: $ProjectFileDir$
+  
+![PyCharm Integration](http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png)
+  
+To use the PyCharm Integration, right click on any dataset file:
+_External Tools_ > _Pandas Profiling_.
+
+### Other integrations
+
+Other editor integrations may be contributed via pull requests.
+
 ## Dependencies
 
 You need [Python 3](https://python3statement.org/) to run this package. Other dependencies can be found in the requirements files:

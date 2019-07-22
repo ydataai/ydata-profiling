@@ -29,60 +29,9 @@
         Toggle details
     </a>
 </div>
-<div class="row collapse col-sm-12" id="descriptives{{ values['varid'] }}">
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active">
-            <a href="#freqtable{{ values['varid'] }}"
-                                                  aria-controls="freqtable{{ values['varid'] }}"
-                                                  role="tab" data-toggle="tab">Full</a>
-        </li>
-        <li role="presentation">
-            <a href="#freqtable_scheme{{ values['varid'] }}"
-                                                  aria-controls="freqtable_scheme{{ values['varid'] }}"
-                                                  role="tab" data-toggle="tab">Scheme</a>
-        </li>
-        <li role="presentation">
-            <a href="#freqtable_netloc{{ values['varid'] }}"
-                                                  aria-controls="freqtable_netloc{{ values['varid'] }}"
-                                                  role="tab" data-toggle="tab">Netloc</a>
-        </li>
-        <li role="presentation">
-            <a href="#freqtable_path{{ values['varid'] }}"
-                                                  aria-controls="freqtable_path{{ values['varid'] }}"
-                                                  role="tab" data-toggle="tab">Path</a>
-        </li>
-        <li role="presentation">
-            <a href="#freqtable_query{{ values['varid'] }}"
-                                                  aria-controls="freqtable_query{{ values['varid'] }}"
-                                                  role="tab" data-toggle="tab">Query</a>
-        </li>
-        <li role="presentation">
-            <a href="#freqtable_fragment{{ values['varid'] }}"
-                                                  aria-controls="freqtable_fragment{{ values['varid'] }}"
-                                                  role="tab" data-toggle="tab">Fragment</a>
-        </li>
-    </ul>
 
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active col-sm-12" id="freqtable{{ values['varid'] }}">
-            {{ values['freqtable'] }}
-        </div>
-        <div role="tabpanel" class="tab-pane col-sm-12" id="freqtable_scheme{{ values['varid'] }}">
-            {{ values['freqtable_scheme'] }}
-        </div>
-        <div role="tabpanel" class="tab-pane col-sm-12" id="freqtable_netloc{{ values['varid'] }}">
-            {{ values['freqtable_netloc'] }}
-        </div>
-        <div role="tabpanel" class="tab-pane col-sm-12" id="freqtable_path{{ values['varid'] }}">
-            {{ values['freqtable_path'] }}
-        </div>
-        <div role="tabpanel" class="tab-pane col-sm-12" id="freqtable_query{{ values['varid'] }}">
-            {{ values['freqtable_query'] }}
-        </div>
-        <div role="tabpanel" class="tab-pane col-sm-12" id="freqtable_fragment{{ values['varid'] }}">
-            {{ values['freqtable_fragment'] }}
-        </div>
-    </div>
-</div>
+{% with values=values['sections'], anchor_id=values['varid'], classes='collapse col-sm-12', id='descriptives' ~ values['varid']|string %}
+    {% include "components/tabs.html" %}
+{% endwith %}
 
 {% include '_row_footer.html' %}

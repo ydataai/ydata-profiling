@@ -1,0 +1,7 @@
+<img src="{{ values['histogram'] }}" class="center-img img-responsive" alt="Histogram" />
+<div class="caption text-center text-muted"><strong>Histogram with fixed size bins</strong> (bins={{ values['histogram_bins'] }})</div>
+
+{% if 'histogram_bayesian_blocks' in values %}
+    <img src="{{ values['histogram_bayesian_blocks'] }}" class="center-img img-responsive" alt="Histogram" />
+    <div class="caption text-center text-muted"><strong>Histogram with variable size bins</strong> (bins={{ values['histogram_bins_bayesian_blocks'] | fmt_array(threshold=5) }}, <a href="https://ui.adsabs.harvard.edu/abs/2013ApJ...764..167S/abstract" target="_blank">"bayesian blocks"</a> binning strategy used)</div>
+{% endif %}

@@ -205,7 +205,9 @@ def render_correlations_section(stats_object: dict) -> str:
     """
     items = get_correlation_items(stats_object)
 
-    return templates.template("components/tabs.html").render(values=items)
+    return templates.template("components/tabs.html").render(
+        values=items, anchor_id="correlations"
+    )
 
 
 def render_missing_section(stats_object: dict) -> str:
@@ -218,7 +220,7 @@ def render_missing_section(stats_object: dict) -> str:
         The missing values component HTML.
     """
     return templates.template("components/tabs.html").render(
-        values=stats_object["missing"]
+        values=stats_object["missing"], anchor_id="missing"
     )
 
 
@@ -259,10 +261,20 @@ def render_variables_section(stats_object: dict) -> str:
                     formatted_values["row_classes"]["missing"] = "alert"
 
         if row["type"] in {Variable.TYPE_NUM, Variable.TYPE_DATE}:
-            formatted_values["histogram"] = histogram(row["histogramdata"], row)
-            formatted_values["mini_histogram"] = mini_histogram(
-                row["histogramdata"], row
+            formatted_values["histogram"] = histogram(
+                row["histogramdata"], row, row["histogram_bins"]
             )
+            formatted_values["mini_histogram"] = mini_histogram(
+                row["histogramdata"], row, row["histogram_bins"]
+            )
+
+            if (
+                "histogram_bins_bayesian_blocks" in row
+                and row["type"] == Variable.TYPE_NUM
+            ):
+                formatted_values["histogram_bayesian_blocks"] = histogram(
+                    row["histogramdata"], row, row["histogram_bins_bayesian_blocks"]
+                )
 
         if row["type"] in {Variable.TYPE_CAT, Variable.TYPE_BOOL}:
             # The number of column to use in the display of the frequency table according to the category
@@ -332,8 +344,72 @@ def render_variables_section(stats_object: dict) -> str:
                 n=stats_object["table"]["n"],
                 ascending=False,
             )
-        # if row['type'] in [Variable.TYPE_NUM, Variable.TYPE_DATE]:
-        # TODO: move histograms here
+
+        if row["type"] == Variable.TYPE_NUM:
+            formatted_values["sections"] = {
+                "statistics": {
+                    "name": "Statistics",
+                    "content": templates.template(
+                        "variables/row_num_statistics.html"
+                    ).render(values=formatted_values),
+                },
+                "histogram": {
+                    "name": "Histogram",
+                    "content": templates.template(
+                        "variables/row_num_histogram.html"
+                    ).render(values=formatted_values),
+                },
+                "frequency_table": {
+                    "name": "Common values",
+                    "content": templates.template(
+                        "variables/row_num_frequency_table.html"
+                    ).render(values=formatted_values),
+                },
+                "extreme_values": {
+                    "name": "Extreme values",
+                    "content": templates.template(
+                        "variables/row_num_extreme_values.html"
+                    ).render(values=formatted_values),
+                },
+            }
+
+        if row["type"] == Variable.TYPE_CAT:
+            formatted_values["sections"] = {
+                "frequency_table": {
+                    "name": "Common values",
+                    "content": templates.template(
+                        "variables/row_cat_frequency_table.html"
+                    ).render(values=formatted_values),
+                },
+                "composition": {
+                    "name": "Composition",
+                    "content": templates.template(
+                        "variables/row_cat_composition.html"
+                    ).render(values=formatted_values),
+                },
+            }
+
+        if row["type"] == Variable.TYPE_URL:
+            formatted_values["sections"] = {
+                "full": {"name": "Full", "value": formatted_values["freqtable"]},
+                "scheme": {
+                    "name": "Scheme",
+                    "value": formatted_values["freqtable_scheme"],
+                },
+                "netloc": {
+                    "name": "Netloc",
+                    "value": formatted_values["freqtable_netloc"],
+                },
+                "path": {"name": "Path", "value": formatted_values["freqtable_path"]},
+                "query": {
+                    "name": "Query",
+                    "value": formatted_values["freqtable_query"],
+                },
+                "fragment": {
+                    "name": "Fragment",
+                    "value": formatted_values["freqtable_fragment"],
+                },
+            }
 
         rows_html += templates.template(
             "variables/row_{}.html".format(row["type"].value.lower())
