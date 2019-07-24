@@ -111,7 +111,6 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     """Plot image of a matrix correlation.
 
     Args:
-        labels = config['labels'],
       data: The matrix correlation to plot.
       vmin: Minimum value of value range.
 
