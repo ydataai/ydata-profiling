@@ -8,17 +8,36 @@ assignees: ''
 ---
 
 **Describe the bug**
+
 A clear and concise description of what the bug is.
 If the description consists of multiple non-related bugs, you are encouraged to create separate issues.
 
 **To Reproduce**
+
 We would need to reproduce your scenario before being able to resolve it. 
 Please share your dataframe. 
 If the data is confidential, for example when it contains company-sensitive information, provide us with a synthetic or open dataset that produces the same error. 
 You should provide the DataFrame structure, for example by reporting the output of `df.info()`. 
 You can anonymize the column names if necessary.
 
+Preferably, use this code format:
+```python
+"""
+Test for issue XXX:
+https://github.com/pandas-profiling/pandas-profiling/issues/XXX
+"""
+import pandas as pd
+import pandas_profiling
+
+
+def test_issueXXX():
+    df = pd.read_csv(r'<file>')
+
+    # Minimal reproducible code
+```
+
 **Version information:**
+
 Please run `pip freeze` in your environment and report the results.
 
 The list of packages can be rather long, you can use the snippet below to collapse the output.
@@ -35,4 +54,5 @@ The list of packages can be rather long, you can use the snippet below to collap
 
 
 **Additional context**
+
 Add any other context about the problem here.
