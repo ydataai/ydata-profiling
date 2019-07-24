@@ -111,6 +111,7 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     """Plot image of a matrix correlation.
 
     Args:
+        labels = config['labels'],
       data: The matrix correlation to plot.
       vmin: Minimum value of value range.
 
@@ -175,6 +176,7 @@ def missing_matrix(data: pd.DataFrame) -> str:
         color=hex_to_rgb(config["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data) / 20 * 16,
         sparkline=False,
+        labels = config['labels'],
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     # Note: override image format, svg contains bug for missingno.matrix
@@ -195,6 +197,7 @@ def missing_bar(data: pd.DataFrame) -> str:
         figsize=(10, 5),
         color=hex_to_rgb(config["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data),
+        labels = config['labels'],
     )
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)

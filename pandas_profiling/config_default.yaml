@@ -102,3 +102,6 @@ style:
 #  full_width: True
 #  theme: "flatly"
 #  primary_color: "#2c3e50"
+
+#missing plot labels when more than 50 features
+labels: None
