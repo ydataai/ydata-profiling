@@ -52,7 +52,7 @@ Alternatively, you could install directly from Github:
  
 You can install using the conda package manager by running
 
-    conda install -c anaconda pandas-profiling
+    conda install -c conda-forge pandas-profiling
 
 ### From source
 
