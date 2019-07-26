@@ -328,6 +328,20 @@ def render_variables_section(stats_object: dict) -&gt; str:
                     max_number_to_print=n_freq_table_max,
                 )
 
+        if row[&#34;type&#34;] in {Variable.TYPE_PATH}:
+            keys = [&#34;name&#34;, &#34;parent&#34;, &#34;suffix&#34;, &#34;stem&#34;]
+            for path_part in keys:
+                formatted_values[&#34;freqtable_{}&#34;.format(path_part)] = freq_table(
+                    freqtable=stats_object[&#34;variables&#34;][idx][
+                        &#34;{}_counts&#34;.format(path_part)
+                    ],
+                    # TODO: n - missing
+                    n=stats_object[&#34;table&#34;][&#34;n&#34;],
+                    table_template=&#34;freq_table.html&#34;,
+                    idx=idx,
+                    max_number_to_print=n_freq_table_max,
+                )
+
         if row[&#34;type&#34;] == Variable.S_TYPE_UNIQUE:
             table = stats_object[&#34;variables&#34;][idx][
                 &#34;value_counts_without_nan&#34;
@@ -405,14 +419,17 @@ def render_variables_section(stats_object: dict) -&gt; str:
                     &#34;content&#34;: templates.template(
                         &#34;variables/row_cat_frequency_table.html&#34;
                     ).render(values=formatted_values),
-                },
-                &#34;composition&#34;: {
+                }
+            }
+
+            check_compositions = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
+            if check_compositions:
+                formatted_values[&#34;sections&#34;][&#34;composition&#34;] = {
                     &#34;name&#34;: &#34;Composition&#34;,
                     &#34;content&#34;: templates.template(
                         &#34;variables/row_cat_composition.html&#34;
                     ).render(values=formatted_values),
-                },
-            }
+                }
 
         if row[&#34;type&#34;] == Variable.TYPE_URL:
             formatted_values[&#34;sections&#34;] = {
@@ -433,6 +450,21 @@ def render_variables_section(stats_object: dict) -&gt; str:
                 &#34;fragment&#34;: {
                     &#34;name&#34;: &#34;Fragment&#34;,
                     &#34;value&#34;: formatted_values[&#34;freqtable_fragment&#34;],
+                },
+            }
+
+        if row[&#34;type&#34;] == Variable.TYPE_PATH:
+            formatted_values[&#34;sections&#34;] = {
+                &#34;full&#34;: {&#34;name&#34;: &#34;Full&#34;, &#34;value&#34;: formatted_values[&#34;freqtable&#34;]},
+                &#34;stem&#34;: {&#34;name&#34;: &#34;Stem&#34;, &#34;value&#34;: formatted_values[&#34;freqtable_stem&#34;]},
+                &#34;name&#34;: {&#34;name&#34;: &#34;Name&#34;, &#34;value&#34;: formatted_values[&#34;freqtable_name&#34;]},
+                &#34;suffix&#34;: {
+                    &#34;name&#34;: &#34;Suffix&#34;,
+                    &#34;value&#34;: formatted_values[&#34;freqtable_suffix&#34;],
+                },
+                &#34;parent&#34;: {
+                    &#34;name&#34;: &#34;Parent&#34;,
+                    &#34;value&#34;: formatted_values[&#34;freqtable_parent&#34;],
                 },
             }
 
@@ -1011,6 +1043,20 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                     max_number_to_print=n_freq_table_max,
                 )
 
+        if row[&#34;type&#34;] in {Variable.TYPE_PATH}:
+            keys = [&#34;name&#34;, &#34;parent&#34;, &#34;suffix&#34;, &#34;stem&#34;]
+            for path_part in keys:
+                formatted_values[&#34;freqtable_{}&#34;.format(path_part)] = freq_table(
+                    freqtable=stats_object[&#34;variables&#34;][idx][
+                        &#34;{}_counts&#34;.format(path_part)
+                    ],
+                    # TODO: n - missing
+                    n=stats_object[&#34;table&#34;][&#34;n&#34;],
+                    table_template=&#34;freq_table.html&#34;,
+                    idx=idx,
+                    max_number_to_print=n_freq_table_max,
+                )
+
         if row[&#34;type&#34;] == Variable.S_TYPE_UNIQUE:
             table = stats_object[&#34;variables&#34;][idx][
                 &#34;value_counts_without_nan&#34;
@@ -1088,14 +1134,17 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                     &#34;content&#34;: templates.template(
                         &#34;variables/row_cat_frequency_table.html&#34;
                     ).render(values=formatted_values),
-                },
-                &#34;composition&#34;: {
+                }
+            }
+
+            check_compositions = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
+            if check_compositions:
+                formatted_values[&#34;sections&#34;][&#34;composition&#34;] = {
                     &#34;name&#34;: &#34;Composition&#34;,
                     &#34;content&#34;: templates.template(
                         &#34;variables/row_cat_composition.html&#34;
                     ).render(values=formatted_values),
-                },
-            }
+                }
 
         if row[&#34;type&#34;] == Variable.TYPE_URL:
             formatted_values[&#34;sections&#34;] = {
@@ -1116,6 +1165,21 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                 &#34;fragment&#34;: {
                     &#34;name&#34;: &#34;Fragment&#34;,
                     &#34;value&#34;: formatted_values[&#34;freqtable_fragment&#34;],
+                },
+            }
+
+        if row[&#34;type&#34;] == Variable.TYPE_PATH:
+            formatted_values[&#34;sections&#34;] = {
+                &#34;full&#34;: {&#34;name&#34;: &#34;Full&#34;, &#34;value&#34;: formatted_values[&#34;freqtable&#34;]},
+                &#34;stem&#34;: {&#34;name&#34;: &#34;Stem&#34;, &#34;value&#34;: formatted_values[&#34;freqtable_stem&#34;]},
+                &#34;name&#34;: {&#34;name&#34;: &#34;Name&#34;, &#34;value&#34;: formatted_values[&#34;freqtable_name&#34;]},
+                &#34;suffix&#34;: {
+                    &#34;name&#34;: &#34;Suffix&#34;,
+                    &#34;value&#34;: formatted_values[&#34;freqtable_suffix&#34;],
+                },
+                &#34;parent&#34;: {
+                    &#34;name&#34;: &#34;Parent&#34;,
+                    &#34;value&#34;: formatted_values[&#34;freqtable_parent&#34;],
                 },
             }
 

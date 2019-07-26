@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
-<title>pandas_profiling.utils.common API documentation</title>
-<meta name="description" content="Common util functions (e.g. missing in Python)." />
+<title>pandas_profiling.utils.data_types API documentation</title>
+<meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,52 +17,31 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.utils.common</code></h1>
+<h1 class="title">Module <code>pandas_profiling.utils.data_types</code></h1>
 </header>
 <section id="section-intro">
-<p>Common util functions (e.g. missing in Python).</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">&#34;&#34;&#34;Common util functions (e.g. missing in Python).&#34;&#34;&#34;
-import collections
-from pathlib import Path
+<pre><code class="python">from pathlib import Path
 
 
-def update(d: dict, u: dict) -&gt; dict:
-    &#34;&#34;&#34; Recursively update a dict.
+def str_is_path(p: str):
+    &#34;&#34;&#34;Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
 
     Args:
-        d: Dictionary to update.
-        u: Dictionary with values to use.
+        p: the Path
 
     Returns:
-        The merged dictionary.
+        True is is an absolute path
     &#34;&#34;&#34;
-    for k, v in u.items():
-        if isinstance(v, collections.Mapping):
-            d[k] = update(d.get(k, {}), v)
+    try:
+        path = Path(p)
+        if path.is_absolute():
+            return True
         else:
-            d[k] = v
-    return d
-
-
-def _copy(self, target):
-    &#34;&#34;&#34;Monkeypatch for pathlib
-
-    Args:
-        self:
-        target:
-
-    Returns:
-
-    &#34;&#34;&#34;
-    import shutil
-
-    assert self.is_file()
-    shutil.copy(str(self), str(target))  # str() only there for Python &lt; (3, 6)
-
-
-Path.copy = _copy</code></pre>
+            return False
+    except TypeError:
+        return False</code></pre>
 </details>
 </section>
 <section>
@@ -72,38 +51,40 @@ Path.copy = _copy</code></pre>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.utils.common.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>d, u)</span>
+<dt id="pandas_profiling.utils.data_types.str_is_path"><code class="name flex">
+<span>def <span class="ident">str_is_path</span></span>(<span>p)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Recursively update a dict.</p>
+<section class="desc"><p>Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>d</code></strong></dt>
-<dd>Dictionary to update.</dd>
-<dt><strong><code>u</code></strong></dt>
-<dd>Dictionary with values to use.</dd>
+<dt><strong><code>p</code></strong></dt>
+<dd>the Path</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>The merged dictionary.</p></section>
+<dl>
+<dt><code>True</code> <code>is</code> <code>is</code> <code>an</code> <code>absolute</code> <code>path</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def update(d: dict, u: dict) -&gt; dict:
-    &#34;&#34;&#34; Recursively update a dict.
+<pre><code class="python">def str_is_path(p: str):
+    &#34;&#34;&#34;Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
 
     Args:
-        d: Dictionary to update.
-        u: Dictionary with values to use.
+        p: the Path
 
     Returns:
-        The merged dictionary.
+        True is is an absolute path
     &#34;&#34;&#34;
-    for k, v in u.items():
-        if isinstance(v, collections.Mapping):
-            d[k] = update(d.get(k, {}), v)
+    try:
+        path = Path(p)
+        if path.is_absolute():
+            return True
         else:
-            d[k] = v
-    return d</code></pre>
+            return False
+    except TypeError:
+        return False</code></pre>
 </details>
 </dd>
 </dl>
@@ -124,7 +105,7 @@ Path.copy = _copy</code></pre>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pandas_profiling.utils.common.update" href="#pandas_profiling.utils.common.update">update</a></code></li>
+<li><code><a title="pandas_profiling.utils.data_types.str_is_path" href="#pandas_profiling.utils.data_types.str_is_path">str_is_path</a></code></li>
 </ul>
 </li>
 </ul>

@@ -169,12 +169,14 @@ def missing_matrix(data: pd.DataFrame) -> str:
     Returns:
       The resulting missing values matrix encoded as a string.
     """
+    labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.matrix(
         data,
         figsize=(10, 4),
         color=hex_to_rgb(config["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data) / 20 * 16,
         sparkline=False,
+        labels=labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     # Note: override image format, svg contains bug for missingno.matrix
@@ -190,11 +192,13 @@ def missing_bar(data: pd.DataFrame) -> str:
     Returns:
       The resulting missing values bar plot encoded as a string.
     """
+    labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.bar(
         data,
         figsize=(10, 5),
         color=hex_to_rgb(config["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data),
+        labels=labels,
     )
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
@@ -217,13 +221,24 @@ def missing_heatmap(data: pd.DataFrame) -> str:
         height += int((len(data.columns) - 10) / 5)
     height = min(height, 10)
 
+    font_size = get_font_size(data)
+    if len(data.columns) > 40:
+        font_size /= 1.4
+
+    labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.heatmap(
         data,
         figsize=(10, height),
-        fontsize=get_font_size(data),
+        fontsize=font_size,
         cmap=config["plot"]["missing"]["cmap"].get(str),
+        labels=labels,
     )
-    plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
+
+    if len(data.columns) > 40:
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
+    else:
+        plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
+
     return plot_360_n0sc0pe(plt)
 
 

@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 
 from pandas_profiling.config import config
+from pandas_profiling.utils.data_types import str_is_path
 
 
 @unique
@@ -25,6 +26,9 @@ class Variable(Enum):
 
     TYPE_URL = "URL"
     """A URL variable"""
+
+    TYPE_PATH = "PATH"
+    """Absolute files"""
 
     S_TYPE_CONST = "CONST"
     """A constant variable"""
@@ -88,13 +92,20 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
     keys = series_description["value_counts_without_nan"].keys()
     if pd.api.types.is_bool_dtype(keys):
         return True
-    elif series_description[
-        "distinct_count_without_nan"
-    ] <= 2 and pd.api.types.is_numeric_dtype(series):
+    elif (
+        series_description["distinct_count_without_nan"] <= 2
+        and pd.api.types.is_numeric_dtype(series)
+        and series[~series.isnull()].between(0, 1).all()
+    ):
         return True
     elif series_description["distinct_count_without_nan"] <= 4:
         unique_values = set([str(value).lower() for value in keys.values])
-        accepted_combinations = [["y", "n"], ["yes", "no"], ["true", "false"]]
+        accepted_combinations = [
+            ["y", "n"],
+            ["yes", "no"],
+            ["true", "false"],
+            ["t", "f"],
+        ]
 
         if len(unique_values) == 2 and any(
             [unique_values == set(bools) for bools in accepted_combinations]
@@ -139,6 +150,17 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
         return False
 
 
+def is_path(series, series_description) -> bool:
+    if series_description["distinct_count_without_nan"] > 0:
+        try:
+            result = series[~series.isnull()].astype(str).apply(str_is_path)
+            return result.all()
+        except ValueError:
+            return False
+    else:
+        return False
+
+
 def is_date(series) -> bool:
     """Is the variable of type datetime? Throws a warning if the series looks like a datetime, but is not typed as
     datetime64.
@@ -167,9 +189,10 @@ def get_var_type(series: pd.Series) -> dict:
     try:
         series_description = get_counts(series)
 
+        distinct_count_with_nan = series_description["distinct_count_with_nan"]
         distinct_count_without_nan = series_description["distinct_count_without_nan"]
 
-        if distinct_count_without_nan <= 1:
+        if distinct_count_with_nan <= 1:
             var_type = Variable.S_TYPE_CONST
         elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
@@ -179,6 +202,8 @@ def get_var_type(series: pd.Series) -> dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
+        elif is_path(series, series_description):
+            var_type = Variable.TYPE_PATH
         elif distinct_count_without_nan == len(series):
             var_type = Variable.S_TYPE_UNIQUE
         else:

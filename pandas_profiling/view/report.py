@@ -303,6 +303,20 @@ def render_variables_section(stats_object: dict) -> str:
                     max_number_to_print=n_freq_table_max,
                 )
 
+        if row["type"] in {Variable.TYPE_PATH}:
+            keys = ["name", "parent", "suffix", "stem"]
+            for path_part in keys:
+                formatted_values["freqtable_{}".format(path_part)] = freq_table(
+                    freqtable=stats_object["variables"][idx][
+                        "{}_counts".format(path_part)
+                    ],
+                    # TODO: n - missing
+                    n=stats_object["table"]["n"],
+                    table_template="freq_table.html",
+                    idx=idx,
+                    max_number_to_print=n_freq_table_max,
+                )
+
         if row["type"] == Variable.S_TYPE_UNIQUE:
             table = stats_object["variables"][idx][
                 "value_counts_without_nan"
@@ -380,14 +394,17 @@ def render_variables_section(stats_object: dict) -> str:
                     "content": templates.template(
                         "variables/row_cat_frequency_table.html"
                     ).render(values=formatted_values),
-                },
-                "composition": {
+                }
+            }
+
+            check_compositions = config["vars"]["cat"]["check_composition"].get(bool)
+            if check_compositions:
+                formatted_values["sections"]["composition"] = {
                     "name": "Composition",
                     "content": templates.template(
                         "variables/row_cat_composition.html"
                     ).render(values=formatted_values),
-                },
-            }
+                }
 
         if row["type"] == Variable.TYPE_URL:
             formatted_values["sections"] = {
@@ -408,6 +425,21 @@ def render_variables_section(stats_object: dict) -> str:
                 "fragment": {
                     "name": "Fragment",
                     "value": formatted_values["freqtable_fragment"],
+                },
+            }
+
+        if row["type"] == Variable.TYPE_PATH:
+            formatted_values["sections"] = {
+                "full": {"name": "Full", "value": formatted_values["freqtable"]},
+                "stem": {"name": "Stem", "value": formatted_values["freqtable_stem"]},
+                "name": {"name": "Name", "value": formatted_values["freqtable_name"]},
+                "suffix": {
+                    "name": "Suffix",
+                    "value": formatted_values["freqtable_suffix"],
+                },
+                "parent": {
+                    "name": "Parent",
+                    "value": formatted_values["freqtable_parent"],
                 },
             }
 

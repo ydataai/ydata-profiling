@@ -27,7 +27,9 @@
 import multiprocessing.pool
 import multiprocessing
 import itertools
+import os
 import warnings
+from pathlib import Path
 from typing import Tuple
 from urllib.parse import urlsplit
 
@@ -206,6 +208,45 @@ def describe_url_1d(series: pd.Series, series_description: dict) -&gt; dict:
     return stats
 
 
+def describe_path_1d(series: pd.Series, series_description: dict) -&gt; dict:
+    &#34;&#34;&#34;Describe a path series.
+
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    &#34;&#34;&#34;
+    # Make sure we deal with strings (Issue #100)
+    series = series[~series.isnull()].astype(str)
+    series = series.map(Path)
+
+    common_prefix = os.path.commonprefix(list(series))
+    if common_prefix == &#34;&#34;:
+        common_prefix = &#34;No common prefix&#34;
+
+    stats = {&#34;common_prefix&#34;: common_prefix}
+
+    # Create separate columns for each path part
+    keys = [&#34;stem&#34;, &#34;suffix&#34;, &#34;name&#34;, &#34;parent&#34;]
+    path_parts = dict(
+        zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
+    )
+    for name, part in path_parts.items():
+        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
+            part, name=name
+        ).value_counts()
+
+    # Only run if at least 1 non-missing value
+    value_counts = series_description[&#34;value_counts_without_nan&#34;]
+
+    stats[&#34;top&#34;] = value_counts.index[0]
+    stats[&#34;freq&#34;] = value_counts.iloc[0]
+
+    return stats
+
+
 def describe_boolean_1d(series: pd.Series, series_description: dict) -&gt; dict:
     &#34;&#34;&#34;Describe a boolean series.
 
@@ -349,6 +390,7 @@ def describe_1d(series: pd.Series) -&gt; dict:
             Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
+            Variable.TYPE_PATH: describe_path_1d,
         }
 
         if series_description[&#34;type&#34;] in type_to_func:
@@ -796,6 +838,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
             Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
+            Variable.TYPE_PATH: describe_path_1d,
         }
 
         if series_description[&#34;type&#34;] in type_to_func:
@@ -1044,6 +1087,61 @@ bins. Read the docs:
             # Sanity check
             if not np.isnan(ret).any() and ret.size &gt; 1:
                 stats[&#34;histogram_bins_bayesian_blocks&#34;] = ret
+
+    return stats</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.describe.describe_path_1d"><code class="name flex">
+<span>def <span class="ident">describe_path_1d</span></span>(<span>series, series_description)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Describe a path series.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>The Series to describe.</dd>
+<dt><strong><code>series_description</code></strong></dt>
+<dd>The dict containing the series description so far.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A dict containing calculated series description values.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def describe_path_1d(series: pd.Series, series_description: dict) -&gt; dict:
+    &#34;&#34;&#34;Describe a path series.
+
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    &#34;&#34;&#34;
+    # Make sure we deal with strings (Issue #100)
+    series = series[~series.isnull()].astype(str)
+    series = series.map(Path)
+
+    common_prefix = os.path.commonprefix(list(series))
+    if common_prefix == &#34;&#34;:
+        common_prefix = &#34;No common prefix&#34;
+
+    stats = {&#34;common_prefix&#34;: common_prefix}
+
+    # Create separate columns for each path part
+    keys = [&#34;stem&#34;, &#34;suffix&#34;, &#34;name&#34;, &#34;parent&#34;]
+    path_parts = dict(
+        zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
+    )
+    for name, part in path_parts.items():
+        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
+            part, name=name
+        ).value_counts()
+
+    # Only run if at least 1 non-missing value
+    value_counts = series_description[&#34;value_counts_without_nan&#34;]
+
+    stats[&#34;top&#34;] = value_counts.index[0]
+    stats[&#34;freq&#34;] = value_counts.iloc[0]
 
     return stats</code></pre>
 </details>
@@ -1431,6 +1529,7 @@ bins. Read the docs:
 <li><code><a title="pandas_profiling.model.describe.describe_constant_1d" href="#pandas_profiling.model.describe.describe_constant_1d">describe_constant_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_date_1d" href="#pandas_profiling.model.describe.describe_date_1d">describe_date_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_numeric_1d" href="#pandas_profiling.model.describe.describe_numeric_1d">describe_numeric_1d</a></code></li>
+<li><code><a title="pandas_profiling.model.describe.describe_path_1d" href="#pandas_profiling.model.describe.describe_path_1d">describe_path_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_supported" href="#pandas_profiling.model.describe.describe_supported">describe_supported</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_table" href="#pandas_profiling.model.describe.describe_table">describe_table</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_unique_1d" href="#pandas_profiling.model.describe.describe_unique_1d">describe_unique_1d</a></code></li>

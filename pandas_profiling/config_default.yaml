@@ -69,12 +69,15 @@ plot:
 
     missing:
         cmap: 'RdBu'
+        # Force labels when there are > 50 variables
+        # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+        force_labels: True
 
     histogram:
         # is used for numeric variables
         bayesian_blocks_bins: True
 
-        bins: 10 # If 'bayesian_blocks_bins' fails to provide a valid number of bins.
+        bins: 50 # If 'bayesian_blocks_bins' fails to provide a valid number of bins.
         # Also used for equal size histogram
 
 # The number of observations to show

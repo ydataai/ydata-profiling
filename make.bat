@@ -30,6 +30,7 @@ IF "%1" == "examples" (
 )
 
 IF "%1" == "pypi_package" (
+	make install
     python setup.py sdist
     twine upload dist/*
     ECHO "PyPi package completed"

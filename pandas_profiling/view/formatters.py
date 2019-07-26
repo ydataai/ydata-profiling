@@ -68,16 +68,17 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
     return "{:2.1f}%".format(value * 100)
 
 
-def fmt_numeric(value: float) -> str:
+def fmt_numeric(value: float, precision=10) -> str:
     """Format any numeric value.
 
     Args:
         value: The numeric value to format.
+        precision: The numeric precision
 
     Returns:
-        The numeric value with 5 point precision.
+        The numeric value with the given precision.
     """
-    return "{:.5g}".format(value)
+    return "{{:.{precision}g}}".format(precision=precision).format(value)
 
 
 def fmt_array(value: np.ndarray, threshold=np.nan) -> str:

@@ -47,7 +47,7 @@ Alternatively, you could install directly from Github:
     
 ### Using conda
 
-[![Conda Downloads](https://anaconda.org/conda-forge/pandas-profiling/badges/downloads.svg)](https://anaconda.org/conda-forge/pandas-profiling/)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling) 
  
 You can install using the conda package manager by running

@@ -144,7 +144,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                 correlation = df.corr(method=correlation_name)
                 if len(correlation) > 0:
                     correlations[correlation_name] = correlation
-            except ValueError as e:
+            except (ValueError, AssertionError) as e:
                 warn_correlation(correlation_name, e)
 
     if config["correlations"]["phi_k"].get(bool):

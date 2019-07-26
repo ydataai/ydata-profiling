@@ -6,6 +6,7 @@ from pandas_profiling.view.formatters import (
     fmt_class,
     fmt_bytesize,
     fmt_array,
+    fmt_numeric,
 )
 
 
@@ -68,3 +69,17 @@ def test_fmt_bytesize(num, fmt, expected):
 )
 def test_fmt_array(array, threshold, expected):
     assert fmt_array(array, threshold) == expected
+
+
+@pytest.mark.parametrize(
+    "value, precision, expected",
+    [
+        (79.999531, 3, "80"),
+        (79.999531, 10, "79.999531"),
+        (81.000000, 10, "81"),
+        (81, 10, "81"),
+        (81.999861123123123123, 10, "81.99986112"),
+    ],
+)
+def test_fmt_numeric(value, precision, expected):
+    assert fmt_numeric(value, precision) == expected

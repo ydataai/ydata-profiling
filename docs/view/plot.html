@@ -194,12 +194,14 @@ def missing_matrix(data: pd.DataFrame) -&gt; str:
     Returns:
       The resulting missing values matrix encoded as a string.
     &#34;&#34;&#34;
+    labels = config[&#34;plot&#34;][&#34;missing&#34;][&#34;force_labels&#34;].get(bool)
     missingno.matrix(
         data,
         figsize=(10, 4),
         color=hex_to_rgb(config[&#34;style&#34;][&#34;primary_color&#34;].get(str)),
         fontsize=get_font_size(data) / 20 * 16,
         sparkline=False,
+        labels=labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     # Note: override image format, svg contains bug for missingno.matrix
@@ -215,11 +217,13 @@ def missing_bar(data: pd.DataFrame) -&gt; str:
     Returns:
       The resulting missing values bar plot encoded as a string.
     &#34;&#34;&#34;
+    labels = config[&#34;plot&#34;][&#34;missing&#34;][&#34;force_labels&#34;].get(bool)
     missingno.bar(
         data,
         figsize=(10, 5),
         color=hex_to_rgb(config[&#34;style&#34;][&#34;primary_color&#34;].get(str)),
         fontsize=get_font_size(data),
+        labels=labels,
     )
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
@@ -242,13 +246,24 @@ def missing_heatmap(data: pd.DataFrame) -&gt; str:
         height += int((len(data.columns) - 10) / 5)
     height = min(height, 10)
 
+    font_size = get_font_size(data)
+    if len(data.columns) &gt; 40:
+        font_size /= 1.4
+
+    labels = config[&#34;plot&#34;][&#34;missing&#34;][&#34;force_labels&#34;].get(bool)
     missingno.heatmap(
         data,
         figsize=(10, height),
-        fontsize=get_font_size(data),
+        fontsize=font_size,
         cmap=config[&#34;plot&#34;][&#34;missing&#34;][&#34;cmap&#34;].get(str),
+        labels=labels,
     )
-    plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
+
+    if len(data.columns) &gt; 40:
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
+    else:
+        plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
+
     return plot_360_n0sc0pe(plt)
 
 
@@ -501,11 +516,13 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     Returns:
       The resulting missing values bar plot encoded as a string.
     &#34;&#34;&#34;
+    labels = config[&#34;plot&#34;][&#34;missing&#34;][&#34;force_labels&#34;].get(bool)
     missingno.bar(
         data,
         figsize=(10, 5),
         color=hex_to_rgb(config[&#34;style&#34;][&#34;primary_color&#34;].get(str)),
         fontsize=get_font_size(data),
+        labels=labels,
     )
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
@@ -571,13 +588,24 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
         height += int((len(data.columns) - 10) / 5)
     height = min(height, 10)
 
+    font_size = get_font_size(data)
+    if len(data.columns) &gt; 40:
+        font_size /= 1.4
+
+    labels = config[&#34;plot&#34;][&#34;missing&#34;][&#34;force_labels&#34;].get(bool)
     missingno.heatmap(
         data,
         figsize=(10, height),
-        fontsize=get_font_size(data),
+        fontsize=font_size,
         cmap=config[&#34;plot&#34;][&#34;missing&#34;][&#34;cmap&#34;].get(str),
+        labels=labels,
     )
-    plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
+
+    if len(data.columns) &gt; 40:
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
+    else:
+        plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
+
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
@@ -604,12 +632,14 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     Returns:
       The resulting missing values matrix encoded as a string.
     &#34;&#34;&#34;
+    labels = config[&#34;plot&#34;][&#34;missing&#34;][&#34;force_labels&#34;].get(bool)
     missingno.matrix(
         data,
         figsize=(10, 4),
         color=hex_to_rgb(config[&#34;style&#34;][&#34;primary_color&#34;].get(str)),
         fontsize=get_font_size(data) / 20 * 16,
         sparkline=False,
+        labels=labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     # Note: override image format, svg contains bug for missingno.matrix

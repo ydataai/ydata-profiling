@@ -100,13 +100,7 @@ def main(args=None) -&gt; None:
 
     # Generate the profiling report
     p = df.profile_report()
-    p.to_file(output_file=args.output_file)
-
-    # Open a webbrowser tab if requested
-    if not args.silent:
-        import webbrowser
-
-        webbrowser.open_new_tab(args.output_file)</code></pre>
+    p.to_file(output_file=args.output_file, silent=args.silent)</code></pre>
 </details>
 </section>
 <section>
@@ -144,13 +138,7 @@ def main(args=None) -&gt; None:
 
     # Generate the profiling report
     p = df.profile_report()
-    p.to_file(output_file=args.output_file)
-
-    # Open a webbrowser tab if requested
-    if not args.silent:
-        import webbrowser
-
-        webbrowser.open_new_tab(args.output_file)</code></pre>
+    p.to_file(output_file=args.output_file, silent=args.silent)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.controller.console.parse_args"><code class="name flex">

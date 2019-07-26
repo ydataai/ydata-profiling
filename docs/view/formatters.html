@@ -93,16 +93,17 @@ def fmt_percent(value: float, edge_cases: bool = True) -&gt; str:
     return &#34;{:2.1f}%&#34;.format(value * 100)
 
 
-def fmt_numeric(value: float) -&gt; str:
+def fmt_numeric(value: float, precision=10) -&gt; str:
     &#34;&#34;&#34;Format any numeric value.
 
     Args:
         value: The numeric value to format.
+        precision: The numeric precision
 
     Returns:
-        The numeric value with 5 point precision.
+        The numeric value with the given precision.
     &#34;&#34;&#34;
-    return &#34;{:.5g}&#34;.format(value)
+    return &#34;{{:.{precision}g}}&#34;.format(precision=precision).format(value)
 
 
 def fmt_array(value: np.ndarray, threshold=np.nan) -&gt; str:
@@ -314,7 +315,7 @@ def hex_to_rgb(hex):
 </details>
 </dd>
 <dt id="pandas_profiling.view.formatters.fmt_numeric"><code class="name flex">
-<span>def <span class="ident">fmt_numeric</span></span>(<span>value)</span>
+<span>def <span class="ident">fmt_numeric</span></span>(<span>value, precision=10)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Format any numeric value.</p>
@@ -322,21 +323,24 @@ def hex_to_rgb(hex):
 <dl>
 <dt><strong><code>value</code></strong></dt>
 <dd>The numeric value to format.</dd>
+<dt><strong><code>precision</code></strong></dt>
+<dd>The numeric precision</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>The numeric value with 5 point precision.</p></section>
+<p>The numeric value with the given precision.</p></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def fmt_numeric(value: float) -&gt; str:
+<pre><code class="python">def fmt_numeric(value: float, precision=10) -&gt; str:
     &#34;&#34;&#34;Format any numeric value.
 
     Args:
         value: The numeric value to format.
+        precision: The numeric precision
 
     Returns:
-        The numeric value with 5 point precision.
+        The numeric value with the given precision.
     &#34;&#34;&#34;
-    return &#34;{:.5g}&#34;.format(value)</code></pre>
+    return &#34;{{:.{precision}g}}&#34;.format(precision=precision).format(value)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.view.formatters.fmt_percent"><code class="name flex">

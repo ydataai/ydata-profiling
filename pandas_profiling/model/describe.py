@@ -2,7 +2,9 @@
 import multiprocessing.pool
 import multiprocessing
 import itertools
+import os
 import warnings
+from pathlib import Path
 from typing import Tuple
 from urllib.parse import urlsplit
 
@@ -181,6 +183,45 @@ def describe_url_1d(series: pd.Series, series_description: dict) -> dict:
     return stats
 
 
+def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
+    """Describe a path series.
+
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    """
+    # Make sure we deal with strings (Issue #100)
+    series = series[~series.isnull()].astype(str)
+    series = series.map(Path)
+
+    common_prefix = os.path.commonprefix(list(series))
+    if common_prefix == "":
+        common_prefix = "No common prefix"
+
+    stats = {"common_prefix": common_prefix}
+
+    # Create separate columns for each path part
+    keys = ["stem", "suffix", "name", "parent"]
+    path_parts = dict(
+        zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
+    )
+    for name, part in path_parts.items():
+        stats["{}_counts".format(name.lower())] = pd.Series(
+            part, name=name
+        ).value_counts()
+
+    # Only run if at least 1 non-missing value
+    value_counts = series_description["value_counts_without_nan"]
+
+    stats["top"] = value_counts.index[0]
+    stats["freq"] = value_counts.iloc[0]
+
+    return stats
+
+
 def describe_boolean_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a boolean series.
 
@@ -324,6 +365,7 @@ def describe_1d(series: pd.Series) -> dict:
             Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
+            Variable.TYPE_PATH: describe_path_1d,
         }
 
         if series_description["type"] in type_to_func:

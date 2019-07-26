@@ -75,10 +75,4 @@ def main(args=None) -> None:
 
     # Generate the profiling report
     p = df.profile_report()
-    p.to_file(output_file=args.output_file)
-
-    # Open a webbrowser tab if requested
-    if not args.silent:
-        import webbrowser
-
-        webbrowser.open_new_tab(args.output_file)
+    p.to_file(output_file=args.output_file, silent=args.silent)

@@ -30,6 +30,7 @@ from urllib.parse import urlparse
 
 
 from pandas_profiling.config import config
+from pandas_profiling.utils.data_types import str_is_path
 
 
 @unique
@@ -50,6 +51,9 @@ class Variable(Enum):
 
     TYPE_URL = &#34;URL&#34;
     &#34;&#34;&#34;A URL variable&#34;&#34;&#34;
+
+    TYPE_PATH = &#34;PATH&#34;
+    &#34;&#34;&#34;Absolute files&#34;&#34;&#34;
 
     S_TYPE_CONST = &#34;CONST&#34;
     &#34;&#34;&#34;A constant variable&#34;&#34;&#34;
@@ -113,13 +117,20 @@ def is_boolean(series: pd.Series, series_description: dict) -&gt; bool:
     keys = series_description[&#34;value_counts_without_nan&#34;].keys()
     if pd.api.types.is_bool_dtype(keys):
         return True
-    elif series_description[
-        &#34;distinct_count_without_nan&#34;
-    ] &lt;= 2 and pd.api.types.is_numeric_dtype(series):
+    elif (
+        series_description[&#34;distinct_count_without_nan&#34;] &lt;= 2
+        and pd.api.types.is_numeric_dtype(series)
+        and series[~series.isnull()].between(0, 1).all()
+    ):
         return True
     elif series_description[&#34;distinct_count_without_nan&#34;] &lt;= 4:
         unique_values = set([str(value).lower() for value in keys.values])
-        accepted_combinations = [[&#34;y&#34;, &#34;n&#34;], [&#34;yes&#34;, &#34;no&#34;], [&#34;true&#34;, &#34;false&#34;]]
+        accepted_combinations = [
+            [&#34;y&#34;, &#34;n&#34;],
+            [&#34;yes&#34;, &#34;no&#34;],
+            [&#34;true&#34;, &#34;false&#34;],
+            [&#34;t&#34;, &#34;f&#34;],
+        ]
 
         if len(unique_values) == 2 and any(
             [unique_values == set(bools) for bools in accepted_combinations]
@@ -164,6 +175,17 @@ def is_url(series: pd.Series, series_description: dict) -&gt; bool:
         return False
 
 
+def is_path(series, series_description) -&gt; bool:
+    if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
+        try:
+            result = series[~series.isnull()].astype(str).apply(str_is_path)
+            return result.all()
+        except ValueError:
+            return False
+    else:
+        return False
+
+
 def is_date(series) -&gt; bool:
     &#34;&#34;&#34;Is the variable of type datetime? Throws a warning if the series looks like a datetime, but is not typed as
     datetime64.
@@ -192,9 +214,10 @@ def get_var_type(series: pd.Series) -&gt; dict:
     try:
         series_description = get_counts(series)
 
+        distinct_count_with_nan = series_description[&#34;distinct_count_with_nan&#34;]
         distinct_count_without_nan = series_description[&#34;distinct_count_without_nan&#34;]
 
-        if distinct_count_without_nan &lt;= 1:
+        if distinct_count_with_nan &lt;= 1:
             var_type = Variable.S_TYPE_CONST
         elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
@@ -204,6 +227,8 @@ def get_var_type(series: pd.Series) -&gt; dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
+        elif is_path(series, series_description):
+            var_type = Variable.TYPE_PATH
         elif distinct_count_without_nan == len(series):
             var_type = Variable.S_TYPE_UNIQUE
         else:
@@ -295,9 +320,10 @@ def get_var_type(series: pd.Series) -&gt; dict:
     try:
         series_description = get_counts(series)
 
+        distinct_count_with_nan = series_description[&#34;distinct_count_with_nan&#34;]
         distinct_count_without_nan = series_description[&#34;distinct_count_without_nan&#34;]
 
-        if distinct_count_without_nan &lt;= 1:
+        if distinct_count_with_nan &lt;= 1:
             var_type = Variable.S_TYPE_CONST
         elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
@@ -307,6 +333,8 @@ def get_var_type(series: pd.Series) -&gt; dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
+        elif is_path(series, series_description):
+            var_type = Variable.TYPE_PATH
         elif distinct_count_without_nan == len(series):
             var_type = Variable.S_TYPE_UNIQUE
         else:
@@ -349,13 +377,20 @@ def get_var_type(series: pd.Series) -&gt; dict:
     keys = series_description[&#34;value_counts_without_nan&#34;].keys()
     if pd.api.types.is_bool_dtype(keys):
         return True
-    elif series_description[
-        &#34;distinct_count_without_nan&#34;
-    ] &lt;= 2 and pd.api.types.is_numeric_dtype(series):
+    elif (
+        series_description[&#34;distinct_count_without_nan&#34;] &lt;= 2
+        and pd.api.types.is_numeric_dtype(series)
+        and series[~series.isnull()].between(0, 1).all()
+    ):
         return True
     elif series_description[&#34;distinct_count_without_nan&#34;] &lt;= 4:
         unique_values = set([str(value).lower() for value in keys.values])
-        accepted_combinations = [[&#34;y&#34;, &#34;n&#34;], [&#34;yes&#34;, &#34;no&#34;], [&#34;true&#34;, &#34;false&#34;]]
+        accepted_combinations = [
+            [&#34;y&#34;, &#34;n&#34;],
+            [&#34;yes&#34;, &#34;no&#34;],
+            [&#34;true&#34;, &#34;false&#34;],
+            [&#34;t&#34;, &#34;f&#34;],
+        ]
 
         if len(unique_values) == 2 and any(
             [unique_values == set(bools) for bools in accepted_combinations]
@@ -426,6 +461,24 @@ datetime64.</p>
     ] &gt;= config[&#34;low_categorical_threshold&#34;].get(int)</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.model.base.is_path"><code class="name flex">
+<span>def <span class="ident">is_path</span></span>(<span>series, series_description)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def is_path(series, series_description) -&gt; bool:
+    if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
+        try:
+            result = series[~series.isnull()].astype(str).apply(str_is_path)
+            return result.all()
+        except ValueError:
+            return False
+    else:
+        return False</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.base.is_url"><code class="name flex">
 <span>def <span class="ident">is_url</span></span>(<span>series, series_description)</span>
 </code></dt>
@@ -493,6 +546,9 @@ datetime64.</p>
     TYPE_URL = &#34;URL&#34;
     &#34;&#34;&#34;A URL variable&#34;&#34;&#34;
 
+    TYPE_PATH = &#34;PATH&#34;
+    &#34;&#34;&#34;Absolute files&#34;&#34;&#34;
+
     S_TYPE_CONST = &#34;CONST&#34;
     &#34;&#34;&#34;A constant variable&#34;&#34;&#34;
 
@@ -557,6 +613,10 @@ datetime64.</p>
 <dd>
 <section class="desc"><p>A numeric variable</p></section>
 </dd>
+<dt id="pandas_profiling.model.base.Variable.TYPE_PATH"><code class="name">var <span class="ident">TYPE_PATH</span></code></dt>
+<dd>
+<section class="desc"><p>Absolute files</p></section>
+</dd>
 <dt id="pandas_profiling.model.base.Variable.TYPE_URL"><code class="name">var <span class="ident">TYPE_URL</span></code></dt>
 <dd>
 <section class="desc"><p>A URL variable</p></section>
@@ -584,6 +644,7 @@ datetime64.</p>
 <li><code><a title="pandas_profiling.model.base.is_boolean" href="#pandas_profiling.model.base.is_boolean">is_boolean</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_date" href="#pandas_profiling.model.base.is_date">is_date</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_numeric" href="#pandas_profiling.model.base.is_numeric">is_numeric</a></code></li>
+<li><code><a title="pandas_profiling.model.base.is_path" href="#pandas_profiling.model.base.is_path">is_path</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_url" href="#pandas_profiling.model.base.is_url">is_url</a></code></li>
 </ul>
 </li>
@@ -602,6 +663,7 @@ datetime64.</p>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_CAT" href="#pandas_profiling.model.base.Variable.TYPE_CAT">TYPE_CAT</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_DATE" href="#pandas_profiling.model.base.Variable.TYPE_DATE">TYPE_DATE</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_NUM" href="#pandas_profiling.model.base.Variable.TYPE_NUM">TYPE_NUM</a></code></li>
+<li><code><a title="pandas_profiling.model.base.Variable.TYPE_PATH" href="#pandas_profiling.model.base.Variable.TYPE_PATH">TYPE_PATH</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_URL" href="#pandas_profiling.model.base.Variable.TYPE_URL">TYPE_URL</a></code></li>
 </ul>
 </li>

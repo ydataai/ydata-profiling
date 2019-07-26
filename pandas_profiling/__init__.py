@@ -111,13 +111,14 @@ class ProfileReport(object):
                     result.append(col)
         return result
 
-    def to_file(self, output_file: Path or str) -> None:
+    def to_file(self, output_file: Path or str, silent: bool = True) -> None:
         """Write the report to a file.
         
         By default a name is generated.
 
         Args:
-            output_file: The name or the path of the file to generate including the extension (.html).        
+            output_file: The name or the path of the file to generate including the extension (.html).
+            silent: if False, opens the file in the default browser
         """
         if type(output_file) == str:
             output_file = Path(output_file)
@@ -131,6 +132,11 @@ class ProfileReport(object):
                     wrapped_html, remove_all_empty_space=True, remove_comments=True
                 )
             f.write(wrapped_html)
+
+        if not silent:
+            import webbrowser
+
+            webbrowser.open_new_tab(output_file)
 
     def to_html(self) -> str:
         """Generate and return complete template as lengthy string
