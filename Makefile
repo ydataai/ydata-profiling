@@ -3,6 +3,9 @@ docs:
 	mv docs/pandas_profiling/* docs
 	rmdir docs/pandas_profiling
 
+test:
+	pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg tests/
+
 install:
 	pip install -e .
 
