@@ -7,15 +7,24 @@ python:
   - "3.6"
   - "3.7"
 
+env:
+  matrix:
+    - TEST=unit
+    - TEST=issue
+    - TEST=console
+    - TEST=examples
+
 install:
   - pip install -r requirements.txt
   - pip install -r requirements-test.txt
   - pip install -e .
 
 script:
-  - pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg
+  - if [ $TEST == 'unit' ]; then pytest --cov=./ --sanitize-with tests/sanitize-notebook.cfg tests/unit/; fi
+  - if [ $TEST == 'issue' ]; then pytest --cov=./ --sanitize-with tests/sanitize-notebook.cfg tests/issues/; fi
+  - if [ $TEST == 'examples' ]; then pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg examples/; fi
   # Our well-behaved Unix-style command-line tool exits with code 0 unless an internal error occurred
-  - pandas_profiling -h
+  - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
 
 after_success:
-  - codecov
+  - codecov -f $TEST

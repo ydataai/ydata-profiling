@@ -1,4 +1,6 @@
 """Common parts to all other modules, mainly utility functions."""
+import sys
+
 import pandas as pd
 from enum import Enum, unique
 from urllib.parse import urlparse
@@ -202,7 +204,7 @@ def get_var_type(series: pd.Series) -> dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
-        elif is_path(series, series_description):
+        elif is_path(series, series_description) and sys.version_info[1] > 5:
             var_type = Variable.TYPE_PATH
         elif distinct_count_without_nan == len(series):
             var_type = Variable.S_TYPE_UNIQUE

@@ -220,6 +220,7 @@ def describe_path_1d(series: pd.Series, series_description: dict) -&gt; dict:
     &#34;&#34;&#34;
     # Make sure we deal with strings (Issue #100)
     series = series[~series.isnull()].astype(str)
+    series = series.map(Path)
 
     common_prefix = os.path.commonprefix(list(series))
     if common_prefix == &#34;&#34;:
@@ -1118,6 +1119,7 @@ bins. Read the docs:
     &#34;&#34;&#34;
     # Make sure we deal with strings (Issue #100)
     series = series[~series.isnull()].astype(str)
+    series = series.map(Path)
 
     common_prefix = os.path.commonprefix(list(series))
     if common_prefix == &#34;&#34;:

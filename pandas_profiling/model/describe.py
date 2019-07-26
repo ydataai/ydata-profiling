@@ -195,6 +195,7 @@ def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
     """
     # Make sure we deal with strings (Issue #100)
     series = series[~series.isnull()].astype(str)
+    series = series.map(Path)
 
     common_prefix = os.path.commonprefix(list(series))
     if common_prefix == "":
