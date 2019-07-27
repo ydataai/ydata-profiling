@@ -38,9 +38,9 @@ setup(
         "confuse>=1.0.0",
         "astropy",  # Could be optional
     ],
-    extras_requires=[
-        # {"variable_bins": ["astropy"]}
-    ],
+    # extras_requires=[
+    # {"variable_bins": ["astropy"]}
+    # ],
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

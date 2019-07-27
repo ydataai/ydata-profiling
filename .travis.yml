@@ -27,4 +27,4 @@ script:
   - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
 
 after_success:
-  - codecov
+  - codecov -F $TEST
