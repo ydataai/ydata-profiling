@@ -9,3 +9,4 @@ htmlmin
 phik
 confuse>=1.0.0
 astropy
+tqdm

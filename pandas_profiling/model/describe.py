@@ -25,7 +25,9 @@ from pandas_profiling.model.correlations import (
     calculate_correlations,
     perform_check_correlation,
 )
+
 from pandas_profiling.utils.common import update
+from pandas_profiling.utils.progress_bar import create_bar
 from pandas_profiling.view import plot
 
 
@@ -523,11 +525,14 @@ def describe(df: pd.DataFrame) -> dict:
     if df.empty:
         raise ValueError("df can not be empty")
 
+    bar = create_bar(total=100, description="Describe 1D")
+
     # Multiprocessing of Describe 1D for each column
     pool_size = config["pool_size"].get(int)
     if pool_size <= 0:
         pool_size = multiprocessing.cpu_count()
 
+    bar.set_description("Describe 1D")
     if pool_size == 1:
         args = [(column, series) for column, series in df.iteritems()]
         series_description = {
@@ -548,6 +553,8 @@ def describe(df: pd.DataFrame) -> dict:
     }
 
     # Get correlations
+    bar.update(25)
+    bar.set_description("Correlations")
     correlations = calculate_correlations(df, variables)
 
     # Check correlations between numerical variables
@@ -593,14 +600,23 @@ def describe(df: pd.DataFrame) -> dict:
         )
 
     # Transform the series_description in a DataFrame
+    bar.update(20)
+    bar.set_description("Generating a DataFrame")
     variable_stats = pd.DataFrame(series_description)
 
     # Table statistics
+    bar.update(20)
+    bar.set_description("Generating the statistics table")
     table_stats = describe_table(df, variable_stats)
 
     # missing diagrams
+    bar.set_description("Missing diagrams")
+
     missing = get_missing_diagrams(df, table_stats)
 
+    bar.update(35)
+    bar.set_description("Completed")
+    bar.close()
     # Messages
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():

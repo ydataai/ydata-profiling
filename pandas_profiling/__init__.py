@@ -10,6 +10,7 @@ import pandas as pd
 from pandas_profiling.version import __version__
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
 from pandas_profiling.utils.paths import get_config_default, get_project_root
+from pandas_profiling.utils import progress_bar
 
 from pathlib import Path
 import numpy as np
@@ -32,6 +33,9 @@ class ProfileReport(object):
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
     def __init__(self, df, **kwargs):
+
+        bar = progress_bar.create_bar(total=100, description="Configuring")
+
         config.set_kwargs(kwargs)
 
         # Treat index as any other column
@@ -52,6 +56,7 @@ class ProfileReport(object):
         if sys.version_info[1] <= 5 and sort != "None":
             warnings.warn("Sorting is supported from Python 3.6+")
 
+        bar.set_description("Reindexing")
         if sort in ["asc", "ascending"]:
             df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
         elif sort in ["desc", "descending"]:
@@ -64,8 +69,12 @@ class ProfileReport(object):
         # Store column order
         config["column_order"] = df.columns.tolist()
 
+        bar.update(10)
+
         # Get dataset statistics
+        bar.set_description("Statistics")
         description_set = describe_df(df)
+        bar.update(50)
 
         # Get sample
         sample = {}
@@ -78,12 +87,17 @@ class ProfileReport(object):
             sample["tail"] = df.tail(n=n_tail)
 
         # Render HTML
+        bar.set_description("Rendering results")
+
         self.html = to_html(sample, description_set)
         self.minify_html = config["minify_html"].get(bool)
         self.use_local_assets = config["use_local_assets"].get(bool)
         self.title = config["title"].get(str)
         self.description_set = description_set
         self.sample = sample
+
+        bar.update(40)
+        bar.close()
 
     def get_description(self) -> dict:
         """Return the description (a raw statistical summary) of the dataset.
