@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
-<title>pandas_profiling.utils.paths API documentation</title>
-<meta name="description" content="Paths that are useful throughout the project." />
+<title>pandas_profiling.utils.progress_bar API documentation</title>
+<meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,32 +17,29 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.utils.paths</code></h1>
+<h1 class="title">Module <code>pandas_profiling.utils.progress_bar</code></h1>
 </header>
 <section id="section-intro">
-<p>Paths that are useful throughout the project.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">&#34;&#34;&#34;Paths that are useful throughout the project.&#34;&#34;&#34;
-from pathlib import Path
+<pre><code class="python">from pandas_profiling.config import config
+
+from tqdm.auto import tqdm
 
 
-def get_project_root() -&gt; Path:
-    &#34;&#34;&#34;Returns the path to the project root folder.
+def create_bar(total: float, description: str) -&gt; tqdm:
+    &#34;&#34;&#34;Returns a tqdm bar with the project default format
 
-    Returns:
-        The path to the project root folder.
+        Args:
+            total: The number of expected iterations
+            description: The description of the bar
+
+        Returns:
+            A tqdm object
     &#34;&#34;&#34;
-    return Path(__file__).parent.parent.parent
-
-
-def get_config_default() -&gt; Path():
-    &#34;&#34;&#34;Returns the path to the default config file.
-
-    Returns:
-        The path to the default config file.
-    &#34;&#34;&#34;
-    return Path(__file__).parent.parent / &#34;config_default.yaml&#34;</code></pre>
+    disable_progress_bar = not(config[&#39;progress_bar&#39;].get(bool))
+    return tqdm(desc=description, total=total, leave=False, unit=&#39;%&#39;, dynamic_ncols=True,
+                disable=disable_progress_bar)</code></pre>
 </details>
 </section>
 <section>
@@ -52,40 +49,38 @@ def get_config_default() -&gt; Path():
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.utils.paths.get_config_default"><code class="name flex">
-<span>def <span class="ident">get_config_default</span></span>(<span>)</span>
+<dt id="pandas_profiling.utils.progress_bar.create_bar"><code class="name flex">
+<span>def <span class="ident">create_bar</span></span>(<span>total, description)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Returns the path to the default config file.</p>
+<section class="desc"><p>Returns a tqdm bar with the project default format</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>total</code></strong></dt>
+<dd>The number of expected iterations</dd>
+<dt><strong><code>description</code></strong></dt>
+<dd>The description of the bar</dd>
+</dl>
 <h2 id="returns">Returns</h2>
-<p>The path to the default config file.</p></section>
+<dl>
+<dt><code>A</code> <code>tqdm</code> <code>object</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def get_config_default() -&gt; Path():
-    &#34;&#34;&#34;Returns the path to the default config file.
+<pre><code class="python">def create_bar(total: float, description: str) -&gt; tqdm:
+    &#34;&#34;&#34;Returns a tqdm bar with the project default format
 
-    Returns:
-        The path to the default config file.
-    &#34;&#34;&#34;
-    return Path(__file__).parent.parent / &#34;config_default.yaml&#34;</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.utils.paths.get_project_root"><code class="name flex">
-<span>def <span class="ident">get_project_root</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Returns the path to the project root folder.</p>
-<h2 id="returns">Returns</h2>
-<p>The path to the project root folder.</p></section>
-<details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def get_project_root() -&gt; Path:
-    &#34;&#34;&#34;Returns the path to the project root folder.
+        Args:
+            total: The number of expected iterations
+            description: The description of the bar
 
-    Returns:
-        The path to the project root folder.
+        Returns:
+            A tqdm object
     &#34;&#34;&#34;
-    return Path(__file__).parent.parent.parent</code></pre>
+    disable_progress_bar = not(config[&#39;progress_bar&#39;].get(bool))
+    return tqdm(desc=description, total=total, leave=False, unit=&#39;%&#39;, dynamic_ncols=True,
+                disable=disable_progress_bar)</code></pre>
 </details>
 </dd>
 </dl>
@@ -106,8 +101,7 @@ def get_config_default() -&gt; Path():
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pandas_profiling.utils.paths.get_config_default" href="#pandas_profiling.utils.paths.get_config_default">get_config_default</a></code></li>
-<li><code><a title="pandas_profiling.utils.paths.get_project_root" href="#pandas_profiling.utils.paths.get_project_root">get_project_root</a></code></li>
+<li><code><a title="pandas_profiling.utils.progress_bar.create_bar" href="#pandas_profiling.utils.progress_bar.create_bar">create_bar</a></code></li>
 </ul>
 </li>
 </ul>

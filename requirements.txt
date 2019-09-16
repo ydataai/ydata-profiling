@@ -9,4 +9,5 @@ htmlmin
 phik
 confuse>=1.0.0
 astropy
-tqdm
+tqdm>=4.35.0
+ipywidgets>=7.5.1

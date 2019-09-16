@@ -34,9 +34,9 @@ class ProfileReport(object):
 
     def __init__(self, df, **kwargs):
 
-        bar = progress_bar.create_bar(total=100, description="Configuring")
-
         config.set_kwargs(kwargs)
+
+        bar = progress_bar.create_bar(total=100, description="Configuring")
 
         # Treat index as any other column
         if (

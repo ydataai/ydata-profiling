@@ -1,6 +1,9 @@
 # Title of the document
 title: "Pandas Profiling Report"
 
+# Show the progress bar
+progress_bar: True
+
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 
