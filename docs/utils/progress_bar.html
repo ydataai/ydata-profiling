@@ -22,24 +22,76 @@
 <section id="section-intro">
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">from pandas_profiling.config import config
+<pre><code class="python">from tqdm.auto import tqdm
 
-from tqdm.auto import tqdm
+from pandas_profiling.config import config
 
 
-def create_bar(total: float, description: str) -&gt; tqdm:
-    &#34;&#34;&#34;Returns a tqdm bar with the project default format
+class ProgressBar(object):
 
-        Args:
-            total: The number of expected iterations
-            description: The description of the bar
+    def __init__(self, total: float, description: str) -&gt; None:
+        &#34;&#34;&#34;
+            Args:
+                total: The number of expected iterations
+                description: The description of the bar
+        &#34;&#34;&#34;
+        enable_progress_bar = config[&#39;progress_bar&#39;].get(bool)
+        if enable_progress_bar:
+            self.bar = self.create_bar(total=total, description=description)
+        else:
+            self.bar = None
 
-        Returns:
-            A tqdm object
-    &#34;&#34;&#34;
-    disable_progress_bar = not(config[&#39;progress_bar&#39;].get(bool))
-    return tqdm(desc=description, total=total, leave=False, unit=&#39;%&#39;, dynamic_ncols=True,
-                disable=disable_progress_bar)</code></pre>
+    def create_bar(self, total: float, description: str) -&gt; tqdm:
+        &#34;&#34;&#34;Returns a tqdm bar with the project default format
+
+            Args:
+                total: The number of expected iterations
+                description: The description of the bar
+
+            Returns:
+                A tqdm object
+        &#34;&#34;&#34;
+        return tqdm(desc=description, total=total, leave=False, unit=&#39;%&#39;, dynamic_ncols=True)
+
+    def _bar_exists(self) -&gt; bool:
+        &#34;&#34;&#34;It checks whether the ProgressBar object has a tqdm bar attribute
+            Returns:
+                A boolean
+       &#34;&#34;&#34;
+        return not (self.bar is None)
+
+    def update_progress(self, progress: float = None):
+        &#34;&#34;&#34;It updates the progress of the tqdm bar
+
+            Args:
+                progress: The total of progress to update
+        &#34;&#34;&#34;
+        if (self._bar_exists()) and (progress is not None):
+            self.bar.update(progress)
+
+    def update_description(self, description: str = None):
+        &#34;&#34;&#34;It updates the description of the tqdm bar
+
+            Args:
+                description: The description of the bar
+        &#34;&#34;&#34;
+        if (self._bar_exists()) and (description is not None):
+            self.bar.set_description(description)
+
+    def update_progress_and_description(self, progress: float = None, description: str = None):
+        &#34;&#34;&#34;It updates the progress and description of the tqdm bar
+
+            Args:
+                progress: The total of progress to update
+                description: The description of the bar
+        &#34;&#34;&#34;
+        self.update_progress(progress)
+        self.update_description(description)
+
+    def close(self):
+        &#34;&#34;&#34;It closes the tqdm bar&#34;&#34;&#34;
+        if self._bar_exists():
+            self.bar.close()</code></pre>
 </details>
 </section>
 <section>
@@ -47,10 +99,107 @@ def create_bar(total: float, description: str) -&gt; tqdm:
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="pandas_profiling.utils.progress_bar.create_bar"><code class="name flex">
-<span>def <span class="ident">create_bar</span></span>(<span>total, description)</span>
+<dt id="pandas_profiling.utils.progress_bar.ProgressBar"><code class="flex name class">
+<span>class <span class="ident">ProgressBar</span></span>
+<span>(</span><span>total, description)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>total</code></strong></dt>
+<dd>The number of expected iterations</dd>
+<dt><strong><code>description</code></strong></dt>
+<dd>The description of the bar</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class ProgressBar(object):
+
+    def __init__(self, total: float, description: str) -&gt; None:
+        &#34;&#34;&#34;
+            Args:
+                total: The number of expected iterations
+                description: The description of the bar
+        &#34;&#34;&#34;
+        enable_progress_bar = config[&#39;progress_bar&#39;].get(bool)
+        if enable_progress_bar:
+            self.bar = self.create_bar(total=total, description=description)
+        else:
+            self.bar = None
+
+    def create_bar(self, total: float, description: str) -&gt; tqdm:
+        &#34;&#34;&#34;Returns a tqdm bar with the project default format
+
+            Args:
+                total: The number of expected iterations
+                description: The description of the bar
+
+            Returns:
+                A tqdm object
+        &#34;&#34;&#34;
+        return tqdm(desc=description, total=total, leave=False, unit=&#39;%&#39;, dynamic_ncols=True)
+
+    def _bar_exists(self) -&gt; bool:
+        &#34;&#34;&#34;It checks whether the ProgressBar object has a tqdm bar attribute
+            Returns:
+                A boolean
+       &#34;&#34;&#34;
+        return not (self.bar is None)
+
+    def update_progress(self, progress: float = None):
+        &#34;&#34;&#34;It updates the progress of the tqdm bar
+
+            Args:
+                progress: The total of progress to update
+        &#34;&#34;&#34;
+        if (self._bar_exists()) and (progress is not None):
+            self.bar.update(progress)
+
+    def update_description(self, description: str = None):
+        &#34;&#34;&#34;It updates the description of the tqdm bar
+
+            Args:
+                description: The description of the bar
+        &#34;&#34;&#34;
+        if (self._bar_exists()) and (description is not None):
+            self.bar.set_description(description)
+
+    def update_progress_and_description(self, progress: float = None, description: str = None):
+        &#34;&#34;&#34;It updates the progress and description of the tqdm bar
+
+            Args:
+                progress: The total of progress to update
+                description: The description of the bar
+        &#34;&#34;&#34;
+        self.update_progress(progress)
+        self.update_description(description)
+
+    def close(self):
+        &#34;&#34;&#34;It closes the tqdm bar&#34;&#34;&#34;
+        if self._bar_exists():
+            self.bar.close()</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.utils.progress_bar.ProgressBar.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>It closes the tqdm bar</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def close(self):
+    &#34;&#34;&#34;It closes the tqdm bar&#34;&#34;&#34;
+    if self._bar_exists():
+        self.bar.close()</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.progress_bar.ProgressBar.create_bar"><code class="name flex">
+<span>def <span class="ident">create_bar</span></span>(<span>self, total, description)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Returns a tqdm bar with the project default format</p>
@@ -68,7 +217,7 @@ def create_bar(total: float, description: str) -&gt; tqdm:
 </dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def create_bar(total: float, description: str) -&gt; tqdm:
+<pre><code class="python">def create_bar(self, total: float, description: str) -&gt; tqdm:
     &#34;&#34;&#34;Returns a tqdm bar with the project default format
 
         Args:
@@ -78,14 +227,81 @@ def create_bar(total: float, description: str) -&gt; tqdm:
         Returns:
             A tqdm object
     &#34;&#34;&#34;
-    disable_progress_bar = not(config[&#39;progress_bar&#39;].get(bool))
-    return tqdm(desc=description, total=total, leave=False, unit=&#39;%&#39;, dynamic_ncols=True,
-                disable=disable_progress_bar)</code></pre>
+    return tqdm(desc=description, total=total, leave=False, unit=&#39;%&#39;, dynamic_ncols=True)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.progress_bar.ProgressBar.update_description"><code class="name flex">
+<span>def <span class="ident">update_description</span></span>(<span>self, description=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>It updates the description of the tqdm bar</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>description</code></strong></dt>
+<dd>The description of the bar</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def update_description(self, description: str = None):
+    &#34;&#34;&#34;It updates the description of the tqdm bar
+
+        Args:
+            description: The description of the bar
+    &#34;&#34;&#34;
+    if (self._bar_exists()) and (description is not None):
+        self.bar.set_description(description)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.progress_bar.ProgressBar.update_progress"><code class="name flex">
+<span>def <span class="ident">update_progress</span></span>(<span>self, progress=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>It updates the progress of the tqdm bar</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>progress</code></strong></dt>
+<dd>The total of progress to update</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def update_progress(self, progress: float = None):
+    &#34;&#34;&#34;It updates the progress of the tqdm bar
+
+        Args:
+            progress: The total of progress to update
+    &#34;&#34;&#34;
+    if (self._bar_exists()) and (progress is not None):
+        self.bar.update(progress)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.progress_bar.ProgressBar.update_progress_and_description"><code class="name flex">
+<span>def <span class="ident">update_progress_and_description</span></span>(<span>self, progress=None, description=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>It updates the progress and description of the tqdm bar</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>progress</code></strong></dt>
+<dd>The total of progress to update</dd>
+<dt><strong><code>description</code></strong></dt>
+<dd>The description of the bar</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def update_progress_and_description(self, progress: float = None, description: str = None):
+    &#34;&#34;&#34;It updates the progress and description of the tqdm bar
+
+        Args:
+            progress: The total of progress to update
+            description: The description of the bar
+    &#34;&#34;&#34;
+    self.update_progress(progress)
+    self.update_description(description)</code></pre>
 </details>
 </dd>
 </dl>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -99,9 +315,18 @@ def create_bar(total: float, description: str) -&gt; tqdm:
 <li><code><a title="pandas_profiling.utils" href="index.html">pandas_profiling.utils</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pandas_profiling.utils.progress_bar.ProgressBar" href="#pandas_profiling.utils.progress_bar.ProgressBar">ProgressBar</a></code></h4>
 <ul class="">
-<li><code><a title="pandas_profiling.utils.progress_bar.create_bar" href="#pandas_profiling.utils.progress_bar.create_bar">create_bar</a></code></li>
+<li><code><a title="pandas_profiling.utils.progress_bar.ProgressBar.close" href="#pandas_profiling.utils.progress_bar.ProgressBar.close">close</a></code></li>
+<li><code><a title="pandas_profiling.utils.progress_bar.ProgressBar.create_bar" href="#pandas_profiling.utils.progress_bar.ProgressBar.create_bar">create_bar</a></code></li>
+<li><code><a title="pandas_profiling.utils.progress_bar.ProgressBar.update_description" href="#pandas_profiling.utils.progress_bar.ProgressBar.update_description">update_description</a></code></li>
+<li><code><a title="pandas_profiling.utils.progress_bar.ProgressBar.update_progress" href="#pandas_profiling.utils.progress_bar.ProgressBar.update_progress">update_progress</a></code></li>
+<li><code><a title="pandas_profiling.utils.progress_bar.ProgressBar.update_progress_and_description" href="#pandas_profiling.utils.progress_bar.ProgressBar.update_progress_and_description">update_progress_and_description</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

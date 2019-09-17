@@ -34,7 +34,7 @@ import pandas_profiling.view.templates as templates
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import MessageType
-from pandas_profiling.utils.progress_bar import create_bar
+from pandas_profiling.utils.progress_bar import ProgressBar
 
 
 def freq_table(
@@ -535,27 +535,27 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
             &#34;stats_object badly formatted. Did you generate this using the pandas_profiling.describe() function?&#34;
         )
 
-    bar = create_bar(total=100, description=&#34;Rendering&#34;)
+    bar = ProgressBar(total=100, description=&#34;Rendering&#34;)
 
-    bar.set_description(&#34;Overview section&#34;)
+    bar.update_description(&#34;Overview section&#34;)
     overview_section = render_overview_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Variables section&#34;)
+    bar.update_description(&#34;Variables section&#34;)
     variables_section = render_variables_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Correlations section&#34;)
+    bar.update_description(&#34;Correlations section&#34;)
     correlations_section = render_correlations_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Missing values section&#34;)
+    bar.update_description(&#34;Missing values section&#34;)
     missing_values_section = render_missing_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Sample section&#34;)
+    bar.update_description(&#34;Sample section&#34;)
     sample_section = render_sample_section(sample)
-    bar.update(20)
+    bar.update_progress(20)
     bar.close()
 
     sections = [
@@ -1257,27 +1257,27 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
             &#34;stats_object badly formatted. Did you generate this using the pandas_profiling.describe() function?&#34;
         )
 
-    bar = create_bar(total=100, description=&#34;Rendering&#34;)
+    bar = ProgressBar(total=100, description=&#34;Rendering&#34;)
 
-    bar.set_description(&#34;Overview section&#34;)
+    bar.update_description(&#34;Overview section&#34;)
     overview_section = render_overview_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Variables section&#34;)
+    bar.update_description(&#34;Variables section&#34;)
     variables_section = render_variables_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Correlations section&#34;)
+    bar.update_description(&#34;Correlations section&#34;)
     correlations_section = render_correlations_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Missing values section&#34;)
+    bar.update_description(&#34;Missing values section&#34;)
     missing_values_section = render_missing_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description(&#34;Sample section&#34;)
+    bar.update_description(&#34;Sample section&#34;)
     sample_section = render_sample_section(sample)
-    bar.update(20)
+    bar.update_progress(20)
     bar.close()
 
     sections = [

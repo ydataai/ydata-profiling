@@ -52,7 +52,7 @@ from pandas_profiling.model.correlations import (
 )
 
 from pandas_profiling.utils.common import update
-from pandas_profiling.utils.progress_bar import create_bar
+from pandas_profiling.utils.progress_bar import ProgressBar
 from pandas_profiling.view import plot
 
 
@@ -550,14 +550,14 @@ def describe(df: pd.DataFrame) -&gt; dict:
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
 
-    bar = create_bar(total=100, description=&#34;Describe 1D&#34;)
+    bar = ProgressBar(total=100, description=&#34;Describe 1D&#34;)
 
     # Multiprocessing of Describe 1D for each column
     pool_size = config[&#34;pool_size&#34;].get(int)
     if pool_size &lt;= 0:
         pool_size = multiprocessing.cpu_count()
 
-    bar.set_description(&#34;Describe 1D&#34;)
+    bar.update_description(&#34;Describe 1D&#34;)
     if pool_size == 1:
         args = [(column, series) for column, series in df.iteritems()]
         series_description = {
@@ -578,8 +578,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
     }
 
     # Get correlations
-    bar.update(25)
-    bar.set_description(&#34;Correlations&#34;)
+    bar.update_progress(25)
+    bar.update_description(&#34;Correlations&#34;)
     correlations = calculate_correlations(df, variables)
 
     # Check correlations between numerical variables
@@ -625,22 +625,22 @@ def describe(df: pd.DataFrame) -&gt; dict:
         )
 
     # Transform the series_description in a DataFrame
-    bar.update(20)
-    bar.set_description(&#34;Generating a DataFrame&#34;)
+    bar.update_progress(20)
+    bar.update_description(&#34;Generating a DataFrame&#34;)
     variable_stats = pd.DataFrame(series_description)
 
     # Table statistics
-    bar.update(20)
-    bar.set_description(&#34;Generating the statistics table&#34;)
+    bar.update_progress(20)
+    bar.update_description(&#34;Generating the statistics table&#34;)
     table_stats = describe_table(df, variable_stats)
 
     # missing diagrams
-    bar.set_description(&#34;Missing diagrams&#34;)
+    bar.update_description(&#34;Missing diagrams&#34;)
 
     missing = get_missing_diagrams(df, table_stats)
 
-    bar.update(35)
-    bar.set_description(&#34;Completed&#34;)
+    bar.update_progress(35)
+    bar.update_description(&#34;Completed&#34;)
     bar.close()
     # Messages
     messages = check_table_messages(table_stats)
@@ -713,14 +713,14 @@ def describe(df: pd.DataFrame) -&gt; dict:
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
 
-    bar = create_bar(total=100, description=&#34;Describe 1D&#34;)
+    bar = ProgressBar(total=100, description=&#34;Describe 1D&#34;)
 
     # Multiprocessing of Describe 1D for each column
     pool_size = config[&#34;pool_size&#34;].get(int)
     if pool_size &lt;= 0:
         pool_size = multiprocessing.cpu_count()
 
-    bar.set_description(&#34;Describe 1D&#34;)
+    bar.update_description(&#34;Describe 1D&#34;)
     if pool_size == 1:
         args = [(column, series) for column, series in df.iteritems()]
         series_description = {
@@ -741,8 +741,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
     }
 
     # Get correlations
-    bar.update(25)
-    bar.set_description(&#34;Correlations&#34;)
+    bar.update_progress(25)
+    bar.update_description(&#34;Correlations&#34;)
     correlations = calculate_correlations(df, variables)
 
     # Check correlations between numerical variables
@@ -788,22 +788,22 @@ def describe(df: pd.DataFrame) -&gt; dict:
         )
 
     # Transform the series_description in a DataFrame
-    bar.update(20)
-    bar.set_description(&#34;Generating a DataFrame&#34;)
+    bar.update_progress(20)
+    bar.update_description(&#34;Generating a DataFrame&#34;)
     variable_stats = pd.DataFrame(series_description)
 
     # Table statistics
-    bar.update(20)
-    bar.set_description(&#34;Generating the statistics table&#34;)
+    bar.update_progress(20)
+    bar.update_description(&#34;Generating the statistics table&#34;)
     table_stats = describe_table(df, variable_stats)
 
     # missing diagrams
-    bar.set_description(&#34;Missing diagrams&#34;)
+    bar.update_description(&#34;Missing diagrams&#34;)
 
     missing = get_missing_diagrams(df, table_stats)
 
-    bar.update(35)
-    bar.set_description(&#34;Completed&#34;)
+    bar.update_progress(35)
+    bar.update_description(&#34;Completed&#34;)
     bar.close()
     # Messages
     messages = check_table_messages(table_stats)

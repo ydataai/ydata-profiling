@@ -9,7 +9,7 @@ import pandas_profiling.view.templates as templates
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import MessageType
-from pandas_profiling.utils.progress_bar import create_bar
+from pandas_profiling.utils.progress_bar import ProgressBar
 
 
 def freq_table(
@@ -510,27 +510,27 @@ def to_html(sample: dict, stats_object: dict) -> str:
             "stats_object badly formatted. Did you generate this using the pandas_profiling.describe() function?"
         )
 
-    bar = create_bar(total=100, description="Rendering")
+    bar = ProgressBar(total=100, description="Rendering")
 
-    bar.set_description("Overview section")
+    bar.update_description("Overview section")
     overview_section = render_overview_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description("Variables section")
+    bar.update_description("Variables section")
     variables_section = render_variables_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description("Correlations section")
+    bar.update_description("Correlations section")
     correlations_section = render_correlations_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description("Missing values section")
+    bar.update_description("Missing values section")
     missing_values_section = render_missing_section(stats_object)
-    bar.update(20)
+    bar.update_progress(20)
 
-    bar.set_description("Sample section")
+    bar.update_description("Sample section")
     sample_section = render_sample_section(sample)
-    bar.update(20)
+    bar.update_progress(20)
     bar.close()
 
     sections = [
