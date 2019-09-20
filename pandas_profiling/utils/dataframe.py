@@ -79,6 +79,9 @@ def clean_column_names(df):
     """
     df.columns = df.columns.str.replace(" ", "_")
     df.columns = df.columns.str.replace(":", "")
+
+    # Necessary for the case of columns with mixed types (float,str ...)
+    df.columns = df.columns.astype('str')
     return df
 
 

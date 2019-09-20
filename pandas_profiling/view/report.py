@@ -1,4 +1,5 @@
 """Generate the report."""
+from warnings import warn
 
 import pandas as pd
 
@@ -320,7 +321,18 @@ def render_variables_section(stats_object: dict) -> str:
         if row["type"] == Variable.S_TYPE_UNIQUE:
             table = stats_object["variables"][idx][
                 "value_counts_without_nan"
-            ].sort_index()
+            ]
+
+            try:
+                table.sort_index(inplace=True)
+            except TypeError:
+                table = table.reset_index()
+                warn(
+                    "There was an attempt to sort the index, but this failed.\n"
+                    "To hide this warning, make the index column sortable.\n"
+                    "You could change the type of the index or set another variable as index column."
+                )
+
             obs = table.index
 
             formatted_values["firstn"] = pd.DataFrame(
