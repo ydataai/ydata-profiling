@@ -534,16 +534,8 @@ def to_html(sample: dict, stats_object: dict) -> str:
     bar.close()
 
     sections = [
-        {
-            "title": "Overview",
-            "anchor_id": "overview",
-            "content": overview_section,
-        },
-        {
-            "title": "Variables",
-            "anchor_id": "variables",
-            "content": variables_section,
-        },
+        {"title": "Overview", "anchor_id": "overview", "content": overview_section},
+        {"title": "Variables", "anchor_id": "variables", "content": variables_section},
         {
             "title": "Correlations",
             "anchor_id": "correlations",
@@ -554,11 +546,7 @@ def to_html(sample: dict, stats_object: dict) -> str:
             "anchor_id": "missing",
             "content": missing_values_section,
         },
-        {
-            "title": "Sample",
-            "anchor_id": "sample",
-            "content": sample_section,
-        },
+        {"title": "Sample", "anchor_id": "sample", "content": sample_section},
     ]
 
     return templates.template("base.html").render(

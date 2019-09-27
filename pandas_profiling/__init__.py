@@ -36,7 +36,7 @@ class ProfileReport(object):
 
         config.set_kwargs(kwargs)
 
-        bar = ProgressBar(total=100, description='Configuring')
+        bar = ProgressBar(total=100, description="Configuring")
 
         # Treat index as any other column
         if (

@@ -38,7 +38,7 @@ setup(
         "confuse>=1.0.0",
         "astropy",  # Could be optional
         "tqdm>=4.35.0",
-        "ipywidgets>=7.5.1"
+        "ipywidgets>=7.5.1",
     ],
     # extras_requires=[
     # {"variable_bins": ["astropy"]}

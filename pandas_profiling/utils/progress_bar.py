@@ -4,14 +4,13 @@ from pandas_profiling.config import config
 
 
 class ProgressBar(object):
-
     def __init__(self, total: float, description: str) -> None:
         """
             Args:
                 total: The number of expected iterations
                 description: The description of the bar
         """
-        enable_progress_bar = config['progress_bar'].get(bool)
+        enable_progress_bar = config["progress_bar"].get(bool)
         if enable_progress_bar:
             self.bar = self.create_bar(total=total, description=description)
         else:
@@ -27,7 +26,9 @@ class ProgressBar(object):
             Returns:
                 A tqdm object
         """
-        return tqdm(desc=description, total=total, leave=False, unit='%', dynamic_ncols=True)
+        return tqdm(
+            desc=description, total=total, leave=False, unit="%", dynamic_ncols=True
+        )
 
     def _bar_exists(self) -> bool:
         """It checks whether the ProgressBar object has a tqdm bar attribute
@@ -54,7 +55,9 @@ class ProgressBar(object):
         if (self._bar_exists()) and (description is not None):
             self.bar.set_description(description)
 
-    def update_progress_and_description(self, progress: float = None, description: str = None):
+    def update_progress_and_description(
+        self, progress: float = None, description: str = None
+    ):
         """It updates the progress and description of the tqdm bar
 
             Args:
