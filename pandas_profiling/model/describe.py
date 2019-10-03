@@ -605,6 +605,8 @@ def describe(df: pd.DataFrame) -> dict:
             # Currently only supports binary differencing
             if df[col_split].nunique() != 2:
                 raise ValueError(f"column {col_split} should have 2 unique values, {df[col_split].nunique()} found")
+            elif df[col_split].dtype != bool:
+                raise ValueError(f"column {col_split} should have bool dtype")
             else:
                 # Use this cfg field as final check about PSI calculation
                 bool_split = True 
