@@ -105,3 +105,6 @@ style:
 #  full_width: True
 #  theme: "flatly"
 #  primary_color: "#2c3e50"
+
+# Column name for sample split (used for PSI estimation)
+col_split: None

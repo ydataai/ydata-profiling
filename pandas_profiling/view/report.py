@@ -443,9 +443,14 @@ def render_variables_section(stats_object: dict) -> str:
                 },
             }
 
-        rows_html += templates.template(
-            "variables/row_{}.html".format(row["type"].value.lower())
-        ).render(values=formatted_values)
+        if ("PSI" in formatted_values.keys()) and (row["type"] in [Variable.TYPE_NUM, Variable.TYPE_BOOL, Variable.TYPE_CAT]):
+            rows_html += templates.template(
+            "variables/row_{}_psi.html".format(row["type"].value.lower())
+            ).render(values=formatted_values)
+        else:
+            rows_html += templates.template(
+                "variables/row_{}.html".format(row["type"].value.lower())
+            ).render(values=formatted_values)
     return rows_html
 
 

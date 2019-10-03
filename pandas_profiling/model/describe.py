@@ -28,6 +28,77 @@ from pandas_profiling.model.correlations import (
 from pandas_profiling.utils.common import update
 from pandas_profiling.view import plot
 
+def PSI_numeric(series, in_out_time_series, quantiles=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]):
+    """Returns the population stability index for numerical variables
+    
+    Args:
+        series: Pandas Series, the variable to describe
+        in_out_time_series: Pandas Series It contains the in time / out of time series
+        quantiles: List with the quantiles applied for the feature bucketing
+        
+    Returns:
+        Estimated PSI
+    """
+    pd_aux = pd.DataFrame(dict(data = series, in_out = in_out_time_series)).reset_index()
+    #capture in time and out of time series
+    in_series = pd_aux.loc[pd_aux.in_out == True]['data']
+    out_series = pd_aux.loc[pd_aux.in_out == False]['data']
+
+    #base data deciles
+    qqs = in_series.quantile(q=quantiles)
+
+    #cut the data, based in the base series deciles
+    in_series_cut = pd.cut(in_series, sorted(list(set(qqs.values))), include_lowest=True)
+    out_series_cut = pd.cut(out_series, sorted(list(set(qqs.values))), include_lowest=True)
+    #count volume per bin
+    in_grp = in_series_cut.value_counts(dropna=False)
+    out_grp = out_series_cut.value_counts(dropna= not (np.nan in in_grp.index.values.tolist()))
+    #small fix, so some inf values are fixed
+    out_grp[out_grp==0] = 0.01
+
+    #N observations in each series
+    N_in = len(in_series_cut)
+    N_out = len(out_series_cut)
+
+    #convert to share in each bin
+    in_grp = in_grp / N_in
+    out_grp = out_grp / N_out
+
+    return sum((in_grp-out_grp)*np.log(in_grp/out_grp))
+
+def PSI_categorical(series, in_out_time_series, Ntop=40):
+    """Returns the population stability index for categorical variables
+    
+    Args:
+        series: Pandas Series, the variable to describe
+        in_out_time_series: Pandas Series It contains the in time / out of time series
+        Ntop: Number of highest frequency different values to observe
+        
+    Returns:
+        Estimated PSI
+    """
+    pd_aux = pd.DataFrame(dict(data = series, in_out = in_out_time_series)).reset_index()
+    #capture in time and out of time series
+    in_series = pd_aux.loc[pd_aux.in_out == True]['data']
+    out_series = pd_aux.loc[pd_aux.in_out == False]['data']
+    
+    #count volume per level
+    in_grp = in_series.value_counts(dropna=False)[:Ntop]
+    out_grp = out_series.value_counts(dropna= not (np.nan in in_grp.index.values.tolist()))
+    
+    #N observations in each series
+    N_in = len(in_series)
+    N_out = len(out_series)
+    
+    #convert to share in each bin
+    in_grp = in_grp / N_in
+    out_grp = out_grp / N_out
+    
+    #put all together in a df
+    df_grp = in_grp.to_frame().join(out_grp.to_frame(), lsuffix = '_in', rsuffix = '_out')
+    df_grp = df_grp.fillna(0.000001)
+
+    return sum((df_grp.data_in - df_grp.data_out) * np.log(df_grp.data_in / df_grp.data_out))
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a numeric series.
@@ -522,6 +593,23 @@ def describe(df: pd.DataFrame) -> dict:
 
     if df.empty:
         raise ValueError("df can not be empty")
+    
+    # Get Split column for PSI
+    col_split = config["col_split"].get()
+    bool_split = False
+    # If a split column is defined
+    if col_split != "None":
+        col_split = str(col_split)
+        # Check if it is in the list of input columns
+        if col_split in df.columns.tolist():
+            # Currently only supports binary differencing
+            if df[col_split].nunique() != 2:
+                raise ValueError(f"column {col_split} should have 2 unique values, {df[col_split].nunique()} found")
+            else:
+                # Use this cfg field as final check about PSI calculation
+                bool_split = True 
+        else:
+            raise ValueError(f"column {col_split} not found in {df.columns.tolist()}")
 
     # Multiprocessing of Describe 1D for each column
     pool_size = config["pool_size"].get(int)
@@ -540,6 +628,9 @@ def describe(df: pd.DataFrame) -> dict:
             results = executor.starmap(multiprocess_1d, df.iteritems())
             for col, description in results:
                 series_description[col] = description
+
+    # Remove the sample flag, as we are not interested in describing it
+    series_description.pop(col_split, None)
 
     # Mapping from column name to variable type
     variables = {
@@ -591,6 +682,14 @@ def describe(df: pd.DataFrame) -> dict:
                 correlations["recoded"], lambda x: x == 1, Variable.S_TYPE_RECODED
             ),
         )
+
+    # Estimate PSI
+    if bool_split:
+        for col, tp in variables.items():
+            if tp == Variable.TYPE_NUM:
+                series_description[col]["PSI"] = round(PSI_numeric(df[col], df[col_split]), 4)
+            elif tp in (Variable.TYPE_BOOL, Variable.TYPE_CAT):
+                series_description[col]["PSI"] = round(PSI_categorical(df[col], df[col_split]), 4)
 
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
