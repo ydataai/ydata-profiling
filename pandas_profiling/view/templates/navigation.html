@@ -2,8 +2,7 @@
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -16,13 +15,9 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a class="anchor" href="#overview">Overview</a></li>
                 <li><a class="anchor" href="#variables">Variables</a></li>
-                {% if correlation %}
-                <li><a class="anchor" href="#correlations">Correlations</a></li>
-                {% endif %}
-               {% if missing %}
+                {% if missing %}
                 <li><a class="anchor" href="#missing">Missing values</a></li>
-                {% endif %}
-                {% if sample %}
+                {% endif %} {% if sample %}
                 <li><a class="anchor" href="#sample">Sample</a></li>
                 {% endif %}
             </ul>
