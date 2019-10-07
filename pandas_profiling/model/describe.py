@@ -548,8 +548,10 @@ def describe(df: pd.DataFrame) -> dict:
     }
 
     # Get correlations
-    correlations = calculate_correlations(df, variables)
+    #correlations = calculate_correlations(df, variables)
+    correlations = {} # Turn off correlation calculations
 
+    '''
     # Check correlations between numerical variables
     if (
         config["check_correlation_pearson"].get(bool) is True
@@ -591,7 +593,8 @@ def describe(df: pd.DataFrame) -> dict:
                 correlations["recoded"], lambda x: x == 1, Variable.S_TYPE_RECODED
             ),
         )
-
+    '''
+    
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
