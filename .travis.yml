@@ -1,11 +1,12 @@
 sudo: required
-dist: xenial
+dist: bionic
 language: python
 cache: pip
 python:
   - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
 
 env:
   matrix:
