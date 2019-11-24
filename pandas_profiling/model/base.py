@@ -89,7 +89,7 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
         series_description: Series description
 
     Returns:
-        True is the series is boolean type in the broad sense (e.g. including yes/no, NaNs allowed).
+        True if the series is boolean type in the broad sense (e.g. including yes/no, NaNs allowed).
     """
     keys = series_description["value_counts_without_nan"].keys()
     if pd.api.types.is_bool_dtype(keys):
@@ -125,7 +125,7 @@ def is_numeric(series: pd.Series, series_description: dict) -> bool:
         series_description: Series description
 
     Returns:
-        True is the series is numeric type (NaNs allowed).
+        True if the series is numeric type (NaNs allowed).
     """
     return pd.api.types.is_numeric_dtype(series) and series_description[
         "distinct_count_without_nan"
@@ -140,7 +140,7 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
         series_description: Series description
 
     Returns:
-        True is the series is url type (NaNs allowed).
+        True if the series is url type (NaNs allowed).
     """
     if series_description["distinct_count_without_nan"] > 0:
         try:
