@@ -44,7 +44,6 @@ You can install using the pip package manager by running
 Alternatively, you could install directly from Github:
 
     pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
-
     
 ### Using conda
 
@@ -55,13 +54,33 @@ You can install using the conda package manager by running
 
     conda install -c conda-forge pandas-profiling
 
+### Using Jupyter notebook
+
+Inside any code cell or line in a cell in the Juyter notebook, type any of the below and execute it to see the package being installed:
+
+#### Linux/MacOS
+
+    %%bash
+    pip install pandas-profiling
+
+    or 
+
+    ! pip install pandas-profiling
+
+#### Windows
+
+    import sys 
+    !{sys.executable} -m pip install pandas-profiling
+
+Similarly, we can also do the above with the `conda` package installer.
+
 ### From source
 
 Download the source code by cloning the repository or by pressing ['Download ZIP'](https://github.com/pandas-profiling/pandas-profiling/archive/master.zip) on this page. 
 Install by navigating to the proper directory and running
 
     python setup.py install
-    
+
 ## Usage
 
 The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
