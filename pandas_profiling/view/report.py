@@ -259,6 +259,10 @@ def render_variables_section(stats_object: dict) -> str:
                     formatted_values["row_classes"]["zeros"] = "alert"
                 elif m.message_type == MessageType.MISSING:
                     formatted_values["row_classes"]["missing"] = "alert"
+                elif m.message_type == MessageType.SMALLEST_ABNORMAL:
+                    formatted_values["row_classes"]["smallest"] = "alert"
+                elif m.message_type == MessageType.LARGEST_ABNORMAL:
+                    formatted_values["row_classes"]["largest"] = "alert"
 
         if row["type"] in {Variable.TYPE_NUM, Variable.TYPE_DATE}:
             formatted_values["histogram"] = histogram(

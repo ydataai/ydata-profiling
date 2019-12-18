@@ -81,6 +81,20 @@
                 <td>
                     <span class="label label-info">Type</span>
                 </td>
+            {% elif message.message_type == MessageType.SMALLEST_ABNORMAL %}
+                <td>
+                    <a class="anchor" href="#pp_var_{{ message.column_name }}"><code>{{ message.column_name }}</code></a> has abnormal smallest values: minimum = {{ message.values['min'] }}, P5 = {{ message.values['5%'] }}, P10 = {{ message.values['10%'] }}
+                </td>
+                <td>
+                    <span class="label label-danger">Abnormal</span>
+                </td>
+            {% elif message.message_type == MessageType.LARGEST_ABNORMAL %}
+                <td>
+                    <a class="anchor" href="#pp_var_{{ message.column_name }}"><code>{{ message.column_name }}</code></a> has abnormal largest values: maximum = {{ message.values['max'] }}, P95 = {{ message.values['95%'] }}, P90 = {{ message.values['90%'] }}
+                </td>
+                <td>
+                    <span class="label label-danger">Abnormal</span>
+                </td>
             {% else %}
                 <td colspan="2">Unknown type {{ message['mtype'] }} </td>
             {% endif %}

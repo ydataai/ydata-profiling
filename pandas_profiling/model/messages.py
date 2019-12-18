@@ -49,6 +49,11 @@ class MessageType(Enum):
     TYPE_DATE = 11
     """This variable is likely a datetime, but treated as categorical."""
 
+    SMALLEST_ABNORMAL = 12
+    """This variable has abnormally smallest values."""
+
+    LARGEST_ABNORMAL = 13
+    """This variable has abnormally largest values."""
 
 class Message(object):
     """A message object (type, values, column)."""
@@ -132,6 +137,24 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             messages.append(
                 Message(
                     column_name=col, message_type=MessageType.ZEROS, values=description
+                )
+            )
+        # abnormally smallest values
+        if ((description["5%"] - description["min"]) / (description["10%"] - description["5%"])) > config["smallest_abnormal_difference"].get():
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.SMALLEST_ABNORMAL,
+                    values=description,
+                )
+            )
+        # abnormally largest values
+        if ((description["max"] - description["95%"]) / (description["95%"] - description["90%"])) > config["largest_abnormal_difference"].get():
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.LARGEST_ABNORMAL,
+                    values=description,
                 )
             )
 
