@@ -17,6 +17,7 @@ env:
     - TEST=types
 
 install:
+  - pip install --upgrade pip six
   - pip install -r requirements.txt
   - pip install -r requirements-test.txt
   - pip install -e .
