@@ -41,7 +41,7 @@ class MessageType(Enum):
     """This variable is highly skewed."""
 
     MISSING = 9
-    """THis variable contains missing values."""
+    """This variable contains missing values."""
 
     INFINITE = 10
     """This variable contains infinite values."""
