@@ -1,5 +1,4 @@
 pytest
-black
 mypy
 coverage==4.5.*
 codecov
