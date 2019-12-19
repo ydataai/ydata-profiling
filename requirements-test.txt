@@ -1,5 +1,9 @@
 pytest
+black
+mypy
 codecov
 pytest-cov
+pytest-mypy
+pytest-black
 nbval
 pyarrow
