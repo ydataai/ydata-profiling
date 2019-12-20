@@ -139,24 +139,45 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                     column_name=col, message_type=MessageType.ZEROS, values=description
                 )
             )
-        # abnormally smallest values
-        if ((description["5%"] - description["min"]) / (description["10%"] - description["5%"])) > config["smallest_abnormal_difference"].get():
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.SMALLEST_ABNORMAL,
-                    values=description,
+        if config["check_abnormal_values"].get():
+            # abnormally smallest values check
+            P10_5 = description["10%"] - description["5%"]
+            if P10_5 != 0:
+                if ((description["5%"] - description["min"]) / P10_5) > config["smallest_abnormal_difference"].get():
+                    messages.append(
+                        Message(
+                            column_name=col,
+                            message_type=MessageType.SMALLEST_ABNORMAL,
+                            values=description,
+                        )
+                    )
+            elif ((description["5%"] - description["min"]) / (description["max"] - description["min"])) > config["abnormal_threshold_difference"].get():
+                    messages.append(
+                        Message(
+                            column_name=col,
+                            message_type=MessageType.SMALLEST_ABNORMAL,
+                            values=description,
+                        )
+                    )
+            # abnormally largest values check
+            P95_90 = description["95%"] - description["90%"]
+            if P95_90 != 0:
+                if ((description["max"] - description["95%"]) / P95_90) > config["largest_abnormal_difference"].get():
+                    messages.append(
+                        Message(
+                            column_name=col,
+                            message_type=MessageType.LARGEST_ABNORMAL,
+                            values=description,
+                        )
+                    )
+            elif ((description["max"] - description["95%"]) / description["max"]) > config["abnormal_threshold_difference"].get():
+                messages.append(
+                    Message(
+                        column_name=col,
+                        message_type=MessageType.LARGEST_ABNORMAL,
+                        values=description,
+                    )
                 )
-            )
-        # abnormally largest values
-        if ((description["max"] - description["95%"]) / (description["95%"] - description["90%"])) > config["largest_abnormal_difference"].get():
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.LARGEST_ABNORMAL,
-                    values=description,
-                )
-            )
 
     if description["type"] not in {
         Variable.S_TYPE_UNSUPPORTED,

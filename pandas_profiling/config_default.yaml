@@ -33,8 +33,10 @@ low_categorical_threshold: 5
 cardinality_threshold: 50
 
 # Settings for abnormal values warnings
+check_abnormal_values: True
 smallest_abnormal_difference: 2
 largest_abnormal_difference: 2
+abnormal_threshold_difference: 0.2
 
 # which diagrams to show
 missing_diagrams:
