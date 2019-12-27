@@ -105,13 +105,6 @@ class ProfileReport(object):
         Returns:
             A list of rejected variables.
         """
-        # variable_profile = self.description_set["variables"]
-        # result = []
-        # for col, values in variable_profile.items():
-        #     if "correlations" in values:
-        #         if values["correlations"] > threshold:
-        #             result.append(col)
-        # return result
         correlations = self.description_set['correlations']
         correlation = correlations[correlation_type]
         correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
