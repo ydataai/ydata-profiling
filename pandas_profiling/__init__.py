@@ -93,7 +93,7 @@ class ProfileReport(object):
         """
         return self.description_set
 
-        def get_rejected_variables(self, threshold: float = 0.9, correlation_type: str = 'pearson') -> list:
+    def get_rejected_variables(self, threshold: float = 0.9, correlation_type: str = 'pearson') -> list:
         """Return a list of variable names being rejected for high 
         correlation with one of remaining variables.
         
