@@ -93,23 +93,30 @@ class ProfileReport(object):
         """
         return self.description_set
 
-    def get_rejected_variables(self, threshold: float = 0.9) -> list:
+        def get_rejected_variables(self, threshold: float = 0.9, correlation_type: str = 'pearson') -> list:
         """Return a list of variable names being rejected for high 
         correlation with one of remaining variables.
         
         Args:
             threshold: correlation value which is above the threshold are rejected (Default value = 0.9)
+            correlation_type: Type of Correlations available 'pearson', 'spearman', 'kendall', 'phi_k'
+            (Default value = pearson)
 
         Returns:
             A list of rejected variables.
         """
-        variable_profile = self.description_set["variables"]
-        result = []
-        for col, values in variable_profile.items():
-            if "correlation" in values:
-                if values["correlation"] > threshold:
-                    result.append(col)
-        return result
+        # variable_profile = self.description_set["variables"]
+        # result = []
+        # for col, values in variable_profile.items():
+        #     if "correlations" in values:
+        #         if values["correlations"] > threshold:
+        #             result.append(col)
+        # return result
+        correlations = self.description_set['correlations']
+        correlation = correlations[correlation_type]
+        correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
+        drop_cols = [i for i in correlation_tri if any(correlation_tri[i]>threshold)]
+        return drop_cols
 
     def to_file(self, output_file: Path or str, silent: bool = True) -> None:
         """Write the report to a file.
