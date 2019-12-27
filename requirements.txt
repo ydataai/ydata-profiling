@@ -3,7 +3,7 @@ requests
 missingno>=0.4.2
 matplotlib
 jinja2
-numpy
+numpy>=1.6.0
 pandas
 htmlmin
 phik
