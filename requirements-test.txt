@@ -1,9 +1,7 @@
 pytest
-mypy
-coverage==4.5.*
+coverage<5
 codecov
 pytest-cov
-pytest-mypy
 pytest-black
 nbval
 pyarrow
