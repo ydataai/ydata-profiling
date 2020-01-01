@@ -13,7 +13,7 @@ env:
     - TEST=issue
     - TEST=console
     - TEST=examples
-    - TEST=types
+    - TEST=lint
 
 install:
   - pip install --upgrade pip six
