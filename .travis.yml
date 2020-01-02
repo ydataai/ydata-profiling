@@ -13,18 +13,21 @@ env:
     - TEST=issue
     - TEST=console
     - TEST=examples
+    - TEST=lint
 
 install:
+  - pip install --upgrade pip six
   - pip install -r requirements.txt
   - pip install -r requirements-test.txt
   - pip install -e .
 
 script:
-  - if [ $TEST == 'unit' ]; then pytest --cov=. --sanitize-with tests/sanitize-notebook.cfg tests/unit/; fi
-  - if [ $TEST == 'issue' ]; then pytest --cov=. --sanitize-with tests/sanitize-notebook.cfg tests/issues/; fi
+  - if [ $TEST == 'unit' ]; then pytest --cov=. tests/unit/; fi
+  - if [ $TEST == 'issue' ]; then pytest --cov=. tests/issues/; fi
   - if [ $TEST == 'examples' ]; then pytest --nbval --cov=. --sanitize-with tests/sanitize-notebook.cfg examples/; fi
   # Our well-behaved Unix-style command-line tool exits with code 0 unless an internal error occurred
   - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
+  - if [ $TEST == 'lint' ]; then pytest --black -m black pandas_profiling/; fi
 
 after_success:
   - codecov -F $TEST
