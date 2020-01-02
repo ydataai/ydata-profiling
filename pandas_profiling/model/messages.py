@@ -55,7 +55,10 @@ class Message(object):
     """A message object (type, values, column)."""
 
     def __init__(
-        self, message_type: MessageType, values: dict, column_name: Union[str, None] = None
+        self,
+        message_type: MessageType,
+        values: dict,
+        column_name: Union[str, None] = None,
     ):
         self.message_type = message_type
         self.values = values

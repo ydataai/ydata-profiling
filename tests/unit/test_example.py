@@ -43,7 +43,7 @@ def test_example(tmpdir):
     assert (tmpdir / "profile.html").exists(), "Output file does not exist"
     assert (
         type(profile.get_description()) == dict
-        and len(profile.get_description().items()) == 5
+        and len(profile.get_description().items()) == 6
     ), "Unexpected result"
     assert set(profile.get_rejected_variables(0.9)) == {
         "reclat_city"
