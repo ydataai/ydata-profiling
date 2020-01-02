@@ -33,7 +33,6 @@ def make_report_minimal(df):
         minimal=True,
         pool_size=0,
         title="Dataset with <em>Numeric</em> Categories",
-        samples={"head": 20},
     )
     html = report.to_html()
     assert type(html) == str and '<p class="h2">Dataset info</p>' in html
@@ -45,7 +44,6 @@ def make_report(df):
         minimal=False,
         pool_size=0,
         title="Dataset with <em>Numeric</em> Categories",
-        samples={"head": 20},
     )
     html = report.to_html()
     assert type(html) == str and '<p class="h2">Dataset info</p>' in html
@@ -61,8 +59,10 @@ def wrap_func(function):
     return inner
 
 
-def time_report(func, cols, rows, runs=1):
+def time_report(func, cols, rows, runs=5):
     df = make_sample_data(cols, rows)
+    print(df.shape, cols, rows)
+    print(df.head())
     test = wrap_func(func)(df)
     return timeit.timeit(test, number=runs) / runs
 
@@ -84,7 +84,9 @@ def plot_col_run_time():
 
 
 def plot_row_run_time():
-    rows = [10, 100, 1000, 10000, 100000]
+    # 10, 100
+    # https://github.com/pandas-profiling/pandas-profiling/issues/270
+    rows = [1000, 10000, 100000]
     col = 10
     default_times = [time_report(make_report, col, row) for row in rows]
     minimal_times = [time_report(make_report_minimal, col, row) for row in rows]
@@ -100,5 +102,5 @@ def plot_row_run_time():
 
 
 if __name__ == "__main__":
-    plot_col_run_time()
+    # plot_col_run_time()
     plot_row_run_time()

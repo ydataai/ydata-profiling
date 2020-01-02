@@ -181,7 +181,7 @@ Read more on getting involved in the [Contribution Guide](https://github.com/pan
     - Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"
     - Working Directory: $ProjectFileDir$
   
-![PyCharm Integration](http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png | width=400)
+<img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" />
   
 To use the PyCharm Integration, right click on any dataset file:
 _External Tools_ > _Pandas Profiling_.
