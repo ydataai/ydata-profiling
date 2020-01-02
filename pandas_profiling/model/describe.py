@@ -27,7 +27,12 @@ from pandas_profiling.model.correlations import (
 )
 from pandas_profiling.utils.common import update
 from pandas_profiling.visualisation import plot
-from pandas_profiling.visualisation.missing import missing_bar, missing_matrix, missing_heatmap, missing_dendrogram
+from pandas_profiling.visualisation.missing import (
+    missing_bar,
+    missing_matrix,
+    missing_heatmap,
+    missing_dendrogram,
+)
 
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
