@@ -31,9 +31,9 @@ class ProfileReport(object):
     html = ""
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
-    def __init__(self, df, config_path=None, **kwargs):
-        if config_path:
-            config.config.set_file(str(config_path))
+    def __init__(self, df, config_file : Path = None, **kwargs):
+        if config_file:
+            config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
         # Treat index as any other column
