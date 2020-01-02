@@ -627,9 +627,14 @@ def test_describe_df(describe_data, expected_results):
 
     results = describe(describe_data_frame)
 
-    assert {"table", "variables", "correlations", "missing", "messages"} == set(
-        results.keys()
-    ), "Not in results"
+    assert {
+        "table",
+        "variables",
+        "correlations",
+        "missing",
+        "messages",
+        "package",
+    } == set(results.keys()), "Not in results"
     assert set(
         {
             "CAT": 1,
