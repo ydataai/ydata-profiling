@@ -4,9 +4,10 @@ from enum import Enum, unique
 from typing import List
 import warnings
 from contextlib import suppress
-import numpy as np
 import re
 from dateutil.parser import parse
+
+import numpy as np
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
