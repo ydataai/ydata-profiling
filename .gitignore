@@ -72,4 +72,4 @@ examples/*/*.csv
 playground/
 
 # mypy
-.mypy_cache
+.mypy_cache/
