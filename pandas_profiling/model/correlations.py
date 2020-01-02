@@ -77,7 +77,7 @@ def recoded_matrix(df: pd.DataFrame, variables: dict):
 
 
 def categorical_matrix(
-    df: pd.DataFrame, variables: dict, correlation_function: callable
+    df: pd.DataFrame, variables: dict, correlation_function: Callable
 ):
     """Calculate a correlation matrix for categorical variables.
 
