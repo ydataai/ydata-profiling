@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 from astropy.stats import bayesian_blocks
 
+from pandas_profiling import __version__
 from pandas_profiling.config import config as config
 from pandas_profiling.model.messages import (
     check_variable_messages,
@@ -612,6 +613,11 @@ def describe(df: pd.DataFrame) -> dict:
     for col, description in series_description.items():
         messages += check_variable_messages(col, description)
 
+    package = {
+        "pandas_profiling_version": __version__,
+        "pandas_profiling_config": config.dump(),
+    }
+
     return {
         # Overall description
         "table": table_stats,
@@ -623,4 +629,6 @@ def describe(df: pd.DataFrame) -> dict:
         "missing": missing,
         # Warnings
         "messages": messages,
+        # Package
+        "package": package,
     }
