@@ -5,8 +5,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues/85
 import pandas as pd
 import numpy as np
 
-import pandas_profiling
-
+from pandas_profiling import ProfileReport
 from pandas_profiling.model.base import Variable
 
 
@@ -25,7 +24,8 @@ def test_issue85():
 
     df = pd.DataFrame(data)
 
-    report = df.profile_report(
+    report = ProfileReport(
+        df,
         pool_size=1,
         title="Dataset with <em>Boolean</em> Variables",
         samples={"head": 20},

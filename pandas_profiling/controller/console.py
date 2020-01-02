@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Union
 import argparse
 
-from pandas_profiling import __version__, ProfileReport
+from pandas_profiling.__init__ import __version__, ProfileReport
 from pandas_profiling.config import config
 from pandas_profiling.utils.dataframe import read_pandas
 

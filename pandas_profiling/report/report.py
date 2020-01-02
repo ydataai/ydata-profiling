@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-import pandas_profiling.view.templates as templates
+import pandas_profiling.report.templates as templates
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import MessageType
