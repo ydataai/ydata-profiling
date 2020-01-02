@@ -3,8 +3,6 @@ from pathlib import Path
 import argparse
 from typing import Union
 
-import pandas as pd
-
 from pandas_profiling.__init__ import __version__, ProfileReport
 from pandas_profiling.config import config
 from pandas_profiling.utils.dataframe import read_pandas
@@ -52,17 +50,17 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
 
     parser.add_argument(
         "--config_file",
-        type=Path,
+        type=str,
         default=None,
         help="Specify a yaml config file. Have a look at the 'config_default.yaml' as a starting point.",
     )
 
     parser.add_argument(
         "input_file",
-        type=Path,
+        type=str,
         help="CSV file (or other file type supported by pandas) to profile",
     )
-    parser.add_argument("output_file", type=Path, help="Output report file")
+    parser.add_argument("output_file", type=str, help="Output report file")
 
     return parser.parse_args(args)
 
@@ -79,8 +77,8 @@ def main(args=None) -> None:
     config.set_args(args, dots=True)
 
     # read the DataFrame
-    df = read_pandas(args.input_file)
+    df = read_pandas(Path(args.input_file))
 
     # Generate the profiling report
     p = ProfileReport(df, config_file=args.config_file)
-    p.to_file(output_file=args.output_file, silent=args.silent)
+    p.to_file(output_file=Path(args.output_file), silent=args.silent)
