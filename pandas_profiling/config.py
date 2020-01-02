@@ -2,6 +2,7 @@
 import argparse
 
 import confuse
+
 from pandas_profiling.utils.paths import get_config_default
 
 

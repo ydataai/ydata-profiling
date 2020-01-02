@@ -60,7 +60,7 @@ check_recoded: True
 
 # Plot-specific settings
 plot:
-    # Image format (svg or png)
+# Image format (svg or png)
     image_format: "svg"
     dpi: 800
 
@@ -69,16 +69,17 @@ plot:
 
     missing:
         cmap: 'RdBu'
-        # Force labels when there are > 50 variables
-        # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+# Force labels when there are > 50 variables
+# https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
         force_labels: True
 
     histogram:
-        # is used for numeric variables
+# is used for numeric variables
         bayesian_blocks_bins: True
 
-        bins: 50 # If 'bayesian_blocks_bins' fails to provide a valid number of bins.
-        # Also used for equal size histogram
+# If 'bayesian_blocks_bins' fails to provide a valid number of bins.
+        bins: 50
+# Also used for equal size histogram
 
 # The number of observations to show
 n_obs_unique: 5
@@ -95,13 +96,14 @@ notebook:
     iframe:
         height: '800px'
         width: '100%'
-        attribute: 'srcdoc' # or 'src'
+# or 'src'
+        attribute: 'srcdoc'
 
 # Styling options for the HTML report
+#  full_width: True
+#  theme: "flatly"
+#  primary_color: "#2c3e50"
 style:
   full_width: False
   theme: None
   primary_color: "#337ab7"
-#  full_width: True
-#  theme: "flatly"
-#  primary_color: "#2c3e50"
