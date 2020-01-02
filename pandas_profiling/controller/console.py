@@ -1,5 +1,6 @@
 """This file add the console interface to the package."""
 from pathlib import Path
+from typing import Union
 
 import pandas as pd
 import pandas_profiling
@@ -10,7 +11,7 @@ import argparse
 from pandas_profiling.utils.dataframe import read_pandas
 
 
-def parse_args(args: list or None = None) -> argparse.Namespace:
+def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
     """Parse the command line arguments for the `pandas_profiling` binary.
 
     Args:

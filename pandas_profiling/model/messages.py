@@ -1,7 +1,7 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
 from enum import Enum, unique
-from typing import List
+from typing import List, Union
 import warnings
 from contextlib import suppress
 import numpy as np
@@ -54,7 +54,7 @@ class Message(object):
     """A message object (type, values, column)."""
 
     def __init__(
-        self, message_type: MessageType, values: dict, column_name: str or None = None
+        self, message_type: MessageType, values: dict, column_name: Union[str, None] = None
     ):
         self.message_type = message_type
         self.values = values
@@ -163,11 +163,11 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     return messages
 
 
-def warning_value(value: np.nan or float) -> bool:
+def warning_value(value: Union[np.nan, float]) -> bool:
     return not np.isnan(value) and value > 0.01
 
 
-def warning_skewness(v: np.nan or float) -> bool:
+def warning_skewness(v: Union[np.nan, float]) -> bool:
     return not np.isnan(v) and (
         v < -config["vars"]["num"]["skewness_threshold"].get(int)
         or v > config["vars"]["num"]["skewness_threshold"].get(int)

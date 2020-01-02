@@ -110,7 +110,7 @@ class ProfileReport(object):
                     result.append(col)
         return result
 
-    def to_file(self, output_file: Path or str, silent: bool = True) -> None:
+    def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
         
         By default a name is generated.
@@ -135,7 +135,7 @@ class ProfileReport(object):
         if not silent:
             import webbrowser
 
-            webbrowser.open_new_tab(output_file)
+            webbrowser.open_new_tab(output_file.as_uri())
 
     def to_html(self) -> str:
         """Generate and return complete template as lengthy string
@@ -172,6 +172,7 @@ class ProfileReport(object):
                 return {"__{}__".format(o.__class__.__name__): str(o)}
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
+
 
     def _repr_html_(self):
         """Used to output the HTML representation to a Jupyter notebook.
