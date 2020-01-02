@@ -9,11 +9,14 @@ assignees: ''
 
 **Describe the bug**
 
+<!--
 A clear and concise description of what the bug is.
 If the description consists of multiple non-related bugs, you are encouraged to create separate issues.
+-->
 
 **To Reproduce**
 
+<!--
 We would need to reproduce your scenario before being able to resolve it. 
 
 _Data:_
@@ -37,9 +40,11 @@ def test_issueXXX():
 
     # Minimal reproducible code
 ```
+--> 
 
 **Version information:**
 
+<!--
 Version information is essential in reproducing and resolving bugs. Please report:
 
 * _Python version_: Your exact Python version.
@@ -55,8 +60,10 @@ Version information is essential in reproducing and resolving bugs. Please repor
 
 </p>
 </details>
-
+-->
 
 **Additional context**
 
+<!--
 Add any other context about the problem here.
+-->
