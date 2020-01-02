@@ -346,7 +346,7 @@ def render_variables_section(stats_object: dict) -> str:
                 max_number_to_print=n_freq_table_max,
             )
 
-            formatted_values['n_extreme_obs'] = n_extreme_obs
+            formatted_values["n_extreme_obs"] = n_extreme_obs
             formatted_values["firstn_expanded"] = extreme_obs_table(
                 freqtable=stats_object["variables"][idx]["value_counts_without_nan"],
                 number_to_print=n_extreme_obs,

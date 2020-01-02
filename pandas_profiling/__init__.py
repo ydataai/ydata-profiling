@@ -4,16 +4,15 @@
 """
 import sys
 import warnings
+import json
+from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 from pandas_profiling.version import __version__
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
 from pandas_profiling.utils.paths import get_config_default, get_project_root
-
-from pathlib import Path
-import numpy as np
-
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 import pandas_profiling.view.templates as templates
@@ -158,13 +157,21 @@ class ProfileReport(object):
             theme=config["style"]["theme"].get(str),
         )
 
-    def get_unique_file_name(self):
-        """Generate a unique file name."""
-        return (
-            "profile_"
-            + str(np.random.randint(1000000000, 9999999999, dtype=np.int64))
-            + ".html"
-        )
+    def to_json(self):
+        class CustomEncoder(json.JSONEncoder):
+            def default(self, o):
+                if isinstance(o, pd.core.series.Series) or isinstance(
+                    o, pd.core.frame.DataFrame
+                ):
+                    return {"__{}__".format(o.__class__.__name__): o.to_json()}
+                if isinstance(o, np.integer):
+                    return {"__{}__".format(o.__class__.__name__): o.tolist()}
+                if isinstance(o, Meta):
+                    return {"__{}__".format(o.__class__.__name__): str(o)}
+
+                return {"__{}__".format(o.__class__.__name__): str(o)}
+
+        return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
     def _repr_html_(self):
         """Used to output the HTML representation to a Jupyter notebook.
