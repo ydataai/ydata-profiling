@@ -12,7 +12,11 @@ import numpy as np
 
 from pandas_profiling.version import __version__
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
-from pandas_profiling.utils.paths import get_config_default, get_project_root
+from pandas_profiling.utils.paths import (
+    get_config_default,
+    get_project_root,
+    get_config_minimal,
+)
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 import pandas_profiling.view.templates as templates
@@ -30,7 +34,15 @@ class ProfileReport(object):
     html = ""
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
-    def __init__(self, df, config_file: Path = None, **kwargs):
+    def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
+        if config_file is not None and minimal:
+            raise ValueError(
+                "Arguments `config_file` and `minimal` are mutually exclusive."
+            )
+
+        if minimal:
+            config_file = get_config_minimal()
+
         if config_file:
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
