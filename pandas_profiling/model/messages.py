@@ -163,11 +163,11 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     return messages
 
 
-def warning_value(value: Union[np.nan, float]) -> bool:
+def warning_value(value: float) -> bool:
     return not np.isnan(value) and value > 0.01
 
 
-def warning_skewness(v: Union[np.nan, float]) -> bool:
+def warning_skewness(v: float) -> bool:
     return not np.isnan(v) and (
         v < -config["vars"]["num"]["skewness_threshold"].get(int)
         or v > config["vars"]["num"]["skewness_threshold"].get(int)
