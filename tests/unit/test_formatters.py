@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from pandas_profiling.view.formatters import (
+from pandas_profiling.report.formatters import (
     fmt_color,
     fmt_class,
     fmt_bytesize,

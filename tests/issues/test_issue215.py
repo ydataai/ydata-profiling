@@ -4,7 +4,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues/215
 """
 import pytest
 
-from pandas_profiling.view.formatters import fmt_percent
+from pandas_profiling.report.formatters import fmt_percent
 
 
 @pytest.mark.parametrize(

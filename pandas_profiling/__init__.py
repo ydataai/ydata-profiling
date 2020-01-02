@@ -15,10 +15,10 @@ from pandas_profiling.utils.dataframe import clean_column_names, rename_index
 from pandas_profiling.utils.paths import get_config_default, get_project_root
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
-import pandas_profiling.view.templates as templates
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.view.notebook import display_notebook_iframe
-from pandas_profiling.view.report import to_html
+import pandas_profiling.report.templates as templates
+from pandas_profiling.report.notebook import display_notebook_iframe
+from pandas_profiling.report.report import to_html
 
 
 class ProfileReport(object):

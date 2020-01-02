@@ -27,7 +27,13 @@ from pandas_profiling.model.correlations import (
     perform_check_correlation,
 )
 from pandas_profiling.utils.common import update
-from pandas_profiling.view import plot
+from pandas_profiling.visualisation import plot
+from pandas_profiling.visualisation.missing import (
+    missing_bar,
+    missing_matrix,
+    missing_heatmap,
+    missing_dendrogram,
+)
 
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
@@ -473,11 +479,11 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
     missing_map = {
-        "bar": {"func": plot.missing_bar, "min_missing": 0, "name": "Count"},
-        "matrix": {"func": plot.missing_matrix, "min_missing": 0, "name": "Matrix"},
-        "heatmap": {"func": plot.missing_heatmap, "min_missing": 2, "name": "Heatmap"},
+        "bar": {"func": missing_bar, "min_missing": 0, "name": "Count"},
+        "matrix": {"func": missing_matrix, "min_missing": 0, "name": "Matrix"},
+        "heatmap": {"func": missing_heatmap, "min_missing": 2, "name": "Heatmap"},
         "dendrogram": {
-            "func": plot.missing_dendrogram,
+            "func": missing_dendrogram,
             "min_missing": 1,
             "name": "Dendrogram",
         },
