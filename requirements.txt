@@ -2,7 +2,7 @@ scipy
 requests
 missingno>=0.4.2
 matplotlib
-jinja2
+jinja2>=2.10.1
 numpy>=1.16.0
 pandas
 htmlmin
