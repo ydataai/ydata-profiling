@@ -1,5 +1,5 @@
 ## Credits for this style go to the ggplot and seaborn packages.
-##   I copied the style file to remove dependencies on the Seaborn package.
+##   We copied the style file to remove dependencies on the Seaborn package.
 ##   Check it out, it's an awesome library for plotting!
 
 patch.facecolor: 348ABD  # blue

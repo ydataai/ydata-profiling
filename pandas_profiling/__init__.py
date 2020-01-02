@@ -175,7 +175,6 @@ class ProfileReport(object):
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
-
     def _repr_html_(self):
         """Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is "src", this function creates a temporary HTML file

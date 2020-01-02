@@ -1,13 +1,10 @@
 """This file add the console interface to the package."""
 from pathlib import Path
 from typing import Union
-
-import pandas as pd
-import pandas_profiling
-from pandas_profiling import __version__
-from pandas_profiling.config import config
 import argparse
 
+from pandas_profiling import __version__, ProfileReport
+from pandas_profiling.config import config
 from pandas_profiling.utils.dataframe import read_pandas
 
 
@@ -75,5 +72,5 @@ def main(args=None) -> None:
     df = read_pandas(args.input_file)
 
     # Generate the profiling report
-    p = df.profile_report()
+    p = ProfileReport(df)
     p.to_file(output_file=args.output_file, silent=args.silent)

@@ -2,13 +2,12 @@
 
 import pandas as pd
 
-import pandas_profiling.view.plot as plot
-from pandas_profiling.view.plot import mini_histogram
-from pandas_profiling.view.plot import histogram
 import pandas_profiling.view.templates as templates
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.visualisation import plot
+from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def freq_table(

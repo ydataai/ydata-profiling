@@ -1,4 +1,4 @@
-"""Formatters are utilities for formatting numbers and certain strings"""
+"""Formatters are mappings from object(s) to a string."""
 from jinja2.utils import escape
 import numpy as np
 
@@ -110,19 +110,3 @@ def fmt(value) -> str:
         return fmt_numeric(value)
     else:
         return str(escape(value))
-
-
-def hex_to_rgb(hex):
-    """Format a hex value (#FFFFFF) as RGB (255,255,255).
-
-    Args:
-        hex: The hex value.
-
-    Returns:
-        The RGB representation of that hex color value.
-    """
-    hex = hex.lstrip("#")
-    hlen = len(hex)
-    return tuple(
-        int(hex[i : i + hlen // 3], 16) / 255 for i in range(0, hlen, hlen // 3)
-    )

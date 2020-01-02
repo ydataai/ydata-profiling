@@ -1,10 +1,9 @@
 """Common parts to all other modules, mainly utility functions."""
 import sys
-
-import pandas as pd
 from enum import Enum, unique
 from urllib.parse import urlparse
 
+import pandas as pd
 
 from pandas_profiling.config import config
 from pandas_profiling.utils.data_types import str_is_path

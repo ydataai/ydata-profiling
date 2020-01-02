@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import requests
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
+
 
 if __name__ == "__main__":
     file_name = Path("rows.csv")
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 
     df = df.append(duplicates_to_add, ignore_index=True)
 
-    profile = df.profile_report(
-        title="NASA Meteorites", correlation_overrides=["recclass"]
+    profile = ProfileReport(
+        df, title="NASA Meteorites", correlation_overrides=["recclass"]
     )
     profile.to_file(output_file=Path("./meteorites_report.html"))

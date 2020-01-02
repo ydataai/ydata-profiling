@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import requests
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 if __name__ == "__main__":
     file_name = Path("census_train.csv")
@@ -40,5 +40,5 @@ if __name__ == "__main__":
     # Prepare missing values
     df = df.replace("\\?", np.nan, regex=True)
 
-    profile = df.profile_report(title="Census Dataset")
+    profile = ProfileReport(df, title="Census Dataset")
     profile.to_file(output_file=Path("./census_report.html"))

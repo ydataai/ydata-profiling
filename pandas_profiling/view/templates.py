@@ -18,6 +18,7 @@ jinja2_env.filters["fmt_bytesize"] = fmt_bytesize
 jinja2_env.filters["fmt_numeric"] = fmt_numeric
 jinja2_env.filters["fmt_array"] = fmt_array
 jinja2_env.filters["fmt"] = fmt
+jinja2_env.filters["dynamic_filter"] = lambda x, v: jinja2_env.filters[v](x)
 
 
 def template(template_name: str) -> jinja2.Template:
