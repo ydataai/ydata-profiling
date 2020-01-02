@@ -3,6 +3,7 @@ import itertools
 import warnings
 from contextlib import suppress
 from functools import partial
+from typing import Callable
 
 import pandas as pd
 import numpy as np
@@ -76,7 +77,7 @@ def recoded_matrix(df: pd.DataFrame, variables: dict):
 
 
 def categorical_matrix(
-    df: pd.DataFrame, variables: dict, correlation_function: callable
+    df: pd.DataFrame, variables: dict, correlation_function: Callable
 ):
     """Calculate a correlation matrix for categorical variables.
 
