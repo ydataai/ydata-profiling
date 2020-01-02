@@ -93,6 +93,7 @@ def categorical_matrix(
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
+        # TODO: solve in type system
         and df[column_name].nunique()
         <= config["categorical_maximum_correlation_distinct"].get(int)
     }
@@ -201,9 +202,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                     correlations["phi_k"] = correlations["phi_k"].reindex(
                         index=column_order, columns=column_order
                     )
-            except ValueError as e:
-                warn_correlation("phi_k", e)
-            except DataError as e:
+            except (ValueError, DataError) as e:
                 warn_correlation("phi_k", e)
 
     categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}
@@ -213,14 +212,14 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                 correlation = get_matrix(df, variables)
                 if len(correlation) > 0:
                     correlations[correlation_name] = correlation
-            except ValueError as e:
+            except (ValueError, ZeroDivisionError) as e:
                 warn_correlation(correlation_name, e)
 
     return correlations
 
 
 def perform_check_correlation(
-    correlation_matrix, criterion: callable, special_type: Variable
+    correlation_matrix, criterion: Callable, special_type: Variable
 ):
     """Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.
 
