@@ -168,8 +168,6 @@ class ProfileReport(object):
                     return {"__{}__".format(o.__class__.__name__): o.to_json()}
                 if isinstance(o, np.integer):
                     return {"__{}__".format(o.__class__.__name__): o.tolist()}
-                if isinstance(o, Meta):
-                    return {"__{}__".format(o.__class__.__name__): str(o)}
 
                 return {"__{}__".format(o.__class__.__name__): str(o)}
 

@@ -32,15 +32,16 @@ setup(
         "pandas>=0.19",
         "matplotlib>=1.4",
         "jinja2>=2.8",
-        "missingno>=0.4.2",  # Could be optional
         "htmlmin>=0.1.12",
-        "phik>=0.9.8",  # Could be optional
         "confuse>=1.0.0",
-        "astropy",  # Could be optional
+        # Could be optional
+        "missingno>=0.4.2",
+        "phik>=0.9.8",
+        "astropy",
     ],
-    # extras_requires=[
-    # {"variable_bins": ["astropy"]}
-    # ],
+    extras_requires=[
+        {'notebook': ['jupyter-client>=5.3.4', 'jupyter-core>=4.6.1', 'ipywidgets']}
+    ],
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
