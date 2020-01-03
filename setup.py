@@ -40,7 +40,7 @@ setup(
         "astropy",
     ],
     extras_requires=[
-        {'notebook': ['jupyter-client>=5.3.4', 'jupyter-core>=4.6.1', 'ipywidgets']}
+        {"notebook": ["jupyter-client>=5.3.4", "jupyter-core>=4.6.1", "ipywidgets"]}
     ],
     include_package_data=True,
     classifiers=[
