@@ -152,7 +152,7 @@ def render_real(summary):
 
     statistics = Sequence(
         [quantile_statistics, descriptive_statistics],
-        anchor_id=f"{summary['varid']}statistics",
+        anchor_id="{varid}statistics".format(varid=summary['varid']),
         name="Statistics",
         sequence_type="grid",
     )
@@ -165,14 +165,14 @@ def render_real(summary):
                 histogram_bins
             ),
             name="Histogram",
-            anchor_id=f"{summary['varid']}histogram",
+            anchor_id="{varid}histogram".format(varid=summary['varid']),
         )
     ]
 
     fq = FrequencyTable(
         template_variables["freq_table_rows"],
         name="Common values",
-        anchor_id=f"{summary['varid']}common_values",
+        anchor_id="{varid}common_values".format(varid=summary['varid']),
     )
 
     evs = Sequence(
@@ -180,17 +180,17 @@ def render_real(summary):
             FrequencyTable(
                 template_variables["firstn_expanded"],
                 name="Minimum 5 values",
-                anchor_id=f"{summary['varid']}firstn",
+                anchor_id="{varid}firstn".format(varid=summary['varid']),
             ),
             FrequencyTable(
                 template_variables["lastn_expanded"],
                 name="Maximum 5 values",
-                anchor_id=f"{summary['varid']}lastn",
+                anchor_id="{varid}lastn".format(varid=summary['varid']),
             ),
         ],
         sequence_type="tabs",
         name="Extreme values",
-        anchor_id=f"{summary['varid']}extreme_values",
+        anchor_id="{varid}extreme_values".format(varid=summary['varid']),
     )
 
     if "histogram_bins_bayesian_blocks" in summary:
@@ -205,7 +205,7 @@ def render_real(summary):
                 fmt_array(summary["histogram_bins_bayesian_blocks"], threshold=5)
             ),
             name="Dynamic Histogram",
-            anchor_id=f"{summary['varid']}dynamic_histogram",
+            anchor_id="{varid}dynamic_histogram".format(varid=summary['varid']),
         )
 
         seqs.append(histo_dyn)
@@ -217,13 +217,13 @@ def render_real(summary):
                 seqs,
                 sequence_type="tabs",
                 name="Histogram(s)",
-                anchor_id=f"{summary['varid']}histograms",
+                anchor_id="{varid}histograms".format(varid=summary['varid']),
             ),
             fq,
             evs,
         ],
         sequence_type="tabs",
-        anchor_id=f'{summary["varid"]}bottom',
+        anchor_id='{varid}bottom'.format(varid=summary["varid"]),
     )
 
     return template_variables

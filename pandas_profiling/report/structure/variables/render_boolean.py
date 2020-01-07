@@ -55,11 +55,11 @@ def render_boolean(summary):
     freqtable = FrequencyTable(
         template_variables["freq_table_rows"],
         name="Frequency Table",
-        anchor_id=f"{summary['varid']}frequency_table",
+        anchor_id="{varid}frequency_table".format(varid=summary['varid']),
     )
 
     template_variables["bottom"] = Sequence(
-        [freqtable], sequence_type="tabs", anchor_id=f'{summary["varid"]}bottom'
+        [freqtable], sequence_type="tabs", anchor_id='{varid}bottom'.format(varid=summary["varid"])
     )
 
     return template_variables

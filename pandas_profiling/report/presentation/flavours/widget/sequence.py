@@ -29,7 +29,7 @@ def get_list(items):
     return widgets.VBox(
         [
             widgets.VBox(
-                [widgets.HTML(f"<strong>{get_name(item)}</strong>"), item.render()]
+                [widgets.HTML("<strong>{name}</strong>".format(name=get_name(item))), item.render()]
             )
             for item in items
         ]

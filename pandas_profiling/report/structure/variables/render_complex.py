@@ -61,7 +61,7 @@ def render_complex(summary):
             alt="Scatterplot",
             caption="Scatterplot in the complex plane",
             name="Scatter",
-            anchor_id=f"{summary['varid']}scatter",
+            anchor_id="{varid}scatter".format(varid=summary['varid']),
         )
     ]
 
