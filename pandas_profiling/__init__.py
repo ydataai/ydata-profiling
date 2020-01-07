@@ -54,7 +54,20 @@ class ProfileReport(object):
         # Remove spaces and colons from column names
         df = clean_column_names(df)
 
-        # Sort column names
+        # Sort names according to config (asc, desc, no sort)
+        df = self.sort_column_names(df)
+        config["column_order"] = df.columns.tolist()
+
+        # Get dataset statistics
+        description_set = describe_df(df)
+
+        # Build report structure
+        self.report = get_report_structure(self.date, sample, description_set)
+        self.title = config["title"].get(str)
+        self.description_set = description_set
+        self.sample = self.get_sample(df)
+        
+    def sort_column_names(self, df):
         sort = config["sort"].get(str)
         if sys.version_info[1] <= 5 and sort != "None":
             warnings.warn("Sorting is supported from Python 3.6+")
@@ -67,14 +80,9 @@ class ProfileReport(object):
             )
         elif sort != "None":
             raise ValueError('"sort" should be "ascending", "descending" or None.')
+        return df
 
-        # Store column order
-        config["column_order"] = df.columns.tolist()
-
-        # Get dataset statistics
-        description_set = describe_df(df)
-
-        # Get sample
+    def get_sample(self, df):
         sample = {}
         n_head = config["samples"]["head"].get(int)
         if n_head > 0:
@@ -84,11 +92,7 @@ class ProfileReport(object):
         if n_tail > 0:
             sample["tail"] = df.tail(n=n_tail)
 
-        # Build report structure
-        self.report = get_report_structure(self.date, sample, description_set)
-        self.title = config["title"].get(str)
-        self.description_set = description_set
-        self.sample = sample
+        return sample
 
     def get_description(self) -> dict:
         """Return the description (a raw statistical summary) of the dataset.
@@ -169,8 +173,6 @@ class ProfileReport(object):
                     return {"__{}__".format(o.__class__.__name__): o.to_json()}
                 if isinstance(o, np.integer):
                     return {"__{}__".format(o.__class__.__name__): o.tolist()}
-                if isinstance(o, Meta):
-                    return {"__{}__".format(o.__class__.__name__): str(o)}
 
                 return {"__{}__".format(o.__class__.__name__): str(o)}
 

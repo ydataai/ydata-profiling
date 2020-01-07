@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import numpy as np
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 
 def test_example(tmpdir):
@@ -34,6 +34,7 @@ def test_example(tmpdir):
     output_file = tmpdir / "profile.html"
     profile = df.profile_report(
         title="NASA Meteorites", samples={"head": 5, "tail": 5}, sort="ascending"
+
     )
     profile.to_file(output_file=output_file)
     assert (tmpdir / "profile.html").exists(), "Output file does not exist"
