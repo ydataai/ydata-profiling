@@ -236,11 +236,11 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": check_is_NaN,
-            "distinct_count": 9,
-            "freq": 1,
+            "distinct_count": 8,
+            "freq": 2,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
-            "is_unique": True,
+            "is_unique": False,
             "kurtosis": check_is_NaN,
             "mad": check_is_NaN,
             "max": check_is_NaN,
@@ -249,7 +249,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0.0,
-            "p_unique": 1.0,
+            "p_unique": 0.88888888,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -658,13 +658,13 @@ def test_describe_df(describe_data, expected_results):
             elif isinstance(v, float):
                 assert (
                     pytest.approx(v) == results["variables"][col][k]
-                ), "Value {} for key {} in column {} is not NaN".format(
+                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
                     results["variables"][col][k], k, col
                 )
             else:
                 assert (
                     v == results["variables"][col][k]
-                ), "Value {} for key {} in column {} is not NaN".format(
+                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
                     results["variables"][col][k], k, col
                 )
 
