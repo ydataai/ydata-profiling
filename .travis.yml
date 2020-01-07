@@ -19,7 +19,7 @@ install:
   - pip install --upgrade pip six
   - pip install -r requirements.txt
   - pip install -r requirements-test.txt
-  - pip install -e .
+  - pip install -e .[notebook,app,html]
 
 script:
   - if [ $TEST == 'unit' ]; then pytest --cov=. tests/unit/; fi

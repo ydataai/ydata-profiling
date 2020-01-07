@@ -26,13 +26,22 @@ With your help, we got approved for [GitHub Sponsors](https://github.com/sponsor
 It's extra exciting that GitHub **matches your contribution** for the first year.
 Therefore, we welcome you to support the project through GitHub! 
 
-The v2.4 release includes many new features and stability improvements.
-(new datasets; extended configuration with better defaults, including minimal mode; json export; GUI (details, widgets))
- 
+The v2.4 release includes many new features (performance, exporting, GUI and datasets) and stability improvements.
+
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
  - [Read the release notes v2.4](https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.4.0) 
 
  *January 7, 2020*
+
+---
+
+_Contents:_ **[Examples](#examples)** |
+**[Installation](#installation)** | **[Documentation](#documentation)** |
+**[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
+**[Advanced usage](#advanced-usage)** |
+**[Types](#types)** | **[How to contribute](#how-to-contribute)** |
+**[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
+---
 
 ## Examples
 
@@ -80,10 +89,6 @@ Install by navigating to the proper directory and running
 
     python setup.py install
     
-## Usage
-
-The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. 
-
 ## Documentation
 
 The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
@@ -252,6 +257,8 @@ _External Tools_ > _Pandas Profiling_.
 Other editor integrations may be contributed via pull requests.
 
 ## Dependencies
+
+The profile report is written in HTML and CSS, which means pandas-profiling requires a modern browser. 
 
 You need [Python 3](https://python3statement.org/) to run this package. Other dependencies can be found in the requirements files:
 

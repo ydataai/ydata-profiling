@@ -119,7 +119,7 @@ class ProfileReport(object):
             silent: if False, opens the file in the default browser
         """
         if not isinstance(output_file, Path):
-            output_file = Path(output_file)
+            output_file = Path(str(output_file))
 
         if output_file.suffix == ".html":
             data = self.to_html()
