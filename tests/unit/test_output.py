@@ -23,3 +23,8 @@ def test_json(data):
         "messages",
         "package",
     }
+
+
+def test_repr(data):
+    report = ProfileReport(data)
+    assert repr(report) == ""

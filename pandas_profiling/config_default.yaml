@@ -4,12 +4,6 @@ title: "Pandas Profiling Report"
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 
-# Minify the html
-minify_html: True
-
-# Offline support
-use_local_assets: True
-
 # Per variable type description settings
 vars:
     num:
@@ -20,15 +14,16 @@ vars:
                 - 0.75
                 - 0.95
           skewness_threshold: 20
+          low_categorical_threshold: 5
     cat:
         check_composition: True
+        cardinality_threshold: 50
+        n_obs: 5
+    bool:
+        n_obs: 3
+
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: ascending
-
-low_categorical_threshold: 5
-
-# Settings regarding warnings
-cardinality_threshold: 50
 
 # which diagrams to show
 missing_diagrams:
@@ -38,25 +33,30 @@ missing_diagrams:
     dendrogram: True
 
 correlations:
-    pearson: True
-    spearman: True
-    kendall: True
-    phi_k: True
-    cramers: True
-    recoded: True
-
-# For numeric
-check_correlation_pearson: True
-correlation_threshold_pearson: 0.9
+    pearson:
+      calculate: True
+      warn_high_correlations: True
+      threshold: 0.9
+    spearman:
+      calculate: True
+      warn_high_correlations: False
+    kendall:
+      calculate: True
+      warn_high_correlations: False
+    phi_k:
+      calculate: True
+      warn_high_correlations: False
+    cramers:
+      calculate: True
+      warn_high_correlations: True
+      threshold: 0.9
+    recoded:
+      calculate: True
+      warn_high_correlations: True
+      threshold: 1.0
 
 # For categorical
-check_correlation_cramers: False
-correlation_threshold_cramers: 0.9
 categorical_maximum_correlation_distinct: 100
-
-# These variables are not rejected in the correlation checks
-correlation_overrides: []
-check_recoded: True
 
 # Plot-specific settings
 plot:
@@ -83,7 +83,6 @@ plot:
 
 # The number of observations to show
 n_obs_unique: 5
-n_obs_bool: 3
 n_extreme_obs: 5
 n_freq_table_max: 10
 
@@ -99,11 +98,15 @@ notebook:
 # or 'src'
         attribute: 'srcdoc'
 
+html:
+# Minify the html
+    minify_html: True
+
+# Offline support
+    use_local_assets: True
+
 # Styling options for the HTML report
-#  full_width: True
-#  theme: "flatly"
-#  primary_color: "#2c3e50"
-style:
-  full_width: False
-  theme: None
-  primary_color: "#337ab7"
+    style:
+      theme: None
+      primary_color: "#337ab7"
+      full_width: False

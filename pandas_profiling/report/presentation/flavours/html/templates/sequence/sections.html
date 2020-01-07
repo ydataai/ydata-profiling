@@ -1,0 +1,14 @@
+<div class="{% if full_width %}container-fluid{% else %}container{% endif %}">
+    {% for section in sections %}
+        {% set html = section.render() %}
+        {% if html | length > 0 %}
+            <div class="row header">
+                <a class="anchor-pos" id="{{ section.content['anchor_id'] }}"></a>
+                <h1 class="page-header">{{ section.content['name'] }}</h1>
+            </div>
+            <div class="section-items">
+                {{ html }}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

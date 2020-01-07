@@ -1,0 +1,23 @@
+{% if tabs | length > 0 %}
+    {# TODO: fix variable class #}
+    <div class="row {% if classes %}{{ classes }}{% else %}spacing{% endif %}"{% if id %} id="{{ id }}"{% endif %}>
+        <ul class="nav nav-tabs" role="tablist">
+            {% for tab in tabs %}
+                <li role="presentation"{% if loop.first %} class="active"{% endif %}>
+                    <a href="#{{ anchor_id }}-{{ tab.anchor_id }}"
+                       aria-controls="{{ anchor_id }}-{{ tab.anchor_id }}"
+                       role="tab"
+                       data-toggle="tab">{{ tab.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content">
+            {% for tab in tabs %}
+            <div role="tabpanel" class="tab-pane col-sm-12{% if loop.first %} active{% endif %}" id="{{ anchor_id }}-{{ tab.anchor_id }}">
+                {{ tab.render() }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

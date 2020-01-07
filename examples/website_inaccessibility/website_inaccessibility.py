@@ -10,6 +10,8 @@ if __name__ == "__main__":
         parse_dates=["date_added"],
     )
     profile = ProfileReport(
-        df, title="Website Inaccessibility Test Lists", correlations={"cramers": False}
+        df,
+        title="Website Inaccessibility Test Lists",
+        correlations={"cramers": {"calculate": False}},
     )
     profile.to_file(output_file=Path("./website_inaccessibility_report.html"))

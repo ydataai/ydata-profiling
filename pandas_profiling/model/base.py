@@ -31,6 +31,8 @@ class Variable(Enum):
     TYPE_PATH = "PATH"
     """Absolute files"""
 
+    TYPE_COMPLEX = "COMPLEX"
+
     S_TYPE_CONST = "CONST"
     """A constant variable"""
 
@@ -43,11 +45,22 @@ class Variable(Enum):
     S_TYPE_CORR = "CORR"
     """A highly correlated variable"""
 
-    S_TYPE_RECODED = "RECODED"
-    """A recorded variable"""
-
     S_TYPE_REJECTED = "REJECTED"
     """A rejected variable"""
+
+
+# Temporary mapping
+Boolean = Variable.TYPE_BOOL
+Real = Variable.TYPE_NUM
+Count = Variable.TYPE_NUM
+Complex = Variable.TYPE_COMPLEX
+Date = Variable.TYPE_DATE
+Categorical = Variable.TYPE_CAT
+Url = Variable.TYPE_URL
+AbsolutePath = Variable.TYPE_PATH
+ExistingPath = Variable.TYPE_PATH
+ImagePath = Variable.TYPE_PATH
+Generic = Variable.S_TYPE_UNSUPPORTED
 
 
 def get_counts(series: pd.Series) -> dict:
@@ -67,12 +80,8 @@ def get_counts(series: pd.Series) -> dict:
     distinct_count_with_nan = value_counts_with_nan.count()
     distinct_count_without_nan = value_counts_without_nan.count()
 
-    # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
-    # list and so on...
-    if value_counts_without_nan.index.inferred_type == "mixed":
-        raise TypeError("Not supported mixed type")
-
     return {
+        "value_counts": value_counts_without_nan,  # Alias
         "value_counts_with_nan": value_counts_with_nan,
         "value_counts_without_nan": value_counts_without_nan,
         "distinct_count_with_nan": distinct_count_with_nan,
@@ -94,12 +103,12 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
     if pd.api.types.is_bool_dtype(keys):
         return True
     elif (
-        series_description["distinct_count_without_nan"] <= 2
+        1 <= series_description["distinct_count_without_nan"] <= 2
         and pd.api.types.is_numeric_dtype(series)
         and series[~series.isnull()].between(0, 1).all()
     ):
         return True
-    elif series_description["distinct_count_without_nan"] <= 4:
+    elif 1 <= series_description["distinct_count_without_nan"] <= 4:
         unique_values = set([str(value).lower() for value in keys.values])
         accepted_combinations = [
             ["y", "n"],
@@ -128,7 +137,7 @@ def is_numeric(series: pd.Series, series_description: dict) -> bool:
     """
     return pd.api.types.is_numeric_dtype(series) and series_description[
         "distinct_count_without_nan"
-    ] >= config["low_categorical_threshold"].get(int)
+    ] >= config["vars"]["num"]["low_categorical_threshold"].get(int)
 
 
 def is_url(series: pd.Series, series_description: dict) -> bool:
@@ -187,14 +196,22 @@ def get_var_type(series: pd.Series) -> dict:
         The series updated with the variable type included.
     """
 
+    series_description = {}
+
     try:
         series_description = get_counts(series)
 
-        distinct_count_with_nan = series_description["distinct_count_with_nan"]
-        distinct_count_without_nan = series_description["distinct_count_without_nan"]
+        # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
+        # list and so on...
+        if (
+            series_description["value_counts_without_nan"].index.inferred_type
+            == "mixed"
+        ):
+            raise TypeError("Not supported mixed type")
 
-        if distinct_count_with_nan <= 1:
-            var_type = Variable.S_TYPE_CONST
+        if series_description["distinct_count_without_nan"] == 0:
+            # Empty
+            var_type = Variable.S_TYPE_UNSUPPORTED
         elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
         elif is_numeric(series, series_description):
@@ -205,12 +222,9 @@ def get_var_type(series: pd.Series) -> dict:
             var_type = Variable.TYPE_URL
         elif is_path(series, series_description) and sys.version_info[1] > 5:
             var_type = Variable.TYPE_PATH
-        elif distinct_count_without_nan == len(series):
-            var_type = Variable.S_TYPE_UNIQUE
         else:
             var_type = Variable.TYPE_CAT
     except TypeError:
-        series_description = {}
         var_type = Variable.S_TYPE_UNSUPPORTED
 
     series_description.update({"type": var_type})

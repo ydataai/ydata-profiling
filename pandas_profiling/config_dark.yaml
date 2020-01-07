@@ -1,0 +1,112 @@
+# Title of the document
+title: "Pandas Profiling Report"
+
+# Number of workers (0=multiprocessing.cpu_count())
+pool_size: 0
+
+# Per variable type description settings
+vars:
+    num:
+          quantiles:
+                - 0.05
+                - 0.25
+                - 0.5
+                - 0.75
+                - 0.95
+          skewness_threshold: 20
+          low_categorical_threshold: 5
+    cat:
+        check_composition: True
+        cardinality_threshold: 50
+        n_obs: 5
+    bool:
+        n_obs: 3
+
+# Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
+sort: ascending
+
+# which diagrams to show
+missing_diagrams:
+    bar: True
+    matrix: True
+    heatmap: True
+    dendrogram: True
+
+correlations:
+    pearson:
+      calculate: True
+      warn_high_correlations: True
+      threshold: 0.9
+    spearman:
+      calculate: True
+      warn_high_correlations: False
+    kendall:
+      calculate: True
+      warn_high_correlations: False
+    phi_k:
+      calculate: True
+      warn_high_correlations: False
+    cramers:
+      calculate: True
+      warn_high_correlations: True
+      threshold: 0.9
+    recoded:
+      calculate: True
+      warn_high_correlations: True
+      threshold: 1.0
+
+# For categorical
+categorical_maximum_correlation_distinct: 100
+
+# Plot-specific settings
+plot:
+# Image format (svg or png)
+    image_format: "svg"
+    dpi: 800
+
+    correlation:
+        cmap: 'bwr'
+
+    missing:
+        cmap: 'RdBu'
+# Force labels when there are > 50 variables
+# https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+        force_labels: True
+
+    histogram:
+# is used for numeric variables
+        bayesian_blocks_bins: True
+
+# If 'bayesian_blocks_bins' fails to provide a valid number of bins.
+        bins: 50
+# Also used for equal size histogram
+
+# The number of observations to show
+n_obs_unique: 5
+n_extreme_obs: 5
+n_freq_table_max: 10
+
+samples:
+    head: 10
+    tail: 10
+
+# When in a Jupyter notebook
+notebook:
+    iframe:
+        height: '800px'
+        width: '100%'
+# or 'src'
+        attribute: 'srcdoc'
+
+html:
+# Minify the html
+    minify_html: True
+
+# Offline support
+    use_local_assets: True
+
+# Styling options for the HTML report
+    style:
+      full_width: True
+      theme: "flatly"
+      primary_color: "#2c3e50"

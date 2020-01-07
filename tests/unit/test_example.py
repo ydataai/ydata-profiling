@@ -33,12 +33,7 @@ def test_example(tmpdir):
 
     output_file = tmpdir / "profile.html"
     profile = ProfileReport(
-        df,
-        title="NASA Meteorites",
-        samples={"head": 5, "tail": 5},
-        sort="ascending",
-        check_correlation_pearson=True,
-        check_correlation_cramers=False,
+        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, sort="ascending"
     )
     profile.to_file(output_file=output_file)
     assert (tmpdir / "profile.html").exists(), "Output file does not exist"

@@ -5,6 +5,7 @@ import pytest
 import requests
 
 from pandas_profiling.controller import console
+from pandas_profiling.utils.paths import get_config_default
 
 
 @pytest.fixture(scope="module")
@@ -36,3 +37,11 @@ def test_console_minimal(data_dir):
     report = data_dir / "test_minimal.html"
     console.main(["-s", "--minimal", str(data_dir / "rows.csv"), str(report)])
     assert report.exists(), "Report should exist"
+
+
+def test_double_config(data_dir):
+    report = data_dir / "test_double_config.html"
+    with pytest.raises(ValueError) as e:
+        console.main(['--config_file', str(get_config_default()), '--minimal', str(data_dir / "rows.csv"), str(report)])
+
+    assert str(e.value) == 'Arguments `config_file` and `minimal` are mutually exclusive.'

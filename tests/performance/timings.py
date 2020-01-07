@@ -14,7 +14,9 @@ def generate_column_names(n):
     column_names = []
     iters = 1
     while len(column_names) < n:
-        column_names += list(''.join(combo) for combo in product(ascii_lowercase, repeat=iters))
+        column_names += list(
+            "".join(combo) for combo in product(ascii_lowercase, repeat=iters)
+        )
         iters += 1
     return column_names
 

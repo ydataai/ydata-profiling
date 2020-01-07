@@ -119,7 +119,7 @@ def warn_correlation(correlation_name, error):
     warnings.warn(
         "There was an attempt to calculate the {correlation_name} correlation, but this failed.\n"
         "To hide this warning, disable the calculation\n"
-        '(using `df.profile_report(correlations={{"{correlation_name}": False}}`)\n'
+        '(using `df.profile_report(correlations={{"{correlation_name}": {{"calculate": False}}}})`\n'
         "If this is problematic for your use case, please report this as an issue:\n"
         "https://github.com/pandas-profiling/pandas-profiling/issues\n"
         "(include the error message: '{error}')".format(
@@ -130,7 +130,7 @@ def warn_correlation(correlation_name, error):
 
 def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramer).
+    (pearson, spearman, kendall, phi_k, cramers).
 
     Args:
         variables: A dict with column names and variable types.
@@ -141,7 +141,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     """
     correlations = {}
     for correlation_name in ["pearson", "spearman", "kendall"]:
-        if config["correlations"][correlation_name].get(bool):
+        if config["correlations"][correlation_name]["calculate"].get(bool):
             try:
                 correlation = df.corr(method=correlation_name)
                 if len(correlation) > 0:
@@ -149,7 +149,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
             except (ValueError, AssertionError) as e:
                 warn_correlation(correlation_name, e)
 
-    if config["correlations"]["phi_k"].get(bool):
+    if config["correlations"]["phi_k"]["calculate"].get(bool):
         import phik
 
         with warnings.catch_warnings():
@@ -177,9 +177,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                         "categorical_maximum_correlation_distinct"
                     ].get(int):
                         selcols.append(col)
-                except TypeError:
-                    continue
-                except ValueError:
+                except (TypeError, ValueError):
                     continue
 
             try:
@@ -207,7 +205,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
 
     categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}
     for correlation_name, get_matrix in categorical_correlations.items():
-        if config["correlations"][correlation_name].get(bool):
+        if config["correlations"][correlation_name]["calculate"].get(bool):
             try:
                 correlation = get_matrix(df, variables)
                 if len(correlation) > 0:
@@ -218,43 +216,35 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     return correlations
 
 
-def perform_check_correlation(
-    correlation_matrix, criterion: Callable, special_type: Variable
-):
-    """Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.
+def perform_check_correlation(correlation_matrix, threshold: float):
+    """Check whether selected variables are highly correlated values in the correlation matrix.
 
     Args:
         correlation_matrix: The correlation matrix for the DataFrame.
-        criterion: a mapping function from the correlation function to a bool
-        special_type: which type to return when the criterion is True (CORR, RECODED).
+        threshold:.
 
     Returns:
         The variables that are highly correlated or recoded.
-
-    Notes:
-        If x~y and y~z but not x~z, it would be better to delete only y
-        Better way would be to find out which variable causes the highest increase in multicollinearity.
     """
 
-    # TODO: find a more reliable way to find highly correlated variables, as corr(x,y) > 0.9 and corr(y,z) > 0.9 does
-    #  not imply corr(x,z) > 0.9
-    variables = {}
     corr = correlation_matrix.copy()
 
-    correlation_overrides = config["correlation_overrides"].get(list)
+    # TODO: use matrix logic
+    # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
+    # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]>threshold)]
 
+    mapping = {}
     for x, corr_x in corr.iterrows():
-        if correlation_overrides and x in correlation_overrides:
-            continue
-
         for y, corr in corr_x.iteritems():
             if x == y:
                 break
 
-            if criterion(corr):
-                variables[x] = {
-                    "type": special_type,
-                    "correlation_var": y,
-                    "correlation": corr,
-                }
-    return variables
+            if corr >= threshold or corr <= -1 * threshold:
+                if x not in mapping:
+                    mapping[x] = []
+                if y not in mapping:
+                    mapping[y] = []
+
+                mapping[x].append(y)
+                mapping[y].append(x)
+    return mapping

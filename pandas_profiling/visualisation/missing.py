@@ -43,7 +43,7 @@ def missing_matrix(data: pd.DataFrame) -> str:
     missingno.matrix(
         data,
         figsize=(10, 4),
-        color=hex_to_rgb(config["style"]["primary_color"].get(str)),
+        color=hex_to_rgb(config["html"]["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data) / 20 * 16,
         sparkline=False,
         labels=labels,
@@ -66,7 +66,7 @@ def missing_bar(data: pd.DataFrame) -> str:
     missingno.bar(
         data,
         figsize=(10, 5),
-        color=hex_to_rgb(config["style"]["primary_color"].get(str)),
+        color=hex_to_rgb(config["html"]["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data),
         labels=labels,
     )

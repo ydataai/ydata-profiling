@@ -38,6 +38,6 @@ if __name__ == "__main__":
     df = df.append(duplicates_to_add, ignore_index=True)
 
     profile = ProfileReport(
-        df, title="NASA Meteorites", correlation_overrides=["recclass"]
+        df, title="NASA Meteorites", correlations={"cramers": {"calculate": False}}
     )
     profile.to_file(output_file=Path("./meteorites_report.html"))

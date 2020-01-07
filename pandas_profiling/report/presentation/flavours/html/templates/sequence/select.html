@@ -1,0 +1,23 @@
+{% if tabs | length > 0 %}
+    <div class="row {% if classes %}{{ classes }}{% else %}variable{% endif %}"{% if id %} id="{{ id }}"{% endif %}>
+        <select class="form-control" role="tablist" id="mySelect">
+
+            {% for key, tab in tabs.items() %}
+                <option role="presentation"{% if loop.first %} class="active"{% endif %}
+                       data-target="#{{ anchor_id }}-{{ key }}"
+                       aria-controls="{{ anchor_id }}-{{ key }}"
+                       role="tab"
+                       data-toggle="tab">{{ tab['name'] }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <div class="tab-content">
+            {% for key, value in tabs.items() %}
+            <div role="tabpanel" class="tab-pane col-sm-12{% if loop.first %} active{% endif %}" id="{{ anchor_id }}-{{ key }}">
+                {{ value.render() }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

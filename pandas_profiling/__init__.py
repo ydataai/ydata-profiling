@@ -6,6 +6,7 @@ import sys
 import warnings
 import json
 from pathlib import Path
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
@@ -20,9 +21,7 @@ from pandas_profiling.utils.paths import (
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
-import pandas_profiling.report.templates as templates
-from pandas_profiling.report.notebook import display_notebook_iframe
-from pandas_profiling.report.report import to_html
+from pandas_profiling.report import get_report_structure
 
 
 class ProfileReport(object):
@@ -47,6 +46,8 @@ class ProfileReport(object):
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
+        self.date = datetime.utcnow()
+
         # Treat index as any other column
         if (
             not pd.Index(np.arange(0, len(df))).equals(df.index)
@@ -67,13 +68,11 @@ class ProfileReport(object):
         # Get dataset statistics
         description_set = describe_df(df)
 
-        # Render HTML
-        self.minify_html = config["minify_html"].get(bool)
-        self.use_local_assets = config["use_local_assets"].get(bool)
+        # Build report structure
+        self.sample = self.get_sample(df)
+        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config["title"].get(str)
         self.description_set = description_set
-        self.sample = self.get_sample(df)
-        self.html = to_html(self.sample, description_set)
 
     def sort_column_names(self, df):
         sort = config["sort"].get(str)
@@ -90,7 +89,7 @@ class ProfileReport(object):
             raise ValueError('"sort" should be "ascending", "descending" or None.')
         return df
 
-    def get_sample(self, df):
+    def get_sample(self, df: pd.DataFrame) -> dict:
         sample = {}
         n_head = config["samples"]["head"].get(int)
         if n_head > 0:
@@ -99,6 +98,7 @@ class ProfileReport(object):
         n_tail = config["samples"]["tail"].get(int)
         if n_tail > 0:
             sample["tail"] = df.tail(n=n_tail)
+
         return sample
 
     def get_description(self) -> dict:
@@ -109,45 +109,27 @@ class ProfileReport(object):
         """
         return self.description_set
 
-    def get_rejected_variables(self, threshold: float = 0.9) -> list:
-        """Return a list of variable names being rejected for high 
-        correlation with one of remaining variables.
-        
-        Args:
-            threshold: correlation value which is above the threshold are rejected (Default value = 0.9)
-
-        Returns:
-            A list of rejected variables.
-        """
-        variable_profile = self.description_set["variables"]
-        result = []
-        for col, values in variable_profile.items():
-            if "correlation" in values:
-                if values["correlation"] > threshold:
-                    result.append(col)
-        return result
-
     def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
         
         By default a name is generated.
 
         Args:
-            output_file: The name or the path of the file to generate including the extension (.html).
+            output_file: The name or the path of the file to generate including the extension (.html, .json).
             silent: if False, opens the file in the default browser
         """
-        if type(output_file) == str:
-            output_file = Path(output_file)
+        if not isinstance(output_file, Path):
+            output_file = Path(str(output_file))
+
+        if output_file.suffix == ".html":
+            data = self.to_html()
+        elif output_file.suffix == ".json":
+            data = self.to_json()
+        else:
+            raise ValueError("Extension not supported (please use .html, .json)")
 
         with output_file.open("w", encoding="utf8") as f:
-            wrapped_html = self.to_html()
-            if self.minify_html:
-                from htmlmin.main import minify
-
-                wrapped_html = minify(
-                    wrapped_html, remove_all_empty_space=True, remove_comments=True
-                )
-            f.write(wrapped_html)
+            f.write(data)
 
         if not silent:
             import webbrowser
@@ -162,19 +144,36 @@ class ProfileReport(object):
             Profiling report html including wrapper.
         
         """
-        return templates.template("wrapper.html").render(
-            content=self.html,
+        from pandas_profiling.report.presentation.flavours import HTMLReport
+        from pandas_profiling.report.presentation.flavours.html import templates
+
+        use_local_assets = config["html"]["use_local_assets"].get(bool)
+
+        html = HTMLReport(self.report).render()
+
+        # TODO: move to structure
+        wrapped_html = templates.template("wrapper/wrapper.html").render(
+            content=html,
             title=self.title,
             correlation=len(self.description_set["correlations"]) > 0,
             missing=len(self.description_set["missing"]) > 0,
             sample=len(self.sample) > 0,
             version=__version__,
-            offline=self.use_local_assets,
-            primary_color=config["style"]["primary_color"].get(str),
-            theme=config["style"]["theme"].get(str),
+            offline=use_local_assets,
+            primary_color=config["html"]["style"]["primary_color"].get(str),
+            theme=config["html"]["style"]["theme"].get(str),
         )
 
-    def to_json(self):
+        minify_html = config["html"]["minify_html"].get(bool)
+        if minify_html:
+            from htmlmin.main import minify
+
+            wrapped_html = minify(
+                wrapped_html, remove_all_empty_space=True, remove_comments=True
+            )
+        return wrapped_html
+
+    def to_json(self) -> str:
         class CustomEncoder(json.JSONEncoder):
             def default(self, o):
                 if isinstance(o, pd.core.series.Series) or isinstance(
@@ -188,7 +187,7 @@ class ProfileReport(object):
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
-    def _repr_html_(self):
+    def to_notebook_iframe(self):
         """Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is "src", this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
@@ -198,8 +197,60 @@ class ProfileReport(object):
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
-        display_notebook_iframe(self)
+        from pandas_profiling.report.presentation.flavours.widget.notebook import (
+            get_notebook_iframe,
+        )
+        from IPython.core.display import display
+
+        display(get_notebook_iframe(self))
+
+    def to_widgets(self):
+        """The ipython notebook widgets user interface."""
+        from pandas_profiling.report.presentation.flavours import WidgetReport
+        from IPython.core.display import display, HTML
+
+        report = WidgetReport(self.report).render()
+
+        display(report)
+        # TODO: move to report structure
+        display(
+            HTML(
+                'Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
+            )
+        )
+
+    def _repr_html_(self):
+        """The ipython notebook widgets user interface gets called by the jupyter notebook."""
+        self.to_widgets()
 
     def __repr__(self):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
+
+    def to_app(self):
+        """
+        (Experimental) PyQt5 user interface, not ready to be used.
+        You are welcome to contribute a pull request if you like this feature.
+        """
+        from pandas_profiling.report.presentation.flavours import QtReport
+        from PyQt5 import QtCore
+        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+
+        app = QtCore.QCoreApplication.instance()
+        if app is None:
+            app = QApplication([])
+
+        class Application(QMainWindow):
+            def __init__(self, widgets):
+                super().__init__()
+                self.layout = QVBoxLayout(self)
+
+                self.resize(1200, 900)
+                self.setWindowTitle("Pandas Profiling Report")
+                self.setCentralWidget(widgets)
+                self.show()
+
+        app_widgets = QtReport(self.report).render()
+
+        ex = Application(app_widgets)
+        sys.exit(app.exec_())

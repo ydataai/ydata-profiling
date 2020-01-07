@@ -7,7 +7,6 @@ source_root = Path(".")
 with (source_root / "README.md").open(encoding="utf-8") as f:
     long_description = f.read()
 
-
 version = "2.4.0"
 
 with (source_root / "pandas_profiling" / "version.py").open("w", encoding="utf-8") as f:
@@ -31,17 +30,20 @@ setup(
     install_requires=[
         "pandas>=0.19",
         "matplotlib>=1.4",
-        "jinja2>=2.8",
-        "htmlmin>=0.1.12",
         "confuse>=1.0.0",
+        "jinja2>=2.8",
+        # Related to HTML report
+        "htmlmin>=0.1.12",
         # Could be optional
         "missingno>=0.4.2",
         "phik>=0.9.8",
         "astropy",
     ],
-    extras_requires=[
-        {"notebook": ["jupyter-client>=5.3.4", "jupyter-core>=4.6.1", "ipywidgets"]}
-    ],
+    extras_require={
+        "notebook": ["jupyter-client>=5.3.4", "jupyter-core>=4.6.1", "ipywidgets"],
+        "app": ["pyqt5>=5.14.1"],
+        "html": ["htmlmin>=0.1.12"],
+    },
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -68,4 +70,5 @@ setup(
             "pandas_profiling = pandas_profiling.controller.console:main"
         ]
     },
+    options={"bdist_wheel": {"universal": True}},
 )

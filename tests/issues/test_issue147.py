@@ -20,4 +20,5 @@ def test_issue147(tmpdir):
     df = pd.read_parquet(str(file_name), engine="pyarrow")
     report = ProfileReport(df, title="PyArrow with Pandas Parquet Backend")
     html = report.to_html()
-    assert type(html) == str and '<p class="h2">Dataset info</p>' in html
+    assert type(html) == str
+    assert "<p class=h2>Dataset info</p>" in html

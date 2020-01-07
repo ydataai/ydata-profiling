@@ -38,6 +38,7 @@ from dateutil.parser import parse
 
 import numpy as np
 
+from pandas_profiling.model.correlations import perform_check_correlation
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 
@@ -52,7 +53,7 @@ class MessageType(Enum):
     ZEROS = 2
     &#34;&#34;&#34;This variable contains zeros.&#34;&#34;&#34;
 
-    CORR = 3
+    HIGH_CORRELATION = 3
     &#34;&#34;&#34;This variable is highly correlated.&#34;&#34;&#34;
 
     RECODED = 4
@@ -79,6 +80,8 @@ class MessageType(Enum):
     TYPE_DATE = 11
     &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
 
+    UNIQUE = 12
+
 
 class Message(object):
     &#34;&#34;&#34;A message object (type, values, column).&#34;&#34;&#34;
@@ -88,7 +91,12 @@ class Message(object):
         message_type: MessageType,
         values: dict,
         column_name: Union[str, None] = None,
+        fields=None,
     ):
+        if fields is None:
+            fields = set()
+
+        self.fields = fields
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
@@ -105,7 +113,13 @@ def check_table_messages(table: dict) -&gt; List[Message]:
     &#34;&#34;&#34;
     messages = []
     if warning_value(table[&#34;n_duplicates&#34;]):
-        messages.append(Message(message_type=MessageType.DUPLICATES, values=table))
+        messages.append(
+            Message(
+                message_type=MessageType.DUPLICATES,
+                values=table,
+                fields={&#34;n_duplicates&#34;},
+            )
+        )
     return messages
 
 
@@ -120,35 +134,44 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
         A list of messages.
     &#34;&#34;&#34;
     messages = []
-    # Special types
-    if description[&#34;type&#34;] in {
-        Variable.S_TYPE_UNSUPPORTED,
-        Variable.S_TYPE_CORR,
-        Variable.S_TYPE_CONST,
-        Variable.S_TYPE_RECODED,
-    }:
+
+    if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
             Message(
                 column_name=col,
-                message_type=MessageType[description[&#34;type&#34;].value],
+                message_type=MessageType.CONST,
                 values=description,
+                fields={&#34;n_unique&#34;},
             )
         )
 
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.S_TYPE_UNIQUE}:
+    if description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.UNIQUE,
+                values=description,
+                fields={&#34;n_unique&#34;, &#34;p_unique&#34;},
+            )
+        )
+
+    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         if description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.TYPE_BOOL}:
+    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         # High cardinality
-        if description[&#34;distinct_count&#34;] &gt; config[&#34;cardinality_threshold&#34;].get(int):
+        if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
+            &#34;cardinality_threshold&#34;
+        ].get(int):
             messages.append(
                 Message(
                     column_name=col,
                     message_type=MessageType.HIGH_CARDINALITY,
                     values=description,
+                    fields={&#34;n_unique&#34;},
                 )
             )
 
@@ -157,42 +180,63 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
         if warning_skewness(description[&#34;skewness&#34;]):
             messages.append(
                 Message(
-                    column_name=col, message_type=MessageType.SKEWED, values=description
+                    column_name=col,
+                    message_type=MessageType.SKEWED,
+                    values=description,
+                    fields={&#34;skewness&#34;},
                 )
             )
         # Zeros
         if warning_value(description[&#34;p_zeros&#34;]):
             messages.append(
                 Message(
-                    column_name=col, message_type=MessageType.ZEROS, values=description
+                    column_name=col,
+                    message_type=MessageType.ZEROS,
+                    values=description,
+                    fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
                 )
             )
 
-    if description[&#34;type&#34;] not in {
-        Variable.S_TYPE_UNSUPPORTED,
-        Variable.S_TYPE_CORR,
-        Variable.S_TYPE_CONST,
-        Variable.S_TYPE_RECODED,
-    }:
-        # Missing
-        if warning_value(description[&#34;p_missing&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.MISSING,
-                    values=description,
-                )
+    # Missing
+    if warning_value(description[&#34;p_missing&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.MISSING,
+                values=description,
+                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
             )
-        # Infinite values
-        if warning_value(description[&#34;p_infinite&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.INFINITE,
-                    values=description,
-                )
+        )
+    # Infinite values
+    if warning_value(description[&#34;p_infinite&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.INFINITE,
+                values=description,
+                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
             )
+        )
 
+    return messages
+
+
+def check_correlation_messages(correlations):
+    messages = []
+
+    for corr, matrix in correlations.items():
+        if config[&#34;correlations&#34;][corr][&#34;warn_high_correlations&#34;].get(bool):
+            threshold = config[&#34;correlations&#34;][corr][&#34;threshold&#34;].get(float)
+            correlated_mapping = perform_check_correlation(matrix, threshold)
+            if len(correlated_mapping) &gt; 0:
+                for k, v in correlated_mapping.items():
+                    messages.append(
+                        Message(
+                            column_name=k,
+                            message_type=MessageType.HIGH_CORRELATION,
+                            values={&#34;corr&#34;: corr, &#34;fields&#34;: v},
+                        )
+                    )
     return messages
 
 
@@ -233,6 +277,34 @@ def warning_type_date(series):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.model.messages.check_correlation_messages"><code class="name flex">
+<span>def <span class="ident">check_correlation_messages</span></span>(<span>correlations)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_correlation_messages(correlations):
+    messages = []
+
+    for corr, matrix in correlations.items():
+        if config[&#34;correlations&#34;][corr][&#34;warn_high_correlations&#34;].get(bool):
+            threshold = config[&#34;correlations&#34;][corr][&#34;threshold&#34;].get(float)
+            correlated_mapping = perform_check_correlation(matrix, threshold)
+            if len(correlated_mapping) &gt; 0:
+                for k, v in correlated_mapping.items():
+                    messages.append(
+                        Message(
+                            column_name=k,
+                            message_type=MessageType.HIGH_CORRELATION,
+                            values={&#34;corr&#34;: corr, &#34;fields&#34;: v},
+                        )
+                    )
+    return messages</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.messages.check_table_messages"><code class="name flex">
 <span>def <span class="ident">check_table_messages</span></span>(<span>table)</span>
 </code></dt>
@@ -260,7 +332,13 @@ def warning_type_date(series):
     &#34;&#34;&#34;
     messages = []
     if warning_value(table[&#34;n_duplicates&#34;]):
-        messages.append(Message(message_type=MessageType.DUPLICATES, values=table))
+        messages.append(
+            Message(
+                message_type=MessageType.DUPLICATES,
+                values=table,
+                fields={&#34;n_duplicates&#34;},
+            )
+        )
     return messages</code></pre>
 </details>
 </dd>
@@ -293,35 +371,44 @@ def warning_type_date(series):
         A list of messages.
     &#34;&#34;&#34;
     messages = []
-    # Special types
-    if description[&#34;type&#34;] in {
-        Variable.S_TYPE_UNSUPPORTED,
-        Variable.S_TYPE_CORR,
-        Variable.S_TYPE_CONST,
-        Variable.S_TYPE_RECODED,
-    }:
+
+    if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
             Message(
                 column_name=col,
-                message_type=MessageType[description[&#34;type&#34;].value],
+                message_type=MessageType.CONST,
                 values=description,
+                fields={&#34;n_unique&#34;},
             )
         )
 
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.S_TYPE_UNIQUE}:
+    if description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.UNIQUE,
+                values=description,
+                fields={&#34;n_unique&#34;, &#34;p_unique&#34;},
+            )
+        )
+
+    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         if description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT, Variable.TYPE_BOOL}:
+    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         # High cardinality
-        if description[&#34;distinct_count&#34;] &gt; config[&#34;cardinality_threshold&#34;].get(int):
+        if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
+            &#34;cardinality_threshold&#34;
+        ].get(int):
             messages.append(
                 Message(
                     column_name=col,
                     message_type=MessageType.HIGH_CARDINALITY,
                     values=description,
+                    fields={&#34;n_unique&#34;},
                 )
             )
 
@@ -330,41 +417,43 @@ def warning_type_date(series):
         if warning_skewness(description[&#34;skewness&#34;]):
             messages.append(
                 Message(
-                    column_name=col, message_type=MessageType.SKEWED, values=description
+                    column_name=col,
+                    message_type=MessageType.SKEWED,
+                    values=description,
+                    fields={&#34;skewness&#34;},
                 )
             )
         # Zeros
         if warning_value(description[&#34;p_zeros&#34;]):
             messages.append(
                 Message(
-                    column_name=col, message_type=MessageType.ZEROS, values=description
+                    column_name=col,
+                    message_type=MessageType.ZEROS,
+                    values=description,
+                    fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
                 )
             )
 
-    if description[&#34;type&#34;] not in {
-        Variable.S_TYPE_UNSUPPORTED,
-        Variable.S_TYPE_CORR,
-        Variable.S_TYPE_CONST,
-        Variable.S_TYPE_RECODED,
-    }:
-        # Missing
-        if warning_value(description[&#34;p_missing&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.MISSING,
-                    values=description,
-                )
+    # Missing
+    if warning_value(description[&#34;p_missing&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.MISSING,
+                values=description,
+                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
             )
-        # Infinite values
-        if warning_value(description[&#34;p_infinite&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.INFINITE,
-                    values=description,
-                )
+        )
+    # Infinite values
+    if warning_value(description[&#34;p_infinite&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.INFINITE,
+                values=description,
+                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
             )
+        )
 
     return messages</code></pre>
 </details>
@@ -423,7 +512,7 @@ def warning_type_date(series):
 <dl>
 <dt id="pandas_profiling.model.messages.Message"><code class="flex name class">
 <span>class <span class="ident">Message</span></span>
-<span>(</span><span>message_type, values, column_name=None)</span>
+<span>(</span><span>message_type, values, column_name=None, fields=None)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>A message object (type, values, column).</p></section>
@@ -439,7 +528,12 @@ def warning_type_date(series):
         message_type: MessageType,
         values: dict,
         column_name: Union[str, None] = None,
+        fields=None,
     ):
+        if fields is None:
+            fields = set()
+
+        self.fields = fields
         self.message_type = message_type
         self.values = values
         self.column_name = column_name</code></pre>
@@ -464,7 +558,7 @@ def warning_type_date(series):
     ZEROS = 2
     &#34;&#34;&#34;This variable contains zeros.&#34;&#34;&#34;
 
-    CORR = 3
+    HIGH_CORRELATION = 3
     &#34;&#34;&#34;This variable is highly correlated.&#34;&#34;&#34;
 
     RECODED = 4
@@ -489,7 +583,9 @@ def warning_type_date(series):
     &#34;&#34;&#34;This variable contains infinite values.&#34;&#34;&#34;
 
     TYPE_DATE = 11
-    &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
+
+    UNIQUE = 12</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -501,10 +597,6 @@ def warning_type_date(series):
 <dd>
 <section class="desc"><p>This variable has a constant value.</p></section>
 </dd>
-<dt id="pandas_profiling.model.messages.MessageType.CORR"><code class="name">var <span class="ident">CORR</span></code></dt>
-<dd>
-<section class="desc"><p>This variable is highly correlated.</p></section>
-</dd>
 <dt id="pandas_profiling.model.messages.MessageType.DUPLICATES"><code class="name">var <span class="ident">DUPLICATES</span></code></dt>
 <dd>
 <section class="desc"><p>This variable contains duplicates.</p></section>
@@ -512,6 +604,10 @@ def warning_type_date(series):
 <dt id="pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY"><code class="name">var <span class="ident">HIGH_CARDINALITY</span></code></dt>
 <dd>
 <section class="desc"><p>This variable has a high cardinality.</p></section>
+</dd>
+<dt id="pandas_profiling.model.messages.MessageType.HIGH_CORRELATION"><code class="name">var <span class="ident">HIGH_CORRELATION</span></code></dt>
+<dd>
+<section class="desc"><p>This variable is highly correlated.</p></section>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType.INFINITE"><code class="name">var <span class="ident">INFINITE</span></code></dt>
 <dd>
@@ -532,6 +628,10 @@ def warning_type_date(series):
 <dt id="pandas_profiling.model.messages.MessageType.TYPE_DATE"><code class="name">var <span class="ident">TYPE_DATE</span></code></dt>
 <dd>
 <section class="desc"><p>This variable is likely a datetime, but treated as categorical.</p></section>
+</dd>
+<dt id="pandas_profiling.model.messages.MessageType.UNIQUE"><code class="name">var <span class="ident">UNIQUE</span></code></dt>
+<dd>
+<section class="desc"><p>Message Types</p></section>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType.UNSUPPORTED"><code class="name">var <span class="ident">UNSUPPORTED</span></code></dt>
 <dd>
@@ -559,6 +659,7 @@ def warning_type_date(series):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.model.messages.check_correlation_messages" href="#pandas_profiling.model.messages.check_correlation_messages">check_correlation_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.check_table_messages" href="#pandas_profiling.model.messages.check_table_messages">check_table_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.check_variable_messages" href="#pandas_profiling.model.messages.check_variable_messages">check_variable_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.warning_skewness" href="#pandas_profiling.model.messages.warning_skewness">warning_skewness</a></code></li>
@@ -575,14 +676,15 @@ def warning_type_date(series):
 <h4><code><a title="pandas_profiling.model.messages.MessageType" href="#pandas_profiling.model.messages.MessageType">MessageType</a></code></h4>
 <ul class="two-column">
 <li><code><a title="pandas_profiling.model.messages.MessageType.CONST" href="#pandas_profiling.model.messages.MessageType.CONST">CONST</a></code></li>
-<li><code><a title="pandas_profiling.model.messages.MessageType.CORR" href="#pandas_profiling.model.messages.MessageType.CORR">CORR</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.DUPLICATES" href="#pandas_profiling.model.messages.MessageType.DUPLICATES">DUPLICATES</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY" href="#pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY">HIGH_CARDINALITY</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.HIGH_CORRELATION" href="#pandas_profiling.model.messages.MessageType.HIGH_CORRELATION">HIGH_CORRELATION</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.INFINITE" href="#pandas_profiling.model.messages.MessageType.INFINITE">INFINITE</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.MISSING" href="#pandas_profiling.model.messages.MessageType.MISSING">MISSING</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.RECODED" href="#pandas_profiling.model.messages.MessageType.RECODED">RECODED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.SKEWED" href="#pandas_profiling.model.messages.MessageType.SKEWED">SKEWED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.TYPE_DATE" href="#pandas_profiling.model.messages.MessageType.TYPE_DATE">TYPE_DATE</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.UNIQUE" href="#pandas_profiling.model.messages.MessageType.UNIQUE">UNIQUE</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.UNSUPPORTED" href="#pandas_profiling.model.messages.MessageType.UNSUPPORTED">UNSUPPORTED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.ZEROS" href="#pandas_profiling.model.messages.MessageType.ZEROS">ZEROS</a></code></li>
 </ul>

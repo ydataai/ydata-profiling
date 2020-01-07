@@ -45,6 +45,7 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
     check_table_messages,
     warning_type_date,
+    check_correlation_messages,
 )
 
 from pandas_profiling.model import base
@@ -54,7 +55,13 @@ from pandas_profiling.model.correlations import (
     perform_check_correlation,
 )
 from pandas_profiling.utils.common import update
-from pandas_profiling.view import plot
+from pandas_profiling.visualisation import plot
+from pandas_profiling.visualisation.missing import (
+    missing_bar,
+    missing_matrix,
+    missing_heatmap,
+    missing_dendrogram,
+)
 
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
@@ -89,7 +96,8 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
         &#34;sum&#34;: series.sum(),
         &#34;mad&#34;: series.mad(),
         &#34;n_zeros&#34;: (len(series) - np.count_nonzero(series)),
-        &#34;histogramdata&#34;: series,
+        &#34;histogram_data&#34;: series,
+        &#34;scatter_data&#34;: series,  # For complex
     }
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
@@ -112,7 +120,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
     if bayesian_blocks_bins:
         with warnings.catch_warnings():
             warnings.simplefilter(&#34;ignore&#34;)
-            ret = bayesian_blocks(stats[&#34;histogramdata&#34;])
+            ret = bayesian_blocks(stats[&#34;histogram_data&#34;])
 
             # Sanity check
             if not np.isnan(ret).any() and ret.size &gt; 1:
@@ -131,7 +139,7 @@ def describe_date_1d(series: pd.Series, series_description: dict) -&gt; dict:
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
-    stats = {&#34;min&#34;: series.min(), &#34;max&#34;: series.max(), &#34;histogramdata&#34;: series}
+    stats = {&#34;min&#34;: series.min(), &#34;max&#34;: series.max(), &#34;histogram_data&#34;: series}
 
     bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
     # Bins should never be larger than the number of distinct values
@@ -169,6 +177,8 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; d
             &#34;spaces&#34;: series.str.contains(r&#34;\s&#34;, case=False, regex=True).any(),
             &#34;non-words&#34;: series.str.contains(r&#34;\W&#34;, case=False, regex=True).any(),
         }
+
+        stats[&#34;length&#34;] = series.str.len()
         stats[&#34;max_length&#34;] = series.str.len().max()
         stats[&#34;mean_length&#34;] = series.str.len().mean()
         stats[&#34;min_length&#34;] = series.str.len().min()
@@ -267,34 +277,6 @@ def describe_boolean_1d(series: pd.Series, series_description: dict) -&gt; dict:
     return stats
 
 
-def describe_constant_1d(series: pd.Series, series_description: dict) -&gt; dict:
-    &#34;&#34;&#34;Describe a constant series (placeholder).
-
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-
-    Returns:
-        An empty dict.
-    &#34;&#34;&#34;
-    return {}
-
-
-def describe_unique_1d(series: pd.Series, series_description: dict) -&gt; dict:
-    &#34;&#34;&#34;Describe a unique series (placeholder).
-
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-
-    Returns:
-        An empty dict.
-    &#34;&#34;&#34;
-    stats = {&#34;date_warning&#34;: warning_type_date(series)}
-
-    return stats
-
-
 def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
     &#34;&#34;&#34;Describe a supported series.
 
@@ -318,8 +300,10 @@ def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
     distinct_count = series_description[&#34;distinct_count_with_nan&#34;]
 
     stats = {
+        &#34;n&#34;: leng,
         &#34;count&#34;: count,
         &#34;distinct_count&#34;: distinct_count,
+        &#34;n_unique&#34;: distinct_count,
         &#34;p_missing&#34;: 1 - count * 1.0 / leng,
         &#34;n_missing&#34;: leng - count,
         &#34;p_infinite&#34;: n_infinite * 1.0 / leng,
@@ -327,7 +311,7 @@ def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
         &#34;is_unique&#34;: distinct_count == leng,
         &#34;mode&#34;: series.mode().iloc[0] if count &gt; distinct_count &gt; 1 else series[0],
         &#34;p_unique&#34;: distinct_count * 1.0 / leng,
-        &#34;memorysize&#34;: series.memory_usage(),
+        &#34;memory_size&#34;: series.memory_usage(),
     }
 
     return stats
@@ -352,12 +336,13 @@ def describe_unsupported(series: pd.Series, series_description: dict):
     n_infinite = count - series.count()
 
     results_data = {
+        &#34;n&#34;: leng,
         &#34;count&#34;: count,
         &#34;p_missing&#34;: 1 - count * 1.0 / leng,
         &#34;n_missing&#34;: leng - count,
         &#34;p_infinite&#34;: n_infinite * 1.0 / leng,
         &#34;n_infinite&#34;: n_infinite,
-        &#34;memorysize&#34;: series.memory_usage(),
+        &#34;memory_size&#34;: series.memory_usage(),
     }
 
     return results_data
@@ -386,11 +371,9 @@ def describe_1d(series: pd.Series) -&gt; dict:
         series_description.update(describe_supported(series, series_description))
 
         type_to_func = {
-            Variable.S_TYPE_CONST: describe_constant_1d,
             Variable.TYPE_BOOL: describe_boolean_1d,
             Variable.TYPE_NUM: describe_numeric_1d,
             Variable.TYPE_DATE: describe_date_1d,
-            Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
             Variable.TYPE_PATH: describe_path_1d,
@@ -431,22 +414,22 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
         A dictionary that contains the table statistics.
     &#34;&#34;&#34;
     n = len(df)
-    # TODO: deep=True?
-    memory_size = df.memory_usage(index=True).sum()
+
+    memory_size = df.memory_usage(index=True, deep=True).sum()
     record_size = float(memory_size) / n
 
     table_stats = {
         &#34;n&#34;: n,
-        &#34;nvar&#34;: len(df.columns),
-        &#34;memsize&#34;: memory_size,
-        &#34;recordsize&#34;: record_size,
+        &#34;n_var&#34;: len(df.columns),
+        &#34;memory_size&#34;: memory_size,
+        &#34;record_size&#34;: record_size,
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
         &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
         &#34;n_vars_all_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] == n).astype(int)),
     }
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
-        table_stats[&#34;n&#34;] * table_stats[&#34;nvar&#34;]
+        table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;]
     )
 
     supported_columns = variable_stats.transpose()[
@@ -466,13 +449,13 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
     # Variable type counts
     table_stats.update({k.value: 0 for k in Variable})
     table_stats.update(
-        dict(variable_stats.loc[&#34;type&#34;].apply(lambda x: x.value).value_counts())
+        {
+            &#34;types&#34;: dict(
+                variable_stats.loc[&#34;type&#34;].apply(lambda x: x.value).value_counts()
+            )
+        }
     )
-    table_stats[Variable.S_TYPE_REJECTED.value] = (
-        table_stats[Variable.S_TYPE_CONST.value]
-        + table_stats[Variable.S_TYPE_CORR.value]
-        + table_stats[Variable.S_TYPE_RECODED.value]
-    )
+
     return table_stats
 
 
@@ -500,11 +483,11 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
     missing_map = {
-        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
-        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
-        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
+        &#34;bar&#34;: {&#34;func&#34;: missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
+        &#34;matrix&#34;: {&#34;func&#34;: missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
+        &#34;heatmap&#34;: {&#34;func&#34;: missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
         &#34;dendrogram&#34;: {
-            &#34;func&#34;: plot.missing_dendrogram,
+            &#34;func&#34;: missing_dendrogram,
             &#34;min_missing&#34;: 1,
             &#34;name&#34;: &#34;Dendrogram&#34;,
         },
@@ -578,48 +561,6 @@ def describe(df: pd.DataFrame) -&gt; dict:
     # Get correlations
     correlations = calculate_correlations(df, variables)
 
-    # Check correlations between numerical variables
-    if (
-        config[&#34;check_correlation_pearson&#34;].get(bool) is True
-        and &#34;pearson&#34; in correlations
-    ):
-        # Overwrites the description with &#34;CORR&#34; series
-        correlation_threshold = config[&#34;correlation_threshold_pearson&#34;].get(float)
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations[&#34;pearson&#34;],
-                lambda x: x &gt; correlation_threshold,
-                Variable.S_TYPE_CORR,
-            ),
-        )
-
-    # Check correlations between categorical variables
-    if (
-        config[&#34;check_correlation_cramers&#34;].get(bool) is True
-        and &#34;cramers&#34; in correlations
-    ):
-        # Overwrites the description with &#34;CORR&#34; series
-        correlation_threshold = config[&#34;correlation_threshold_cramers&#34;].get(float)
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations[&#34;cramers&#34;],
-                lambda x: x &gt; correlation_threshold,
-                Variable.S_TYPE_CORR,
-            ),
-        )
-
-    # Check recoded
-    if config[&#34;check_recoded&#34;].get(bool) is True and &#34;recoded&#34; in correlations:
-        # Overwrites the description with &#34;RECORDED&#34; series
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations[&#34;recoded&#34;], lambda x: x == 1, Variable.S_TYPE_RECODED
-            ),
-        )
-
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
@@ -633,6 +574,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():
         messages += check_variable_messages(col, description)
+
+    messages += check_correlation_messages(correlations)
 
     package = {
         &#34;pandas_profiling_version&#34;: __version__,
@@ -736,48 +679,6 @@ def describe(df: pd.DataFrame) -&gt; dict:
     # Get correlations
     correlations = calculate_correlations(df, variables)
 
-    # Check correlations between numerical variables
-    if (
-        config[&#34;check_correlation_pearson&#34;].get(bool) is True
-        and &#34;pearson&#34; in correlations
-    ):
-        # Overwrites the description with &#34;CORR&#34; series
-        correlation_threshold = config[&#34;correlation_threshold_pearson&#34;].get(float)
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations[&#34;pearson&#34;],
-                lambda x: x &gt; correlation_threshold,
-                Variable.S_TYPE_CORR,
-            ),
-        )
-
-    # Check correlations between categorical variables
-    if (
-        config[&#34;check_correlation_cramers&#34;].get(bool) is True
-        and &#34;cramers&#34; in correlations
-    ):
-        # Overwrites the description with &#34;CORR&#34; series
-        correlation_threshold = config[&#34;correlation_threshold_cramers&#34;].get(float)
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations[&#34;cramers&#34;],
-                lambda x: x &gt; correlation_threshold,
-                Variable.S_TYPE_CORR,
-            ),
-        )
-
-    # Check recoded
-    if config[&#34;check_recoded&#34;].get(bool) is True and &#34;recoded&#34; in correlations:
-        # Overwrites the description with &#34;RECORDED&#34; series
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations[&#34;recoded&#34;], lambda x: x == 1, Variable.S_TYPE_RECODED
-            ),
-        )
-
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
@@ -791,6 +692,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():
         messages += check_variable_messages(col, description)
+
+    messages += check_correlation_messages(correlations)
 
     package = {
         &#34;pandas_profiling_version&#34;: __version__,
@@ -852,11 +755,9 @@ def describe(df: pd.DataFrame) -&gt; dict:
         series_description.update(describe_supported(series, series_description))
 
         type_to_func = {
-            Variable.S_TYPE_CONST: describe_constant_1d,
             Variable.TYPE_BOOL: describe_boolean_1d,
             Variable.TYPE_NUM: describe_numeric_1d,
             Variable.TYPE_DATE: describe_date_1d,
-            Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
             Variable.TYPE_PATH: describe_path_1d,
@@ -952,6 +853,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
             &#34;spaces&#34;: series.str.contains(r&#34;\s&#34;, case=False, regex=True).any(),
             &#34;non-words&#34;: series.str.contains(r&#34;\W&#34;, case=False, regex=True).any(),
         }
+
+        stats[&#34;length&#34;] = series.str.len()
         stats[&#34;max_length&#34;] = series.str.len().max()
         stats[&#34;mean_length&#34;] = series.str.len().mean()
         stats[&#34;min_length&#34;] = series.str.len().min()
@@ -960,37 +863,6 @@ def describe(df: pd.DataFrame) -&gt; dict:
     stats[&#34;date_warning&#34;] = warning_type_date(series)
 
     return stats</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.model.describe.describe_constant_1d"><code class="name flex">
-<span>def <span class="ident">describe_constant_1d</span></span>(<span>series, series_description)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Describe a constant series (placeholder).</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>series_description</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>An empty dict.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def describe_constant_1d(series: pd.Series, series_description: dict) -&gt; dict:
-    &#34;&#34;&#34;Describe a constant series (placeholder).
-
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-
-    Returns:
-        An empty dict.
-    &#34;&#34;&#34;
-    return {}</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.describe.describe_date_1d"><code class="name flex">
@@ -1021,7 +893,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
-    stats = {&#34;min&#34;: series.min(), &#34;max&#34;: series.max(), &#34;histogramdata&#34;: series}
+    stats = {&#34;min&#34;: series.min(), &#34;max&#34;: series.max(), &#34;histogram_data&#34;: series}
 
     bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
     # Bins should never be larger than the number of distinct values
@@ -1090,7 +962,8 @@ bins. Read the docs:
         &#34;sum&#34;: series.sum(),
         &#34;mad&#34;: series.mad(),
         &#34;n_zeros&#34;: (len(series) - np.count_nonzero(series)),
-        &#34;histogramdata&#34;: series,
+        &#34;histogram_data&#34;: series,
+        &#34;scatter_data&#34;: series,  # For complex
     }
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
@@ -1113,7 +986,7 @@ bins. Read the docs:
     if bayesian_blocks_bins:
         with warnings.catch_warnings():
             warnings.simplefilter(&#34;ignore&#34;)
-            ret = bayesian_blocks(stats[&#34;histogramdata&#34;])
+            ret = bayesian_blocks(stats[&#34;histogram_data&#34;])
 
             # Sanity check
             if not np.isnan(ret).any() and ret.size &gt; 1:
@@ -1220,8 +1093,10 @@ bins. Read the docs:
     distinct_count = series_description[&#34;distinct_count_with_nan&#34;]
 
     stats = {
+        &#34;n&#34;: leng,
         &#34;count&#34;: count,
         &#34;distinct_count&#34;: distinct_count,
+        &#34;n_unique&#34;: distinct_count,
         &#34;p_missing&#34;: 1 - count * 1.0 / leng,
         &#34;n_missing&#34;: leng - count,
         &#34;p_infinite&#34;: n_infinite * 1.0 / leng,
@@ -1229,7 +1104,7 @@ bins. Read the docs:
         &#34;is_unique&#34;: distinct_count == leng,
         &#34;mode&#34;: series.mode().iloc[0] if count &gt; distinct_count &gt; 1 else series[0],
         &#34;p_unique&#34;: distinct_count * 1.0 / leng,
-        &#34;memorysize&#34;: series.memory_usage(),
+        &#34;memory_size&#34;: series.memory_usage(),
     }
 
     return stats</code></pre>
@@ -1264,22 +1139,22 @@ bins. Read the docs:
         A dictionary that contains the table statistics.
     &#34;&#34;&#34;
     n = len(df)
-    # TODO: deep=True?
-    memory_size = df.memory_usage(index=True).sum()
+
+    memory_size = df.memory_usage(index=True, deep=True).sum()
     record_size = float(memory_size) / n
 
     table_stats = {
         &#34;n&#34;: n,
-        &#34;nvar&#34;: len(df.columns),
-        &#34;memsize&#34;: memory_size,
-        &#34;recordsize&#34;: record_size,
+        &#34;n_var&#34;: len(df.columns),
+        &#34;memory_size&#34;: memory_size,
+        &#34;record_size&#34;: record_size,
         &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
         &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
         &#34;n_vars_all_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] == n).astype(int)),
     }
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
-        table_stats[&#34;n&#34;] * table_stats[&#34;nvar&#34;]
+        table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;]
     )
 
     supported_columns = variable_stats.transpose()[
@@ -1299,47 +1174,14 @@ bins. Read the docs:
     # Variable type counts
     table_stats.update({k.value: 0 for k in Variable})
     table_stats.update(
-        dict(variable_stats.loc[&#34;type&#34;].apply(lambda x: x.value).value_counts())
+        {
+            &#34;types&#34;: dict(
+                variable_stats.loc[&#34;type&#34;].apply(lambda x: x.value).value_counts()
+            )
+        }
     )
-    table_stats[Variable.S_TYPE_REJECTED.value] = (
-        table_stats[Variable.S_TYPE_CONST.value]
-        + table_stats[Variable.S_TYPE_CORR.value]
-        + table_stats[Variable.S_TYPE_RECODED.value]
-    )
+
     return table_stats</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.model.describe.describe_unique_1d"><code class="name flex">
-<span>def <span class="ident">describe_unique_1d</span></span>(<span>series, series_description)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Describe a unique series (placeholder).</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>series_description</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>An empty dict.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def describe_unique_1d(series: pd.Series, series_description: dict) -&gt; dict:
-    &#34;&#34;&#34;Describe a unique series (placeholder).
-
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-
-    Returns:
-        An empty dict.
-    &#34;&#34;&#34;
-    stats = {&#34;date_warning&#34;: warning_type_date(series)}
-
-    return stats</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.describe.describe_unsupported"><code class="name flex">
@@ -1379,12 +1221,13 @@ bins. Read the docs:
     n_infinite = count - series.count()
 
     results_data = {
+        &#34;n&#34;: leng,
         &#34;count&#34;: count,
         &#34;p_missing&#34;: 1 - count * 1.0 / leng,
         &#34;n_missing&#34;: leng - count,
         &#34;p_infinite&#34;: n_infinite * 1.0 / leng,
         &#34;n_infinite&#34;: n_infinite,
-        &#34;memorysize&#34;: series.memory_usage(),
+        &#34;memory_size&#34;: series.memory_usage(),
     }
 
     return results_data</code></pre>
@@ -1469,11 +1312,11 @@ bins. Read the docs:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
     missing_map = {
-        &#34;bar&#34;: {&#34;func&#34;: plot.missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
-        &#34;matrix&#34;: {&#34;func&#34;: plot.missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
-        &#34;heatmap&#34;: {&#34;func&#34;: plot.missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
+        &#34;bar&#34;: {&#34;func&#34;: missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
+        &#34;matrix&#34;: {&#34;func&#34;: missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
+        &#34;heatmap&#34;: {&#34;func&#34;: missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
         &#34;dendrogram&#34;: {
-            &#34;func&#34;: plot.missing_dendrogram,
+            &#34;func&#34;: missing_dendrogram,
             &#34;min_missing&#34;: 1,
             &#34;name&#34;: &#34;Dendrogram&#34;,
         },
@@ -1575,13 +1418,11 @@ bins. Read the docs:
 <li><code><a title="pandas_profiling.model.describe.describe_1d" href="#pandas_profiling.model.describe.describe_1d">describe_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_boolean_1d" href="#pandas_profiling.model.describe.describe_boolean_1d">describe_boolean_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_categorical_1d" href="#pandas_profiling.model.describe.describe_categorical_1d">describe_categorical_1d</a></code></li>
-<li><code><a title="pandas_profiling.model.describe.describe_constant_1d" href="#pandas_profiling.model.describe.describe_constant_1d">describe_constant_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_date_1d" href="#pandas_profiling.model.describe.describe_date_1d">describe_date_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_numeric_1d" href="#pandas_profiling.model.describe.describe_numeric_1d">describe_numeric_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_path_1d" href="#pandas_profiling.model.describe.describe_path_1d">describe_path_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_supported" href="#pandas_profiling.model.describe.describe_supported">describe_supported</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_table" href="#pandas_profiling.model.describe.describe_table">describe_table</a></code></li>
-<li><code><a title="pandas_profiling.model.describe.describe_unique_1d" href="#pandas_profiling.model.describe.describe_unique_1d">describe_unique_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_unsupported" href="#pandas_profiling.model.describe.describe_unsupported">describe_unsupported</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_url_1d" href="#pandas_profiling.model.describe.describe_url_1d">describe_url_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.get_missing_diagrams" href="#pandas_profiling.model.describe.get_missing_diagrams">get_missing_diagrams</a></code></li>

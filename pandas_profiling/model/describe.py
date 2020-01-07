@@ -18,6 +18,7 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
     check_table_messages,
     warning_type_date,
+    check_correlation_messages,
 )
 
 from pandas_profiling.model import base
@@ -68,7 +69,8 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         "sum": series.sum(),
         "mad": series.mad(),
         "n_zeros": (len(series) - np.count_nonzero(series)),
-        "histogramdata": series,
+        "histogram_data": series,
+        "scatter_data": series,  # For complex
     }
 
     stats["range"] = stats["max"] - stats["min"]
@@ -91,7 +93,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     if bayesian_blocks_bins:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            ret = bayesian_blocks(stats["histogramdata"])
+            ret = bayesian_blocks(stats["histogram_data"])
 
             # Sanity check
             if not np.isnan(ret).any() and ret.size > 1:
@@ -110,7 +112,7 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
     Returns:
         A dict containing calculated series description values.
     """
-    stats = {"min": series.min(), "max": series.max(), "histogramdata": series}
+    stats = {"min": series.min(), "max": series.max(), "histogram_data": series}
 
     bins = config["plot"]["histogram"]["bins"].get(int)
     # Bins should never be larger than the number of distinct values
@@ -148,6 +150,8 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
             "spaces": series.str.contains(r"\s", case=False, regex=True).any(),
             "non-words": series.str.contains(r"\W", case=False, regex=True).any(),
         }
+
+        stats["length"] = series.str.len()
         stats["max_length"] = series.str.len().max()
         stats["mean_length"] = series.str.len().mean()
         stats["min_length"] = series.str.len().min()
@@ -246,34 +250,6 @@ def describe_boolean_1d(series: pd.Series, series_description: dict) -> dict:
     return stats
 
 
-def describe_constant_1d(series: pd.Series, series_description: dict) -> dict:
-    """Describe a constant series (placeholder).
-
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-
-    Returns:
-        An empty dict.
-    """
-    return {}
-
-
-def describe_unique_1d(series: pd.Series, series_description: dict) -> dict:
-    """Describe a unique series (placeholder).
-
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-
-    Returns:
-        An empty dict.
-    """
-    stats = {"date_warning": warning_type_date(series)}
-
-    return stats
-
-
 def describe_supported(series: pd.Series, series_description: dict) -> dict:
     """Describe a supported series.
 
@@ -297,8 +273,10 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
     distinct_count = series_description["distinct_count_with_nan"]
 
     stats = {
+        "n": leng,
         "count": count,
         "distinct_count": distinct_count,
+        "n_unique": distinct_count,
         "p_missing": 1 - count * 1.0 / leng,
         "n_missing": leng - count,
         "p_infinite": n_infinite * 1.0 / leng,
@@ -306,7 +284,7 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
         "is_unique": distinct_count == leng,
         "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
         "p_unique": distinct_count * 1.0 / leng,
-        "memorysize": series.memory_usage(),
+        "memory_size": series.memory_usage(),
     }
 
     return stats
@@ -331,12 +309,13 @@ def describe_unsupported(series: pd.Series, series_description: dict):
     n_infinite = count - series.count()
 
     results_data = {
+        "n": leng,
         "count": count,
         "p_missing": 1 - count * 1.0 / leng,
         "n_missing": leng - count,
         "p_infinite": n_infinite * 1.0 / leng,
         "n_infinite": n_infinite,
-        "memorysize": series.memory_usage(),
+        "memory_size": series.memory_usage(),
     }
 
     return results_data
@@ -365,11 +344,9 @@ def describe_1d(series: pd.Series) -> dict:
         series_description.update(describe_supported(series, series_description))
 
         type_to_func = {
-            Variable.S_TYPE_CONST: describe_constant_1d,
             Variable.TYPE_BOOL: describe_boolean_1d,
             Variable.TYPE_NUM: describe_numeric_1d,
             Variable.TYPE_DATE: describe_date_1d,
-            Variable.S_TYPE_UNIQUE: describe_unique_1d,
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
             Variable.TYPE_PATH: describe_path_1d,
@@ -410,22 +387,22 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
         A dictionary that contains the table statistics.
     """
     n = len(df)
-    # TODO: deep=True?
-    memory_size = df.memory_usage(index=True).sum()
+
+    memory_size = df.memory_usage(index=True, deep=True).sum()
     record_size = float(memory_size) / n
 
     table_stats = {
         "n": n,
-        "nvar": len(df.columns),
-        "memsize": memory_size,
-        "recordsize": record_size,
+        "n_var": len(df.columns),
+        "memory_size": memory_size,
+        "record_size": record_size,
         "n_cells_missing": variable_stats.loc["n_missing"].sum(),
         "n_vars_with_missing": sum((variable_stats.loc["n_missing"] > 0).astype(int)),
         "n_vars_all_missing": sum((variable_stats.loc["n_missing"] == n).astype(int)),
     }
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-        table_stats["n"] * table_stats["nvar"]
+        table_stats["n"] * table_stats["n_var"]
     )
 
     supported_columns = variable_stats.transpose()[
@@ -445,13 +422,13 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     # Variable type counts
     table_stats.update({k.value: 0 for k in Variable})
     table_stats.update(
-        dict(variable_stats.loc["type"].apply(lambda x: x.value).value_counts())
+        {
+            "types": dict(
+                variable_stats.loc["type"].apply(lambda x: x.value).value_counts()
+            )
+        }
     )
-    table_stats[Variable.S_TYPE_REJECTED.value] = (
-        table_stats[Variable.S_TYPE_CONST.value]
-        + table_stats[Variable.S_TYPE_CORR.value]
-        + table_stats[Variable.S_TYPE_RECODED.value]
-    )
+
     return table_stats
 
 
@@ -557,48 +534,6 @@ def describe(df: pd.DataFrame) -> dict:
     # Get correlations
     correlations = calculate_correlations(df, variables)
 
-    # Check correlations between numerical variables
-    if (
-        config["check_correlation_pearson"].get(bool) is True
-        and "pearson" in correlations
-    ):
-        # Overwrites the description with "CORR" series
-        correlation_threshold = config["correlation_threshold_pearson"].get(float)
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations["pearson"],
-                lambda x: x > correlation_threshold,
-                Variable.S_TYPE_CORR,
-            ),
-        )
-
-    # Check correlations between categorical variables
-    if (
-        config["check_correlation_cramers"].get(bool) is True
-        and "cramers" in correlations
-    ):
-        # Overwrites the description with "CORR" series
-        correlation_threshold = config["correlation_threshold_cramers"].get(float)
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations["cramers"],
-                lambda x: x > correlation_threshold,
-                Variable.S_TYPE_CORR,
-            ),
-        )
-
-    # Check recoded
-    if config["check_recoded"].get(bool) is True and "recoded" in correlations:
-        # Overwrites the description with "RECORDED" series
-        update(
-            series_description,
-            perform_check_correlation(
-                correlations["recoded"], lambda x: x == 1, Variable.S_TYPE_RECODED
-            ),
-        )
-
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
@@ -612,6 +547,8 @@ def describe(df: pd.DataFrame) -> dict:
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():
         messages += check_variable_messages(col, description)
+
+    messages += check_correlation_messages(correlations)
 
     package = {
         "pandas_profiling_version": __version__,

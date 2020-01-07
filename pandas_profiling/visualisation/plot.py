@@ -42,7 +42,7 @@ def _plot_histogram(
         plot.set_ylabel("Frequency")
         plot.hist(
             series.dropna().values,
-            facecolor=config["style"]["primary_color"].get(str),
+            facecolor=config["html"]["style"]["primary_color"].get(str),
             bins=bins,
         )
 
@@ -50,7 +50,7 @@ def _plot_histogram(
         plot = series.plot(
             kind="hist",
             figsize=figsize,
-            facecolor=config["style"]["primary_color"].get(str),
+            facecolor=config["html"]["style"]["primary_color"].get(str),
             bins=bins,
         )
     return plot
@@ -158,8 +158,6 @@ def scatter_series(series, x_label="Width", y_label="Height") -> str:
     Returns:
 
     """
-    x, y = zip(*series.tolist())
-
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 

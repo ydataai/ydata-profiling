@@ -19,6 +19,4 @@ def test_urls():
     )
 
     assert "<small>URL</small>" in profile.to_html(), "URL not detected"
-    assert (
-        "<th>URL</th>\n                <td>1</td>" in profile.to_html()
-    ), "URL not detected"
+    assert "<th>URL</th>" in profile.to_html(), "URL not detected"
