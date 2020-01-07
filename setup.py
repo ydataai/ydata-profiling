@@ -39,7 +39,7 @@ setup(
         "phik>=0.9.8",
         "astropy",
     ],
-    extras_requires={
+    extras_require={
         "notebook": ["jupyter-client>=5.3.4", "jupyter-core>=4.6.1", "ipywidgets"],
         "app": ["pyqt5>=5.14.1"],
         "html": ["htmlmin>=0.1.12"],
