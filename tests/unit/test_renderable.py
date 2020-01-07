@@ -9,9 +9,9 @@ def test_html_frequency_table():
     item = HTMLFrequencyTable(
         rows=[{"count": 10, "percentage": 1.0, "label": "Pizza", "width": 1.0}]
     )
-    print(item)
+    assert str(item) == "HTMLFrequencyTable"
     html = item.render()
-    print(html)
+    assert '<table class="freq table table-hover table-striped">' in html
 
 
 def test_html_html():

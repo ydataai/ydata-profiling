@@ -41,6 +41,7 @@ _Contents:_ **[Examples](#examples)** |
 **[Advanced usage](#advanced-usage)** |
 **[Types](#types)** | **[How to contribute](#how-to-contribute)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
+
 ---
 
 ## Examples

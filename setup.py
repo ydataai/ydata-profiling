@@ -39,11 +39,11 @@ setup(
         "phik>=0.9.8",
         "astropy",
     ],
-    extras_requires=[
-        {"notebook": ["jupyter-client>=5.3.4", "jupyter-core>=4.6.1", "ipywidgets"]},
-        {"app": ["pyqt5>=5.14.1"]},
-        {"html": ["htmlmin>=0.1.12"]},
-    ],
+    extras_requires={
+        "notebook": ["jupyter-client>=5.3.4", "jupyter-core>=4.6.1", "ipywidgets"],
+        "app": ["pyqt5>=5.14.1"],
+        "html": ["htmlmin>=0.1.12"],
+    },
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
