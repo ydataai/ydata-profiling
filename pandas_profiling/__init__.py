@@ -62,11 +62,11 @@ class ProfileReport(object):
         description_set = describe_df(df)
 
         # Build report structure
-        self.report = get_report_structure(self.date, sample, description_set)
+        self.sample = self.get_sample(df)
+        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config["title"].get(str)
         self.description_set = description_set
-        self.sample = self.get_sample(df)
-        
+
     def sort_column_names(self, df):
         sort = config["sort"].get(str)
         if sys.version_info[1] <= 5 and sort != "None":
@@ -164,7 +164,7 @@ class ProfileReport(object):
             )
         return wrapped_html
 
-    def to_json(self):
+    def to_json(self) -> str:
         class CustomEncoder(json.JSONEncoder):
             def default(self, o):
                 if isinstance(o, pd.core.series.Series) or isinstance(
