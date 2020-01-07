@@ -106,7 +106,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     """
     messages = []
 
-    if description['type'] == MessageType.UNSUPPORTED:
+    if description['type'] == Variable.S_TYPE_UNSUPPORTED:
         return messages
 
     if description["distinct_count_with_nan"] <= 1:
