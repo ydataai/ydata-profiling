@@ -1,6 +1,6 @@
 include LICENSE
-include pandas_profiling/visualisation/*.mplstyle
-recursive-include pandas_profiling/report/presentation/flavours/html/templates *.html
-recursive-include pandas_profiling/report/presentation/flavours/html/templates/assets *.js *.css
-include pandas_profiling/ *.yaml
+include src/pandas_profiling/visualisation/*.mplstyle
+recursive-include src/pandas_profiling/report/presentation/flavours/html/templates *.html
+recursive-include src/pandas_profiling/report/presentation/flavours/html/templates/assets *.js *.css
+include src/pandas_profiling/ *.yaml
 include README.md
