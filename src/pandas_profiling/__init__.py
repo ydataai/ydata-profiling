@@ -134,7 +134,7 @@ class ProfileReport(object):
         if not silent:
             import webbrowser
 
-            webbrowser.open_new_tab(output_file.as_uri())
+            webbrowser.open_new_tab(output_file.absolute().as_uri())
 
     def to_html(self) -> str:
         """Generate and return complete template as lengthy string
