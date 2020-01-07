@@ -1,0 +1,229 @@
+"""Generate the report."""
+
+import pandas_profiling.visualisation.plot as plot
+from pandas_profiling.model.base import (
+    Boolean,
+    Real,
+    Count,
+    Complex,
+    Date,
+    Categorical,
+    Url,
+    AbsolutePath,
+    ExistingPath,
+    ImagePath,
+    Generic,
+)
+from pandas_profiling.report.structure.variables import (
+    render_boolean,
+    render_categorical,
+    render_complex,
+    render_date,
+    render_real,
+    render_path,
+    render_path_image,
+    render_url,
+)
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core import (
+    HTML,
+    Image,
+    Preview,
+    Sequence,
+    Overview,
+    Dataset,
+)
+
+
+def get_missing_items(summary) -> list:
+    items = []
+    for key, item in summary["missing"].items():
+        items.append(
+            # TODO: Add informative caption
+            Image(item["matrix"], alt=item["name"], name=item["name"], anchor_id=key)
+        )
+
+    return items
+
+
+def get_correlation_items(summary) -> list:
+    """Create the list of correlation items
+
+    Args:
+        summary: dict of correlations
+
+    Returns:
+        List of correlation items to show in the interface.
+    """
+    items = []
+
+    key_to_data = {
+        "pearson": {"vmin": -1, "name": "Pearson's r"},
+        "spearman": {"vmin": -1, "name": "Spearman's ρ"},
+        "kendall": {"vmin": -1, "name": "Kendall's τ"},
+        "phi_k": {"vmin": 0, "name": "Phik (φk)"},
+        "cramers": {"vmin": 0, "name": "Cramér's V (φc)"},
+        "recoded": {"vmin": 0, "name": "Recoded"},
+    }
+
+    for key, item in summary["correlations"].items():
+        vmin = key_to_data[key]["vmin"]
+        name = key_to_data[key]["name"]
+        items.append(
+            Image(
+                plot.correlation_matrix(item, vmin=vmin),
+                alt=name,
+                anchor_id=key,
+                name=name,
+            )
+        )
+
+    return items
+
+
+# TODO: split in per variable function
+def render_variables_section(dataframe_summary: dict) -> list:
+    """Render the HTML for each of the variables in the DataFrame.
+
+    Args:
+        dataframe_summary: The statistics for each variable.
+
+    Returns:
+        The rendered HTML, where each row represents a variable.
+    """
+    type_to_func = {
+        Boolean: render_boolean,
+        Real: render_real,
+        Count: render_real,
+        Complex: render_complex,
+        Date: render_date,
+        Categorical: render_categorical,
+        Url: render_url,
+        AbsolutePath: render_path,
+        ExistingPath: render_path,
+        ImagePath: render_path_image,
+        Generic: lambda x: {"top": HTML("Unsupported"), "bottom": HTML("")},
+    }
+
+    templs = []
+
+    for idx, summary in dataframe_summary["variables"].items():
+        # TODO: move to render
+        # Common template variables
+        def fmt_warning(warning):
+            name = warning.message_type.name.replace("_", " ")
+            if name == "HIGH CORRELATION":
+                name += " (" + ", ".join(warning.values["fields"]) + ")"
+            return name
+
+        warnings = [
+            fmt_warning(warning)
+            for warning in dataframe_summary["messages"]
+            if warning.column_name == idx
+        ]
+        warn_fields = [
+            field
+            for warning in dataframe_summary["messages"]
+            if warning.column_name == idx
+            for field in warning.fields
+        ]
+        template_variables = {
+            "varname": idx,
+            "varid": hash(idx),
+            "warnings": warnings,
+            "warn_fields": warn_fields,
+        }
+
+        template_variables.update(summary)
+
+        # Per type template variables
+        template_variables.update(type_to_func[summary["type"]](template_variables))
+
+        templs.append(
+            Preview(
+                template_variables["top"],
+                template_variables["bottom"],
+                anchor_id=template_variables["varid"],
+                name=idx,
+            )
+        )
+
+    return templs
+
+
+def get_sample_items(sample: dict):
+    """Create the list of sample items
+
+    Args:
+        sample: dict of samples
+
+    Returns:
+        List of sample items to show in the interface.
+    """
+    items = []
+    names = {"head": "First rows", "tail": "Last rows"}
+    for key in sample:
+        items.append(
+            HTML(
+                '<div id="sample-container" class="col-sm-12">{}</div>'.format(
+                    sample[key].to_html(classes="sample table table-striped")
+                ),
+                name=names[key],
+                anchor_id=key,
+            )
+        )
+    return items
+
+
+def get_report_structure(date, sample: dict, summary: dict) -> Renderable:
+    """Generate a HTML report from summary statistics and a given sample.
+
+    Args:
+      sample: A dict containing the samples to print.
+      summary: Statistics to use for the overview, variables, correlations and missing values.
+
+    Returns:
+      The profile report in HTML format
+    """
+
+    sections = Sequence(
+        [
+            Dataset(
+                package=summary["package"],
+                date=date,
+                values=summary["table"],
+                messages=summary["messages"],
+                variables=summary["variables"],
+                name="Overview",
+                anchor_id="overview",
+            ),
+            Sequence(
+                render_variables_section(summary),
+                sequence_type="accordion",
+                name="Variables",
+                anchor_id="variables",
+            ),
+            Sequence(
+                get_correlation_items(summary),
+                sequence_type="tabs",
+                name="Correlations",
+                anchor_id="correlations",
+            ),
+            Sequence(
+                get_missing_items(summary),
+                sequence_type="tabs",
+                name="Missing values",
+                anchor_id="missing",
+            ),
+            Sequence(
+                get_sample_items(sample),
+                sequence_type="list",
+                name="Sample",
+                anchor_id="sample",
+            ),
+        ],
+        name="Report",
+        sequence_type="sections",
+    )
+
+    return sections

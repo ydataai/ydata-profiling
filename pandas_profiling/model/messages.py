@@ -9,6 +9,7 @@ from dateutil.parser import parse
 
 import numpy as np
 
+from pandas_profiling.model.correlations import perform_check_correlation
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 
@@ -23,7 +24,7 @@ class MessageType(Enum):
     ZEROS = 2
     """This variable contains zeros."""
 
-    CORR = 3
+    HIGH_CORRELATION = 3
     """This variable is highly correlated."""
 
     RECODED = 4
@@ -50,6 +51,8 @@ class MessageType(Enum):
     TYPE_DATE = 11
     """This variable is likely a datetime, but treated as categorical."""
 
+    UNIQUE = 12
+
 
 class Message(object):
     """A message object (type, values, column)."""
@@ -59,7 +62,12 @@ class Message(object):
         message_type: MessageType,
         values: dict,
         column_name: Union[str, None] = None,
+        fields=None,
     ):
+        if fields is None:
+            fields = set()
+
+        self.fields = fields
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
@@ -76,7 +84,13 @@ def check_table_messages(table: dict) -> List[Message]:
     """
     messages = []
     if warning_value(table["n_duplicates"]):
-        messages.append(Message(message_type=MessageType.DUPLICATES, values=table))
+        messages.append(
+            Message(
+                message_type=MessageType.DUPLICATES,
+                values=table,
+                fields={"n_duplicates"},
+            )
+        )
     return messages
 
 
@@ -91,35 +105,44 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
-    # Special types
-    if description["type"] in {
-        Variable.S_TYPE_UNSUPPORTED,
-        Variable.S_TYPE_CORR,
-        Variable.S_TYPE_CONST,
-        Variable.S_TYPE_RECODED,
-    }:
+
+    if description["distinct_count_with_nan"] <= 1:
         messages.append(
             Message(
                 column_name=col,
-                message_type=MessageType[description["type"].value],
+                message_type=MessageType.CONST,
                 values=description,
+                fields={"n_unique"},
             )
         )
 
-    if description["type"] in {Variable.TYPE_CAT, Variable.S_TYPE_UNIQUE}:
+    if description["distinct_count_without_nan"] == description["n"]:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.UNIQUE,
+                values=description,
+                fields={"n_unique", "p_unique"},
+            )
+        )
+
+    if description["type"] in {Variable.TYPE_CAT}:
         if description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
-    if description["type"] in {Variable.TYPE_CAT, Variable.TYPE_BOOL}:
+    if description["type"] in {Variable.TYPE_CAT}:
         # High cardinality
-        if description["distinct_count"] > config["cardinality_threshold"].get(int):
+        if description["distinct_count"] > config["vars"]["cat"][
+            "cardinality_threshold"
+        ].get(int):
             messages.append(
                 Message(
                     column_name=col,
                     message_type=MessageType.HIGH_CARDINALITY,
                     values=description,
+                    fields={"n_unique"},
                 )
             )
 
@@ -128,42 +151,63 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         if warning_skewness(description["skewness"]):
             messages.append(
                 Message(
-                    column_name=col, message_type=MessageType.SKEWED, values=description
+                    column_name=col,
+                    message_type=MessageType.SKEWED,
+                    values=description,
+                    fields={"skewness"},
                 )
             )
         # Zeros
         if warning_value(description["p_zeros"]):
             messages.append(
                 Message(
-                    column_name=col, message_type=MessageType.ZEROS, values=description
+                    column_name=col,
+                    message_type=MessageType.ZEROS,
+                    values=description,
+                    fields={"n_zeros", "p_zeros"},
                 )
             )
 
-    if description["type"] not in {
-        Variable.S_TYPE_UNSUPPORTED,
-        Variable.S_TYPE_CORR,
-        Variable.S_TYPE_CONST,
-        Variable.S_TYPE_RECODED,
-    }:
-        # Missing
-        if warning_value(description["p_missing"]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.MISSING,
-                    values=description,
-                )
+    # Missing
+    if warning_value(description["p_missing"]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.MISSING,
+                values=description,
+                fields={"p_missing", "n_missing"},
             )
-        # Infinite values
-        if warning_value(description["p_infinite"]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.INFINITE,
-                    values=description,
-                )
+        )
+    # Infinite values
+    if warning_value(description["p_infinite"]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.INFINITE,
+                values=description,
+                fields={"p_infinite", "n_infinite"},
             )
+        )
 
+    return messages
+
+
+def check_correlation_messages(correlations):
+    messages = []
+
+    for corr, matrix in correlations.items():
+        if config["correlations"][corr]["warn_high_correlations"].get(bool):
+            threshold = config["correlations"][corr]["threshold"].get(float)
+            correlated_mapping = perform_check_correlation(matrix, threshold)
+            if len(correlated_mapping) > 0:
+                for k, v in correlated_mapping.items():
+                    messages.append(
+                        Message(
+                            column_name=k,
+                            message_type=MessageType.HIGH_CORRELATION,
+                            values={"corr": corr, "fields": v},
+                        )
+                    )
     return messages
 
 

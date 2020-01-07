@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
-<title>pandas_profiling.view.plot API documentation</title>
+<title>pandas_profiling.report.plot API documentation</title>
 <meta name="description" content="Plot functions for the profiling report." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.view.plot</code></h1>
+<h1 class="title">Module <code>pandas_profiling.report.plot</code></h1>
 </header>
 <section id="section-intro">
 <p>Plot functions for the profiling report.</p>
@@ -40,7 +40,7 @@ from pkg_resources import resource_filename
 
 from pandas_profiling import config
 from pandas_profiling.model.base import Variable
-from pandas_profiling.view.formatters import hex_to_rgb
+from pandas_profiling.report.formatters import hex_to_rgb
 
 register_matplotlib_converters()
 matplotlib.style.use(resource_filename(__name__, &#34;pandas_profiling.mplstyle&#34;))
@@ -329,7 +329,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.view.plot.correlation_matrix"><code class="name flex">
+<dt id="pandas_profiling.report.plot.correlation_matrix"><code class="name flex">
 <span>def <span class="ident">correlation_matrix</span></span>(<span>data, vmin=-1)</span>
 </code></dt>
 <dd>
@@ -374,7 +374,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.get_font_size"><code class="name flex">
+<dt id="pandas_profiling.report.plot.get_font_size"><code class="name flex">
 <span>def <span class="ident">get_font_size</span></span>(<span>data)</span>
 </code></dt>
 <dd>
@@ -412,7 +412,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return font_size</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.histogram"><code class="name flex">
+<dt id="pandas_profiling.report.plot.histogram"><code class="name flex">
 <span>def <span class="ident">histogram</span></span>(<span>series, series_description, bins)</span>
 </code></dt>
 <dd>
@@ -450,7 +450,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.mini_histogram"><code class="name flex">
+<dt id="pandas_profiling.report.plot.mini_histogram"><code class="name flex">
 <span>def <span class="ident">mini_histogram</span></span>(<span>series, series_description, bins)</span>
 </code></dt>
 <dd>
@@ -493,7 +493,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.missing_bar"><code class="name flex">
+<dt id="pandas_profiling.report.plot.missing_bar"><code class="name flex">
 <span>def <span class="ident">missing_bar</span></span>(<span>data)</span>
 </code></dt>
 <dd>
@@ -530,7 +530,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.missing_dendrogram"><code class="name flex">
+<dt id="pandas_profiling.report.plot.missing_dendrogram"><code class="name flex">
 <span>def <span class="ident">missing_dendrogram</span></span>(<span>data)</span>
 </code></dt>
 <dd>
@@ -559,7 +559,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.missing_heatmap"><code class="name flex">
+<dt id="pandas_profiling.report.plot.missing_heatmap"><code class="name flex">
 <span>def <span class="ident">missing_heatmap</span></span>(<span>data)</span>
 </code></dt>
 <dd>
@@ -609,7 +609,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.missing_matrix"><code class="name flex">
+<dt id="pandas_profiling.report.plot.missing_matrix"><code class="name flex">
 <span>def <span class="ident">missing_matrix</span></span>(<span>data)</span>
 </code></dt>
 <dd>
@@ -646,7 +646,7 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
     return plot_360_n0sc0pe(plt, image_format=&#34;png&#34;)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.plot.plot_360_n0sc0pe"><code class="name flex">
+<dt id="pandas_profiling.report.plot.plot_360_n0sc0pe"><code class="name flex">
 <span>def <span class="ident">plot_360_n0sc0pe</span></span>(<span>plt, image_format=None, attempts=0)</span>
 </code></dt>
 <dd>
@@ -722,15 +722,15 @@ def plot_360_n0sc0pe(plt, image_format=None, attempts=0) -&gt; str:
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
-<li><code><a title="pandas_profiling.view.plot.correlation_matrix" href="#pandas_profiling.view.plot.correlation_matrix">correlation_matrix</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.get_font_size" href="#pandas_profiling.view.plot.get_font_size">get_font_size</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.histogram" href="#pandas_profiling.view.plot.histogram">histogram</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.mini_histogram" href="#pandas_profiling.view.plot.mini_histogram">mini_histogram</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.missing_bar" href="#pandas_profiling.view.plot.missing_bar">missing_bar</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.missing_dendrogram" href="#pandas_profiling.view.plot.missing_dendrogram">missing_dendrogram</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.missing_heatmap" href="#pandas_profiling.view.plot.missing_heatmap">missing_heatmap</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.missing_matrix" href="#pandas_profiling.view.plot.missing_matrix">missing_matrix</a></code></li>
-<li><code><a title="pandas_profiling.view.plot.plot_360_n0sc0pe" href="#pandas_profiling.view.plot.plot_360_n0sc0pe">plot_360_n0sc0pe</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.correlation_matrix" href="#pandas_profiling.report.plot.correlation_matrix">correlation_matrix</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.get_font_size" href="#pandas_profiling.report.plot.get_font_size">get_font_size</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.histogram" href="#pandas_profiling.report.plot.histogram">histogram</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.mini_histogram" href="#pandas_profiling.report.plot.mini_histogram">mini_histogram</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.missing_bar" href="#pandas_profiling.report.plot.missing_bar">missing_bar</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.missing_dendrogram" href="#pandas_profiling.report.plot.missing_dendrogram">missing_dendrogram</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.missing_heatmap" href="#pandas_profiling.report.plot.missing_heatmap">missing_heatmap</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.missing_matrix" href="#pandas_profiling.report.plot.missing_matrix">missing_matrix</a></code></li>
+<li><code><a title="pandas_profiling.report.plot.plot_360_n0sc0pe" href="#pandas_profiling.report.plot.plot_360_n0sc0pe">plot_360_n0sc0pe</a></code></li>
 </ul>
 </li>
 </ul>

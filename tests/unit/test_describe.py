@@ -58,8 +58,8 @@ def recoding_data():
 
 
 def test_recoding_reject(recoding_data):
-    config["check_recoded"] = True
-    config["correlations"]["recoded"] = True
+    config["correlations"]["recoded"]["calculate"] = True
+    config["correlations"]["recoded"]["warn_high_correlations"] = True
     results = describe(recoding_data)
 
     assert (

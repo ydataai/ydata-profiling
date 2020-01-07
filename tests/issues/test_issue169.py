@@ -26,11 +26,13 @@ def test_issue_169_column(issue_169_data):
     df = pd.read_csv(issue_169_data, sep=",")
     report = df.profile_report(missing_diagrams={"dendrogram": True, "heatmap": True})
     html = report.to_html()
-    assert type(html) == str and '<p class="h2">Dataset info</p>' in html
+    assert type(html) == str
+    assert '<p class=h2>Dataset info</p>' in html
 
 
 def test_issue_169_index(issue_169_data):
     df = pd.read_csv(issue_169_data, sep=",", index_col=0)
     report = df.profile_report(missing_diagrams={"dendrogram": True, "heatmap": True})
     html = report.to_html()
-    assert type(html) == str and '<p class="h2">Dataset info</p>' in html
+    assert type(html) == str
+    assert '<p class=h2>Dataset info</p>' in html

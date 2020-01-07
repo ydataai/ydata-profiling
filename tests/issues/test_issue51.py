@@ -54,7 +54,7 @@ def test_issue51_mixed():
     report = df.profile_report(title="Pandas Profiling Report")
 
     assert (
-        'data-toggle="tab">Recoded</a>' in report.to_html()
+        "data-toggle=tab>Recoded</a>" in report.to_html()
     ), "Recoded should be present"
 
 

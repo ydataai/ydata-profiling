@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.6.2" />
+<meta name="generator" content="pdoc 0.7.2" />
 <title>pandas_profiling.model.correlations API documentation</title>
 <meta name="description" content="Correlations between variables." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 </head>
@@ -22,12 +22,15 @@
 <section id="section-intro">
 <p>Correlations between variables.</p>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">&#34;&#34;&#34;Correlations between variables.&#34;&#34;&#34;
 import itertools
 import warnings
 from contextlib import suppress
 from functools import partial
+from typing import Callable
 
 import pandas as pd
 import numpy as np
@@ -101,7 +104,7 @@ def recoded_matrix(df: pd.DataFrame, variables: dict):
 
 
 def categorical_matrix(
-    df: pd.DataFrame, variables: dict, correlation_function: callable
+    df: pd.DataFrame, variables: dict, correlation_function: Callable
 ):
     &#34;&#34;&#34;Calculate a correlation matrix for categorical variables.
 
@@ -117,6 +120,7 @@ def categorical_matrix(
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
+        # TODO: solve in type system
         and df[column_name].nunique()
         &lt;= config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
     }
@@ -164,7 +168,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
     &#34;&#34;&#34;
     correlations = {}
     for correlation_name in [&#34;pearson&#34;, &#34;spearman&#34;, &#34;kendall&#34;]:
-        if config[&#34;correlations&#34;][correlation_name].get(bool):
+        if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool):
             try:
                 correlation = df.corr(method=correlation_name)
                 if len(correlation) &gt; 0:
@@ -172,7 +176,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
             except (ValueError, AssertionError) as e:
                 warn_correlation(correlation_name, e)
 
-    if config[&#34;correlations&#34;][&#34;phi_k&#34;].get(bool):
+    if config[&#34;correlations&#34;][&#34;phi_k&#34;][&#34;calculate&#34;].get(bool):
         import phik
 
         with warnings.catch_warnings():
@@ -225,64 +229,54 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
                     correlations[&#34;phi_k&#34;] = correlations[&#34;phi_k&#34;].reindex(
                         index=column_order, columns=column_order
                     )
-            except ValueError as e:
-                warn_correlation(&#34;phi_k&#34;, e)
-            except DataError as e:
+            except (ValueError, DataError) as e:
                 warn_correlation(&#34;phi_k&#34;, e)
 
     categorical_correlations = {&#34;cramers&#34;: cramers_matrix, &#34;recoded&#34;: recoded_matrix}
     for correlation_name, get_matrix in categorical_correlations.items():
-        if config[&#34;correlations&#34;][correlation_name].get(bool):
+        if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool):
             try:
                 correlation = get_matrix(df, variables)
                 if len(correlation) &gt; 0:
                     correlations[correlation_name] = correlation
-            except ValueError as e:
+            except (ValueError, ZeroDivisionError) as e:
                 warn_correlation(correlation_name, e)
 
     return correlations
 
 
-def perform_check_correlation(
-    correlation_matrix, criterion: callable, special_type: Variable
-):
-    &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.
+def perform_check_correlation(correlation_matrix, threshold: float):
+    &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix.
 
     Args:
         correlation_matrix: The correlation matrix for the DataFrame.
-        criterion: a mapping function from the correlation function to a bool
-        special_type: which type to return when the criterion is True (CORR, RECODED).
+        threshold:.
 
     Returns:
         The variables that are highly correlated or recoded.
-
-    Notes:
-        If x~y and y~z but not x~z, it would be better to delete only y
-        Better way would be to find out which variable causes the highest increase in multicollinearity.
     &#34;&#34;&#34;
 
-    # TODO: find a more reliable way to find highly correlated variables, as corr(x,y) &gt; 0.9 and corr(y,z) &gt; 0.9 does
-    #  not imply corr(x,z) &gt; 0.9
-    variables = {}
     corr = correlation_matrix.copy()
 
-    correlation_overrides = config[&#34;correlation_overrides&#34;].get(list)
+    # TODO: use matrix logic
+    # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
+    # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]&gt;threshold)]
 
+    mapping = {}
     for x, corr_x in corr.iterrows():
-        if correlation_overrides and x in correlation_overrides:
-            continue
-
         for y, corr in corr_x.iteritems():
             if x == y:
                 break
 
-            if criterion(corr):
-                variables[x] = {
-                    &#34;type&#34;: special_type,
-                    &#34;correlation_var&#34;: y,
-                    &#34;correlation&#34;: corr,
-                }
-    return variables</code></pre>
+            if corr &gt;= threshold or corr &lt;= -1 * threshold:
+                if x not in mapping:
+                    mapping[x] = []
+                if y not in mapping:
+                    mapping[y] = []
+
+                mapping[x].append(y)
+                mapping[y].append(x)
+    return mapping</code></pre>
 </details>
 </section>
 <section>
@@ -308,7 +302,9 @@ def perform_check_correlation(
 <h2 id="returns">Returns</h2>
 <p>A dictionary containing the correlation matrices for each of the active correlation measures.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, phi_k, cramer).
@@ -322,7 +318,7 @@ def perform_check_correlation(
     &#34;&#34;&#34;
     correlations = {}
     for correlation_name in [&#34;pearson&#34;, &#34;spearman&#34;, &#34;kendall&#34;]:
-        if config[&#34;correlations&#34;][correlation_name].get(bool):
+        if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool):
             try:
                 correlation = df.corr(method=correlation_name)
                 if len(correlation) &gt; 0:
@@ -330,7 +326,7 @@ def perform_check_correlation(
             except (ValueError, AssertionError) as e:
                 warn_correlation(correlation_name, e)
 
-    if config[&#34;correlations&#34;][&#34;phi_k&#34;].get(bool):
+    if config[&#34;correlations&#34;][&#34;phi_k&#34;][&#34;calculate&#34;].get(bool):
         import phik
 
         with warnings.catch_warnings():
@@ -383,19 +379,17 @@ def perform_check_correlation(
                     correlations[&#34;phi_k&#34;] = correlations[&#34;phi_k&#34;].reindex(
                         index=column_order, columns=column_order
                     )
-            except ValueError as e:
-                warn_correlation(&#34;phi_k&#34;, e)
-            except DataError as e:
+            except (ValueError, DataError) as e:
                 warn_correlation(&#34;phi_k&#34;, e)
 
     categorical_correlations = {&#34;cramers&#34;: cramers_matrix, &#34;recoded&#34;: recoded_matrix}
     for correlation_name, get_matrix in categorical_correlations.items():
-        if config[&#34;correlations&#34;][correlation_name].get(bool):
+        if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool):
             try:
                 correlation = get_matrix(df, variables)
                 if len(correlation) &gt; 0:
                     correlations[correlation_name] = correlation
-            except ValueError as e:
+            except (ValueError, ZeroDivisionError) as e:
                 warn_correlation(correlation_name, e)
 
     return correlations</code></pre>
@@ -418,9 +412,11 @@ def perform_check_correlation(
 <h2 id="returns">Returns</h2>
 <p>A correlation matrix for categorical variables.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def categorical_matrix(
-    df: pd.DataFrame, variables: dict, correlation_function: callable
+    df: pd.DataFrame, variables: dict, correlation_function: Callable
 ):
     &#34;&#34;&#34;Calculate a correlation matrix for categorical variables.
 
@@ -436,6 +432,7 @@ def perform_check_correlation(
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
+        # TODO: solve in type system
         and df[column_name].nunique()
         &lt;= config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
     }
@@ -472,7 +469,9 @@ def perform_check_correlation(
 <h2 id="returns">Returns</h2>
 <p>Whether the variables are recoded.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def check_recoded(confusion_matrix, count: int) -&gt; int:
     &#34;&#34;&#34;Check if two variables are recoded based on their crosstab.
 
@@ -501,7 +500,9 @@ def perform_check_correlation(
 <h2 id="returns">Returns</h2>
 <p>The Cramer's V corrected stat for the two variables.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def cramers_corrected_stat(confusion_matrix, correction: bool) -&gt; float:
     &#34;&#34;&#34;Calculate the Cramer&#39;s V corrected stat for two variables.
 
@@ -537,7 +538,9 @@ def perform_check_correlation(
 <h2 id="returns">Returns</h2>
 <p>A Cramer's V matrix for categorical variables.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def cramers_matrix(df: pd.DataFrame, variables: dict):
     &#34;&#34;&#34;Calculate the Cramer&#39;s V correlation matrix.
 
@@ -554,66 +557,54 @@ def perform_check_correlation(
 </details>
 </dd>
 <dt id="pandas_profiling.model.correlations.perform_check_correlation"><code class="name flex">
-<span>def <span class="ident">perform_check_correlation</span></span>(<span>correlation_matrix, criterion, special_type)</span>
+<span>def <span class="ident">perform_check_correlation</span></span>(<span>correlation_matrix, threshold)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.</p>
+<section class="desc"><p>Check whether selected variables are highly correlated values in the correlation matrix.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>correlation_matrix</code></strong></dt>
 <dd>The correlation matrix for the DataFrame.</dd>
-<dt><strong><code>criterion</code></strong></dt>
-<dd>a mapping function from the correlation function to a bool</dd>
-<dt><strong><code>special_type</code></strong></dt>
-<dd>which type to return when the criterion is True (CORR, RECODED).</dd>
 </dl>
+<p>threshold:.</p>
 <h2 id="returns">Returns</h2>
-<p>The variables that are highly correlated or recoded.</p>
-<h2 id="notes">Notes</h2>
-<p>If x~y and y~z but not x~z, it would be better to delete only y
-Better way would be to find out which variable causes the highest increase in multicollinearity.</p></section>
+<p>The variables that are highly correlated or recoded.</p></section>
 <details class="source">
-<summary>Source code</summary>
-<pre><code class="python">def perform_check_correlation(
-    correlation_matrix, criterion: callable, special_type: Variable
-):
-    &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix and if found, reject them.
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def perform_check_correlation(correlation_matrix, threshold: float):
+    &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix.
 
     Args:
         correlation_matrix: The correlation matrix for the DataFrame.
-        criterion: a mapping function from the correlation function to a bool
-        special_type: which type to return when the criterion is True (CORR, RECODED).
+        threshold:.
 
     Returns:
         The variables that are highly correlated or recoded.
-
-    Notes:
-        If x~y and y~z but not x~z, it would be better to delete only y
-        Better way would be to find out which variable causes the highest increase in multicollinearity.
     &#34;&#34;&#34;
 
-    # TODO: find a more reliable way to find highly correlated variables, as corr(x,y) &gt; 0.9 and corr(y,z) &gt; 0.9 does
-    #  not imply corr(x,z) &gt; 0.9
-    variables = {}
     corr = correlation_matrix.copy()
 
-    correlation_overrides = config[&#34;correlation_overrides&#34;].get(list)
+    # TODO: use matrix logic
+    # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
+    # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]&gt;threshold)]
 
+    mapping = {}
     for x, corr_x in corr.iterrows():
-        if correlation_overrides and x in correlation_overrides:
-            continue
-
         for y, corr in corr_x.iteritems():
             if x == y:
                 break
 
-            if criterion(corr):
-                variables[x] = {
-                    &#34;type&#34;: special_type,
-                    &#34;correlation_var&#34;: y,
-                    &#34;correlation&#34;: corr,
-                }
-    return variables</code></pre>
+            if corr &gt;= threshold or corr &lt;= -1 * threshold:
+                if x not in mapping:
+                    mapping[x] = []
+                if y not in mapping:
+                    mapping[y] = []
+
+                mapping[x].append(y)
+                mapping[y].append(x)
+    return mapping</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.correlations.recoded_matrix"><code class="name flex">
@@ -631,7 +622,9 @@ Better way would be to find out which variable causes the highest increase in mu
 <h2 id="returns">Returns</h2>
 <p>A recoded matrix for categorical variables.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def recoded_matrix(df: pd.DataFrame, variables: dict):
     &#34;&#34;&#34;Calculate the recoded correlation matrix.
 
@@ -651,7 +644,9 @@ Better way would be to find out which variable causes the highest increase in mu
 <dd>
 <section class="desc"></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def warn_correlation(correlation_name, error):
     warnings.warn(
         &#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.\n&#34;
@@ -697,7 +692,7 @@ Better way would be to find out which variable causes the highest increase in mu
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad()</script>

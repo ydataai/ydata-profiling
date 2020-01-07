@@ -6,6 +6,7 @@ import sys
 import warnings
 import json
 from pathlib import Path
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
@@ -16,9 +17,12 @@ from pandas_profiling.utils.paths import get_config_default, get_project_root
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
-import pandas_profiling.report.templates as templates
-from pandas_profiling.report.notebook import display_notebook_iframe
-from pandas_profiling.report.report import to_html
+from pandas_profiling.report import get_report_structure
+from pandas_profiling.report.presentation.flavours import (
+    HTMLReport,
+    WidgetReport,
+    QtReport,
+)
 
 
 class ProfileReport(object):
@@ -34,6 +38,8 @@ class ProfileReport(object):
         if config_file:
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
+
+        self.date = datetime.utcnow()
 
         # Treat index as any other column
         if (
@@ -78,10 +84,8 @@ class ProfileReport(object):
         if n_tail > 0:
             sample["tail"] = df.tail(n=n_tail)
 
-        # Render HTML
-        self.html = to_html(sample, description_set)
-        self.minify_html = config["minify_html"].get(bool)
-        self.use_local_assets = config["use_local_assets"].get(bool)
+        # Build report structure
+        self.report = get_report_structure(self.date, sample, description_set)
         self.title = config["title"].get(str)
         self.description_set = description_set
         self.sample = sample
@@ -93,24 +97,6 @@ class ProfileReport(object):
             Dict containing a description for each variable in the DataFrame.
         """
         return self.description_set
-
-    def get_rejected_variables(self, threshold: float = 0.9) -> list:
-        """Return a list of variable names being rejected for high 
-        correlation with one of remaining variables.
-        
-        Args:
-            threshold: correlation value which is above the threshold are rejected (Default value = 0.9)
-
-        Returns:
-            A list of rejected variables.
-        """
-        variable_profile = self.description_set["variables"]
-        result = []
-        for col, values in variable_profile.items():
-            if "correlation" in values:
-                if values["correlation"] > threshold:
-                    result.append(col)
-        return result
 
     def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
@@ -124,15 +110,15 @@ class ProfileReport(object):
         if type(output_file) == str:
             output_file = Path(output_file)
 
-        with output_file.open("w", encoding="utf8") as f:
-            wrapped_html = self.to_html()
-            if self.minify_html:
-                from htmlmin.main import minify
+        if output_file.suffix == ".html":
+            data = self.to_html()
+        elif output_file.suffix == ".json":
+            data = self.to_json()
+        else:
+            raise ValueError("Extension not supported (please use .html, .json)")
 
-                wrapped_html = minify(
-                    wrapped_html, remove_all_empty_space=True, remove_comments=True
-                )
-            f.write(wrapped_html)
+        with output_file.open("w", encoding="utf8") as f:
+            f.write(data)
 
         if not silent:
             import webbrowser
@@ -147,17 +133,32 @@ class ProfileReport(object):
             Profiling report html including wrapper.
         
         """
-        return templates.template("wrapper.html").render(
-            content=self.html,
+        use_local_assets = config["html"]["use_local_assets"].get(bool)
+
+        html = HTMLReport(self.report).render()
+
+        from pandas_profiling.report.presentation.flavours.html import templates
+
+        wrapped_html = templates.template("wrapper/wrapper.html").render(
+            content=html,
             title=self.title,
             correlation=len(self.description_set["correlations"]) > 0,
             missing=len(self.description_set["missing"]) > 0,
             sample=len(self.sample) > 0,
             version=__version__,
-            offline=self.use_local_assets,
-            primary_color=config["style"]["primary_color"].get(str),
-            theme=config["style"]["theme"].get(str),
+            offline=use_local_assets,
+            primary_color=config["html"]["style"]["primary_color"].get(str),
+            theme=config["html"]["style"]["theme"].get(str),
         )
+
+        minify_html = config["html"]["minify_html"].get(bool)
+        if minify_html:
+            from htmlmin.main import minify
+
+            wrapped_html = minify(
+                wrapped_html, remove_all_empty_space=True, remove_comments=True
+            )
+        return wrapped_html
 
     def to_json(self):
         class CustomEncoder(json.JSONEncoder):
@@ -185,8 +186,41 @@ class ProfileReport(object):
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
-        display_notebook_iframe(self)
+        report = WidgetReport(self.report).render()
+
+        from IPython.core.display import display, HTML
+
+        display(report)
+        display(
+            HTML(
+                'Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
+            )
+        )
+        # display_notebook_iframe(self)
 
     def __repr__(self):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
+
+    def app(self):
+        from PyQt5 import QtCore
+        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+
+        app = QtCore.QCoreApplication.instance()
+        if app is None:
+            app = QApplication([])
+
+        class Application(QMainWindow):
+            def __init__(self, widgets):
+                super().__init__()
+                self.layout = QVBoxLayout(self)
+
+                self.resize(1200, 900)
+                self.setWindowTitle("Pandas Profiling Report")
+                self.setCentralWidget(widgets)
+                self.show()
+
+        app_widgets = QtReport(self.report).render()
+
+        ex = Application(app_widgets)
+        sys.exit(app.exec_())

@@ -38,12 +38,12 @@ def test_modular_absent(df):
         title="Modular test",
         samples={"head": 0, "tail": 0},
         correlations={
-            "pearson": False,
-            "spearman": False,
-            "kendall": False,
-            "phi_k": False,
-            "cramers": False,
-            "recoded": False,
+            "pearson": {"calculate": False},
+            "spearman": {"calculate": False},
+            "kendall": {"calculate": False},
+            "phi_k": {"calculate": False},
+            "cramers": {"calculate": False},
+            "recoded": {"calculate": False},
         },
         missing_diagrams={
             "matrix": False,

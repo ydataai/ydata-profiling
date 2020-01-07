@@ -1,0 +1,13 @@
+{% if name %}
+    <p class="h4">{{ name }}</p>
+{% endif %}
+<table class="table table-condensed stats">
+    <tbody>
+        {% for row in rows %}
+        <tr{% if row['class'] %} class="{{ row['class'] }}"{% endif %}>
+            <th>{{ row['name'] }}</th>
+            <td>{{ row['value'] | dynamic_filter(row['fmt']) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

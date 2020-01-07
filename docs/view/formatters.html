@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
-<title>pandas_profiling.view.formatters API documentation</title>
+<title>pandas_profiling.report.formatters API documentation</title>
 <meta name="description" content="Formatters are utilities for formatting numbers and certain strings" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.view.formatters</code></h1>
+<h1 class="title">Module <code>pandas_profiling.report.formatters</code></h1>
 </header>
 <section id="section-intro">
 <p>Formatters are utilities for formatting numbers and certain strings</p>
@@ -160,7 +160,7 @@ def hex_to_rgb(hex):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.view.formatters.fmt"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.fmt"><code class="name flex">
 <span>def <span class="ident">fmt</span></span>(<span>value)</span>
 </code></dt>
 <dd>
@@ -189,7 +189,7 @@ def hex_to_rgb(hex):
         return str(escape(value))</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.formatters.fmt_array"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.fmt_array"><code class="name flex">
 <span>def <span class="ident">fmt_array</span></span>(<span>value, threshold=nan)</span>
 </code></dt>
 <dd>
@@ -221,7 +221,7 @@ def hex_to_rgb(hex):
     return value</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.formatters.fmt_bytesize"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.fmt_bytesize"><code class="name flex">
 <span>def <span class="ident">fmt_bytesize</span></span>(<span>num, suffix='B')</span>
 </code></dt>
 <dd>
@@ -254,7 +254,7 @@ def hex_to_rgb(hex):
     return &#34;{:.1f} {}{}&#34;.format(num, &#34;Yi&#34;, suffix)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.formatters.fmt_class"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.fmt_class"><code class="name flex">
 <span>def <span class="ident">fmt_class</span></span>(<span>text, cls)</span>
 </code></dt>
 <dd>
@@ -283,7 +283,7 @@ def hex_to_rgb(hex):
     return u&#39;&lt;span class=&#34;{cls}&#34;&gt;{text}&lt;/span&gt;&#39;.format(cls=cls, text=str(text))</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.formatters.fmt_color"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.fmt_color"><code class="name flex">
 <span>def <span class="ident">fmt_color</span></span>(<span>text, color)</span>
 </code></dt>
 <dd>
@@ -314,7 +314,7 @@ def hex_to_rgb(hex):
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.formatters.fmt_numeric"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.fmt_numeric"><code class="name flex">
 <span>def <span class="ident">fmt_numeric</span></span>(<span>value, precision=10)</span>
 </code></dt>
 <dd>
@@ -343,7 +343,7 @@ def hex_to_rgb(hex):
     return &#34;{{:.{precision}g}}&#34;.format(precision=precision).format(value)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.formatters.fmt_percent"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.fmt_percent"><code class="name flex">
 <span>def <span class="ident">fmt_percent</span></span>(<span>value, edge_cases=True)</span>
 </code></dt>
 <dd>
@@ -379,7 +379,7 @@ def hex_to_rgb(hex):
     return &#34;{:2.1f}%&#34;.format(value * 100)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.formatters.hex_to_rgb"><code class="name flex">
+<dt id="pandas_profiling.report.formatters.hex_to_rgb"><code class="name flex">
 <span>def <span class="ident">hex_to_rgb</span></span>(<span>hex)</span>
 </code></dt>
 <dd>
@@ -427,14 +427,14 @@ def hex_to_rgb(hex):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
-<li><code><a title="pandas_profiling.view.formatters.fmt" href="#pandas_profiling.view.formatters.fmt">fmt</a></code></li>
-<li><code><a title="pandas_profiling.view.formatters.fmt_array" href="#pandas_profiling.view.formatters.fmt_array">fmt_array</a></code></li>
-<li><code><a title="pandas_profiling.view.formatters.fmt_bytesize" href="#pandas_profiling.view.formatters.fmt_bytesize">fmt_bytesize</a></code></li>
-<li><code><a title="pandas_profiling.view.formatters.fmt_class" href="#pandas_profiling.view.formatters.fmt_class">fmt_class</a></code></li>
-<li><code><a title="pandas_profiling.view.formatters.fmt_color" href="#pandas_profiling.view.formatters.fmt_color">fmt_color</a></code></li>
-<li><code><a title="pandas_profiling.view.formatters.fmt_numeric" href="#pandas_profiling.view.formatters.fmt_numeric">fmt_numeric</a></code></li>
-<li><code><a title="pandas_profiling.view.formatters.fmt_percent" href="#pandas_profiling.view.formatters.fmt_percent">fmt_percent</a></code></li>
-<li><code><a title="pandas_profiling.view.formatters.hex_to_rgb" href="#pandas_profiling.view.formatters.hex_to_rgb">hex_to_rgb</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt" href="#pandas_profiling.report.formatters.fmt">fmt</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_array" href="#pandas_profiling.report.formatters.fmt_array">fmt_array</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_bytesize" href="#pandas_profiling.report.formatters.fmt_bytesize">fmt_bytesize</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_class" href="#pandas_profiling.report.formatters.fmt_class">fmt_class</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_color" href="#pandas_profiling.report.formatters.fmt_color">fmt_color</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_numeric" href="#pandas_profiling.report.formatters.fmt_numeric">fmt_numeric</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_percent" href="#pandas_profiling.report.formatters.fmt_percent">fmt_percent</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.hex_to_rgb" href="#pandas_profiling.report.formatters.hex_to_rgb">hex_to_rgb</a></code></li>
 </ul>
 </li>
 </ul>

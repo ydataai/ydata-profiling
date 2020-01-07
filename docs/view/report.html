@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.2" />
-<title>pandas_profiling.view.report API documentation</title>
+<title>pandas_profiling.report.report API documentation</title>
 <meta name="description" content="Generate the report." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.view.report</code></h1>
+<h1 class="title">Module <code>pandas_profiling.report.report</code></h1>
 </header>
 <section id="section-intro">
 <p>Generate the report.</p>
@@ -27,10 +27,10 @@
 
 import pandas as pd
 
-import pandas_profiling.view.plot as plot
-from pandas_profiling.view.plot import mini_histogram
-from pandas_profiling.view.plot import histogram
-import pandas_profiling.view.templates as templates
+import pandas_profiling.report.plot as plot
+from pandas_profiling.visualisation.plot import mini_histogram
+from pandas_profiling.visualisation.plot import histogram
+import pandas_profiling.report.templates as templates
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import MessageType
@@ -574,7 +574,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.view.report.extreme_obs_table"><code class="name flex">
+<dt id="pandas_profiling.report.report.extreme_obs_table"><code class="name flex">
 <span>def <span class="ident">extreme_obs_table</span></span>(<span>freqtable, number_to_print, n, ascending=True)</span>
 </code></dt>
 <dd>
@@ -630,7 +630,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return templates.template(&#34;freq_table.html&#34;).render(rows=rows)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.freq_table"><code class="name flex">
+<dt id="pandas_profiling.report.report.freq_table"><code class="name flex">
 <span>def <span class="ident">freq_table</span></span>(<span>freqtable, n, table_template, max_number_to_print, idx, nb_col=6)</span>
 </code></dt>
 <dd>
@@ -729,7 +729,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.get_correlation_items"><code class="name flex">
+<dt id="pandas_profiling.report.report.get_correlation_items"><code class="name flex">
 <span>def <span class="ident">get_correlation_items</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -798,7 +798,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return items</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.get_sample_items"><code class="name flex">
+<dt id="pandas_profiling.report.report.get_sample_items"><code class="name flex">
 <span>def <span class="ident">get_sample_items</span></span>(<span>sample)</span>
 </code></dt>
 <dd>
@@ -833,7 +833,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return items</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_correlations_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_correlations_section"><code class="name flex">
 <span>def <span class="ident">render_correlations_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -863,7 +863,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_missing_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_missing_section"><code class="name flex">
 <span>def <span class="ident">render_missing_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -891,7 +891,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_overview_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_overview_section"><code class="name flex">
 <span>def <span class="ident">render_overview_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -922,7 +922,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_sample_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_sample_section"><code class="name flex">
 <span>def <span class="ident">render_sample_section</span></span>(<span>sample)</span>
 </code></dt>
 <dd>
@@ -950,7 +950,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return templates.template(&#34;components/list.html&#34;).render(values=items)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_variables_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_variables_section"><code class="name flex">
 <span>def <span class="ident">render_variables_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -1189,7 +1189,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return rows_html</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.to_html"><code class="name flex">
+<dt id="pandas_profiling.report.report.to_html"><code class="name flex">
 <span>def <span class="ident">to_html</span></span>(<span>sample, stats_object)</span>
 </code></dt>
 <dd>
@@ -1284,16 +1284,16 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pandas_profiling.view.report.extreme_obs_table" href="#pandas_profiling.view.report.extreme_obs_table">extreme_obs_table</a></code></li>
-<li><code><a title="pandas_profiling.view.report.freq_table" href="#pandas_profiling.view.report.freq_table">freq_table</a></code></li>
-<li><code><a title="pandas_profiling.view.report.get_correlation_items" href="#pandas_profiling.view.report.get_correlation_items">get_correlation_items</a></code></li>
-<li><code><a title="pandas_profiling.view.report.get_sample_items" href="#pandas_profiling.view.report.get_sample_items">get_sample_items</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_correlations_section" href="#pandas_profiling.view.report.render_correlations_section">render_correlations_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_missing_section" href="#pandas_profiling.view.report.render_missing_section">render_missing_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_overview_section" href="#pandas_profiling.view.report.render_overview_section">render_overview_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_sample_section" href="#pandas_profiling.view.report.render_sample_section">render_sample_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_variables_section" href="#pandas_profiling.view.report.render_variables_section">render_variables_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.to_html" href="#pandas_profiling.view.report.to_html">to_html</a></code></li>
+<li><code><a title="pandas_profiling.report.report.extreme_obs_table" href="#pandas_profiling.report.report.extreme_obs_table">extreme_obs_table</a></code></li>
+<li><code><a title="pandas_profiling.report.report.freq_table" href="#pandas_profiling.report.report.freq_table">freq_table</a></code></li>
+<li><code><a title="pandas_profiling.report.report.get_correlation_items" href="#pandas_profiling.report.report.get_correlation_items">get_correlation_items</a></code></li>
+<li><code><a title="pandas_profiling.report.report.get_sample_items" href="#pandas_profiling.report.report.get_sample_items">get_sample_items</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_correlations_section" href="#pandas_profiling.report.report.render_correlations_section">render_correlations_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_missing_section" href="#pandas_profiling.report.report.render_missing_section">render_missing_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_overview_section" href="#pandas_profiling.report.report.render_overview_section">render_overview_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_sample_section" href="#pandas_profiling.report.report.render_sample_section">render_sample_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_variables_section" href="#pandas_profiling.report.report.render_variables_section">render_variables_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.to_html" href="#pandas_profiling.report.report.to_html">to_html</a></code></li>
 </ul>
 </li>
 </ul>
