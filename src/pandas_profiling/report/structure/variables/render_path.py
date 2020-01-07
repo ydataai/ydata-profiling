@@ -32,27 +32,27 @@ def render_path(summary):
     #
     # Bottom
     full = FrequencyTable(
-        template_variables["freq_table_rows"], name="Full", anchor_id="full_frequency"
+        template_variables["freq_table_rows"], name="Full", anchor_id="{varid}full_frequency".format(varid=summary['varid'])
     )
 
     stem = FrequencyTable(
-        template_variables["freqtable_stem"], name="Stem", anchor_id="stem_frequency"
+        template_variables["freqtable_stem"], name="Stem", anchor_id="{varid}stem_frequency".format(varid=summary['varid'])
     )
 
     name = FrequencyTable(
-        template_variables["freqtable_name"], name="Name", anchor_id="name_frequency"
+        template_variables["freqtable_name"], name="Name", anchor_id="{varid}name_frequency".format(varid=summary['varid'])
     )
 
     suffix = FrequencyTable(
         template_variables["freqtable_suffix"],
         name="Suffix",
-        anchor_id="suffix_frequency",
+        anchor_id="{varid}suffix_frequency".format(varid=summary['varid']),
     )
 
     parent = FrequencyTable(
         template_variables["freqtable_parent"],
         name="Parent",
-        anchor_id="parent_frequency",
+        anchor_id="{varid}parent_frequency".format(varid=summary['varid']),
     )
 
     template_variables["bottom"].content["items"].append(full)
@@ -69,7 +69,7 @@ def render_path(summary):
                 summary["histogram_bins"]
             ),
             name="File size",
-            anchor_id="file_size_histogram",
+            anchor_id="{varid}file_size_histogram".format(varid=summary['varid']),
         )
 
         # TODO: in SequeencyItem

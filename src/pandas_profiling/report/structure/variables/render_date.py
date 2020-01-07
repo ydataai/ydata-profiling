@@ -62,7 +62,7 @@ def render_date(summary):
                 alt="Histogram",
                 caption="Histogram",
                 name="Histogram",
-                anchor_id="histogram",
+                anchor_id="{varid}histogram".format(varid=summary['varid']),
             )
         ],
         sequence_type="tabs",

@@ -9,7 +9,7 @@ IF "%1%" == "docs" (
 )
 
 IF "%1" == "test" (
-    pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg tests/
+    pytest --nbval --cov=./ --black --sanitize-with tests/sanitize-notebook.cfg tests/
     ECHO "Tests completed!"
     GOTO end
 )

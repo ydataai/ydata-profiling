@@ -32,28 +32,28 @@ def render_url(summary):
         )
 
     full_frequency_table = FrequencyTable(
-        template_variables["freq_table_rows"], name="Full", anchor_id="full_frequency"
+        template_variables["freq_table_rows"], name="Full", anchor_id="{varid}full_frequency".format(varid=summary['varid'])
     )
     scheme_frequency_table = FrequencyTable(
         template_variables["freqtable_scheme"],
         name="Scheme",
-        anchor_id="scheme_frequency",
+        anchor_id="{varid}scheme_frequency".format(varid=summary['varid']),
     )
     netloc_frequency_table = FrequencyTable(
         template_variables["freqtable_netloc"],
         name="Netloc",
-        anchor_id="netloc_frequency",
+        anchor_id="{varid}netloc_frequency".format(varid=summary['varid']),
     )
     path_frequency_table = FrequencyTable(
-        template_variables["freqtable_path"], name="Path", anchor_id="path_frequency"
+        template_variables["freqtable_path"], name="Path", anchor_id="{varid}path_frequency".format(varid=summary['varid'])
     )
     query_frequency_table = FrequencyTable(
-        template_variables["freqtable_query"], name="Query", anchor_id="query_frequency"
+        template_variables["freqtable_query"], name="Query", anchor_id="{varid}query_frequency".format(varid=summary['varid'])
     )
     fragment_frequency_table = FrequencyTable(
         template_variables["freqtable_fragment"],
         name="Fragment",
-        anchor_id="fragment_frequency",
+        anchor_id="{varid}fragment_frequency".format(varid=summary['varid']),
     )
 
     items = [

@@ -27,7 +27,7 @@ def render_path_image(summary):
     exif_keys = FrequencyTable(
         template_variables["freqtable_{}".format("exif_keys")],
         name="Exif keys",
-        anchor_id="exif_frequency",
+        anchor_id="{varid}exif_frequency".format(varid=summary['varid']),
     )
 
     template_variables["bottom"].content["items"].append(exif_keys)
@@ -35,7 +35,7 @@ def render_path_image(summary):
     image_shape_freq = FrequencyTable(
         template_variables["freqtable_{}".format("image_shape")],
         name="Frequency",
-        anchor_id="image_shape_frequency",
+        anchor_id="{varid}image_shape_frequency".format(varid=summary['varid']),
     )
 
     image_shape_scatter = Image(
@@ -43,14 +43,14 @@ def render_path_image(summary):
         alt="Scatterplot of image sizes",
         caption="Scatterplot of image sizes",
         name="Scatter",
-        anchor_id="scatter",
+        anchor_id="{varid}scatter".format(varid=summary['varid']),
     )
 
     image_shape = Sequence(
         [image_shape_freq, image_shape_scatter],
         sequence_type="tabs",
         name="Image shape",
-        anchor_id="image_shape",
+        anchor_id="{varid}image_shape".format(varid=summary['varid']),
     )
 
     template_variables["bottom"].content["items"].append(image_shape)

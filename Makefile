@@ -4,7 +4,7 @@ docs:
 	rmdir docs/pandas_profiling
 
 test:
-	pytest --nbval --cov=./ --sanitize-with tests/sanitize-notebook.cfg tests/
+	pytest --nbval --cov=./ --black --sanitize-with tests/sanitize-notebook.cfg tests/
 
 install:
 	pip install -e .
