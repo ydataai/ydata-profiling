@@ -30,3 +30,9 @@ def test_console_single_core(data_dir):
     report = data_dir / "test_single_core.html"
     console.main(["-s", "--pool_size", "1", str(data_dir / "rows.csv"), str(report)])
     assert report.exists(), "Report should exist"
+
+
+def test_console_minimal(data_dir):
+    report = data_dir / "test_minimal.html"
+    console.main(["-s", "--minimal", str(data_dir / "rows.csv"), str(report)])
+    assert report.exists(), "Report should exist"

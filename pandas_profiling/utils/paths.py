@@ -18,3 +18,12 @@ def get_config_default() -> Path:
         The path to the default config file.
     """
     return Path(__file__).parent.parent / "config_default.yaml"
+
+
+def get_config_minimal() -> Path:
+    """Returns the path to the minimal config file.
+
+    Returns:
+        The path to the default config file.
+    """
+    return Path(__file__).parent.parent / "config_minimal.yaml"
