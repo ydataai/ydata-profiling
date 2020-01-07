@@ -106,6 +106,9 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     """
     messages = []
 
+    if description['type'] == MessageType.UNSUPPORTED:
+        return messages
+
     if description["distinct_count_with_nan"] <= 1:
         messages.append(
             Message(
@@ -125,48 +128,6 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={"n_unique", "p_unique"},
             )
         )
-
-    if description["type"] in {Variable.TYPE_CAT}:
-        if description["date_warning"]:
-            messages.append(
-                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
-            )
-
-    if description["type"] in {Variable.TYPE_CAT}:
-        # High cardinality
-        if description["distinct_count"] > config["vars"]["cat"][
-            "cardinality_threshold"
-        ].get(int):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.HIGH_CARDINALITY,
-                    values=description,
-                    fields={"n_unique"},
-                )
-            )
-
-    if description["type"] in {Variable.TYPE_NUM}:
-        # Skewness
-        if warning_skewness(description["skewness"]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.SKEWED,
-                    values=description,
-                    fields={"skewness"},
-                )
-            )
-        # Zeros
-        if warning_value(description["p_zeros"]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.ZEROS,
-                    values=description,
-                    fields={"n_zeros", "p_zeros"},
-                )
-            )
 
     # Missing
     if warning_value(description["p_missing"]):
@@ -188,6 +149,49 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={"p_infinite", "n_infinite"},
             )
         )
+
+    # Categorical
+    if description["type"] in {Variable.TYPE_CAT}:
+        if description["date_warning"]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
+            )
+
+        # High cardinality
+        if description["distinct_count"] > config["vars"]["cat"][
+            "cardinality_threshold"
+        ].get(int):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.HIGH_CARDINALITY,
+                    values=description,
+                    fields={"n_unique"},
+                )
+            )
+
+    # Numerical
+    if description["type"] in {Variable.TYPE_NUM}:
+        # Skewness
+        if warning_skewness(description["skewness"]):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.SKEWED,
+                    values=description,
+                    fields={"skewness"},
+                )
+            )
+        # Zeros
+        if warning_value(description["p_zeros"]):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.ZEROS,
+                    values=description,
+                    fields={"n_zeros", "p_zeros"},
+                )
+            )
 
     return messages
 
