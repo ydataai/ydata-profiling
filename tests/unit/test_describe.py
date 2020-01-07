@@ -144,7 +144,7 @@ def recoding_data():
 @pytest.fixture
 def describe_data():
     data = {
-        "id": [chr(97 + c) for c in range(1, 9)] + ['d'],
+        "id": [chr(97 + c) for c in range(1, 9)] + ["d"],
         "x": [50, 50, -10, 0, 0, 5, 15, -3, None],
         "y": [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
         "cat": [

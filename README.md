@@ -67,7 +67,7 @@ The following examples can give you an impression of what the package can do:
 
 You can install using the pip package manager by running
 
-    pip install pandas-profiling
+    pip install pandas-profiling[notebook,html]
     
 Alternatively, you could install directly from Github:
 

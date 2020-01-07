@@ -11,3 +11,4 @@ from pandas_profiling.report.presentation.flavours.widget.preview import WidgetP
 from pandas_profiling.report.presentation.flavours.widget.sequence import WidgetSequence
 from pandas_profiling.report.presentation.flavours.widget.table import WidgetTable
 from pandas_profiling.report.presentation.flavours.widget.dataset import WidgetDataset
+from pandas_profiling.report.presentation.flavours.widget.sample import WidgetSample
