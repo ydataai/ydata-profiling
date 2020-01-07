@@ -146,7 +146,7 @@ def warn_correlation(correlation_name, error):
     warnings.warn(
         &#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.\n&#34;
         &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}}`)\n&#39;
+        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}})`\n&#39;
         &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
         &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
         &#34;(include the error message: &#39;{error}&#39;)&#34;.format(
@@ -157,7 +157,7 @@ def warn_correlation(correlation_name, error):
 
 def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramer).
+    (pearson, spearman, kendall, phi_k, cramers).
 
     Args:
         variables: A dict with column names and variable types.
@@ -289,7 +289,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
 </code></dt>
 <dd>
 <section class="desc"><p>Calculate the correlation coefficients between variables for the correlation types selected in the config
-(pearson, spearman, kendall, phi_k, cramer).</p>
+(pearson, spearman, kendall, phi_k, cramers).</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>variables</code></strong></dt>
@@ -305,7 +305,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
 </summary>
 <pre><code class="python">def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramer).
+    (pearson, spearman, kendall, phi_k, cramers).
 
     Args:
         variables: A dict with column names and variable types.
@@ -647,7 +647,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     warnings.warn(
         &#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.\n&#34;
         &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}}`)\n&#39;
+        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}})`\n&#39;
         &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
         &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
         &#34;(include the error message: &#39;{error}&#39;)&#34;.format(

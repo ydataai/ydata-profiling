@@ -32,9 +32,8 @@ def test_example(tmpdir):
     df = df.append(duplicates_to_add, ignore_index=True)
 
     output_file = tmpdir / "profile.html"
-    profile = df.profile_report(
-        title="NASA Meteorites", samples={"head": 5, "tail": 5}, sort="ascending"
-
+    profile = ProfileReport(
+        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, sort="ascending"
     )
     profile.to_file(output_file=output_file)
     assert (tmpdir / "profile.html").exists(), "Output file does not exist"

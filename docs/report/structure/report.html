@@ -59,6 +59,7 @@ from pandas_profiling.report.presentation.core import (
     Sequence,
     Overview,
     Dataset,
+    Sample,
 )
 
 
@@ -189,12 +190,10 @@ def get_sample_items(sample: dict):
     &#34;&#34;&#34;
     items = []
     names = {&#34;head&#34;: &#34;First rows&#34;, &#34;tail&#34;: &#34;Last rows&#34;}
-    for key in sample:
+    for key, value in sample.items():
         items.append(
-            HTML(
-                &#39;&lt;div id=&#34;sample-container&#34; class=&#34;col-sm-12&#34;&gt;{}&lt;/div&gt;&#39;.format(
-                    sample[key].to_html(classes=&#34;sample table table-striped&#34;)
-                ),
+            Sample(
+                sample=value.to_html(classes=&#34;sample table table-striped&#34;),
                 name=names[key],
                 anchor_id=key,
             )
@@ -436,12 +435,10 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
     &#34;&#34;&#34;
     items = []
     names = {&#34;head&#34;: &#34;First rows&#34;, &#34;tail&#34;: &#34;Last rows&#34;}
-    for key in sample:
+    for key, value in sample.items():
         items.append(
-            HTML(
-                &#39;&lt;div id=&#34;sample-container&#34; class=&#34;col-sm-12&#34;&gt;{}&lt;/div&gt;&#39;.format(
-                    sample[key].to_html(classes=&#34;sample table table-striped&#34;)
-                ),
+            Sample(
+                sample=value.to_html(classes=&#34;sample table table-striped&#34;),
                 name=names[key],
                 anchor_id=key,
             )

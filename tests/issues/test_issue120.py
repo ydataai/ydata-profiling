@@ -12,7 +12,9 @@ def test_issue_120():
         "https://github.com/pandas-profiling/pandas-profiling/files/2386812/pandas_profiling_bug.txt"
     )
 
+    print(df["device_isMobile"].value_counts())
+
     report = ProfileReport(df, correlations={"cramers": {"calculate": False}})
     html = report.to_html()
     assert type(html) == str
-    assert '<p class=h2>Dataset info</p>' in html
+    assert "<p class=h2>Dataset info</p>" in html

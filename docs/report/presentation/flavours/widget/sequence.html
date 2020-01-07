@@ -55,7 +55,10 @@ def get_list(items):
     return widgets.VBox(
         [
             widgets.VBox(
-                [widgets.HTML(&#34;&lt;strong&gt;{name}&lt;/strong&gt;&#34;.format(name=get_name(item))), item.render()]
+                [
+                    widgets.HTML(&#34;&lt;strong&gt;{name}&lt;/strong&gt;&#34;.format(name=get_name(item))),
+                    item.render(),
+                ]
             )
             for item in items
         ]
@@ -171,7 +174,10 @@ class WidgetSequence(Sequence):
     return widgets.VBox(
         [
             widgets.VBox(
-                [widgets.HTML(&#34;&lt;strong&gt;{name}&lt;/strong&gt;&#34;.format(name=get_name(item))), item.render()]
+                [
+                    widgets.HTML(&#34;&lt;strong&gt;{name}&lt;/strong&gt;&#34;.format(name=get_name(item))),
+                    item.render(),
+                ]
             )
             for item in items
         ]

@@ -11,5 +11,4 @@ if __name__ == "__main__":
     )
 
     profile = ProfileReport(df, title="Titanic Dataset")
-    # profile.to_file(output_file=Path("./titanic_report.html"))
-    profile.app()
+    profile.to_file(output_file=Path("./titanic_report.html"))

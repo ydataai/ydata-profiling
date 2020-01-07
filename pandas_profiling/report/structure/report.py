@@ -32,6 +32,7 @@ from pandas_profiling.report.presentation.core import (
     Sequence,
     Overview,
     Dataset,
+    Sample,
 )
 
 
@@ -162,12 +163,10 @@ def get_sample_items(sample: dict):
     """
     items = []
     names = {"head": "First rows", "tail": "Last rows"}
-    for key in sample:
+    for key, value in sample.items():
         items.append(
-            HTML(
-                '<div id="sample-container" class="col-sm-12">{}</div>'.format(
-                    sample[key].to_html(classes="sample table table-striped")
-                ),
+            Sample(
+                sample=value.to_html(classes="sample table table-striped"),
                 name=names[key],
                 anchor_id=key,
             )

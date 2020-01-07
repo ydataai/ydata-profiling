@@ -119,7 +119,7 @@ def warn_correlation(correlation_name, error):
     warnings.warn(
         "There was an attempt to calculate the {correlation_name} correlation, but this failed.\n"
         "To hide this warning, disable the calculation\n"
-        '(using `df.profile_report(correlations={{"{correlation_name}": {{"calculate": False}}}}`)\n'
+        '(using `df.profile_report(correlations={{"{correlation_name}": {{"calculate": False}}}})`\n'
         "If this is problematic for your use case, please report this as an issue:\n"
         "https://github.com/pandas-profiling/pandas-profiling/issues\n"
         "(include the error message: '{error}')".format(
@@ -130,7 +130,7 @@ def warn_correlation(correlation_name, error):
 
 def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramer).
+    (pearson, spearman, kendall, phi_k, cramers).
 
     Args:
         variables: A dict with column names and variable types.

@@ -21,4 +21,4 @@ def test_issue147(tmpdir):
     report = ProfileReport(df, title="PyArrow with Pandas Parquet Backend")
     html = report.to_html()
     assert type(html) == str
-    assert '<p class=h2>Dataset info</p>' in html
+    assert "<p class=h2>Dataset info</p>" in html

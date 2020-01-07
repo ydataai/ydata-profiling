@@ -76,7 +76,7 @@ def render_categorical(summary):
         # 'frequency_table',
         template_variables["freq_table_rows"],
         name="Common Values",
-        anchor_id="{varid}common_values".format(varid=summary['varid']),
+        anchor_id="{varid}common_values".format(varid=summary["varid"]),
     )
 
     items.append(frequency_table)
@@ -107,7 +107,7 @@ def render_categorical(summary):
                 },
             ],
             name="Composition",
-            anchor_id="{varid}composition".format(varid=summary['varid']),
+            anchor_id="{varid}composition".format(varid=summary["varid"]),
         )
 
         length = Table(
@@ -129,12 +129,12 @@ def render_categorical(summary):
                 },
             ],
             name="Length",
-            anchor_id="{varid}lengthstats".format(varid=summary['varid']),
+            anchor_id="{varid}lengthstats".format(varid=summary["varid"]),
         )
 
         tbl = Sequence(
             [composition, length],
-            anchor_id="{varid}tbl".format(varid=summary['varid']),
+            anchor_id="{varid}tbl".format(varid=summary["varid"]),
             name="Composition",
             sequence_type="grid",
         )
@@ -147,12 +147,14 @@ def render_categorical(summary):
             histogram(summary["length"], summary, histogram_bins),
             alt="Scatter",
             name="Length",
-            anchor_id="{varid}length".format(varid=summary['varid']),
+            anchor_id="{varid}length".format(varid=summary["varid"]),
         )
         items.append(length)
 
     template_variables["bottom"] = Sequence(
-        items, sequence_type="tabs", anchor_id='{varid}bottom'.format(varid=summary["varid"])
+        items,
+        sequence_type="tabs",
+        anchor_id="{varid}bottom".format(varid=summary["varid"]),
     )
 
     return template_variables

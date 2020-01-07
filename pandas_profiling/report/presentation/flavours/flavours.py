@@ -22,6 +22,7 @@ def HTMLReport(structure: Type[Renderable]):
         HTMLFrequencyTable,
         HTMLFrequencyTableSmall,
         HTMLDataset,
+        HTMLSample,
     )
     from pandas_profiling.report.presentation.core import (
         Sequence,
@@ -33,6 +34,7 @@ def HTMLReport(structure: Type[Renderable]):
         FrequencyTable,
         FrequencyTableSmall,
         Dataset,
+        Sample,
     )
 
     mapping = {
@@ -45,6 +47,7 @@ def HTMLReport(structure: Type[Renderable]):
         FrequencyTable: HTMLFrequencyTable,
         FrequencyTableSmall: HTMLFrequencyTableSmall,
         Dataset: HTMLDataset,
+        Sample: HTMLSample,
     }
 
     for key, value in mapping.items():
@@ -65,6 +68,7 @@ def WidgetReport(structure: Type[Renderable]):
         WidgetFrequencyTable,
         WidgetFrequencyTableSmall,
         WidgetDataset,
+        WidgetSample,
     )
     from pandas_profiling.report.presentation.core import (
         Sequence,
@@ -76,6 +80,7 @@ def WidgetReport(structure: Type[Renderable]):
         FrequencyTable,
         FrequencyTableSmall,
         Dataset,
+        Sample,
     )
 
     mapping = {
@@ -88,6 +93,7 @@ def WidgetReport(structure: Type[Renderable]):
         FrequencyTable: WidgetFrequencyTable,
         FrequencyTableSmall: WidgetFrequencyTableSmall,
         Dataset: WidgetDataset,
+        Sample: WidgetSample,
     }
 
     for key, value in mapping.items():
@@ -108,6 +114,7 @@ def QtReport(structure: Type[Renderable]):
         QtFrequencyTable,
         QtFrequencyTableSmall,
         QtDataset,
+        QtSample,
     )
     from pandas_profiling.report.presentation.core import (
         Sequence,
@@ -119,6 +126,7 @@ def QtReport(structure: Type[Renderable]):
         FrequencyTable,
         FrequencyTableSmall,
         Dataset,
+        Sample,
     )
 
     mapping = {
@@ -131,6 +139,7 @@ def QtReport(structure: Type[Renderable]):
         FrequencyTable: QtFrequencyTable,
         FrequencyTableSmall: QtFrequencyTableSmall,
         Dataset: QtDataset,
+        Sample: QtSample,
     }
 
     for key, value in mapping.items():

@@ -80,11 +80,6 @@ def get_counts(series: pd.Series) -> dict:
     distinct_count_with_nan = value_counts_with_nan.count()
     distinct_count_without_nan = value_counts_without_nan.count()
 
-    # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
-    # list and so on...
-    if value_counts_without_nan.index.inferred_type == "mixed":
-        raise TypeError("Not supported mixed type")
-
     return {
         "value_counts": value_counts_without_nan,  # Alias
         "value_counts_with_nan": value_counts_with_nan,
@@ -108,12 +103,12 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
     if pd.api.types.is_bool_dtype(keys):
         return True
     elif (
-        series_description["distinct_count_without_nan"] <= 2
+        1 <= series_description["distinct_count_without_nan"] <= 2
         and pd.api.types.is_numeric_dtype(series)
         and series[~series.isnull()].between(0, 1).all()
     ):
         return True
-    elif series_description["distinct_count_without_nan"] <= 4:
+    elif 1 <= series_description["distinct_count_without_nan"] <= 4:
         unique_values = set([str(value).lower() for value in keys.values])
         accepted_combinations = [
             ["y", "n"],
@@ -201,10 +196,23 @@ def get_var_type(series: pd.Series) -> dict:
         The series updated with the variable type included.
     """
 
+    series_description = {}
+
     try:
         series_description = get_counts(series)
 
-        if is_boolean(series, series_description):
+        # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
+        # list and so on...
+        if (
+            series_description["value_counts_without_nan"].index.inferred_type
+            == "mixed"
+        ):
+            raise TypeError("Not supported mixed type")
+
+        if series_description["distinct_count_without_nan"] == 0:
+            # Empty
+            var_type = Variable.S_TYPE_UNSUPPORTED
+        elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
         elif is_numeric(series, series_description):
             var_type = Variable.TYPE_NUM
@@ -217,7 +225,6 @@ def get_var_type(series: pd.Series) -> dict:
         else:
             var_type = Variable.TYPE_CAT
     except TypeError:
-        series_description = {}
         var_type = Variable.S_TYPE_UNSUPPORTED
 
     series_description.update({"type": var_type})

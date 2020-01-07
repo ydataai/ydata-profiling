@@ -22,11 +22,6 @@ from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.report import get_report_structure
-from pandas_profiling.report.presentation.flavours import (
-    HTMLReport,
-    WidgetReport,
-    QtReport,
-)
 
 
 class ProfileReport(object):
@@ -94,7 +89,7 @@ class ProfileReport(object):
             raise ValueError('"sort" should be "ascending", "descending" or None.')
         return df
 
-    def get_sample(self, df):
+    def get_sample(self, df: pd.DataFrame) -> dict:
         sample = {}
         n_head = config["samples"]["head"].get(int)
         if n_head > 0:
@@ -120,10 +115,10 @@ class ProfileReport(object):
         By default a name is generated.
 
         Args:
-            output_file: The name or the path of the file to generate including the extension (.html).
+            output_file: The name or the path of the file to generate including the extension (.html, .json).
             silent: if False, opens the file in the default browser
         """
-        if type(output_file) == str:
+        if not isinstance(output_file, Path):
             output_file = Path(output_file)
 
         if output_file.suffix == ".html":
@@ -149,12 +144,14 @@ class ProfileReport(object):
             Profiling report html including wrapper.
         
         """
+        from pandas_profiling.report.presentation.flavours import HTMLReport
+        from pandas_profiling.report.presentation.flavours.html import templates
+
         use_local_assets = config["html"]["use_local_assets"].get(bool)
 
         html = HTMLReport(self.report).render()
 
-        from pandas_profiling.report.presentation.flavours.html import templates
-
+        # TODO: move to structure
         wrapped_html = templates.template("wrapper/wrapper.html").render(
             content=html,
             title=self.title,
@@ -190,7 +187,7 @@ class ProfileReport(object):
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
-    def _repr_html_(self):
+    def to_notebook_iframe(self):
         """Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is "src", this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
@@ -200,23 +197,42 @@ class ProfileReport(object):
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
-        report = WidgetReport(self.report).render()
+        from pandas_profiling.report.presentation.flavours.widget.notebook import (
+            get_notebook_iframe,
+        )
+        from IPython.core.display import display
 
+        display(get_notebook_iframe(self))
+
+    def to_widgets(self):
+        """The ipython notebook widgets user interface."""
+        from pandas_profiling.report.presentation.flavours import WidgetReport
         from IPython.core.display import display, HTML
 
+        report = WidgetReport(self.report).render()
+
         display(report)
+        # TODO: move to report structure
         display(
             HTML(
                 'Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
             )
         )
-        # display_notebook_iframe(self)
+
+    def _repr_html_(self):
+        """The ipython notebook widgets user interface gets called by the jupyter notebook."""
+        self.to_widgets()
 
     def __repr__(self):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
 
-    def app(self):
+    def to_app(self):
+        """
+        (Experimental) PyQt5 user interface, not ready to be used.
+        You are welcome to contribute a pull request if you like this feature.
+        """
+        from pandas_profiling.report.presentation.flavours import QtReport
         from PyQt5 import QtCore
         from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
 

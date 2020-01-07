@@ -14,8 +14,8 @@ from pandas_profiling.config import config
 
 def test_issue72_higher():
     # Showcase (and test) different ways of interfacing with config/profiling report
-    config['vars']['num']["low_categorical_threshold"].set(2)
-    config["correlations"]['recoded']['calculate'].set(False)
+    config["vars"]["num"]["low_categorical_threshold"].set(2)
+    config["correlations"]["recoded"]["calculate"].set(False)
 
     df = pd.DataFrame({"A": [1, 2, 3, 3]})
     df["B"] = df["A"].apply(str)

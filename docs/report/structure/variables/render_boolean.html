@@ -81,11 +81,13 @@ def render_boolean(summary):
     freqtable = FrequencyTable(
         template_variables[&#34;freq_table_rows&#34;],
         name=&#34;Frequency Table&#34;,
-        anchor_id=&#34;{varid}frequency_table&#34;.format(varid=summary[&#39;varid&#39;]),
+        anchor_id=&#34;{varid}frequency_table&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     template_variables[&#34;bottom&#34;] = Sequence(
-        [freqtable], sequence_type=&#34;tabs&#34;, anchor_id=&#39;{varid}bottom&#39;.format(varid=summary[&#34;varid&#34;])
+        [freqtable],
+        sequence_type=&#34;tabs&#34;,
+        anchor_id=&#34;{varid}bottom&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     return template_variables</code></pre>
@@ -151,11 +153,13 @@ def render_boolean(summary):
     freqtable = FrequencyTable(
         template_variables[&#34;freq_table_rows&#34;],
         name=&#34;Frequency Table&#34;,
-        anchor_id=&#34;{varid}frequency_table&#34;.format(varid=summary[&#39;varid&#39;]),
+        anchor_id=&#34;{varid}frequency_table&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     template_variables[&#34;bottom&#34;] = Sequence(
-        [freqtable], sequence_type=&#34;tabs&#34;, anchor_id=&#39;{varid}bottom&#39;.format(varid=summary[&#34;varid&#34;])
+        [freqtable],
+        sequence_type=&#34;tabs&#34;,
+        anchor_id=&#34;{varid}bottom&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     return template_variables</code></pre>

@@ -6,7 +6,9 @@ from pandas_profiling.report.presentation.flavours.html.image import HTMLImage
 
 
 def test_html_frequency_table():
-    item = HTMLFrequencyTable(rows=[1, 2, 3])
+    item = HTMLFrequencyTable(
+        rows=[{"count": 10, "percentage": 1.0, "label": "Pizza", "width": 1.0}]
+    )
     print(item)
     html = item.render()
     print(html)
@@ -30,7 +32,13 @@ def test_html_image():
     item = HTMLImage(image=image_str, alt=alt_str)
     assert str(item) == "HTMLImage"
     html = item.render()
-    assert all(x in html for x in [f'src="{image_str}"', f'alt="{alt_str}"'])
+    assert all(
+        x in html
+        for x in [
+            'src="{image_str}"'.format(image_str=image_str),
+            'alt="{alt_str}"'.format(alt_str=alt_str),
+        ]
+    )
 
     # With caption
     item_caption = HTMLImage(image=image_str, alt=alt_str, caption=caption_str)
@@ -38,5 +46,9 @@ def test_html_image():
     html_caption = item_caption.render()
     assert all(
         x in html_caption
-        for x in [f'src="{image_str}"', f'alt="{alt_str}"', caption_str]
+        for x in [
+            'src="{image_str}"'.format(image_str=image_str),
+            'alt="{alt_str}"'.format(alt_str=alt_str),
+            caption_str,
+        ]
     )
