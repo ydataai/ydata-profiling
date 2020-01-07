@@ -42,6 +42,16 @@ def test_console_minimal(data_dir):
 def test_double_config(data_dir):
     report = data_dir / "test_double_config.html"
     with pytest.raises(ValueError) as e:
-        console.main(['--config_file', str(get_config_default()), '--minimal', str(data_dir / "rows.csv"), str(report)])
+        console.main(
+            [
+                "--config_file",
+                str(get_config_default()),
+                "--minimal",
+                str(data_dir / "rows.csv"),
+                str(report),
+            ]
+        )
 
-    assert str(e.value) == 'Arguments `config_file` and `minimal` are mutually exclusive.'
+    assert (
+        str(e.value) == "Arguments `config_file` and `minimal` are mutually exclusive."
+    )
