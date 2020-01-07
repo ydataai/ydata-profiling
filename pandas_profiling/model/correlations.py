@@ -200,7 +200,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                     correlations["phi_k"] = correlations["phi_k"].reindex(
                         index=column_order, columns=column_order
                     )
-            except (ValueError, DataError) as e:
+            except (ValueError, DataError, IndexError) as e:
                 warn_correlation("phi_k", e)
 
     categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}

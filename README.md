@@ -87,7 +87,7 @@ Start by loading in your pandas DataFrame, e.g. by using
 ```python
 import numpy as np
 import pandas as pd
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 df = pd.DataFrame(
     np.random.rand(100, 5),
@@ -96,18 +96,30 @@ df = pd.DataFrame(
 ```
 To display the report in a Jupyter notebook, run:
 ```python
-df.profile_report(style={'full_width':True})
+ProfileReport(df, style={'full_width':True})
 ```
 To retrieve the list of variables which are rejected due to high correlation:
 ```python
-profile = df.profile_report()
+profile = ProfileReport(df)
 rejected_variables = profile.get_rejected_variables(threshold=0.9)
 ```
 If you want to generate a HTML report file, save the `ProfileReport` to an object and use the `to_file()` function:
 ```python
-profile = df.profile_report(title='Pandas Profiling Report')
+profile = ProfileReport(df, title='Pandas Profiling Report')
 profile.to_file(output_file="output.html")
 ```
+
+### Large datasets
+
+Version 2.4 introduces minimal mode. 
+This is a default configuration that disables expensive computations (such as correlations and dynamic binning).
+Use the following syntax:
+
+```python
+profile = ProfileReport(large_dataset, minimal=True)
+profile.to_file(output_file="output.html")
+```
+
 ### Command line usage
 
 For standard formatted CSV files that can be read immediately by pandas, you can use the `pandas_profiling` executable. Run
@@ -169,7 +181,7 @@ Read more on getting involved in the [Contribution Guide](https://github.com/pan
     - Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"
     - Working Directory: $ProjectFileDir$
   
-![PyCharm Integration](http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png)
+<img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" />
   
 To use the PyCharm Integration, right click on any dataset file:
 _External Tools_ > _Pandas Profiling_.

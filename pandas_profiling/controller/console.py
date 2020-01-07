@@ -37,6 +37,13 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
         action="store_true",
     )
 
+    parser.add_argument(
+        "-m",
+        "--minimal",
+        help="Minimal configuration for big data sets",
+        action="store_true",
+    )
+
     # Config
     parser.add_argument(
         "--pool_size", type=int, default=0, help="Number of CPU cores to use"
@@ -80,5 +87,5 @@ def main(args=None) -> None:
     df = read_pandas(Path(args.input_file))
 
     # Generate the profiling report
-    p = ProfileReport(df, config_file=args.config_file)
+    p = ProfileReport(df, minimal=args.minimal, config_file=args.config_file)
     p.to_file(output_file=Path(args.output_file), silent=args.silent)

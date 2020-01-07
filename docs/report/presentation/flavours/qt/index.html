@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
-<title>pandas_profiling.report.presentation.core.html API documentation</title>
+<title>pandas_profiling.report.presentation.flavours.qt API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,83 +17,74 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.report.presentation.core.html</code></h1>
+<h1 class="title">Module <code>pandas_profiling.report.presentation.flavours.qt</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
-
-from pandas_profiling.report.presentation.abstract.item_renderer import ItemRenderer
-
-
-class HTML(ItemRenderer):
-    def __init__(self, content, **kwargs):
-        super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
-
-    def render(self) -&gt; Any:
-        raise NotImplementedError()</code></pre>
+<pre><code class="python">from pandas_profiling.report.presentation.flavours.qt.frequency_table import (
+    QtFrequencyTable,
+)
+from pandas_profiling.report.presentation.flavours.qt.frequency_table_small import (
+    QtFrequencyTableSmall,
+)
+from pandas_profiling.report.presentation.flavours.qt.html import QtHTML
+from pandas_profiling.report.presentation.flavours.qt.image import QtImage
+from pandas_profiling.report.presentation.flavours.qt.overview import QtOverview
+from pandas_profiling.report.presentation.flavours.qt.preview import QtPreview
+from pandas_profiling.report.presentation.flavours.qt.sequence import QtSequence
+from pandas_profiling.report.presentation.flavours.qt.table import QtTable
+from pandas_profiling.report.presentation.flavours.qt.dataset import QtDataset</code></pre>
 </details>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt id="pandas_profiling.report.presentation.core.html.HTML"><code class="flex name class">
-<span>class <span class="ident">HTML</span></span>
-<span>(</span><span>content, **kwargs)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class HTML(ItemRenderer):
-    def __init__(self, content, **kwargs):
-        super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
-
-    def render(self) -&gt; Any:
-        raise NotImplementedError()</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer" href="../abstract/item_renderer.html#pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer">ItemRenderer</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.flavours.html.html.HTMLHTML" href="../flavours/html/html.html#pandas_profiling.report.presentation.flavours.html.html.HTMLHTML">HTMLHTML</a></li>
-<li><a title="pandas_profiling.report.presentation.flavours.qt.html.QtHTML" href="../flavours/qt/html.html#pandas_profiling.report.presentation.flavours.qt.html.QtHTML">QtHTML</a></li>
-<li><a title="pandas_profiling.report.presentation.flavours.widget.html.WidgetHTML" href="../flavours/widget/html.html#pandas_profiling.report.presentation.flavours.widget.html.WidgetHTML">WidgetHTML</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="pandas_profiling.report.presentation.core.html.HTML.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
-</code></dt>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.dataset" href="dataset.html">pandas_profiling.report.presentation.flavours.qt.dataset</a></code></dt>
 <dd>
 <section class="desc"></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def render(self) -&gt; Any:
-    raise NotImplementedError()</code></pre>
-</details>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.frequency_table" href="frequency_table.html">pandas_profiling.report.presentation.flavours.qt.frequency_table</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.frequency_table_small" href="frequency_table_small.html">pandas_profiling.report.presentation.flavours.qt.frequency_table_small</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.html" href="html.html">pandas_profiling.report.presentation.flavours.qt.html</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.image" href="image.html">pandas_profiling.report.presentation.flavours.qt.image</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.overview" href="overview.html">pandas_profiling.report.presentation.flavours.qt.overview</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.preview" href="preview.html">pandas_profiling.report.presentation.flavours.qt.preview</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.sequence" href="sequence.html">pandas_profiling.report.presentation.flavours.qt.sequence</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.table" href="table.html">pandas_profiling.report.presentation.flavours.qt.table</a></code></dt>
+<dd>
+<section class="desc"></section>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -104,17 +95,20 @@ inheritance.</p></section>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pandas_profiling.report.presentation.core" href="index.html">pandas_profiling.report.presentation.core</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours" href="../index.html">pandas_profiling.report.presentation.flavours</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li>
-<h4><code><a title="pandas_profiling.report.presentation.core.html.HTML" href="#pandas_profiling.report.presentation.core.html.HTML">HTML</a></code></h4>
-<ul class="">
-<li><code><a title="pandas_profiling.report.presentation.core.html.HTML.render" href="#pandas_profiling.report.presentation.core.html.HTML.render">render</a></code></li>
-</ul>
-</li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.dataset" href="dataset.html">pandas_profiling.report.presentation.flavours.qt.dataset</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.frequency_table" href="frequency_table.html">pandas_profiling.report.presentation.flavours.qt.frequency_table</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.frequency_table_small" href="frequency_table_small.html">pandas_profiling.report.presentation.flavours.qt.frequency_table_small</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.html" href="html.html">pandas_profiling.report.presentation.flavours.qt.html</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.image" href="image.html">pandas_profiling.report.presentation.flavours.qt.image</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.overview" href="overview.html">pandas_profiling.report.presentation.flavours.qt.overview</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.preview" href="preview.html">pandas_profiling.report.presentation.flavours.qt.preview</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.sequence" href="sequence.html">pandas_profiling.report.presentation.flavours.qt.sequence</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.table" href="table.html">pandas_profiling.report.presentation.flavours.qt.table</a></code></li>
 </ul>
 </li>
 </ul>

@@ -32,11 +32,11 @@ from pandas_profiling.report.presentation.core.image import Image
 class WidgetImage(Image):
     def render(self):
         widget = widgets.HTML(
-            f&#34;&lt;img src=\&#34;{self.content[&#39;image&#39;]}\&#34; alt=\&#34;{self.content[&#39;alt&#39;]}\&#34; /&gt;&#34;
+            &#34;&lt;img src=\&#34;{image}\&#34; alt=\&#34;{alt}\&#34; /&gt;&#34;.format(image=self.content[&#39;image&#39;], alt=self.content[&#39;alt&#39;])
         )
         if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
             caption = widgets.HTML(
-                f&#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&lt;/p&gt;&#39;
+                &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(caption=self.content[&#34;caption&#34;])
             )
             return widgets.VBox([widget, caption])
         else:
@@ -66,11 +66,11 @@ inheritance.</p></section>
 <pre><code class="python">class WidgetImage(Image):
     def render(self):
         widget = widgets.HTML(
-            f&#34;&lt;img src=\&#34;{self.content[&#39;image&#39;]}\&#34; alt=\&#34;{self.content[&#39;alt&#39;]}\&#34; /&gt;&#34;
+            &#34;&lt;img src=\&#34;{image}\&#34; alt=\&#34;{alt}\&#34; /&gt;&#34;.format(image=self.content[&#39;image&#39;], alt=self.content[&#39;alt&#39;])
         )
         if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
             caption = widgets.HTML(
-                f&#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&lt;/p&gt;&#39;
+                &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(caption=self.content[&#34;caption&#34;])
             )
             return widgets.VBox([widget, caption])
         else:
@@ -96,11 +96,11 @@ inheritance.</p></section>
 </summary>
 <pre><code class="python">def render(self):
     widget = widgets.HTML(
-        f&#34;&lt;img src=\&#34;{self.content[&#39;image&#39;]}\&#34; alt=\&#34;{self.content[&#39;alt&#39;]}\&#34; /&gt;&#34;
+        &#34;&lt;img src=\&#34;{image}\&#34; alt=\&#34;{alt}\&#34; /&gt;&#34;.format(image=self.content[&#39;image&#39;], alt=self.content[&#39;alt&#39;])
     )
     if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
         caption = widgets.HTML(
-            f&#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&lt;/p&gt;&#39;
+            &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(caption=self.content[&#34;caption&#34;])
         )
         return widgets.VBox([widget, caption])
     else:

@@ -44,7 +44,16 @@ def get_config_default() -&gt; Path:
     Returns:
         The path to the default config file.
     &#34;&#34;&#34;
-    return Path(__file__).parent.parent / &#34;config_default.yaml&#34;</code></pre>
+    return Path(__file__).parent.parent / &#34;config_default.yaml&#34;
+
+
+def get_config_minimal() -&gt; Path:
+    &#34;&#34;&#34;Returns the path to the minimal config file.
+
+    Returns:
+        The path to the default config file.
+    &#34;&#34;&#34;
+    return Path(__file__).parent.parent / &#34;config_minimal.yaml&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -72,6 +81,26 @@ def get_config_default() -&gt; Path:
         The path to the default config file.
     &#34;&#34;&#34;
     return Path(__file__).parent.parent / &#34;config_default.yaml&#34;</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.paths.get_config_minimal"><code class="name flex">
+<span>def <span class="ident">get_config_minimal</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns the path to the minimal config file.</p>
+<h2 id="returns">Returns</h2>
+<p>The path to the default config file.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_config_minimal() -&gt; Path:
+    &#34;&#34;&#34;Returns the path to the minimal config file.
+
+    Returns:
+        The path to the default config file.
+    &#34;&#34;&#34;
+    return Path(__file__).parent.parent / &#34;config_minimal.yaml&#34;</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.paths.get_project_root"><code class="name flex">
@@ -113,6 +142,7 @@ def get_config_default() -&gt; Path:
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.utils.paths.get_config_default" href="#pandas_profiling.utils.paths.get_config_default">get_config_default</a></code></li>
+<li><code><a title="pandas_profiling.utils.paths.get_config_minimal" href="#pandas_profiling.utils.paths.get_config_minimal">get_config_minimal</a></code></li>
 <li><code><a title="pandas_profiling.utils.paths.get_project_root" href="#pandas_profiling.utils.paths.get_project_root">get_project_root</a></code></li>
 </ul>
 </li>

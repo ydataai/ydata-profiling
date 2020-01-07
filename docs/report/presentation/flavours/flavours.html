@@ -120,6 +120,49 @@ def WidgetReport(structure: Type[Renderable]):
         if isinstance(structure, key):
             value.convert_to_class(structure, WidgetReport)
 
+    return structure
+
+
+def QtReport(structure: Type[Renderable]):
+    from pandas_profiling.report.presentation.flavours.qt import (
+        QtSequence,
+        QtPreview,
+        QtOverview,
+        QtTable,
+        QtImage,
+        QtHTML,
+        QtFrequencyTable,
+        QtFrequencyTableSmall,
+        QtDataset,
+    )
+    from pandas_profiling.report.presentation.core import (
+        Sequence,
+        Preview,
+        Overview,
+        Table,
+        Image,
+        HTML,
+        FrequencyTable,
+        FrequencyTableSmall,
+        Dataset,
+    )
+
+    mapping = {
+        Sequence: QtSequence,
+        Preview: QtPreview,
+        Overview: QtOverview,
+        Table: QtTable,
+        HTML: QtHTML,
+        Image: QtImage,
+        FrequencyTable: QtFrequencyTable,
+        FrequencyTableSmall: QtFrequencyTableSmall,
+        Dataset: QtDataset,
+    }
+
+    for key, value in mapping.items():
+        if isinstance(structure, key):
+            value.convert_to_class(structure, QtReport)
+
     return structure</code></pre>
 </details>
 </section>
@@ -189,6 +232,58 @@ Returns:</p></section>
     for key, value in mapping.items():
         if isinstance(structure, key):
             value.convert_to_class(structure, HTMLReport)
+
+    return structure</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.flavours.QtReport"><code class="name flex">
+<span>def <span class="ident">QtReport</span></span>(<span>structure)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def QtReport(structure: Type[Renderable]):
+    from pandas_profiling.report.presentation.flavours.qt import (
+        QtSequence,
+        QtPreview,
+        QtOverview,
+        QtTable,
+        QtImage,
+        QtHTML,
+        QtFrequencyTable,
+        QtFrequencyTableSmall,
+        QtDataset,
+    )
+    from pandas_profiling.report.presentation.core import (
+        Sequence,
+        Preview,
+        Overview,
+        Table,
+        Image,
+        HTML,
+        FrequencyTable,
+        FrequencyTableSmall,
+        Dataset,
+    )
+
+    mapping = {
+        Sequence: QtSequence,
+        Preview: QtPreview,
+        Overview: QtOverview,
+        Table: QtTable,
+        HTML: QtHTML,
+        Image: QtImage,
+        FrequencyTable: QtFrequencyTable,
+        FrequencyTableSmall: QtFrequencyTableSmall,
+        Dataset: QtDataset,
+    }
+
+    for key, value in mapping.items():
+        if isinstance(structure, key):
+            value.convert_to_class(structure, QtReport)
 
     return structure</code></pre>
 </details>
@@ -264,6 +359,7 @@ Returns:</p></section>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.report.presentation.flavours.flavours.HTMLReport" href="#pandas_profiling.report.presentation.flavours.flavours.HTMLReport">HTMLReport</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.flavours.QtReport" href="#pandas_profiling.report.presentation.flavours.flavours.QtReport">QtReport</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.flavours.WidgetReport" href="#pandas_profiling.report.presentation.flavours.flavours.WidgetReport">WidgetReport</a></code></li>
 </ul>
 </li>

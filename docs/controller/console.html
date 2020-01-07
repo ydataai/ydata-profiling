@@ -64,6 +64,13 @@ def parse_args(args: Union[list, None] = None) -&gt; argparse.Namespace:
         action=&#34;store_true&#34;,
     )
 
+    parser.add_argument(
+        &#34;-m&#34;,
+        &#34;--minimal&#34;,
+        help=&#34;Minimal configuration for big data sets&#34;,
+        action=&#34;store_true&#34;,
+    )
+
     # Config
     parser.add_argument(
         &#34;--pool_size&#34;, type=int, default=0, help=&#34;Number of CPU cores to use&#34;
@@ -107,7 +114,7 @@ def main(args=None) -&gt; None:
     df = read_pandas(Path(args.input_file))
 
     # Generate the profiling report
-    p = ProfileReport(df, config_file=args.config_file)
+    p = ProfileReport(df, minimal=args.minimal, config_file=args.config_file)
     p.to_file(output_file=Path(args.output_file), silent=args.silent)</code></pre>
 </details>
 </section>
@@ -147,7 +154,7 @@ def main(args=None) -&gt; None:
     df = read_pandas(Path(args.input_file))
 
     # Generate the profiling report
-    p = ProfileReport(df, config_file=args.config_file)
+    p = ProfileReport(df, minimal=args.minimal, config_file=args.config_file)
     p.to_file(output_file=Path(args.output_file), silent=args.silent)</code></pre>
 </details>
 </dd>
@@ -193,6 +200,13 @@ def main(args=None) -&gt; None:
         &#34;-s&#34;,
         &#34;--silent&#34;,
         help=&#34;Only generate but do not open report&#34;,
+        action=&#34;store_true&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-m&#34;,
+        &#34;--minimal&#34;,
+        help=&#34;Minimal configuration for big data sets&#34;,
         action=&#34;store_true&#34;,
     )
 

@@ -146,7 +146,7 @@ def warn_correlation(correlation_name, error):
     warnings.warn(
         &#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.\n&#34;
         &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: False}}`)\n&#39;
+        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}}`)\n&#39;
         &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
         &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
         &#34;(include the error message: &#39;{error}&#39;)&#34;.format(
@@ -204,9 +204,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
                         &#34;categorical_maximum_correlation_distinct&#34;
                     ].get(int):
                         selcols.append(col)
-                except TypeError:
-                    continue
-                except ValueError:
+                except (TypeError, ValueError):
                     continue
 
             try:
@@ -229,7 +227,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
                     correlations[&#34;phi_k&#34;] = correlations[&#34;phi_k&#34;].reindex(
                         index=column_order, columns=column_order
                     )
-            except (ValueError, DataError) as e:
+            except (ValueError, DataError, IndexError) as e:
                 warn_correlation(&#34;phi_k&#34;, e)
 
     categorical_correlations = {&#34;cramers&#34;: cramers_matrix, &#34;recoded&#34;: recoded_matrix}
@@ -354,9 +352,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
                         &#34;categorical_maximum_correlation_distinct&#34;
                     ].get(int):
                         selcols.append(col)
-                except TypeError:
-                    continue
-                except ValueError:
+                except (TypeError, ValueError):
                     continue
 
             try:
@@ -379,7 +375,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
                     correlations[&#34;phi_k&#34;] = correlations[&#34;phi_k&#34;].reindex(
                         index=column_order, columns=column_order
                     )
-            except (ValueError, DataError) as e:
+            except (ValueError, DataError, IndexError) as e:
                 warn_correlation(&#34;phi_k&#34;, e)
 
     categorical_correlations = {&#34;cramers&#34;: cramers_matrix, &#34;recoded&#34;: recoded_matrix}
@@ -651,7 +647,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     warnings.warn(
         &#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.\n&#34;
         &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: False}}`)\n&#39;
+        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}}`)\n&#39;
         &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
         &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
         &#34;(include the error message: &#39;{error}&#39;)&#34;.format(

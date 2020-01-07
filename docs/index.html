@@ -87,7 +87,7 @@ If you are contributing to this project, you can rebuild the documentation using
 <p>Start by loading in your pandas DataFrame, e.g. by using</p>
 <pre><code class="python">import numpy as np
 import pandas as pd
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 df = pd.DataFrame(
     np.random.rand(100, 5),
@@ -95,14 +95,21 @@ df = pd.DataFrame(
 )
 </code></pre>
 <p>To display the report in a Jupyter notebook, run:</p>
-<pre><code class="python">df.profile_report(style={'full_width':True})
+<pre><code class="python">ProfileReport(df, style={'full_width':True})
 </code></pre>
 <p>To retrieve the list of variables which are rejected due to high correlation:</p>
-<pre><code class="python">profile = df.profile_report()
+<pre><code class="python">profile = ProfileReport(df)
 rejected_variables = profile.get_rejected_variables(threshold=0.9)
 </code></pre>
 <p>If you want to generate a HTML report file, save the <code>ProfileReport</code> to an object and use the <code>to_file()</code> function:</p>
-<pre><code class="python">profile = df.profile_report(title='Pandas Profiling Report')
+<pre><code class="python">profile = ProfileReport(df, title='Pandas Profiling Report')
+profile.to_file(output_file=&quot;output.html&quot;)
+</code></pre>
+<h3 id="large-datasets">Large datasets</h3>
+<p>Version 2.4 introduces minimal mode.
+This is a default configuration that disables expensive computations (such as correlations and dynamic binning).
+Use the following syntax:</p>
+<pre><code class="python">profile = ProfileReport(large_dataset, minimal=True)
 profile.to_file(output_file=&quot;output.html&quot;)
 </code></pre>
 <h3 id="command-line-usage">Command line usage</h3>
@@ -155,7 +162,7 @@ $ where pandas_profiling
 </ul>
 </li>
 </ol>
-<p><img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png"></p>
+<p><img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" /></p>
 <p>To use the PyCharm Integration, right click on any dataset file:
 <em>External Tools</em> &gt; <em>Pandas Profiling</em>.</p>
 <h3 id="other-integrations">Other integrations</h3>
@@ -203,12 +210,20 @@ import numpy as np
 
 from pandas_profiling.version import __version__
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
-from pandas_profiling.utils.paths import get_config_default, get_project_root
+from pandas_profiling.utils.paths import (
+    get_config_default,
+    get_project_root,
+    get_config_minimal,
+)
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.report import get_report_structure
-from pandas_profiling.report.presentation.flavours import HTMLReport, WidgetReport
+from pandas_profiling.report.presentation.flavours import (
+    HTMLReport,
+    WidgetReport,
+    QtReport,
+)
 
 
 class ProfileReport(object):
@@ -220,7 +235,15 @@ class ProfileReport(object):
     html = &#34;&#34;
     &#34;&#34;&#34;the HTML representation of the report, without the wrapper (containing `&lt;head&gt;` etc.)&#34;&#34;&#34;
 
-    def __init__(self, df, config_file: Path = None, **kwargs):
+    def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
+        if config_file is not None and minimal:
+            raise ValueError(
+                &#34;Arguments `config_file` and `minimal` are mutually exclusive.&#34;
+            )
+
+        if minimal:
+            config_file = get_config_minimal()
+
         if config_file:
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
@@ -240,7 +263,20 @@ class ProfileReport(object):
         # Remove spaces and colons from column names
         df = clean_column_names(df)
 
-        # Sort column names
+        # Sort names according to config (asc, desc, no sort)
+        df = self.sort_column_names(df)
+        config[&#34;column_order&#34;] = df.columns.tolist()
+
+        # Get dataset statistics
+        description_set = describe_df(df)
+
+        # Build report structure
+        self.sample = self.get_sample(df)
+        self.report = get_report_structure(self.date, self.sample, description_set)
+        self.title = config[&#34;title&#34;].get(str)
+        self.description_set = description_set
+
+    def sort_column_names(self, df):
         sort = config[&#34;sort&#34;].get(str)
         if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
             warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
@@ -253,14 +289,9 @@ class ProfileReport(object):
             )
         elif sort != &#34;None&#34;:
             raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+        return df
 
-        # Store column order
-        config[&#34;column_order&#34;] = df.columns.tolist()
-
-        # Get dataset statistics
-        description_set = describe_df(df)
-
-        # Get sample
+    def get_sample(self, df):
         sample = {}
         n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
         if n_head &gt; 0:
@@ -270,11 +301,7 @@ class ProfileReport(object):
         if n_tail &gt; 0:
             sample[&#34;tail&#34;] = df.tail(n=n_tail)
 
-        # Build report structure
-        self.report = get_report_structure(self.date, sample, description_set)
-        self.title = config[&#34;title&#34;].get(str)
-        self.description_set = description_set
-        self.sample = sample
+        return sample
 
     def get_description(self) -&gt; dict:
         &#34;&#34;&#34;Return the description (a raw statistical summary) of the dataset.
@@ -346,7 +373,7 @@ class ProfileReport(object):
             )
         return wrapped_html
 
-    def to_json(self):
+    def to_json(self) -&gt; str:
         class CustomEncoder(json.JSONEncoder):
             def default(self, o):
                 if isinstance(o, pd.core.series.Series) or isinstance(
@@ -355,8 +382,6 @@ class ProfileReport(object):
                     return {&#34;__{}__&#34;.format(o.__class__.__name__): o.to_json()}
                 if isinstance(o, np.integer):
                     return {&#34;__{}__&#34;.format(o.__class__.__name__): o.tolist()}
-                if isinstance(o, Meta):
-                    return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
 
                 return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
 
@@ -374,14 +399,42 @@ class ProfileReport(object):
         &#34;&#34;&#34;
         report = WidgetReport(self.report).render()
 
-        from IPython.display import display
+        from IPython.core.display import display, HTML
 
         display(report)
+        display(
+            HTML(
+                &#39;Report generated with &lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling&lt;/a&gt;.&#39;
+            )
+        )
         # display_notebook_iframe(self)
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
-        return &#34;&#34;</code></pre>
+        return &#34;&#34;
+
+    def app(self):
+        from PyQt5 import QtCore
+        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+
+        app = QtCore.QCoreApplication.instance()
+        if app is None:
+            app = QApplication([])
+
+        class Application(QMainWindow):
+            def __init__(self, widgets):
+                super().__init__()
+                self.layout = QVBoxLayout(self)
+
+                self.resize(1200, 900)
+                self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
+                self.setCentralWidget(widgets)
+                self.show()
+
+        app_widgets = QtReport(self.report).render()
+
+        ex = Application(app_widgets)
+        sys.exit(app.exec_())</code></pre>
 </details>
 </section>
 <section>
@@ -413,7 +466,7 @@ class ProfileReport(object):
 </dd>
 <dt><code class="name"><a title="pandas_profiling.visualisation" href="visualisation/index.html">pandas_profiling.visualisation</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Code for generating plots</p></section>
 </dd>
 </dl>
 </section>
@@ -426,7 +479,7 @@ class ProfileReport(object):
 <dl>
 <dt id="pandas_profiling.ProfileReport"><code class="flex name class">
 <span>class <span class="ident">ProfileReport</span></span>
-<span>(</span><span>df, config_file=None, **kwargs)</span>
+<span>(</span><span>df, minimal=False, config_file=None, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Generate a profile report from a Dataset stored as a pandas <code>DataFrame</code>.</p>
@@ -444,7 +497,15 @@ class ProfileReport(object):
     html = &#34;&#34;
     &#34;&#34;&#34;the HTML representation of the report, without the wrapper (containing `&lt;head&gt;` etc.)&#34;&#34;&#34;
 
-    def __init__(self, df, config_file: Path = None, **kwargs):
+    def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
+        if config_file is not None and minimal:
+            raise ValueError(
+                &#34;Arguments `config_file` and `minimal` are mutually exclusive.&#34;
+            )
+
+        if minimal:
+            config_file = get_config_minimal()
+
         if config_file:
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
@@ -464,7 +525,20 @@ class ProfileReport(object):
         # Remove spaces and colons from column names
         df = clean_column_names(df)
 
-        # Sort column names
+        # Sort names according to config (asc, desc, no sort)
+        df = self.sort_column_names(df)
+        config[&#34;column_order&#34;] = df.columns.tolist()
+
+        # Get dataset statistics
+        description_set = describe_df(df)
+
+        # Build report structure
+        self.sample = self.get_sample(df)
+        self.report = get_report_structure(self.date, self.sample, description_set)
+        self.title = config[&#34;title&#34;].get(str)
+        self.description_set = description_set
+
+    def sort_column_names(self, df):
         sort = config[&#34;sort&#34;].get(str)
         if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
             warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
@@ -477,14 +551,9 @@ class ProfileReport(object):
             )
         elif sort != &#34;None&#34;:
             raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+        return df
 
-        # Store column order
-        config[&#34;column_order&#34;] = df.columns.tolist()
-
-        # Get dataset statistics
-        description_set = describe_df(df)
-
-        # Get sample
+    def get_sample(self, df):
         sample = {}
         n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
         if n_head &gt; 0:
@@ -494,11 +563,7 @@ class ProfileReport(object):
         if n_tail &gt; 0:
             sample[&#34;tail&#34;] = df.tail(n=n_tail)
 
-        # Build report structure
-        self.report = get_report_structure(self.date, sample, description_set)
-        self.title = config[&#34;title&#34;].get(str)
-        self.description_set = description_set
-        self.sample = sample
+        return sample
 
     def get_description(self) -&gt; dict:
         &#34;&#34;&#34;Return the description (a raw statistical summary) of the dataset.
@@ -570,7 +635,7 @@ class ProfileReport(object):
             )
         return wrapped_html
 
-    def to_json(self):
+    def to_json(self) -&gt; str:
         class CustomEncoder(json.JSONEncoder):
             def default(self, o):
                 if isinstance(o, pd.core.series.Series) or isinstance(
@@ -579,8 +644,6 @@ class ProfileReport(object):
                     return {&#34;__{}__&#34;.format(o.__class__.__name__): o.to_json()}
                 if isinstance(o, np.integer):
                     return {&#34;__{}__&#34;.format(o.__class__.__name__): o.tolist()}
-                if isinstance(o, Meta):
-                    return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
 
                 return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
 
@@ -598,14 +661,42 @@ class ProfileReport(object):
         &#34;&#34;&#34;
         report = WidgetReport(self.report).render()
 
-        from IPython.display import display
+        from IPython.core.display import display, HTML
 
         display(report)
+        display(
+            HTML(
+                &#39;Report generated with &lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling&lt;/a&gt;.&#39;
+            )
+        )
         # display_notebook_iframe(self)
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
-        return &#34;&#34;</code></pre>
+        return &#34;&#34;
+
+    def app(self):
+        from PyQt5 import QtCore
+        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+
+        app = QtCore.QCoreApplication.instance()
+        if app is None:
+            app = QApplication([])
+
+        class Application(QMainWindow):
+            def __init__(self, widgets):
+                super().__init__()
+                self.layout = QVBoxLayout(self)
+
+                self.resize(1200, 900)
+                self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
+                self.setCentralWidget(widgets)
+                self.show()
+
+        app_widgets = QtReport(self.report).render()
+
+        ex = Application(app_widgets)
+        sys.exit(app.exec_())</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -616,6 +707,39 @@ class ProfileReport(object):
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="pandas_profiling.ProfileReport.app"><code class="name flex">
+<span>def <span class="ident">app</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def app(self):
+    from PyQt5 import QtCore
+    from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+
+    app = QtCore.QCoreApplication.instance()
+    if app is None:
+        app = QApplication([])
+
+    class Application(QMainWindow):
+        def __init__(self, widgets):
+            super().__init__()
+            self.layout = QVBoxLayout(self)
+
+            self.resize(1200, 900)
+            self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
+            self.setCentralWidget(widgets)
+            self.show()
+
+    app_widgets = QtReport(self.report).render()
+
+    ex = Application(app_widgets)
+    sys.exit(app.exec_())</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.ProfileReport.get_description"><code class="name flex">
 <span>def <span class="ident">get_description</span></span>(<span>self)</span>
 </code></dt>
@@ -634,6 +758,53 @@ class ProfileReport(object):
         Dict containing a description for each variable in the DataFrame.
     &#34;&#34;&#34;
     return self.description_set</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.ProfileReport.get_sample"><code class="name flex">
+<span>def <span class="ident">get_sample</span></span>(<span>self, df)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_sample(self, df):
+    sample = {}
+    n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
+    if n_head &gt; 0:
+        sample[&#34;head&#34;] = df.head(n=n_head)
+
+    n_tail = config[&#34;samples&#34;][&#34;tail&#34;].get(int)
+    if n_tail &gt; 0:
+        sample[&#34;tail&#34;] = df.tail(n=n_tail)
+
+    return sample</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.ProfileReport.sort_column_names"><code class="name flex">
+<span>def <span class="ident">sort_column_names</span></span>(<span>self, df)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sort_column_names(self, df):
+    sort = config[&#34;sort&#34;].get(str)
+    if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
+        warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
+
+    if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
+        df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
+    elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
+        df = df.reindex(
+            reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+        )
+    elif sort != &#34;None&#34;:
+        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+    return df</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_file"><code class="name flex">
@@ -738,7 +909,7 @@ for using with frameworks.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_json(self):
+<pre><code class="python">def to_json(self) -&gt; str:
     class CustomEncoder(json.JSONEncoder):
         def default(self, o):
             if isinstance(o, pd.core.series.Series) or isinstance(
@@ -747,8 +918,6 @@ for using with frameworks.</p>
                 return {&#34;__{}__&#34;.format(o.__class__.__name__): o.to_json()}
             if isinstance(o, np.integer):
                 return {&#34;__{}__&#34;.format(o.__class__.__name__): o.tolist()}
-            if isinstance(o, Meta):
-                return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
 
             return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
 
@@ -775,6 +944,7 @@ for using with frameworks.</p>
 <li><a href="#usage">Usage</a></li>
 <li><a href="#documentation">Documentation</a><ul>
 <li><a href="#jupyter-notebook">Jupyter Notebook</a></li>
+<li><a href="#large-datasets">Large datasets</a></li>
 <li><a href="#command-line-usage">Command line usage</a></li>
 <li><a href="#advanced-usage">Advanced usage</a></li>
 </ul>
@@ -806,9 +976,12 @@ for using with frameworks.</p>
 <ul>
 <li>
 <h4><code><a title="pandas_profiling.ProfileReport" href="#pandas_profiling.ProfileReport">ProfileReport</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="pandas_profiling.ProfileReport.app" href="#pandas_profiling.ProfileReport.app">app</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.get_description" href="#pandas_profiling.ProfileReport.get_description">get_description</a></code></li>
+<li><code><a title="pandas_profiling.ProfileReport.get_sample" href="#pandas_profiling.ProfileReport.get_sample">get_sample</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.html" href="#pandas_profiling.ProfileReport.html">html</a></code></li>
+<li><code><a title="pandas_profiling.ProfileReport.sort_column_names" href="#pandas_profiling.ProfileReport.sort_column_names">sort_column_names</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_file" href="#pandas_profiling.ProfileReport.to_file">to_file</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_html" href="#pandas_profiling.ProfileReport.to_html">to_html</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_json" href="#pandas_profiling.ProfileReport.to_json">to_json</a></code></li>

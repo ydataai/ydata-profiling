@@ -42,9 +42,6 @@ def test_example(tmpdir):
         type(profile.get_description()) == dict
         and len(profile.get_description().items()) == 6
     ), "Unexpected result"
-    assert set(profile.get_rejected_variables(0.9)) == {
-        "reclat_city"
-    }, "rejected variables not correct"
     if sys.version_info[1] >= 6:
         assert list(profile.get_description()["variables"].keys()) == [
             "boolean",

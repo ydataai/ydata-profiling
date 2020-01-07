@@ -35,7 +35,7 @@ class Sequence(Renderable):
         self.sequence_type = sequence_type
 
     def __str__(self):
-        text = f&#34;Sequence\n&#34;
+        text = &#34;Sequence\n&#34;
         if &#34;items&#34; in self.content:
             for id, item in enumerate(self.content[&#34;items&#34;]):
                 text += &#34;- {}: {}\n&#34;.format(id, str(item).replace(&#34;\n&#34;, &#34;\n\t&#34;))
@@ -78,7 +78,7 @@ inheritance.</p></section>
         self.sequence_type = sequence_type
 
     def __str__(self):
-        text = f&#34;Sequence\n&#34;
+        text = &#34;Sequence\n&#34;
         if &#34;items&#34; in self.content:
             for id, item in enumerate(self.content[&#34;items&#34;]):
                 text += &#34;- {}: {}\n&#34;.format(id, str(item).replace(&#34;\n&#34;, &#34;\n\t&#34;))
@@ -102,6 +102,7 @@ inheritance.</p></section>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="pandas_profiling.report.presentation.flavours.html.sequence.HTMLSequence" href="../flavours/html/sequence.html#pandas_profiling.report.presentation.flavours.html.sequence.HTMLSequence">HTMLSequence</a></li>
+<li><a title="pandas_profiling.report.presentation.flavours.qt.sequence.QtSequence" href="../flavours/qt/sequence.html#pandas_profiling.report.presentation.flavours.qt.sequence.QtSequence">QtSequence</a></li>
 <li><a title="pandas_profiling.report.presentation.flavours.widget.sequence.WidgetSequence" href="../flavours/widget/sequence.html#pandas_profiling.report.presentation.flavours.widget.sequence.WidgetSequence">WidgetSequence</a></li>
 </ul>
 <h3>Static methods</h3>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
-<title>pandas_profiling.report.presentation.core.html API documentation</title>
+<title>pandas_profiling.report.presentation.flavours.qt.table API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,24 +17,35 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.report.presentation.core.html</code></h1>
+<h1 class="title">Module <code>pandas_profiling.report.presentation.flavours.qt.table</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
+<pre><code class="python">from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
 
-from pandas_profiling.report.presentation.abstract.item_renderer import ItemRenderer
+from pandas_profiling.report.formatters import fmt
+from pandas_profiling.report.presentation.core.table import Table
 
 
-class HTML(ItemRenderer):
-    def __init__(self, content, **kwargs):
-        super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
+def get_table(items):
+    table = QTableWidget()
 
-    def render(self) -&gt; Any:
-        raise NotImplementedError()</code></pre>
+    table.setRowCount(len(items))
+    table.setColumnCount(2)
+
+    for row_id, item in enumerate(items):
+        table.setItem(row_id, 0, QTableWidgetItem(item[&#34;name&#34;]))
+        table.setItem(row_id, 1, QTableWidgetItem(fmt(item[&#34;value&#34;])))
+
+    return table
+
+
+class QtTable(Table):
+    def render(self):
+        return get_table(self.content[&#34;rows&#34;])</code></pre>
 </details>
 </section>
 <section>
@@ -42,13 +53,38 @@ class HTML(ItemRenderer):
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.qt.table.get_table"><code class="name flex">
+<span>def <span class="ident">get_table</span></span>(<span>items)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_table(items):
+    table = QTableWidget()
+
+    table.setRowCount(len(items))
+    table.setColumnCount(2)
+
+    for row_id, item in enumerate(items):
+        table.setItem(row_id, 0, QTableWidgetItem(item[&#34;name&#34;]))
+        table.setItem(row_id, 1, QTableWidgetItem(fmt(item[&#34;value&#34;])))
+
+    return table</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="pandas_profiling.report.presentation.core.html.HTML"><code class="flex name class">
-<span>class <span class="ident">HTML</span></span>
-<span>(</span><span>content, **kwargs)</span>
+<dt id="pandas_profiling.report.presentation.flavours.qt.table.QtTable"><code class="flex name class">
+<span>class <span class="ident">QtTable</span></span>
+<span>(</span><span>rows, name=None, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -57,28 +93,20 @@ inheritance.</p></section>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class HTML(ItemRenderer):
-    def __init__(self, content, **kwargs):
-        super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
-
-    def render(self) -&gt; Any:
-        raise NotImplementedError()</code></pre>
+<pre><code class="python">class QtTable(Table):
+    def render(self):
+        return get_table(self.content[&#34;rows&#34;])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer" href="../abstract/item_renderer.html#pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer">ItemRenderer</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.table.Table" href="../../core/table.html#pandas_profiling.report.presentation.core.table.Table">Table</a></li>
+<li><a title="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer" href="../../abstract/item_renderer.html#pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
 <li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.flavours.html.html.HTMLHTML" href="../flavours/html/html.html#pandas_profiling.report.presentation.flavours.html.html.HTMLHTML">HTMLHTML</a></li>
-<li><a title="pandas_profiling.report.presentation.flavours.qt.html.QtHTML" href="../flavours/qt/html.html#pandas_profiling.report.presentation.flavours.qt.html.QtHTML">QtHTML</a></li>
-<li><a title="pandas_profiling.report.presentation.flavours.widget.html.WidgetHTML" href="../flavours/widget/html.html#pandas_profiling.report.presentation.flavours.widget.html.WidgetHTML">WidgetHTML</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="pandas_profiling.report.presentation.core.html.HTML.render"><code class="name flex">
+<dt id="pandas_profiling.report.presentation.flavours.qt.table.QtTable.render"><code class="name flex">
 <span>def <span class="ident">render</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -87,8 +115,8 @@ inheritance.</p></section>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self) -&gt; Any:
-    raise NotImplementedError()</code></pre>
+<pre><code class="python">def render(self):
+    return get_table(self.content[&#34;rows&#34;])</code></pre>
 </details>
 </dd>
 </dl>
@@ -104,15 +132,20 @@ inheritance.</p></section>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pandas_profiling.report.presentation.core" href="index.html">pandas_profiling.report.presentation.core</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt" href="index.html">pandas_profiling.report.presentation.flavours.qt</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.table.get_table" href="#pandas_profiling.report.presentation.flavours.qt.table.get_table">get_table</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="pandas_profiling.report.presentation.core.html.HTML" href="#pandas_profiling.report.presentation.core.html.HTML">HTML</a></code></h4>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.qt.table.QtTable" href="#pandas_profiling.report.presentation.flavours.qt.table.QtTable">QtTable</a></code></h4>
 <ul class="">
-<li><code><a title="pandas_profiling.report.presentation.core.html.HTML.render" href="#pandas_profiling.report.presentation.core.html.HTML.render">render</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.table.QtTable.render" href="#pandas_profiling.report.presentation.flavours.qt.table.QtTable.render">render</a></code></li>
 </ul>
 </li>
 </ul>
