@@ -71,6 +71,7 @@ class Message(object):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
+        self.anchor_id = hash(column_name)
 
 
 def check_table_messages(table: dict) -> List[Message]:
@@ -106,7 +107,26 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     """
     messages = []
 
+    # Missing
+    if warning_value(description["p_missing"]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.MISSING,
+                values=description,
+                fields={"p_missing", "n_missing"},
+            )
+        )
+
     if description["type"] == Variable.S_TYPE_UNSUPPORTED:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.UNSUPPORTED,
+                values=description,
+                fields={},
+            )
+        )
         return messages
 
     if description["distinct_count_with_nan"] <= 1:
@@ -129,16 +149,6 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    # Missing
-    if warning_value(description["p_missing"]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.MISSING,
-                values=description,
-                fields={"p_missing", "n_missing"},
-            )
-        )
     # Infinite values
     if warning_value(description["p_infinite"]):
         messages.append(

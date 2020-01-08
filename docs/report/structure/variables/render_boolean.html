@@ -58,13 +58,29 @@ def render_boolean(summary):
 
     table = Table(
         [
-            {&#34;name&#34;: &#34;Distinct count&#34;, &#34;value&#34;: summary[&#34;n_unique&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Unique (%)&#34;, &#34;value&#34;: summary[&#34;p_unique&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
-            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: summary[&#34;n_missing&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Distinct count&#34;,
+                &#34;value&#34;: summary[&#34;n_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;n_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+            },
+            {
+                &#34;name&#34;: &#34;Unique (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;p_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+            },
+            {
+                &#34;name&#34;: &#34;Missing&#34;,
+                &#34;value&#34;: summary[&#34;n_missing&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+            },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
@@ -130,13 +146,29 @@ def render_boolean(summary):
 
     table = Table(
         [
-            {&#34;name&#34;: &#34;Distinct count&#34;, &#34;value&#34;: summary[&#34;n_unique&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Unique (%)&#34;, &#34;value&#34;: summary[&#34;p_unique&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
-            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: summary[&#34;n_missing&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Distinct count&#34;,
+                &#34;value&#34;: summary[&#34;n_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;n_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+            },
+            {
+                &#34;name&#34;: &#34;Unique (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;p_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+            },
+            {
+                &#34;name&#34;: &#34;Missing&#34;,
+                &#34;value&#34;: summary[&#34;n_missing&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+            },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,

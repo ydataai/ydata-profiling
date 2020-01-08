@@ -100,6 +100,7 @@ class Message(object):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
+        self.anchor_id = hash(column_name)
 
 
 def check_table_messages(table: dict) -&gt; List[Message]:
@@ -135,6 +136,28 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
     &#34;&#34;&#34;
     messages = []
 
+    # Missing
+    if warning_value(description[&#34;p_missing&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.MISSING,
+                values=description,
+                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
+            )
+        )
+
+    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.UNSUPPORTED,
+                values=description,
+                fields={},
+            )
+        )
+        return messages
+
     if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
             Message(
@@ -155,13 +178,24 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
             )
         )
 
+    # Infinite values
+    if warning_value(description[&#34;p_infinite&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.INFINITE,
+                values=description,
+                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
+            )
+        )
+
+    # Categorical
     if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         if description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         # High cardinality
         if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
             &#34;cardinality_threshold&#34;
@@ -175,6 +209,7 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 )
             )
 
+    # Numerical
     if description[&#34;type&#34;] in {Variable.TYPE_NUM}:
         # Skewness
         if warning_skewness(description[&#34;skewness&#34;]):
@@ -196,27 +231,6 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                     fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
                 )
             )
-
-    # Missing
-    if warning_value(description[&#34;p_missing&#34;]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.MISSING,
-                values=description,
-                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
-            )
-        )
-    # Infinite values
-    if warning_value(description[&#34;p_infinite&#34;]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.INFINITE,
-                values=description,
-                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
-            )
-        )
 
     return messages
 
@@ -372,6 +386,28 @@ def warning_type_date(series):
     &#34;&#34;&#34;
     messages = []
 
+    # Missing
+    if warning_value(description[&#34;p_missing&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.MISSING,
+                values=description,
+                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
+            )
+        )
+
+    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.UNSUPPORTED,
+                values=description,
+                fields={},
+            )
+        )
+        return messages
+
     if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
             Message(
@@ -392,13 +428,24 @@ def warning_type_date(series):
             )
         )
 
+    # Infinite values
+    if warning_value(description[&#34;p_infinite&#34;]):
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.INFINITE,
+                values=description,
+                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
+            )
+        )
+
+    # Categorical
     if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         if description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
         # High cardinality
         if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
             &#34;cardinality_threshold&#34;
@@ -412,6 +459,7 @@ def warning_type_date(series):
                 )
             )
 
+    # Numerical
     if description[&#34;type&#34;] in {Variable.TYPE_NUM}:
         # Skewness
         if warning_skewness(description[&#34;skewness&#34;]):
@@ -433,27 +481,6 @@ def warning_type_date(series):
                     fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
                 )
             )
-
-    # Missing
-    if warning_value(description[&#34;p_missing&#34;]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.MISSING,
-                values=description,
-                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
-            )
-        )
-    # Infinite values
-    if warning_value(description[&#34;p_infinite&#34;]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.INFINITE,
-                values=description,
-                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
-            )
-        )
 
     return messages</code></pre>
 </details>
@@ -536,7 +563,8 @@ def warning_type_date(series):
         self.fields = fields
         self.message_type = message_type
         self.values = values
-        self.column_name = column_name</code></pre>
+        self.column_name = column_name
+        self.anchor_id = hash(column_name)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType"><code class="flex name class">

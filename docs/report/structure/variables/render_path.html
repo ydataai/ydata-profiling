@@ -58,27 +58,33 @@ def render_path(summary):
     #
     # Bottom
     full = FrequencyTable(
-        template_variables[&#34;freq_table_rows&#34;], name=&#34;Full&#34;, anchor_id=&#34;full_frequency&#34;
+        template_variables[&#34;freq_table_rows&#34;],
+        name=&#34;Full&#34;,
+        anchor_id=&#34;{varid}full_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     stem = FrequencyTable(
-        template_variables[&#34;freqtable_stem&#34;], name=&#34;Stem&#34;, anchor_id=&#34;stem_frequency&#34;
+        template_variables[&#34;freqtable_stem&#34;],
+        name=&#34;Stem&#34;,
+        anchor_id=&#34;{varid}stem_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     name = FrequencyTable(
-        template_variables[&#34;freqtable_name&#34;], name=&#34;Name&#34;, anchor_id=&#34;name_frequency&#34;
+        template_variables[&#34;freqtable_name&#34;],
+        name=&#34;Name&#34;,
+        anchor_id=&#34;{varid}name_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     suffix = FrequencyTable(
         template_variables[&#34;freqtable_suffix&#34;],
         name=&#34;Suffix&#34;,
-        anchor_id=&#34;suffix_frequency&#34;,
+        anchor_id=&#34;{varid}suffix_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     parent = FrequencyTable(
         template_variables[&#34;freqtable_parent&#34;],
         name=&#34;Parent&#34;,
-        anchor_id=&#34;parent_frequency&#34;,
+        anchor_id=&#34;{varid}parent_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     template_variables[&#34;bottom&#34;].content[&#34;items&#34;].append(full)
@@ -95,7 +101,7 @@ def render_path(summary):
                 summary[&#34;histogram_bins&#34;]
             ),
             name=&#34;File size&#34;,
-            anchor_id=&#34;file_size_histogram&#34;,
+            anchor_id=&#34;{varid}file_size_histogram&#34;.format(varid=summary[&#34;varid&#34;]),
         )
 
         # TODO: in SequeencyItem
@@ -145,27 +151,33 @@ def render_path(summary):
     #
     # Bottom
     full = FrequencyTable(
-        template_variables[&#34;freq_table_rows&#34;], name=&#34;Full&#34;, anchor_id=&#34;full_frequency&#34;
+        template_variables[&#34;freq_table_rows&#34;],
+        name=&#34;Full&#34;,
+        anchor_id=&#34;{varid}full_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     stem = FrequencyTable(
-        template_variables[&#34;freqtable_stem&#34;], name=&#34;Stem&#34;, anchor_id=&#34;stem_frequency&#34;
+        template_variables[&#34;freqtable_stem&#34;],
+        name=&#34;Stem&#34;,
+        anchor_id=&#34;{varid}stem_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     name = FrequencyTable(
-        template_variables[&#34;freqtable_name&#34;], name=&#34;Name&#34;, anchor_id=&#34;name_frequency&#34;
+        template_variables[&#34;freqtable_name&#34;],
+        name=&#34;Name&#34;,
+        anchor_id=&#34;{varid}name_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     suffix = FrequencyTable(
         template_variables[&#34;freqtable_suffix&#34;],
         name=&#34;Suffix&#34;,
-        anchor_id=&#34;suffix_frequency&#34;,
+        anchor_id=&#34;{varid}suffix_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     parent = FrequencyTable(
         template_variables[&#34;freqtable_parent&#34;],
         name=&#34;Parent&#34;,
-        anchor_id=&#34;parent_frequency&#34;,
+        anchor_id=&#34;{varid}parent_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     template_variables[&#34;bottom&#34;].content[&#34;items&#34;].append(full)
@@ -182,7 +194,7 @@ def render_path(summary):
                 summary[&#34;histogram_bins&#34;]
             ),
             name=&#34;File size&#34;,
-            anchor_id=&#34;file_size_histogram&#34;,
+            anchor_id=&#34;{varid}file_size_histogram&#34;.format(varid=summary[&#34;varid&#34;]),
         )
 
         # TODO: in SequeencyItem

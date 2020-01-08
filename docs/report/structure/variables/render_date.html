@@ -88,7 +88,7 @@ def render_date(summary):
                 alt=&#34;Histogram&#34;,
                 caption=&#34;Histogram&#34;,
                 name=&#34;Histogram&#34;,
-                anchor_id=&#34;histogram&#34;,
+                anchor_id=&#34;{varid}histogram&#34;.format(varid=summary[&#34;varid&#34;]),
             )
         ],
         sequence_type=&#34;tabs&#34;,
@@ -170,7 +170,7 @@ def render_date(summary):
                 alt=&#34;Histogram&#34;,
                 caption=&#34;Histogram&#34;,
                 name=&#34;Histogram&#34;,
-                anchor_id=&#34;histogram&#34;,
+                anchor_id=&#34;{varid}histogram&#34;.format(varid=summary[&#34;varid&#34;]),
             )
         ],
         sequence_type=&#34;tabs&#34;,

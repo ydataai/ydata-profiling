@@ -32,9 +32,15 @@ from pandas_profiling.report.presentation.abstract.renderable import Renderable
 
 class Preview(ItemRenderer):
     def __init__(
-        self, top: Renderable, bottom: Union[Renderable, None] = None, **kwargs
+        self,
+        top: Renderable,
+        bottom: Union[Renderable, None] = None,
+        ignore: bool = False,
+        **kwargs
     ):
-        super().__init__(&#34;variable&#34;, {&#34;top&#34;: top, &#34;bottom&#34;: bottom}, **kwargs)
+        super().__init__(
+            &#34;variable&#34;, {&#34;top&#34;: top, &#34;bottom&#34;: bottom, &#34;ignore&#34;: ignore}, **kwargs
+        )
 
     def __str__(self):
         text = &#34;Variabele\n&#34;
@@ -65,7 +71,7 @@ class Preview(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.preview.Preview"><code class="flex name class">
 <span>class <span class="ident">Preview</span></span>
-<span>(</span><span>top, bottom=None, **kwargs)</span>
+<span>(</span><span>top, bottom=None, ignore=False, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -76,9 +82,15 @@ inheritance.</p></section>
 </summary>
 <pre><code class="python">class Preview(ItemRenderer):
     def __init__(
-        self, top: Renderable, bottom: Union[Renderable, None] = None, **kwargs
+        self,
+        top: Renderable,
+        bottom: Union[Renderable, None] = None,
+        ignore: bool = False,
+        **kwargs
     ):
-        super().__init__(&#34;variable&#34;, {&#34;top&#34;: top, &#34;bottom&#34;: bottom}, **kwargs)
+        super().__init__(
+            &#34;variable&#34;, {&#34;top&#34;: top, &#34;bottom&#34;: bottom, &#34;ignore&#34;: ignore}, **kwargs
+        )
 
     def __str__(self):
         text = &#34;Variabele\n&#34;

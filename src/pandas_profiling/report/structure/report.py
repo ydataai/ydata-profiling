@@ -23,6 +23,7 @@ from pandas_profiling.report.structure.variables import (
     render_path,
     render_path_image,
     render_url,
+    render_generic,
 )
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
@@ -103,7 +104,7 @@ def render_variables_section(dataframe_summary: dict) -> list:
         AbsolutePath: render_path,
         ExistingPath: render_path,
         ImagePath: render_path_image,
-        Generic: lambda x: {"top": HTML("Unsupported"), "bottom": HTML("")},
+        Generic: render_generic,
     }
 
     templs = []
@@ -114,7 +115,10 @@ def render_variables_section(dataframe_summary: dict) -> list:
         def fmt_warning(warning):
             name = warning.message_type.name.replace("_", " ")
             if name == "HIGH CORRELATION":
-                name += " (" + ", ".join(warning.values["fields"]) + ")"
+                name = '<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'.format(
+                    num=len(warning.values["fields"]),
+                    title=", ".join(warning.values["fields"]),
+                )
             return name
 
         warnings = [
@@ -146,6 +150,7 @@ def render_variables_section(dataframe_summary: dict) -> list:
                 template_variables["bottom"],
                 anchor_id=template_variables["varid"],
                 name=idx,
+                ignore="ignore" in template_variables,
             )
         )
 

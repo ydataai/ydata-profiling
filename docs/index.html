@@ -45,13 +45,20 @@ The pandas <code>df.describe()</code> function is great but a little basic for s
 <p>With your help, we got approved for <a href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
 It's extra exciting that GitHub <strong>matches your contribution</strong> for the first year.
 Therefore, we welcome you to support the project through GitHub! </p>
-<p>The v2.4 release includes many new features and stability improvements.
-(new datasets; extended configuration with better defaults, including minimal mode; json export; GUI (details, widgets))</p>
+<p>The v2.4 release includes many new features (performance, exporting, GUI and datasets) and stability improvements.</p>
 <ul>
 <li><a href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></li>
 <li><a href="https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.4.0">Read the release notes v2.4</a> </li>
 </ul>
 <p><em>January 7, 2020</em></p>
+<hr>
+<p><em>Contents:</em> <strong><a href="#examples">Examples</a></strong> |
+<strong><a href="#installation">Installation</a></strong> | <strong><a href="#documentation">Documentation</a></strong> |
+<strong><a href="#large-datasets">Large datasets</a></strong> | <strong><a href="#command-line-usage">Command line usage</a></strong> |
+<strong><a href="#advanced-usage">Advanced usage</a></strong> |
+<strong><a href="#types">Types</a></strong> | <strong><a href="#how-to-contribute">How to contribute</a></strong> |
+<strong><a href="#editor-integration">Editor Integration</a></strong> | <strong><a href="#dependencies">Dependencies</a></strong></p>
+<hr>
 <h2 id="examples">Examples</h2>
 <p>The following examples can give you an impression of what the package can do:</p>
 <ul>
@@ -70,7 +77,7 @@ Therefore, we welcome you to support the project through GitHub! </p>
 <a href="https://pepy.tech/project/pandas-profiling/month"><img alt="PyPi Monthly Downloads" src="https://pepy.tech/badge/pandas-profiling/month"></a>
 <a href="https://pypi.org/project/pandas-profiling/"><img alt="PyPi Version" src="https://badge.fury.io/py/pandas-profiling.svg"></a></p>
 <p>You can install using the pip package manager by running</p>
-<pre><code>pip install pandas-profiling
+<pre><code>pip install pandas-profiling[notebook,html]
 </code></pre>
 <p>Alternatively, you could install directly from Github:</p>
 <pre><code>pip install &lt;https://github.com/pandas-profiling/pandas-profiling/archive/master.zip&gt;
@@ -86,8 +93,6 @@ Therefore, we welcome you to support the project through GitHub! </p>
 Install by navigating to the proper directory and running</p>
 <pre><code>python setup.py install
 </code></pre>
-<h2 id="usage">Usage</h2>
-<p>The profile report is written in HTML5 and CSS3, which means pandas-profiling requires a modern browser. </p>
 <h2 id="documentation">Documentation</h2>
 <p>The documentation for <a title="pandas_profiling" href="#pandas_profiling"><code>pandas_profiling</code></a> can be found <a href="https://pandas-profiling.github.io/pandas-profiling/docs/">here</a>.</p>
 <h3 id="getting-started">Getting started</h3>
@@ -211,6 +216,7 @@ $ where pandas_profiling
 <h3 id="other-integrations">Other integrations</h3>
 <p>Other editor integrations may be contributed via pull requests.</p>
 <h2 id="dependencies">Dependencies</h2>
+<p>The profile report is written in HTML and CSS, which means pandas-profiling requires a modern browser. </p>
 <p>You need <a href="https://python3statement.org/">Python 3</a> to run this package. Other dependencies can be found in the requirements files:</p>
 <table>
 <thead>
@@ -244,7 +250,7 @@ $ where pandas_profiling
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Main module of pandas-profiling.
 
-.. include:: ../README.md
+.. include:: ../../README.md
 &#34;&#34;&#34;
 import sys
 import warnings
@@ -363,7 +369,7 @@ class ProfileReport(object):
             silent: if False, opens the file in the default browser
         &#34;&#34;&#34;
         if not isinstance(output_file, Path):
-            output_file = Path(output_file)
+            output_file = Path(str(output_file))
 
         if output_file.suffix == &#34;.html&#34;:
             data = self.to_html()
@@ -378,7 +384,7 @@ class ProfileReport(object):
         if not silent:
             import webbrowser
 
-            webbrowser.open_new_tab(output_file.as_uri())
+            webbrowser.open_new_tab(output_file.absolute().as_uri())
 
     def to_html(self) -&gt; str:
         &#34;&#34;&#34;Generate and return complete template as lengthy string
@@ -646,7 +652,7 @@ class ProfileReport(object):
             silent: if False, opens the file in the default browser
         &#34;&#34;&#34;
         if not isinstance(output_file, Path):
-            output_file = Path(output_file)
+            output_file = Path(str(output_file))
 
         if output_file.suffix == &#34;.html&#34;:
             data = self.to_html()
@@ -661,7 +667,7 @@ class ProfileReport(object):
         if not silent:
             import webbrowser
 
-            webbrowser.open_new_tab(output_file.as_uri())
+            webbrowser.open_new_tab(output_file.absolute().as_uri())
 
     def to_html(self) -&gt; str:
         &#34;&#34;&#34;Generate and return complete template as lengthy string
@@ -924,7 +930,7 @@ You are welcome to contribute a pull request if you like this feature.</p></sect
         silent: if False, opens the file in the default browser
     &#34;&#34;&#34;
     if not isinstance(output_file, Path):
-        output_file = Path(output_file)
+        output_file = Path(str(output_file))
 
     if output_file.suffix == &#34;.html&#34;:
         data = self.to_html()
@@ -939,7 +945,7 @@ You are welcome to contribute a pull request if you like this feature.</p></sect
     if not silent:
         import webbrowser
 
-        webbrowser.open_new_tab(output_file.as_uri())</code></pre>
+        webbrowser.open_new_tab(output_file.absolute().as_uri())</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_html"><code class="name flex">
@@ -1092,7 +1098,6 @@ the Iframe.</p>
 <li><a href="#from-source">From source</a></li>
 </ul>
 </li>
-<li><a href="#usage">Usage</a></li>
 <li><a href="#documentation">Documentation</a><ul>
 <li><a href="#getting-started">Getting started</a><ul>
 <li><a href="#jupyter-notebook">Jupyter Notebook</a></li>

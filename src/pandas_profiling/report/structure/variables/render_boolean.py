@@ -32,13 +32,29 @@ def render_boolean(summary):
 
     table = Table(
         [
-            {"name": "Distinct count", "value": summary["n_unique"], "fmt": "fmt"},
-            {"name": "Unique (%)", "value": summary["p_unique"], "fmt": "fmt_percent"},
-            {"name": "Missing", "value": summary["n_missing"], "fmt": "fmt"},
+            {
+                "name": "Distinct count",
+                "value": summary["n_unique"],
+                "fmt": "fmt",
+                "class": "alert" if "n_unique" in summary["warn_fields"] else "",
+            },
+            {
+                "name": "Unique (%)",
+                "value": summary["p_unique"],
+                "fmt": "fmt_percent",
+                "class": "alert" if "p_unique" in summary["warn_fields"] else "",
+            },
+            {
+                "name": "Missing",
+                "value": summary["n_missing"],
+                "fmt": "fmt",
+                "class": "alert" if "n_missing" in summary["warn_fields"] else "",
+            },
             {
                 "name": "Missing (%)",
                 "value": summary["p_missing"],
                 "fmt": "fmt_percent",
+                "class": "alert" if "p_missing" in summary["warn_fields"] else "",
             },
             {
                 "name": "Memory size",

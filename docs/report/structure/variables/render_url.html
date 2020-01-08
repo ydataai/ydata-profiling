@@ -58,28 +58,34 @@ def render_url(summary):
         )
 
     full_frequency_table = FrequencyTable(
-        template_variables[&#34;freq_table_rows&#34;], name=&#34;Full&#34;, anchor_id=&#34;full_frequency&#34;
+        template_variables[&#34;freq_table_rows&#34;],
+        name=&#34;Full&#34;,
+        anchor_id=&#34;{varid}full_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     scheme_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_scheme&#34;],
         name=&#34;Scheme&#34;,
-        anchor_id=&#34;scheme_frequency&#34;,
+        anchor_id=&#34;{varid}scheme_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     netloc_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_netloc&#34;],
         name=&#34;Netloc&#34;,
-        anchor_id=&#34;netloc_frequency&#34;,
+        anchor_id=&#34;{varid}netloc_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     path_frequency_table = FrequencyTable(
-        template_variables[&#34;freqtable_path&#34;], name=&#34;Path&#34;, anchor_id=&#34;path_frequency&#34;
+        template_variables[&#34;freqtable_path&#34;],
+        name=&#34;Path&#34;,
+        anchor_id=&#34;{varid}path_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     query_frequency_table = FrequencyTable(
-        template_variables[&#34;freqtable_query&#34;], name=&#34;Query&#34;, anchor_id=&#34;query_frequency&#34;
+        template_variables[&#34;freqtable_query&#34;],
+        name=&#34;Query&#34;,
+        anchor_id=&#34;{varid}query_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     fragment_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_fragment&#34;],
         name=&#34;Fragment&#34;,
-        anchor_id=&#34;fragment_frequency&#34;,
+        anchor_id=&#34;{varid}fragment_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     items = [
@@ -157,28 +163,34 @@ def render_url(summary):
         )
 
     full_frequency_table = FrequencyTable(
-        template_variables[&#34;freq_table_rows&#34;], name=&#34;Full&#34;, anchor_id=&#34;full_frequency&#34;
+        template_variables[&#34;freq_table_rows&#34;],
+        name=&#34;Full&#34;,
+        anchor_id=&#34;{varid}full_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     scheme_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_scheme&#34;],
         name=&#34;Scheme&#34;,
-        anchor_id=&#34;scheme_frequency&#34;,
+        anchor_id=&#34;{varid}scheme_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     netloc_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_netloc&#34;],
         name=&#34;Netloc&#34;,
-        anchor_id=&#34;netloc_frequency&#34;,
+        anchor_id=&#34;{varid}netloc_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     path_frequency_table = FrequencyTable(
-        template_variables[&#34;freqtable_path&#34;], name=&#34;Path&#34;, anchor_id=&#34;path_frequency&#34;
+        template_variables[&#34;freqtable_path&#34;],
+        name=&#34;Path&#34;,
+        anchor_id=&#34;{varid}path_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     query_frequency_table = FrequencyTable(
-        template_variables[&#34;freqtable_query&#34;], name=&#34;Query&#34;, anchor_id=&#34;query_frequency&#34;
+        template_variables[&#34;freqtable_query&#34;],
+        name=&#34;Query&#34;,
+        anchor_id=&#34;{varid}query_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
     fragment_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_fragment&#34;],
         name=&#34;Fragment&#34;,
-        anchor_id=&#34;fragment_frequency&#34;,
+        anchor_id=&#34;{varid}fragment_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
     )
 
     items = [

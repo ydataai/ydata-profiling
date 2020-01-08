@@ -1,6 +1,6 @@
 """Main module of pandas-profiling.
 
-.. include:: ../README.md
+.. include:: ../../README.md
 """
 import sys
 import warnings

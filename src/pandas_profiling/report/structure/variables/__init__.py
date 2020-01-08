@@ -12,3 +12,4 @@ from pandas_profiling.report.structure.variables.render_path_image import (
 )
 from pandas_profiling.report.structure.variables.render_real import render_real
 from pandas_profiling.report.structure.variables.render_url import render_url
+from pandas_profiling.report.structure.variables.render_generic import render_generic

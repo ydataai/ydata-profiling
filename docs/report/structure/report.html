@@ -50,6 +50,7 @@ from pandas_profiling.report.structure.variables import (
     render_path,
     render_path_image,
     render_url,
+    render_generic,
 )
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
@@ -130,7 +131,7 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
         AbsolutePath: render_path,
         ExistingPath: render_path,
         ImagePath: render_path_image,
-        Generic: lambda x: {&#34;top&#34;: HTML(&#34;Unsupported&#34;), &#34;bottom&#34;: HTML(&#34;&#34;)},
+        Generic: render_generic,
     }
 
     templs = []
@@ -141,7 +142,10 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
         def fmt_warning(warning):
             name = warning.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
             if name == &#34;HIGH CORRELATION&#34;:
-                name += &#34; (&#34; + &#34;, &#34;.join(warning.values[&#34;fields&#34;]) + &#34;)&#34;
+                name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
+                    num=len(warning.values[&#34;fields&#34;]),
+                    title=&#34;, &#34;.join(warning.values[&#34;fields&#34;]),
+                )
             return name
 
         warnings = [
@@ -173,6 +177,7 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
                 template_variables[&#34;bottom&#34;],
                 anchor_id=template_variables[&#34;varid&#34;],
                 name=idx,
+                ignore=&#34;ignore&#34; in template_variables,
             )
         )
 
@@ -482,7 +487,7 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
         AbsolutePath: render_path,
         ExistingPath: render_path,
         ImagePath: render_path_image,
-        Generic: lambda x: {&#34;top&#34;: HTML(&#34;Unsupported&#34;), &#34;bottom&#34;: HTML(&#34;&#34;)},
+        Generic: render_generic,
     }
 
     templs = []
@@ -493,7 +498,10 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
         def fmt_warning(warning):
             name = warning.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
             if name == &#34;HIGH CORRELATION&#34;:
-                name += &#34; (&#34; + &#34;, &#34;.join(warning.values[&#34;fields&#34;]) + &#34;)&#34;
+                name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
+                    num=len(warning.values[&#34;fields&#34;]),
+                    title=&#34;, &#34;.join(warning.values[&#34;fields&#34;]),
+                )
             return name
 
         warnings = [
@@ -525,6 +533,7 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
                 template_variables[&#34;bottom&#34;],
                 anchor_id=template_variables[&#34;varid&#34;],
                 name=idx,
+                ignore=&#34;ignore&#34; in template_variables,
             )
         )
 

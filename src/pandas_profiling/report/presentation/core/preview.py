@@ -6,9 +6,15 @@ from pandas_profiling.report.presentation.abstract.renderable import Renderable
 
 class Preview(ItemRenderer):
     def __init__(
-        self, top: Renderable, bottom: Union[Renderable, None] = None, **kwargs
+        self,
+        top: Renderable,
+        bottom: Union[Renderable, None] = None,
+        ignore: bool = False,
+        **kwargs
     ):
-        super().__init__("variable", {"top": top, "bottom": bottom}, **kwargs)
+        super().__init__(
+            "variable", {"top": top, "bottom": bottom, "ignore": ignore}, **kwargs
+        )
 
     def __str__(self):
         text = "Variabele\n"
