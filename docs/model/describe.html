@@ -231,6 +231,8 @@ def describe_path_1d(series: pd.Series, series_description: dict) -&gt; dict:
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
+    series_description.update(describe_categorical_1d(series, series_description))
+
     # Make sure we deal with strings (Issue #100)
     series = series[~series.isnull()].astype(str)
     series = series.map(Path)
@@ -1023,6 +1025,8 @@ bins. Read the docs:
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
+    series_description.update(describe_categorical_1d(series, series_description))
+
     # Make sure we deal with strings (Issue #100)
     series = series[~series.isnull()].astype(str)
     series = series.map(Path)

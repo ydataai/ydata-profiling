@@ -103,7 +103,7 @@ def render_variables_section(dataframe_summary: dict) -> list:
         Url: render_url,
         AbsolutePath: render_path,
         ExistingPath: render_path,
-        ImagePath: render_path_image,
+        # ImagePath: render_path_image,
         Generic: render_generic,
     }
 

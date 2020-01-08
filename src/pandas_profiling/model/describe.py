@@ -204,6 +204,8 @@ def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
     Returns:
         A dict containing calculated series description values.
     """
+    series_description.update(describe_categorical_1d(series, series_description))
+
     # Make sure we deal with strings (Issue #100)
     series = series[~series.isnull()].astype(str)
     series = series.map(Path)
