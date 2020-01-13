@@ -1,6 +1,6 @@
 from typing import Union, Tuple
 import base64
-from io import BytesIO
+from io import BytesIO, StringIO
 from urllib.parse import quote
 
 from pandas_profiling.config import config
@@ -43,13 +43,19 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
     mime_types = {"png": "image/png", "svg": "image/svg+xml"}
 
     try:
-        image_data = BytesIO()
-        plt.savefig(image_data, dpi=dpi, format=image_format)
-        image_data.seek(0)
-        result_string = "data:{mime_type};base64,{image_data}".format(
-            mime_type=mime_types[image_format],
-            image_data=quote(base64.b64encode(image_data.getvalue())),
-        )
+        if image_format == "svg":
+            image_data = StringIO()
+            plt.savefig(image_data, format=image_format)
+            image_data.seek(0)
+            result_string = image_data.getvalue()
+        else:
+            image_data = BytesIO()
+            plt.savefig(image_data, dpi=dpi, format=image_format)
+            image_data.seek(0)
+            base64_data = base64.b64encode(image_data.getvalue())
+            result_string = "data:{mime_type};base64,{image_data}".format(
+                mime_type=mime_types[image_format], image_data=quote(base64_data)
+            )
         plt.close()
     except RuntimeError:
         plt.close()

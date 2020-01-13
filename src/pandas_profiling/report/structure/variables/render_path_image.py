@@ -7,6 +7,7 @@ from pandas_profiling.report.structure.variables.render_path import render_path
 
 def render_path_image(summary):
     n_freq_table_max = config["n_freq_table_max"].get(int)
+    image_format = config["plot"]["image_format"].get(str)
 
     template_variables = render_path(summary)
 
@@ -40,6 +41,7 @@ def render_path_image(summary):
 
     image_shape_scatter = Image(
         scatter_series(summary["scatter_data"]),
+        image_format=image_format,
         alt="Scatterplot of image sizes",
         caption="Scatterplot of image sizes",
         name="Scatter",

@@ -9,6 +9,7 @@ from pandas_profiling.report.structure.variables.render_categorical import (
 
 def render_path(summary):
     n_freq_table_max = config["n_freq_table_max"].get(int)
+    image_format = config["plot"]["image_format"].get(str)
 
     template_variables = render_categorical(summary)
 
@@ -70,6 +71,7 @@ def render_path(summary):
     if "file_sizes" in summary:
         file_size_histogram = Image(
             histogram(summary["file_sizes"], summary, summary["histogram_bins"]),
+            image_format=image_format,
             alt="File size",
             caption="<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={})".format(
                 summary["histogram_bins"]
