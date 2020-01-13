@@ -1,4 +1,5 @@
 """Generate the report."""
+from datetime import datetime
 
 import pandas_profiling.visualisation.plot as plot
 from pandas_profiling.model.base import (
@@ -179,7 +180,9 @@ def get_sample_items(sample: dict):
     return items
 
 
-def get_report_structure(date, sample: dict, summary: dict) -> Renderable:
+def get_report_structure(
+    date_start: datetime, date_end: datetime, sample: dict, summary: dict
+) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -194,7 +197,8 @@ def get_report_structure(date, sample: dict, summary: dict) -> Renderable:
         [
             Dataset(
                 package=summary["package"],
-                date=date,
+                date_start=date_start,
+                date_end=date_end,
                 values=summary["table"],
                 messages=summary["messages"],
                 variables=summary["variables"],
