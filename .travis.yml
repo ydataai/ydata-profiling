@@ -14,6 +14,7 @@ env:
   - TEST=console
   - TEST=examples
   - TEST=lint
+  - TEST=typing
 
 jobs:
   exclude:
@@ -32,6 +33,7 @@ script:
   - if [ $TEST == 'examples' ]; then pytest --cov=. --nbval --sanitize-with tests/sanitize-notebook.cfg examples/; fi
   - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
   - if [ $TEST == 'lint' ]; then pytest --black -m black src/; fi
+  - if [ $TEST == 'typing' ]; then pytest --mypy -m mypy .; fi
 
 after_success:
   - codecov -F $TEST

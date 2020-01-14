@@ -5,7 +5,7 @@ import itertools
 import os
 import warnings
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Callable
 from urllib.parse import urlsplit
 
 import numpy as np
@@ -457,15 +457,20 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
+
+    def missing_diagram(name) -> Callable:
+        return {
+            "bar": missing_bar,
+            "matrix": missing_matrix,
+            "heatmap": missing_heatmap,
+            "dendrogram": missing_dendrogram,
+        }[name]
+
     missing_map = {
-        "bar": {"func": missing_bar, "min_missing": 0, "name": "Count"},
-        "matrix": {"func": missing_matrix, "min_missing": 0, "name": "Matrix"},
-        "heatmap": {"func": missing_heatmap, "min_missing": 2, "name": "Heatmap"},
-        "dendrogram": {
-            "func": missing_dendrogram,
-            "min_missing": 1,
-            "name": "Dendrogram",
-        },
+        "bar": {"min_missing": 0, "name": "Count"},
+        "matrix": {"min_missing": 0, "name": "Matrix"},
+        "heatmap": {"min_missing": 2, "name": "Heatmap"},
+        "dendrogram": {"min_missing": 1, "name": "Dendrogram"},
     }
 
     missing = {}
@@ -482,7 +487,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
                 ):
                     missing[name] = {
                         "name": settings["name"],
-                        "matrix": settings["func"](df),
+                        "matrix": missing_diagram(name)(df),
                     }
             except ValueError as e:
                 warn_missing(name, e)

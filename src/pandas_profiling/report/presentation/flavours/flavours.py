@@ -1,9 +1,9 @@
-from typing import Type
+from typing import Dict, Type
 
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 
 
-def HTMLReport(structure: Type[Renderable]):
+def HTMLReport(structure: Renderable):
     """Adds HTML flavour to Renderable
 
     Args:
@@ -37,7 +37,7 @@ def HTMLReport(structure: Type[Renderable]):
         Sample,
     )
 
-    mapping = {
+    mapping: Dict[Type[Renderable], Type[Renderable]] = {
         Sequence: HTMLSequence,
         Preview: HTMLPreview,
         Overview: HTMLOverview,
@@ -57,7 +57,7 @@ def HTMLReport(structure: Type[Renderable]):
     return structure
 
 
-def WidgetReport(structure: Type[Renderable]):
+def WidgetReport(structure: Renderable):
     from pandas_profiling.report.presentation.flavours.widget import (
         WidgetSequence,
         WidgetPreview,
@@ -83,7 +83,7 @@ def WidgetReport(structure: Type[Renderable]):
         Sample,
     )
 
-    mapping = {
+    mapping: Dict[Type[Renderable], Type[Renderable]] = {
         Sequence: WidgetSequence,
         Preview: WidgetPreview,
         Overview: WidgetOverview,
@@ -103,7 +103,7 @@ def WidgetReport(structure: Type[Renderable]):
     return structure
 
 
-def QtReport(structure: Type[Renderable]):
+def QtReport(structure: Renderable):
     from pandas_profiling.report.presentation.flavours.qt import (
         QtSequence,
         QtPreview,
@@ -129,7 +129,7 @@ def QtReport(structure: Type[Renderable]):
         Sample,
     )
 
-    mapping = {
+    mapping: Dict[Type[Renderable], Type[Renderable]] = {
         Sequence: QtSequence,
         Preview: QtPreview,
         Overview: QtOverview,

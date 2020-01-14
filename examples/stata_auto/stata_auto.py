@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 from pandas_profiling import ProfileReport
 
@@ -8,4 +10,4 @@ if __name__ == "__main__":
 
     # Length left out due to correlation with weight.
     report = ProfileReport(df, title="1978 Automobile dataset")
-    report.to_file("stata_auto_report.html")
+    report.to_file(Path("stata_auto_report.html"))

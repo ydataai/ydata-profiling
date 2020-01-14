@@ -3,7 +3,7 @@ import itertools
 import warnings
 from contextlib import suppress
 from functools import partial
-from typing import Callable
+from typing import Callable, Dict, List
 
 import pandas as pd
 import numpy as np
@@ -216,7 +216,9 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     return correlations
 
 
-def perform_check_correlation(correlation_matrix, threshold: float):
+def perform_check_correlation(
+    correlation_matrix, threshold: float
+) -> Dict[str, List[str]]:
     """Check whether selected variables are highly correlated values in the correlation matrix.
 
     Args:
@@ -233,7 +235,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
     # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]>threshold)]
 
-    mapping = {}
+    mapping: Dict[str, List[str]] = {}
     for x, corr_x in corr.iterrows():
         for y, corr in corr_x.iteritems():
             if x == y:

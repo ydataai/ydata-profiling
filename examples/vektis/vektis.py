@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 
 from pandas_profiling import ProfileReport
@@ -19,4 +21,4 @@ if __name__ == "__main__":
         },
         plot={"histogram": {"bayesian_blocks_bins": False}},
     )
-    report.to_file("vektis_report.html", True)
+    report.to_file(Path("vektis_report.html"))

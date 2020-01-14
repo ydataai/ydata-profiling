@@ -60,17 +60,16 @@ def get_correlation_items(summary) -> list:
     items = []
 
     key_to_data = {
-        "pearson": {"vmin": -1, "name": "Pearson's r"},
-        "spearman": {"vmin": -1, "name": "Spearman's ρ"},
-        "kendall": {"vmin": -1, "name": "Kendall's τ"},
-        "phi_k": {"vmin": 0, "name": "Phik (φk)"},
-        "cramers": {"vmin": 0, "name": "Cramér's V (φc)"},
-        "recoded": {"vmin": 0, "name": "Recoded"},
+        "pearson": (-1, "Pearson's r"),
+        "spearman": (-1, "Spearman's ρ"),
+        "kendall": (-1, "Kendall's τ"),
+        "phi_k": (0, "Phik (φk)"),
+        "cramers": (0, "Cramér's V (φc)"),
+        "recoded": (0, "Recoded"),
     }
 
     for key, item in summary["correlations"].items():
-        vmin = key_to_data[key]["vmin"]
-        name = key_to_data[key]["name"]
+        vmin, name = key_to_data[key]
         items.append(
             Image(
                 plot.correlation_matrix(item, vmin=vmin),

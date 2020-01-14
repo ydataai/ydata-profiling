@@ -1,4 +1,7 @@
-def freq_table(freqtable, n: int, max_number_to_print: int) -> list:
+from typing import List, Dict
+
+
+def freq_table(freqtable, n: int, max_number_to_print: int) -> List[Dict]:
     """Render the rows for a frequency table (value, count).
 
     Args:
@@ -9,7 +12,6 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -> list:
     Returns:
         The rows of the frequency table.
     """
-    rows = []
 
     # TODO: replace '' by '(Empty)' ?
 
@@ -26,15 +28,16 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -> list:
     freq_missing = n - sum(freqtable)
     # No values
     if len(freqtable) == 0:
-        return rows
+        return []
 
     max_freq = max(freqtable.values[0], freq_other, freq_missing)
 
     # TODO: Correctly sort missing and other
     # No values
     if max_freq == 0:
-        return rows
+        return []
 
+    rows = []
     for label, freq in freqtable.iloc[0:max_number_to_print].items():
         rows.append(
             {
