@@ -111,6 +111,7 @@ def render_categorical(summary):
 
         length = Image(
             histogram(summary["length"], summary, histogram_bins),
+            image_format=image_format,
             alt="Scatter",
             name="Length",
             anchor_id="{varid}length".format(varid=summary["varid"]),
