@@ -2,9 +2,9 @@ sudo: required
 dist: bionic
 language: python
 cache:
+  pip: true
   directories:
     - data/
-  pip
 
 python:
   - "3.5"
