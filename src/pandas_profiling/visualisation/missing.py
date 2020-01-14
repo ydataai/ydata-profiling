@@ -49,8 +49,7 @@ def missing_matrix(data: pd.DataFrame) -> str:
         labels=labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
-    # Note: override image format, svg contains bug for missingno.matrix
-    return plot_360_n0sc0pe(plt, image_format="png")
+    return plot_360_n0sc0pe(plt)
 
 
 def missing_bar(data: pd.DataFrame) -> str:
