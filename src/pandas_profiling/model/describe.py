@@ -74,10 +74,10 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         "scatter_data": series,  # For complex
     }
 
-    chi_squared_threshold = config['vars']['num']['chi_squared_threshold'].get(float)
-    if chi_squared_threshold > 0.:
-        histogram = np.histogram(series[series.notna()].values, bins='auto')[0]
-        stats['chi_squared'] = chisquare(histogram)
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    if chi_squared_threshold > 0.0:
+        histogram = np.histogram(series[series.notna()].values, bins="auto")[0]
+        stats["chi_squared"] = chisquare(histogram)
 
     stats["range"] = stats["max"] - stats["min"]
     stats.update(
@@ -148,9 +148,9 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
 
     stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
-    chi_squared_threshold = config['vars']['num']['chi_squared_threshold'].get(float)
-    if chi_squared_threshold > 0.:
-        stats['chi_squared'] = list(chisquare(value_counts.values))
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    if chi_squared_threshold > 0.0:
+        stats["chi_squared"] = list(chisquare(value_counts.values))
 
     check_composition = config["vars"]["cat"]["check_composition"].get(bool)
     if check_composition:
