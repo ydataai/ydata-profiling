@@ -29,7 +29,7 @@ def test_html_image():
     alt_str = "Example Image"
 
     # Without caption
-    item = HTMLImage(image=image_str, alt=alt_str)
+    item = HTMLImage(image=image_str, image_format="gif", alt=alt_str)
     assert str(item) == "HTMLImage"
     html = item.render()
     assert all(
@@ -41,7 +41,9 @@ def test_html_image():
     )
 
     # With caption
-    item_caption = HTMLImage(image=image_str, alt=alt_str, caption=caption_str)
+    item_caption = HTMLImage(
+        image=image_str, image_format="gif", alt=alt_str, caption=caption_str
+    )
     assert str(item_caption) == "HTMLImage"
     html_caption = item_caption.render()
     assert all(

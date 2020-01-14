@@ -83,6 +83,11 @@ class Message(object):
             )
         return name
 
+    def __repr__(self):
+        return "[{message_type}] warning on column {column}".format(
+            message_type=self.message_type.name, column=self.column_name
+        )
+
 
 def check_table_messages(table: dict) -> List[Message]:
     """Checks the overall dataset for warnings.
