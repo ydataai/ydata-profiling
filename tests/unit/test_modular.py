@@ -6,10 +6,14 @@ import pandas_profiling
 
 
 @pytest.fixture
-def df():
-    df = pd.read_csv(
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD"
+def df(get_data_file):
+    file_name = get_data_file(
+        "meteorites.csv",
+        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
     )
+
+    df = pd.read_csv(file_name)
+
     # Note: Pandas does not support dates before 1880, so we ignore these for this analysis
     df["year"] = pd.to_datetime(df["year"], errors="coerce")
 

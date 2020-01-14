@@ -2,18 +2,15 @@ from pathlib import Path
 
 import pandas as pd
 import numpy as np
-import requests
 
 from pandas_profiling import ProfileReport
-
+from pandas_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
-    file_name = Path("rows.csv")
-    if not file_name.exists():
-        data = requests.get(
-            "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD"
-        )
-        file_name.write_bytes(data.content)
+    file_name = cache_file(
+        "meteorites.csv",
+        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+    )
 
     df = pd.read_csv(file_name)
     # Note: Pandas does not support dates before 1880, so we ignore these for this analysis

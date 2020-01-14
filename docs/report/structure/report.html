@@ -26,8 +26,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Generate the report.&#34;&#34;&#34;
+from datetime import datetime
 
 import pandas_profiling.visualisation.plot as plot
+from pandas_profiling.config import config
 from pandas_profiling.model.base import (
     Boolean,
     Real,
@@ -65,11 +67,18 @@ from pandas_profiling.report.presentation.core import (
 
 
 def get_missing_items(summary) -&gt; list:
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     items = []
     for key, item in summary[&#34;missing&#34;].items():
         items.append(
             # TODO: Add informative caption
-            Image(item[&#34;matrix&#34;], alt=item[&#34;name&#34;], name=item[&#34;name&#34;], anchor_id=key)
+            Image(
+                item[&#34;matrix&#34;],
+                image_format=image_format,
+                alt=item[&#34;name&#34;],
+                name=item[&#34;name&#34;],
+                anchor_id=key,
+            )
         )
 
     return items
@@ -95,12 +104,15 @@ def get_correlation_items(summary) -&gt; list:
         &#34;recoded&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Recoded&#34;},
     }
 
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
     for key, item in summary[&#34;correlations&#34;].items():
         vmin = key_to_data[key][&#34;vmin&#34;]
         name = key_to_data[key][&#34;name&#34;]
         items.append(
             Image(
                 plot.correlation_matrix(item, vmin=vmin),
+                image_format=image_format,
                 alt=name,
                 anchor_id=key,
                 name=name,
@@ -206,7 +218,9 @@ def get_sample_items(sample: dict):
     return items
 
 
-def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
+def get_report_structure(
+    date_start: datetime, date_end: datetime, sample: dict, summary: dict
+) -&gt; Renderable:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -221,7 +235,8 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
         [
             Dataset(
                 package=summary[&#34;package&#34;],
-                date=date,
+                date_start=date_start,
+                date_end=date_end,
                 values=summary[&#34;table&#34;],
                 messages=summary[&#34;messages&#34;],
                 variables=summary[&#34;variables&#34;],
@@ -303,12 +318,15 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
         &#34;recoded&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Recoded&#34;},
     }
 
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
     for key, item in summary[&#34;correlations&#34;].items():
         vmin = key_to_data[key][&#34;vmin&#34;]
         name = key_to_data[key][&#34;name&#34;]
         items.append(
             Image(
                 plot.correlation_matrix(item, vmin=vmin),
+                image_format=image_format,
                 alt=name,
                 anchor_id=key,
                 name=name,
@@ -328,18 +346,25 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_missing_items(summary) -&gt; list:
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     items = []
     for key, item in summary[&#34;missing&#34;].items():
         items.append(
             # TODO: Add informative caption
-            Image(item[&#34;matrix&#34;], alt=item[&#34;name&#34;], name=item[&#34;name&#34;], anchor_id=key)
+            Image(
+                item[&#34;matrix&#34;],
+                image_format=image_format,
+                alt=item[&#34;name&#34;],
+                name=item[&#34;name&#34;],
+                anchor_id=key,
+            )
         )
 
     return items</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_report_structure"><code class="name flex">
-<span>def <span class="ident">get_report_structure</span></span>(<span>date, sample, summary)</span>
+<span>def <span class="ident">get_report_structure</span></span>(<span>date_start, date_end, sample, summary)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Generate a HTML report from summary statistics and a given sample.</p>
@@ -359,7 +384,9 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
+<pre><code class="python">def get_report_structure(
+    date_start: datetime, date_end: datetime, sample: dict, summary: dict
+) -&gt; Renderable:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -374,7 +401,8 @@ def get_report_structure(date, sample: dict, summary: dict) -&gt; Renderable:
         [
             Dataset(
                 package=summary[&#34;package&#34;],
-                date=date,
+                date_start=date_start,
+                date_end=date_end,
                 values=summary[&#34;table&#34;],
                 messages=summary[&#34;messages&#34;],
                 variables=summary[&#34;variables&#34;],

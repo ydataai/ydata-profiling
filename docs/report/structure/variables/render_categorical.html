@@ -41,6 +41,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 
 def render_categorical(summary):
     n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     template_variables = render_common(summary)
 
@@ -171,6 +172,7 @@ def render_categorical(summary):
 
         length = Image(
             histogram(summary[&#34;length&#34;], summary, histogram_bins),
+            image_format=image_format,
             alt=&#34;Scatter&#34;,
             name=&#34;Length&#34;,
             anchor_id=&#34;{varid}length&#34;.format(varid=summary[&#34;varid&#34;]),
@@ -204,6 +206,7 @@ def render_categorical(summary):
 </summary>
 <pre><code class="python">def render_categorical(summary):
     n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     template_variables = render_common(summary)
 
@@ -334,6 +337,7 @@ def render_categorical(summary):
 
         length = Image(
             histogram(summary[&#34;length&#34;], summary, histogram_bins),
+            image_format=image_format,
             alt=&#34;Scatter&#34;,
             name=&#34;Length&#34;,
             anchor_id=&#34;{varid}length&#34;.format(varid=summary[&#34;varid&#34;]),

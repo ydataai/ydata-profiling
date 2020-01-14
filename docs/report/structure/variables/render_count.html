@@ -24,7 +24,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from pandas_profiling.report.formatters import fmt_array
+<pre><code class="python">from pandas_profiling.config import config
+from pandas_profiling.report.formatters import fmt_array
 from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
     FrequencyTable,
@@ -39,6 +40,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 
 def render_count(summary):
     template_variables = render_common(summary)
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
     info = Overview(
@@ -81,7 +83,8 @@ def render_count(summary):
     # TODO: replace with SmallImage...
     mini_histo = Image(
         mini_histogram(summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]),
-        &#34;Mini histogram&#34;,
+        image_format=image_format,
+        alt=&#34;Mini histogram&#34;,
     )
 
     template_variables[&#34;top&#34;] = Sequence(
@@ -151,6 +154,7 @@ def render_count(summary):
     seqs = [
         Image(
             histogram(summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]),
+            image_format=image_format,
             alt=&#34;Histogram&#34;,
             caption=&#34;&lt;strong&gt;Histogram with fixed size bins&lt;/strong&gt; (bins={})&#34;.format(
                 summary[&#34;histogram_bins&#34;]
@@ -191,6 +195,7 @@ def render_count(summary):
                 summary,
                 summary[&#34;histogram_bins_bayesian_blocks&#34;],
             ),
+            image_format=image_format,
             alt=&#34;Histogram&#34;,
             caption=&#39;&lt;strong&gt;Histogram with variable size bins&lt;/strong&gt; (bins={}, &lt;a href=&#34;https://ui.adsabs.harvard.edu/abs/2013ApJ...764..167S/abstract&#34; target=&#34;_blank&#34;&gt;&#34;bayesian blocks&#34;&lt;/a&gt; binning strategy used)&#39;.format(
                 fmt_array(summary[&#34;histogram_bins_bayesian_blocks&#34;], threshold=5)
@@ -235,6 +240,7 @@ def render_count(summary):
 </summary>
 <pre><code class="python">def render_count(summary):
     template_variables = render_common(summary)
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
     info = Overview(
@@ -277,7 +283,8 @@ def render_count(summary):
     # TODO: replace with SmallImage...
     mini_histo = Image(
         mini_histogram(summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]),
-        &#34;Mini histogram&#34;,
+        image_format=image_format,
+        alt=&#34;Mini histogram&#34;,
     )
 
     template_variables[&#34;top&#34;] = Sequence(
@@ -347,6 +354,7 @@ def render_count(summary):
     seqs = [
         Image(
             histogram(summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]),
+            image_format=image_format,
             alt=&#34;Histogram&#34;,
             caption=&#34;&lt;strong&gt;Histogram with fixed size bins&lt;/strong&gt; (bins={})&#34;.format(
                 summary[&#34;histogram_bins&#34;]
@@ -387,6 +395,7 @@ def render_count(summary):
                 summary,
                 summary[&#34;histogram_bins_bayesian_blocks&#34;],
             ),
+            image_format=image_format,
             alt=&#34;Histogram&#34;,
             caption=&#39;&lt;strong&gt;Histogram with variable size bins&lt;/strong&gt; (bins={}, &lt;a href=&#34;https://ui.adsabs.harvard.edu/abs/2013ApJ...764..167S/abstract&#34; target=&#34;_blank&#34;&gt;&#34;bayesian blocks&#34;&lt;/a&gt; binning strategy used)&#39;.format(
                 fmt_array(summary[&#34;histogram_bins_bayesian_blocks&#34;], threshold=5)

@@ -5,14 +5,16 @@
 import pandas as pd
 
 from pandas_profiling import ProfileReport
-
+from pandas_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
-    # Download the UCI Bank Marketing Dataset
-    df = pd.read_csv(
+    file_name = cache_file(
+        "bank-full.csv",
         "https://storage.googleapis.com/erwinh-public-data/bankingdata/bank-full.csv",
-        sep=";",
     )
+
+    # Download the UCI Bank Marketing Dataset
+    df = pd.read_csv(file_name, sep=";")
 
     profile = ProfileReport(
         df, title="Profile Report of the UCI Bank Marketing Dataset"

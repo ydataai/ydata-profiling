@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
-<title>pandas_profiling.report.presentation.core.dataset API documentation</title>
+<title>pandas_profiling.utils.cache API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,37 +17,28 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.report.presentation.core.dataset</code></h1>
+<h1 class="title">Module <code>pandas_profiling.utils.cache</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
+<pre><code class="python">import requests
 
-from pandas_profiling.report.presentation.abstract.item_renderer import ItemRenderer
+from pandas_profiling.utils.paths import get_data_path
 
 
-class Dataset(ItemRenderer):
-    def __init__(
-        self, package, date_start, date_end, values, messages, variables, **kwargs
-    ):
-        super().__init__(
-            &#34;dataset&#34;,
-            {
-                &#34;date_start&#34;: date_start,
-                &#34;date_end&#34;: date_end,
-                &#34;values&#34;: values,
-                &#34;messages&#34;: messages,
-                &#34;variables&#34;: variables,
-                &#34;package&#34;: package,
-            },
-            **kwargs
-        )
+def cache_file(file_name, url):
+    # Cache all datasets here
+    data_path = get_data_path()
+    data_path.mkdir(exist_ok=True)
 
-    def render(self) -&gt; Any:
-        raise NotImplementedError()</code></pre>
+    # If not exists, download and create file
+    if not (data_path / file_name).exists():
+        data = requests.get(url)
+        (data_path / file_name).write_bytes(data.content)
+    return data_path / file_name</code></pre>
 </details>
 </section>
 <section>
@@ -55,57 +46,10 @@ class Dataset(ItemRenderer):
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.report.presentation.core.dataset.Dataset"><code class="flex name class">
-<span>class <span class="ident">Dataset</span></span>
-<span>(</span><span>package, date_start, date_end, values, messages, variables, **kwargs)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Dataset(ItemRenderer):
-    def __init__(
-        self, package, date_start, date_end, values, messages, variables, **kwargs
-    ):
-        super().__init__(
-            &#34;dataset&#34;,
-            {
-                &#34;date_start&#34;: date_start,
-                &#34;date_end&#34;: date_end,
-                &#34;values&#34;: values,
-                &#34;messages&#34;: messages,
-                &#34;variables&#34;: variables,
-                &#34;package&#34;: package,
-            },
-            **kwargs
-        )
-
-    def render(self) -&gt; Any:
-        raise NotImplementedError()</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer" href="../abstract/item_renderer.html#pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer">ItemRenderer</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.flavours.html.dataset.HTMLDataset" href="../flavours/html/dataset.html#pandas_profiling.report.presentation.flavours.html.dataset.HTMLDataset">HTMLDataset</a></li>
-<li><a title="pandas_profiling.report.presentation.flavours.qt.dataset.QtDataset" href="../flavours/qt/dataset.html#pandas_profiling.report.presentation.flavours.qt.dataset.QtDataset">QtDataset</a></li>
-<li><a title="pandas_profiling.report.presentation.flavours.widget.dataset.WidgetDataset" href="../flavours/widget/dataset.html#pandas_profiling.report.presentation.flavours.widget.dataset.WidgetDataset">WidgetDataset</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="pandas_profiling.report.presentation.core.dataset.Dataset.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<dt id="pandas_profiling.utils.cache.cache_file"><code class="name flex">
+<span>def <span class="ident">cache_file</span></span>(<span>file_name, url)</span>
 </code></dt>
 <dd>
 <section class="desc"></section>
@@ -113,13 +57,21 @@ inheritance.</p></section>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self) -&gt; Any:
-    raise NotImplementedError()</code></pre>
+<pre><code class="python">def cache_file(file_name, url):
+    # Cache all datasets here
+    data_path = get_data_path()
+    data_path.mkdir(exist_ok=True)
+
+    # If not exists, download and create file
+    if not (data_path / file_name).exists():
+        data = requests.get(url)
+        (data_path / file_name).write_bytes(data.content)
+    return data_path / file_name</code></pre>
 </details>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -130,17 +82,12 @@ inheritance.</p></section>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pandas_profiling.report.presentation.core" href="index.html">pandas_profiling.report.presentation.core</a></code></li>
+<li><code><a title="pandas_profiling.utils" href="index.html">pandas_profiling.utils</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="pandas_profiling.report.presentation.core.dataset.Dataset" href="#pandas_profiling.report.presentation.core.dataset.Dataset">Dataset</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pandas_profiling.report.presentation.core.dataset.Dataset.render" href="#pandas_profiling.report.presentation.core.dataset.Dataset.render">render</a></code></li>
-</ul>
-</li>
+<li><code><a title="pandas_profiling.utils.cache.cache_file" href="#pandas_profiling.utils.cache.cache_file">cache_file</a></code></li>
 </ul>
 </li>
 </ul>

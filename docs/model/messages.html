@@ -102,6 +102,11 @@ class Message(object):
         self.column_name = column_name
         self.anchor_id = hash(column_name)
 
+    def __repr__(self):
+        return &#34;[{message_type}] warning on column {column}&#34;.format(
+            message_type=self.message_type.name, column=self.column_name
+        )
+
 
 def check_table_messages(table: dict) -&gt; List[Message]:
     &#34;&#34;&#34;Checks the overall dataset for warnings.
@@ -564,7 +569,12 @@ def warning_type_date(series):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self.anchor_id = hash(column_name)</code></pre>
+        self.anchor_id = hash(column_name)
+
+    def __repr__(self):
+        return &#34;[{message_type}] warning on column {column}&#34;.format(
+            message_type=self.message_type.name, column=self.column_name
+        )</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType"><code class="flex name class">

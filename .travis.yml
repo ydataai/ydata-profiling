@@ -1,7 +1,10 @@
 sudo: required
 dist: bionic
 language: python
-cache: pip
+cache:
+  directories:
+    - data/
+  pip
 
 python:
   - "3.5"
