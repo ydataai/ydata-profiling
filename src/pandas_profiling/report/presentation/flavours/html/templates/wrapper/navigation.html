@@ -10,6 +10,12 @@
                 <span class="icon-bar"></span>
             </button>
 
+            {% if logo | length > 0 %}
+              <a class="navbar-brand" href="#top">
+                <img alt="Logo" src="{{ logo }}" style="max-height: 20px;">
+              </a>
+            {% endif %}
+
             <a class="navbar-brand anchor" href="#top">{{ title }}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
