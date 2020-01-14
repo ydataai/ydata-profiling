@@ -5,7 +5,15 @@ from pandas_profiling.report.presentation.abstract.item_renderer import ItemRend
 
 class Dataset(ItemRenderer):
     def __init__(
-        self, package, date_start, date_end, values, messages, collapse_warnings, variables, **kwargs
+        self,
+        package,
+        date_start,
+        date_end,
+        values,
+        messages,
+        collapse_warnings,
+        variables,
+        **kwargs
     ):
         super().__init__(
             "dataset",
