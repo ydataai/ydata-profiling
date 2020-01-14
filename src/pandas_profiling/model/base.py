@@ -33,20 +33,8 @@ class Variable(Enum):
 
     TYPE_COMPLEX = "COMPLEX"
 
-    S_TYPE_CONST = "CONST"
-    """A constant variable"""
-
-    S_TYPE_UNIQUE = "UNIQUE"
-    """An unique variable"""
-
     S_TYPE_UNSUPPORTED = "UNSUPPORTED"
     """An unsupported variable"""
-
-    S_TYPE_CORR = "CORR"
-    """A highly correlated variable"""
-
-    S_TYPE_REJECTED = "REJECTED"
-    """A rejected variable"""
 
 
 # Temporary mapping
