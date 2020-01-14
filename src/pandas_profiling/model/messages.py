@@ -18,7 +18,7 @@ from pandas_profiling.model.base import Variable
 class MessageType(Enum):
     """Message Types"""
 
-    CONST = 1
+    CONSTANT = 1
     """This variable has a constant value."""
 
     ZEROS = 2
@@ -57,7 +57,7 @@ class MessageType(Enum):
     CONSTANT_LENGTH = 13
     """This variable has a constant length"""
 
-    REJECTED = 15
+    REJECTED = 14
     """Variables are rejected if we do not want to consider them for further analysis."""
 
 
@@ -85,8 +85,7 @@ class Message(object):
         name = self.message_type.name.replace("_", " ")
         if name == "HIGH CORRELATION":
             name = '<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'.format(
-                num=len(self.values["fields"]),
-                title=", ".join(self.values["fields"]),
+                num=len(self.values["fields"]), title=", ".join(self.values["fields"])
             )
         return name
 
@@ -155,9 +154,18 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         messages.append(
             Message(
                 column_name=col,
-                message_type=MessageType.CONST,
+                message_type=MessageType.CONSTANT,
                 values=description,
                 fields={"n_unique"},
+            )
+        )
+
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
             )
         )
 
@@ -179,6 +187,17 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 message_type=MessageType.INFINITE,
                 values=description,
                 fields={"p_infinite", "n_infinite"},
+            )
+        )
+
+    # Unsupported
+    if description["type"] == Variable.S_TYPE_UNSUPPORTED:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
             )
         )
 
@@ -217,7 +236,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
 
     # Numerical
-    if description["type"] in {Variable.TYPE_NUM}:
+    if description["type"] == Variable.TYPE_NUM:
         # Skewness
         if warning_skewness(description["skewness"]):
             messages.append(

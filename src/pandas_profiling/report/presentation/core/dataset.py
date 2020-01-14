@@ -4,7 +4,9 @@ from pandas_profiling.report.presentation.abstract.item_renderer import ItemRend
 
 
 class Dataset(ItemRenderer):
-    def __init__(self, package, date, values, messages, collapse_warnings, variables, **kwargs):
+    def __init__(
+        self, package, date, values, messages, collapse_warnings, variables, **kwargs
+    ):
         super().__init__(
             "dataset",
             {

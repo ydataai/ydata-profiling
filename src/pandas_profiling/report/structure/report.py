@@ -148,8 +148,10 @@ def render_variables_section(dataframe_summary: dict) -> list:
         template_variables.update(type_to_func[summary["type"]](template_variables))
 
         # Ignore these
-        if config['reject_variables'].get(bool):
-            ignore = summary["type"] == Generic or MessageType.CONST.value in warnings
+        if config["reject_variables"].get(bool):
+            ignore = MessageType.REJECTED in {
+                warning.message_type for warning in warnings
+            }
         else:
             ignore = False
 
@@ -199,7 +201,7 @@ def get_report_structure(date, sample: dict, summary: dict) -> Renderable:
       The profile report in HTML format
     """
 
-    collapse_warnings = config['warnings']['collapse_if_more'].get(int)
+    collapse_warnings = config["warnings"]["collapse_if_more"].get(int)
     if collapse_warnings == 0:
         warnings = []
     else:

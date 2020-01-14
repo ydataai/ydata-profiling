@@ -110,7 +110,11 @@ class ProfileReport(object):
         return self.description_set
 
     def get_rejected_variables() -> list:
-        return [message.column_name for message in self.description_set['messages'] if message.message_type == MessageType.REJECTED]
+        return [
+            message.column_name
+            for message in self.description_set["messages"]
+            if message.message_type == MessageType.REJECTED
+        ]
 
     def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
