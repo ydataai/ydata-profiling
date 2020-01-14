@@ -12,8 +12,8 @@ def get_data_file(tmpdir):
         source_file = cache_file(file_name, url)
         # Move to temporary directory
         test_path = Path(str(tmpdir))
-        shutil.copy(source_file, test_path / file_name)
-        return test_path / file_name
+        shutil.copy(str(source_file), str(test_path / file_name))
+        return str(test_path / file_name)
 
     return getter
 
