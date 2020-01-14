@@ -150,7 +150,7 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <li><code>title</code> (<code>str</code>): Title for the report ('Pandas Profiling Report' by default).</li>
 <li><code>pool_size</code> (<code>int</code>): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).</li>
 </ul>
-<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_default.yaml">default configuration file</a>, <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_minimal.yaml">minimal configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_dark.yaml">dark themed configuration file</a>.</p>
+<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>, <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml">dark themed configuration file</a>.</p>
 <p><strong>Example</strong></p>
 <pre><code class="python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file(output_file=&quot;output.html&quot;)
@@ -263,11 +263,7 @@ import numpy as np
 
 from pandas_profiling.version import __version__
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
-from pandas_profiling.utils.paths import (
-    get_config_default,
-    get_project_root,
-    get_config_minimal,
-)
+from pandas_profiling.utils.paths import get_config_default, get_config_minimal
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
@@ -296,7 +292,7 @@ class ProfileReport(object):
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
-        self.date = datetime.utcnow()
+        self.date_start = datetime.utcnow()
 
         # Treat index as any other column
         if (
@@ -320,9 +316,13 @@ class ProfileReport(object):
 
         # Build report structure
         self.sample = self.get_sample(df)
-        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config[&#34;title&#34;].get(str)
         self.description_set = description_set
+
+        self.date_end = datetime.utcnow()
+        self.report = get_report_structure(
+            self.date_start, self.date_end, self.sample, description_set
+        )
 
     def sort_column_names(self, df):
         sort = config[&#34;sort&#34;].get(str)
@@ -471,7 +471,7 @@ class ProfileReport(object):
 
     def _repr_html_(self):
         &#34;&#34;&#34;The ipython notebook widgets user interface gets called by the jupyter notebook.&#34;&#34;&#34;
-        self.to_widgets()
+        self.to_notebook_iframe()
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
@@ -579,7 +579,7 @@ class ProfileReport(object):
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
-        self.date = datetime.utcnow()
+        self.date_start = datetime.utcnow()
 
         # Treat index as any other column
         if (
@@ -603,9 +603,13 @@ class ProfileReport(object):
 
         # Build report structure
         self.sample = self.get_sample(df)
-        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config[&#34;title&#34;].get(str)
         self.description_set = description_set
+
+        self.date_end = datetime.utcnow()
+        self.report = get_report_structure(
+            self.date_start, self.date_end, self.sample, description_set
+        )
 
     def sort_column_names(self, df):
         sort = config[&#34;sort&#34;].get(str)
@@ -754,7 +758,7 @@ class ProfileReport(object):
 
     def _repr_html_(self):
         &#34;&#34;&#34;The ipython notebook widgets user interface gets called by the jupyter notebook.&#34;&#34;&#34;
-        self.to_widgets()
+        self.to_notebook_iframe()
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
