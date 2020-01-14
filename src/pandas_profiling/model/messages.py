@@ -187,8 +187,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         # Constant length
         if (
             "composition" in description
-            and description["composition"]["min_length"]
-            == description["composition"]["max_length"]
+            and description["min_length"] == description["max_length"]
         ):
             messages.append(
                 Message(
