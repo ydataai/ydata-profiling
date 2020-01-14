@@ -1,3 +1,4 @@
+from pandas_profiling.config import config
 from pandas_profiling.report.formatters import fmt_array
 from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
@@ -13,6 +14,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 
 def render_count(summary):
     template_variables = render_common(summary)
+    image_format = config["plot"]["image_format"].get(str)
 
     # Top
     info = Overview(
@@ -55,7 +57,8 @@ def render_count(summary):
     # TODO: replace with SmallImage...
     mini_histo = Image(
         mini_histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
-        "Mini histogram",
+        image_format=image_format,
+        alt="Mini histogram",
     )
 
     template_variables["top"] = Sequence(
@@ -125,6 +128,7 @@ def render_count(summary):
     seqs = [
         Image(
             histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
+            image_format=image_format,
             alt="Histogram",
             caption="<strong>Histogram with fixed size bins</strong> (bins={})".format(
                 summary["histogram_bins"]
@@ -165,6 +169,7 @@ def render_count(summary):
                 summary,
                 summary["histogram_bins_bayesian_blocks"],
             ),
+            image_format=image_format,
             alt="Histogram",
             caption='<strong>Histogram with variable size bins</strong> (bins={}, <a href="https://ui.adsabs.harvard.edu/abs/2013ApJ...764..167S/abstract" target="_blank">"bayesian blocks"</a> binning strategy used)'.format(
                 fmt_array(summary["histogram_bins_bayesian_blocks"], threshold=5)

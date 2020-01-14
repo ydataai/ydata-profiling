@@ -1,6 +1,7 @@
 """Generate the report."""
 
 import pandas_profiling.visualisation.plot as plot
+from pandas_profiling.config import config
 from pandas_profiling.model.base import (
     Boolean,
     Real,
@@ -38,11 +39,18 @@ from pandas_profiling.report.presentation.core import (
 
 
 def get_missing_items(summary) -> list:
+    image_format = config["plot"]["image_format"].get(str)
     items = []
     for key, item in summary["missing"].items():
         items.append(
             # TODO: Add informative caption
-            Image(item["matrix"], alt=item["name"], name=item["name"], anchor_id=key)
+            Image(
+                item["matrix"],
+                image_format=image_format,
+                alt=item["name"],
+                name=item["name"],
+                anchor_id=key,
+            )
         )
 
     return items
@@ -68,12 +76,15 @@ def get_correlation_items(summary) -> list:
         "recoded": {"vmin": 0, "name": "Recoded"},
     }
 
+    image_format = config["plot"]["image_format"].get(str)
+
     for key, item in summary["correlations"].items():
         vmin = key_to_data[key]["vmin"]
         name = key_to_data[key]["name"]
         items.append(
             Image(
                 plot.correlation_matrix(item, vmin=vmin),
+                image_format=image_format,
                 alt=name,
                 anchor_id=key,
                 name=name,

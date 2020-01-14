@@ -17,6 +17,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 
 def render_categorical(summary):
     n_obs_cat = config["vars"]["cat"]["n_obs"].get(int)
+    image_format = config["plot"]["image_format"].get(str)
 
     template_variables = render_common(summary)
 

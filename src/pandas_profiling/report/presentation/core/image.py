@@ -4,9 +4,16 @@ from pandas_profiling.report.presentation.abstract.item_renderer import ItemRend
 
 
 class Image(ItemRenderer):
-    def __init__(self, image, alt, caption=None, **kwargs):
+    def __init__(self, image, image_format, alt, caption=None, **kwargs):
         super().__init__(
-            "image", {"image": image, "alt": alt, "caption": caption}, **kwargs
+            "image",
+            {
+                "image": image,
+                "image_format": image_format,
+                "alt": alt,
+                "caption": caption,
+            },
+            **kwargs
         )
 
     def render(self) -> Any:

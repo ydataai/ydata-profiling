@@ -221,7 +221,7 @@ class ProfileReport(object):
 
     def _repr_html_(self):
         """The ipython notebook widgets user interface gets called by the jupyter notebook."""
-        self.to_widgets()
+        self.to_notebook_iframe()
 
     def __repr__(self):
         """Override so that Jupyter Notebook does not print the object."""
