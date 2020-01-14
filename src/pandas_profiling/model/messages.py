@@ -60,6 +60,9 @@ class MessageType(Enum):
     REJECTED = 15
     """Variables are rejected if we do not want to consider them for further analysis."""
 
+    UNIFORM = 14
+    """The variable is uniformly distributed"""
+
 
 class Message(object):
     """A message object (type, values, column)."""
@@ -208,6 +211,15 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
+        # Uniformity
+        chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
+            float
+        )
+        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # High cardinality
         if description["distinct_count"] > config["vars"]["cat"][
             "cardinality_threshold"
@@ -247,6 +259,16 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                     fields={"skewness"},
                 )
             )
+
+        # Uniformity
+        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
+            float
+        )
+        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # Zeros
         if warning_value(description["p_zeros"]):
             messages.append(

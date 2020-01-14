@@ -46,7 +46,7 @@ class ProfileReport(object):
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
-        self.date = datetime.utcnow()
+        self.date_start = datetime.utcnow()
 
         # Treat index as any other column
         if (
@@ -70,9 +70,13 @@ class ProfileReport(object):
 
         # Build report structure
         self.sample = self.get_sample(df)
-        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config["title"].get(str)
         self.description_set = description_set
+
+        self.date_end = datetime.utcnow()
+        self.report = get_report_structure(
+            self.date_start, self.date_end, self.sample, description_set
+        )
 
     def sort_column_names(self, df):
         sort = config["sort"].get(str)
