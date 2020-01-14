@@ -129,17 +129,24 @@ def render_variables_section(dataframe_summary: dict) -> list:
             if warning.column_name == idx
         ]
 
-        warn_fields = [
+        warning_fields = {
             field
             for warning in dataframe_summary["messages"]
             if warning.column_name == idx
             for field in warning.fields
-        ]
+        }
+
+        warning_types = {
+            warning.message_type
+            for warning in dataframe_summary["messages"]
+            if warning.column_name == idx
+        }
+
         template_variables = {
             "varname": idx,
             "varid": hash(idx),
             "warnings": warnings,
-            "warn_fields": warn_fields,
+            "warn_fields": warning_fields,
         }
 
         template_variables.update(summary)
@@ -149,9 +156,7 @@ def render_variables_section(dataframe_summary: dict) -> list:
 
         # Ignore these
         if config["reject_variables"].get(bool):
-            ignore = MessageType.REJECTED in {
-                warning.message_type for warning in warnings
-            }
+            ignore = MessageType.REJECTED in warning_types
         else:
             ignore = False
 

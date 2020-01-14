@@ -57,7 +57,7 @@ class MessageType(Enum):
     CONSTANT_LENGTH = 13
     """This variable has a constant length"""
 
-    REJECTED = 14
+    REJECTED = 15
     """Variables are rejected if we do not want to consider them for further analysis."""
 
 

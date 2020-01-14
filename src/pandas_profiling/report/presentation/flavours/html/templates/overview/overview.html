@@ -95,7 +95,7 @@
             <table class="table table-condensed list-warnings">
                 {% for message in messages %}
                     <tr>
-                      {% include 'overview/warnings/warning_' + message.message_type.name | lower  + '.html'  %}
+                      {% include 'overview/warnings/warning_' + message.message_type.name | lower  + '.html' ignore missing  %}
                     </tr>
                 {% endfor %}
             </table>
