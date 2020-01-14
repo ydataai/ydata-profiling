@@ -121,5 +121,6 @@ html:
 # Styling options for the HTML report
     style:
       full_width: True
+      logo: ""
       theme: "flatly"
       primary_color: "#2c3e50"

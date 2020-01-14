@@ -168,6 +168,7 @@ class ProfileReport(object):
             version=__version__,
             offline=use_local_assets,
             primary_color=config["html"]["style"]["primary_color"].get(str),
+            logo=config["html"]["style"]["logo"].get(str),
             theme=config["html"]["style"]["theme"].get(str),
         )
 
