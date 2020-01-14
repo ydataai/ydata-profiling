@@ -73,6 +73,16 @@ class Message(object):
         self.column_name = column_name
         self.anchor_id = hash(column_name)
 
+    def fmt(self):
+        # TODO: render in template
+        name = self.message_type.name.replace("_", " ")
+        if name == "HIGH CORRELATION":
+            name = '<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'.format(
+                num=len(self.values["fields"]),
+                title=", ".join(self.values["fields"]),
+            )
+        return name
+
 
 def check_table_messages(table: dict) -> List[Message]:
     """Checks the overall dataset for warnings.

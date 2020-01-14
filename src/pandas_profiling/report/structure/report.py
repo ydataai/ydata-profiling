@@ -1,6 +1,7 @@
 """Generate the report."""
 
 import pandas_profiling.visualisation.plot as plot
+from pandas_profiling.config import config
 from pandas_profiling.model.base import (
     Boolean,
     Real,
@@ -110,22 +111,13 @@ def render_variables_section(dataframe_summary: dict) -> list:
     templs = []
 
     for idx, summary in dataframe_summary["variables"].items():
-        # TODO: move to render
         # Common template variables
-        def fmt_warning(warning):
-            name = warning.message_type.name.replace("_", " ")
-            if name == "HIGH CORRELATION":
-                name = '<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'.format(
-                    num=len(warning.values["fields"]),
-                    title=", ".join(warning.values["fields"]),
-                )
-            return name
-
         warnings = [
-            fmt_warning(warning)
+            warning.fmt()
             for warning in dataframe_summary["messages"]
             if warning.column_name == idx
         ]
+
         warn_fields = [
             field
             for warning in dataframe_summary["messages"]
@@ -144,13 +136,18 @@ def render_variables_section(dataframe_summary: dict) -> list:
         # Per type template variables
         template_variables.update(type_to_func[summary["type"]](template_variables))
 
+        if config['reject_variables'].get(bool):
+            ignore = "ignore" in template_variables
+        else:
+            ignore = False
+
         templs.append(
             Preview(
                 template_variables["top"],
                 template_variables["bottom"],
                 anchor_id=template_variables["varid"],
                 name=idx,
-                ignore="ignore" in template_variables,
+                ignore=ignore,
             )
         )
 
@@ -190,13 +187,20 @@ def get_report_structure(date, sample: dict, summary: dict) -> Renderable:
       The profile report in HTML format
     """
 
+    collapse_warnings = config['warnings']['collapse_if_more'].get(int)
+    if collapse_warnings == 0:
+        warnings = []
+    else:
+        warnings = summary["messages"]
+
     sections = Sequence(
         [
             Dataset(
                 package=summary["package"],
                 date=date,
                 values=summary["table"],
-                messages=summary["messages"],
+                messages=warnings,
+                collapse_warnings=len(warnings) > collapse_warnings,
                 variables=summary["variables"],
                 name="Overview",
                 anchor_id="overview",

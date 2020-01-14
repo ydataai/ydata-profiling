@@ -86,9 +86,18 @@ n_obs_unique: 5
 n_extreme_obs: 5
 n_freq_table_max: 10
 
+# Configuration related to the samples area
 samples:
     head: 10
     tail: 10
+
+# Configuration related to the warning overview (top) and per variable warnings
+warnings:
+    # Set to zero to disable showing warnings
+    collapse_if_more: 20
+
+# Configuration related to the rejection of variables
+reject_variables: True
 
 # When in a Jupyter notebook
 notebook:
