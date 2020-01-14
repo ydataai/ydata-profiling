@@ -1,19 +1,24 @@
 sudo: required
-dist: xenial
+dist: bionic
 language: python
 cache: pip
+
 python:
   - "3.5"
   - "3.6"
   - "3.7"
 
 env:
-  matrix:
-    - TEST=unit
-    - TEST=issue
-    - TEST=console
-    - TEST=examples
-    - TEST=lint
+  - TEST=unit
+  - TEST=issue
+  - TEST=console
+  - TEST=examples
+  - TEST=lint
+
+jobs:
+  exclude:
+    - python: "3.5"
+      env: TEST=examples
 
 install:
   - pip install --upgrade pip six
@@ -24,7 +29,7 @@ install:
 script:
   - if [ $TEST == 'unit' ]; then pytest --cov=. tests/unit/; fi
   - if [ $TEST == 'issue' ]; then pytest --cov=. tests/issues/; fi
-  - if [ $TEST == 'examples' ]; then pytest --nbval --cov=. --sanitize-with tests/sanitize-notebook.cfg examples/; fi
+  - if [ $TEST == 'examples' ]; then pytest --cov=. --nbval --sanitize-with tests/sanitize-notebook.cfg examples/; fi
   - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
   - if [ $TEST == 'lint' ]; then pytest --black -m black src/; fi
 
