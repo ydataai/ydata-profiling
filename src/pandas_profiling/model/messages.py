@@ -52,6 +52,10 @@ class MessageType(Enum):
     """This variable is likely a datetime, but treated as categorical."""
 
     UNIQUE = 12
+    """This variable has unique values."""
+
+    CONSTANT_LENGTH = 13
+    """This variable has a constant length"""
 
     REJECTED = 15
     """Variables are rejected if we do not want to consider them for further analysis."""
@@ -164,7 +168,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         )
 
     # Categorical
-    if description["type"] in {Variable.TYPE_CAT}:
+    if description["type"] == Variable.TYPE_CAT:
         if description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
@@ -180,6 +184,20 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                     message_type=MessageType.HIGH_CARDINALITY,
                     values=description,
                     fields={"n_unique"},
+                )
+            )
+
+        # Constant length
+        if (
+            "composition" in description
+            and description["min_length"] == description["max_length"]
+        ):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.CONSTANT_LENGTH,
+                    values=description,
+                    fields={"composition_min_length", "composition_max_length"},
                 )
             )
 

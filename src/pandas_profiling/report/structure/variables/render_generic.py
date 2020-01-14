@@ -37,7 +37,6 @@ def render_generic(summary):
     return {
         "top": Sequence([info, table, HTML("")], sequence_type="grid"),
         "bottom": None,
-        "ignore": "ignore",
     }
 
     # Add class Ignore

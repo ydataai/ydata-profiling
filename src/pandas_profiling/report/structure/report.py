@@ -14,6 +14,7 @@ from pandas_profiling.model.base import (
     ImagePath,
     Generic,
 )
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.structure.variables import (
     render_boolean,
     render_categorical,
@@ -144,13 +145,16 @@ def render_variables_section(dataframe_summary: dict) -> list:
         # Per type template variables
         template_variables.update(type_to_func[summary["type"]](template_variables))
 
+        # Ignore these
+        ignore = summary["type"] == Generic or MessageType.CONST.value in warnings
+
         templs.append(
             Preview(
                 template_variables["top"],
                 template_variables["bottom"],
                 anchor_id=template_variables["varid"],
                 name=idx,
-                ignore="ignore" in template_variables,
+                ignore=ignore,
             )
         )
 
