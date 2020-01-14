@@ -44,15 +44,15 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
 
     try:
         if image_format == "svg":
-            image_data = StringIO()
-            plt.savefig(image_data, format=image_format)
-            image_data.seek(0)
-            result_string = image_data.getvalue()
+            image_str = StringIO()
+            plt.savefig(image_str, format=image_format)
+            image_str.seek(0)
+            result_string = image_str.getvalue()
         else:
-            image_data = BytesIO()
-            plt.savefig(image_data, dpi=dpi, format=image_format)
-            image_data.seek(0)
-            base64_data = base64.b64encode(image_data.getvalue())
+            image_bytes = BytesIO()
+            plt.savefig(image_bytes, dpi=dpi, format=image_format)
+            image_bytes.seek(0)
+            base64_data = base64.b64encode(image_bytes.getvalue())
             result_string = "data:{mime_type};base64,{image_data}".format(
                 mime_type=mime_types[image_format], image_data=quote(base64_data)
             )

@@ -1,6 +1,6 @@
 # As featured on this Google Cloud Platform page:
 # https://cloud.google.com/solutions/building-a-propensity-model-for-financial-services-on-gcp
-
+from pathlib import Path
 
 import pandas as pd
 
@@ -17,4 +17,4 @@ if __name__ == "__main__":
     profile = ProfileReport(
         df, title="Profile Report of the UCI Bank Marketing Dataset"
     )
-    profile.to_file("uci_bank_marketing_report.html")
+    profile.to_file(Path("uci_bank_marketing_report.html"))
