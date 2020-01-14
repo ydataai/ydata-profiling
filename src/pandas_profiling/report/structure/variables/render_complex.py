@@ -1,3 +1,4 @@
+from pandas_profiling.config import config
 from pandas_profiling.visualisation.plot import scatter_complex
 from pandas_profiling.report.presentation.core import (
     HTML,
@@ -11,6 +12,7 @@ from pandas_profiling.report.presentation.core import (
 
 def render_complex(summary):
     template_variables = {}
+    image_format = config["plot"]["image_format"].get(str)
 
     # Top
     info = Overview(
@@ -58,6 +60,7 @@ def render_complex(summary):
     items = [
         Image(
             scatter_complex(summary["scatter_data"]),
+            image_format=image_format,
             alt="Scatterplot",
             caption="Scatterplot in the complex plane",
             name="Scatter",

@@ -1,3 +1,4 @@
+from pandas_profiling.config import config
 from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
     Image,
@@ -11,6 +12,9 @@ from pandas_profiling.report.presentation.core import (
 def render_date(summary):
     # TODO: render common?
     template_variables = {}
+
+    image_format = config["plot"]["image_format"].get(str)
+
     # Top
     info = Overview(summary["varid"], summary["varname"], "Date", [])
 
@@ -45,7 +49,8 @@ def render_date(summary):
 
     mini_histo = Image(
         mini_histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
-        "Mini histogram",
+        image_format=image_format,
+        alt="Mini histogram",
     )
 
     template_variables["top"] = Sequence(
@@ -59,6 +64,7 @@ def render_date(summary):
                 histogram(
                     summary["histogram_data"], summary, summary["histogram_bins"]
                 ),
+                image_format=image_format,
                 alt="Histogram",
                 caption="Histogram",
                 name="Histogram",

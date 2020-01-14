@@ -1,6 +1,7 @@
 """Generate the report."""
 
 import pandas_profiling.visualisation.plot as plot
+from pandas_profiling.config import config
 from pandas_profiling.model.base import (
     Boolean,
     Real,
@@ -39,11 +40,18 @@ from pandas_profiling.report.presentation.core import (
 
 
 def get_missing_items(summary) -> list:
+    image_format = config["plot"]["image_format"].get(str)
     items = []
     for key, item in summary["missing"].items():
         items.append(
             # TODO: Add informative caption
-            Image(item["matrix"], alt=item["name"], name=item["name"], anchor_id=key)
+            Image(
+                item["matrix"],
+                image_format=image_format,
+                alt=item["name"],
+                name=item["name"],
+                anchor_id=key,
+            )
         )
 
     return items
@@ -69,12 +77,15 @@ def get_correlation_items(summary) -> list:
         "recoded": {"vmin": 0, "name": "Recoded"},
     }
 
+    image_format = config["plot"]["image_format"].get(str)
+
     for key, item in summary["correlations"].items():
         vmin = key_to_data[key]["vmin"]
         name = key_to_data[key]["name"]
         items.append(
             Image(
                 plot.correlation_matrix(item, vmin=vmin),
+                image_format=image_format,
                 alt=name,
                 anchor_id=key,
                 name=name,
@@ -111,22 +122,13 @@ def render_variables_section(dataframe_summary: dict) -> list:
     templs = []
 
     for idx, summary in dataframe_summary["variables"].items():
-        # TODO: move to render
         # Common template variables
-        def fmt_warning(warning):
-            name = warning.message_type.name.replace("_", " ")
-            if name == "HIGH CORRELATION":
-                name = '<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'.format(
-                    num=len(warning.values["fields"]),
-                    title=", ".join(warning.values["fields"]),
-                )
-            return name
-
         warnings = [
-            fmt_warning(warning)
+            warning.fmt()
             for warning in dataframe_summary["messages"]
             if warning.column_name == idx
         ]
+
         warn_fields = [
             field
             for warning in dataframe_summary["messages"]
@@ -146,7 +148,10 @@ def render_variables_section(dataframe_summary: dict) -> list:
         template_variables.update(type_to_func[summary["type"]](template_variables))
 
         # Ignore these
-        ignore = summary["type"] == Generic or MessageType.CONST.value in warnings
+        if config['reject_variables'].get(bool):
+            ignore = summary["type"] == Generic or MessageType.CONST.value in warnings
+        else:
+            ignore = False
 
         templs.append(
             Preview(
@@ -194,13 +199,20 @@ def get_report_structure(date, sample: dict, summary: dict) -> Renderable:
       The profile report in HTML format
     """
 
+    collapse_warnings = config['warnings']['collapse_if_more'].get(int)
+    if collapse_warnings == 0:
+        warnings = []
+    else:
+        warnings = summary["messages"]
+
     sections = Sequence(
         [
             Dataset(
                 package=summary["package"],
                 date=date,
                 values=summary["table"],
-                messages=summary["messages"],
+                messages=warnings,
+                collapse_warnings=len(warnings) > collapse_warnings,
                 variables=summary["variables"],
                 name="Overview",
                 anchor_id="overview",
