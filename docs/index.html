@@ -360,6 +360,13 @@ class ProfileReport(object):
         &#34;&#34;&#34;
         return self.description_set
 
+    def get_rejected_variables() -&gt; list:
+        return [
+            message.column_name
+            for message in self.description_set[&#34;messages&#34;]
+            if message.message_type == MessageType.REJECTED
+        ]
+
     def to_file(self, output_file: Path, silent: bool = True) -&gt; None:
         &#34;&#34;&#34;Write the report to a file.
         
@@ -413,6 +420,7 @@ class ProfileReport(object):
             version=__version__,
             offline=use_local_assets,
             primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+            logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
             theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
         )
 
@@ -639,6 +647,13 @@ class ProfileReport(object):
         &#34;&#34;&#34;
         return self.description_set
 
+    def get_rejected_variables() -&gt; list:
+        return [
+            message.column_name
+            for message in self.description_set[&#34;messages&#34;]
+            if message.message_type == MessageType.REJECTED
+        ]
+
     def to_file(self, output_file: Path, silent: bool = True) -&gt; None:
         &#34;&#34;&#34;Write the report to a file.
         
@@ -692,6 +707,7 @@ class ProfileReport(object):
             version=__version__,
             offline=use_local_assets,
             primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+            logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
             theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
         )
 
@@ -804,6 +820,23 @@ class ProfileReport(object):
         Dict containing a description for each variable in the DataFrame.
     &#34;&#34;&#34;
     return self.description_set</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.ProfileReport.get_rejected_variables"><code class="name flex">
+<span>def <span class="ident">get_rejected_variables</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_rejected_variables() -&gt; list:
+    return [
+        message.column_name
+        for message in self.description_set[&#34;messages&#34;]
+        if message.message_type == MessageType.REJECTED
+    ]</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.get_sample"><code class="name flex">
@@ -966,6 +999,7 @@ for using with frameworks.</p>
         version=__version__,
         offline=use_local_assets,
         primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+        logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
         theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
     )
 
@@ -1118,8 +1152,9 @@ the Iframe.</p>
 <ul>
 <li>
 <h4><code><a title="pandas_profiling.ProfileReport" href="#pandas_profiling.ProfileReport">ProfileReport</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="pandas_profiling.ProfileReport.get_description" href="#pandas_profiling.ProfileReport.get_description">get_description</a></code></li>
+<li><code><a title="pandas_profiling.ProfileReport.get_rejected_variables" href="#pandas_profiling.ProfileReport.get_rejected_variables">get_rejected_variables</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.get_sample" href="#pandas_profiling.ProfileReport.get_sample">get_sample</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.html" href="#pandas_profiling.ProfileReport.html">html</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.sort_column_names" href="#pandas_profiling.ProfileReport.sort_column_names">sort_column_names</a></code></li>

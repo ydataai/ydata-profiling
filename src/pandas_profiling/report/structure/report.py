@@ -16,6 +16,7 @@ from pandas_profiling.model.base import (
     ImagePath,
     Generic,
 )
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.structure.variables import (
     render_boolean,
     render_categorical,
@@ -122,33 +123,31 @@ def render_variables_section(dataframe_summary: dict) -> list:
     templs = []
 
     for idx, summary in dataframe_summary["variables"].items():
-        # TODO: move to render
         # Common template variables
-        def fmt_warning(warning):
-            name = warning.message_type.name.replace("_", " ")
-            if name == "HIGH CORRELATION":
-                name = '<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'.format(
-                    num=len(warning.values["fields"]),
-                    title=", ".join(warning.values["fields"]),
-                )
-            return name
-
         warnings = [
-            fmt_warning(warning)
+            warning.fmt()
             for warning in dataframe_summary["messages"]
             if warning.column_name == idx
         ]
-        warn_fields = [
+
+        warning_fields = {
             field
             for warning in dataframe_summary["messages"]
             if warning.column_name == idx
             for field in warning.fields
-        ]
+        }
+
+        warning_types = {
+            warning.message_type
+            for warning in dataframe_summary["messages"]
+            if warning.column_name == idx
+        }
+
         template_variables = {
             "varname": idx,
             "varid": hash(idx),
             "warnings": warnings,
-            "warn_fields": warn_fields,
+            "warn_fields": warning_fields,
         }
 
         template_variables.update(summary)
@@ -156,13 +155,19 @@ def render_variables_section(dataframe_summary: dict) -> list:
         # Per type template variables
         template_variables.update(type_to_func[summary["type"]](template_variables))
 
+        # Ignore these
+        if config["reject_variables"].get(bool):
+            ignore = MessageType.REJECTED in warning_types
+        else:
+            ignore = False
+
         templs.append(
             Preview(
                 template_variables["top"],
                 template_variables["bottom"],
                 anchor_id=template_variables["varid"],
                 name=idx,
-                ignore="ignore" in template_variables,
+                ignore=ignore,
             )
         )
 
@@ -240,6 +245,11 @@ def get_report_structure(
         name="Interactions",
         anchor_id="interactions",
     )
+    collapse_warnings = config["warnings"]["collapse_if_more"].get(int)
+    if collapse_warnings == 0:
+        warnings = []
+    else:
+        warnings = summary["messages"]
 
     sections = Sequence(
         [
@@ -248,7 +258,8 @@ def get_report_structure(
                 date_start=date_start,
                 date_end=date_end,
                 values=summary["table"],
-                messages=summary["messages"],
+                messages=warnings,
+                collapse_warnings=len(warnings) > collapse_warnings,
                 variables=summary["variables"],
                 name="Overview",
                 anchor_id="overview",

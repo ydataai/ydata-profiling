@@ -42,7 +42,7 @@ def test_example(get_data_file, test_output_dir):
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
     assert (
         type(profile.get_description()) == dict
-        and len(profile.get_description().items()) == 6
+        and len(profile.get_description().items()) == 7
     ), "Unexpected result"
     if sys.version_info[1] >= 6:
         assert list(profile.get_description()["variables"].keys()) == [

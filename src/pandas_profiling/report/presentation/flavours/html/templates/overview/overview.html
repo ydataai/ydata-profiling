@@ -55,7 +55,7 @@
         </a>
     </div>
 
-    <div id="reproduction" class="row collapse">
+    <div id="reproduction" class="row collapse" aria-expanded="false">
         <div class="col-sm-12">
             <p class="h2">Reproduction info</p>
             <table class="table table-condensed stats">
@@ -88,13 +88,13 @@
     {% if messages %}
     <div class="col-sm-12 text-right">
         <a role="button" data-toggle="collapse" data-target="#warnings"
-           aria-expanded="true" aria-controls="collapseExample" class="">
+           aria-expanded="{% if collapse_warnings %}false{% else %}true{% endif %}" aria-controls="collapseExample" class="">
             Toggle Warnings
         </a>
     </div>
 
-    <div id="warnings" class="row collapse in" aria-expanded="true">
-        <div class="col-sm-12" style="padding-left: 1em;">
+    <div id="warnings" class="row collapse{% if not collapse_warnings %} in{% endif %}" aria-expanded="{% if collapse_warnings %}false{% else %}true{% endif %}">
+        <div class="col-sm-12" style="padding-left: 1em;}">
             <p class="h2">Warnings</p>
             <table class="table table-condensed list-warnings">
                 {% for message in messages %}

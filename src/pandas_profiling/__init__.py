@@ -109,6 +109,13 @@ class ProfileReport(object):
         """
         return self.description_set
 
+    def get_rejected_variables() -> list:
+        return [
+            message.column_name
+            for message in self.description_set["messages"]
+            if message.message_type == MessageType.REJECTED
+        ]
+
     def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
         
@@ -162,6 +169,7 @@ class ProfileReport(object):
             version=__version__,
             offline=use_local_assets,
             primary_color=config["html"]["style"]["primary_color"].get(str),
+            logo=config["html"]["style"]["logo"].get(str),
             theme=config["html"]["style"]["theme"].get(str),
         )
 
