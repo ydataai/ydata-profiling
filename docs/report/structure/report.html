@@ -43,6 +43,7 @@ from pandas_profiling.model.base import (
     ImagePath,
     Generic,
 )
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.structure.variables import (
     render_boolean,
     render_categorical,
@@ -149,33 +150,31 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
     templs = []
 
     for idx, summary in dataframe_summary[&#34;variables&#34;].items():
-        # TODO: move to render
         # Common template variables
-        def fmt_warning(warning):
-            name = warning.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
-            if name == &#34;HIGH CORRELATION&#34;:
-                name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
-                    num=len(warning.values[&#34;fields&#34;]),
-                    title=&#34;, &#34;.join(warning.values[&#34;fields&#34;]),
-                )
-            return name
-
         warnings = [
-            fmt_warning(warning)
+            warning.fmt()
             for warning in dataframe_summary[&#34;messages&#34;]
             if warning.column_name == idx
         ]
-        warn_fields = [
+
+        warning_fields = {
             field
             for warning in dataframe_summary[&#34;messages&#34;]
             if warning.column_name == idx
             for field in warning.fields
-        ]
+        }
+
+        warning_types = {
+            warning.message_type
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+        }
+
         template_variables = {
             &#34;varname&#34;: idx,
             &#34;varid&#34;: hash(idx),
             &#34;warnings&#34;: warnings,
-            &#34;warn_fields&#34;: warn_fields,
+            &#34;warn_fields&#34;: warning_fields,
         }
 
         template_variables.update(summary)
@@ -183,13 +182,19 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
         # Per type template variables
         template_variables.update(type_to_func[summary[&#34;type&#34;]](template_variables))
 
+        # Ignore these
+        if config[&#34;reject_variables&#34;].get(bool):
+            ignore = MessageType.REJECTED in warning_types
+        else:
+            ignore = False
+
         templs.append(
             Preview(
                 template_variables[&#34;top&#34;],
                 template_variables[&#34;bottom&#34;],
                 anchor_id=template_variables[&#34;varid&#34;],
                 name=idx,
-                ignore=&#34;ignore&#34; in template_variables,
+                ignore=ignore,
             )
         )
 
@@ -218,6 +223,36 @@ def get_sample_items(sample: dict):
     return items
 
 
+def get_scatter_matrix(scatter_matrix):
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
+    titems = []
+    for x_col, y_cols in scatter_matrix.items():
+        items = []
+        for y_col, splot in y_cols.items():
+            items.append(
+                Image(
+                    splot,
+                    image_format=image_format,
+                    alt=&#34;{x_col} x {y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                    anchor_id=&#34;interactions_{x_col}_{y_col}&#34;.format(
+                        x_col=x_col, y_col=y_col
+                    ),
+                    name=&#34;{y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                )
+            )
+
+        titems.append(
+            Sequence(
+                items,
+                sequence_type=&#34;tabs&#34;,
+                name=x_col,
+                anchor_id=&#34;interactions_{x_col}&#34;.format(x_col=x_col),
+            )
+        )
+    return titems
+
+
 def get_report_structure(
     date_start: datetime, date_end: datetime, sample: dict, summary: dict
 ) -&gt; Renderable:
@@ -231,6 +266,18 @@ def get_report_structure(
       The profile report in HTML format
     &#34;&#34;&#34;
 
+    scatter = Sequence(
+        get_scatter_matrix(summary[&#34;scatter&#34;]),
+        sequence_type=&#34;tabs&#34;,
+        name=&#34;Interactions&#34;,
+        anchor_id=&#34;interactions&#34;,
+    )
+    collapse_warnings = config[&#34;warnings&#34;][&#34;collapse_if_more&#34;].get(int)
+    if collapse_warnings == 0:
+        warnings = []
+    else:
+        warnings = summary[&#34;messages&#34;]
+
     sections = Sequence(
         [
             Dataset(
@@ -238,7 +285,8 @@ def get_report_structure(
                 date_start=date_start,
                 date_end=date_end,
                 values=summary[&#34;table&#34;],
-                messages=summary[&#34;messages&#34;],
+                messages=warnings,
+                collapse_warnings=len(warnings) &gt; collapse_warnings,
                 variables=summary[&#34;variables&#34;],
                 name=&#34;Overview&#34;,
                 anchor_id=&#34;overview&#34;,
@@ -249,6 +297,7 @@ def get_report_structure(
                 name=&#34;Variables&#34;,
                 anchor_id=&#34;variables&#34;,
             ),
+            scatter,
             Sequence(
                 get_correlation_items(summary),
                 sequence_type=&#34;tabs&#34;,
@@ -397,6 +446,18 @@ def get_report_structure(
       The profile report in HTML format
     &#34;&#34;&#34;
 
+    scatter = Sequence(
+        get_scatter_matrix(summary[&#34;scatter&#34;]),
+        sequence_type=&#34;tabs&#34;,
+        name=&#34;Interactions&#34;,
+        anchor_id=&#34;interactions&#34;,
+    )
+    collapse_warnings = config[&#34;warnings&#34;][&#34;collapse_if_more&#34;].get(int)
+    if collapse_warnings == 0:
+        warnings = []
+    else:
+        warnings = summary[&#34;messages&#34;]
+
     sections = Sequence(
         [
             Dataset(
@@ -404,7 +465,8 @@ def get_report_structure(
                 date_start=date_start,
                 date_end=date_end,
                 values=summary[&#34;table&#34;],
-                messages=summary[&#34;messages&#34;],
+                messages=warnings,
+                collapse_warnings=len(warnings) &gt; collapse_warnings,
                 variables=summary[&#34;variables&#34;],
                 name=&#34;Overview&#34;,
                 anchor_id=&#34;overview&#34;,
@@ -415,6 +477,7 @@ def get_report_structure(
                 name=&#34;Variables&#34;,
                 anchor_id=&#34;variables&#34;,
             ),
+            scatter,
             Sequence(
                 get_correlation_items(summary),
                 sequence_type=&#34;tabs&#34;,
@@ -479,6 +542,45 @@ def get_report_structure(
     return items</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.report.structure.report.get_scatter_matrix"><code class="name flex">
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>scatter_matrix)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_scatter_matrix(scatter_matrix):
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
+    titems = []
+    for x_col, y_cols in scatter_matrix.items():
+        items = []
+        for y_col, splot in y_cols.items():
+            items.append(
+                Image(
+                    splot,
+                    image_format=image_format,
+                    alt=&#34;{x_col} x {y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                    anchor_id=&#34;interactions_{x_col}_{y_col}&#34;.format(
+                        x_col=x_col, y_col=y_col
+                    ),
+                    name=&#34;{y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                )
+            )
+
+        titems.append(
+            Sequence(
+                items,
+                sequence_type=&#34;tabs&#34;,
+                name=x_col,
+                anchor_id=&#34;interactions_{x_col}&#34;.format(x_col=x_col),
+            )
+        )
+    return titems</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.report.structure.report.render_variables_section"><code class="name flex">
 <span>def <span class="ident">render_variables_section</span></span>(<span>dataframe_summary)</span>
 </code></dt>
@@ -521,33 +623,31 @@ def get_report_structure(
     templs = []
 
     for idx, summary in dataframe_summary[&#34;variables&#34;].items():
-        # TODO: move to render
         # Common template variables
-        def fmt_warning(warning):
-            name = warning.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
-            if name == &#34;HIGH CORRELATION&#34;:
-                name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
-                    num=len(warning.values[&#34;fields&#34;]),
-                    title=&#34;, &#34;.join(warning.values[&#34;fields&#34;]),
-                )
-            return name
-
         warnings = [
-            fmt_warning(warning)
+            warning.fmt()
             for warning in dataframe_summary[&#34;messages&#34;]
             if warning.column_name == idx
         ]
-        warn_fields = [
+
+        warning_fields = {
             field
             for warning in dataframe_summary[&#34;messages&#34;]
             if warning.column_name == idx
             for field in warning.fields
-        ]
+        }
+
+        warning_types = {
+            warning.message_type
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+        }
+
         template_variables = {
             &#34;varname&#34;: idx,
             &#34;varid&#34;: hash(idx),
             &#34;warnings&#34;: warnings,
-            &#34;warn_fields&#34;: warn_fields,
+            &#34;warn_fields&#34;: warning_fields,
         }
 
         template_variables.update(summary)
@@ -555,13 +655,19 @@ def get_report_structure(
         # Per type template variables
         template_variables.update(type_to_func[summary[&#34;type&#34;]](template_variables))
 
+        # Ignore these
+        if config[&#34;reject_variables&#34;].get(bool):
+            ignore = MessageType.REJECTED in warning_types
+        else:
+            ignore = False
+
         templs.append(
             Preview(
                 template_variables[&#34;top&#34;],
                 template_variables[&#34;bottom&#34;],
                 anchor_id=template_variables[&#34;varid&#34;],
                 name=idx,
-                ignore=&#34;ignore&#34; in template_variables,
+                ignore=ignore,
             )
         )
 
@@ -590,6 +696,7 @@ def get_report_structure(
 <li><code><a title="pandas_profiling.report.structure.report.get_missing_items" href="#pandas_profiling.report.structure.report.get_missing_items">get_missing_items</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.get_report_structure" href="#pandas_profiling.report.structure.report.get_report_structure">get_report_structure</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.get_sample_items" href="#pandas_profiling.report.structure.report.get_sample_items">get_sample_items</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.report.get_scatter_matrix" href="#pandas_profiling.report.structure.report.get_scatter_matrix">get_scatter_matrix</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.render_variables_section" href="#pandas_profiling.report.structure.report.render_variables_section">render_variables_section</a></code></li>
 </ul>
 </li>

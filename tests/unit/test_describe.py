@@ -634,6 +634,7 @@ def test_describe_df(describe_data, expected_results):
         "correlations",
         "missing",
         "messages",
+        "scatter",
         "package",
     } == set(results.keys()), "Not in results"
 

@@ -16,7 +16,5 @@ if __name__ == "__main__":
     # Download the UCI Bank Marketing Dataset
     df = pd.read_csv(file_name, sep=";")
 
-    profile = ProfileReport(
-        df, title="UCI Bank Marketing Dataset"
-    )
+    profile = ProfileReport(df, title="UCI Bank Marketing Dataset")
     profile.to_file("uci_bank_marketing_report.html")

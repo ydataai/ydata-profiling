@@ -15,13 +15,13 @@ vars:
               - 0.95
         skewness_threshold: 20
         low_categorical_threshold: 5
-        # Set to zero to disable
+# Set to zero to disable
         chi_squared_threshold: 0.0
     cat:
         check_composition: True
         cardinality_threshold: 50
         n_obs: 5
-        # Set to zero to disable
+# Set to zero to disable
         chi_squared_threshold: 0.0
     bool:
         n_obs: 3
@@ -59,6 +59,10 @@ correlations:
       warn_high_correlations: True
       threshold: 1.0
 
+# Bivariate / Pairwise relations
+interactions:
+  continuous: True
+
 # For categorical
 categorical_maximum_correlation_distinct: 100
 
@@ -69,7 +73,7 @@ plot:
     dpi: 800
 
     correlation:
-        cmap: 'bwr'
+        cmap: 'RdBu'
 
     missing:
         cmap: 'RdBu'

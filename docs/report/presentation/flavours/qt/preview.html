@@ -24,14 +24,17 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PyQt5.QtWidgets import QPushButton
-
-from pandas_profiling.report.presentation.core.preview import Preview
+<pre><code class="python">from pandas_profiling.report.presentation.core.preview import Preview
+from pandas_profiling.report.presentation.flavours.qt.sequence import QtSequence
 
 
 class QtPreview(Preview):
     def render(self):
-        return QPushButton(&#34;PyQt5 button&#34;)</code></pre>
+        if self.content[&#34;bottom&#34;] is not None:
+            items = [self.content[&#34;top&#34;], self.content[&#34;bottom&#34;]]
+        else:
+            items = [self.content[&#34;top&#34;]]
+        return QtSequence(items, sequence_type=&#34;list&#34;).render()</code></pre>
 </details>
 </section>
 <section>
@@ -56,7 +59,11 @@ inheritance.</p></section>
 </summary>
 <pre><code class="python">class QtPreview(Preview):
     def render(self):
-        return QPushButton(&#34;PyQt5 button&#34;)</code></pre>
+        if self.content[&#34;bottom&#34;] is not None:
+            items = [self.content[&#34;top&#34;], self.content[&#34;bottom&#34;]]
+        else:
+            items = [self.content[&#34;top&#34;]]
+        return QtSequence(items, sequence_type=&#34;list&#34;).render()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -77,7 +84,11 @@ inheritance.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render(self):
-    return QPushButton(&#34;PyQt5 button&#34;)</code></pre>
+    if self.content[&#34;bottom&#34;] is not None:
+        items = [self.content[&#34;top&#34;], self.content[&#34;bottom&#34;]]
+    else:
+        items = [self.content[&#34;top&#34;]]
+    return QtSequence(items, sequence_type=&#34;list&#34;).render()</code></pre>
 </details>
 </dd>
 </dl>
