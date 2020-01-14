@@ -53,6 +53,9 @@ class MessageType(Enum):
 
     UNIQUE = 12
 
+    REJECTED = 15
+    """Variables are rejected if we do not want to consider them for further analysis."""
+
 
 class Message(object):
     """A message object (type, values, column)."""
