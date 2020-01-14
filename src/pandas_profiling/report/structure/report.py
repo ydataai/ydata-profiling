@@ -191,6 +191,36 @@ def get_sample_items(sample: dict):
     return items
 
 
+def get_scatter_matrix(scatter_matrix):
+    image_format = config["plot"]["image_format"].get(str)
+
+    titems = []
+    for x_col, y_cols in scatter_matrix.items():
+        items = []
+        for y_col, splot in y_cols.items():
+            items.append(
+                Image(
+                    splot,
+                    image_format=image_format,
+                    alt="{x_col} x {y_col}".format(x_col=x_col, y_col=y_col),
+                    anchor_id="interactions_{x_col}_{y_col}".format(
+                        x_col=x_col, y_col=y_col
+                    ),
+                    name="{y_col}".format(x_col=x_col, y_col=y_col),
+                )
+            )
+
+        titems.append(
+            Sequence(
+                items,
+                sequence_type="tabs",
+                name=x_col,
+                anchor_id="interactions_{x_col}".format(x_col=x_col),
+            )
+        )
+    return titems
+
+
 def get_report_structure(
     date_start: datetime, date_end: datetime, sample: dict, summary: dict
 ) -> Renderable:
@@ -203,6 +233,13 @@ def get_report_structure(
     Returns:
       The profile report in HTML format
     """
+
+    scatter = Sequence(
+        get_scatter_matrix(summary["scatter"]),
+        sequence_type="tabs",
+        name="Interactions",
+        anchor_id="interactions",
+    )
 
     sections = Sequence(
         [
@@ -222,6 +259,7 @@ def get_report_structure(
                 name="Variables",
                 anchor_id="variables",
             ),
+            scatter,
             Sequence(
                 get_correlation_items(summary),
                 sequence_type="tabs",

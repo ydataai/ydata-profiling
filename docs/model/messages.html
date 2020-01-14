@@ -82,6 +82,9 @@ class MessageType(Enum):
 
     UNIQUE = 12
 
+    UNIFORM = 14
+    &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;
+
 
 class Message(object):
     &#34;&#34;&#34;A message object (type, values, column).&#34;&#34;&#34;
@@ -201,6 +204,15 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # High cardinality
         if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
             &#34;cardinality_threshold&#34;
@@ -215,7 +227,7 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
             )
 
     # Numerical
-    if description[&#34;type&#34;] in {Variable.TYPE_NUM}:
+    if description[&#34;type&#34;] == Variable.TYPE_NUM:
         # Skewness
         if warning_skewness(description[&#34;skewness&#34;]):
             messages.append(
@@ -226,6 +238,16 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                     fields={&#34;skewness&#34;},
                 )
             )
+
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # Zeros
         if warning_value(description[&#34;p_zeros&#34;]):
             messages.append(
@@ -451,6 +473,15 @@ def warning_type_date(series):
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
 
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # High cardinality
         if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
             &#34;cardinality_threshold&#34;
@@ -465,7 +496,7 @@ def warning_type_date(series):
             )
 
     # Numerical
-    if description[&#34;type&#34;] in {Variable.TYPE_NUM}:
+    if description[&#34;type&#34;] == Variable.TYPE_NUM:
         # Skewness
         if warning_skewness(description[&#34;skewness&#34;]):
             messages.append(
@@ -476,6 +507,16 @@ def warning_type_date(series):
                     fields={&#34;skewness&#34;},
                 )
             )
+
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # Zeros
         if warning_value(description[&#34;p_zeros&#34;]):
             messages.append(
@@ -623,7 +664,10 @@ def warning_type_date(series):
     TYPE_DATE = 11
     &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
 
-    UNIQUE = 12</code></pre>
+    UNIQUE = 12
+
+    UNIFORM = 14
+    &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -666,6 +710,10 @@ def warning_type_date(series):
 <dt id="pandas_profiling.model.messages.MessageType.TYPE_DATE"><code class="name">var <span class="ident">TYPE_DATE</span></code></dt>
 <dd>
 <section class="desc"><p>This variable is likely a datetime, but treated as categorical.</p></section>
+</dd>
+<dt id="pandas_profiling.model.messages.MessageType.UNIFORM"><code class="name">var <span class="ident">UNIFORM</span></code></dt>
+<dd>
+<section class="desc"><p>The variable is uniformly distributed</p></section>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType.UNIQUE"><code class="name">var <span class="ident">UNIQUE</span></code></dt>
 <dd>
@@ -722,6 +770,7 @@ def warning_type_date(series):
 <li><code><a title="pandas_profiling.model.messages.MessageType.RECODED" href="#pandas_profiling.model.messages.MessageType.RECODED">RECODED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.SKEWED" href="#pandas_profiling.model.messages.MessageType.SKEWED">SKEWED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.TYPE_DATE" href="#pandas_profiling.model.messages.MessageType.TYPE_DATE">TYPE_DATE</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.UNIFORM" href="#pandas_profiling.model.messages.MessageType.UNIFORM">UNIFORM</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.UNIQUE" href="#pandas_profiling.model.messages.MessageType.UNIQUE">UNIQUE</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.UNSUPPORTED" href="#pandas_profiling.model.messages.MessageType.UNSUPPORTED">UNSUPPORTED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.ZEROS" href="#pandas_profiling.model.messages.MessageType.ZEROS">ZEROS</a></code></li>

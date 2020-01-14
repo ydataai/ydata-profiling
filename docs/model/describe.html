@@ -38,6 +38,7 @@ from urllib.parse import urlsplit
 import numpy as np
 import pandas as pd
 from astropy.stats import bayesian_blocks
+from scipy.stats.stats import chisquare
 
 from pandas_profiling import __version__
 from pandas_profiling.config import config as config
@@ -50,18 +51,14 @@ from pandas_profiling.model.messages import (
 
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
-from pandas_profiling.model.correlations import (
-    calculate_correlations,
-    perform_check_correlation,
-)
-from pandas_profiling.utils.common import update
-from pandas_profiling.visualisation import plot
+from pandas_profiling.model.correlations import calculate_correlations
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_matrix,
     missing_heatmap,
     missing_dendrogram,
 )
+from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
@@ -99,6 +96,11 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
         &#34;histogram_data&#34;: series,
         &#34;scatter_data&#34;: series,  # For complex
     }
+
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        histogram = np.histogram(series[series.notna()].values, bins=&#34;auto&#34;)[0]
+        stats[&#34;chi_squared&#34;] = chisquare(histogram)
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
     stats.update(
@@ -168,6 +170,10 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; d
     value_counts = series_description[&#34;value_counts_without_nan&#34;]
 
     stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
+
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
 
     check_composition = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
     if check_composition:
@@ -516,6 +522,24 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     return missing
 
 
+def get_scatter_matrix(df, variables):
+    if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
+        continuous_variables = [
+            column for column, type in variables.items() if type == Variable.TYPE_NUM
+        ]
+
+        scatter_matrix = {
+            x: {y: &#34;&#34; for y in continuous_variables} for x in continuous_variables
+        }
+        for x in continuous_variables:
+            for y in continuous_variables:
+                scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+    else:
+        scatter_matrix = {}
+
+    return scatter_matrix
+
+
 def describe(df: pd.DataFrame) -&gt; dict:
     &#34;&#34;&#34;Calculate the statistics for each series in this DataFrame.
 
@@ -563,6 +587,9 @@ def describe(df: pd.DataFrame) -&gt; dict:
     # Get correlations
     correlations = calculate_correlations(df, variables)
 
+    # Scatter matrix
+    scatter_matrix = get_scatter_matrix(df, variables)
+
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
@@ -589,6 +616,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
         &#34;table&#34;: table_stats,
         # Per variable descriptions
         &#34;variables&#34;: series_description,
+        # Bivariate relations
+        &#34;scatter&#34;: scatter_matrix,
         # Correlation matrices
         &#34;correlations&#34;: correlations,
         # Missing values
@@ -681,6 +710,9 @@ def describe(df: pd.DataFrame) -&gt; dict:
     # Get correlations
     correlations = calculate_correlations(df, variables)
 
+    # Scatter matrix
+    scatter_matrix = get_scatter_matrix(df, variables)
+
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
@@ -707,6 +739,8 @@ def describe(df: pd.DataFrame) -&gt; dict:
         &#34;table&#34;: table_stats,
         # Per variable descriptions
         &#34;variables&#34;: series_description,
+        # Bivariate relations
+        &#34;scatter&#34;: scatter_matrix,
         # Correlation matrices
         &#34;correlations&#34;: correlations,
         # Missing values
@@ -847,6 +881,10 @@ def describe(df: pd.DataFrame) -&gt; dict:
 
     stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
 
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
+
     check_composition = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
     if check_composition:
         contains = {
@@ -967,6 +1005,11 @@ bins. Read the docs:
         &#34;histogram_data&#34;: series,
         &#34;scatter_data&#34;: series,  # For complex
     }
+
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        histogram = np.histogram(series[series.notna()].values, bins=&#34;auto&#34;)[0]
+        stats[&#34;chi_squared&#34;] = chisquare(histogram)
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
     stats.update(
@@ -1347,6 +1390,33 @@ bins. Read the docs:
     return missing</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.model.describe.get_scatter_matrix"><code class="name flex">
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>df, variables)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_scatter_matrix(df, variables):
+    if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
+        continuous_variables = [
+            column for column, type in variables.items() if type == Variable.TYPE_NUM
+        ]
+
+        scatter_matrix = {
+            x: {y: &#34;&#34; for y in continuous_variables} for x in continuous_variables
+        }
+        for x in continuous_variables:
+            for y in continuous_variables:
+                scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+    else:
+        scatter_matrix = {}
+
+    return scatter_matrix</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.describe.multiprocess_1d"><code class="name flex">
 <span>def <span class="ident">multiprocess_1d</span></span>(<span>column, series)</span>
 </code></dt>
@@ -1430,6 +1500,7 @@ bins. Read the docs:
 <li><code><a title="pandas_profiling.model.describe.describe_unsupported" href="#pandas_profiling.model.describe.describe_unsupported">describe_unsupported</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_url_1d" href="#pandas_profiling.model.describe.describe_url_1d">describe_url_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.get_missing_diagrams" href="#pandas_profiling.model.describe.get_missing_diagrams">get_missing_diagrams</a></code></li>
+<li><code><a title="pandas_profiling.model.describe.get_scatter_matrix" href="#pandas_profiling.model.describe.get_scatter_matrix">get_scatter_matrix</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.multiprocess_1d" href="#pandas_profiling.model.describe.multiprocess_1d">multiprocess_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.warn_missing" href="#pandas_profiling.model.describe.warn_missing">warn_missing</a></code></li>
 </ul>

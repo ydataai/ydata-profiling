@@ -28,8 +28,27 @@ def get_tabs(items):
     return tabs
 
 
+def get_list(items):
+    list = QWidget()
+    layout = QVBoxLayout()
+    layout.addStretch(1)
+    for item in items:
+        layout.addWidget(item.render())
+    list.setLayout(layout)
+    return list
+
+
 class QtSequence(Sequence):
     def render(self):
-        # if self.sequence_type == "tabs":
-        return get_tabs(self.content["items"])
-        # raise NotImplementedError()
+        # TODO: remove
+        if self.sequence_type not in ["tabs", "variables", "sections", "accordion"]:
+            self.sequence_type = "list"
+        else:
+            self.sequence_type = "tabs"
+
+        if self.sequence_type == "tabs":
+            return get_tabs(self.content["items"])
+        elif self.sequence_type == "list":
+            return get_list(self.content["items"])
+        else:
+            raise NotImplementedError()

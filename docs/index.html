@@ -22,6 +22,7 @@
 <section id="section-intro">
 <p>Main module of pandas-profiling.</p>
 <h1 id="pandas-profiling">Pandas Profiling</h1>
+<p><img alt="Pandas Profiling Logo Header" src="docs/assets/logo_header.png"></p>
 <p><a href="https://travis-ci.com/pandas-profiling/pandas-profiling"><img alt="Build Status" src="https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master"></a>
 <a href="https://codecov.io/gh/pandas-profiling/pandas-profiling"><img alt="Code Coverage" src="https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF"></a>
 <a href="https://github.com/pandas-profiling/pandas-profiling/releases"><img alt="Release Version" src="https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg"></a>
@@ -407,6 +408,7 @@ class ProfileReport(object):
             title=self.title,
             correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
+            scatter=len(self.description_set[&#34;scatter&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
             version=__version__,
             offline=use_local_assets,
@@ -482,28 +484,19 @@ class ProfileReport(object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         &#34;&#34;&#34;
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
+
         from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+        from PyQt5.QtWidgets import QApplication
 
         app = QtCore.QCoreApplication.instance()
         if app is None:
             app = QApplication([])
 
-        class Application(QMainWindow):
-            def __init__(self, widgets):
-                super().__init__()
-                self.layout = QVBoxLayout(self)
-
-                self.resize(1200, 900)
-                self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
-                self.setCentralWidget(widgets)
-                self.show()
-
         app_widgets = QtReport(self.report).render()
 
-        ex = Application(app_widgets)
-        sys.exit(app.exec_())</code></pre>
+        app = get_app(app, self.title, app_widgets)</code></pre>
 </details>
 </section>
 <section>
@@ -694,6 +687,7 @@ class ProfileReport(object):
             title=self.title,
             correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
+            scatter=len(self.description_set[&#34;scatter&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
             version=__version__,
             offline=use_local_assets,
@@ -769,28 +763,19 @@ class ProfileReport(object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         &#34;&#34;&#34;
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
+
         from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+        from PyQt5.QtWidgets import QApplication
 
         app = QtCore.QCoreApplication.instance()
         if app is None:
             app = QApplication([])
 
-        class Application(QMainWindow):
-            def __init__(self, widgets):
-                super().__init__()
-                self.layout = QVBoxLayout(self)
-
-                self.resize(1200, 900)
-                self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
-                self.setCentralWidget(widgets)
-                self.show()
-
         app_widgets = QtReport(self.report).render()
 
-        ex = Application(app_widgets)
-        sys.exit(app.exec_())</code></pre>
+        app = get_app(app, self.title, app_widgets)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -883,28 +868,19 @@ You are welcome to contribute a pull request if you like this feature.</p></sect
     (Experimental) PyQt5 user interface, not ready to be used.
     You are welcome to contribute a pull request if you like this feature.
     &#34;&#34;&#34;
+    from pandas_profiling.report.presentation.flavours.qt.app import get_app
     from pandas_profiling.report.presentation.flavours import QtReport
+
     from PyQt5 import QtCore
-    from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+    from PyQt5.QtWidgets import QApplication
 
     app = QtCore.QCoreApplication.instance()
     if app is None:
         app = QApplication([])
 
-    class Application(QMainWindow):
-        def __init__(self, widgets):
-            super().__init__()
-            self.layout = QVBoxLayout(self)
-
-            self.resize(1200, 900)
-            self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
-            self.setCentralWidget(widgets)
-            self.show()
-
     app_widgets = QtReport(self.report).render()
 
-    ex = Application(app_widgets)
-    sys.exit(app.exec_())</code></pre>
+    app = get_app(app, self.title, app_widgets)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_file"><code class="name flex">
@@ -985,6 +961,7 @@ for using with frameworks.</p>
         title=self.title,
         correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
         missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
+        scatter=len(self.description_set[&#34;scatter&#34;]) &gt; 0,
         sample=len(self.sample) &gt; 0,
         version=__version__,
         offline=use_local_assets,

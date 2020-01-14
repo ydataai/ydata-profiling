@@ -24,18 +24,14 @@ from pandas_profiling.model.messages import (
 
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
-from pandas_profiling.model.correlations import (
-    calculate_correlations,
-    perform_check_correlation,
-)
-from pandas_profiling.utils.common import update
-from pandas_profiling.visualisation import plot
+from pandas_profiling.model.correlations import calculate_correlations
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_matrix,
     missing_heatmap,
     missing_dendrogram,
 )
+from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
@@ -499,6 +495,24 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     return missing
 
 
+def get_scatter_matrix(df, variables):
+    if config["interactions"]["continuous"].get(bool):
+        continuous_variables = [
+            column for column, type in variables.items() if type == Variable.TYPE_NUM
+        ]
+
+        scatter_matrix = {
+            x: {y: "" for y in continuous_variables} for x in continuous_variables
+        }
+        for x in continuous_variables:
+            for y in continuous_variables:
+                scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+    else:
+        scatter_matrix = {}
+
+    return scatter_matrix
+
+
 def describe(df: pd.DataFrame) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
@@ -546,6 +560,9 @@ def describe(df: pd.DataFrame) -> dict:
     # Get correlations
     correlations = calculate_correlations(df, variables)
 
+    # Scatter matrix
+    scatter_matrix = get_scatter_matrix(df, variables)
+
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
@@ -572,6 +589,8 @@ def describe(df: pd.DataFrame) -> dict:
         "table": table_stats,
         # Per variable descriptions
         "variables": series_description,
+        # Bivariate relations
+        "scatter": scatter_matrix,
         # Correlation matrices
         "correlations": correlations,
         # Missing values

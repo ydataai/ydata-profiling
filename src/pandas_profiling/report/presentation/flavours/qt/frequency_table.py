@@ -5,4 +5,4 @@ from pandas_profiling.report.presentation.core.frequency_table import FrequencyT
 
 class QtFrequencyTable(FrequencyTable):
     def render(self):
-        return QPushButton("PyQt5 button")
+        return QPushButton("Frequency Table")

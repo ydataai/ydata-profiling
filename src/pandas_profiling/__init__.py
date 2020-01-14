@@ -157,6 +157,7 @@ class ProfileReport(object):
             title=self.title,
             correlation=len(self.description_set["correlations"]) > 0,
             missing=len(self.description_set["missing"]) > 0,
+            scatter=len(self.description_set["scatter"]) > 0,
             sample=len(self.sample) > 0,
             version=__version__,
             offline=use_local_assets,
@@ -232,25 +233,16 @@ class ProfileReport(object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         """
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
+
         from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+        from PyQt5.QtWidgets import QApplication
 
         app = QtCore.QCoreApplication.instance()
         if app is None:
             app = QApplication([])
 
-        class Application(QMainWindow):
-            def __init__(self, widgets):
-                super().__init__()
-                self.layout = QVBoxLayout(self)
-
-                self.resize(1200, 900)
-                self.setWindowTitle("Pandas Profiling Report")
-                self.setCentralWidget(widgets)
-                self.show()
-
         app_widgets = QtReport(self.report).render()
 
-        ex = Application(app_widgets)
-        sys.exit(app.exec_())
+        app = get_app(app, self.title, app_widgets)

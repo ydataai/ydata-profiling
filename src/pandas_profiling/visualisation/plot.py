@@ -6,6 +6,8 @@ import matplotlib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+
 from pandas.plotting import register_matplotlib_converters
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 from pkg_resources import resource_filename
@@ -15,6 +17,7 @@ from pandas_profiling.model.base import Variable
 
 register_matplotlib_converters()
 matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
+sns.set_style(style="white")
 
 
 def _plot_histogram(
@@ -165,4 +168,17 @@ def scatter_series(series, x_label="Width", y_label="Height") -> str:
         plt.hexbin(*zip(*series.tolist()))
     else:
         plt.scatter(*zip(*series.tolist()))
+    return plot_360_n0sc0pe(plt)
+
+
+def scatter_pairwise(series1, series2, x_label, y_label) -> str:
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    if len(series1) > 1000:
+        color = config["html"]["style"]["primary_color"].get(str)
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
+    else:
+        plt.scatter(series1.tolist(), series2.tolist())
     return plot_360_n0sc0pe(plt)
