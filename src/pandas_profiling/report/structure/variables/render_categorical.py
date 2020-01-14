@@ -1,3 +1,5 @@
+import pandas as pd
+
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.visualisation.plot import histogram
@@ -73,7 +75,6 @@ def render_categorical(summary):
     # Bottom
     items = []
     frequency_table = FrequencyTable(
-        # 'frequency_table',
         template_variables["freq_table_rows"],
         name="Common Values",
         anchor_id="{varid}common_values".format(varid=summary["varid"]),
@@ -83,34 +84,7 @@ def render_categorical(summary):
 
     check_compositions = config["vars"]["cat"]["check_composition"].get(bool)
     if check_compositions:
-        composition = Table(
-            [
-                {
-                    "name": "Contains chars",
-                    "value": summary["composition"]["chars"],
-                    "fmt": "fmt",
-                },
-                {
-                    "name": "Contains digits",
-                    "value": summary["composition"]["digits"],
-                    "fmt": "fmt",
-                },
-                {
-                    "name": "Contains whitespace",
-                    "value": summary["composition"]["spaces"],
-                    "fmt": "fmt",
-                },
-                {
-                    "name": "Contains non-words",
-                    "value": summary["composition"]["non-words"],
-                    "fmt": "fmt",
-                },
-            ],
-            name="Composition",
-            anchor_id="{varid}composition".format(varid=summary["varid"]),
-        )
-
-        length = Table(
+        length_table = Table(
             [
                 {
                     "name": "Max length",
@@ -132,15 +106,6 @@ def render_categorical(summary):
             anchor_id="{varid}lengthstats".format(varid=summary["varid"]),
         )
 
-        tbl = Sequence(
-            [composition, length],
-            anchor_id="{varid}tbl".format(varid=summary["varid"]),
-            name="Composition",
-            sequence_type="grid",
-        )
-
-        items.append(tbl)
-
         histogram_bins = 10
 
         length = Image(
@@ -149,7 +114,60 @@ def render_categorical(summary):
             name="Length",
             anchor_id="{varid}length".format(varid=summary["varid"]),
         )
-        items.append(length)
+
+        tbl = Sequence(
+            [length, length_table],
+            anchor_id="{varid}tbl".format(varid=summary["varid"]),
+            name="Length",
+            sequence_type="grid",
+        )
+
+        items.append(tbl)
+
+        n_freq_table_max = config["n_freq_table_max"].get(int)
+
+        citems = []
+        vc = pd.Series(summary["category_alias_values"]).value_counts()
+        citems.append(
+            FrequencyTable(
+                freq_table(
+                    freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
+                ),
+                name="Categories",
+                anchor_id="{varid}category_long_values".format(varid=summary["varid"]),
+            )
+        )
+
+        vc = pd.Series(summary["script_values"]).value_counts()
+        citems.append(
+            FrequencyTable(
+                freq_table(
+                    freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
+                ),
+                name="Scripts",
+                anchor_id="{varid}script_values".format(varid=summary["varid"]),
+            )
+        )
+
+        vc = pd.Series(summary["block_alias_values"]).value_counts()
+        citems.append(
+            FrequencyTable(
+                freq_table(
+                    freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
+                ),
+                name="Blocks",
+                anchor_id="{varid}block_alias_values".format(varid=summary["varid"]),
+            )
+        )
+
+        characters = Sequence(
+            citems,
+            name="Characters",
+            sequence_type="tabs",
+            anchor_id="{varid}characters".format(varid=summary["varid"]),
+        )
+
+        items.append(characters)
 
     template_variables["bottom"] = Sequence(
         items,

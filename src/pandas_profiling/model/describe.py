@@ -144,18 +144,14 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
 
     check_composition = config["vars"]["cat"]["check_composition"].get(bool)
     if check_composition:
-        contains = {
-            "chars": series.str.contains(r"[a-zA-Z]", case=False, regex=True).any(),
-            "digits": series.str.contains(r"[0-9]", case=False, regex=True).any(),
-            "spaces": series.str.contains(r"\s", case=False, regex=True).any(),
-            "non-words": series.str.contains(r"\W", case=False, regex=True).any(),
-        }
-
-        stats["length"] = series.str.len()
         stats["max_length"] = series.str.len().max()
         stats["mean_length"] = series.str.len().mean()
         stats["min_length"] = series.str.len().min()
-        stats["composition"] = contains
+
+        from visions.application.summaries.series.text_summary import text_summary
+
+        stats.update(text_summary(series))
+        stats["length"] = series.str.len()
 
     stats["date_warning"] = warning_type_date(series)
 
