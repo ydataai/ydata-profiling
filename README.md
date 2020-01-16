@@ -112,7 +112,7 @@ df = pd.DataFrame(
 ```
 To generate the report, run:
 ```python
-profile = ProfileReport(df, title='Pandas Profiling Report', style={'full_width':True})
+profile = ProfileReport(df, title='Pandas Profiling Report', html={'style':{'full_width':True}})
 ```
 
 #### Jupyter Notebook
