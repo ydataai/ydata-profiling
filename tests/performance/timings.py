@@ -83,7 +83,7 @@ def plot_col_run_time():
     ax1 = sns.scatterplot(cols, default_times)
     ax2 = sns.scatterplot(cols, minimal_times)
     _ = ax1.set(
-        xlabel=f"Number of columns (row={row})",
+        xlabel="Number of columns (row={row})".format(row=row),
         ylabel="time (s)",
         title="Run Time Complexity",
     )
@@ -101,7 +101,7 @@ def plot_row_run_time():
     ax1 = sns.scatterplot(rows, default_times)
     ax2 = sns.scatterplot(rows, minimal_times)
     _ = ax1.set(
-        xlabel=f"Number of rows (col={col})",
+        xlabel="Number of rows (col={col})".format(col=col),
         ylabel="time (s)",
         title="Run Time Complexity",
     )
