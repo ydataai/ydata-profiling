@@ -17,6 +17,7 @@ from pandas_profiling.utils.paths import get_config_default, get_config_minimal
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
 
 
@@ -109,7 +110,7 @@ class ProfileReport(object):
         """
         return self.description_set
 
-    def get_rejected_variables() -> list:
+    def get_rejected_variables(self) -> list:
         return [
             message.column_name
             for message in self.description_set["messages"]
