@@ -5,3 +5,4 @@ pytest-cov
 pytest-black
 nbval
 pyarrow
+flake8

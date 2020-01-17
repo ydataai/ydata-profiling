@@ -11,6 +11,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.version import __version__
 from pandas_profiling.utils.dataframe import clean_column_names, rename_index
 from pandas_profiling.utils.paths import get_config_default, get_config_minimal
