@@ -60,7 +60,7 @@ The following examples can give you an impression of what the package can do:
 * [Vektis](http://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Website Inaccessibility](http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
 * [Colors](http://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html) (a simple colors dataset)
-* [Russian Vocabulary](http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocaulbary_report.html) (demonstrates text analysis)
+* [Russian Vocabulary](http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
 
 ## Installation
 
