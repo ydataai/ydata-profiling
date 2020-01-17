@@ -30,7 +30,7 @@ def test_example(get_data_file, test_output_dir):
 
     # Example: Duplicate observations
     duplicates_to_add = pd.DataFrame(df.iloc[0:10])
-    duplicates_to_add["name"] = duplicates_to_add["name"] + " copy"
+    duplicates_to_add["name"] += " copy"
 
     df = df.append(duplicates_to_add, ignore_index=True)
 
@@ -50,7 +50,7 @@ def test_example(get_data_file, test_output_dir):
             "fall",
             "GeoLocation",
             "id",
-            "mass_(g)",
+            "mass (g)",
             "mixed",
             "name",
             "nametype",
