@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Tuple
 from urllib.parse import urlsplit
 
+from tqdm.autonotebook import tqdm
 import numpy as np
 import pandas as pd
 from astropy.stats import bayesian_blocks
@@ -371,7 +372,7 @@ def describe_1d(series: pd.Series) -> dict:
     return series_description
 
 
-def multiprocess_1d(column, series) -> Tuple[str, dict]:
+def multiprocess_1d(args) -> Tuple[str, dict]:
     """Wrapper to process series in parallel.
 
     Args:
@@ -381,6 +382,7 @@ def multiprocess_1d(column, series) -> Tuple[str, dict]:
     Returns:
         A tuple with column and the series description.
     """
+    column, series = args
     return column, describe_1d(series)
 
 
@@ -410,12 +412,12 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     }
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-        table_stats["n"] * table_stats["n_var"]
+            table_stats["n"] * table_stats["n_var"]
     )
 
     supported_columns = variable_stats.transpose()[
         variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-    ].index.tolist()
+        ].index.tolist()
     table_stats["n_duplicates"] = (
         sum(df.duplicated(subset=supported_columns))
         if len(supported_columns) > 0
@@ -477,14 +479,14 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     missing = {}
     for name, settings in missing_map.items():
         if (
-            config["missing_diagrams"][name].get(bool)
-            and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+                config["missing_diagrams"][name].get(bool)
+                and table_stats["n_vars_with_missing"] >= settings["min_missing"]
         ):
             try:
                 if name != "heatmap" or (
-                    table_stats["n_vars_with_missing"]
-                    - table_stats["n_vars_all_missing"]
-                    >= settings["min_missing"]
+                        table_stats["n_vars_with_missing"]
+                        - table_stats["n_vars_all_missing"]
+                        >= settings["min_missing"]
                 ):
                     missing[name] = {
                         "name": settings["name"],
@@ -533,23 +535,26 @@ def describe(df: pd.DataFrame) -> dict:
     if df.empty:
         raise ValueError("df can not be empty")
 
+    disable_progress_bar = not config['progress_bar'].get(bool)
+
     # Multiprocessing of Describe 1D for each column
     pool_size = config["pool_size"].get(int)
     if pool_size <= 0:
         pool_size = multiprocessing.cpu_count()
 
-    if pool_size == 1:
-        args = [(column, series) for column, series in df.iteritems()]
-        series_description = {
-            column: series
-            for column, series in itertools.starmap(multiprocess_1d, args)
-        }
-    else:
-        with multiprocessing.pool.ThreadPool(pool_size) as executor:
-            series_description = {}
-            results = executor.starmap(multiprocess_1d, df.iteritems())
-            for col, description in results:
-                series_description[col] = description
+    args = [(column, series) for column, series in df.iteritems()]
+    series_description = {}
+    with tqdm(total=len(args), desc="variables", disable=disable_progress_bar) as pbar:
+        if pool_size == 1:
+            for arg in args:
+                column, description = multiprocess_1d(arg)
+                series_description[column] = description
+                pbar.update(1)
+        else:
+            with multiprocessing.pool.ThreadPool(pool_size) as executor:
+                for i, (column, description) in enumerate(executor.imap_unordered(multiprocess_1d, args)):
+                    pbar.update(1)
+                    series_description[column] = description
 
     # Mapping from column name to variable type
     variables = {
@@ -557,32 +562,48 @@ def describe(df: pd.DataFrame) -> dict:
         for column, description in series_description.items()
     }
 
-    # Get correlations
-    correlations = calculate_correlations(df, variables)
-
-    # Scatter matrix
-    scatter_matrix = get_scatter_matrix(df, variables)
-
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
+    # Get correlations
+    with tqdm(total=1, desc="correlations", disable=disable_progress_bar) as pbar:
+        correlations = calculate_correlations(df, variables)
+        pbar.update(1)
+
+    # Scatter matrix
+    with tqdm(total=1, desc="scatter", disable=disable_progress_bar) as pbar:
+        scatter_matrix = get_scatter_matrix(df, variables)
+        pbar.update(1)
+
     # Table statistics
-    table_stats = describe_table(df, variable_stats)
+    with tqdm(total=1, desc="table", disable=disable_progress_bar) as pbar:
+        table_stats = describe_table(df, variable_stats)
+        pbar.update(1)
 
     # missing diagrams
-    missing = get_missing_diagrams(df, table_stats)
+    with tqdm(total=1, desc="missing", disable=disable_progress_bar) as pbar:
+        missing = get_missing_diagrams(df, table_stats)
+        pbar.update(1)
 
     # Messages
-    messages = check_table_messages(table_stats)
-    for col, description in series_description.items():
-        messages += check_variable_messages(col, description)
+    with tqdm(total=3, desc="warnings", disable=disable_progress_bar) as pbar:
+        pbar.set_description_str("warnings [table]")
+        messages = check_table_messages(table_stats)
+        pbar.update(1)
+        pbar.set_description_str("warnings [variables]")
+        for col, description in series_description.items():
+            messages += check_variable_messages(col, description)
+        pbar.update(1)
+        pbar.set_description_str("warnings [correlations]")
+        messages += check_correlation_messages(correlations)
+        pbar.update(1)
 
-    messages += check_correlation_messages(correlations)
-
-    package = {
-        "pandas_profiling_version": __version__,
-        "pandas_profiling_config": config.dump(),
-    }
+    with tqdm(total=1, desc="package", disable=disable_progress_bar) as pbar:
+        package = {
+            "pandas_profiling_version": __version__,
+            "pandas_profiling_config": config.dump(),
+        }
+        pbar.update(1)
 
     return {
         # Overall description

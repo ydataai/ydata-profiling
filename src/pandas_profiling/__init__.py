@@ -10,6 +10,7 @@ from datetime import datetime
 
 import pandas as pd
 import numpy as np
+from tqdm.autonotebook import tqdm
 
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.version import __version__
@@ -72,9 +73,11 @@ class ProfileReport(object):
         self.description_set = description_set
 
         self.date_end = datetime.utcnow()
-        self.report = get_report_structure(
-            self.date_start, self.date_end, self.sample, description_set
-        )
+        with tqdm(total=1, desc="build report structure") as pbar:
+            self.report = get_report_structure(
+                self.date_start, self.date_end, self.sample, description_set
+            )
+            pbar.update(1)
 
     def sort_column_names(self, df):
         sort = config["sort"].get(str)
