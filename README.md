@@ -177,6 +177,7 @@ A set of options is available in order to adapt the report generated.
 
 * `title` (`str`): Title for the report ('Pandas Profiling Report' by default).
 * `pool_size` (`int`): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).
+* `progress_bar` (`bool`): If True, `pandas-profiling`will display a progress bar.
 
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 

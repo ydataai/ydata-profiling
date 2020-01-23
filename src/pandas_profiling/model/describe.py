@@ -412,12 +412,12 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     }
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-            table_stats["n"] * table_stats["n_var"]
+        table_stats["n"] * table_stats["n_var"]
     )
 
     supported_columns = variable_stats.transpose()[
         variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-        ].index.tolist()
+    ].index.tolist()
     table_stats["n_duplicates"] = (
         sum(df.duplicated(subset=supported_columns))
         if len(supported_columns) > 0
@@ -479,14 +479,14 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     missing = {}
     for name, settings in missing_map.items():
         if (
-                config["missing_diagrams"][name].get(bool)
-                and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+            config["missing_diagrams"][name].get(bool)
+            and table_stats["n_vars_with_missing"] >= settings["min_missing"]
         ):
             try:
                 if name != "heatmap" or (
-                        table_stats["n_vars_with_missing"]
-                        - table_stats["n_vars_all_missing"]
-                        >= settings["min_missing"]
+                    table_stats["n_vars_with_missing"]
+                    - table_stats["n_vars_all_missing"]
+                    >= settings["min_missing"]
                 ):
                     missing[name] = {
                         "name": settings["name"],
@@ -535,7 +535,7 @@ def describe(df: pd.DataFrame) -> dict:
     if df.empty:
         raise ValueError("df can not be empty")
 
-    disable_progress_bar = not config['progress_bar'].get(bool)
+    disable_progress_bar = not config["progress_bar"].get(bool)
 
     # Multiprocessing of Describe 1D for each column
     pool_size = config["pool_size"].get(int)
@@ -552,7 +552,9 @@ def describe(df: pd.DataFrame) -> dict:
                 pbar.update(1)
         else:
             with multiprocessing.pool.ThreadPool(pool_size) as executor:
-                for i, (column, description) in enumerate(executor.imap_unordered(multiprocess_1d, args)):
+                for i, (column, description) in enumerate(
+                    executor.imap_unordered(multiprocess_1d, args)
+                ):
                     pbar.update(1)
                     series_description[column] = description
 

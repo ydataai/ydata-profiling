@@ -10,7 +10,7 @@ from datetime import datetime
 
 import pandas as pd
 import numpy as np
-from tqdm.autonotebook import tqdm
+from tqdm.auto import tqdm
 
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.version import __version__
@@ -71,9 +71,13 @@ class ProfileReport(object):
         self.sample = self.get_sample(df)
         self.title = config["title"].get(str)
         self.description_set = description_set
-
         self.date_end = datetime.utcnow()
-        with tqdm(total=1, desc="build report structure") as pbar:
+
+        disable_progress_bar = not config["progress_bar"].get(bool)
+
+        with tqdm(
+            total=1, desc="build report structure", disable=disable_progress_bar
+        ) as pbar:
             self.report = get_report_structure(
                 self.date_start, self.date_end, self.sample, description_set
             )

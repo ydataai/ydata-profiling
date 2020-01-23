@@ -1,11 +1,11 @@
 scipy
 requests
 missingno>=0.4.2
-matplotlib
+matplotlib>=3.1.2
 jinja2>=2.10.1
 numpy>=1.16.0
-pandas
-htmlmin
+pandas>=0.25.3
+htmlmin>=0.1.12
 phik
 confuse>=1.0.0
 astropy
