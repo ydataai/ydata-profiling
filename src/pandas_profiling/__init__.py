@@ -60,10 +60,6 @@ class ProfileReport(object):
         # Ensure that columns are strings
         df.columns = df.columns.astype("str")
 
-        # Sort names according to config (asc, desc, no sort)
-        df = self.sort_column_names(df)
-        config["column_order"] = df.columns.tolist()
-
         # Get dataset statistics
         description_set = describe_df(df)
 
@@ -82,21 +78,6 @@ class ProfileReport(object):
                 self.date_start, self.date_end, self.sample, description_set
             )
             pbar.update(1)
-
-    def sort_column_names(self, df):
-        sort = config["sort"].get(str)
-        if sys.version_info[1] <= 5 and sort != "None":
-            warnings.warn("Sorting is supported from Python 3.6+")
-
-        if sort in ["asc", "ascending"]:
-            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
-        elif sort in ["desc", "descending"]:
-            df = df.reindex(
-                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
-            )
-        elif sort != "None":
-            raise ValueError('"sort" should be "ascending", "descending" or None.')
-        return df
 
     def get_sample(self, df: pd.DataFrame) -> dict:
         sample = {}

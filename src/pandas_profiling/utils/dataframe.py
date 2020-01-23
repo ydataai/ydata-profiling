@@ -1,8 +1,11 @@
 """Utils for pandas DataFrames."""
+import sys
 import warnings
 from pathlib import Path
 
 import pandas as pd
+
+from pandas_profiling.config import config
 
 
 def warn_read(extension):

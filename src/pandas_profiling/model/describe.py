@@ -3,6 +3,7 @@ import multiprocessing.pool
 import multiprocessing
 import itertools
 import os
+import sys
 import warnings
 from pathlib import Path
 from typing import Tuple
@@ -511,6 +512,20 @@ def get_scatter_matrix(df, variables):
     return scatter_matrix
 
 
+def sort_column_names(dct):
+    sort = config["sort"].get(str)
+    if sys.version_info[1] <= 5 and sort != "None":
+        warnings.warn("Sorting is supported from Python 3.6+")
+    else:
+        if sort in ["asc", "ascending"]:
+            dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
+        elif sort in ["desc", "descending"]:
+            dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
+        elif sort != "None":
+            raise ValueError('"sort" should be "ascending", "descending" or None.')
+    return dct
+
+
 def describe(df: pd.DataFrame) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
@@ -551,10 +566,12 @@ def describe(df: pd.DataFrame) -> dict:
                 for i, (column, description) in enumerate(
                     executor.imap_unordered(multiprocess_1d, args)
                 ):
-                    pbar.update(1)
                     series_description[column] = description
+                    pbar.update(1)
 
     # Mapping from column name to variable type
+    series_description = sort_column_names(series_description)
+
     variables = {
         column: description["type"]
         for column, description in series_description.items()
