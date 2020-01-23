@@ -98,6 +98,9 @@ def categorical_matrix(
         <= config["categorical_maximum_correlation_distinct"].get(int)
     }
 
+    if len(categoricals) <= 1:
+        return []
+
     correlation_matrix = pd.DataFrame(
         np.ones((len(categoricals), len(categoricals))),
         index=categoricals.keys(),
@@ -180,28 +183,33 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                 except (TypeError, ValueError):
                     continue
 
-            try:
-                correlations["phi_k"] = df[selcols].phik_matrix(interval_cols=intcols)
-
-                # Only do this if the column_order is set
-                with suppress(NotFoundError):
-                    # Get the preferred order
-                    column_order = config["column_order"].get(list)
-
-                    # Get the Phi_k sorted order
-                    current_order = (
-                        correlations["phi_k"].index.get_level_values("var1").tolist()
+            if len(selcols) > 1:
+                try:
+                    correlations["phi_k"] = df[selcols].phik_matrix(
+                        interval_cols=intcols
                     )
 
-                    # Intersection (some columns are not used in correlation)
-                    column_order = [x for x in column_order if x in current_order]
+                    # Only do this if the column_order is set
+                    with suppress(NotFoundError):
+                        # Get the preferred order
+                        column_order = config["column_order"].get(list)
 
-                    # Override the Phi_k sorting
-                    correlations["phi_k"] = correlations["phi_k"].reindex(
-                        index=column_order, columns=column_order
-                    )
-            except (ValueError, DataError, IndexError, TypeError) as e:
-                warn_correlation("phi_k", e)
+                        # Get the Phi_k sorted order
+                        current_order = (
+                            correlations["phi_k"]
+                            .index.get_level_values("var1")
+                            .tolist()
+                        )
+
+                        # Intersection (some columns are not used in correlation)
+                        column_order = [x for x in column_order if x in current_order]
+
+                        # Override the Phi_k sorting
+                        correlations["phi_k"] = correlations["phi_k"].reindex(
+                            index=column_order, columns=column_order
+                        )
+                except (ValueError, DataError, IndexError, TypeError) as e:
+                    warn_correlation("phi_k", e)
 
     categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}
     for correlation_name, get_matrix in categorical_correlations.items():

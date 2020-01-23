@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master)](https://travis-ci.com/pandas-profiling/pandas-profiling)
 [![Code Coverage](https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/pandas-profiling/pandas-profiling)
 [![Release Version](https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg)](https://github.com/pandas-profiling/pandas-profiling/releases)
-[![Python Version](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7-blue.svg)](https://pypi.org/project/pandas-profiling/)
+[![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 Generates profile reports from a pandas `DataFrame`. 
@@ -22,6 +22,7 @@ For each column the following statistics - if relevant for the column type - are
 * **Histogram**
 * **Correlations** highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices
 * **Missing values** matrix, count, heatmap and dendrogram of missing values
+* **Text analysis** learn about categories (Uppercase, Space), scripts (Latin, Cyrillic) and blocks (ASCII) of text data.
 
 ## Announcements
 
@@ -59,6 +60,7 @@ The following examples can give you an impression of what the package can do:
 * [Vektis](http://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Website Inaccessibility](http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
 * [Colors](http://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html) (a simple colors dataset)
+* [Russian Vocabulary](http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
 
 ## Installation
 
