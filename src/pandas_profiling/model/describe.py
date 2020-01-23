@@ -462,6 +462,8 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
+    disable_progress_bar = not config["progress_bar"].get(bool)
+
     missing_map = {
         "bar": {"func": missing_bar, "min_missing": 0, "name": "Count"},
         "matrix": {"func": missing_matrix, "min_missing": 0, "name": "Matrix"},
@@ -473,39 +475,51 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         },
     }
 
-    missing = {}
-    for name, settings in missing_map.items():
-        if (
-            config["missing_diagrams"][name].get(bool)
-            and table_stats["n_vars_with_missing"] >= settings["min_missing"]
-        ):
-            try:
-                if name != "heatmap" or (
-                    table_stats["n_vars_with_missing"]
-                    - table_stats["n_vars_all_missing"]
-                    >= settings["min_missing"]
-                ):
-                    missing[name] = {
-                        "name": settings["name"],
-                        "matrix": settings["func"](df),
-                    }
-            except ValueError as e:
-                warn_missing(name, e)
+    with tqdm(
+        total=len(missing_map), desc="missing", disable=disable_progress_bar
+    ) as pbar:
+        missing = {}
+        for name, settings in missing_map.items():
+            pbar.set_description_str("missing [{name}]".format(name=name))
+            if (
+                config["missing_diagrams"][name].get(bool)
+                and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+            ):
+                try:
+                    if name != "heatmap" or (
+                        table_stats["n_vars_with_missing"]
+                        - table_stats["n_vars_all_missing"]
+                        >= settings["min_missing"]
+                    ):
+                        missing[name] = {
+                            "name": settings["name"],
+                            "matrix": settings["func"](df),
+                        }
+                except ValueError as e:
+                    warn_missing(name, e)
+            pbar.update()
     return missing
 
 
 def get_scatter_matrix(df, variables):
+    disable_progress_bar = not config["progress_bar"].get(bool)
+
     if config["interactions"]["continuous"].get(bool):
         continuous_variables = [
             column for column, type in variables.items() if type == Variable.TYPE_NUM
         ]
-
-        scatter_matrix = {
-            x: {y: "" for y in continuous_variables} for x in continuous_variables
-        }
-        for x in continuous_variables:
-            for y in continuous_variables:
-                scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+        with tqdm(
+            total=len(continuous_variables) ** 2,
+            desc="interactions [continuous]",
+            disable=disable_progress_bar,
+        ) as pbar:
+            scatter_matrix = {
+                x: {y: "" for y in continuous_variables} for x in continuous_variables
+            }
+            for x in continuous_variables:
+                for y in continuous_variables:
+                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                    pbar.update()
     else:
         scatter_matrix = {}
 
@@ -581,14 +595,10 @@ def describe(df: pd.DataFrame) -> dict:
     variable_stats = pd.DataFrame(series_description)
 
     # Get correlations
-    with tqdm(total=1, desc="correlations", disable=disable_progress_bar) as pbar:
-        correlations = calculate_correlations(df, variables)
-        pbar.update(1)
+    correlations = calculate_correlations(df, variables)
 
     # Scatter matrix
-    with tqdm(total=1, desc="scatter", disable=disable_progress_bar) as pbar:
-        scatter_matrix = get_scatter_matrix(df, variables)
-        pbar.update(1)
+    scatter_matrix = get_scatter_matrix(df, variables)
 
     # Table statistics
     with tqdm(total=1, desc="table", disable=disable_progress_bar) as pbar:
@@ -596,9 +606,7 @@ def describe(df: pd.DataFrame) -> dict:
         pbar.update(1)
 
     # missing diagrams
-    with tqdm(total=1, desc="missing", disable=disable_progress_bar) as pbar:
-        missing = get_missing_diagrams(df, table_stats)
-        pbar.update(1)
+    missing = get_missing_diagrams(df, table_stats)
 
     # Messages
     with tqdm(total=3, desc="warnings", disable=disable_progress_bar) as pbar:

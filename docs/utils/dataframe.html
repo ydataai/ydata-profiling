@@ -26,10 +26,13 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Utils for pandas DataFrames.&#34;&#34;&#34;
+import sys
 import warnings
 from pathlib import Path
 
 import pandas as pd
+
+from pandas_profiling.config import config
 
 
 def warn_read(extension):
@@ -92,20 +95,6 @@ def read_pandas(file_name: Path) -&gt; pd.DataFrame:
             warn_read(extension)
 
         df = pd.read_csv(str(file_name))
-    return df
-
-
-def clean_column_names(df):
-    &#34;&#34;&#34;Removes spaces and colons from pandas DataFrame column names
-
-    Args:
-        df: DataFrame
-
-    Returns:
-        DataFrame with spaces in column names replaced by underscores, colons removed.
-    &#34;&#34;&#34;
-    df.columns = df.columns.str.replace(&#34; &#34;, &#34;_&#34;)
-    df.columns = df.columns.str.replace(&#34;:&#34;, &#34;&#34;)
     return df
 
 
@@ -173,36 +162,6 @@ def expand_mixed(df: pd.DataFrame, types=None) -&gt; pd.DataFrame:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.utils.dataframe.clean_column_names"><code class="name flex">
-<span>def <span class="ident">clean_column_names</span></span>(<span>df)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Removes spaces and colons from pandas DataFrame column names</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>df</code></strong></dt>
-<dd>DataFrame</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>DataFrame with spaces in column names replaced by underscores, colons removed.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def clean_column_names(df):
-    &#34;&#34;&#34;Removes spaces and colons from pandas DataFrame column names
-
-    Args:
-        df: DataFrame
-
-    Returns:
-        DataFrame with spaces in column names replaced by underscores, colons removed.
-    &#34;&#34;&#34;
-    df.columns = df.columns.str.replace(&#34; &#34;, &#34;_&#34;)
-    df.columns = df.columns.str.replace(&#34;:&#34;, &#34;&#34;)
-    return df</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.utils.dataframe.expand_mixed"><code class="name flex">
 <span>def <span class="ident">expand_mixed</span></span>(<span>df, types=None)</span>
 </code></dt>
@@ -424,7 +383,6 @@ to be <code>df_index</code>.</p>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pandas_profiling.utils.dataframe.clean_column_names" href="#pandas_profiling.utils.dataframe.clean_column_names">clean_column_names</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.expand_mixed" href="#pandas_profiling.utils.dataframe.expand_mixed">expand_mixed</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.read_pandas" href="#pandas_profiling.utils.dataframe.read_pandas">read_pandas</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.rename_index" href="#pandas_profiling.utils.dataframe.rename_index">rename_index</a></code></li>
