@@ -32,7 +32,7 @@ setup(
     description="Generate profile report for pandas DataFrame",
     install_requires=[
         "pandas>=0.25.3",
-        "matplotlib>=3.1.2",
+        "matplotlib>=3.0.3", #3.1.2
         "confuse>=1.0.0",
         "jinja2>=2.8",
         # Related to HTML report
