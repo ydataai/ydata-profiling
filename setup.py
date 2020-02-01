@@ -32,7 +32,7 @@ setup(
     description="Generate profile report for pandas DataFrame",
     install_requires=[
         "pandas==0.25.3",
-        "matplotlib>=3.1.2",
+        "matplotlib>=3.0.3",
         "confuse==1.0.0",
         "jinja2==2.11.1",
         # Related to HTML report
@@ -40,7 +40,7 @@ setup(
         # Could be optional
         "missingno==0.4.2",
         "phik==0.9.8",
-        "astropy==4.0",
+        "astropy>=3.2.3", # preferred 4.0
     ],
     extras_require={
         "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.1", "ipywidgets"],
