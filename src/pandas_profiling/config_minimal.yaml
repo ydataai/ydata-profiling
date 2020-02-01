@@ -34,8 +34,8 @@ sort: None
 
 # which diagrams to show
 missing_diagrams:
-    bar: True
-    matrix: True
+    bar: False
+    matrix: False
     heatmap: False
     dendrogram: False
 

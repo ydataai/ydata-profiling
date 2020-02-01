@@ -17,11 +17,6 @@ env:
   - TEST=examples
   - TEST=lint
 
-jobs:
-  exclude:
-    - python: "3.5"
-      env: TEST=examples
-
 install:
   - pip install --upgrade pip six
   - pip install -r requirements.txt
@@ -31,7 +26,7 @@ install:
 script:
   - if [ $TEST == 'unit' ]; then pytest --cov=. tests/unit/; fi
   - if [ $TEST == 'issue' ]; then pytest --cov=. tests/issues/; fi
-  - if [ $TEST == 'examples' ]; then pytest --cov=. --nbval --sanitize-with tests/sanitize-notebook.cfg examples/; fi
+  - if [ $TEST == 'examples' ]; then pytest --cov=. --nbval test/notebooks/; fi
   - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
   - if [ $TEST == 'lint' ]; then pytest --black -m black src/; flake8 . --select=E9,F63,F7,F82 --show-source --statistics; fi
 

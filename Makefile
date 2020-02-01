@@ -4,8 +4,9 @@ docs:
 	rmdir docs/pandas_profiling
 
 test:
-    pytest --nbval --cov=./ --black --sanitize-with tests/sanitize-notebook.cfg tests/unit/
-    pytest --nbval --cov=./ --black --sanitize-with tests/sanitize-notebook.cfg tests/issues/
+    pytest --black tests/unit/
+    pytest --black tests/issues/
+    pytest --nbval tests/notebooks/
     flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 
 install:

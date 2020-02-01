@@ -475,16 +475,20 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         },
     }
 
-    with tqdm(
-        total=len(missing_map), desc="missing", disable=disable_progress_bar
-    ) as pbar:
-        missing = {}
-        for name, settings in missing_map.items():
-            pbar.set_description_str("missing [{name}]".format(name=name))
-            if (
-                config["missing_diagrams"][name].get(bool)
-                and table_stats["n_vars_with_missing"] >= settings["min_missing"]
-            ):
+    missing_map = {
+        name: settings
+        for name, settings in missing_map.items()
+        if config["missing_diagrams"][name].get(bool)
+        and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+    }
+    missing = {}
+
+    if len(missing_map) > 0:
+        with tqdm(
+            total=len(missing_map), desc="missing", disable=disable_progress_bar
+        ) as pbar:
+            for name, settings in missing_map.items():
+                pbar.set_description_str("missing [{name}]".format(name=name))
                 try:
                     if name != "heatmap" or (
                         table_stats["n_vars_with_missing"]
@@ -497,7 +501,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
                         }
                 except ValueError as e:
                     warn_missing(name, e)
-            pbar.update()
+                pbar.update()
     return missing
 
 
