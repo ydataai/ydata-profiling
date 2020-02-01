@@ -502,16 +502,20 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
         },
     }
 
-    with tqdm(
-        total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
-    ) as pbar:
-        missing = {}
-        for name, settings in missing_map.items():
-            pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
-            if (
-                config[&#34;missing_diagrams&#34;][name].get(bool)
-                and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
-            ):
+    missing_map = {
+        name: settings
+        for name, settings in missing_map.items()
+        if config[&#34;missing_diagrams&#34;][name].get(bool)
+        and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
+    }
+    missing = {}
+
+    if len(missing_map) &gt; 0:
+        with tqdm(
+            total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
+        ) as pbar:
+            for name, settings in missing_map.items():
+                pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
                 try:
                     if name != &#34;heatmap&#34; or (
                         table_stats[&#34;n_vars_with_missing&#34;]
@@ -524,7 +528,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
                         }
                 except ValueError as e:
                     warn_missing(name, e)
-            pbar.update()
+                pbar.update()
     return missing
 
 
@@ -1428,16 +1432,20 @@ bins. Read the docs:
         },
     }
 
-    with tqdm(
-        total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
-    ) as pbar:
-        missing = {}
-        for name, settings in missing_map.items():
-            pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
-            if (
-                config[&#34;missing_diagrams&#34;][name].get(bool)
-                and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
-            ):
+    missing_map = {
+        name: settings
+        for name, settings in missing_map.items()
+        if config[&#34;missing_diagrams&#34;][name].get(bool)
+        and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
+    }
+    missing = {}
+
+    if len(missing_map) &gt; 0:
+        with tqdm(
+            total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
+        ) as pbar:
+            for name, settings in missing_map.items():
+                pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
                 try:
                     if name != &#34;heatmap&#34; or (
                         table_stats[&#34;n_vars_with_missing&#34;]
@@ -1450,7 +1458,7 @@ bins. Read the docs:
                         }
                 except ValueError as e:
                     warn_missing(name, e)
-            pbar.update()
+                pbar.update()
     return missing</code></pre>
 </details>
 </dd>

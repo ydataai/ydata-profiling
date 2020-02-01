@@ -164,7 +164,9 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
 
     if len(correlation_names) > 0:
         with tqdm(
-            total=len(correlation_names), desc="correlations", disable=disable_progress_bar
+            total=len(correlation_names),
+            desc="correlations",
+            disable=disable_progress_bar,
         ) as pbar:
             for correlation_name in correlation_names:
                 pbar.set_description_str(
@@ -236,9 +238,9 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                                     ]
 
                                     # Override the Phi_k sorting
-                                    correlations["phi_k"] = correlations["phi_k"].reindex(
-                                        index=column_order, columns=column_order
-                                    )
+                                    correlations["phi_k"] = correlations[
+                                        "phi_k"
+                                    ].reindex(index=column_order, columns=column_order)
                             except (ValueError, DataError, IndexError, TypeError) as e:
                                 warn_correlation("phi_k", e)
                 elif correlation_name in ["cramers", "recoded"]:
