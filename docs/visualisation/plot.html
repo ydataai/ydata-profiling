@@ -33,6 +33,8 @@ import matplotlib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+
 from pandas.plotting import register_matplotlib_converters
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 from pkg_resources import resource_filename
@@ -42,6 +44,7 @@ from pandas_profiling.model.base import Variable
 
 register_matplotlib_converters()
 matplotlib.style.use(resource_filename(__name__, &#34;pandas_profiling.mplstyle&#34;))
+sns.set_style(style=&#34;white&#34;)
 
 
 def _plot_histogram(
@@ -192,6 +195,19 @@ def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&
         plt.hexbin(*zip(*series.tolist()))
     else:
         plt.scatter(*zip(*series.tolist()))
+    return plot_360_n0sc0pe(plt)
+
+
+def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    if len(series1) &gt; 1000:
+        color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
+    else:
+        plt.scatter(series1.tolist(), series2.tolist())
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </section>
@@ -355,6 +371,28 @@ def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.visualisation.plot.scatter_pairwise"><code class="name flex">
+<span>def <span class="ident">scatter_pairwise</span></span>(<span>series1, series2, x_label, y_label)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    if len(series1) &gt; 1000:
+        color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
+    else:
+        plt.scatter(series1.tolist(), series2.tolist())
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.visualisation.plot.scatter_series"><code class="name flex">
 <span>def <span class="ident">scatter_series</span></span>(<span>series, x_label='Width', y_label='Height')</span>
 </code></dt>
@@ -412,11 +450,12 @@ Returns:</p></section>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="pandas_profiling.visualisation.plot.correlation_matrix" href="#pandas_profiling.visualisation.plot.correlation_matrix">correlation_matrix</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.histogram" href="#pandas_profiling.visualisation.plot.histogram">histogram</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.mini_histogram" href="#pandas_profiling.visualisation.plot.mini_histogram">mini_histogram</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.scatter_complex" href="#pandas_profiling.visualisation.plot.scatter_complex">scatter_complex</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.scatter_pairwise" href="#pandas_profiling.visualisation.plot.scatter_pairwise">scatter_pairwise</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.scatter_series" href="#pandas_profiling.visualisation.plot.scatter_series">scatter_series</a></code></li>
 </ul>
 </li>

@@ -4,21 +4,28 @@ title: "Pandas Profiling Report"
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 
+# Show the progress bar
+progress_bar: True
+
 # Per variable type description settings
 vars:
     num:
-          quantiles:
-                - 0.05
-                - 0.25
-                - 0.5
-                - 0.75
-                - 0.95
-          skewness_threshold: 20
-          low_categorical_threshold: 5
+        quantiles:
+              - 0.05
+              - 0.25
+              - 0.5
+              - 0.75
+              - 0.95
+        skewness_threshold: 20
+        low_categorical_threshold: 5
+# Set to zero to disable
+        chi_squared_threshold: 0.999
     cat:
         check_composition: True
         cardinality_threshold: 50
         n_obs: 5
+# Set to zero to disable
+        chi_squared_threshold: 0.999
     bool:
         n_obs: 3
 
@@ -55,6 +62,10 @@ correlations:
       warn_high_correlations: True
       threshold: 1.0
 
+# Bivariate / Pairwise relations
+interactions:
+  continuous: True
+
 # For categorical
 categorical_maximum_correlation_distinct: 100
 
@@ -86,9 +97,18 @@ n_obs_unique: 5
 n_extreme_obs: 5
 n_freq_table_max: 10
 
+# Configuration related to the samples area
 samples:
     head: 10
     tail: 10
+
+# Configuration related to the warning overview (top) and per variable warnings
+warnings:
+    # Set to zero to disable showing warnings
+    collapse_if_more: 20
+
+# Configuration related to the rejection of variables
+reject_variables: True
 
 # When in a Jupyter notebook
 notebook:
@@ -108,5 +128,6 @@ html:
 # Styling options for the HTML report
     style:
       theme: None
+      logo: ""
       primary_color: "#337ab7"
       full_width: False

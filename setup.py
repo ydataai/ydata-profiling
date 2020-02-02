@@ -23,7 +23,7 @@ with (source_root / "src" / "pandas_profiling" / "version.py").open(
 setup(
     name="pandas-profiling",
     version=version,
-    author="Jos Polfliet, Simon Brugman",
+    author="Simon Brugman",
     author_email="pandasprofiling@gmail.com",
     packages=find_packages("src"),
     package_dir={"": "src"},
@@ -31,21 +31,24 @@ setup(
     license="MIT",
     description="Generate profile report for pandas DataFrame",
     install_requires=[
-        "pandas>=0.19",
-        "matplotlib>=1.4",
-        "confuse>=1.0.0",
-        "jinja2>=2.8",
+        "pandas==0.25.3",
+        "matplotlib>=3.0.3",  # 3.1.2 for Python > 3.5
+        "confuse==1.0.0",
+        "jinja2==2.11.1",
+        "visions==0.2.2",
         # Related to HTML report
-        "htmlmin>=0.1.12",
+        "htmlmin==0.1.12",
         # Could be optional
-        "missingno>=0.4.2",
-        "phik>=0.9.8",
-        "astropy",
+        "missingno==0.4.2",
+        "phik==0.9.8",
+        "astropy>=3.2.3",  # 4.0 for Python > 3.5
+        "tqdm==4.42.0",
     ],
     extras_require={
-        "notebook": ["jupyter-client>=5.3.4", "jupyter-core>=4.6.1", "ipywidgets"],
-        "app": ["pyqt5>=5.14.1"],
-        "html": ["htmlmin>=0.1.12"],
+        "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.1", "ipywidgets"],
+        "app": ["pyqt5==5.14.1"],
+        "html": ["htmlmin==0.1.12"],
+        "kaggle": ["kaggle"],
     },
     include_package_data=True,
     classifiers=[

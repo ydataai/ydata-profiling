@@ -1,8 +1,11 @@
 """Utils for pandas DataFrames."""
+import sys
 import warnings
 from pathlib import Path
 
 import pandas as pd
+
+from pandas_profiling.config import config
 
 
 def warn_read(extension):
@@ -65,20 +68,6 @@ def read_pandas(file_name: Path) -> pd.DataFrame:
             warn_read(extension)
 
         df = pd.read_csv(str(file_name))
-    return df
-
-
-def clean_column_names(df):
-    """Removes spaces and colons from pandas DataFrame column names
-
-    Args:
-        df: DataFrame
-
-    Returns:
-        DataFrame with spaces in column names replaced by underscores, colons removed.
-    """
-    df.columns = df.columns.str.replace(" ", "_")
-    df.columns = df.columns.str.replace(":", "")
     return df
 
 

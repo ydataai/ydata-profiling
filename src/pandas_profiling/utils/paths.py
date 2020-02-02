@@ -8,7 +8,7 @@ def get_project_root() -> Path:
     Returns:
         The path to the project root folder.
     """
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent.parent
 
 
 def get_config_default() -> Path:
@@ -27,3 +27,7 @@ def get_config_minimal() -> Path:
         The path to the default config file.
     """
     return Path(__file__).parent.parent / "config_minimal.yaml"
+
+
+def get_data_path() -> Path():
+    return get_project_root() / "data"

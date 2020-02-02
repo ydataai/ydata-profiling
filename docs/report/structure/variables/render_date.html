@@ -24,7 +24,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from pandas_profiling.visualisation.plot import mini_histogram, histogram
+<pre><code class="python">from pandas_profiling.config import config
+from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
     Image,
     Preview,
@@ -37,6 +38,9 @@ from pandas_profiling.report.presentation.core import (
 def render_date(summary):
     # TODO: render common?
     template_variables = {}
+
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
     # Top
     info = Overview(summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;Date&#34;, [])
 
@@ -71,7 +75,8 @@ def render_date(summary):
 
     mini_histo = Image(
         mini_histogram(summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]),
-        &#34;Mini histogram&#34;,
+        image_format=image_format,
+        alt=&#34;Mini histogram&#34;,
     )
 
     template_variables[&#34;top&#34;] = Sequence(
@@ -85,6 +90,7 @@ def render_date(summary):
                 histogram(
                     summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]
                 ),
+                image_format=image_format,
                 alt=&#34;Histogram&#34;,
                 caption=&#34;Histogram&#34;,
                 name=&#34;Histogram&#34;,
@@ -119,6 +125,9 @@ def render_date(summary):
 <pre><code class="python">def render_date(summary):
     # TODO: render common?
     template_variables = {}
+
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
     # Top
     info = Overview(summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;Date&#34;, [])
 
@@ -153,7 +162,8 @@ def render_date(summary):
 
     mini_histo = Image(
         mini_histogram(summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]),
-        &#34;Mini histogram&#34;,
+        image_format=image_format,
+        alt=&#34;Mini histogram&#34;,
     )
 
     template_variables[&#34;top&#34;] = Sequence(
@@ -167,6 +177,7 @@ def render_date(summary):
                 histogram(
                     summary[&#34;histogram_data&#34;], summary, summary[&#34;histogram_bins&#34;]
                 ),
+                image_format=image_format,
                 alt=&#34;Histogram&#34;,
                 caption=&#34;Histogram&#34;,
                 name=&#34;Histogram&#34;,

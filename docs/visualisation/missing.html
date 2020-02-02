@@ -75,8 +75,7 @@ def missing_matrix(data: pd.DataFrame) -&gt; str:
         labels=labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
-    # Note: override image format, svg contains bug for missingno.matrix
-    return plot_360_n0sc0pe(plt, image_format=&#34;png&#34;)
+    return plot_360_n0sc0pe(plt)
 
 
 def missing_bar(data: pd.DataFrame) -&gt; str:
@@ -357,8 +356,7 @@ def missing_dendrogram(data: pd.DataFrame) -&gt; str:
         labels=labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
-    # Note: override image format, svg contains bug for missingno.matrix
-    return plot_360_n0sc0pe(plt, image_format=&#34;png&#34;)</code></pre>
+    return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
 </dl>

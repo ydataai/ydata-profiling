@@ -54,11 +54,30 @@ def get_tabs(items):
     return tabs
 
 
+def get_list(items):
+    list = QWidget()
+    layout = QVBoxLayout()
+    layout.addStretch(1)
+    for item in items:
+        layout.addWidget(item.render())
+    list.setLayout(layout)
+    return list
+
+
 class QtSequence(Sequence):
     def render(self):
-        # if self.sequence_type == &#34;tabs&#34;:
-        return get_tabs(self.content[&#34;items&#34;])
-        # raise NotImplementedError()</code></pre>
+        # TODO: remove
+        if self.sequence_type not in [&#34;tabs&#34;, &#34;variables&#34;, &#34;sections&#34;, &#34;accordion&#34;]:
+            self.sequence_type = &#34;list&#34;
+        else:
+            self.sequence_type = &#34;tabs&#34;
+
+        if self.sequence_type == &#34;tabs&#34;:
+            return get_tabs(self.content[&#34;items&#34;])
+        elif self.sequence_type == &#34;list&#34;:
+            return get_list(self.content[&#34;items&#34;])
+        else:
+            raise NotImplementedError()</code></pre>
 </details>
 </section>
 <section>
@@ -68,6 +87,25 @@ class QtSequence(Sequence):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.report.presentation.flavours.qt.sequence.get_list"><code class="name flex">
+<span>def <span class="ident">get_list</span></span>(<span>items)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_list(items):
+    list = QWidget()
+    layout = QVBoxLayout()
+    layout.addStretch(1)
+    for item in items:
+        layout.addWidget(item.render())
+    list.setLayout(layout)
+    return list</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.report.presentation.flavours.qt.sequence.get_name"><code class="name flex">
 <span>def <span class="ident">get_name</span></span>(<span>item)</span>
 </code></dt>
@@ -126,8 +164,18 @@ inheritance.</p></section>
 </summary>
 <pre><code class="python">class QtSequence(Sequence):
     def render(self):
-        # if self.sequence_type == &#34;tabs&#34;:
-        return get_tabs(self.content[&#34;items&#34;])</code></pre>
+        # TODO: remove
+        if self.sequence_type not in [&#34;tabs&#34;, &#34;variables&#34;, &#34;sections&#34;, &#34;accordion&#34;]:
+            self.sequence_type = &#34;list&#34;
+        else:
+            self.sequence_type = &#34;tabs&#34;
+
+        if self.sequence_type == &#34;tabs&#34;:
+            return get_tabs(self.content[&#34;items&#34;])
+        elif self.sequence_type == &#34;list&#34;:
+            return get_list(self.content[&#34;items&#34;])
+        else:
+            raise NotImplementedError()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -147,8 +195,18 @@ inheritance.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render(self):
-    # if self.sequence_type == &#34;tabs&#34;:
-    return get_tabs(self.content[&#34;items&#34;])</code></pre>
+    # TODO: remove
+    if self.sequence_type not in [&#34;tabs&#34;, &#34;variables&#34;, &#34;sections&#34;, &#34;accordion&#34;]:
+        self.sequence_type = &#34;list&#34;
+    else:
+        self.sequence_type = &#34;tabs&#34;
+
+    if self.sequence_type == &#34;tabs&#34;:
+        return get_tabs(self.content[&#34;items&#34;])
+    elif self.sequence_type == &#34;list&#34;:
+        return get_list(self.content[&#34;items&#34;])
+    else:
+        raise NotImplementedError()</code></pre>
 </details>
 </dd>
 </dl>
@@ -169,6 +227,7 @@ inheritance.</p></section>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.sequence.get_list" href="#pandas_profiling.report.presentation.flavours.qt.sequence.get_list">get_list</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.sequence.get_name" href="#pandas_profiling.report.presentation.flavours.qt.sequence.get_name">get_name</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.sequence.get_tabs" href="#pandas_profiling.report.presentation.flavours.qt.sequence.get_tabs">get_tabs</a></code></li>
 </ul>

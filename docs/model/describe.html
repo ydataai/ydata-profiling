@@ -30,14 +30,17 @@ import multiprocessing.pool
 import multiprocessing
 import itertools
 import os
+import sys
 import warnings
 from pathlib import Path
 from typing import Tuple
 from urllib.parse import urlsplit
 
+from tqdm.autonotebook import tqdm
 import numpy as np
 import pandas as pd
 from astropy.stats import bayesian_blocks
+from scipy.stats.stats import chisquare
 
 from pandas_profiling import __version__
 from pandas_profiling.config import config as config
@@ -50,18 +53,14 @@ from pandas_profiling.model.messages import (
 
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
-from pandas_profiling.model.correlations import (
-    calculate_correlations,
-    perform_check_correlation,
-)
-from pandas_profiling.utils.common import update
-from pandas_profiling.visualisation import plot
+from pandas_profiling.model.correlations import calculate_correlations
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_matrix,
     missing_heatmap,
     missing_dendrogram,
 )
+from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
@@ -99,6 +98,11 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
         &#34;histogram_data&#34;: series,
         &#34;scatter_data&#34;: series,  # For complex
     }
+
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        histogram = np.histogram(series[series.notna()].values, bins=&#34;auto&#34;)[0]
+        stats[&#34;chi_squared&#34;] = chisquare(histogram)
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
     stats.update(
@@ -169,20 +173,20 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; d
 
     stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
 
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
+
     check_composition = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
     if check_composition:
-        contains = {
-            &#34;chars&#34;: series.str.contains(r&#34;[a-zA-Z]&#34;, case=False, regex=True).any(),
-            &#34;digits&#34;: series.str.contains(r&#34;[0-9]&#34;, case=False, regex=True).any(),
-            &#34;spaces&#34;: series.str.contains(r&#34;\s&#34;, case=False, regex=True).any(),
-            &#34;non-words&#34;: series.str.contains(r&#34;\W&#34;, case=False, regex=True).any(),
-        }
-
-        stats[&#34;length&#34;] = series.str.len()
         stats[&#34;max_length&#34;] = series.str.len().max()
         stats[&#34;mean_length&#34;] = series.str.len().mean()
         stats[&#34;min_length&#34;] = series.str.len().min()
-        stats[&#34;composition&#34;] = contains
+
+        from visions.application.summaries.series.text_summary import text_summary
+
+        stats.update(text_summary(series))
+        stats[&#34;length&#34;] = series.str.len()
 
     stats[&#34;date_warning&#34;] = warning_type_date(series)
 
@@ -392,7 +396,7 @@ def describe_1d(series: pd.Series) -&gt; dict:
     return series_description
 
 
-def multiprocess_1d(column, series) -&gt; Tuple[str, dict]:
+def multiprocess_1d(args) -&gt; Tuple[str, dict]:
     &#34;&#34;&#34;Wrapper to process series in parallel.
 
     Args:
@@ -402,6 +406,7 @@ def multiprocess_1d(column, series) -&gt; Tuple[str, dict]:
     Returns:
         A tuple with column and the series description.
     &#34;&#34;&#34;
+    column, series = args
     return column, describe_1d(series)
 
 
@@ -484,6 +489,8 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+
     missing_map = {
         &#34;bar&#34;: {&#34;func&#34;: missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
         &#34;matrix&#34;: {&#34;func&#34;: missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
@@ -495,25 +502,73 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
         },
     }
 
+    missing_map = {
+        name: settings
+        for name, settings in missing_map.items()
+        if config[&#34;missing_diagrams&#34;][name].get(bool)
+        and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
+    }
     missing = {}
-    for name, settings in missing_map.items():
-        if (
-            config[&#34;missing_diagrams&#34;][name].get(bool)
-            and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
-        ):
-            try:
-                if name != &#34;heatmap&#34; or (
-                    table_stats[&#34;n_vars_with_missing&#34;]
-                    - table_stats[&#34;n_vars_all_missing&#34;]
-                    &gt;= settings[&#34;min_missing&#34;]
-                ):
-                    missing[name] = {
-                        &#34;name&#34;: settings[&#34;name&#34;],
-                        &#34;matrix&#34;: settings[&#34;func&#34;](df),
-                    }
-            except ValueError as e:
-                warn_missing(name, e)
+
+    if len(missing_map) &gt; 0:
+        with tqdm(
+            total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
+        ) as pbar:
+            for name, settings in missing_map.items():
+                pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
+                try:
+                    if name != &#34;heatmap&#34; or (
+                        table_stats[&#34;n_vars_with_missing&#34;]
+                        - table_stats[&#34;n_vars_all_missing&#34;]
+                        &gt;= settings[&#34;min_missing&#34;]
+                    ):
+                        missing[name] = {
+                            &#34;name&#34;: settings[&#34;name&#34;],
+                            &#34;matrix&#34;: settings[&#34;func&#34;](df),
+                        }
+                except ValueError as e:
+                    warn_missing(name, e)
+                pbar.update()
     return missing
+
+
+def get_scatter_matrix(df, variables):
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+
+    if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
+        continuous_variables = [
+            column for column, type in variables.items() if type == Variable.TYPE_NUM
+        ]
+        with tqdm(
+            total=len(continuous_variables) ** 2,
+            desc=&#34;interactions [continuous]&#34;,
+            disable=disable_progress_bar,
+        ) as pbar:
+            scatter_matrix = {
+                x: {y: &#34;&#34; for y in continuous_variables} for x in continuous_variables
+            }
+            for x in continuous_variables:
+                for y in continuous_variables:
+                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                    pbar.update()
+    else:
+        scatter_matrix = {}
+
+    return scatter_matrix
+
+
+def sort_column_names(dct):
+    sort = config[&#34;sort&#34;].get(str)
+    if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
+        warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
+    else:
+        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
+            dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
+        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
+            dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
+        elif sort != &#34;None&#34;:
+            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+    return dct
 
 
 def describe(df: pd.DataFrame) -&gt; dict:
@@ -536,59 +591,81 @@ def describe(df: pd.DataFrame) -&gt; dict:
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
 
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+
     # Multiprocessing of Describe 1D for each column
     pool_size = config[&#34;pool_size&#34;].get(int)
     if pool_size &lt;= 0:
         pool_size = multiprocessing.cpu_count()
 
-    if pool_size == 1:
-        args = [(column, series) for column, series in df.iteritems()]
-        series_description = {
-            column: series
-            for column, series in itertools.starmap(multiprocess_1d, args)
-        }
-    else:
-        with multiprocessing.pool.ThreadPool(pool_size) as executor:
-            series_description = {}
-            results = executor.starmap(multiprocess_1d, df.iteritems())
-            for col, description in results:
-                series_description[col] = description
+    args = [(column, series) for column, series in df.iteritems()]
+    series_description = {}
+    with tqdm(total=len(args), desc=&#34;variables&#34;, disable=disable_progress_bar) as pbar:
+        if pool_size == 1:
+            for arg in args:
+                column, description = multiprocess_1d(arg)
+                series_description[column] = description
+                pbar.update(1)
+        else:
+            with multiprocessing.pool.ThreadPool(pool_size) as executor:
+                for i, (column, description) in enumerate(
+                    executor.imap_unordered(multiprocess_1d, args)
+                ):
+                    series_description[column] = description
+                    pbar.update(1)
 
     # Mapping from column name to variable type
+    series_description = sort_column_names(series_description)
+
     variables = {
         column: description[&#34;type&#34;]
         for column, description in series_description.items()
     }
 
-    # Get correlations
-    correlations = calculate_correlations(df, variables)
-
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
+    # Get correlations
+    correlations = calculate_correlations(df, variables)
+
+    # Scatter matrix
+    scatter_matrix = get_scatter_matrix(df, variables)
+
     # Table statistics
-    table_stats = describe_table(df, variable_stats)
+    with tqdm(total=1, desc=&#34;table&#34;, disable=disable_progress_bar) as pbar:
+        table_stats = describe_table(df, variable_stats)
+        pbar.update(1)
 
     # missing diagrams
     missing = get_missing_diagrams(df, table_stats)
 
     # Messages
-    messages = check_table_messages(table_stats)
-    for col, description in series_description.items():
-        messages += check_variable_messages(col, description)
+    with tqdm(total=3, desc=&#34;warnings&#34;, disable=disable_progress_bar) as pbar:
+        pbar.set_description_str(&#34;warnings [table]&#34;)
+        messages = check_table_messages(table_stats)
+        pbar.update(1)
+        pbar.set_description_str(&#34;warnings [variables]&#34;)
+        for col, description in series_description.items():
+            messages += check_variable_messages(col, description)
+        pbar.update(1)
+        pbar.set_description_str(&#34;warnings [correlations]&#34;)
+        messages += check_correlation_messages(correlations)
+        pbar.update(1)
 
-    messages += check_correlation_messages(correlations)
-
-    package = {
-        &#34;pandas_profiling_version&#34;: __version__,
-        &#34;pandas_profiling_config&#34;: config.dump(),
-    }
+    with tqdm(total=1, desc=&#34;package&#34;, disable=disable_progress_bar) as pbar:
+        package = {
+            &#34;pandas_profiling_version&#34;: __version__,
+            &#34;pandas_profiling_config&#34;: config.dump(),
+        }
+        pbar.update(1)
 
     return {
         # Overall description
         &#34;table&#34;: table_stats,
         # Per variable descriptions
         &#34;variables&#34;: series_description,
+        # Bivariate relations
+        &#34;scatter&#34;: scatter_matrix,
         # Correlation matrices
         &#34;correlations&#34;: correlations,
         # Missing values
@@ -654,59 +731,81 @@ def describe(df: pd.DataFrame) -&gt; dict:
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
 
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+
     # Multiprocessing of Describe 1D for each column
     pool_size = config[&#34;pool_size&#34;].get(int)
     if pool_size &lt;= 0:
         pool_size = multiprocessing.cpu_count()
 
-    if pool_size == 1:
-        args = [(column, series) for column, series in df.iteritems()]
-        series_description = {
-            column: series
-            for column, series in itertools.starmap(multiprocess_1d, args)
-        }
-    else:
-        with multiprocessing.pool.ThreadPool(pool_size) as executor:
-            series_description = {}
-            results = executor.starmap(multiprocess_1d, df.iteritems())
-            for col, description in results:
-                series_description[col] = description
+    args = [(column, series) for column, series in df.iteritems()]
+    series_description = {}
+    with tqdm(total=len(args), desc=&#34;variables&#34;, disable=disable_progress_bar) as pbar:
+        if pool_size == 1:
+            for arg in args:
+                column, description = multiprocess_1d(arg)
+                series_description[column] = description
+                pbar.update(1)
+        else:
+            with multiprocessing.pool.ThreadPool(pool_size) as executor:
+                for i, (column, description) in enumerate(
+                    executor.imap_unordered(multiprocess_1d, args)
+                ):
+                    series_description[column] = description
+                    pbar.update(1)
 
     # Mapping from column name to variable type
+    series_description = sort_column_names(series_description)
+
     variables = {
         column: description[&#34;type&#34;]
         for column, description in series_description.items()
     }
 
-    # Get correlations
-    correlations = calculate_correlations(df, variables)
-
     # Transform the series_description in a DataFrame
     variable_stats = pd.DataFrame(series_description)
 
+    # Get correlations
+    correlations = calculate_correlations(df, variables)
+
+    # Scatter matrix
+    scatter_matrix = get_scatter_matrix(df, variables)
+
     # Table statistics
-    table_stats = describe_table(df, variable_stats)
+    with tqdm(total=1, desc=&#34;table&#34;, disable=disable_progress_bar) as pbar:
+        table_stats = describe_table(df, variable_stats)
+        pbar.update(1)
 
     # missing diagrams
     missing = get_missing_diagrams(df, table_stats)
 
     # Messages
-    messages = check_table_messages(table_stats)
-    for col, description in series_description.items():
-        messages += check_variable_messages(col, description)
+    with tqdm(total=3, desc=&#34;warnings&#34;, disable=disable_progress_bar) as pbar:
+        pbar.set_description_str(&#34;warnings [table]&#34;)
+        messages = check_table_messages(table_stats)
+        pbar.update(1)
+        pbar.set_description_str(&#34;warnings [variables]&#34;)
+        for col, description in series_description.items():
+            messages += check_variable_messages(col, description)
+        pbar.update(1)
+        pbar.set_description_str(&#34;warnings [correlations]&#34;)
+        messages += check_correlation_messages(correlations)
+        pbar.update(1)
 
-    messages += check_correlation_messages(correlations)
-
-    package = {
-        &#34;pandas_profiling_version&#34;: __version__,
-        &#34;pandas_profiling_config&#34;: config.dump(),
-    }
+    with tqdm(total=1, desc=&#34;package&#34;, disable=disable_progress_bar) as pbar:
+        package = {
+            &#34;pandas_profiling_version&#34;: __version__,
+            &#34;pandas_profiling_config&#34;: config.dump(),
+        }
+        pbar.update(1)
 
     return {
         # Overall description
         &#34;table&#34;: table_stats,
         # Per variable descriptions
         &#34;variables&#34;: series_description,
+        # Bivariate relations
+        &#34;scatter&#34;: scatter_matrix,
         # Correlation matrices
         &#34;correlations&#34;: correlations,
         # Missing values
@@ -847,20 +946,20 @@ def describe(df: pd.DataFrame) -&gt; dict:
 
     stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
 
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
+
     check_composition = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
     if check_composition:
-        contains = {
-            &#34;chars&#34;: series.str.contains(r&#34;[a-zA-Z]&#34;, case=False, regex=True).any(),
-            &#34;digits&#34;: series.str.contains(r&#34;[0-9]&#34;, case=False, regex=True).any(),
-            &#34;spaces&#34;: series.str.contains(r&#34;\s&#34;, case=False, regex=True).any(),
-            &#34;non-words&#34;: series.str.contains(r&#34;\W&#34;, case=False, regex=True).any(),
-        }
-
-        stats[&#34;length&#34;] = series.str.len()
         stats[&#34;max_length&#34;] = series.str.len().max()
         stats[&#34;mean_length&#34;] = series.str.len().mean()
         stats[&#34;min_length&#34;] = series.str.len().min()
-        stats[&#34;composition&#34;] = contains
+
+        from visions.application.summaries.series.text_summary import text_summary
+
+        stats.update(text_summary(series))
+        stats[&#34;length&#34;] = series.str.len()
 
     stats[&#34;date_warning&#34;] = warning_type_date(series)
 
@@ -967,6 +1066,11 @@ bins. Read the docs:
         &#34;histogram_data&#34;: series,
         &#34;scatter_data&#34;: series,  # For complex
     }
+
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        histogram = np.histogram(series[series.notna()].values, bins=&#34;auto&#34;)[0]
+        stats[&#34;chi_squared&#34;] = chisquare(histogram)
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
     stats.update(
@@ -1315,6 +1419,8 @@ bins. Read the docs:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+
     missing_map = {
         &#34;bar&#34;: {&#34;func&#34;: missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
         &#34;matrix&#34;: {&#34;func&#34;: missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
@@ -1326,29 +1432,72 @@ bins. Read the docs:
         },
     }
 
+    missing_map = {
+        name: settings
+        for name, settings in missing_map.items()
+        if config[&#34;missing_diagrams&#34;][name].get(bool)
+        and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
+    }
     missing = {}
-    for name, settings in missing_map.items():
-        if (
-            config[&#34;missing_diagrams&#34;][name].get(bool)
-            and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
-        ):
-            try:
-                if name != &#34;heatmap&#34; or (
-                    table_stats[&#34;n_vars_with_missing&#34;]
-                    - table_stats[&#34;n_vars_all_missing&#34;]
-                    &gt;= settings[&#34;min_missing&#34;]
-                ):
-                    missing[name] = {
-                        &#34;name&#34;: settings[&#34;name&#34;],
-                        &#34;matrix&#34;: settings[&#34;func&#34;](df),
-                    }
-            except ValueError as e:
-                warn_missing(name, e)
+
+    if len(missing_map) &gt; 0:
+        with tqdm(
+            total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
+        ) as pbar:
+            for name, settings in missing_map.items():
+                pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
+                try:
+                    if name != &#34;heatmap&#34; or (
+                        table_stats[&#34;n_vars_with_missing&#34;]
+                        - table_stats[&#34;n_vars_all_missing&#34;]
+                        &gt;= settings[&#34;min_missing&#34;]
+                    ):
+                        missing[name] = {
+                            &#34;name&#34;: settings[&#34;name&#34;],
+                            &#34;matrix&#34;: settings[&#34;func&#34;](df),
+                        }
+                except ValueError as e:
+                    warn_missing(name, e)
+                pbar.update()
     return missing</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.model.describe.get_scatter_matrix"><code class="name flex">
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>df, variables)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_scatter_matrix(df, variables):
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+
+    if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
+        continuous_variables = [
+            column for column, type in variables.items() if type == Variable.TYPE_NUM
+        ]
+        with tqdm(
+            total=len(continuous_variables) ** 2,
+            desc=&#34;interactions [continuous]&#34;,
+            disable=disable_progress_bar,
+        ) as pbar:
+            scatter_matrix = {
+                x: {y: &#34;&#34; for y in continuous_variables} for x in continuous_variables
+            }
+            for x in continuous_variables:
+                for y in continuous_variables:
+                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                    pbar.update()
+    else:
+        scatter_matrix = {}
+
+    return scatter_matrix</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.describe.multiprocess_1d"><code class="name flex">
-<span>def <span class="ident">multiprocess_1d</span></span>(<span>column, series)</span>
+<span>def <span class="ident">multiprocess_1d</span></span>(<span>args)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Wrapper to process series in parallel.</p>
@@ -1365,7 +1514,7 @@ bins. Read the docs:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def multiprocess_1d(column, series) -&gt; Tuple[str, dict]:
+<pre><code class="python">def multiprocess_1d(args) -&gt; Tuple[str, dict]:
     &#34;&#34;&#34;Wrapper to process series in parallel.
 
     Args:
@@ -1375,7 +1524,31 @@ bins. Read the docs:
     Returns:
         A tuple with column and the series description.
     &#34;&#34;&#34;
+    column, series = args
     return column, describe_1d(series)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.describe.sort_column_names"><code class="name flex">
+<span>def <span class="ident">sort_column_names</span></span>(<span>dct)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sort_column_names(dct):
+    sort = config[&#34;sort&#34;].get(str)
+    if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
+        warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
+    else:
+        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
+            dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
+        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
+            dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
+        elif sort != &#34;None&#34;:
+            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+    return dct</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.describe.warn_missing"><code class="name flex">
@@ -1430,7 +1603,9 @@ bins. Read the docs:
 <li><code><a title="pandas_profiling.model.describe.describe_unsupported" href="#pandas_profiling.model.describe.describe_unsupported">describe_unsupported</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.describe_url_1d" href="#pandas_profiling.model.describe.describe_url_1d">describe_url_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.get_missing_diagrams" href="#pandas_profiling.model.describe.get_missing_diagrams">get_missing_diagrams</a></code></li>
+<li><code><a title="pandas_profiling.model.describe.get_scatter_matrix" href="#pandas_profiling.model.describe.get_scatter_matrix">get_scatter_matrix</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.multiprocess_1d" href="#pandas_profiling.model.describe.multiprocess_1d">multiprocess_1d</a></code></li>
+<li><code><a title="pandas_profiling.model.describe.sort_column_names" href="#pandas_profiling.model.describe.sort_column_names">sort_column_names</a></code></li>
 <li><code><a title="pandas_profiling.model.describe.warn_missing" href="#pandas_profiling.model.describe.warn_missing">warn_missing</a></code></li>
 </ul>
 </li>

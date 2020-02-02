@@ -1,12 +1,16 @@
 sudo: required
 dist: bionic
 language: python
-cache: pip
+cache:
+  pip: true
+  directories:
+    - data/
 
 python:
   - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
 
 env:
   - TEST=unit
@@ -15,11 +19,6 @@ env:
   - TEST=examples
   - TEST=lint
   - TEST=typing
-
-jobs:
-  exclude:
-    - python: "3.5"
-      env: TEST=examples
 
 install:
   - pip install --upgrade pip six
@@ -30,10 +29,10 @@ install:
 script:
   - if [ $TEST == 'unit' ]; then pytest --cov=. tests/unit/; fi
   - if [ $TEST == 'issue' ]; then pytest --cov=. tests/issues/; fi
-  - if [ $TEST == 'examples' ]; then pytest --cov=. --nbval --sanitize-with tests/sanitize-notebook.cfg examples/; fi
+  - if [ $TEST == 'examples' ]; then pytest --cov=. --nbval tests/notebooks/; fi
   - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
-  - if [ $TEST == 'lint' ]; then pytest --black -m black src/; fi
   - if [ $TEST == 'typing' ]; then pytest --mypy -m mypy .; fi
+  - if [ $TEST == 'lint' ]; then pytest --black -m black src/; flake8 . --select=E9,F63,F7,F82 --show-source --statistics; fi
 
 after_success:
   - codecov -F $TEST

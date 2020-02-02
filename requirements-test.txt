@@ -5,4 +5,5 @@ pytest-mypy
 pytest-cov
 pytest-black
 nbval
-pyarrow
+fastparquet==0.3.2
+flake8

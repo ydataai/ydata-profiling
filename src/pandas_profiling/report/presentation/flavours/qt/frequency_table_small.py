@@ -7,4 +7,4 @@ from pandas_profiling.report.presentation.core.frequency_table_small import (
 
 class QtFrequencyTableSmall(FrequencyTableSmall):
     def render(self):
-        return QPushButton("PyQt5 button")
+        return QPushButton("Small Frequency Table")

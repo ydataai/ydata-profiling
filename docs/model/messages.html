@@ -47,7 +47,7 @@ from pandas_profiling.model.base import Variable
 class MessageType(Enum):
     &#34;&#34;&#34;Message Types&#34;&#34;&#34;
 
-    CONST = 1
+    CONSTANT = 1
     &#34;&#34;&#34;This variable has a constant value.&#34;&#34;&#34;
 
     ZEROS = 2
@@ -81,6 +81,16 @@ class MessageType(Enum):
     &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
 
     UNIQUE = 12
+    &#34;&#34;&#34;This variable has unique values.&#34;&#34;&#34;
+
+    CONSTANT_LENGTH = 13
+    &#34;&#34;&#34;This variable has a constant length&#34;&#34;&#34;
+
+    REJECTED = 15
+    &#34;&#34;&#34;Variables are rejected if we do not want to consider them for further analysis.&#34;&#34;&#34;
+
+    UNIFORM = 14
+    &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;
 
 
 class Message(object):
@@ -101,6 +111,20 @@ class Message(object):
         self.values = values
         self.column_name = column_name
         self.anchor_id = hash(column_name)
+
+    def fmt(self):
+        # TODO: render in template
+        name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
+        if name == &#34;HIGH CORRELATION&#34;:
+            name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
+                num=len(self.values[&#34;fields&#34;]), title=&#34;, &#34;.join(self.values[&#34;fields&#34;])
+            )
+        return name
+
+    def __repr__(self):
+        return &#34;[{message_type}] warning on column {column}&#34;.format(
+            message_type=self.message_type.name, column=self.column_name
+        )
 
 
 def check_table_messages(table: dict) -&gt; List[Message]:
@@ -162,9 +186,18 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
         messages.append(
             Message(
                 column_name=col,
-                message_type=MessageType.CONST,
+                message_type=MessageType.CONSTANT,
                 values=description,
                 fields={&#34;n_unique&#34;},
+            )
+        )
+
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
             )
         )
 
@@ -189,11 +222,31 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
             )
         )
 
+    # Unsupported
+    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
+            )
+        )
+
     # Categorical
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
+    if description[&#34;type&#34;] == Variable.TYPE_CAT:
         if description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
+            )
+
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
         # High cardinality
@@ -209,8 +262,22 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 )
             )
 
+        # Constant length
+        if (
+            &#34;composition&#34; in description
+            and description[&#34;min_length&#34;] == description[&#34;max_length&#34;]
+        ):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.CONSTANT_LENGTH,
+                    values=description,
+                    fields={&#34;composition_min_length&#34;, &#34;composition_max_length&#34;},
+                )
+            )
+
     # Numerical
-    if description[&#34;type&#34;] in {Variable.TYPE_NUM}:
+    if description[&#34;type&#34;] == Variable.TYPE_NUM:
         # Skewness
         if warning_skewness(description[&#34;skewness&#34;]):
             messages.append(
@@ -221,6 +288,16 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                     fields={&#34;skewness&#34;},
                 )
             )
+
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # Zeros
         if warning_value(description[&#34;p_zeros&#34;]):
             messages.append(
@@ -412,9 +489,18 @@ def warning_type_date(series):
         messages.append(
             Message(
                 column_name=col,
-                message_type=MessageType.CONST,
+                message_type=MessageType.CONSTANT,
                 values=description,
                 fields={&#34;n_unique&#34;},
+            )
+        )
+
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
             )
         )
 
@@ -439,11 +525,31 @@ def warning_type_date(series):
             )
         )
 
+    # Unsupported
+    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
+            )
+        )
+
     # Categorical
-    if description[&#34;type&#34;] in {Variable.TYPE_CAT}:
+    if description[&#34;type&#34;] == Variable.TYPE_CAT:
         if description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
+            )
+
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
         # High cardinality
@@ -459,8 +565,22 @@ def warning_type_date(series):
                 )
             )
 
+        # Constant length
+        if (
+            &#34;composition&#34; in description
+            and description[&#34;min_length&#34;] == description[&#34;max_length&#34;]
+        ):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.CONSTANT_LENGTH,
+                    values=description,
+                    fields={&#34;composition_min_length&#34;, &#34;composition_max_length&#34;},
+                )
+            )
+
     # Numerical
-    if description[&#34;type&#34;] in {Variable.TYPE_NUM}:
+    if description[&#34;type&#34;] == Variable.TYPE_NUM:
         # Skewness
         if warning_skewness(description[&#34;skewness&#34;]):
             messages.append(
@@ -471,6 +591,16 @@ def warning_type_date(series):
                     fields={&#34;skewness&#34;},
                 )
             )
+
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
+        )
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # Zeros
         if warning_value(description[&#34;p_zeros&#34;]):
             messages.append(
@@ -564,8 +694,44 @@ def warning_type_date(series):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self.anchor_id = hash(column_name)</code></pre>
+        self.anchor_id = hash(column_name)
+
+    def fmt(self):
+        # TODO: render in template
+        name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
+        if name == &#34;HIGH CORRELATION&#34;:
+            name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
+                num=len(self.values[&#34;fields&#34;]), title=&#34;, &#34;.join(self.values[&#34;fields&#34;])
+            )
+        return name
+
+    def __repr__(self):
+        return &#34;[{message_type}] warning on column {column}&#34;.format(
+            message_type=self.message_type.name, column=self.column_name
+        )</code></pre>
 </details>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.model.messages.Message.fmt"><code class="name flex">
+<span>def <span class="ident">fmt</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fmt(self):
+    # TODO: render in template
+    name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
+    if name == &#34;HIGH CORRELATION&#34;:
+        name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
+            num=len(self.values[&#34;fields&#34;]), title=&#34;, &#34;.join(self.values[&#34;fields&#34;])
+        )
+    return name</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType"><code class="flex name class">
 <span>class <span class="ident">MessageType</span></span>
@@ -580,7 +746,7 @@ def warning_type_date(series):
 <pre><code class="python">class MessageType(Enum):
     &#34;&#34;&#34;Message Types&#34;&#34;&#34;
 
-    CONST = 1
+    CONSTANT = 1
     &#34;&#34;&#34;This variable has a constant value.&#34;&#34;&#34;
 
     ZEROS = 2
@@ -613,7 +779,17 @@ def warning_type_date(series):
     TYPE_DATE = 11
     &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
 
-    UNIQUE = 12</code></pre>
+    UNIQUE = 12
+    &#34;&#34;&#34;This variable has unique values.&#34;&#34;&#34;
+
+    CONSTANT_LENGTH = 13
+    &#34;&#34;&#34;This variable has a constant length&#34;&#34;&#34;
+
+    REJECTED = 15
+    &#34;&#34;&#34;Variables are rejected if we do not want to consider them for further analysis.&#34;&#34;&#34;
+
+    UNIFORM = 14
+    &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -621,9 +797,13 @@ def warning_type_date(series):
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="pandas_profiling.model.messages.MessageType.CONST"><code class="name">var <span class="ident">CONST</span></code></dt>
+<dt id="pandas_profiling.model.messages.MessageType.CONSTANT"><code class="name">var <span class="ident">CONSTANT</span></code></dt>
 <dd>
 <section class="desc"><p>This variable has a constant value.</p></section>
+</dd>
+<dt id="pandas_profiling.model.messages.MessageType.CONSTANT_LENGTH"><code class="name">var <span class="ident">CONSTANT_LENGTH</span></code></dt>
+<dd>
+<section class="desc"><p>This variable has a constant length</p></section>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType.DUPLICATES"><code class="name">var <span class="ident">DUPLICATES</span></code></dt>
 <dd>
@@ -649,6 +829,10 @@ def warning_type_date(series):
 <dd>
 <section class="desc"><p>This variable is correlated (categorical).</p></section>
 </dd>
+<dt id="pandas_profiling.model.messages.MessageType.REJECTED"><code class="name">var <span class="ident">REJECTED</span></code></dt>
+<dd>
+<section class="desc"><p>Variables are rejected if we do not want to consider them for further analysis.</p></section>
+</dd>
 <dt id="pandas_profiling.model.messages.MessageType.SKEWED"><code class="name">var <span class="ident">SKEWED</span></code></dt>
 <dd>
 <section class="desc"><p>This variable is highly skewed.</p></section>
@@ -657,9 +841,13 @@ def warning_type_date(series):
 <dd>
 <section class="desc"><p>This variable is likely a datetime, but treated as categorical.</p></section>
 </dd>
+<dt id="pandas_profiling.model.messages.MessageType.UNIFORM"><code class="name">var <span class="ident">UNIFORM</span></code></dt>
+<dd>
+<section class="desc"><p>The variable is uniformly distributed</p></section>
+</dd>
 <dt id="pandas_profiling.model.messages.MessageType.UNIQUE"><code class="name">var <span class="ident">UNIQUE</span></code></dt>
 <dd>
-<section class="desc"><p>Message Types</p></section>
+<section class="desc"><p>This variable has unique values.</p></section>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType.UNSUPPORTED"><code class="name">var <span class="ident">UNSUPPORTED</span></code></dt>
 <dd>
@@ -699,19 +887,25 @@ def warning_type_date(series):
 <ul>
 <li>
 <h4><code><a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.model.messages.Message.fmt" href="#pandas_profiling.model.messages.Message.fmt">fmt</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="pandas_profiling.model.messages.MessageType" href="#pandas_profiling.model.messages.MessageType">MessageType</a></code></h4>
 <ul class="two-column">
-<li><code><a title="pandas_profiling.model.messages.MessageType.CONST" href="#pandas_profiling.model.messages.MessageType.CONST">CONST</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.CONSTANT" href="#pandas_profiling.model.messages.MessageType.CONSTANT">CONSTANT</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.CONSTANT_LENGTH" href="#pandas_profiling.model.messages.MessageType.CONSTANT_LENGTH">CONSTANT_LENGTH</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.DUPLICATES" href="#pandas_profiling.model.messages.MessageType.DUPLICATES">DUPLICATES</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY" href="#pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY">HIGH_CARDINALITY</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.HIGH_CORRELATION" href="#pandas_profiling.model.messages.MessageType.HIGH_CORRELATION">HIGH_CORRELATION</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.INFINITE" href="#pandas_profiling.model.messages.MessageType.INFINITE">INFINITE</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.MISSING" href="#pandas_profiling.model.messages.MessageType.MISSING">MISSING</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.RECODED" href="#pandas_profiling.model.messages.MessageType.RECODED">RECODED</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.REJECTED" href="#pandas_profiling.model.messages.MessageType.REJECTED">REJECTED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.SKEWED" href="#pandas_profiling.model.messages.MessageType.SKEWED">SKEWED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.TYPE_DATE" href="#pandas_profiling.model.messages.MessageType.TYPE_DATE">TYPE_DATE</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.UNIFORM" href="#pandas_profiling.model.messages.MessageType.UNIFORM">UNIFORM</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.UNIQUE" href="#pandas_profiling.model.messages.MessageType.UNIQUE">UNIQUE</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.UNSUPPORTED" href="#pandas_profiling.model.messages.MessageType.UNSUPPORTED">UNSUPPORTED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.ZEROS" href="#pandas_profiling.model.messages.MessageType.ZEROS">ZEROS</a></code></li>

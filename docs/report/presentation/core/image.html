@@ -30,9 +30,16 @@ from pandas_profiling.report.presentation.abstract.item_renderer import ItemRend
 
 
 class Image(ItemRenderer):
-    def __init__(self, image, alt, caption=None, **kwargs):
+    def __init__(self, image, image_format, alt, caption=None, **kwargs):
         super().__init__(
-            &#34;image&#34;, {&#34;image&#34;: image, &#34;alt&#34;: alt, &#34;caption&#34;: caption}, **kwargs
+            &#34;image&#34;,
+            {
+                &#34;image&#34;: image,
+                &#34;image_format&#34;: image_format,
+                &#34;alt&#34;: alt,
+                &#34;caption&#34;: caption,
+            },
+            **kwargs
         )
 
     def render(self) -&gt; Any:
@@ -50,7 +57,7 @@ class Image(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.image.Image"><code class="flex name class">
 <span>class <span class="ident">Image</span></span>
-<span>(</span><span>image, alt, caption=None, **kwargs)</span>
+<span>(</span><span>image, image_format, alt, caption=None, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -60,9 +67,16 @@ inheritance.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Image(ItemRenderer):
-    def __init__(self, image, alt, caption=None, **kwargs):
+    def __init__(self, image, image_format, alt, caption=None, **kwargs):
         super().__init__(
-            &#34;image&#34;, {&#34;image&#34;: image, &#34;alt&#34;: alt, &#34;caption&#34;: caption}, **kwargs
+            &#34;image&#34;,
+            {
+                &#34;image&#34;: image,
+                &#34;image_format&#34;: image_format,
+                &#34;alt&#34;: alt,
+                &#34;caption&#34;: caption,
+            },
+            **kwargs
         )
 
     def render(self) -&gt; Any:

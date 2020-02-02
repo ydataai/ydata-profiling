@@ -22,10 +22,11 @@
 <section id="section-intro">
 <p>Main module of pandas-profiling.</p>
 <h1 id="pandas-profiling">Pandas Profiling</h1>
+<p><img alt="Pandas Profiling Logo Header" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png"></p>
 <p><a href="https://travis-ci.com/pandas-profiling/pandas-profiling"><img alt="Build Status" src="https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master"></a>
 <a href="https://codecov.io/gh/pandas-profiling/pandas-profiling"><img alt="Code Coverage" src="https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF"></a>
 <a href="https://github.com/pandas-profiling/pandas-profiling/releases"><img alt="Release Version" src="https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg"></a>
-<a href="https://pypi.org/project/pandas-profiling/"><img alt="Python Version" src="https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7-blue.svg"></a>
+<a href="https://pypi.org/project/pandas-profiling/"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/pandas-profiling"></a>
 <a href="https://github.com/python/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a></p>
 <p>Generates profile reports from a pandas <code>DataFrame</code>.
 The pandas <code>df.describe()</code> function is great but a little basic for serious exploratory data analysis.
@@ -40,6 +41,7 @@ The pandas <code>df.describe()</code> function is great but a little basic for s
 <li><strong>Histogram</strong></li>
 <li><strong>Correlations</strong> highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices</li>
 <li><strong>Missing values</strong> matrix, count, heatmap and dendrogram of missing values</li>
+<li><strong>Text analysis</strong> learn about categories (Uppercase, Space), scripts (Latin, Cyrillic) and blocks (ASCII) of text data.</li>
 </ul>
 <h2 id="announcements">Announcements</h2>
 <p>With your help, we got approved for <a href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
@@ -70,6 +72,7 @@ Therefore, we welcome you to support the project through GitHub! </p>
 <li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html">Vektis</a> (Vektis Dutch Healthcare data)</li>
 <li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html">Website Inaccessibility</a> (demonstrates the URL type)</li>
 <li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html">Colors</a> (a simple colors dataset)</li>
+<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html">Russian Vocabulary</a> (demonstrates text analysis)</li>
 </ul>
 <h2 id="installation">Installation</h2>
 <h3 id="using-pip">Using pip</h3>
@@ -107,7 +110,7 @@ df = pd.DataFrame(
 )
 </code></pre>
 <p>To generate the report, run:</p>
-<pre><code class="python">profile = ProfileReport(df, title='Pandas Profiling Report', style={'full_width':True})
+<pre><code class="python">profile = ProfileReport(df, title='Pandas Profiling Report', html={'style':{'full_width':True}})
 </code></pre>
 <h4 id="jupyter-notebook">Jupyter Notebook</h4>
 <p>We recommend generating reports interactively by using the Jupyter notebook.
@@ -149,8 +152,9 @@ profile.to_file(output_file=&quot;output.html&quot;)
 <ul>
 <li><code>title</code> (<code>str</code>): Title for the report ('Pandas Profiling Report' by default).</li>
 <li><code>pool_size</code> (<code>int</code>): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).</li>
+<li><code>progress_bar</code> (<code>bool</code>): If True, <code>pandas-profiling</code> will display a progress bar.</li>
 </ul>
-<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_default.yaml">default configuration file</a>, <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_minimal.yaml">minimal configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/pandas_profiling/config_dark.yaml">dark themed configuration file</a>.</p>
+<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>, <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml">dark themed configuration file</a>.</p>
 <p><strong>Example</strong></p>
 <pre><code class="python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file(output_file=&quot;output.html&quot;)
@@ -260,17 +264,16 @@ from datetime import datetime
 
 import pandas as pd
 import numpy as np
+from tqdm.auto import tqdm
 
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.version import __version__
-from pandas_profiling.utils.dataframe import clean_column_names, rename_index
-from pandas_profiling.utils.paths import (
-    get_config_default,
-    get_project_root,
-    get_config_minimal,
-)
+from pandas_profiling.utils.dataframe import rename_index
+from pandas_profiling.utils.paths import get_config_default, get_config_minimal
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
 
 
@@ -296,7 +299,7 @@ class ProfileReport(object):
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
-        self.date = datetime.utcnow()
+        self.date_start = datetime.utcnow()
 
         # Treat index as any other column
         if (
@@ -308,36 +311,27 @@ class ProfileReport(object):
         # Rename reserved column names
         df = rename_index(df)
 
-        # Remove spaces and colons from column names
-        df = clean_column_names(df)
-
-        # Sort names according to config (asc, desc, no sort)
-        df = self.sort_column_names(df)
-        config[&#34;column_order&#34;] = df.columns.tolist()
+        # Ensure that columns are strings
+        df.columns = df.columns.astype(&#34;str&#34;)
 
         # Get dataset statistics
         description_set = describe_df(df)
 
         # Build report structure
         self.sample = self.get_sample(df)
-        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config[&#34;title&#34;].get(str)
         self.description_set = description_set
+        self.date_end = datetime.utcnow()
 
-    def sort_column_names(self, df):
-        sort = config[&#34;sort&#34;].get(str)
-        if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
-            warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
+        disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
 
-        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
-            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
-        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
-            df = df.reindex(
-                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+        with tqdm(
+            total=1, desc=&#34;build report structure&#34;, disable=disable_progress_bar
+        ) as pbar:
+            self.report = get_report_structure(
+                self.date_start, self.date_end, self.sample, description_set
             )
-        elif sort != &#34;None&#34;:
-            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
-        return df
+            pbar.update(1)
 
     def get_sample(self, df: pd.DataFrame) -&gt; dict:
         sample = {}
@@ -358,6 +352,13 @@ class ProfileReport(object):
             Dict containing a description for each variable in the DataFrame.
         &#34;&#34;&#34;
         return self.description_set
+
+    def get_rejected_variables(self) -&gt; list:
+        return [
+            message.column_name
+            for message in self.description_set[&#34;messages&#34;]
+            if message.message_type == MessageType.REJECTED
+        ]
 
     def to_file(self, output_file: Path, silent: bool = True) -&gt; None:
         &#34;&#34;&#34;Write the report to a file.
@@ -407,10 +408,12 @@ class ProfileReport(object):
             title=self.title,
             correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
+            scatter=len(self.description_set[&#34;scatter&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
             version=__version__,
             offline=use_local_assets,
             primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+            logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
             theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
         )
 
@@ -471,7 +474,7 @@ class ProfileReport(object):
 
     def _repr_html_(self):
         &#34;&#34;&#34;The ipython notebook widgets user interface gets called by the jupyter notebook.&#34;&#34;&#34;
-        self.to_widgets()
+        self.to_notebook_iframe()
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
@@ -482,28 +485,19 @@ class ProfileReport(object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         &#34;&#34;&#34;
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
+
         from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+        from PyQt5.QtWidgets import QApplication
 
         app = QtCore.QCoreApplication.instance()
         if app is None:
             app = QApplication([])
 
-        class Application(QMainWindow):
-            def __init__(self, widgets):
-                super().__init__()
-                self.layout = QVBoxLayout(self)
-
-                self.resize(1200, 900)
-                self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
-                self.setCentralWidget(widgets)
-                self.show()
-
         app_widgets = QtReport(self.report).render()
 
-        ex = Application(app_widgets)
-        sys.exit(app.exec_())</code></pre>
+        app = get_app(app, self.title, app_widgets)</code></pre>
 </details>
 </section>
 <section>
@@ -579,7 +573,7 @@ class ProfileReport(object):
             config.config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
-        self.date = datetime.utcnow()
+        self.date_start = datetime.utcnow()
 
         # Treat index as any other column
         if (
@@ -591,36 +585,27 @@ class ProfileReport(object):
         # Rename reserved column names
         df = rename_index(df)
 
-        # Remove spaces and colons from column names
-        df = clean_column_names(df)
-
-        # Sort names according to config (asc, desc, no sort)
-        df = self.sort_column_names(df)
-        config[&#34;column_order&#34;] = df.columns.tolist()
+        # Ensure that columns are strings
+        df.columns = df.columns.astype(&#34;str&#34;)
 
         # Get dataset statistics
         description_set = describe_df(df)
 
         # Build report structure
         self.sample = self.get_sample(df)
-        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config[&#34;title&#34;].get(str)
         self.description_set = description_set
+        self.date_end = datetime.utcnow()
 
-    def sort_column_names(self, df):
-        sort = config[&#34;sort&#34;].get(str)
-        if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
-            warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
+        disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
 
-        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
-            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
-        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
-            df = df.reindex(
-                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+        with tqdm(
+            total=1, desc=&#34;build report structure&#34;, disable=disable_progress_bar
+        ) as pbar:
+            self.report = get_report_structure(
+                self.date_start, self.date_end, self.sample, description_set
             )
-        elif sort != &#34;None&#34;:
-            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
-        return df
+            pbar.update(1)
 
     def get_sample(self, df: pd.DataFrame) -&gt; dict:
         sample = {}
@@ -641,6 +626,13 @@ class ProfileReport(object):
             Dict containing a description for each variable in the DataFrame.
         &#34;&#34;&#34;
         return self.description_set
+
+    def get_rejected_variables(self) -&gt; list:
+        return [
+            message.column_name
+            for message in self.description_set[&#34;messages&#34;]
+            if message.message_type == MessageType.REJECTED
+        ]
 
     def to_file(self, output_file: Path, silent: bool = True) -&gt; None:
         &#34;&#34;&#34;Write the report to a file.
@@ -690,10 +682,12 @@ class ProfileReport(object):
             title=self.title,
             correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
             missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
+            scatter=len(self.description_set[&#34;scatter&#34;]) &gt; 0,
             sample=len(self.sample) &gt; 0,
             version=__version__,
             offline=use_local_assets,
             primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+            logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
             theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
         )
 
@@ -754,7 +748,7 @@ class ProfileReport(object):
 
     def _repr_html_(self):
         &#34;&#34;&#34;The ipython notebook widgets user interface gets called by the jupyter notebook.&#34;&#34;&#34;
-        self.to_widgets()
+        self.to_notebook_iframe()
 
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
@@ -765,28 +759,19 @@ class ProfileReport(object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         &#34;&#34;&#34;
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
+
         from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+        from PyQt5.QtWidgets import QApplication
 
         app = QtCore.QCoreApplication.instance()
         if app is None:
             app = QApplication([])
 
-        class Application(QMainWindow):
-            def __init__(self, widgets):
-                super().__init__()
-                self.layout = QVBoxLayout(self)
-
-                self.resize(1200, 900)
-                self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
-                self.setCentralWidget(widgets)
-                self.show()
-
         app_widgets = QtReport(self.report).render()
 
-        ex = Application(app_widgets)
-        sys.exit(app.exec_())</code></pre>
+        app = get_app(app, self.title, app_widgets)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -817,6 +802,23 @@ class ProfileReport(object):
     return self.description_set</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.ProfileReport.get_rejected_variables"><code class="name flex">
+<span>def <span class="ident">get_rejected_variables</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_rejected_variables(self) -&gt; list:
+    return [
+        message.column_name
+        for message in self.description_set[&#34;messages&#34;]
+        if message.message_type == MessageType.REJECTED
+    ]</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.ProfileReport.get_sample"><code class="name flex">
 <span>def <span class="ident">get_sample</span></span>(<span>self, df)</span>
 </code></dt>
@@ -839,31 +841,6 @@ class ProfileReport(object):
     return sample</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.sort_column_names"><code class="name flex">
-<span>def <span class="ident">sort_column_names</span></span>(<span>self, df)</span>
-</code></dt>
-<dd>
-<section class="desc"></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def sort_column_names(self, df):
-    sort = config[&#34;sort&#34;].get(str)
-    if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
-        warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
-
-    if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
-        df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
-    elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
-        df = df.reindex(
-            reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
-        )
-    elif sort != &#34;None&#34;:
-        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
-    return df</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.ProfileReport.to_app"><code class="name flex">
 <span>def <span class="ident">to_app</span></span>(<span>self)</span>
 </code></dt>
@@ -879,28 +856,19 @@ You are welcome to contribute a pull request if you like this feature.</p></sect
     (Experimental) PyQt5 user interface, not ready to be used.
     You are welcome to contribute a pull request if you like this feature.
     &#34;&#34;&#34;
+    from pandas_profiling.report.presentation.flavours.qt.app import get_app
     from pandas_profiling.report.presentation.flavours import QtReport
+
     from PyQt5 import QtCore
-    from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+    from PyQt5.QtWidgets import QApplication
 
     app = QtCore.QCoreApplication.instance()
     if app is None:
         app = QApplication([])
 
-    class Application(QMainWindow):
-        def __init__(self, widgets):
-            super().__init__()
-            self.layout = QVBoxLayout(self)
-
-            self.resize(1200, 900)
-            self.setWindowTitle(&#34;Pandas Profiling Report&#34;)
-            self.setCentralWidget(widgets)
-            self.show()
-
     app_widgets = QtReport(self.report).render()
 
-    ex = Application(app_widgets)
-    sys.exit(app.exec_())</code></pre>
+    app = get_app(app, self.title, app_widgets)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_file"><code class="name flex">
@@ -981,10 +949,12 @@ for using with frameworks.</p>
         title=self.title,
         correlation=len(self.description_set[&#34;correlations&#34;]) &gt; 0,
         missing=len(self.description_set[&#34;missing&#34;]) &gt; 0,
+        scatter=len(self.description_set[&#34;scatter&#34;]) &gt; 0,
         sample=len(self.sample) &gt; 0,
         version=__version__,
         offline=use_local_assets,
         primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+        logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
         theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
     )
 
@@ -1137,11 +1107,11 @@ the Iframe.</p>
 <ul>
 <li>
 <h4><code><a title="pandas_profiling.ProfileReport" href="#pandas_profiling.ProfileReport">ProfileReport</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="pandas_profiling.ProfileReport.get_description" href="#pandas_profiling.ProfileReport.get_description">get_description</a></code></li>
+<li><code><a title="pandas_profiling.ProfileReport.get_rejected_variables" href="#pandas_profiling.ProfileReport.get_rejected_variables">get_rejected_variables</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.get_sample" href="#pandas_profiling.ProfileReport.get_sample">get_sample</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.html" href="#pandas_profiling.ProfileReport.html">html</a></code></li>
-<li><code><a title="pandas_profiling.ProfileReport.sort_column_names" href="#pandas_profiling.ProfileReport.sort_column_names">sort_column_names</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_app" href="#pandas_profiling.ProfileReport.to_app">to_app</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_file" href="#pandas_profiling.ProfileReport.to_file">to_file</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_html" href="#pandas_profiling.ProfileReport.to_html">to_html</a></code></li>

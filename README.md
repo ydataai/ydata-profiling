@@ -1,8 +1,11 @@
 # Pandas Profiling
+
+![Pandas Profiling Logo Header](http://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png)
+
 [![Build Status](https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master)](https://travis-ci.com/pandas-profiling/pandas-profiling)
 [![Code Coverage](https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/pandas-profiling/pandas-profiling)
 [![Release Version](https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg)](https://github.com/pandas-profiling/pandas-profiling/releases)
-[![Python Version](https://img.shields.io/badge/python-3.5%20%7C%203.6%20%7C%203.7-blue.svg)](https://pypi.org/project/pandas-profiling/)
+[![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 Generates profile reports from a pandas `DataFrame`. 
@@ -19,6 +22,7 @@ For each column the following statistics - if relevant for the column type - are
 * **Histogram**
 * **Correlations** highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices
 * **Missing values** matrix, count, heatmap and dendrogram of missing values
+* **Text analysis** learn about categories (Uppercase, Space), scripts (Latin, Cyrillic) and blocks (ASCII) of text data.
 
 ## Announcements
 
@@ -56,6 +60,7 @@ The following examples can give you an impression of what the package can do:
 * [Vektis](http://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Website Inaccessibility](http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
 * [Colors](http://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html) (a simple colors dataset)
+* [Russian Vocabulary](http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
 
 ## Installation
 
@@ -109,7 +114,7 @@ df = pd.DataFrame(
 ```
 To generate the report, run:
 ```python
-profile = ProfileReport(df, title='Pandas Profiling Report', style={'full_width':True})
+profile = ProfileReport(df, title='Pandas Profiling Report', html={'style':{'full_width':True}})
 ```
 
 #### Jupyter Notebook
@@ -174,6 +179,7 @@ A set of options is available in order to adapt the report generated.
 
 * `title` (`str`): Title for the report ('Pandas Profiling Report' by default).
 * `pool_size` (`int`): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).
+* `progress_bar` (`bool`): If True, `pandas-profiling` will display a progress bar.
 
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 

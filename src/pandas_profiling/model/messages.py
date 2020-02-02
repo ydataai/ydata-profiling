@@ -18,7 +18,7 @@ from pandas_profiling.model.base import Variable
 class MessageType(Enum):
     """Message Types"""
 
-    CONST = 1
+    CONSTANT = 1
     """This variable has a constant value."""
 
     ZEROS = 2
@@ -52,6 +52,16 @@ class MessageType(Enum):
     """This variable is likely a datetime, but treated as categorical."""
 
     UNIQUE = 12
+    """This variable has unique values."""
+
+    CONSTANT_LENGTH = 13
+    """This variable has a constant length"""
+
+    REJECTED = 15
+    """Variables are rejected if we do not want to consider them for further analysis."""
+
+    UNIFORM = 14
+    """The variable is uniformly distributed"""
 
 
 class Message(object):
@@ -72,6 +82,15 @@ class Message(object):
         self.values = values
         self.column_name = column_name
         self.anchor_id = hash(column_name)
+
+    def fmt(self):
+        # TODO: render in template
+        name = self.message_type.name.replace("_", " ")
+        if name == "HIGH CORRELATION":
+            name = '<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'.format(
+                num=len(self.values["fields"]), title=", ".join(self.values["fields"])
+            )
+        return name
 
     def __repr__(self):
         return "[{message_type}] warning on column {column}".format(
@@ -138,9 +157,18 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         messages.append(
             Message(
                 column_name=col,
-                message_type=MessageType.CONST,
+                message_type=MessageType.CONSTANT,
                 values=description,
                 fields={"n_unique"},
+            )
+        )
+
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
             )
         )
 
@@ -165,11 +193,31 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
+    # Unsupported
+    if description["type"] == Variable.S_TYPE_UNSUPPORTED:
+        messages.append(
+            Message(
+                column_name=col,
+                message_type=MessageType.REJECTED,
+                values=description,
+                fields={},
+            )
+        )
+
     # Categorical
-    if description["type"] in {Variable.TYPE_CAT}:
+    if description["type"] == Variable.TYPE_CAT:
         if description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
+            )
+
+        # Uniformity
+        chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
+            float
+        )
+        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
         # High cardinality
@@ -185,8 +233,22 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 )
             )
 
+        # Constant length
+        if (
+            "composition" in description
+            and description["min_length"] == description["max_length"]
+        ):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.CONSTANT_LENGTH,
+                    values=description,
+                    fields={"composition_min_length", "composition_max_length"},
+                )
+            )
+
     # Numerical
-    if description["type"] in {Variable.TYPE_NUM}:
+    if description["type"] == Variable.TYPE_NUM:
         # Skewness
         if warning_skewness(description["skewness"]):
             messages.append(
@@ -197,6 +259,16 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                     fields={"skewness"},
                 )
             )
+
+        # Uniformity
+        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
+            float
+        )
+        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+
         # Zeros
         if warning_value(description["p_zeros"]):
             messages.append(

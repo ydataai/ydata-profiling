@@ -24,7 +24,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from pandas_profiling.visualisation.plot import scatter_complex
+<pre><code class="python">from pandas_profiling.config import config
+from pandas_profiling.visualisation.plot import scatter_complex
 from pandas_profiling.report.presentation.core import (
     HTML,
     Image,
@@ -37,6 +38,7 @@ from pandas_profiling.report.presentation.core import (
 
 def render_complex(summary):
     template_variables = {}
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
     info = Overview(
@@ -84,6 +86,7 @@ def render_complex(summary):
     items = [
         Image(
             scatter_complex(summary[&#34;scatter_data&#34;]),
+            image_format=image_format,
             alt=&#34;Scatterplot&#34;,
             caption=&#34;Scatterplot in the complex plane&#34;,
             name=&#34;Scatter&#34;,
@@ -116,6 +119,7 @@ def render_complex(summary):
 </summary>
 <pre><code class="python">def render_complex(summary):
     template_variables = {}
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
     info = Overview(
@@ -163,6 +167,7 @@ def render_complex(summary):
     items = [
         Image(
             scatter_complex(summary[&#34;scatter_data&#34;]),
+            image_format=image_format,
             alt=&#34;Scatterplot&#34;,
             caption=&#34;Scatterplot in the complex plane&#34;,
             name=&#34;Scatter&#34;,

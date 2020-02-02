@@ -10,17 +10,16 @@ from datetime import datetime
 
 import pandas as pd
 import numpy as np
+from tqdm.auto import tqdm
 
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.version import __version__
-from pandas_profiling.utils.dataframe import clean_column_names, rename_index
-from pandas_profiling.utils.paths import (
-    get_config_default,
-    get_project_root,
-    get_config_minimal,
-)
+from pandas_profiling.utils.dataframe import rename_index
+from pandas_profiling.utils.paths import get_config_default, get_config_minimal
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
 
 
@@ -46,7 +45,7 @@ class ProfileReport(object):
             config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
-        self.date = datetime.utcnow()
+        self.date_start = datetime.utcnow()
 
         # Treat index as any other column
         if (
@@ -58,36 +57,27 @@ class ProfileReport(object):
         # Rename reserved column names
         df = rename_index(df)
 
-        # Remove spaces and colons from column names
-        df = clean_column_names(df)
-
-        # Sort names according to config (asc, desc, no sort)
-        df = self.sort_column_names(df)
-        config["column_order"] = df.columns.tolist()
+        # Ensure that columns are strings
+        df.columns = df.columns.astype("str")
 
         # Get dataset statistics
         description_set = describe_df(df)
 
         # Build report structure
         self.sample = self.get_sample(df)
-        self.report = get_report_structure(self.date, self.sample, description_set)
         self.title = config["title"].get(str)
         self.description_set = description_set
+        self.date_end = datetime.utcnow()
 
-    def sort_column_names(self, df):
-        sort = config["sort"].get(str)
-        if sys.version_info[1] <= 5 and sort != "None":
-            warnings.warn("Sorting is supported from Python 3.6+")
+        disable_progress_bar = not config["progress_bar"].get(bool)
 
-        if sort in ["asc", "ascending"]:
-            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
-        elif sort in ["desc", "descending"]:
-            df = df.reindex(
-                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+        with tqdm(
+            total=1, desc="build report structure", disable=disable_progress_bar
+        ) as pbar:
+            self.report = get_report_structure(
+                self.date_start, self.date_end, self.sample, description_set
             )
-        elif sort != "None":
-            raise ValueError('"sort" should be "ascending", "descending" or None.')
-        return df
+            pbar.update(1)
 
     def get_sample(self, df: pd.DataFrame) -> dict:
         sample = {}
@@ -108,6 +98,13 @@ class ProfileReport(object):
             Dict containing a description for each variable in the DataFrame.
         """
         return self.description_set
+
+    def get_rejected_variables(self) -> list:
+        return [
+            message.column_name
+            for message in self.description_set["messages"]
+            if message.message_type == MessageType.REJECTED
+        ]
 
     def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
@@ -157,10 +154,12 @@ class ProfileReport(object):
             title=self.title,
             correlation=len(self.description_set["correlations"]) > 0,
             missing=len(self.description_set["missing"]) > 0,
+            scatter=len(self.description_set["scatter"]) > 0,
             sample=len(self.sample) > 0,
             version=__version__,
             offline=use_local_assets,
             primary_color=config["html"]["style"]["primary_color"].get(str),
+            logo=config["html"]["style"]["logo"].get(str),
             theme=config["html"]["style"]["theme"].get(str),
         )
 
@@ -232,25 +231,16 @@ class ProfileReport(object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         """
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
+
         from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
+        from PyQt5.QtWidgets import QApplication
 
         app = QtCore.QCoreApplication.instance()
         if app is None:
             app = QApplication([])
 
-        class Application(QMainWindow):
-            def __init__(self, widgets):
-                super().__init__()
-                self.layout = QVBoxLayout(self)
-
-                self.resize(1200, 900)
-                self.setWindowTitle("Pandas Profiling Report")
-                self.setCentralWidget(widgets)
-                self.show()
-
         app_widgets = QtReport(self.report).render()
 
-        ex = Application(app_widgets)
-        sys.exit(app.exec_())
+        app = get_app(app, self.title, app_widgets)

@@ -11,7 +11,12 @@ def test_read_pandas_parquet():
     with pytest.raises(OSError) as e:
         read_pandas(p)
 
-    assert str(e.value) == "Passed non-file path: dataframe.parquet"
+    assert str(e.value) in [
+        # pyarrow
+        "Passed non-file path: dataframe.parquet",
+        # fastparquet
+        "[Errno 2] No such file or directory: 'dataframe.parquet'",
+    ]
 
 
 def test_read_pandas_csv():

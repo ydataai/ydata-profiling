@@ -30,14 +30,26 @@ from pandas_profiling.report.presentation.abstract.item_renderer import ItemRend
 
 
 class Dataset(ItemRenderer):
-    def __init__(self, package, date, values, messages, variables, **kwargs):
+    def __init__(
+        self,
+        package,
+        date_start,
+        date_end,
+        values,
+        messages,
+        collapse_warnings,
+        variables,
+        **kwargs
+    ):
         super().__init__(
             &#34;dataset&#34;,
             {
-                &#34;date&#34;: date,
+                &#34;date_start&#34;: date_start,
+                &#34;date_end&#34;: date_end,
                 &#34;values&#34;: values,
                 &#34;messages&#34;: messages,
                 &#34;variables&#34;: variables,
+                &#34;collapse_warnings&#34;: collapse_warnings,
                 &#34;package&#34;: package,
             },
             **kwargs
@@ -58,7 +70,7 @@ class Dataset(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.dataset.Dataset"><code class="flex name class">
 <span>class <span class="ident">Dataset</span></span>
-<span>(</span><span>package, date, values, messages, variables, **kwargs)</span>
+<span>(</span><span>package, date_start, date_end, values, messages, collapse_warnings, variables, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -68,14 +80,26 @@ inheritance.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Dataset(ItemRenderer):
-    def __init__(self, package, date, values, messages, variables, **kwargs):
+    def __init__(
+        self,
+        package,
+        date_start,
+        date_end,
+        values,
+        messages,
+        collapse_warnings,
+        variables,
+        **kwargs
+    ):
         super().__init__(
             &#34;dataset&#34;,
             {
-                &#34;date&#34;: date,
+                &#34;date_start&#34;: date_start,
+                &#34;date_end&#34;: date_end,
                 &#34;values&#34;: values,
                 &#34;messages&#34;: messages,
                 &#34;variables&#34;: variables,
+                &#34;collapse_warnings&#34;: collapse_warnings,
                 &#34;package&#34;: package,
             },
             **kwargs

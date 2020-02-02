@@ -21,6 +21,7 @@ def test_json(data):
         "correlations",
         "missing",
         "messages",
+        "scatter",
         "package",
     }
 
