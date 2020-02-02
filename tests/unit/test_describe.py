@@ -600,7 +600,7 @@ def expected_results():
             "p_infinite": 0,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.TYPE_CAT,
+            "type": Variable.S_TYPE_UNSUPPORTED,
         },
         "dict": {
             "count": 9,
@@ -638,14 +638,9 @@ def test_describe_df(describe_data, expected_results):
         "package",
     } == set(results.keys()), "Not in results"
 
-    assert {"BOOL": 5, "CAT": 4, "UNSUPPORTED": 3, "NUM": 2, "DATE": 1} == results[
+    assert {"BOOL": 5, "CAT": 3, "UNSUPPORTED": 4, "NUM": 2, "DATE": 1} == results[
         "table"
     ]["types"], "Variable analysis failed"
-
-    # "n": 9,
-    # "nvar": 15,
-    # "n_cells_missing": 6,
-    # "n_duplicates": 0,
 
     # Loop over variables
     for col in describe_data.keys():
