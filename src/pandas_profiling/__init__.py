@@ -10,6 +10,7 @@ from datetime import datetime
 
 import pandas as pd
 import numpy as np
+from tqdm.auto import tqdm
 
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.version import __version__
@@ -59,10 +60,6 @@ class ProfileReport(object):
         # Ensure that columns are strings
         df.columns = df.columns.astype("str")
 
-        # Sort names according to config (asc, desc, no sort)
-        df = self.sort_column_names(df)
-        config["column_order"] = df.columns.tolist()
-
         # Get dataset statistics
         description_set = describe_df(df)
 
@@ -70,26 +67,17 @@ class ProfileReport(object):
         self.sample = self.get_sample(df)
         self.title = config["title"].get(str)
         self.description_set = description_set
-
         self.date_end = datetime.utcnow()
-        self.report = get_report_structure(
-            self.date_start, self.date_end, self.sample, description_set
-        )
 
-    def sort_column_names(self, df):
-        sort = config["sort"].get(str)
-        if sys.version_info[1] <= 5 and sort != "None":
-            warnings.warn("Sorting is supported from Python 3.6+")
+        disable_progress_bar = not config["progress_bar"].get(bool)
 
-        if sort in ["asc", "ascending"]:
-            df = df.reindex(sorted(df.columns, key=lambda s: s.casefold()), axis=1)
-        elif sort in ["desc", "descending"]:
-            df = df.reindex(
-                reversed(sorted(df.columns, key=lambda s: s.casefold())), axis=1
+        with tqdm(
+            total=1, desc="build report structure", disable=disable_progress_bar
+        ) as pbar:
+            self.report = get_report_structure(
+                self.date_start, self.date_end, self.sample, description_set
             )
-        elif sort != "None":
-            raise ValueError('"sort" should be "ascending", "descending" or None.')
-        return df
+            pbar.update(1)
 
     def get_sample(self, df: pd.DataFrame) -> dict:
         sample = {}

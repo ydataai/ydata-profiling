@@ -4,6 +4,9 @@ title: "Pandas Profiling Report"
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 
+# Show the progress bar
+progress_bar: True
+
 # Per variable type description settings
 vars:
     num:
@@ -31,8 +34,8 @@ sort: None
 
 # which diagrams to show
 missing_diagrams:
-    bar: True
-    matrix: True
+    bar: False
+    matrix: False
     heatmap: False
     dendrogram: False
 
