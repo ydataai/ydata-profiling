@@ -210,7 +210,7 @@ def get_scatter_matrix(scatter_matrix):
                     anchor_id="interactions_{x_col}_{y_col}".format(
                         x_col=x_col, y_col=y_col
                     ),
-                    name="{y_col}".format(x_col=x_col, y_col=y_col),
+                    name="{x_col}_{y_col}".format(x_col=x_col, y_col=y_col),
                 )
             )
 

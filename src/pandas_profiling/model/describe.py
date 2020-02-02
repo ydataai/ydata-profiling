@@ -490,7 +490,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
 
     if len(missing_map) > 0:
         with tqdm(
-                total=len(missing_map), desc="missing", disable=disable_progress_bar
+            total=len(missing_map), desc="missing", disable=disable_progress_bar
         ) as pbar:
             for name, settings in missing_map.items():
                 pbar.set_description_str("missing [{name}]".format(name=name))

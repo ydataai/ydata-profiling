@@ -29,5 +29,5 @@ def get_config_minimal() -> Path:
     return Path(__file__).parent.parent / "config_minimal.yaml"
 
 
-def get_data_path() -> Path():
+def get_data_path() -> Path:
     return get_project_root() / "data"
