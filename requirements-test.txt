@@ -4,4 +4,4 @@ codecov
 pytest-cov
 pytest-black
 nbval
-pyarrow
+fastparquet==0.3.2
