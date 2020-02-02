@@ -3,14 +3,17 @@ from typing import Dict, Type
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 
 
-def HTMLReport(structure: Renderable):
-    """Adds HTML flavour to Renderable
+def apply_renderable_mapping(mapping, structure, flavour):
+    for key, value in mapping.items():
+        if isinstance(structure, key):
+            value.convert_to_class(structure, flavour)
 
-    Args:
-        structure:
+
+def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
+    """Workaround variable type annotations not being supported in Python 3.5
 
     Returns:
-
+        type annotated mapping dict
     """
     from pandas_profiling.report.presentation.flavours.html import (
         HTMLSequence,
@@ -37,7 +40,7 @@ def HTMLReport(structure: Renderable):
         Sample,
     )
 
-    mapping: Dict[Type[Renderable], Type[Renderable]] = {
+    return {
         Sequence: HTMLSequence,
         Preview: HTMLPreview,
         Overview: HTMLOverview,
@@ -50,14 +53,22 @@ def HTMLReport(structure: Renderable):
         Sample: HTMLSample,
     }
 
-    for key, value in mapping.items():
-        if isinstance(structure, key):
-            value.convert_to_class(structure, HTMLReport)
 
+def HTMLReport(structure: Renderable):
+    """Adds HTML flavour to Renderable
+
+    Args:
+        structure:
+
+    Returns:
+
+    """
+    mapping = get_html_renderable_mapping()
+    apply_renderable_mapping(mapping, structure, flavour=HTMLReport)
     return structure
 
 
-def WidgetReport(structure: Renderable):
+def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.flavours.widget import (
         WidgetSequence,
         WidgetPreview,
@@ -83,7 +94,7 @@ def WidgetReport(structure: Renderable):
         Sample,
     )
 
-    mapping: Dict[Type[Renderable], Type[Renderable]] = {
+    return {
         Sequence: WidgetSequence,
         Preview: WidgetPreview,
         Overview: WidgetOverview,
@@ -96,14 +107,14 @@ def WidgetReport(structure: Renderable):
         Sample: WidgetSample,
     }
 
-    for key, value in mapping.items():
-        if isinstance(structure, key):
-            value.convert_to_class(structure, WidgetReport)
 
+def WidgetReport(structure: Renderable):
+    mapping = get_html_renderable_mapping()
+    apply_renderable_mapping(mapping, structure, flavour=WidgetReport)
     return structure
 
 
-def QtReport(structure: Renderable):
+def get_qt_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.flavours.qt import (
         QtSequence,
         QtPreview,
@@ -129,7 +140,7 @@ def QtReport(structure: Renderable):
         Sample,
     )
 
-    mapping: Dict[Type[Renderable], Type[Renderable]] = {
+    return {
         Sequence: QtSequence,
         Preview: QtPreview,
         Overview: QtOverview,
@@ -142,8 +153,8 @@ def QtReport(structure: Renderable):
         Sample: QtSample,
     }
 
-    for key, value in mapping.items():
-        if isinstance(structure, key):
-            value.convert_to_class(structure, QtReport)
 
+def QtReport(structure: Renderable):
+    mapping = get_qt_renderable_mapping()
+    apply_renderable_mapping(mapping, structure, flavour=QtReport)
     return structure

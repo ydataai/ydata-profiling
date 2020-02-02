@@ -216,6 +216,15 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
     return correlations
 
 
+def get_correlation_mapping() -> Dict[str, List[str]]:
+    """Workaround variable type annotations not being supported in Python 3.5
+
+    Returns:
+        type annotated empty dict
+    """
+    return {}
+
+
 def perform_check_correlation(
     correlation_matrix: pd.DataFrame, threshold: float
 ) -> Dict[str, List[str]]:
@@ -235,8 +244,7 @@ def perform_check_correlation(
     # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
     # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]>threshold)]
 
-    # mapping = {}  # Dict[str, List[str]]
-    mapping: Dict[str, List[str]] = {}
+    mapping = get_correlation_mapping()
     for x, corr_x in corr.iterrows():
         for y, corr in corr_x.iteritems():
             if x == y:
