@@ -18,7 +18,12 @@ class Config(object):
         """The config constructor should be called only once."""
         if self.config is None:
             self.config = confuse.Configuration("PandasProfiling", __name__)
-            self.config.set_file(str(get_config_default()))
+
+        self.set_file(str(get_config_default()))
+
+    def set_file(self, file_name):
+        if self.config is not None:
+            self.config.set_file(file_name)
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -> None:
         """
@@ -28,7 +33,8 @@ class Config(object):
             namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
             dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
         """
-        self.config.set_args(namespace, dots)
+        if self.config is not None:
+            self.config.set_args(namespace, dots)
 
     def _set_kwargs(self, reference, values: dict):
         """Helper function to set config variables based on kwargs."""

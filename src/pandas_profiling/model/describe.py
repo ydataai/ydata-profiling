@@ -6,7 +6,7 @@ import os
 import sys
 import warnings
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Callable
 from urllib.parse import urlsplit
 
 from tqdm.autonotebook import tqdm
@@ -462,17 +462,22 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
+
     disable_progress_bar = not config["progress_bar"].get(bool)
 
+    def missing_diagram(name) -> Callable:
+        return {
+            "bar": missing_bar,
+            "matrix": missing_matrix,
+            "heatmap": missing_heatmap,
+            "dendrogram": missing_dendrogram,
+        }[name]
+
     missing_map = {
-        "bar": {"func": missing_bar, "min_missing": 0, "name": "Count"},
-        "matrix": {"func": missing_matrix, "min_missing": 0, "name": "Matrix"},
-        "heatmap": {"func": missing_heatmap, "min_missing": 2, "name": "Heatmap"},
-        "dendrogram": {
-            "func": missing_dendrogram,
-            "min_missing": 1,
-            "name": "Dendrogram",
-        },
+        "bar": {"min_missing": 0, "name": "Count"},
+        "matrix": {"min_missing": 0, "name": "Matrix"},
+        "heatmap": {"min_missing": 2, "name": "Heatmap"},
+        "dendrogram": {"min_missing": 1, "name": "Dendrogram"},
     }
 
     missing_map = {
@@ -497,11 +502,12 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
                     ):
                         missing[name] = {
                             "name": settings["name"],
-                            "matrix": settings["func"](df),
+                            "matrix": missing_diagram(name)(df),
                         }
                 except ValueError as e:
                     warn_missing(name, e)
                 pbar.update()
+
     return missing
 
 

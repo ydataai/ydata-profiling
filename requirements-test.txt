@@ -1,6 +1,7 @@
 pytest
 coverage<5
 codecov
+pytest-mypy
 pytest-cov
 pytest-black
 nbval

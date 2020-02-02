@@ -18,6 +18,7 @@ env:
   - TEST=console
   - TEST=examples
   - TEST=lint
+  - TEST=typing
 
 install:
   - pip install --upgrade pip six
@@ -30,6 +31,7 @@ script:
   - if [ $TEST == 'issue' ]; then pytest --cov=. tests/issues/; fi
   - if [ $TEST == 'examples' ]; then pytest --cov=. --nbval tests/notebooks/; fi
   - if [ $TEST == 'console' ]; then pandas_profiling -h; fi
+  - if [ $TEST == 'typing' ]; then pytest --mypy -m mypy .; fi
   - if [ $TEST == 'lint' ]; then pytest --black -m black src/; flake8 . --select=E9,F63,F7,F82 --show-source --statistics; fi
 
 after_success:

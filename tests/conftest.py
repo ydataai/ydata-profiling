@@ -6,6 +6,11 @@ import pytest
 from pandas_profiling.utils.cache import cache_file
 
 
+def pytest_configure(config):
+    plugin = config.pluginmanager.getplugin("mypy")
+    plugin.mypy_argv.append("--ignore-missing-imports")
+
+
 @pytest.fixture(scope="function")
 def get_data_file(tmpdir):
     def getter(file_name, url):

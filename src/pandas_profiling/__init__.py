@@ -42,7 +42,7 @@ class ProfileReport(object):
             config_file = get_config_minimal()
 
         if config_file:
-            config.config.set_file(str(config_file))
+            config.set_file(str(config_file))
         config.set_kwargs(kwargs)
 
         self.date_start = datetime.utcnow()
