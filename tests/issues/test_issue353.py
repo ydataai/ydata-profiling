@@ -9,10 +9,9 @@ from pandas_profiling import ProfileReport
 
 
 def test_issue353():
-    df = pd.DataFrame(
-        np.random.rand(100, 5),
-        columns=['a', 'b', 'c', 'd', 'e']
-    )
+    df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
     # make one column categorical
     df["a"] = df["a"].multiply(5).astype("int").astype("category")
-    profile = ProfileReport(df, title='Pandas Profiling Report', html={'style': {'full_width': True}})
+    profile = ProfileReport(
+        df, title="Pandas Profiling Report", html={"style": {"full_width": True}}
+    )

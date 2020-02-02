@@ -1,5 +1,5 @@
 pytest
-coverage<=5.0.0
+coverage<5
 codecov
 pytest-cov
 pytest-black

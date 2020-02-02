@@ -41,7 +41,7 @@ setup(
         # Could be optional
         "missingno==0.4.2",
         "phik==0.9.8",
-        "astropy>=3.2.3", # 4.0 for Python > 3.5
+        "astropy>=3.2.3",  # 4.0 for Python > 3.5
         "tqdm==4.42.0",
     ],
     extras_require={
