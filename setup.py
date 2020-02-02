@@ -41,7 +41,7 @@ setup(
         # Could be optional
         "missingno==0.4.2",
         "phik==0.9.8",
-        "astropy>=3.2.3", # preferred 4.0
+        "astropy>=3.2.3",  # preferred 4.0
     ],
     extras_require={
         "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.1", "ipywidgets"],
