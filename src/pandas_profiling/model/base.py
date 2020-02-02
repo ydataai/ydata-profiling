@@ -191,10 +191,9 @@ def get_var_type(series: pd.Series) -> dict:
 
         # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
         # list and so on...
-        if (
-            series_description["value_counts_without_nan"].index.inferred_type
-            == "mixed"
-        ):
+        if series_description[
+            "value_counts_without_nan"
+        ].index.inferred_type.startswith("mixed"):
             raise TypeError("Not supported mixed type")
 
         if series_description["distinct_count_without_nan"] == 0:
