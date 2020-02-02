@@ -5,3 +5,4 @@ pytest-cov
 pytest-black
 nbval
 fastparquet==0.3.2
+flake8

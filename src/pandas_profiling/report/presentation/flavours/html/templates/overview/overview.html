@@ -1,0 +1,109 @@
+<div id="overview-content" class="row variable spacing">
+    <div class="row">
+        <div class="col-sm-5">
+            <p class="h2">Dataset info</p>
+            <table class="table table-condensed stats">
+                <tbody>
+                <tr>
+                    <th>Number of variables</th>
+                    <td>{{ values['n_var'] }} </td>
+                </tr>
+                <tr>
+                    <th>Number of observations</th>
+                    <td>{{ values['n'] }} </td>
+                </tr>
+                <tr>
+                    <th>Missing cells</th>
+                    <td>{{ values['n_cells_missing'] }}  ({{ values['p_cells_missing'] | fmt_percent}})</td>
+                </tr>
+                 <tr>
+                    <th>Duplicate rows</th>
+                    <td>{{ values['n_duplicates'] }} ({{ values['p_duplicates'] | fmt_percent }})</td>
+                </tr>
+                <tr>
+                    <th>Total size in memory</th>
+                    <td>{{ values['memory_size'] | fmt_bytesize }} </td>
+                </tr>
+                <tr>
+                    <th>Average record size in memory</th>
+                    <td>{{ values['record_size'] | fmt_bytesize }} </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6 col-sm-offset-1">
+            <p class="h2">Variables types</p>
+            <table class="table table-condensed stats">
+                {# TODO: count, n_unique, n_rejected etc. #}
+                <tbody>
+                    {% for type_name, count in values['types'].items() %}
+                    <tr>
+                        <th>{{ type_name }}</th>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# TODO: use collapse template #}
+    <div class="col-sm-12 text-right">
+        <a role="button" data-toggle="collapse" data-target="#reproduction"
+           aria-expanded="false" aria-controls="collapseExample">
+            Toggle Reproduction Information
+        </a>
+    </div>
+
+    <div id="reproduction" class="row collapse" aria-expanded="false">
+        <div class="col-sm-12">
+            <p class="h2">Reproduction info</p>
+            <table class="table table-condensed stats">
+                <tbody>
+                <tr>
+                    <th>Analysis started</th>
+                    <td>{{ date_start }}</td>
+                </tr>
+                <tr>
+                    <th>Analysis finished</th>
+                    <td>{{ date_end }}</td>
+                </tr>
+                <tr>
+                    <th>Version</th>
+                    <td><a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{{ package['pandas_profiling_version'] }}</a></td>
+                </tr>
+                <tr>
+                    <th>Command line</th>
+                    <td><code>pandas_profiling --config_file config.yaml [YOUR_FILE.csv]</code></td>
+                </tr>
+                <tr>
+                    <th>Download Configuration</th>
+                    <td><a download="config.yaml" href="data:text/plain;charset=utf-8,{{ package['pandas_profiling_config'] | urlencode }}">config.yaml</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="col-sm-12 text-right">
+        <a role="button" data-toggle="collapse" data-target="#warnings"
+           aria-expanded="{% if collapse_warnings %}false{% else %}true{% endif %}" aria-controls="collapseExample" class="">
+            Toggle Warnings
+        </a>
+    </div>
+
+    <div id="warnings" class="row collapse{% if not collapse_warnings %} in{% endif %}" aria-expanded="{% if collapse_warnings %}false{% else %}true{% endif %}">
+        <div class="col-sm-12" style="padding-left: 1em;}">
+            <p class="h2">Warnings</p>
+            <table class="table table-condensed list-warnings">
+                {% for message in messages %}
+                    <tr>
+                      {% include 'overview/warnings/warning_' + message.message_type.name | lower  + '.html' ignore missing  %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>

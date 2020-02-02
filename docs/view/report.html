@@ -3,13 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<<<<<<< HEAD
 <meta name="generator" content="pdoc 0.6.2" />
+<title>pandas_profiling.report.report API documentation</title>
+=======
+<meta name="generator" content="pdoc 0.7.2" />
 <title>pandas_profiling.view.report API documentation</title>
+>>>>>>> master
 <meta name="description" content="Generate the report." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 </head>
@@ -17,20 +22,22 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pandas_profiling.view.report</code></h1>
+<h1 class="title">Module <code>pandas_profiling.report.report</code></h1>
 </header>
 <section id="section-intro">
 <p>Generate the report.</p>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">&#34;&#34;&#34;Generate the report.&#34;&#34;&#34;
 
 import pandas as pd
 
-import pandas_profiling.view.plot as plot
-from pandas_profiling.view.plot import mini_histogram
-from pandas_profiling.view.plot import histogram
-import pandas_profiling.view.templates as templates
+import pandas_profiling.report.plot as plot
+from pandas_profiling.visualisation.plot import mini_histogram
+from pandas_profiling.visualisation.plot import histogram
+import pandas_profiling.report.templates as templates
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import MessageType
@@ -371,6 +378,7 @@ def render_variables_section(stats_object: dict) -&gt; str:
                 max_number_to_print=n_freq_table_max,
             )
 
+            formatted_values[&#34;n_extreme_obs&#34;] = n_extreme_obs
             formatted_values[&#34;firstn_expanded&#34;] = extreme_obs_table(
                 freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
                 number_to_print=n_extreme_obs,
@@ -574,7 +582,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.view.report.extreme_obs_table"><code class="name flex">
+<dt id="pandas_profiling.report.report.extreme_obs_table"><code class="name flex">
 <span>def <span class="ident">extreme_obs_table</span></span>(<span>freqtable, number_to_print, n, ascending=True)</span>
 </code></dt>
 <dd>
@@ -593,7 +601,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>The HTML rendering of the extreme observation table.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; str:
     &#34;&#34;&#34;Similar to the frequency table, for extreme observations.
 
@@ -630,7 +640,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return templates.template(&#34;freq_table.html&#34;).render(rows=rows)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.freq_table"><code class="name flex">
+<dt id="pandas_profiling.report.report.freq_table"><code class="name flex">
 <span>def <span class="ident">freq_table</span></span>(<span>freqtable, n, table_template, max_number_to_print, idx, nb_col=6)</span>
 </code></dt>
 <dd>
@@ -653,7 +663,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>The HTML representation of the frequency table.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def freq_table(
     freqtable, n: int, table_template, max_number_to_print: int, idx: int, nb_col=6
 ) -&gt; str:
@@ -729,7 +741,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.get_correlation_items"><code class="name flex">
+<dt id="pandas_profiling.report.report.get_correlation_items"><code class="name flex">
 <span>def <span class="ident">get_correlation_items</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -742,7 +754,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>List of correlation items to show in the interface.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def get_correlation_items(stats_object) -&gt; dict:
     &#34;&#34;&#34;Create the list of correlation items
 
@@ -798,7 +812,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return items</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.get_sample_items"><code class="name flex">
+<dt id="pandas_profiling.report.report.get_sample_items"><code class="name flex">
 <span>def <span class="ident">get_sample_items</span></span>(<span>sample)</span>
 </code></dt>
 <dd>
@@ -811,7 +825,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>List of sample items to show in the interface.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def get_sample_items(sample: dict):
     &#34;&#34;&#34;Create the list of sample items
 
@@ -833,7 +849,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return items</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_correlations_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_correlations_section"><code class="name flex">
 <span>def <span class="ident">render_correlations_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -846,7 +862,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>The rendered HTML of the correlations component of the profile.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def render_correlations_section(stats_object: dict) -&gt; str:
     &#34;&#34;&#34;Render the correlations HTML.
 
@@ -863,7 +881,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_missing_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_missing_section"><code class="name flex">
 <span>def <span class="ident">render_missing_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -876,7 +894,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>The missing values component HTML.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def render_missing_section(stats_object: dict) -&gt; str:
     &#34;&#34;&#34;Render the missing values HTML.
 
@@ -891,7 +911,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_overview_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_overview_section"><code class="name flex">
 <span>def <span class="ident">render_overview_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -904,7 +924,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>The rendered HTML for the overview component of the profile.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def render_overview_section(stats_object: dict) -&gt; str:
     &#34;&#34;&#34;Render the overview HTML.
 
@@ -922,7 +944,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_sample_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_sample_section"><code class="name flex">
 <span>def <span class="ident">render_sample_section</span></span>(<span>sample)</span>
 </code></dt>
 <dd>
@@ -935,7 +957,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>The HTML rendering of the samples.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def render_sample_section(sample: dict) -&gt; str:
     &#34;&#34;&#34;Render the sample HTML
 
@@ -950,7 +974,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return templates.template(&#34;components/list.html&#34;).render(values=items)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.render_variables_section"><code class="name flex">
+<dt id="pandas_profiling.report.report.render_variables_section"><code class="name flex">
 <span>def <span class="ident">render_variables_section</span></span>(<span>stats_object)</span>
 </code></dt>
 <dd>
@@ -963,7 +987,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <h2 id="returns">Returns</h2>
 <p>The rendered HTML, where each row represents a variable.</p></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def render_variables_section(stats_object: dict) -&gt; str:
     &#34;&#34;&#34;Render the HTML for each of the variables in the DataFrame.
 
@@ -1086,6 +1112,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
                 max_number_to_print=n_freq_table_max,
             )
 
+            formatted_values[&#34;n_extreme_obs&#34;] = n_extreme_obs
             formatted_values[&#34;firstn_expanded&#34;] = extreme_obs_table(
                 freqtable=stats_object[&#34;variables&#34;][idx][&#34;value_counts_without_nan&#34;],
                 number_to_print=n_extreme_obs,
@@ -1189,7 +1216,7 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
     return rows_html</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.view.report.to_html"><code class="name flex">
+<dt id="pandas_profiling.report.report.to_html"><code class="name flex">
 <span>def <span class="ident">to_html</span></span>(<span>sample, stats_object)</span>
 </code></dt>
 <dd>
@@ -1207,7 +1234,9 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 <dd>&nbsp;</dd>
 </dl></section>
 <details class="source">
-<summary>Source code</summary>
+<summary>
+<span>Expand source code</span>
+</summary>
 <pre><code class="python">def to_html(sample: dict, stats_object: dict) -&gt; str:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
@@ -1284,23 +1313,23 @@ def to_html(sample: dict, stats_object: dict) -&gt; str:
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pandas_profiling.view.report.extreme_obs_table" href="#pandas_profiling.view.report.extreme_obs_table">extreme_obs_table</a></code></li>
-<li><code><a title="pandas_profiling.view.report.freq_table" href="#pandas_profiling.view.report.freq_table">freq_table</a></code></li>
-<li><code><a title="pandas_profiling.view.report.get_correlation_items" href="#pandas_profiling.view.report.get_correlation_items">get_correlation_items</a></code></li>
-<li><code><a title="pandas_profiling.view.report.get_sample_items" href="#pandas_profiling.view.report.get_sample_items">get_sample_items</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_correlations_section" href="#pandas_profiling.view.report.render_correlations_section">render_correlations_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_missing_section" href="#pandas_profiling.view.report.render_missing_section">render_missing_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_overview_section" href="#pandas_profiling.view.report.render_overview_section">render_overview_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_sample_section" href="#pandas_profiling.view.report.render_sample_section">render_sample_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.render_variables_section" href="#pandas_profiling.view.report.render_variables_section">render_variables_section</a></code></li>
-<li><code><a title="pandas_profiling.view.report.to_html" href="#pandas_profiling.view.report.to_html">to_html</a></code></li>
+<li><code><a title="pandas_profiling.report.report.extreme_obs_table" href="#pandas_profiling.report.report.extreme_obs_table">extreme_obs_table</a></code></li>
+<li><code><a title="pandas_profiling.report.report.freq_table" href="#pandas_profiling.report.report.freq_table">freq_table</a></code></li>
+<li><code><a title="pandas_profiling.report.report.get_correlation_items" href="#pandas_profiling.report.report.get_correlation_items">get_correlation_items</a></code></li>
+<li><code><a title="pandas_profiling.report.report.get_sample_items" href="#pandas_profiling.report.report.get_sample_items">get_sample_items</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_correlations_section" href="#pandas_profiling.report.report.render_correlations_section">render_correlations_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_missing_section" href="#pandas_profiling.report.report.render_missing_section">render_missing_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_overview_section" href="#pandas_profiling.report.report.render_overview_section">render_overview_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_sample_section" href="#pandas_profiling.report.report.render_sample_section">render_sample_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.render_variables_section" href="#pandas_profiling.report.report.render_variables_section">render_variables_section</a></code></li>
+<li><code><a title="pandas_profiling.report.report.to_html" href="#pandas_profiling.report.report.to_html">to_html</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad()</script>

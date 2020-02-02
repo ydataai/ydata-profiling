@@ -11,15 +11,14 @@ import requests
 import numpy as np
 
 
-def test_issue51(tmpdir):
+def test_issue51(get_data_file):
     # Categorical has empty ('') value
-    response = requests.get(
-        "https://raw.githubusercontent.com/adamrossnelson/HelloWorld/master/sparefiles/buggy1.pkl"
+    file_name = get_data_file(
+        "buggy1.pkl",
+        "https://raw.githubusercontent.com/adamrossnelson/HelloWorld/master/sparefiles/buggy1.pkl",
     )
-    pkl_file = Path(str(tmpdir)) / "buggy1.pkl"
-    pkl_file.write_bytes(response.content)
 
-    df = pd.read_pickle(str(pkl_file))
+    df = pd.read_pickle(str(file_name))
 
     report = df.profile_report(title="Pandas Profiling Report")
     assert (
@@ -54,7 +53,7 @@ def test_issue51_mixed():
     report = df.profile_report(title="Pandas Profiling Report")
 
     assert (
-        'data-toggle="tab">Recoded</a>' in report.to_html()
+        "data-toggle=tab>Recoded</a>" in report.to_html()
     ), "Recoded should be present"
 
 

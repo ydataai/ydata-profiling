@@ -2,17 +2,15 @@ from pathlib import Path
 
 import pandas as pd
 import numpy as np
-import requests
 
 from pandas_profiling import ProfileReport
+from pandas_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
-    file_name = Path("census_train.csv")
-    if not file_name.exists():
-        data = requests.get(
-            "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
-        )
-        file_name.write_bytes(data.content)
+    file_name = cache_file(
+        "census_train.csv",
+        "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data",
+    )
 
     # Names based on https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
     df = pd.read_csv(

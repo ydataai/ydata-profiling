@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>pandas_profiling.report.structure.report API documentation</title>
+<meta name="description" content="Generate the report." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pandas_profiling.report.structure.report</code></h1>
+</header>
+<section id="section-intro">
+<p>Generate the report.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Generate the report.&#34;&#34;&#34;
+from datetime import datetime
+
+import pandas_profiling.visualisation.plot as plot
+from pandas_profiling.config import config
+from pandas_profiling.model.base import (
+    Boolean,
+    Real,
+    Count,
+    Complex,
+    Date,
+    Categorical,
+    Url,
+    AbsolutePath,
+    ExistingPath,
+    ImagePath,
+    Generic,
+)
+from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.structure.variables import (
+    render_boolean,
+    render_categorical,
+    render_complex,
+    render_date,
+    render_real,
+    render_path,
+    render_path_image,
+    render_url,
+    render_generic,
+)
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core import (
+    HTML,
+    Image,
+    Preview,
+    Sequence,
+    Overview,
+    Dataset,
+    Sample,
+)
+
+
+def get_missing_items(summary) -&gt; list:
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    items = []
+    for key, item in summary[&#34;missing&#34;].items():
+        items.append(
+            # TODO: Add informative caption
+            Image(
+                item[&#34;matrix&#34;],
+                image_format=image_format,
+                alt=item[&#34;name&#34;],
+                name=item[&#34;name&#34;],
+                anchor_id=key,
+            )
+        )
+
+    return items
+
+
+def get_correlation_items(summary) -&gt; list:
+    &#34;&#34;&#34;Create the list of correlation items
+
+    Args:
+        summary: dict of correlations
+
+    Returns:
+        List of correlation items to show in the interface.
+    &#34;&#34;&#34;
+    items = []
+
+    key_to_data = {
+        &#34;pearson&#34;: {&#34;vmin&#34;: -1, &#34;name&#34;: &#34;Pearson&#39;s r&#34;},
+        &#34;spearman&#34;: {&#34;vmin&#34;: -1, &#34;name&#34;: &#34;Spearman&#39;s ρ&#34;},
+        &#34;kendall&#34;: {&#34;vmin&#34;: -1, &#34;name&#34;: &#34;Kendall&#39;s τ&#34;},
+        &#34;phi_k&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Phik (φk)&#34;},
+        &#34;cramers&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Cramér&#39;s V (φc)&#34;},
+        &#34;recoded&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Recoded&#34;},
+    }
+
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
+    for key, item in summary[&#34;correlations&#34;].items():
+        vmin = key_to_data[key][&#34;vmin&#34;]
+        name = key_to_data[key][&#34;name&#34;]
+        items.append(
+            Image(
+                plot.correlation_matrix(item, vmin=vmin),
+                image_format=image_format,
+                alt=name,
+                anchor_id=key,
+                name=name,
+            )
+        )
+
+    return items
+
+
+# TODO: split in per variable function
+def render_variables_section(dataframe_summary: dict) -&gt; list:
+    &#34;&#34;&#34;Render the HTML for each of the variables in the DataFrame.
+
+    Args:
+        dataframe_summary: The statistics for each variable.
+
+    Returns:
+        The rendered HTML, where each row represents a variable.
+    &#34;&#34;&#34;
+    type_to_func = {
+        Boolean: render_boolean,
+        Real: render_real,
+        Count: render_real,
+        Complex: render_complex,
+        Date: render_date,
+        Categorical: render_categorical,
+        Url: render_url,
+        AbsolutePath: render_path,
+        ExistingPath: render_path,
+        # ImagePath: render_path_image,
+        Generic: render_generic,
+    }
+
+    templs = []
+
+    for idx, summary in dataframe_summary[&#34;variables&#34;].items():
+        # Common template variables
+        warnings = [
+            warning.fmt()
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+        ]
+
+        warning_fields = {
+            field
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+            for field in warning.fields
+        }
+
+        warning_types = {
+            warning.message_type
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+        }
+
+        template_variables = {
+            &#34;varname&#34;: idx,
+            &#34;varid&#34;: hash(idx),
+            &#34;warnings&#34;: warnings,
+            &#34;warn_fields&#34;: warning_fields,
+        }
+
+        template_variables.update(summary)
+
+        # Per type template variables
+        template_variables.update(type_to_func[summary[&#34;type&#34;]](template_variables))
+
+        # Ignore these
+        if config[&#34;reject_variables&#34;].get(bool):
+            ignore = MessageType.REJECTED in warning_types
+        else:
+            ignore = False
+
+        templs.append(
+            Preview(
+                template_variables[&#34;top&#34;],
+                template_variables[&#34;bottom&#34;],
+                anchor_id=template_variables[&#34;varid&#34;],
+                name=idx,
+                ignore=ignore,
+            )
+        )
+
+    return templs
+
+
+def get_sample_items(sample: dict):
+    &#34;&#34;&#34;Create the list of sample items
+
+    Args:
+        sample: dict of samples
+
+    Returns:
+        List of sample items to show in the interface.
+    &#34;&#34;&#34;
+    items = []
+    names = {&#34;head&#34;: &#34;First rows&#34;, &#34;tail&#34;: &#34;Last rows&#34;}
+    for key, value in sample.items():
+        items.append(
+            Sample(
+                sample=value.to_html(classes=&#34;sample table table-striped&#34;),
+                name=names[key],
+                anchor_id=key,
+            )
+        )
+    return items
+
+
+def get_scatter_matrix(scatter_matrix):
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
+    titems = []
+    for x_col, y_cols in scatter_matrix.items():
+        items = []
+        for y_col, splot in y_cols.items():
+            items.append(
+                Image(
+                    splot,
+                    image_format=image_format,
+                    alt=&#34;{x_col} x {y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                    anchor_id=&#34;interactions_{x_col}_{y_col}&#34;.format(
+                        x_col=x_col, y_col=y_col
+                    ),
+                    name=&#34;{y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                )
+            )
+
+        titems.append(
+            Sequence(
+                items,
+                sequence_type=&#34;tabs&#34;,
+                name=x_col,
+                anchor_id=&#34;interactions_{x_col}&#34;.format(x_col=x_col),
+            )
+        )
+    return titems
+
+
+def get_report_structure(
+    date_start: datetime, date_end: datetime, sample: dict, summary: dict
+) -&gt; Renderable:
+    &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
+
+    Args:
+      sample: A dict containing the samples to print.
+      summary: Statistics to use for the overview, variables, correlations and missing values.
+
+    Returns:
+      The profile report in HTML format
+    &#34;&#34;&#34;
+
+    scatter = Sequence(
+        get_scatter_matrix(summary[&#34;scatter&#34;]),
+        sequence_type=&#34;tabs&#34;,
+        name=&#34;Interactions&#34;,
+        anchor_id=&#34;interactions&#34;,
+    )
+    collapse_warnings = config[&#34;warnings&#34;][&#34;collapse_if_more&#34;].get(int)
+    if collapse_warnings == 0:
+        warnings = []
+    else:
+        warnings = summary[&#34;messages&#34;]
+
+    sections = Sequence(
+        [
+            Dataset(
+                package=summary[&#34;package&#34;],
+                date_start=date_start,
+                date_end=date_end,
+                values=summary[&#34;table&#34;],
+                messages=warnings,
+                collapse_warnings=len(warnings) &gt; collapse_warnings,
+                variables=summary[&#34;variables&#34;],
+                name=&#34;Overview&#34;,
+                anchor_id=&#34;overview&#34;,
+            ),
+            Sequence(
+                render_variables_section(summary),
+                sequence_type=&#34;accordion&#34;,
+                name=&#34;Variables&#34;,
+                anchor_id=&#34;variables&#34;,
+            ),
+            scatter,
+            Sequence(
+                get_correlation_items(summary),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Correlations&#34;,
+                anchor_id=&#34;correlations&#34;,
+            ),
+            Sequence(
+                get_missing_items(summary),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Missing values&#34;,
+                anchor_id=&#34;missing&#34;,
+            ),
+            Sequence(
+                get_sample_items(sample),
+                sequence_type=&#34;list&#34;,
+                name=&#34;Sample&#34;,
+                anchor_id=&#34;sample&#34;,
+            ),
+        ],
+        name=&#34;Report&#34;,
+        sequence_type=&#34;sections&#34;,
+    )
+
+    return sections</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pandas_profiling.report.structure.report.get_correlation_items"><code class="name flex">
+<span>def <span class="ident">get_correlation_items</span></span>(<span>summary)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Create the list of correlation items</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>summary</code></strong></dt>
+<dd>dict of correlations</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of correlation items to show in the interface.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_correlation_items(summary) -&gt; list:
+    &#34;&#34;&#34;Create the list of correlation items
+
+    Args:
+        summary: dict of correlations
+
+    Returns:
+        List of correlation items to show in the interface.
+    &#34;&#34;&#34;
+    items = []
+
+    key_to_data = {
+        &#34;pearson&#34;: {&#34;vmin&#34;: -1, &#34;name&#34;: &#34;Pearson&#39;s r&#34;},
+        &#34;spearman&#34;: {&#34;vmin&#34;: -1, &#34;name&#34;: &#34;Spearman&#39;s ρ&#34;},
+        &#34;kendall&#34;: {&#34;vmin&#34;: -1, &#34;name&#34;: &#34;Kendall&#39;s τ&#34;},
+        &#34;phi_k&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Phik (φk)&#34;},
+        &#34;cramers&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Cramér&#39;s V (φc)&#34;},
+        &#34;recoded&#34;: {&#34;vmin&#34;: 0, &#34;name&#34;: &#34;Recoded&#34;},
+    }
+
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
+    for key, item in summary[&#34;correlations&#34;].items():
+        vmin = key_to_data[key][&#34;vmin&#34;]
+        name = key_to_data[key][&#34;name&#34;]
+        items.append(
+            Image(
+                plot.correlation_matrix(item, vmin=vmin),
+                image_format=image_format,
+                alt=name,
+                anchor_id=key,
+                name=name,
+            )
+        )
+
+    return items</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.structure.report.get_missing_items"><code class="name flex">
+<span>def <span class="ident">get_missing_items</span></span>(<span>summary)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_missing_items(summary) -&gt; list:
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    items = []
+    for key, item in summary[&#34;missing&#34;].items():
+        items.append(
+            # TODO: Add informative caption
+            Image(
+                item[&#34;matrix&#34;],
+                image_format=image_format,
+                alt=item[&#34;name&#34;],
+                name=item[&#34;name&#34;],
+                anchor_id=key,
+            )
+        )
+
+    return items</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.structure.report.get_report_structure"><code class="name flex">
+<span>def <span class="ident">get_report_structure</span></span>(<span>date_start, date_end, sample, summary)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Generate a HTML report from summary statistics and a given sample.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>sample</code></strong></dt>
+<dd>A dict containing the samples to print.</dd>
+<dt><strong><code>summary</code></strong></dt>
+<dd>Statistics to use for the overview, variables, correlations and missing values.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The</code> <code>profile</code> <code>report</code> <code>in</code> <code>HTML</code> <code>format</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_report_structure(
+    date_start: datetime, date_end: datetime, sample: dict, summary: dict
+) -&gt; Renderable:
+    &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
+
+    Args:
+      sample: A dict containing the samples to print.
+      summary: Statistics to use for the overview, variables, correlations and missing values.
+
+    Returns:
+      The profile report in HTML format
+    &#34;&#34;&#34;
+
+    scatter = Sequence(
+        get_scatter_matrix(summary[&#34;scatter&#34;]),
+        sequence_type=&#34;tabs&#34;,
+        name=&#34;Interactions&#34;,
+        anchor_id=&#34;interactions&#34;,
+    )
+    collapse_warnings = config[&#34;warnings&#34;][&#34;collapse_if_more&#34;].get(int)
+    if collapse_warnings == 0:
+        warnings = []
+    else:
+        warnings = summary[&#34;messages&#34;]
+
+    sections = Sequence(
+        [
+            Dataset(
+                package=summary[&#34;package&#34;],
+                date_start=date_start,
+                date_end=date_end,
+                values=summary[&#34;table&#34;],
+                messages=warnings,
+                collapse_warnings=len(warnings) &gt; collapse_warnings,
+                variables=summary[&#34;variables&#34;],
+                name=&#34;Overview&#34;,
+                anchor_id=&#34;overview&#34;,
+            ),
+            Sequence(
+                render_variables_section(summary),
+                sequence_type=&#34;accordion&#34;,
+                name=&#34;Variables&#34;,
+                anchor_id=&#34;variables&#34;,
+            ),
+            scatter,
+            Sequence(
+                get_correlation_items(summary),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Correlations&#34;,
+                anchor_id=&#34;correlations&#34;,
+            ),
+            Sequence(
+                get_missing_items(summary),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Missing values&#34;,
+                anchor_id=&#34;missing&#34;,
+            ),
+            Sequence(
+                get_sample_items(sample),
+                sequence_type=&#34;list&#34;,
+                name=&#34;Sample&#34;,
+                anchor_id=&#34;sample&#34;,
+            ),
+        ],
+        name=&#34;Report&#34;,
+        sequence_type=&#34;sections&#34;,
+    )
+
+    return sections</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.structure.report.get_sample_items"><code class="name flex">
+<span>def <span class="ident">get_sample_items</span></span>(<span>sample)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Create the list of sample items</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>sample</code></strong></dt>
+<dd>dict of samples</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of sample items to show in the interface.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_sample_items(sample: dict):
+    &#34;&#34;&#34;Create the list of sample items
+
+    Args:
+        sample: dict of samples
+
+    Returns:
+        List of sample items to show in the interface.
+    &#34;&#34;&#34;
+    items = []
+    names = {&#34;head&#34;: &#34;First rows&#34;, &#34;tail&#34;: &#34;Last rows&#34;}
+    for key, value in sample.items():
+        items.append(
+            Sample(
+                sample=value.to_html(classes=&#34;sample table table-striped&#34;),
+                name=names[key],
+                anchor_id=key,
+            )
+        )
+    return items</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.structure.report.get_scatter_matrix"><code class="name flex">
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>scatter_matrix)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_scatter_matrix(scatter_matrix):
+    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+
+    titems = []
+    for x_col, y_cols in scatter_matrix.items():
+        items = []
+        for y_col, splot in y_cols.items():
+            items.append(
+                Image(
+                    splot,
+                    image_format=image_format,
+                    alt=&#34;{x_col} x {y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                    anchor_id=&#34;interactions_{x_col}_{y_col}&#34;.format(
+                        x_col=x_col, y_col=y_col
+                    ),
+                    name=&#34;{y_col}&#34;.format(x_col=x_col, y_col=y_col),
+                )
+            )
+
+        titems.append(
+            Sequence(
+                items,
+                sequence_type=&#34;tabs&#34;,
+                name=x_col,
+                anchor_id=&#34;interactions_{x_col}&#34;.format(x_col=x_col),
+            )
+        )
+    return titems</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.structure.report.render_variables_section"><code class="name flex">
+<span>def <span class="ident">render_variables_section</span></span>(<span>dataframe_summary)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Render the HTML for each of the variables in the DataFrame.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dataframe_summary</code></strong></dt>
+<dd>The statistics for each variable.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The rendered HTML, where each row represents a variable.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render_variables_section(dataframe_summary: dict) -&gt; list:
+    &#34;&#34;&#34;Render the HTML for each of the variables in the DataFrame.
+
+    Args:
+        dataframe_summary: The statistics for each variable.
+
+    Returns:
+        The rendered HTML, where each row represents a variable.
+    &#34;&#34;&#34;
+    type_to_func = {
+        Boolean: render_boolean,
+        Real: render_real,
+        Count: render_real,
+        Complex: render_complex,
+        Date: render_date,
+        Categorical: render_categorical,
+        Url: render_url,
+        AbsolutePath: render_path,
+        ExistingPath: render_path,
+        # ImagePath: render_path_image,
+        Generic: render_generic,
+    }
+
+    templs = []
+
+    for idx, summary in dataframe_summary[&#34;variables&#34;].items():
+        # Common template variables
+        warnings = [
+            warning.fmt()
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+        ]
+
+        warning_fields = {
+            field
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+            for field in warning.fields
+        }
+
+        warning_types = {
+            warning.message_type
+            for warning in dataframe_summary[&#34;messages&#34;]
+            if warning.column_name == idx
+        }
+
+        template_variables = {
+            &#34;varname&#34;: idx,
+            &#34;varid&#34;: hash(idx),
+            &#34;warnings&#34;: warnings,
+            &#34;warn_fields&#34;: warning_fields,
+        }
+
+        template_variables.update(summary)
+
+        # Per type template variables
+        template_variables.update(type_to_func[summary[&#34;type&#34;]](template_variables))
+
+        # Ignore these
+        if config[&#34;reject_variables&#34;].get(bool):
+            ignore = MessageType.REJECTED in warning_types
+        else:
+            ignore = False
+
+        templs.append(
+            Preview(
+                template_variables[&#34;top&#34;],
+                template_variables[&#34;bottom&#34;],
+                anchor_id=template_variables[&#34;varid&#34;],
+                name=idx,
+                ignore=ignore,
+            )
+        )
+
+    return templs</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pandas_profiling.report.structure" href="index.html">pandas_profiling.report.structure</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.report.structure.report.get_correlation_items" href="#pandas_profiling.report.structure.report.get_correlation_items">get_correlation_items</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.report.get_missing_items" href="#pandas_profiling.report.structure.report.get_missing_items">get_missing_items</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.report.get_report_structure" href="#pandas_profiling.report.structure.report.get_report_structure">get_report_structure</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.report.get_sample_items" href="#pandas_profiling.report.structure.report.get_sample_items">get_sample_items</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.report.get_scatter_matrix" href="#pandas_profiling.report.structure.report.get_scatter_matrix">get_scatter_matrix</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.report.render_variables_section" href="#pandas_profiling.report.structure.report.render_variables_section">render_variables_section</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

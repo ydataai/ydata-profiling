@@ -1,0 +1,11 @@
+{% if image_format == 'svg' %}
+    {{- image.replace('svg ','svg class="img-responsive center-img"') }}
+{% else %}
+    <img class="img-responsive center-img" src="{{ image }}" alt="{{ alt }}">
+{% endif %}
+
+{% if caption %}
+    <div class="caption text-center text-muted">
+        {{ caption }}
+    </div>
+{% endif %}

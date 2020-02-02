@@ -1,0 +1,17 @@
+<a class="anchor-pos anchor-pos-variable" id="pp_var_{{ anchor_id }}"></a>
+<div class="variable{% if ignore %} ignore{% endif %}">
+    {{ top.render() }}
+
+    {% if bottom is not none %}
+        <div class="col-sm-12 text-right">
+            <a role="button" data-toggle="collapse" data-target="#bottom-{{ anchor_id }}, #minifreqtable{{ anchor_id }}"
+                aria-expanded="true" aria-controls="collapseExample">
+                Toggle details
+            </a>
+        </div>
+
+        <div id="bottom-{{ anchor_id }}" class="collapse">
+            {{ bottom.render() }}
+        </div>
+    {% endif %}
+</div>

@@ -6,10 +6,14 @@ import pandas_profiling
 
 
 @pytest.fixture
-def df():
-    df = pd.read_csv(
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD"
+def df(get_data_file):
+    file_name = get_data_file(
+        "meteorites.csv",
+        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
     )
+
+    df = pd.read_csv(file_name)
+
     # Note: Pandas does not support dates before 1880, so we ignore these for this analysis
     df["year"] = pd.to_datetime(df["year"], errors="coerce")
 
@@ -38,12 +42,12 @@ def test_modular_absent(df):
         title="Modular test",
         samples={"head": 0, "tail": 0},
         correlations={
-            "pearson": False,
-            "spearman": False,
-            "kendall": False,
-            "phi_k": False,
-            "cramers": False,
-            "recoded": False,
+            "pearson": {"calculate": False},
+            "spearman": {"calculate": False},
+            "kendall": {"calculate": False},
+            "phi_k": {"calculate": False},
+            "cramers": {"calculate": False},
+            "recoded": {"calculate": False},
         },
         missing_diagrams={
             "matrix": False,
@@ -53,9 +57,10 @@ def test_modular_absent(df):
         },
     )
 
-    assert "Correlations</h1>" not in profile.to_html()
-    assert "Sample</h1>" not in profile.to_html()
-    assert "Missing values</h1>" not in profile.to_html()
+    html = profile.to_html()
+    assert "Correlations</h1>" not in html
+    assert "Sample</h1>" not in html
+    assert "Missing values</h1>" not in html
 
 
 def test_modular_present(df):
@@ -63,11 +68,12 @@ def test_modular_present(df):
         title="Modular test",
         samples={"head": 10, "tail": 10},
         correlations={
-            "pearson": True,
-            "spearman": True,
-            "kendall": True,
-            "phi_k": True,
-            "recoded": True,
+            "pearson": {"calculate": True},
+            "spearman": {"calculate": True},
+            "kendall": {"calculate": True},
+            "phi_k": {"calculate": True},
+            "recoded": {"calculate": True},
+            "cramers": {"calculate": True},
         },
         missing_diagrams={
             "matrix": True,
@@ -77,6 +83,7 @@ def test_modular_present(df):
         },
     )
 
-    assert "Correlations</h1>" in profile.to_html()
-    assert "Sample</h1>" in profile.to_html()
-    assert "Missing values</h1>" in profile.to_html()
+    html = profile.to_html()
+    assert "Correlations</h1>" in html
+    assert "Sample</h1>" in html
+    assert "Missing values</h1>" in html

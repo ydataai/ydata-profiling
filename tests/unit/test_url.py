@@ -4,11 +4,14 @@ import numpy as np
 import pandas_profiling
 
 
-def test_urls():
-    df = pd.read_csv(
+def test_urls(get_data_file):
+    file_name = get_data_file(
+        "whitelist_urls.csv",
         "https://raw.githubusercontent.com/openeventdata/scraper/master/whitelist_urls.csv",
-        header=None,
-        names=["source", "url", "reach", "language"],
+    )
+
+    df = pd.read_csv(
+        file_name, header=None, names=["source", "url", "reach", "language"]
     )
 
     # Add ~10% missing values
@@ -19,6 +22,4 @@ def test_urls():
     )
 
     assert "<small>URL</small>" in profile.to_html(), "URL not detected"
-    assert (
-        "<th>URL</th>\n                <td>1</td>" in profile.to_html()
-    ), "URL not detected"
+    assert "<th>URL</th>" in profile.to_html(), "URL not detected"
