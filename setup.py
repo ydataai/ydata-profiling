@@ -31,7 +31,7 @@ setup(
     license="MIT",
     description="Generate profile report for pandas DataFrame",
     install_requires=[
-        "pandas==0.25.3",
+        "pandas==1.0.0",
         "matplotlib>=3.0.3",  # 3.1.2 for Python > 3.5
         "confuse==1.0.0",
         "jinja2==2.11.1",

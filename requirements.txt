@@ -4,7 +4,7 @@ missingno==0.4.2
 matplotlib>=3.0.3
 jinja2==2.11.1
 numpy>=1.16.0
-pandas==0.25.3
+pandas==1.0.0
 htmlmin==0.1.12
 phik==0.9.9
 confuse==1.0.0
