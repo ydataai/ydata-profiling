@@ -124,7 +124,7 @@ def get_correlation_font_size(n_labels) -> Optional[int]:
     elif n_labels > 40:
         font_size = 8
     else:
-        font_size = None
+        return None
     return font_size
 
 
