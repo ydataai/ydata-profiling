@@ -1,6 +1,6 @@
 """Plot functions for the profiling report."""
 
-from typing import Union
+from typing import Union, Optional
 
 import matplotlib
 import numpy as np
@@ -106,6 +106,28 @@ def mini_histogram(
     return plot_360_n0sc0pe(plt)
 
 
+def get_correlation_font_size(n_labels) -> Optional[int]:
+    """Dynamic label font sizes in correlation plots
+
+    Args:
+        n_labels: the number of labels
+
+    Returns:
+        A font size or None for the default font size
+    """
+    if n_labels > 100:
+        font_size = 4
+    elif n_labels > 80:
+        font_size = 5
+    elif n_labels > 50:
+        font_size = 6
+    elif n_labels > 40:
+        font_size = 8
+    else:
+        return None
+    return font_size
+
+
 def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     """Plot image of a matrix correlation.
 
@@ -128,8 +150,10 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     plt.colorbar(matrix_image)
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
-    axes_cor.set_xticklabels(labels, rotation=90)
-    axes_cor.set_yticklabels(labels)
+
+    font_size = get_correlation_font_size(len(labels))
+    axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
+    axes_cor.set_yticklabels(labels, fontsize=font_size)
     plt.subplots_adjust(bottom=0.2)
 
     return plot_360_n0sc0pe(plt)
