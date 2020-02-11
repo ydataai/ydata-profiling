@@ -45,7 +45,7 @@ setup(
         "tqdm==4.42.1",
     ],
     extras_require={
-        "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.1", "ipywidgets"],
+        "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.2", "ipywidgets"],
         "app": ["pyqt5==5.14.1"],
         "html": ["htmlmin==0.1.12"],
         "kaggle": ["kaggle"],
