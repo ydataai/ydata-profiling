@@ -21,4 +21,4 @@ def test_issue_120(get_data_file):
     )
     html = report.to_html()
     assert type(html) == str
-    assert "<p class=h2>Dataset info</p>" in html
+    assert "<p class=h4>Dataset statistics</p>" in html

@@ -42,6 +42,9 @@ class Overview(ItemRenderer):
             **kwargs
         )
 
+    def __repr__(self):
+        return &#34;Overview&#34;
+
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>
 </details>
@@ -78,6 +81,9 @@ inheritance.</p></section>
             },
             **kwargs
         )
+
+    def __repr__(self):
+        return &#34;Overview&#34;
 
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>

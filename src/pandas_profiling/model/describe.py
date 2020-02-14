@@ -1,12 +1,11 @@
 """Compute statistical description of datasets."""
 import multiprocessing.pool
 import multiprocessing
-import itertools
 import os
 import sys
 import warnings
 from pathlib import Path
-from typing import Tuple, Callable
+from typing import Tuple, Callable, Mapping
 from urllib.parse import urlsplit
 
 from tqdm.autonotebook import tqdm
@@ -124,6 +123,13 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
     stats["histogram_bins"] = bins
 
     stats["range"] = stats["max"] - stats["min"]
+
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    if chi_squared_threshold > 0.0:
+        histogram = np.histogram(
+            series[series.notna()].astype("int64").values, bins="auto"
+        )[0]
+        stats["chi_squared"] = chisquare(histogram)
 
     return stats
 
@@ -275,8 +281,7 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
     # number of infinite observations in the Series
     n_infinite = count - series.count()
 
-    # TODO: check if we prefer without nan
-    distinct_count = series_description["distinct_count_with_nan"]
+    distinct_count = series_description["distinct_count_without_nan"]
 
     stats = {
         "n": leng,
@@ -287,9 +292,9 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
         "n_missing": leng - count,
         "p_infinite": n_infinite * 1.0 / leng,
         "n_infinite": n_infinite,
-        "is_unique": distinct_count == leng,
+        "is_unique": distinct_count == count,
         "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
-        "p_unique": distinct_count * 1.0 / leng,
+        "p_unique": distinct_count * 1.0 / count,
         "memory_size": series.memory_usage(),
     }
 
@@ -536,17 +541,17 @@ def get_scatter_matrix(df, variables):
     return scatter_matrix
 
 
-def sort_column_names(dct):
-    sort = config["sort"].get(str)
-    if sys.version_info[1] <= 5 and sort != "None":
+def sort_column_names(dct: Mapping, sort: str):
+    sort = sort.lower()
+    if sys.version_info < (3, 6) and sort != "none":
         warnings.warn("Sorting is supported from Python 3.6+")
     else:
-        if sort in ["asc", "ascending"]:
+        if sort.startswith("asc"):
             dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
-        elif sort in ["desc", "descending"]:
+        elif sort.startswith("desc"):
             dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
-        elif sort != "None":
-            raise ValueError('"sort" should be "ascending", "descending" or None.')
+        elif sort != "none":
+            raise ValueError('"sort" should be "ascending", "descending" or "None".')
     return dct
 
 
@@ -584,17 +589,32 @@ def describe(df: pd.DataFrame) -> dict:
             for arg in args:
                 column, description = multiprocess_1d(arg)
                 series_description[column] = description
-                pbar.update(1)
+                pbar.update()
         else:
+            # Store the original order
+            original_order = {
+                k: v for v, k in enumerate([column for column, _ in args])
+            }
+
+            # TODO: use `Pool` for Linux-based systems
             with multiprocessing.pool.ThreadPool(pool_size) as executor:
                 for i, (column, description) in enumerate(
                     executor.imap_unordered(multiprocess_1d, args)
                 ):
                     series_description[column] = description
-                    pbar.update(1)
+                    pbar.update()
+
+            # Restore the original order
+            series_description = dict(
+                sorted(
+                    series_description.items(),
+                    key=lambda index: original_order.get(index[0]),
+                )
+            )
 
     # Mapping from column name to variable type
-    series_description = sort_column_names(series_description)
+    sort = config["sort"].get(str)
+    series_description = sort_column_names(series_description, sort)
 
     variables = {
         column: description["type"]
@@ -622,21 +642,22 @@ def describe(df: pd.DataFrame) -> dict:
     with tqdm(total=3, desc="warnings", disable=disable_progress_bar) as pbar:
         pbar.set_description_str("warnings [table]")
         messages = check_table_messages(table_stats)
-        pbar.update(1)
+        pbar.update()
         pbar.set_description_str("warnings [variables]")
         for col, description in series_description.items():
             messages += check_variable_messages(col, description)
-        pbar.update(1)
+        pbar.update()
         pbar.set_description_str("warnings [correlations]")
         messages += check_correlation_messages(correlations)
-        pbar.update(1)
+        messages.sort(key=lambda message: str(message.message_type))
+        pbar.update()
 
     with tqdm(total=1, desc="package", disable=disable_progress_bar) as pbar:
         package = {
             "pandas_profiling_version": __version__,
             "pandas_profiling_config": config.dump(),
         }
-        pbar.update(1)
+        pbar.update()
 
     return {
         # Overall description

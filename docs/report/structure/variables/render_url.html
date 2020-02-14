@@ -31,10 +31,10 @@ from pandas_profiling.report.structure.variables import render_common
 from pandas_profiling.report.presentation.core import (
     Sequence,
     Table,
-    Overview,
+    Variable,
     FrequencyTable,
     FrequencyTableSmall,
-    Overview,
+    VariableInfo,
 )
 
 
@@ -96,32 +96,55 @@ def render_url(summary):
         query_frequency_table,
         fragment_frequency_table,
     ]
-    template_variables[&#34;bottom&#34;] = Sequence(items, sequence_type=&#34;tabs&#34;)
+    template_variables[&#34;bottom&#34;] = Sequence(
+        items,
+        sequence_type=&#34;tabs&#34;,
+        name=&#34;url stats&#34;,
+        anchor_id=&#34;{varid}urlstats&#34;.format(varid=summary[&#34;varid&#34;]),
+    )
 
     # Element composition
-    info = Overview(summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;URL&#34;, summary[&#34;warnings&#34;])
+    info = VariableInfo(
+        summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;URL&#34;, summary[&#34;warnings&#34;]
+    )
 
     table = Table(
         [
-            {&#34;name&#34;: &#34;Distinct count&#34;, &#34;value&#34;: summary[&#34;n_unique&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Unique (%)&#34;, &#34;value&#34;: summary[&#34;p_unique&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
-            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: summary[&#34;n_missing&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Distinct count&#34;,
+                &#34;value&#34;: summary[&#34;n_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Unique (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Missing&#34;,
+                &#34;value&#34;: summary[&#34;n_missing&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
 
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
-    # TODO: settings 3,3,6
     template_variables[&#34;top&#34;] = Sequence([info, table, fqm], sequence_type=&#34;grid&#34;)
 
     return template_variables</code></pre>
@@ -201,32 +224,55 @@ def render_url(summary):
         query_frequency_table,
         fragment_frequency_table,
     ]
-    template_variables[&#34;bottom&#34;] = Sequence(items, sequence_type=&#34;tabs&#34;)
+    template_variables[&#34;bottom&#34;] = Sequence(
+        items,
+        sequence_type=&#34;tabs&#34;,
+        name=&#34;url stats&#34;,
+        anchor_id=&#34;{varid}urlstats&#34;.format(varid=summary[&#34;varid&#34;]),
+    )
 
     # Element composition
-    info = Overview(summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;URL&#34;, summary[&#34;warnings&#34;])
+    info = VariableInfo(
+        summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;URL&#34;, summary[&#34;warnings&#34;]
+    )
 
     table = Table(
         [
-            {&#34;name&#34;: &#34;Distinct count&#34;, &#34;value&#34;: summary[&#34;n_unique&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Unique (%)&#34;, &#34;value&#34;: summary[&#34;p_unique&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
-            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: summary[&#34;n_missing&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Distinct count&#34;,
+                &#34;value&#34;: summary[&#34;n_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Unique (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Missing&#34;,
+                &#34;value&#34;: summary[&#34;n_missing&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
 
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
-    # TODO: settings 3,3,6
     template_variables[&#34;top&#34;] = Sequence([info, table, fqm], sequence_type=&#34;grid&#34;)
 
     return template_variables</code></pre>

@@ -5,9 +5,8 @@ from pandas_profiling.report.presentation.core import (
     Table,
     Sequence,
     Image,
-    Preview,
     FrequencyTable,
-    Overview,
+    VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
 
@@ -22,7 +21,7 @@ def render_real(summary):
         name = "Real number (&Ropf;)"
 
     # Top
-    info = Overview(summary["varid"], summary["varname"], name, summary["warnings"])
+    info = VariableInfo(summary["varid"], summary["varname"], name, summary["warnings"])
 
     table1 = Table(
         [
@@ -30,62 +29,63 @@ def render_real(summary):
                 "name": "Distinct count",
                 "value": summary["n_unique"],
                 "fmt": "fmt",
-                "class": "alert" if "n_unique" in summary["warn_fields"] else "",
+                "alert": "n_unique" in summary["warn_fields"],
             },
             {
                 "name": "Unique (%)",
                 "value": summary["p_unique"],
                 "fmt": "fmt_percent",
-                "class": "alert" if "p_unique" in summary["warn_fields"] else "",
+                "alert": "p_unique" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
                 "value": summary["n_missing"],
                 "fmt": "fmt",
-                "class": "alert" if "n_missing" in summary["warn_fields"] else "",
+                "alert": "n_missing" in summary["warn_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": summary["p_missing"],
                 "fmt": "fmt_percent",
-                "class": "alert" if "p_missing" in summary["warn_fields"] else "",
+                "alert": "p_missing" in summary["warn_fields"],
             },
             {
                 "name": "Infinite",
                 "value": summary["n_infinite"],
                 "fmt": "fmt",
-                "class": "alert" if "n_infinite" in summary["warn_fields"] else "",
+                "alert": "n_infinite" in summary["warn_fields"],
             },
             {
                 "name": "Infinite (%)",
                 "value": summary["p_infinite"],
                 "fmt": "fmt_percent",
-                "class": "alert" if "p_infinite" in summary["warn_fields"] else "",
+                "alert": "p_infinite" in summary["warn_fields"],
             },
         ]
     )
 
     table2 = Table(
         [
-            {"name": "Mean", "value": summary["mean"], "fmt": "fmt"},
-            {"name": "Minimum", "value": summary["min"], "fmt": "fmt"},
-            {"name": "Maximum", "value": summary["max"], "fmt": "fmt"},
+            {"name": "Mean", "value": summary["mean"], "fmt": "fmt", "alert": False},
+            {"name": "Minimum", "value": summary["min"], "fmt": "fmt", "alert": False},
+            {"name": "Maximum", "value": summary["max"], "fmt": "fmt", "alert": False},
             {
                 "name": "Zeros",
                 "value": summary["n_zeros"],
                 "fmt": "fmt",
-                "class": "alert" if "n_zeros" in summary["warn_fields"] else "",
+                "alert": "n_zeros" in summary["warn_fields"],
             },
             {
                 "name": "Zeros (%)",
                 "value": summary["p_zeros"],
                 "fmt": "fmt_percent",
-                "class": "alert" if "p_zeros" in summary["warn_fields"] else "",
+                "alert": "p_zeros" in summary["warn_fields"],
             },
             {
                 "name": "Memory size",
                 "value": summary["memory_size"],
                 "fmt": "fmt_bytesize",
+                "alert": False,
             },
         ]
     )

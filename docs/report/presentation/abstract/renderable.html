@@ -29,12 +29,14 @@ from typing import Any
 
 
 class Renderable(ABC):
-    def __init__(self, content, name=None, anchor_id=None):
+    def __init__(self, content, name=None, anchor_id=None, classes=None):
         self.content = content
         if name is not None:
             self.content[&#34;name&#34;] = name
         if anchor_id is not None:
             self.content[&#34;anchor_id&#34;] = anchor_id
+        if classes is not None:
+            self.content[&#34;classes&#34;] = classes
 
     @property
     def name(self):
@@ -43,6 +45,10 @@ class Renderable(ABC):
     @property
     def anchor_id(self):
         return self.content[&#34;anchor_id&#34;]
+
+    @property
+    def classes(self):
+        return self.content[&#34;classes&#34;]
 
     @abstractmethod
     def render(self) -&gt; Any:
@@ -67,7 +73,7 @@ class Renderable(ABC):
 <dl>
 <dt id="pandas_profiling.report.presentation.abstract.renderable.Renderable"><code class="flex name class">
 <span>class <span class="ident">Renderable</span></span>
-<span>(</span><span>content, name=None, anchor_id=None)</span>
+<span>(</span><span>content, name=None, anchor_id=None, classes=None)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -77,12 +83,14 @@ inheritance.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Renderable(ABC):
-    def __init__(self, content, name=None, anchor_id=None):
+    def __init__(self, content, name=None, anchor_id=None, classes=None):
         self.content = content
         if name is not None:
             self.content[&#34;name&#34;] = name
         if anchor_id is not None:
             self.content[&#34;anchor_id&#34;] = anchor_id
+        if classes is not None:
+            self.content[&#34;classes&#34;] = classes
 
     @property
     def name(self):
@@ -91,6 +99,10 @@ inheritance.</p></section>
     @property
     def anchor_id(self):
         return self.content[&#34;anchor_id&#34;]
+
+    @property
+    def classes(self):
+        return self.content[&#34;classes&#34;]
 
     @abstractmethod
     def render(self) -&gt; Any:
@@ -141,6 +153,18 @@ def convert_to_class(cls, obj, flv):
 <pre><code class="python">@property
 def anchor_id(self):
     return self.content[&#34;anchor_id&#34;]</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.presentation.abstract.renderable.Renderable.classes"><code class="name">var <span class="ident">classes</span></code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def classes(self):
+    return self.content[&#34;classes&#34;]</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.abstract.renderable.Renderable.name"><code class="name">var <span class="ident">name</span></code></dt>
@@ -194,6 +218,7 @@ def render(self) -&gt; Any:
 <h4><code><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></code></h4>
 <ul class="">
 <li><code><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable.anchor_id" href="#pandas_profiling.report.presentation.abstract.renderable.Renderable.anchor_id">anchor_id</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable.classes" href="#pandas_profiling.report.presentation.abstract.renderable.Renderable.classes">classes</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable.convert_to_class" href="#pandas_profiling.report.presentation.abstract.renderable.Renderable.convert_to_class">convert_to_class</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable.name" href="#pandas_profiling.report.presentation.abstract.renderable.Renderable.name">name</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable.render" href="#pandas_profiling.report.presentation.abstract.renderable.Renderable.render">render</a></code></li>

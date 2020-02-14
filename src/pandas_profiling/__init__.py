@@ -2,9 +2,9 @@
 
 .. include:: ../../README.md
 """
+import json
 import sys
 import warnings
-import json
 from pathlib import Path
 from datetime import datetime
 
@@ -33,6 +33,12 @@ class ProfileReport(object):
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
     def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
+        if sys.version_info <= (3, 5):
+            warnings.warn(
+                "This is the last release to support Python 3.5, please upgrade.",
+                category=DeprecationWarning,
+            )
+
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
@@ -77,9 +83,17 @@ class ProfileReport(object):
             self.report = get_report_structure(
                 self.date_start, self.date_end, self.sample, description_set
             )
-            pbar.update(1)
+            pbar.update()
 
     def get_sample(self, df: pd.DataFrame) -> dict:
+        """Get head/tail samples based on the configuration
+
+        Args:
+            df: the DataFrame to sample from.
+
+        Returns:
+            A dict with the head and tail samples.
+        """
         sample = {}
         n_head = config["samples"]["head"].get(int)
         if n_head > 0:
@@ -99,12 +113,17 @@ class ProfileReport(object):
         """
         return self.description_set
 
-    def get_rejected_variables(self) -> list:
-        return [
+    def get_rejected_variables(self) -> set:
+        """Get variables that are rejected for analysis (e.g. constant, mixed data types)
+
+        Returns:
+            a set of column names that are unsupported
+        """
+        return {
             message.column_name
             for message in self.description_set["messages"]
             if message.message_type == MessageType.REJECTED
-        ]
+        }
 
     def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
@@ -148,14 +167,16 @@ class ProfileReport(object):
 
         html = HTMLReport(self.report).render()
 
+        nav_items = [
+            (section.name, section.anchor_id)
+            for section in self.report.content["items"]
+        ]
         # TODO: move to structure
         wrapped_html = templates.template("wrapper/wrapper.html").render(
             content=html,
             title=self.title,
-            correlation=len(self.description_set["correlations"]) > 0,
-            missing=len(self.description_set["missing"]) > 0,
-            scatter=len(self.description_set["scatter"]) > 0,
-            sample=len(self.sample) > 0,
+            nav=config["html"]["navbar_show"].get(bool),
+            nav_items=nav_items,
             version=__version__,
             offline=use_local_assets,
             primary_color=config["html"]["style"]["primary_color"].get(str),

@@ -30,12 +30,12 @@ With your help, we got approved for [GitHub Sponsors](https://github.com/sponsor
 It's extra exciting that GitHub **matches your contribution** for the first year.
 Therefore, we welcome you to support the project through GitHub! 
 
-The v2.4 release includes many new features (performance, exporting, GUI and datasets) and stability improvements.
+The v2.5.0 release includes many new features and stability improvements.
 
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
- - [Read the release notes v2.4](https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.4.0) 
+ - [Read the release notes v2.5.0](https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.5.0) 
 
- *January 7, 2020*
+ *February 14, 2020 💘*
 
 ---
 
@@ -53,14 +53,17 @@ _Contents:_ **[Examples](#examples)** |
 The following examples can give you an impression of what the package can do:
 
 * [Census Income](http://pandas-profiling.github.io/pandas-profiling/examples/census/census_report.html) (US Adult Census data relating income)
-* [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html) (comprehensive set of meteorite landings)
-* [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html) (the "Wonderwall" of datasets)
+* [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
+* [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
 * [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
 * [Stata Auto](http://pandas-profiling.github.io/pandas-profiling/examples/stata_auto/stata_auto_report.html) (1978 Automobile data)
 * [Vektis](http://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Website Inaccessibility](http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
 * [Colors](http://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html) (a simple colors dataset)
 * [Russian Vocabulary](http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
+* [Orange prices](http://pandas-profiling.github.io/pandas-profiling/examples/themes/united_report.html) and [Coal prices](http://pandas-profiling.github.io/pandas-profiling/examples/themes/flatly_report.html) (showcase report themes)
+* [Tutorial: report structure using Kaggle data](http://pandas-profiling.github.io/pandas-profiling/examples/kaggle/modify_report_structure.ipynb) (modify the report's structure for advanced usage) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/kaggle/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb)
+
 
 ## Installation
 
@@ -126,7 +129,7 @@ There are two interfaces (see animations below): through widgets and through a H
 
 This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 ```python
-profile
+profile.to_widgets()
 ```
 
 The HTML report can be included in a Juyter notebook:

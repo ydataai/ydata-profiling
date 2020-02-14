@@ -1,5 +1,3 @@
-import sys
-
 import pandas as pd
 import numpy as np
 
@@ -35,29 +33,11 @@ def test_example(get_data_file, test_output_dir):
     df = df.append(duplicates_to_add, ignore_index=True)
 
     output_file = test_output_dir / "profile.html"
-    profile = ProfileReport(
-        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, sort="ascending"
-    )
+    profile = ProfileReport(df, title="NASA Meteorites", samples={"head": 5, "tail": 5})
     profile.to_file(output_file=output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
     assert (
         type(profile.get_description()) == dict
         and len(profile.get_description().items()) == 7
     ), "Unexpected result"
-    if sys.version_info[1] >= 6:
-        assert list(profile.get_description()["variables"].keys()) == [
-            "boolean",
-            "fall",
-            "GeoLocation",
-            "id",
-            "mass (g)",
-            "mixed",
-            "name",
-            "nametype",
-            "recclass",
-            "reclat",
-            "reclat_city",
-            "reclong",
-            "source",
-            "year",
-        ], "Ascending sort did not work"
+    assert "<span class=badge>12</span>" in profile.to_html()

@@ -50,12 +50,18 @@ IF "%1" == "install" (
 	GOTO end
 )
 
+if "%1" == "typing" (
+	pytest --mypy -m mypy .
+	GOTO end
+)
+
 IF "%1%" == "all" (
     make lint
     make install
     make examples
     make docs
     make test
+    make typing
     GOTO end
 )
 

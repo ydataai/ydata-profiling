@@ -1,7 +1,16 @@
-from IPython.core.display import display
-from ipywidgets import widgets, HTML
+from ipywidgets import widgets, GridspecLayout, VBox
 
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
+
+
+def get_table(items):
+    table = GridspecLayout(len(items), 3)
+    for row_id, (label, progress, count) in enumerate(items):
+        table[row_id, 0] = label
+        table[row_id, 1] = progress
+        table[row_id, 2] = count
+
+    return VBox([table])
 
 
 class WidgetFrequencyTable(FrequencyTable):
@@ -11,57 +20,33 @@ class WidgetFrequencyTable(FrequencyTable):
         for row in self.content["rows"]:
             if row["extra_class"] == "missing":
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row["count"],
-                                min=0,
-                                max=row["n"],
-                                description=str(row["label"]),
-                                bar_style="danger",
-                            ),
-                            widgets.Label(str(row["count"])),
-                        ]
+                    (
+                        widgets.Label(str(row["label"])),
+                        widgets.FloatProgress(
+                            value=row["count"], min=0, max=row["n"], bar_style="danger"
+                        ),
+                        widgets.Label(str(row["count"])),
                     )
                 )
             elif row["extra_class"] == "other":
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row["count"],
-                                min=0,
-                                max=row["n"],
-                                description=str(row["label"]),
-                                bar_style="info",
-                            ),
-                            widgets.Label(str(row["count"])),
-                        ]
+                    (
+                        widgets.Label(str(row["label"])),
+                        widgets.FloatProgress(
+                            value=row["count"], min=0, max=row["n"], bar_style="info"
+                        ),
+                        widgets.Label(str(row["count"])),
                     )
                 )
             else:
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row["count"],
-                                min=0,
-                                max=row["n"],
-                                description=str(row["label"]),
-                                bar_style="",
-                            ),
-                            widgets.Label(str(row["count"])),
-                        ]
+                    (
+                        widgets.Label(str(row["label"])),
+                        widgets.FloatProgress(
+                            value=row["count"], min=0, max=row["n"], bar_style=""
+                        ),
+                        widgets.Label(str(row["count"])),
                     )
                 )
 
-        ft = widgets.VBox(items)
-
-        # Overwrite info to disabled
-        # TODO: resize width of progress bar / label
-        # display(
-        #     HTML(
-        #         "<style>.progress-bar-info{background-color: #ddd !important;} .dataframe td{     white-space: nowrap !important;}</style>"
-        #     )
-        # )
-        return ft
+        return get_table(items)

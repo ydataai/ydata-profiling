@@ -1,5 +1,6 @@
 """Common util functions (e.g. missing in Python)."""
 import collections
+import zipfile
 from pathlib import Path
 from typing import Mapping
 
@@ -39,6 +40,15 @@ def _copy(self, target):
 
 
 Path.copy = _copy  # type: ignore
+
+
+def extract_zip(outfile, effective_path):
+    try:
+        with zipfile.ZipFile(outfile) as z:
+            z.extractall(effective_path)
+    except zipfile.BadZipFile as e:
+        raise ValueError("Bad zip file", e)
+
 
 # Monkeypatch bug in imagehdr
 from imghdr import tests

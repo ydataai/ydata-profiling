@@ -15,7 +15,9 @@
 </head>
 
 <body>
-    {% include 'wrapper/navigation.html' %}
+    {% if nav == True %}
+        {% include 'wrapper/navigation.html' %}
+    {% endif %}
     <div class="content">
     {{ content }}
     </div>

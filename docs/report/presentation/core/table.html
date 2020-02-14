@@ -33,6 +33,9 @@ class Table(ItemRenderer):
     def __init__(self, rows, name=None, **kwargs):
         super().__init__(&#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name}, **kwargs)
 
+    def __repr__(self):
+        return &#34;Table&#34;
+
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>
 </details>
@@ -60,6 +63,9 @@ inheritance.</p></section>
 <pre><code class="python">class Table(ItemRenderer):
     def __init__(self, rows, name=None, **kwargs):
         super().__init__(&#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name}, **kwargs)
+
+    def __repr__(self):
+        return &#34;Table&#34;
 
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>

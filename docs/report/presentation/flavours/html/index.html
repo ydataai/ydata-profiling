@@ -26,7 +26,7 @@
 </summary>
 <pre><code class="python">from pandas_profiling.report.presentation.flavours.html.sequence import HTMLSequence
 from pandas_profiling.report.presentation.flavours.html.table import HTMLTable
-from pandas_profiling.report.presentation.flavours.html.preview import HTMLPreview
+from pandas_profiling.report.presentation.flavours.html.variable import HTMLVariable
 from pandas_profiling.report.presentation.flavours.html.image import HTMLImage
 from pandas_profiling.report.presentation.flavours.html.frequency_table import (
     HTMLFrequencyTable,
@@ -34,16 +34,22 @@ from pandas_profiling.report.presentation.flavours.html.frequency_table import (
 from pandas_profiling.report.presentation.flavours.html.frequency_table_small import (
     HTMLFrequencyTableSmall,
 )
-from pandas_profiling.report.presentation.flavours.html.overview import HTMLOverview
+from pandas_profiling.report.presentation.flavours.html.variable_info import (
+    HTMLVariableInfo,
+)
 from pandas_profiling.report.presentation.flavours.html.html import HTMLHTML
-from pandas_profiling.report.presentation.flavours.html.dataset import HTMLDataset
-from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample</code></pre>
+from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
+from pandas_profiling.report.presentation.flavours.html.toggle_button import (
+    HTMLToggleButton,
+)
+from pandas_profiling.report.presentation.flavours.html.warnings import HTMLWarnings
+from pandas_profiling.report.presentation.flavours.html.collapse import HTMLCollapse</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.dataset" href="dataset.html">pandas_profiling.report.presentation.flavours.html.dataset</a></code></dt>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.html.collapse</a></code></dt>
 <dd>
 <section class="desc"></section>
 </dd>
@@ -63,14 +69,6 @@ from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
 <dd>
 <section class="desc"></section>
 </dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.overview" href="overview.html">pandas_profiling.report.presentation.flavours.html.overview</a></code></dt>
-<dd>
-<section class="desc"></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.preview" href="preview.html">pandas_profiling.report.presentation.flavours.html.preview</a></code></dt>
-<dd>
-<section class="desc"></section>
-</dd>
 <dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.sample" href="sample.html">pandas_profiling.report.presentation.flavours.html.sample</a></code></dt>
 <dd>
 <section class="desc"></section>
@@ -86,6 +84,22 @@ from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
 <dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.templates" href="templates.html">pandas_profiling.report.presentation.flavours.html.templates</a></code></dt>
 <dd>
 <section class="desc"><p>Contains all templates used for generating the HTML profile report</p></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.flavours.html.toggle_button</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.variable" href="variable.html">pandas_profiling.report.presentation.flavours.html.variable</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.variable_info" href="variable_info.html">pandas_profiling.report.presentation.flavours.html.variable_info</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.warnings" href="warnings.html">pandas_profiling.report.presentation.flavours.html.warnings</a></code></dt>
+<dd>
+<section class="desc"></section>
 </dd>
 </dl>
 </section>
@@ -109,17 +123,19 @@ from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="pandas_profiling.report.presentation.flavours.html.dataset" href="dataset.html">pandas_profiling.report.presentation.flavours.html.dataset</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.html.collapse</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.frequency_table" href="frequency_table.html">pandas_profiling.report.presentation.flavours.html.frequency_table</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.frequency_table_small" href="frequency_table_small.html">pandas_profiling.report.presentation.flavours.html.frequency_table_small</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.html" href="html.html">pandas_profiling.report.presentation.flavours.html.html</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.image" href="image.html">pandas_profiling.report.presentation.flavours.html.image</a></code></li>
-<li><code><a title="pandas_profiling.report.presentation.flavours.html.overview" href="overview.html">pandas_profiling.report.presentation.flavours.html.overview</a></code></li>
-<li><code><a title="pandas_profiling.report.presentation.flavours.html.preview" href="preview.html">pandas_profiling.report.presentation.flavours.html.preview</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.sample" href="sample.html">pandas_profiling.report.presentation.flavours.html.sample</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.sequence" href="sequence.html">pandas_profiling.report.presentation.flavours.html.sequence</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.table" href="table.html">pandas_profiling.report.presentation.flavours.html.table</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html.templates" href="templates.html">pandas_profiling.report.presentation.flavours.html.templates</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.flavours.html.toggle_button</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.variable" href="variable.html">pandas_profiling.report.presentation.flavours.html.variable</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.variable_info" href="variable_info.html">pandas_profiling.report.presentation.flavours.html.variable_info</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.warnings" href="warnings.html">pandas_profiling.report.presentation.flavours.html.warnings</a></code></li>
 </ul>
 </li>
 </ul>

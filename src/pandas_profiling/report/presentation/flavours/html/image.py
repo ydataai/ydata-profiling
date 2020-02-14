@@ -1,4 +1,4 @@
-from pandas_profiling.report.presentation.core.image import Image
+from pandas_profiling.report.presentation.core import Image
 from pandas_profiling.report.presentation.flavours.html import templates
 
 

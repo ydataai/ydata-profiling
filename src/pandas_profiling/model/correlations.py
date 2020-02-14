@@ -3,7 +3,7 @@ import itertools
 import warnings
 from contextlib import suppress
 from functools import partial
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional
 
 import pandas as pd
 import numpy as np
@@ -30,10 +30,14 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
     r, k = confusion_matrix.shape
-    phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
-    rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
-    kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
-    return np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
+
+    # Deal with NaNs later on
+    with np.errstate(divide="ignore", invalid="ignore"):
+        phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
+        rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
+        kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
+        corr = np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
+    return corr
 
 
 def check_recoded(confusion_matrix, count: int) -> int:
@@ -79,7 +83,7 @@ def recoded_matrix(df: pd.DataFrame, variables: dict):
 
 def categorical_matrix(
     df: pd.DataFrame, variables: dict, correlation_function: Callable
-):
+) -> Optional[pd.DataFrame]:
     """Calculate a correlation matrix for categorical variables.
 
     Args:
@@ -95,12 +99,13 @@ def categorical_matrix(
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
         # TODO: solve in type system
-        and df[column_name].nunique()
-        <= config["categorical_maximum_correlation_distinct"].get(int)
+        and config["categorical_maximum_correlation_distinct"].get(int)
+        >= df[column_name].nunique()
+        > 1
     }
 
     if len(categoricals) <= 1:
-        return []
+        return None
 
     correlation_matrix = pd.DataFrame(
         np.ones((len(categoricals), len(categoricals))),
@@ -111,7 +116,7 @@ def categorical_matrix(
     for (name1, data1), (name2, data2) in itertools.combinations(
         categoricals.items(), 2
     ):
-        confusion_matrix = pd.crosstab(data1, data2, dropna=False)
+        confusion_matrix = pd.crosstab(data1, data2)
         correlation_matrix.loc[name2, name1] = correlation_matrix.loc[
             name1, name2
         ] = correlation_function(confusion_matrix)
@@ -182,7 +187,6 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                             correlations[correlation_name] = correlation
                     except (ValueError, AssertionError) as e:
                         warn_correlation(correlation_name, e)
-                    pbar.update()
                 elif correlation_name in ["phi_k"]:
                     import phik
 
@@ -245,13 +249,16 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                                 warn_correlation("phi_k", e)
                 elif correlation_name in ["cramers", "recoded"]:
                     get_matrix = categorical_correlations[correlation_name]
+                    correlation = get_matrix(df, variables)
+                    if correlation is not None and len(correlation) > 0:
+                        correlations[correlation_name] = correlation
 
-                    try:
-                        correlation = get_matrix(df, variables)
-                        if len(correlation) > 0:
-                            correlations[correlation_name] = correlation
-                    except (ValueError, ZeroDivisionError) as e:
-                        warn_correlation(correlation_name, e)
+                if correlation_name in correlations:
+                    # Drop rows and columns with NaNs
+                    correlations[correlation_name].dropna(inplace=True, how="all")
+                    if correlations[correlation_name].empty:
+                        del correlations[correlation_name]
+
                 pbar.update()
 
     return correlations

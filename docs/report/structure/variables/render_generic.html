@@ -24,14 +24,19 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from pandas_profiling.report.presentation.core import Overview, Table, Sequence, HTML
+<pre><code class="python">from pandas_profiling.report.presentation.core import (
+    Table,
+    Sequence,
+    HTML,
+    VariableInfo,
+)
 from pandas_profiling.report.structure.variables import render_common
 
 
 def render_generic(summary):
     template_variables = {}  # render_common(summary)
 
-    info = Overview(
+    info = VariableInfo(
         anchor_id=summary[&#34;varid&#34;],
         warnings=summary[&#34;warnings&#34;],
         var_type=&#34;Unsupported&#34;,
@@ -44,18 +49,19 @@ def render_generic(summary):
                 &#34;name&#34;: &#34;Missing&#34;,
                 &#34;value&#34;: summary[&#34;n_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
@@ -63,15 +69,7 @@ def render_generic(summary):
     return {
         &#34;top&#34;: Sequence([info, table, HTML(&#34;&#34;)], sequence_type=&#34;grid&#34;),
         &#34;bottom&#34;: None,
-    }
-
-    # Add class Ignore
-    # return {
-    #     &#34;top&#34;: HTML(&#34;Unsupported&#34;),
-    #     &#34;bottom&#34;: HTML(&#34;&#34;)
-    # }
-
-    # &lt;div class=&#34;row variable ignore&#34;&gt;&lt;div class=&#34;col-sm-3&#34;&gt;&lt;p class=&#34;h4&#34; title=&#34;device_browserSize&#34;&gt;device_browserSize&lt;br&gt;&lt;small&gt;Constant&lt;/small&gt;&lt;/p&gt;&lt;/div&gt;&lt;div class=&#34;col-sm-3&#34;&gt;&lt;p&gt;&lt;em&gt;This variable is constant and should be ignored for analysis&lt;/em&gt;&lt;/p&gt;&lt;/div&gt;&lt;div class=&#34;col-sm-6&#34;&gt;&lt;table class=&#34;stats &#34;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;th&gt;Constant value&lt;/th&gt;&lt;td&gt;not available in demo dataset&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;</code></pre>
+    }</code></pre>
 </details>
 </section>
 <section>
@@ -93,7 +91,7 @@ def render_generic(summary):
 <pre><code class="python">def render_generic(summary):
     template_variables = {}  # render_common(summary)
 
-    info = Overview(
+    info = VariableInfo(
         anchor_id=summary[&#34;varid&#34;],
         warnings=summary[&#34;warnings&#34;],
         var_type=&#34;Unsupported&#34;,
@@ -106,18 +104,19 @@ def render_generic(summary):
                 &#34;name&#34;: &#34;Missing&#34;,
                 &#34;value&#34;: summary[&#34;n_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )

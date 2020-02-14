@@ -24,10 +24,19 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from IPython.core.display import display
-from ipywidgets import widgets, HTML
+<pre><code class="python">from ipywidgets import widgets, GridspecLayout, VBox
 
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
+
+
+def get_table(items):
+    table = GridspecLayout(len(items), 3)
+    for row_id, (label, progress, count) in enumerate(items):
+        table[row_id, 0] = label
+        table[row_id, 1] = progress
+        table[row_id, 2] = count
+
+    return VBox([table])
 
 
 class WidgetFrequencyTable(FrequencyTable):
@@ -37,60 +46,36 @@ class WidgetFrequencyTable(FrequencyTable):
         for row in self.content[&#34;rows&#34;]:
             if row[&#34;extra_class&#34;] == &#34;missing&#34;:
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row[&#34;count&#34;],
-                                min=0,
-                                max=row[&#34;n&#34;],
-                                description=str(row[&#34;label&#34;]),
-                                bar_style=&#34;danger&#34;,
-                            ),
-                            widgets.Label(str(row[&#34;count&#34;])),
-                        ]
+                    (
+                        widgets.Label(str(row[&#34;label&#34;])),
+                        widgets.FloatProgress(
+                            value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;danger&#34;
+                        ),
+                        widgets.Label(str(row[&#34;count&#34;])),
                     )
                 )
             elif row[&#34;extra_class&#34;] == &#34;other&#34;:
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row[&#34;count&#34;],
-                                min=0,
-                                max=row[&#34;n&#34;],
-                                description=str(row[&#34;label&#34;]),
-                                bar_style=&#34;info&#34;,
-                            ),
-                            widgets.Label(str(row[&#34;count&#34;])),
-                        ]
+                    (
+                        widgets.Label(str(row[&#34;label&#34;])),
+                        widgets.FloatProgress(
+                            value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;info&#34;
+                        ),
+                        widgets.Label(str(row[&#34;count&#34;])),
                     )
                 )
             else:
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row[&#34;count&#34;],
-                                min=0,
-                                max=row[&#34;n&#34;],
-                                description=str(row[&#34;label&#34;]),
-                                bar_style=&#34;&#34;,
-                            ),
-                            widgets.Label(str(row[&#34;count&#34;])),
-                        ]
+                    (
+                        widgets.Label(str(row[&#34;label&#34;])),
+                        widgets.FloatProgress(
+                            value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;&#34;
+                        ),
+                        widgets.Label(str(row[&#34;count&#34;])),
                     )
                 )
 
-        ft = widgets.VBox(items)
-
-        # Overwrite info to disabled
-        # TODO: resize width of progress bar / label
-        # display(
-        #     HTML(
-        #         &#34;&lt;style&gt;.progress-bar-info{background-color: #ddd !important;} .dataframe td{     white-space: nowrap !important;}&lt;/style&gt;&#34;
-        #     )
-        # )
-        return ft</code></pre>
+        return get_table(items)</code></pre>
 </details>
 </section>
 <section>
@@ -98,6 +83,28 @@ class WidgetFrequencyTable(FrequencyTable):
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.widget.frequency_table.get_table"><code class="name flex">
+<span>def <span class="ident">get_table</span></span>(<span>items)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_table(items):
+    table = GridspecLayout(len(items), 3)
+    for row_id, (label, progress, count) in enumerate(items):
+        table[row_id, 0] = label
+        table[row_id, 1] = progress
+        table[row_id, 2] = count
+
+    return VBox([table])</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -120,60 +127,36 @@ inheritance.</p></section>
         for row in self.content[&#34;rows&#34;]:
             if row[&#34;extra_class&#34;] == &#34;missing&#34;:
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row[&#34;count&#34;],
-                                min=0,
-                                max=row[&#34;n&#34;],
-                                description=str(row[&#34;label&#34;]),
-                                bar_style=&#34;danger&#34;,
-                            ),
-                            widgets.Label(str(row[&#34;count&#34;])),
-                        ]
+                    (
+                        widgets.Label(str(row[&#34;label&#34;])),
+                        widgets.FloatProgress(
+                            value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;danger&#34;
+                        ),
+                        widgets.Label(str(row[&#34;count&#34;])),
                     )
                 )
             elif row[&#34;extra_class&#34;] == &#34;other&#34;:
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row[&#34;count&#34;],
-                                min=0,
-                                max=row[&#34;n&#34;],
-                                description=str(row[&#34;label&#34;]),
-                                bar_style=&#34;info&#34;,
-                            ),
-                            widgets.Label(str(row[&#34;count&#34;])),
-                        ]
+                    (
+                        widgets.Label(str(row[&#34;label&#34;])),
+                        widgets.FloatProgress(
+                            value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;info&#34;
+                        ),
+                        widgets.Label(str(row[&#34;count&#34;])),
                     )
                 )
             else:
                 items.append(
-                    widgets.HBox(
-                        [
-                            widgets.FloatProgress(
-                                value=row[&#34;count&#34;],
-                                min=0,
-                                max=row[&#34;n&#34;],
-                                description=str(row[&#34;label&#34;]),
-                                bar_style=&#34;&#34;,
-                            ),
-                            widgets.Label(str(row[&#34;count&#34;])),
-                        ]
+                    (
+                        widgets.Label(str(row[&#34;label&#34;])),
+                        widgets.FloatProgress(
+                            value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;&#34;
+                        ),
+                        widgets.Label(str(row[&#34;count&#34;])),
                     )
                 )
 
-        ft = widgets.VBox(items)
-
-        # Overwrite info to disabled
-        # TODO: resize width of progress bar / label
-        # display(
-        #     HTML(
-        #         &#34;&lt;style&gt;.progress-bar-info{background-color: #ddd !important;} .dataframe td{     white-space: nowrap !important;}&lt;/style&gt;&#34;
-        #     )
-        # )
-        return ft</code></pre>
+        return get_table(items)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -199,60 +182,36 @@ inheritance.</p></section>
     for row in self.content[&#34;rows&#34;]:
         if row[&#34;extra_class&#34;] == &#34;missing&#34;:
             items.append(
-                widgets.HBox(
-                    [
-                        widgets.FloatProgress(
-                            value=row[&#34;count&#34;],
-                            min=0,
-                            max=row[&#34;n&#34;],
-                            description=str(row[&#34;label&#34;]),
-                            bar_style=&#34;danger&#34;,
-                        ),
-                        widgets.Label(str(row[&#34;count&#34;])),
-                    ]
+                (
+                    widgets.Label(str(row[&#34;label&#34;])),
+                    widgets.FloatProgress(
+                        value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;danger&#34;
+                    ),
+                    widgets.Label(str(row[&#34;count&#34;])),
                 )
             )
         elif row[&#34;extra_class&#34;] == &#34;other&#34;:
             items.append(
-                widgets.HBox(
-                    [
-                        widgets.FloatProgress(
-                            value=row[&#34;count&#34;],
-                            min=0,
-                            max=row[&#34;n&#34;],
-                            description=str(row[&#34;label&#34;]),
-                            bar_style=&#34;info&#34;,
-                        ),
-                        widgets.Label(str(row[&#34;count&#34;])),
-                    ]
+                (
+                    widgets.Label(str(row[&#34;label&#34;])),
+                    widgets.FloatProgress(
+                        value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;info&#34;
+                    ),
+                    widgets.Label(str(row[&#34;count&#34;])),
                 )
             )
         else:
             items.append(
-                widgets.HBox(
-                    [
-                        widgets.FloatProgress(
-                            value=row[&#34;count&#34;],
-                            min=0,
-                            max=row[&#34;n&#34;],
-                            description=str(row[&#34;label&#34;]),
-                            bar_style=&#34;&#34;,
-                        ),
-                        widgets.Label(str(row[&#34;count&#34;])),
-                    ]
+                (
+                    widgets.Label(str(row[&#34;label&#34;])),
+                    widgets.FloatProgress(
+                        value=row[&#34;count&#34;], min=0, max=row[&#34;n&#34;], bar_style=&#34;&#34;
+                    ),
+                    widgets.Label(str(row[&#34;count&#34;])),
                 )
             )
 
-    ft = widgets.VBox(items)
-
-    # Overwrite info to disabled
-    # TODO: resize width of progress bar / label
-    # display(
-    #     HTML(
-    #         &#34;&lt;style&gt;.progress-bar-info{background-color: #ddd !important;} .dataframe td{     white-space: nowrap !important;}&lt;/style&gt;&#34;
-    #     )
-    # )
-    return ft</code></pre>
+    return get_table(items)</code></pre>
 </details>
 </dd>
 </dl>
@@ -269,6 +228,11 @@ inheritance.</p></section>
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget" href="index.html">pandas_profiling.report.presentation.flavours.widget</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.widget.frequency_table.get_table" href="#pandas_profiling.report.presentation.flavours.widget.frequency_table.get_table">get_table</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
