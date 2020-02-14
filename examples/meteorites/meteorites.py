@@ -12,6 +12,9 @@ if __name__ == "__main__":
         "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
     )
 
+    # Set a seed for reproducibility
+    np.random.seed(7331)
+
     df = pd.read_csv(file_name)
     # Note: Pandas does not support dates before 1880, so we ignore these for this analysis
     df["year"] = pd.to_datetime(df["year"], errors="coerce")

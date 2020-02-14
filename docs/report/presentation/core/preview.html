@@ -48,6 +48,9 @@ class Preview(ItemRenderer):
         text += &#34;- bottom: {}&#34;.format(str(self.content[&#34;bottom&#34;]).replace(&#34;\n&#34;, &#34;\n\t&#34;))
         return text
 
+    def __repr__(self):
+        return &#34;Preview&#34;
+
     def render(self) -&gt; Any:
         raise NotImplementedError()
 
@@ -97,6 +100,9 @@ inheritance.</p></section>
         text += &#34;- top: {}&#34;.format(str(self.content[&#34;top&#34;]).replace(&#34;\n&#34;, &#34;\n\t&#34;))
         text += &#34;- bottom: {}&#34;.format(str(self.content[&#34;bottom&#34;]).replace(&#34;\n&#34;, &#34;\n\t&#34;))
         return text
+
+    def __repr__(self):
+        return &#34;Preview&#34;
 
     def render(self) -&gt; Any:
         raise NotImplementedError()

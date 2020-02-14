@@ -19,5 +19,4 @@ def test_issue100():
         samples={"head": 20},
     )
     html = report.to_html()
-    print(html)
-    assert type(html) == str and "<p class=h2>Dataset info</p>" in html
+    assert type(html) == str and "Dataset with <em>Numeric</em> Categories" in html

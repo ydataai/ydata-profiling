@@ -98,27 +98,6 @@ class WidgetSequence(Sequence):
     def render(self):
         if self.sequence_type == &#34;list&#34;:
             widget = get_list(self.content[&#34;items&#34;])
-        elif self.sequence_type == &#34;variable&#34;:
-            i1 = self.content[&#34;items&#34;][0].render()
-            i2 = self.content[&#34;items&#34;][1].render()
-            toggle = widgets.ToggleButton(description=&#34;Toggle details&#34;)
-
-            def hide_slider(widg):
-                if widg[&#34;new&#34;]:
-                    i2.layout.display = &#34;&#34;
-                else:
-                    i2.layout.display = &#34;none&#34;
-
-            toggle.observe(hide_slider, names=[&#34;value&#34;])
-            i2.layout.display = &#34;none&#34;
-
-            toggle_box = widgets.HBox([toggle])
-            toggle_box.layout.align_items = &#34;flex-end&#34;
-            toggle_box.layout.object_position = &#34;right center&#34;
-            toggle_box.layout.width = &#34;100%&#34;
-
-            return widgets.VBox([i1, toggle_box, i2])
-
         elif self.sequence_type in [&#34;tabs&#34;, &#34;sections&#34;]:
             widget = get_tabs(self.content[&#34;items&#34;])
         elif self.sequence_type == &#34;accordion&#34;:
@@ -267,27 +246,6 @@ inheritance.</p></section>
     def render(self):
         if self.sequence_type == &#34;list&#34;:
             widget = get_list(self.content[&#34;items&#34;])
-        elif self.sequence_type == &#34;variable&#34;:
-            i1 = self.content[&#34;items&#34;][0].render()
-            i2 = self.content[&#34;items&#34;][1].render()
-            toggle = widgets.ToggleButton(description=&#34;Toggle details&#34;)
-
-            def hide_slider(widg):
-                if widg[&#34;new&#34;]:
-                    i2.layout.display = &#34;&#34;
-                else:
-                    i2.layout.display = &#34;none&#34;
-
-            toggle.observe(hide_slider, names=[&#34;value&#34;])
-            i2.layout.display = &#34;none&#34;
-
-            toggle_box = widgets.HBox([toggle])
-            toggle_box.layout.align_items = &#34;flex-end&#34;
-            toggle_box.layout.object_position = &#34;right center&#34;
-            toggle_box.layout.width = &#34;100%&#34;
-
-            return widgets.VBox([i1, toggle_box, i2])
-
         elif self.sequence_type in [&#34;tabs&#34;, &#34;sections&#34;]:
             widget = get_tabs(self.content[&#34;items&#34;])
         elif self.sequence_type == &#34;accordion&#34;:
@@ -319,27 +277,6 @@ inheritance.</p></section>
 <pre><code class="python">def render(self):
     if self.sequence_type == &#34;list&#34;:
         widget = get_list(self.content[&#34;items&#34;])
-    elif self.sequence_type == &#34;variable&#34;:
-        i1 = self.content[&#34;items&#34;][0].render()
-        i2 = self.content[&#34;items&#34;][1].render()
-        toggle = widgets.ToggleButton(description=&#34;Toggle details&#34;)
-
-        def hide_slider(widg):
-            if widg[&#34;new&#34;]:
-                i2.layout.display = &#34;&#34;
-            else:
-                i2.layout.display = &#34;none&#34;
-
-        toggle.observe(hide_slider, names=[&#34;value&#34;])
-        i2.layout.display = &#34;none&#34;
-
-        toggle_box = widgets.HBox([toggle])
-        toggle_box.layout.align_items = &#34;flex-end&#34;
-        toggle_box.layout.object_position = &#34;right center&#34;
-        toggle_box.layout.width = &#34;100%&#34;
-
-        return widgets.VBox([i1, toggle_box, i2])
-
     elif self.sequence_type in [&#34;tabs&#34;, &#34;sections&#34;]:
         widget = get_tabs(self.content[&#34;items&#34;])
     elif self.sequence_type == &#34;accordion&#34;:

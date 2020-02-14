@@ -102,11 +102,6 @@ samples:
     head: 10
     tail: 10
 
-# Configuration related to the warning overview (top) and per variable warnings
-warnings:
-    # Set to zero to disable showing warnings
-    collapse_if_more: 20
-
 # Configuration related to the rejection of variables
 reject_variables: True
 
@@ -124,6 +119,9 @@ html:
 
 # Offline support
     use_local_assets: True
+
+# Show navbar
+    navbar_show: False
 
 # Styling options for the HTML report
     style:

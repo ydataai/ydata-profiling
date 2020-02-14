@@ -33,6 +33,9 @@ class Sample(ItemRenderer):
     def __init__(self, name, sample, **kwargs):
         super().__init__(&#34;sample&#34;, {&#34;sample&#34;: sample}, name=name, **kwargs)
 
+    def __repr__(self):
+        return &#34;Sample&#34;
+
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>
 </details>
@@ -60,6 +63,9 @@ inheritance.</p></section>
 <pre><code class="python">class Sample(ItemRenderer):
     def __init__(self, name, sample, **kwargs):
         super().__init__(&#34;sample&#34;, {&#34;sample&#34;: sample}, name=name, **kwargs)
+
+    def __repr__(self):
+        return &#34;Sample&#34;
 
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>

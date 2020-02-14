@@ -34,6 +34,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.colors import LinearSegmentedColormap
 
 from pandas.plotting import register_matplotlib_converters
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
@@ -133,6 +134,26 @@ def mini_histogram(
     return plot_360_n0sc0pe(plt)
 
 
+def get_cmap_half(cmap_name):
+    &#34;&#34;&#34;Get the upper half of the color map
+
+    Args:
+        cmap_name: the name of the color map
+
+    Returns:
+        A new color map based on the upper half of another color map
+
+    References:
+        https://stackoverflow.com/a/24746399/470433
+    &#34;&#34;&#34;
+    # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
+    cmap = plt.get_cmap(cmap_name)
+    colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
+
+    # Create a new colormap from those colors
+    return LinearSegmentedColormap.from_list(&#34;cmap_half&#34;, colors)
+
+
 def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
     &#34;&#34;&#34;Plot image of a matrix correlation.
 
@@ -143,14 +164,14 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
     Returns:
       The resulting correlation matrix encoded as a string.
     &#34;&#34;&#34;
-    fig_cor, axes_cor = plt.subplots(1, 1)
+    fig_cor, axes_cor = plt.subplots()
+    cmap = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    if vmin == 0:
+        cmap = get_cmap_half(cmap)
+
     labels = data.columns
     matrix_image = axes_cor.imshow(
-        data,
-        vmin=vmin,
-        vmax=1,
-        interpolation=&#34;nearest&#34;,
-        cmap=config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str),
+        data, vmin=vmin, vmax=1, interpolation=&#34;nearest&#34;, cmap=cmap
     )
     plt.colorbar(matrix_image)
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
@@ -166,10 +187,13 @@ def scatter_complex(series) -&gt; str:
     plt.ylabel(&#34;Imaginary&#34;)
     plt.xlabel(&#34;Real&#34;)
 
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+
     if len(series) &gt; 1000:
-        plt.hexbin(series.real, series.imag)
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series.real, series.imag, cmap=cmap)
     else:
-        plt.scatter(series.real, series.imag)
+        plt.scatter(series.real, series.imag, color=color)
 
     return plot_360_n0sc0pe(plt)
 
@@ -191,10 +215,13 @@ def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+
     if len(series) &gt; 1000:
-        plt.hexbin(*zip(*series.tolist()))
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(*zip(*series.tolist()), cmap=cmap)
     else:
-        plt.scatter(*zip(*series.tolist()))
+        plt.scatter(*zip(*series.tolist()), color=color)
     return plot_360_n0sc0pe(plt)
 
 
@@ -202,12 +229,13 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+
     if len(series1) &gt; 1000:
-        color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:
-        plt.scatter(series1.tolist(), series2.tolist())
+        plt.scatter(series1.tolist(), series2.tolist(), color=color)
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </section>
@@ -246,14 +274,14 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
     Returns:
       The resulting correlation matrix encoded as a string.
     &#34;&#34;&#34;
-    fig_cor, axes_cor = plt.subplots(1, 1)
+    fig_cor, axes_cor = plt.subplots()
+    cmap = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    if vmin == 0:
+        cmap = get_cmap_half(cmap)
+
     labels = data.columns
     matrix_image = axes_cor.imshow(
-        data,
-        vmin=vmin,
-        vmax=1,
-        interpolation=&#34;nearest&#34;,
-        cmap=config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str),
+        data, vmin=vmin, vmax=1, interpolation=&#34;nearest&#34;, cmap=cmap
     )
     plt.colorbar(matrix_image)
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
@@ -263,6 +291,47 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
     plt.subplots_adjust(bottom=0.2)
 
     return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.get_cmap_half"><code class="name flex">
+<span>def <span class="ident">get_cmap_half</span></span>(<span>cmap_name)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get the upper half of the color map</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>cmap_name</code></strong></dt>
+<dd>the name of the color map</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A</code> <code>new</code> <code>color</code> <code>map</code> <code>based</code> <code>on</code> <code>the</code> <code>upper</code> <code>half</code> of <code>another</code> <code>color</code> <code>map</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="references">References</h2>
+<p><a href="https://stackoverflow.com/a/24746399/470433">https://stackoverflow.com/a/24746399/470433</a></p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_cmap_half(cmap_name):
+    &#34;&#34;&#34;Get the upper half of the color map
+
+    Args:
+        cmap_name: the name of the color map
+
+    Returns:
+        A new color map based on the upper half of another color map
+
+    References:
+        https://stackoverflow.com/a/24746399/470433
+    &#34;&#34;&#34;
+    # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
+    cmap = plt.get_cmap(cmap_name)
+    colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
+
+    # Create a new colormap from those colors
+    return LinearSegmentedColormap.from_list(&#34;cmap_half&#34;, colors)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.plot.histogram"><code class="name flex">
@@ -363,10 +432,13 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
     plt.ylabel(&#34;Imaginary&#34;)
     plt.xlabel(&#34;Real&#34;)
 
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+
     if len(series) &gt; 1000:
-        plt.hexbin(series.real, series.imag)
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series.real, series.imag, cmap=cmap)
     else:
-        plt.scatter(series.real, series.imag)
+        plt.scatter(series.real, series.imag, color=color)
 
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
@@ -384,12 +456,13 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+
     if len(series1) &gt; 1000:
-        color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:
-        plt.scatter(series1.tolist(), series2.tolist())
+        plt.scatter(series1.tolist(), series2.tolist(), color=color)
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
@@ -426,10 +499,13 @@ Returns:</p></section>
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+
     if len(series) &gt; 1000:
-        plt.hexbin(*zip(*series.tolist()))
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(*zip(*series.tolist()), cmap=cmap)
     else:
-        plt.scatter(*zip(*series.tolist()))
+        plt.scatter(*zip(*series.tolist()), color=color)
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
@@ -452,6 +528,7 @@ Returns:</p></section>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
 <li><code><a title="pandas_profiling.visualisation.plot.correlation_matrix" href="#pandas_profiling.visualisation.plot.correlation_matrix">correlation_matrix</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.get_cmap_half" href="#pandas_profiling.visualisation.plot.get_cmap_half">get_cmap_half</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.histogram" href="#pandas_profiling.visualisation.plot.histogram">histogram</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.mini_histogram" href="#pandas_profiling.visualisation.plot.mini_histogram">mini_histogram</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.scatter_complex" href="#pandas_profiling.visualisation.plot.scatter_complex">scatter_complex</a></code></li>

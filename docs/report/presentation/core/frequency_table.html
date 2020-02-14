@@ -33,6 +33,9 @@ class FrequencyTable(ItemRenderer):
     def __init__(self, rows, **kwargs):
         super().__init__(&#34;frequency_table&#34;, {&#34;rows&#34;: rows}, **kwargs)
 
+    def __repr__(self):
+        return &#34;FrequencyTable&#34;
+
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>
 </details>
@@ -60,6 +63,9 @@ inheritance.</p></section>
 <pre><code class="python">class FrequencyTable(ItemRenderer):
     def __init__(self, rows, **kwargs):
         super().__init__(&#34;frequency_table&#34;, {&#34;rows&#34;: rows}, **kwargs)
+
+    def __repr__(self):
+        return &#34;FrequencyTable&#34;
 
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>

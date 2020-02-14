@@ -1,26 +1,24 @@
 """Contains all templates used for generating the HTML profile report"""
+import re
+
 import jinja2
 from jinja2 import Environment, PackageLoader
 
-from pandas_profiling.report.formatters import (
-    fmt_percent,
-    fmt_bytesize,
-    fmt_numeric,
-    fmt_array,
-    fmt,
-)
+from pandas_profiling.report.formatters import get_fmt_mapping
 
 # Initializing Jinja
 package_loader = PackageLoader(
     "pandas_profiling", "report/presentation/flavours/html/templates"
 )
 jinja2_env = Environment(lstrip_blocks=True, trim_blocks=True, loader=package_loader)
-jinja2_env.filters["fmt_percent"] = fmt_percent
-jinja2_env.filters["fmt_bytesize"] = fmt_bytesize
-jinja2_env.filters["fmt_numeric"] = fmt_numeric
-jinja2_env.filters["fmt_array"] = fmt_array
-jinja2_env.filters["fmt"] = fmt
-jinja2_env.filters["dynamic_filter"] = lambda x, v: jinja2_env.filters[v](x)
+fmt_mapping = get_fmt_mapping()
+for key, value in fmt_mapping.items():
+    jinja2_env.filters[key] = value
+
+jinja2_env.filters["fmt_badge"] = lambda x: re.sub(
+    r"\((\d+)\)", r'<span class="badge">\1</span>', x
+)
+jinja2_env.filters["dynamic_filter"] = lambda x, v: fmt_mapping[v](x)
 
 
 def template(template_name: str) -> jinja2.Template:

@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.colors import LinearSegmentedColormap
 
 from pandas.plotting import register_matplotlib_converters
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
@@ -106,6 +107,26 @@ def mini_histogram(
     return plot_360_n0sc0pe(plt)
 
 
+def get_cmap_half(cmap_name):
+    """Get the upper half of the color map
+
+    Args:
+        cmap_name: the name of the color map
+
+    Returns:
+        A new color map based on the upper half of another color map
+
+    References:
+        https://stackoverflow.com/a/24746399/470433
+    """
+    # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
+    cmap = plt.get_cmap(cmap_name)
+    colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
+
+    # Create a new colormap from those colors
+    return LinearSegmentedColormap.from_list("cmap_half", colors)
+
+
 def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     """Plot image of a matrix correlation.
 
@@ -116,14 +137,14 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     Returns:
       The resulting correlation matrix encoded as a string.
     """
-    fig_cor, axes_cor = plt.subplots(1, 1)
+    fig_cor, axes_cor = plt.subplots()
+    cmap = config["plot"]["correlation"]["cmap"].get(str)
+    if vmin == 0:
+        cmap = get_cmap_half(cmap)
+
     labels = data.columns
     matrix_image = axes_cor.imshow(
-        data,
-        vmin=vmin,
-        vmax=1,
-        interpolation="nearest",
-        cmap=config["plot"]["correlation"]["cmap"].get(str),
+        data, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
     )
     plt.colorbar(matrix_image)
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
@@ -139,10 +160,13 @@ def scatter_complex(series) -> str:
     plt.ylabel("Imaginary")
     plt.xlabel("Real")
 
+    color = config["html"]["style"]["primary_color"].get(str)
+
     if len(series) > 1000:
-        plt.hexbin(series.real, series.imag)
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series.real, series.imag, cmap=cmap)
     else:
-        plt.scatter(series.real, series.imag)
+        plt.scatter(series.real, series.imag, color=color)
 
     return plot_360_n0sc0pe(plt)
 
@@ -164,10 +188,13 @@ def scatter_series(series, x_label="Width", y_label="Height") -> str:
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
+    color = config["html"]["style"]["primary_color"].get(str)
+
     if len(series) > 1000:
-        plt.hexbin(*zip(*series.tolist()))
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(*zip(*series.tolist()), cmap=cmap)
     else:
-        plt.scatter(*zip(*series.tolist()))
+        plt.scatter(*zip(*series.tolist()), color=color)
     return plot_360_n0sc0pe(plt)
 
 
@@ -175,10 +202,11 @@ def scatter_pairwise(series1, series2, x_label, y_label) -> str:
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
+    color = config["html"]["style"]["primary_color"].get(str)
+
     if len(series1) > 1000:
-        color = config["html"]["style"]["primary_color"].get(str)
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:
-        plt.scatter(series1.tolist(), series2.tolist())
+        plt.scatter(series1.tolist(), series2.tolist(), color=color)
     return plot_360_n0sc0pe(plt)

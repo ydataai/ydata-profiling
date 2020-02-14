@@ -5,10 +5,10 @@ from pandas_profiling.report.structure.variables import render_common
 from pandas_profiling.report.presentation.core import (
     Sequence,
     Table,
-    Overview,
+    Variable,
     FrequencyTable,
     FrequencyTableSmall,
-    Overview,
+    VariableInfo,
 )
 
 
@@ -70,32 +70,55 @@ def render_url(summary):
         query_frequency_table,
         fragment_frequency_table,
     ]
-    template_variables["bottom"] = Sequence(items, sequence_type="tabs")
+    template_variables["bottom"] = Sequence(
+        items,
+        sequence_type="tabs",
+        name="url stats",
+        anchor_id="{varid}urlstats".format(varid=summary["varid"]),
+    )
 
     # Element composition
-    info = Overview(summary["varid"], summary["varname"], "URL", summary["warnings"])
+    info = VariableInfo(
+        summary["varid"], summary["varname"], "URL", summary["warnings"]
+    )
 
     table = Table(
         [
-            {"name": "Distinct count", "value": summary["n_unique"], "fmt": "fmt"},
-            {"name": "Unique (%)", "value": summary["p_unique"], "fmt": "fmt_percent"},
-            {"name": "Missing", "value": summary["n_missing"], "fmt": "fmt"},
+            {
+                "name": "Distinct count",
+                "value": summary["n_unique"],
+                "fmt": "fmt",
+                "alert": False,
+            },
+            {
+                "name": "Unique (%)",
+                "value": summary["p_unique"],
+                "fmt": "fmt_percent",
+                "alert": False,
+            },
+            {
+                "name": "Missing",
+                "value": summary["n_missing"],
+                "fmt": "fmt",
+                "alert": False,
+            },
             {
                 "name": "Missing (%)",
                 "value": summary["p_missing"],
                 "fmt": "fmt_percent",
+                "alert": False,
             },
             {
                 "name": "Memory size",
                 "value": summary["memory_size"],
                 "fmt": "fmt_bytesize",
+                "alert": False,
             },
         ]
     )
 
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
-    # TODO: settings 3,3,6
     template_variables["top"] = Sequence([info, table, fqm], sequence_type="grid")
 
     return template_variables

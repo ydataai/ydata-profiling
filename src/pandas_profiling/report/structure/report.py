@@ -1,7 +1,7 @@
 """Generate the report."""
 from datetime import datetime
+from typing import List
 
-import pandas_profiling.visualisation.plot as plot
 from pandas_profiling.config import config
 from pandas_profiling.model.base import (
     Boolean,
@@ -17,6 +17,12 @@ from pandas_profiling.model.base import (
     Generic,
 )
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.structure.correlations import get_correlation_items
+from pandas_profiling.report.structure.overview import (
+    get_dataset_overview,
+    get_dataset_reproduction,
+    get_dataset_warnings,
+)
 from pandas_profiling.report.structure.variables import (
     render_boolean,
     render_categorical,
@@ -30,13 +36,12 @@ from pandas_profiling.report.structure.variables import (
 )
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
-    HTML,
     Image,
-    Preview,
     Sequence,
-    Overview,
-    Dataset,
     Sample,
+    Variable,
+    Collapse,
+    ToggleButton,
 )
 
 
@@ -52,43 +57,6 @@ def get_missing_items(summary) -> list:
                 alt=item["name"],
                 name=item["name"],
                 anchor_id=key,
-            )
-        )
-
-    return items
-
-
-def get_correlation_items(summary) -> list:
-    """Create the list of correlation items
-
-    Args:
-        summary: dict of correlations
-
-    Returns:
-        List of correlation items to show in the interface.
-    """
-    items = []
-
-    key_to_data = {
-        "pearson": (-1, "Pearson's r"),
-        "spearman": (-1, "Spearman's ρ"),
-        "kendall": (-1, "Kendall's τ"),
-        "phi_k": (0, "Phik (φk)"),
-        "cramers": (0, "Cramér's V (φc)"),
-        "recoded": (0, "Recoded"),
-    }
-
-    image_format = config["plot"]["image_format"].get(str)
-
-    for key, item in summary["correlations"].items():
-        vmin, name = key_to_data[key]
-        items.append(
-            Image(
-                plot.correlation_matrix(item, vmin=vmin),
-                image_format=image_format,
-                alt=name,
-                anchor_id=key,
-                name=name,
             )
         )
 
@@ -160,15 +128,20 @@ def render_variables_section(dataframe_summary: dict) -> list:
         else:
             ignore = False
 
-        templs.append(
-            Preview(
-                template_variables["top"],
-                template_variables["bottom"],
-                anchor_id=template_variables["varid"],
-                name=idx,
-                ignore=ignore,
-            )
+        bottom = None
+        if "bottom" in template_variables and template_variables["bottom"] is not None:
+            btn = ToggleButton("Toggle details", anchor_id=template_variables["varid"])
+            bottom = Collapse(btn, template_variables["bottom"])
+
+        var = Variable(
+            template_variables["top"],
+            bottom=bottom,
+            anchor_id=template_variables["varid"],
+            name=idx,
+            ignore=ignore,
         )
+
+        templs.append(var)
 
     return templs
 
@@ -210,7 +183,7 @@ def get_scatter_matrix(scatter_matrix):
                     anchor_id="interactions_{x_col}_{y_col}".format(
                         x_col=x_col, y_col=y_col
                     ),
-                    name="{x_col}_{y_col}".format(x_col=x_col, y_col=y_col),
+                    name=y_col,
                 )
             )
 
@@ -223,6 +196,35 @@ def get_scatter_matrix(scatter_matrix):
             )
         )
     return titems
+
+
+def get_dataset_items(summary, date_start, date_end, warnings):
+    items = [
+        get_dataset_overview(summary),
+        get_dataset_reproduction(summary, date_start, date_end),
+    ]
+
+    count = len(
+        [
+            warning
+            for warning in warnings
+            if warning.message_type
+            not in [
+                MessageType.UNIFORM,
+                MessageType.UNIQUE,
+                MessageType.REJECTED,
+                MessageType.CONSTANT,
+            ]
+        ]
+    )
+    if count > 0:
+        items.append(get_dataset_warnings(warnings, count))
+
+    return items
+
+
+def get_section_items() -> List[Renderable]:
+    return []
 
 
 def get_report_structure(
@@ -238,59 +240,56 @@ def get_report_structure(
       The profile report in HTML format
     """
 
-    scatter = Sequence(
-        get_scatter_matrix(summary["scatter"]),
-        sequence_type="tabs",
-        name="Interactions",
-        anchor_id="interactions",
-    )
-    collapse_warnings = config["warnings"]["collapse_if_more"].get(int)
-    if collapse_warnings == 0:
-        warnings = []
-    else:
-        warnings = summary["messages"]
+    warnings = summary["messages"]
 
-    sections = Sequence(
-        [
-            Dataset(
-                package=summary["package"],
-                date_start=date_start,
-                date_end=date_end,
-                values=summary["table"],
-                messages=warnings,
-                collapse_warnings=len(warnings) > collapse_warnings,
-                variables=summary["variables"],
-                name="Overview",
-                anchor_id="overview",
-            ),
-            Sequence(
-                render_variables_section(summary),
-                sequence_type="accordion",
-                name="Variables",
-                anchor_id="variables",
-            ),
-            scatter,
-            Sequence(
-                get_correlation_items(summary),
-                sequence_type="tabs",
-                name="Correlations",
-                anchor_id="correlations",
-            ),
-            Sequence(
-                get_missing_items(summary),
-                sequence_type="tabs",
-                name="Missing values",
-                anchor_id="missing",
-            ),
-            Sequence(
-                get_sample_items(sample),
-                sequence_type="list",
-                name="Sample",
-                anchor_id="sample",
-            ),
-        ],
-        name="Report",
-        sequence_type="sections",
+    section_items = get_section_items()
+
+    section_items.append(
+        Sequence(
+            get_dataset_items(summary, date_start, date_end, warnings),
+            sequence_type="tabs",
+            name="Overview",
+            anchor_id="overview",
+        )
     )
+    section_items.append(
+        Sequence(
+            render_variables_section(summary),
+            sequence_type="accordion",
+            name="Variables",
+            anchor_id="variables",
+        )
+    )
+    section_items.append(
+        Sequence(
+            get_scatter_matrix(summary["scatter"]),
+            sequence_type="tabs",
+            name="Interactions",
+            anchor_id="interactions",
+        )
+    )
+
+    corr = get_correlation_items(summary)
+    if corr is not None:
+        section_items.append(corr)
+
+    section_items.append(
+        Sequence(
+            get_missing_items(summary),
+            sequence_type="tabs",
+            name="Missing values",
+            anchor_id="missing",
+        )
+    )
+    section_items.append(
+        Sequence(
+            get_sample_items(sample),
+            sequence_type="list",
+            name="Sample",
+            anchor_id="sample",
+        )
+    )
+
+    sections = Sequence(section_items, name="Report", sequence_type="sections")
 
     return sections

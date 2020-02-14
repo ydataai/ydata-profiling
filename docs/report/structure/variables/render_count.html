@@ -31,9 +31,8 @@ from pandas_profiling.report.presentation.core import (
     FrequencyTable,
     Sequence,
     Image,
-    Preview,
     Table,
-    Overview,
+    VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
 
@@ -43,7 +42,7 @@ def render_count(summary):
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
-    info = Overview(
+    info = VariableInfo(
         summary[&#34;varid&#34;],
         summary[&#34;varname&#34;],
         &#34;Real number (&amp;Ropf; / &amp;Ropf;&lt;sub&gt;&amp;ge;0&lt;/sub&gt;)&#34;,
@@ -52,30 +51,55 @@ def render_count(summary):
 
     table1 = Table(
         [
-            {&#34;name&#34;: &#34;Distinct count&#34;, &#34;value&#34;: summary[&#34;n_unique&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Unique (%)&#34;, &#34;value&#34;: summary[&#34;p_unique&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
-            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: summary[&#34;n_missing&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Distinct count&#34;,
+                &#34;value&#34;: summary[&#34;n_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Unique (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Missing&#34;,
+                &#34;value&#34;: summary[&#34;n_missing&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
             },
-            # {&#39;name&#39;: &#39;Infinite&#39;, &#39;value&#39;: summary[&#39;n_infinite&#39;], &#39;fmt&#39;: &#39;fmt&#39;},
-            # {&#39;name&#39;: &#39;Infinite (%)&#39;, &#39;value&#39;: summary[&#39;p_infinite&#39;], &#39;fmt&#39;: &#39;fmt_percent&#39;},
         ]
     )
 
     table2 = Table(
         [
-            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Zeros&#34;, &#34;value&#34;: summary[&#34;n_zeros&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Zeros (%)&#34;, &#34;value&#34;: summary[&#34;p_zeros&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
+            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {
+                &#34;name&#34;: &#34;Zeros&#34;,
+                &#34;value&#34;: summary[&#34;n_zeros&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Zeros (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_zeros&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
@@ -94,26 +118,59 @@ def render_count(summary):
     quantile_statistics = {
         &#34;name&#34;: &#34;Quantile statistics&#34;,
         &#34;items&#34;: [
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Minimum&#34;,
+                &#34;value&#34;: summary[&#34;min&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;5-th percentile&#34;,
                 &#34;value&#34;: summary[&#34;quantile_5&#34;],
                 &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
             },
-            {&#34;name&#34;: &#34;Q1&#34;, &#34;value&#34;: summary[&#34;quantile_25&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;median&#34;, &#34;value&#34;: summary[&#34;quantile_50&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Q3&#34;, &#34;value&#34;: summary[&#34;quantile_75&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Q1&#34;,
+                &#34;value&#34;: summary[&#34;quantile_25&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;median&#34;,
+                &#34;value&#34;: summary[&#34;quantile_50&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Q3&#34;,
+                &#34;value&#34;: summary[&#34;quantile_75&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;95-th percentile&#34;,
                 &#34;value&#34;: summary[&#34;quantile_95&#34;],
                 &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
             },
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Range&#34;, &#34;value&#34;: summary[&#34;range&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Maximum&#34;,
+                &#34;value&#34;: summary[&#34;max&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Range&#34;,
+                &#34;value&#34;: summary[&#34;range&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Interquartile range&#34;,
                 &#34;value&#34;: summary[&#34;iqr&#34;],
                 &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
             },
         ],
     }
@@ -243,7 +300,7 @@ def render_count(summary):
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
-    info = Overview(
+    info = VariableInfo(
         summary[&#34;varid&#34;],
         summary[&#34;varname&#34;],
         &#34;Real number (&amp;Ropf; / &amp;Ropf;&lt;sub&gt;&amp;ge;0&lt;/sub&gt;)&#34;,
@@ -252,30 +309,55 @@ def render_count(summary):
 
     table1 = Table(
         [
-            {&#34;name&#34;: &#34;Distinct count&#34;, &#34;value&#34;: summary[&#34;n_unique&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Unique (%)&#34;, &#34;value&#34;: summary[&#34;p_unique&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
-            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: summary[&#34;n_missing&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Distinct count&#34;,
+                &#34;value&#34;: summary[&#34;n_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Unique (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_unique&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Missing&#34;,
+                &#34;value&#34;: summary[&#34;n_missing&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
             },
-            # {&#39;name&#39;: &#39;Infinite&#39;, &#39;value&#39;: summary[&#39;n_infinite&#39;], &#39;fmt&#39;: &#39;fmt&#39;},
-            # {&#39;name&#39;: &#39;Infinite (%)&#39;, &#39;value&#39;: summary[&#39;p_infinite&#39;], &#39;fmt&#39;: &#39;fmt_percent&#39;},
         ]
     )
 
     table2 = Table(
         [
-            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Zeros&#34;, &#34;value&#34;: summary[&#34;n_zeros&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Zeros (%)&#34;, &#34;value&#34;: summary[&#34;p_zeros&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
+            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {
+                &#34;name&#34;: &#34;Zeros&#34;,
+                &#34;value&#34;: summary[&#34;n_zeros&#34;],
+                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Zeros (%)&#34;,
+                &#34;value&#34;: summary[&#34;p_zeros&#34;],
+                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
@@ -294,26 +376,59 @@ def render_count(summary):
     quantile_statistics = {
         &#34;name&#34;: &#34;Quantile statistics&#34;,
         &#34;items&#34;: [
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Minimum&#34;,
+                &#34;value&#34;: summary[&#34;min&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;5-th percentile&#34;,
                 &#34;value&#34;: summary[&#34;quantile_5&#34;],
                 &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
             },
-            {&#34;name&#34;: &#34;Q1&#34;, &#34;value&#34;: summary[&#34;quantile_25&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;median&#34;, &#34;value&#34;: summary[&#34;quantile_50&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Q3&#34;, &#34;value&#34;: summary[&#34;quantile_75&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Q1&#34;,
+                &#34;value&#34;: summary[&#34;quantile_25&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;median&#34;,
+                &#34;value&#34;: summary[&#34;quantile_50&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Q3&#34;,
+                &#34;value&#34;: summary[&#34;quantile_75&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;95-th percentile&#34;,
                 &#34;value&#34;: summary[&#34;quantile_95&#34;],
                 &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
             },
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Range&#34;, &#34;value&#34;: summary[&#34;range&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Maximum&#34;,
+                &#34;value&#34;: summary[&#34;max&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Range&#34;,
+                &#34;value&#34;: summary[&#34;range&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
             {
                 &#34;name&#34;: &#34;Interquartile range&#34;,
                 &#34;value&#34;: summary[&#34;iqr&#34;],
                 &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
             },
         ],
     }

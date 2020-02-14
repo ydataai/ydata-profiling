@@ -72,27 +72,6 @@ class WidgetSequence(Sequence):
     def render(self):
         if self.sequence_type == "list":
             widget = get_list(self.content["items"])
-        elif self.sequence_type == "variable":
-            i1 = self.content["items"][0].render()
-            i2 = self.content["items"][1].render()
-            toggle = widgets.ToggleButton(description="Toggle details")
-
-            def hide_slider(widg):
-                if widg["new"]:
-                    i2.layout.display = ""
-                else:
-                    i2.layout.display = "none"
-
-            toggle.observe(hide_slider, names=["value"])
-            i2.layout.display = "none"
-
-            toggle_box = widgets.HBox([toggle])
-            toggle_box.layout.align_items = "flex-end"
-            toggle_box.layout.object_position = "right center"
-            toggle_box.layout.width = "100%"
-
-            return widgets.VBox([i1, toggle_box, i2])
-
         elif self.sequence_type in ["tabs", "sections"]:
             widget = get_tabs(self.content["items"])
         elif self.sequence_type == "accordion":

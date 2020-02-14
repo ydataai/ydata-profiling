@@ -29,10 +29,9 @@ from pandas_profiling.visualisation.plot import scatter_complex
 from pandas_profiling.report.presentation.core import (
     HTML,
     Image,
-    Preview,
     Sequence,
     Table,
-    Overview,
+    VariableInfo,
 )
 
 
@@ -41,7 +40,7 @@ def render_complex(summary):
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
-    info = Overview(
+    info = VariableInfo(
         summary[&#34;varid&#34;],
         summary[&#34;varname&#34;],
         &#34;Complex number (&amp;Copf;)&#34;,
@@ -122,7 +121,7 @@ def render_complex(summary):
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     # Top
-    info = Overview(
+    info = VariableInfo(
         summary[&#34;varid&#34;],
         summary[&#34;varname&#34;],
         &#34;Complex number (&amp;Copf;)&#34;,

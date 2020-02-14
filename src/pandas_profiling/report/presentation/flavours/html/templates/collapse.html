@@ -1,0 +1,13 @@
+{% if button.anchor_id != 'toggle-correlation-description' %}
+    {{ button.render() }}
+
+    <div id="bottom-{{ button.anchor_id }}" class="collapse">
+        {{ item.render() }}
+    </div>
+{% else %}
+    <div class="row spacing">
+        {{ button.render() }}
+
+        {{ item.render() | replace('class="row spacing"', 'style="display:inline"') }}
+    </div>
+{% endif %}

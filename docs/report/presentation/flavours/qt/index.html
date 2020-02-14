@@ -32,12 +32,18 @@ from pandas_profiling.report.presentation.flavours.qt.frequency_table_small impo
 )
 from pandas_profiling.report.presentation.flavours.qt.html import QtHTML
 from pandas_profiling.report.presentation.flavours.qt.image import QtImage
-from pandas_profiling.report.presentation.flavours.qt.overview import QtOverview
-from pandas_profiling.report.presentation.flavours.qt.preview import QtPreview
+from pandas_profiling.report.presentation.flavours.qt.variable import QtVariable
+from pandas_profiling.report.presentation.flavours.qt.variable_info import (
+    QtVariableInfo,
+)
 from pandas_profiling.report.presentation.flavours.qt.sequence import QtSequence
 from pandas_profiling.report.presentation.flavours.qt.table import QtTable
-from pandas_profiling.report.presentation.flavours.qt.dataset import QtDataset
-from pandas_profiling.report.presentation.flavours.qt.sample import QtSample</code></pre>
+from pandas_profiling.report.presentation.flavours.qt.sample import QtSample
+from pandas_profiling.report.presentation.flavours.qt.warnings import QtWarnings
+from pandas_profiling.report.presentation.flavours.qt.collapse import QtCollapse
+from pandas_profiling.report.presentation.flavours.qt.toggle_button import (
+    QtToggleButton,
+)</code></pre>
 </details>
 </section>
 <section>
@@ -47,7 +53,7 @@ from pandas_profiling.report.presentation.flavours.qt.sample import QtSample</co
 <dd>
 <section class="desc"></section>
 </dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.dataset" href="dataset.html">pandas_profiling.report.presentation.flavours.qt.dataset</a></code></dt>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.qt.collapse</a></code></dt>
 <dd>
 <section class="desc"></section>
 </dd>
@@ -67,14 +73,6 @@ from pandas_profiling.report.presentation.flavours.qt.sample import QtSample</co
 <dd>
 <section class="desc"></section>
 </dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.overview" href="overview.html">pandas_profiling.report.presentation.flavours.qt.overview</a></code></dt>
-<dd>
-<section class="desc"></section>
-</dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.preview" href="preview.html">pandas_profiling.report.presentation.flavours.qt.preview</a></code></dt>
-<dd>
-<section class="desc"></section>
-</dd>
 <dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.sample" href="sample.html">pandas_profiling.report.presentation.flavours.qt.sample</a></code></dt>
 <dd>
 <section class="desc"></section>
@@ -84,6 +82,22 @@ from pandas_profiling.report.presentation.flavours.qt.sample import QtSample</co
 <section class="desc"></section>
 </dd>
 <dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.table" href="table.html">pandas_profiling.report.presentation.flavours.qt.table</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.flavours.qt.toggle_button</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.variable" href="variable.html">pandas_profiling.report.presentation.flavours.qt.variable</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.variable_info" href="variable_info.html">pandas_profiling.report.presentation.flavours.qt.variable_info</a></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.qt.warnings" href="warnings.html">pandas_profiling.report.presentation.flavours.qt.warnings</a></code></dt>
 <dd>
 <section class="desc"></section>
 </dd>
@@ -110,16 +124,18 @@ from pandas_profiling.report.presentation.flavours.qt.sample import QtSample</co
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.app" href="app.html">pandas_profiling.report.presentation.flavours.qt.app</a></code></li>
-<li><code><a title="pandas_profiling.report.presentation.flavours.qt.dataset" href="dataset.html">pandas_profiling.report.presentation.flavours.qt.dataset</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.qt.collapse</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.frequency_table" href="frequency_table.html">pandas_profiling.report.presentation.flavours.qt.frequency_table</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.frequency_table_small" href="frequency_table_small.html">pandas_profiling.report.presentation.flavours.qt.frequency_table_small</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.html" href="html.html">pandas_profiling.report.presentation.flavours.qt.html</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.image" href="image.html">pandas_profiling.report.presentation.flavours.qt.image</a></code></li>
-<li><code><a title="pandas_profiling.report.presentation.flavours.qt.overview" href="overview.html">pandas_profiling.report.presentation.flavours.qt.overview</a></code></li>
-<li><code><a title="pandas_profiling.report.presentation.flavours.qt.preview" href="preview.html">pandas_profiling.report.presentation.flavours.qt.preview</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.sample" href="sample.html">pandas_profiling.report.presentation.flavours.qt.sample</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.sequence" href="sequence.html">pandas_profiling.report.presentation.flavours.qt.sequence</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.qt.table" href="table.html">pandas_profiling.report.presentation.flavours.qt.table</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.flavours.qt.toggle_button</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.variable" href="variable.html">pandas_profiling.report.presentation.flavours.qt.variable</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.variable_info" href="variable_info.html">pandas_profiling.report.presentation.flavours.qt.variable_info</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.qt.warnings" href="warnings.html">pandas_profiling.report.presentation.flavours.qt.warnings</a></code></li>
 </ul>
 </li>
 </ul>

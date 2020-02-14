@@ -7,5 +7,8 @@ class Table(ItemRenderer):
     def __init__(self, rows, name=None, **kwargs):
         super().__init__("table", {"rows": rows, "name": name}, **kwargs)
 
+    def __repr__(self):
+        return "Table"
+
     def render(self) -> Any:
         raise NotImplementedError()

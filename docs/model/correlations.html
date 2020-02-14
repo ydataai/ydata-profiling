@@ -30,7 +30,7 @@ import itertools
 import warnings
 from contextlib import suppress
 from functools import partial
-from typing import Callable
+from typing import Callable, Dict, List, Optional
 
 import pandas as pd
 import numpy as np
@@ -57,10 +57,14 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -&gt; float:
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
     r, k = confusion_matrix.shape
-    phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
-    rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
-    kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
-    return np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
+
+    # Deal with NaNs later on
+    with np.errstate(divide=&#34;ignore&#34;, invalid=&#34;ignore&#34;):
+        phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
+        rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
+        kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
+        corr = np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
+    return corr
 
 
 def check_recoded(confusion_matrix, count: int) -&gt; int:
@@ -106,7 +110,7 @@ def recoded_matrix(df: pd.DataFrame, variables: dict):
 
 def categorical_matrix(
     df: pd.DataFrame, variables: dict, correlation_function: Callable
-):
+) -&gt; Optional[pd.DataFrame]:
     &#34;&#34;&#34;Calculate a correlation matrix for categorical variables.
 
     Args:
@@ -122,12 +126,13 @@ def categorical_matrix(
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
         # TODO: solve in type system
-        and df[column_name].nunique()
-        &lt;= config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+        and config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+        &gt;= df[column_name].nunique()
+        &gt; 1
     }
 
     if len(categoricals) &lt;= 1:
-        return []
+        return None
 
     correlation_matrix = pd.DataFrame(
         np.ones((len(categoricals), len(categoricals))),
@@ -138,7 +143,7 @@ def categorical_matrix(
     for (name1, data1), (name2, data2) in itertools.combinations(
         categoricals.items(), 2
     ):
-        confusion_matrix = pd.crosstab(data1, data2, dropna=False)
+        confusion_matrix = pd.crosstab(data1, data2)
         correlation_matrix.loc[name2, name1] = correlation_matrix.loc[
             name1, name2
         ] = correlation_function(confusion_matrix)
@@ -209,7 +214,6 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
                             correlations[correlation_name] = correlation
                     except (ValueError, AssertionError) as e:
                         warn_correlation(correlation_name, e)
-                    pbar.update()
                 elif correlation_name in [&#34;phi_k&#34;]:
                     import phik
 
@@ -272,19 +276,33 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
                                 warn_correlation(&#34;phi_k&#34;, e)
                 elif correlation_name in [&#34;cramers&#34;, &#34;recoded&#34;]:
                     get_matrix = categorical_correlations[correlation_name]
+                    correlation = get_matrix(df, variables)
+                    if correlation is not None and len(correlation) &gt; 0:
+                        correlations[correlation_name] = correlation
 
-                    try:
-                        correlation = get_matrix(df, variables)
-                        if len(correlation) &gt; 0:
-                            correlations[correlation_name] = correlation
-                    except (ValueError, ZeroDivisionError) as e:
-                        warn_correlation(correlation_name, e)
+                if correlation_name in correlations:
+                    # Drop rows and columns with NaNs
+                    correlations[correlation_name].dropna(inplace=True, how=&#34;all&#34;)
+                    if correlations[correlation_name].empty:
+                        del correlations[correlation_name]
+
                 pbar.update()
 
     return correlations
 
 
-def perform_check_correlation(correlation_matrix, threshold: float):
+def get_correlation_mapping() -&gt; Dict[str, List[str]]:
+    &#34;&#34;&#34;Workaround variable type annotations not being supported in Python 3.5
+
+    Returns:
+        type annotated empty dict
+    &#34;&#34;&#34;
+    return {}
+
+
+def perform_check_correlation(
+    correlation_matrix: pd.DataFrame, threshold: float
+) -&gt; Dict[str, List[str]]:
     &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix.
 
     Args:
@@ -301,7 +319,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
     # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]&gt;threshold)]
 
-    mapping = {}
+    mapping = get_correlation_mapping()
     for x, corr_x in corr.iterrows():
         for y, corr in corr_x.iteritems():
             if x == y:
@@ -394,7 +412,6 @@ def perform_check_correlation(correlation_matrix, threshold: float):
                             correlations[correlation_name] = correlation
                     except (ValueError, AssertionError) as e:
                         warn_correlation(correlation_name, e)
-                    pbar.update()
                 elif correlation_name in [&#34;phi_k&#34;]:
                     import phik
 
@@ -457,13 +474,16 @@ def perform_check_correlation(correlation_matrix, threshold: float):
                                 warn_correlation(&#34;phi_k&#34;, e)
                 elif correlation_name in [&#34;cramers&#34;, &#34;recoded&#34;]:
                     get_matrix = categorical_correlations[correlation_name]
+                    correlation = get_matrix(df, variables)
+                    if correlation is not None and len(correlation) &gt; 0:
+                        correlations[correlation_name] = correlation
 
-                    try:
-                        correlation = get_matrix(df, variables)
-                        if len(correlation) &gt; 0:
-                            correlations[correlation_name] = correlation
-                    except (ValueError, ZeroDivisionError) as e:
-                        warn_correlation(correlation_name, e)
+                if correlation_name in correlations:
+                    # Drop rows and columns with NaNs
+                    correlations[correlation_name].dropna(inplace=True, how=&#34;all&#34;)
+                    if correlations[correlation_name].empty:
+                        del correlations[correlation_name]
+
                 pbar.update()
 
     return correlations</code></pre>
@@ -491,7 +511,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
 </summary>
 <pre><code class="python">def categorical_matrix(
     df: pd.DataFrame, variables: dict, correlation_function: Callable
-):
+) -&gt; Optional[pd.DataFrame]:
     &#34;&#34;&#34;Calculate a correlation matrix for categorical variables.
 
     Args:
@@ -507,12 +527,13 @@ def perform_check_correlation(correlation_matrix, threshold: float):
         for column_name, variable_type in variables.items()
         if variable_type == Variable.TYPE_CAT
         # TODO: solve in type system
-        and df[column_name].nunique()
-        &lt;= config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+        and config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+        &gt;= df[column_name].nunique()
+        &gt; 1
     }
 
     if len(categoricals) &lt;= 1:
-        return []
+        return None
 
     correlation_matrix = pd.DataFrame(
         np.ones((len(categoricals), len(categoricals))),
@@ -523,7 +544,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     for (name1, data1), (name2, data2) in itertools.combinations(
         categoricals.items(), 2
     ):
-        confusion_matrix = pd.crosstab(data1, data2, dropna=False)
+        confusion_matrix = pd.crosstab(data1, data2)
         correlation_matrix.loc[name2, name1] = correlation_matrix.loc[
             name1, name2
         ] = correlation_function(confusion_matrix)
@@ -594,10 +615,14 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
     r, k = confusion_matrix.shape
-    phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
-    rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
-    kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
-    return np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))</code></pre>
+
+    # Deal with NaNs later on
+    with np.errstate(divide=&#34;ignore&#34;, invalid=&#34;ignore&#34;):
+        phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
+        rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
+        kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
+        corr = np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
+    return corr</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.correlations.cramers_matrix"><code class="name flex">
@@ -633,6 +658,29 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     )</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.model.correlations.get_correlation_mapping"><code class="name flex">
+<span>def <span class="ident">get_correlation_mapping</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Workaround variable type annotations not being supported in Python 3.5</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>type</code> <code>annotated</code> <code>empty</code> <code>dict</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_correlation_mapping() -&gt; Dict[str, List[str]]:
+    &#34;&#34;&#34;Workaround variable type annotations not being supported in Python 3.5
+
+    Returns:
+        type annotated empty dict
+    &#34;&#34;&#34;
+    return {}</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.correlations.perform_check_correlation"><code class="name flex">
 <span>def <span class="ident">perform_check_correlation</span></span>(<span>correlation_matrix, threshold)</span>
 </code></dt>
@@ -650,7 +698,9 @@ def perform_check_correlation(correlation_matrix, threshold: float):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def perform_check_correlation(correlation_matrix, threshold: float):
+<pre><code class="python">def perform_check_correlation(
+    correlation_matrix: pd.DataFrame, threshold: float
+) -&gt; Dict[str, List[str]]:
     &#34;&#34;&#34;Check whether selected variables are highly correlated values in the correlation matrix.
 
     Args:
@@ -667,7 +717,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
     # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
     # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]&gt;threshold)]
 
-    mapping = {}
+    mapping = get_correlation_mapping()
     for x, corr_x in corr.iterrows():
         for y, corr in corr_x.iteritems():
             if x == y:
@@ -760,6 +810,7 @@ def perform_check_correlation(correlation_matrix, threshold: float):
 <li><code><a title="pandas_profiling.model.correlations.check_recoded" href="#pandas_profiling.model.correlations.check_recoded">check_recoded</a></code></li>
 <li><code><a title="pandas_profiling.model.correlations.cramers_corrected_stat" href="#pandas_profiling.model.correlations.cramers_corrected_stat">cramers_corrected_stat</a></code></li>
 <li><code><a title="pandas_profiling.model.correlations.cramers_matrix" href="#pandas_profiling.model.correlations.cramers_matrix">cramers_matrix</a></code></li>
+<li><code><a title="pandas_profiling.model.correlations.get_correlation_mapping" href="#pandas_profiling.model.correlations.get_correlation_mapping">get_correlation_mapping</a></code></li>
 <li><code><a title="pandas_profiling.model.correlations.perform_check_correlation" href="#pandas_profiling.model.correlations.perform_check_correlation">perform_check_correlation</a></code></li>
 <li><code><a title="pandas_profiling.model.correlations.recoded_matrix" href="#pandas_profiling.model.correlations.recoded_matrix">recoded_matrix</a></code></li>
 <li><code><a title="pandas_profiling.model.correlations.warn_correlation" href="#pandas_profiling.model.correlations.warn_correlation">warn_correlation</a></code></li>

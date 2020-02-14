@@ -26,6 +26,8 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Formatters are mappings from object(s) to a string.&#34;&#34;&#34;
+from typing import Dict, Callable
+
 from jinja2.utils import escape
 import numpy as np
 
@@ -136,7 +138,22 @@ def fmt(value) -&gt; str:
     if type(value) in [float, int]:
         return fmt_numeric(value)
     else:
-        return str(escape(value))</code></pre>
+        return str(escape(value))
+
+
+def get_fmt_mapping() -&gt; Dict[str, Callable]:
+    &#34;&#34;&#34;Get a mapping from formatter name to the function
+
+    Returns: formatter mapping
+    &#34;&#34;&#34;
+    return {
+        &#34;fmt_percent&#34;: fmt_percent,
+        &#34;fmt_bytesize&#34;: fmt_bytesize,
+        &#34;fmt_numeric&#34;: fmt_numeric,
+        &#34;fmt_array&#34;: fmt_array,
+        &#34;fmt&#34;: fmt,
+        &#34;raw&#34;: lambda x: x,
+    }</code></pre>
 </details>
 </section>
 <section>
@@ -379,6 +396,31 @@ def fmt(value) -&gt; str:
     return &#34;{:2.1f}%&#34;.format(value * 100)</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.report.formatters.get_fmt_mapping"><code class="name flex">
+<span>def <span class="ident">get_fmt_mapping</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get a mapping from formatter name to the function</p>
+<p>Returns: formatter mapping</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_fmt_mapping() -&gt; Dict[str, Callable]:
+    &#34;&#34;&#34;Get a mapping from formatter name to the function
+
+    Returns: formatter mapping
+    &#34;&#34;&#34;
+    return {
+        &#34;fmt_percent&#34;: fmt_percent,
+        &#34;fmt_bytesize&#34;: fmt_bytesize,
+        &#34;fmt_numeric&#34;: fmt_numeric,
+        &#34;fmt_array&#34;: fmt_array,
+        &#34;fmt&#34;: fmt,
+        &#34;raw&#34;: lambda x: x,
+    }</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -404,6 +446,7 @@ def fmt(value) -&gt; str:
 <li><code><a title="pandas_profiling.report.formatters.fmt_color" href="#pandas_profiling.report.formatters.fmt_color">fmt_color</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_numeric" href="#pandas_profiling.report.formatters.fmt_numeric">fmt_numeric</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_percent" href="#pandas_profiling.report.formatters.fmt_percent">fmt_percent</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.get_fmt_mapping" href="#pandas_profiling.report.formatters.get_fmt_mapping">get_fmt_mapping</a></code></li>
 </ul>
 </li>
 </ul>

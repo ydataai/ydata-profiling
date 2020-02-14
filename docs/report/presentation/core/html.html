@@ -33,6 +33,9 @@ class HTML(ItemRenderer):
     def __init__(self, content, **kwargs):
         super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
 
+    def __repr__(self):
+        return &#34;HTML&#34;
+
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>
 </details>
@@ -60,6 +63,9 @@ inheritance.</p></section>
 <pre><code class="python">class HTML(ItemRenderer):
     def __init__(self, content, **kwargs):
         super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
+
+    def __repr__(self):
+        return &#34;HTML&#34;
 
     def render(self) -&gt; Any:
         raise NotImplementedError()</code></pre>

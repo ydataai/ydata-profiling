@@ -20,11 +20,11 @@ testdata = [
     # Non unique values
     (pd.Series([1, 2, 2]), False, 2 / 3),
     # Non unique nan
-    (pd.Series([1, np.nan, np.nan]), False, 2 / 3),
+    (pd.Series([1, np.nan, np.nan]), True, 1),
     # Non unique values including nan
-    (pd.Series([1, 2, 2, np.nan]), False, 3 / 4),
+    (pd.Series([1, 2, 2, np.nan]), False, 2 / 3),
     # Non unique values including non unique nan
-    (pd.Series([1, 2, 2, np.nan, np.nan]), False, 3 / 5),
+    (pd.Series([1, 2, 2, np.nan, np.nan]), False, 2 / 3),
 ]
 
 
@@ -34,8 +34,8 @@ def test_describe_unique(data, is_unique, p_unique):
 
     desc_1d = describe_1d(data)
     if is_unique is not None:
-        assert desc_1d["is_unique"] == is_unique, "Describe 1D should return unique"
         assert desc_1d["p_unique"] == p_unique, "Describe 1D p_unique incorrect"
+        assert desc_1d["is_unique"] == is_unique, "Describe 1D should return unique"
 
 
 @pytest.fixture
@@ -269,7 +269,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": 1.771071190261633,
-            "distinct_count": 7,
+            "distinct_count": 6,
             "freq": check_is_NaN,
             "iqr": 24.5,
             "is_unique": False,
@@ -281,7 +281,7 @@ def expected_results():
             "mode": 0.0,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 7 / 9,
+            "p_unique": 6 / 8,
             "p_zeros": 0.2222222222222222,
             "range": 60.0,
             "skewness": 1.0851622393567653,
@@ -301,7 +301,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": 2.2112992878833846,
-            "distinct_count": 9,
+            "distinct_count": 8,
             "freq": check_is_NaN,
             "iqr": 236.66299975000001,
             "is_unique": True,
@@ -333,7 +333,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": check_is_NaN,
-            "distinct_count": 7,
+            "distinct_count": 6,
             "freq": 3,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -347,7 +347,7 @@ def expected_results():
             "mode": "c",
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 7 / 9,
+            "p_unique": 6 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -435,7 +435,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": check_is_NaN,
-            "distinct_count": 6,
+            "distinct_count": 5,
             "freq": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -447,7 +447,7 @@ def expected_results():
             "mode": datetime.datetime(1950, 12, 9),
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 6 / 9,
+            "p_unique": 5 / 8,
             "p_zeros": check_is_NaN,
             "range": datetime.timedelta(45289, hours=13, minutes=57),
             "skewness": check_is_NaN,
@@ -499,7 +499,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": check_is_NaN,
-            "distinct_count": 3,
+            "distinct_count": 2,
             "freq": 5,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -512,7 +512,7 @@ def expected_results():
             "mode": False,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 3 / 9,
+            "p_unique": 2 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -565,7 +565,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": check_is_NaN,
-            "distinct_count": 3,
+            "distinct_count": 2,
             "freq": 4,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -576,7 +576,7 @@ def expected_results():
             "mode": False,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 3 / 9,
+            "p_unique": 2 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,

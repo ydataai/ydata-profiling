@@ -45,7 +45,12 @@ class Config(object):
         &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
             self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__)
-            self.config.set_file(str(get_config_default()))
+
+        self.set_file(str(get_config_default()))
+
+    def set_file(self, file_name):
+        if self.config is not None:
+            self.config.set_file(file_name)
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
         &#34;&#34;&#34;
@@ -55,7 +60,8 @@ class Config(object):
             namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
             dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
         &#34;&#34;&#34;
-        self.config.set_args(namespace, dots)
+        if self.config is not None:
+            self.config.set_args(namespace, dots)
 
     def _set_kwargs(self, reference, values: dict):
         &#34;&#34;&#34;Helper function to set config variables based on kwargs.&#34;&#34;&#34;
@@ -123,7 +129,12 @@ various ways (notably via argparse and kwargs).</p>
         &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
             self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__)
-            self.config.set_file(str(get_config_default()))
+
+        self.set_file(str(get_config_default()))
+
+    def set_file(self, file_name):
+        if self.config is not None:
+            self.config.set_file(file_name)
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
         &#34;&#34;&#34;
@@ -133,7 +144,8 @@ various ways (notably via argparse and kwargs).</p>
             namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
             dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
         &#34;&#34;&#34;
-        self.config.set_args(namespace, dots)
+        if self.config is not None:
+            self.config.set_args(namespace, dots)
 
     def _set_kwargs(self, reference, values: dict):
         &#34;&#34;&#34;Helper function to set config variables based on kwargs.&#34;&#34;&#34;
@@ -211,7 +223,22 @@ various ways (notably via argparse and kwargs).</p>
         namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
         dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
     &#34;&#34;&#34;
-    self.config.set_args(namespace, dots)</code></pre>
+    if self.config is not None:
+        self.config.set_args(namespace, dots)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.config.Config.set_file"><code class="name flex">
+<span>def <span class="ident">set_file</span></span>(<span>self, file_name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_file(self, file_name):
+    if self.config is not None:
+        self.config.set_file(file_name)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.config.Config.set_kwargs"><code class="name flex">
@@ -263,6 +290,7 @@ various ways (notably via argparse and kwargs).</p>
 <li><code><a title="pandas_profiling.config.Config.config" href="#pandas_profiling.config.Config.config">config</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.dump" href="#pandas_profiling.config.Config.dump">dump</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.set_args" href="#pandas_profiling.config.Config.set_args">set_args</a></code></li>
+<li><code><a title="pandas_profiling.config.Config.set_file" href="#pandas_profiling.config.Config.set_file">set_file</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.set_kwargs" href="#pandas_profiling.config.Config.set_kwargs">set_kwargs</a></code></li>
 </ul>
 </li>

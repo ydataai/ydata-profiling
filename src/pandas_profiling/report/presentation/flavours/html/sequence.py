@@ -12,7 +12,7 @@ class HTMLSequence(Sequence):
             )
         elif self.sequence_type == "tabs":
             return templates.template("sequence/tabs.html").render(
-                tabs=self.content["items"]
+                tabs=self.content["items"], anchor_id=self.content["anchor_id"]
             )
         elif self.sequence_type == "sections":
             return templates.template("sequence/sections.html").render(

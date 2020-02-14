@@ -1,0 +1,7 @@
+<table class="table table-condensed list-warnings">
+    {% for message in warnings %}
+        <tr{% if loop.first %} style="border-top:0"{% endif %}>
+          {% include 'warnings/warning_' + message.message_type.name | lower  + '.html' ignore missing  %}
+        </tr>
+    {% endfor %}
+</table>

@@ -7,10 +7,9 @@ from pandas_profiling.report.presentation.core import (
     Image,
     FrequencyTable,
     FrequencyTableSmall,
-    Preview,
     Sequence,
     Table,
-    Overview,
+    VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
 
@@ -30,7 +29,7 @@ def render_categorical(summary):
 
     # Top
     # Element composition
-    info = Overview(
+    info = VariableInfo(
         summary["varid"], summary["varname"], "Categorical", summary["warnings"]
     )
 
@@ -40,30 +39,31 @@ def render_categorical(summary):
                 "name": "Distinct count",
                 "value": summary["n_unique"],
                 "fmt": "fmt",
-                "class": "alert" if "n_unique" in summary["warn_fields"] else "",
+                "alert": "n_unique" in summary["warn_fields"],
             },
             {
                 "name": "Unique (%)",
                 "value": summary["p_unique"],
                 "fmt": "fmt_percent",
-                "class": "alert" if "p_unique" in summary["warn_fields"] else "",
+                "alert": "p_unique" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
                 "value": summary["n_missing"],
                 "fmt": "fmt",
-                "class": "alert" if "n_missing" in summary["warn_fields"] else "",
+                "alert": "n_missing" in summary["warn_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": summary["p_missing"],
                 "fmt": "fmt_percent",
-                "class": "alert" if "p_missing" in summary["warn_fields"] else "",
+                "alert": "p_missing" in summary["warn_fields"],
             },
             {
                 "name": "Memory size",
                 "value": summary["memory_size"],
                 "fmt": "fmt_bytesize",
+                "alert": False,
             },
         ]
     )
@@ -91,16 +91,19 @@ def render_categorical(summary):
                     "name": "Max length",
                     "value": summary["max_length"],
                     "fmt": "fmt_numeric",
+                    "alert": False,
                 },
                 {
                     "name": "Mean length",
                     "value": summary["mean_length"],
                     "fmt": "fmt_numeric",
+                    "alert": False,
                 },
                 {
                     "name": "Min length",
                     "value": summary["min_length"],
                     "fmt": "fmt_numeric",
+                    "alert": False,
                 },
             ],
             name="Length",

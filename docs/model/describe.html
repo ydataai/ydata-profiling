@@ -28,12 +28,11 @@
 <pre><code class="python">&#34;&#34;&#34;Compute statistical description of datasets.&#34;&#34;&#34;
 import multiprocessing.pool
 import multiprocessing
-import itertools
 import os
 import sys
 import warnings
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Callable, Mapping
 from urllib.parse import urlsplit
 
 from tqdm.autonotebook import tqdm
@@ -151,6 +150,13 @@ def describe_date_1d(series: pd.Series, series_description: dict) -&gt; dict:
     stats[&#34;histogram_bins&#34;] = bins
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
+
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        histogram = np.histogram(
+            series[series.notna()].astype(&#34;int64&#34;).values, bins=&#34;auto&#34;
+        )[0]
+        stats[&#34;chi_squared&#34;] = chisquare(histogram)
 
     return stats
 
@@ -302,8 +308,7 @@ def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
     # number of infinite observations in the Series
     n_infinite = count - series.count()
 
-    # TODO: check if we prefer without nan
-    distinct_count = series_description[&#34;distinct_count_with_nan&#34;]
+    distinct_count = series_description[&#34;distinct_count_without_nan&#34;]
 
     stats = {
         &#34;n&#34;: leng,
@@ -314,9 +319,9 @@ def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
         &#34;n_missing&#34;: leng - count,
         &#34;p_infinite&#34;: n_infinite * 1.0 / leng,
         &#34;n_infinite&#34;: n_infinite,
-        &#34;is_unique&#34;: distinct_count == leng,
+        &#34;is_unique&#34;: distinct_count == count,
         &#34;mode&#34;: series.mode().iloc[0] if count &gt; distinct_count &gt; 1 else series[0],
-        &#34;p_unique&#34;: distinct_count * 1.0 / leng,
+        &#34;p_unique&#34;: distinct_count * 1.0 / count,
         &#34;memory_size&#34;: series.memory_usage(),
     }
 
@@ -489,17 +494,22 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
+
     disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
 
+    def missing_diagram(name) -&gt; Callable:
+        return {
+            &#34;bar&#34;: missing_bar,
+            &#34;matrix&#34;: missing_matrix,
+            &#34;heatmap&#34;: missing_heatmap,
+            &#34;dendrogram&#34;: missing_dendrogram,
+        }[name]
+
     missing_map = {
-        &#34;bar&#34;: {&#34;func&#34;: missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
-        &#34;matrix&#34;: {&#34;func&#34;: missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
-        &#34;heatmap&#34;: {&#34;func&#34;: missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
-        &#34;dendrogram&#34;: {
-            &#34;func&#34;: missing_dendrogram,
-            &#34;min_missing&#34;: 1,
-            &#34;name&#34;: &#34;Dendrogram&#34;,
-        },
+        &#34;bar&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
+        &#34;matrix&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
+        &#34;heatmap&#34;: {&#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
+        &#34;dendrogram&#34;: {&#34;min_missing&#34;: 1, &#34;name&#34;: &#34;Dendrogram&#34;},
     }
 
     missing_map = {
@@ -524,11 +534,12 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
                     ):
                         missing[name] = {
                             &#34;name&#34;: settings[&#34;name&#34;],
-                            &#34;matrix&#34;: settings[&#34;func&#34;](df),
+                            &#34;matrix&#34;: missing_diagram(name)(df),
                         }
                 except ValueError as e:
                     warn_missing(name, e)
                 pbar.update()
+
     return missing
 
 
@@ -557,17 +568,17 @@ def get_scatter_matrix(df, variables):
     return scatter_matrix
 
 
-def sort_column_names(dct):
-    sort = config[&#34;sort&#34;].get(str)
-    if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
+def sort_column_names(dct: Mapping, sort: str):
+    sort = sort.lower()
+    if sys.version_info &lt; (3, 6) and sort != &#34;none&#34;:
         warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
     else:
-        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
+        if sort.startswith(&#34;asc&#34;):
             dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
-        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
+        elif sort.startswith(&#34;desc&#34;):
             dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
-        elif sort != &#34;None&#34;:
-            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+        elif sort != &#34;none&#34;:
+            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
     return dct
 
 
@@ -605,17 +616,32 @@ def describe(df: pd.DataFrame) -&gt; dict:
             for arg in args:
                 column, description = multiprocess_1d(arg)
                 series_description[column] = description
-                pbar.update(1)
+                pbar.update()
         else:
+            # Store the original order
+            original_order = {
+                k: v for v, k in enumerate([column for column, _ in args])
+            }
+
+            # TODO: use `Pool` for Linux-based systems
             with multiprocessing.pool.ThreadPool(pool_size) as executor:
                 for i, (column, description) in enumerate(
                     executor.imap_unordered(multiprocess_1d, args)
                 ):
                     series_description[column] = description
-                    pbar.update(1)
+                    pbar.update()
+
+            # Restore the original order
+            series_description = dict(
+                sorted(
+                    series_description.items(),
+                    key=lambda index: original_order.get(index[0]),
+                )
+            )
 
     # Mapping from column name to variable type
-    series_description = sort_column_names(series_description)
+    sort = config[&#34;sort&#34;].get(str)
+    series_description = sort_column_names(series_description, sort)
 
     variables = {
         column: description[&#34;type&#34;]
@@ -643,21 +669,22 @@ def describe(df: pd.DataFrame) -&gt; dict:
     with tqdm(total=3, desc=&#34;warnings&#34;, disable=disable_progress_bar) as pbar:
         pbar.set_description_str(&#34;warnings [table]&#34;)
         messages = check_table_messages(table_stats)
-        pbar.update(1)
+        pbar.update()
         pbar.set_description_str(&#34;warnings [variables]&#34;)
         for col, description in series_description.items():
             messages += check_variable_messages(col, description)
-        pbar.update(1)
+        pbar.update()
         pbar.set_description_str(&#34;warnings [correlations]&#34;)
         messages += check_correlation_messages(correlations)
-        pbar.update(1)
+        messages.sort(key=lambda message: str(message.message_type))
+        pbar.update()
 
     with tqdm(total=1, desc=&#34;package&#34;, disable=disable_progress_bar) as pbar:
         package = {
             &#34;pandas_profiling_version&#34;: __version__,
             &#34;pandas_profiling_config&#34;: config.dump(),
         }
-        pbar.update(1)
+        pbar.update()
 
     return {
         # Overall description
@@ -745,17 +772,32 @@ def describe(df: pd.DataFrame) -&gt; dict:
             for arg in args:
                 column, description = multiprocess_1d(arg)
                 series_description[column] = description
-                pbar.update(1)
+                pbar.update()
         else:
+            # Store the original order
+            original_order = {
+                k: v for v, k in enumerate([column for column, _ in args])
+            }
+
+            # TODO: use `Pool` for Linux-based systems
             with multiprocessing.pool.ThreadPool(pool_size) as executor:
                 for i, (column, description) in enumerate(
                     executor.imap_unordered(multiprocess_1d, args)
                 ):
                     series_description[column] = description
-                    pbar.update(1)
+                    pbar.update()
+
+            # Restore the original order
+            series_description = dict(
+                sorted(
+                    series_description.items(),
+                    key=lambda index: original_order.get(index[0]),
+                )
+            )
 
     # Mapping from column name to variable type
-    series_description = sort_column_names(series_description)
+    sort = config[&#34;sort&#34;].get(str)
+    series_description = sort_column_names(series_description, sort)
 
     variables = {
         column: description[&#34;type&#34;]
@@ -783,21 +825,22 @@ def describe(df: pd.DataFrame) -&gt; dict:
     with tqdm(total=3, desc=&#34;warnings&#34;, disable=disable_progress_bar) as pbar:
         pbar.set_description_str(&#34;warnings [table]&#34;)
         messages = check_table_messages(table_stats)
-        pbar.update(1)
+        pbar.update()
         pbar.set_description_str(&#34;warnings [variables]&#34;)
         for col, description in series_description.items():
             messages += check_variable_messages(col, description)
-        pbar.update(1)
+        pbar.update()
         pbar.set_description_str(&#34;warnings [correlations]&#34;)
         messages += check_correlation_messages(correlations)
-        pbar.update(1)
+        messages.sort(key=lambda message: str(message.message_type))
+        pbar.update()
 
     with tqdm(total=1, desc=&#34;package&#34;, disable=disable_progress_bar) as pbar:
         package = {
             &#34;pandas_profiling_version&#34;: __version__,
             &#34;pandas_profiling_config&#34;: config.dump(),
         }
-        pbar.update(1)
+        pbar.update()
 
     return {
         # Overall description
@@ -1003,6 +1046,13 @@ def describe(df: pd.DataFrame) -&gt; dict:
 
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
 
+    chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(float)
+    if chi_squared_threshold &gt; 0.0:
+        histogram = np.histogram(
+            series[series.notna()].astype(&#34;int64&#34;).values, bins=&#34;auto&#34;
+        )[0]
+        stats[&#34;chi_squared&#34;] = chisquare(histogram)
+
     return stats</code></pre>
 </details>
 </dd>
@@ -1197,8 +1247,7 @@ bins. Read the docs:
     # number of infinite observations in the Series
     n_infinite = count - series.count()
 
-    # TODO: check if we prefer without nan
-    distinct_count = series_description[&#34;distinct_count_with_nan&#34;]
+    distinct_count = series_description[&#34;distinct_count_without_nan&#34;]
 
     stats = {
         &#34;n&#34;: leng,
@@ -1209,9 +1258,9 @@ bins. Read the docs:
         &#34;n_missing&#34;: leng - count,
         &#34;p_infinite&#34;: n_infinite * 1.0 / leng,
         &#34;n_infinite&#34;: n_infinite,
-        &#34;is_unique&#34;: distinct_count == leng,
+        &#34;is_unique&#34;: distinct_count == count,
         &#34;mode&#34;: series.mode().iloc[0] if count &gt; distinct_count &gt; 1 else series[0],
-        &#34;p_unique&#34;: distinct_count * 1.0 / leng,
+        &#34;p_unique&#34;: distinct_count * 1.0 / count,
         &#34;memory_size&#34;: series.memory_usage(),
     }
 
@@ -1419,17 +1468,22 @@ bins. Read the docs:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
+
     disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
 
+    def missing_diagram(name) -&gt; Callable:
+        return {
+            &#34;bar&#34;: missing_bar,
+            &#34;matrix&#34;: missing_matrix,
+            &#34;heatmap&#34;: missing_heatmap,
+            &#34;dendrogram&#34;: missing_dendrogram,
+        }[name]
+
     missing_map = {
-        &#34;bar&#34;: {&#34;func&#34;: missing_bar, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
-        &#34;matrix&#34;: {&#34;func&#34;: missing_matrix, &#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
-        &#34;heatmap&#34;: {&#34;func&#34;: missing_heatmap, &#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
-        &#34;dendrogram&#34;: {
-            &#34;func&#34;: missing_dendrogram,
-            &#34;min_missing&#34;: 1,
-            &#34;name&#34;: &#34;Dendrogram&#34;,
-        },
+        &#34;bar&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
+        &#34;matrix&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
+        &#34;heatmap&#34;: {&#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
+        &#34;dendrogram&#34;: {&#34;min_missing&#34;: 1, &#34;name&#34;: &#34;Dendrogram&#34;},
     }
 
     missing_map = {
@@ -1454,11 +1508,12 @@ bins. Read the docs:
                     ):
                         missing[name] = {
                             &#34;name&#34;: settings[&#34;name&#34;],
-                            &#34;matrix&#34;: settings[&#34;func&#34;](df),
+                            &#34;matrix&#34;: missing_diagram(name)(df),
                         }
                 except ValueError as e:
                     warn_missing(name, e)
                 pbar.update()
+
     return missing</code></pre>
 </details>
 </dd>
@@ -1529,7 +1584,7 @@ bins. Read the docs:
 </details>
 </dd>
 <dt id="pandas_profiling.model.describe.sort_column_names"><code class="name flex">
-<span>def <span class="ident">sort_column_names</span></span>(<span>dct)</span>
+<span>def <span class="ident">sort_column_names</span></span>(<span>dct, sort)</span>
 </code></dt>
 <dd>
 <section class="desc"></section>
@@ -1537,17 +1592,17 @@ bins. Read the docs:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def sort_column_names(dct):
-    sort = config[&#34;sort&#34;].get(str)
-    if sys.version_info[1] &lt;= 5 and sort != &#34;None&#34;:
+<pre><code class="python">def sort_column_names(dct: Mapping, sort: str):
+    sort = sort.lower()
+    if sys.version_info &lt; (3, 6) and sort != &#34;none&#34;:
         warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
     else:
-        if sort in [&#34;asc&#34;, &#34;ascending&#34;]:
+        if sort.startswith(&#34;asc&#34;):
             dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
-        elif sort in [&#34;desc&#34;, &#34;descending&#34;]:
+        elif sort.startswith(&#34;desc&#34;):
             dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
-        elif sort != &#34;None&#34;:
-            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
+        elif sort != &#34;none&#34;:
+            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
     return dct</code></pre>
 </details>
 </dd>

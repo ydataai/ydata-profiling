@@ -27,7 +27,7 @@ def test_issue_169_column(issue_169_data):
     report = df.profile_report(missing_diagrams={"dendrogram": True, "heatmap": True})
     html = report.to_html()
     assert type(html) == str
-    assert "<p class=h2>Dataset info</p>" in html
+    assert "<p class=h4>Dataset statistics</p>" in html
 
 
 def test_issue_169_index(issue_169_data):
@@ -35,4 +35,4 @@ def test_issue_169_index(issue_169_data):
     report = df.profile_report(missing_diagrams={"dendrogram": True, "heatmap": True})
     html = report.to_html()
     assert type(html) == str
-    assert "<p class=h2>Dataset info</p>" in html
+    assert "<p class=h4>Dataset statistics</p>" in html
