@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QPushButton
 
-from pandas_profiling.report.presentation.core.html import HTML
+from pandas_profiling.report.presentation.core import HTML
 
 
 class QtHTML(HTML):

@@ -24,19 +24,27 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ipywidgets import widgets, GridspecLayout
+<pre><code class="python">from ipywidgets import widgets, GridspecLayout, VBox
 
-from pandas_profiling.report.formatters import fmt
+from pandas_profiling.report.formatters import fmt_color, get_fmt_mapping
 from pandas_profiling.report.presentation.core.table import Table
 
 
 def get_table(items):
     table = GridspecLayout(len(items), 2)
+    fmt_mapping = get_fmt_mapping()
     for row_id, item in enumerate(items):
-        table[row_id, 0] = widgets.HTML(item[&#34;name&#34;])
-        table[row_id, 1] = widgets.HTML(fmt(item[&#34;value&#34;]))
+        name = item[&#34;name&#34;]
+        formatter = fmt_mapping[item[&#34;fmt&#34;]]
+        value = formatter(item[&#34;value&#34;])
+        if &#34;alert&#34; in item and item[&#34;alert&#34;]:
+            name = fmt_color(name, &#34;var(--jp-error-color1)&#34;)
+            value = fmt_color(value, &#34;var(--jp-error-color1)&#34;)
 
-    return table
+        table[row_id, 0] = widgets.HTML(name)
+        table[row_id, 1] = widgets.HTML(value)
+
+    return VBox([table])
 
 
 class WidgetTable(Table):
@@ -62,11 +70,19 @@ class WidgetTable(Table):
 </summary>
 <pre><code class="python">def get_table(items):
     table = GridspecLayout(len(items), 2)
+    fmt_mapping = get_fmt_mapping()
     for row_id, item in enumerate(items):
-        table[row_id, 0] = widgets.HTML(item[&#34;name&#34;])
-        table[row_id, 1] = widgets.HTML(fmt(item[&#34;value&#34;]))
+        name = item[&#34;name&#34;]
+        formatter = fmt_mapping[item[&#34;fmt&#34;]]
+        value = formatter(item[&#34;value&#34;])
+        if &#34;alert&#34; in item and item[&#34;alert&#34;]:
+            name = fmt_color(name, &#34;var(--jp-error-color1)&#34;)
+            value = fmt_color(value, &#34;var(--jp-error-color1)&#34;)
 
-    return table</code></pre>
+        table[row_id, 0] = widgets.HTML(name)
+        table[row_id, 1] = widgets.HTML(value)
+
+    return VBox([table])</code></pre>
 </details>
 </dd>
 </dl>

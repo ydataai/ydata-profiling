@@ -16,5 +16,8 @@ class Image(ItemRenderer):
             **kwargs
         )
 
+    def __repr__(self):
+        return "Image"
+
     def render(self) -> Any:
         raise NotImplementedError()

@@ -180,7 +180,6 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 fields={},
             )
         )
-        return messages
 
     if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
@@ -192,6 +191,10 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
             )
         )
 
+    if (
+        description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED
+        or description[&#34;distinct_count_with_nan&#34;] &lt;= 1
+    ):
         messages.append(
             Message(
                 column_name=col,
@@ -222,16 +225,17 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
             )
         )
 
-    # Unsupported
-    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.REJECTED,
-                values=description,
-                fields={},
-            )
+    # Date
+    if description[&#34;type&#34;] == Variable.TYPE_DATE:
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
         )
+        # chi_squared_threshold = 0.5
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
 
     # Categorical
     if description[&#34;type&#34;] == Variable.TYPE_CAT:
@@ -353,10 +357,9 @@ def _date_parser(date_string):
 
 
 def warning_type_date(series):
-    with suppress(ValueError):
-        with suppress(TypeError):
-            series.apply(_date_parser)
-            return True
+    with suppress(ValueError, TypeError):
+        series.apply(_date_parser)
+        return True
 
     return False</code></pre>
 </details>
@@ -483,7 +486,6 @@ def warning_type_date(series):
                 fields={},
             )
         )
-        return messages
 
     if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
@@ -495,6 +497,10 @@ def warning_type_date(series):
             )
         )
 
+    if (
+        description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED
+        or description[&#34;distinct_count_with_nan&#34;] &lt;= 1
+    ):
         messages.append(
             Message(
                 column_name=col,
@@ -525,16 +531,17 @@ def warning_type_date(series):
             )
         )
 
-    # Unsupported
-    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.REJECTED,
-                values=description,
-                fields={},
-            )
+    # Date
+    if description[&#34;type&#34;] == Variable.TYPE_DATE:
+        # Uniformity
+        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+            float
         )
+        # chi_squared_threshold = 0.5
+        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
 
     # Categorical
     if description[&#34;type&#34;] == Variable.TYPE_CAT:
@@ -641,10 +648,9 @@ def warning_type_date(series):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def warning_type_date(series):
-    with suppress(ValueError):
-        with suppress(TypeError):
-            series.apply(_date_parser)
-            return True
+    with suppress(ValueError, TypeError):
+        series.apply(_date_parser)
+        return True
 
     return False</code></pre>
 </details>

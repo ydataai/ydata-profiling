@@ -27,6 +27,7 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Common util functions (e.g. missing in Python).&#34;&#34;&#34;
 import collections
+import zipfile
 from pathlib import Path
 from typing import Mapping
 
@@ -65,7 +66,16 @@ def _copy(self, target):
     shutil.copy(str(self), str(target))  # str() only there for Python &lt; (3, 6)
 
 
-Path.copy = _copy
+Path.copy = _copy  # type: ignore
+
+
+def extract_zip(outfile, effective_path):
+    try:
+        with zipfile.ZipFile(outfile) as z:
+            z.extractall(effective_path)
+    except zipfile.BadZipFile as e:
+        raise ValueError(&#34;Bad zip file&#34;, e)
+
 
 # Monkeypatch bug in imagehdr
 from imghdr import tests
@@ -107,6 +117,23 @@ tests.append(test_jpeg3)</code></pre>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.utils.common.extract_zip"><code class="name flex">
+<span>def <span class="ident">extract_zip</span></span>(<span>outfile, effective_path)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extract_zip(outfile, effective_path):
+    try:
+        with zipfile.ZipFile(outfile) as z:
+            z.extractall(effective_path)
+    except zipfile.BadZipFile as e:
+        raise ValueError(&#34;Bad zip file&#34;, e)</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.utils.common.test_jpeg1"><code class="name flex">
 <span>def <span class="ident">test_jpeg1</span></span>(<span>h, f)</span>
 </code></dt>
@@ -206,6 +233,7 @@ tests.append(test_jpeg3)</code></pre>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.utils.common.extract_zip" href="#pandas_profiling.utils.common.extract_zip">extract_zip</a></code></li>
 <li><code><a title="pandas_profiling.utils.common.test_jpeg1" href="#pandas_profiling.utils.common.test_jpeg1">test_jpeg1</a></code></li>
 <li><code><a title="pandas_profiling.utils.common.test_jpeg2" href="#pandas_profiling.utils.common.test_jpeg2">test_jpeg2</a></code></li>
 <li><code><a title="pandas_profiling.utils.common.test_jpeg3" href="#pandas_profiling.utils.common.test_jpeg3">test_jpeg3</a></code></li>

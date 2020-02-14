@@ -1,4 +1,4 @@
-sudo: required
+os: linux
 dist: bionic
 language: python
 cache:

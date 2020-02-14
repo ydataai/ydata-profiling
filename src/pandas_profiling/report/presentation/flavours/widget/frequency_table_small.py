@@ -1,5 +1,4 @@
-from IPython.core.display import display
-from ipywidgets import widgets, HTML
+from ipywidgets import widgets
 
 from pandas_profiling.report.presentation.core.frequency_table_small import (
     FrequencyTableSmall,

@@ -17,40 +17,46 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     """
     from pandas_profiling.report.presentation.flavours.html import (
         HTMLSequence,
-        HTMLPreview,
-        HTMLOverview,
+        HTMLVariable,
+        HTMLVariableInfo,
         HTMLTable,
         HTMLImage,
         HTMLHTML,
         HTMLFrequencyTable,
         HTMLFrequencyTableSmall,
-        HTMLDataset,
+        HTMLWarnings,
         HTMLSample,
+        HTMLToggleButton,
+        HTMLCollapse,
     )
     from pandas_profiling.report.presentation.core import (
         Sequence,
-        Preview,
-        Overview,
+        Variable,
+        VariableInfo,
         Table,
         Image,
         HTML,
         FrequencyTable,
         FrequencyTableSmall,
-        Dataset,
+        Warnings,
         Sample,
+        ToggleButton,
+        Collapse,
     )
 
     return {
         Sequence: HTMLSequence,
-        Preview: HTMLPreview,
-        Overview: HTMLOverview,
+        Variable: HTMLVariable,
+        VariableInfo: HTMLVariableInfo,
         Table: HTMLTable,
         HTML: HTMLHTML,
         Image: HTMLImage,
         FrequencyTable: HTMLFrequencyTable,
         FrequencyTableSmall: HTMLFrequencyTableSmall,
-        Dataset: HTMLDataset,
+        Warnings: HTMLWarnings,
         Sample: HTMLSample,
+        ToggleButton: HTMLToggleButton,
+        Collapse: HTMLCollapse,
     }
 
 
@@ -71,45 +77,51 @@ def HTMLReport(structure: Renderable):
 def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.flavours.widget import (
         WidgetSequence,
-        WidgetPreview,
-        WidgetOverview,
+        WidgetVariable,
+        WidgetVariableInfo,
         WidgetTable,
         WidgetImage,
         WidgetHTML,
         WidgetFrequencyTable,
         WidgetFrequencyTableSmall,
-        WidgetDataset,
         WidgetSample,
+        WidgetWarnings,
+        WidgetToggleButton,
+        WidgetCollapse,
     )
     from pandas_profiling.report.presentation.core import (
         Sequence,
-        Preview,
-        Overview,
+        Variable,
+        VariableInfo,
         Table,
         Image,
         HTML,
         FrequencyTable,
         FrequencyTableSmall,
-        Dataset,
+        Warnings,
         Sample,
+        ToggleButton,
+        Collapse,
     )
 
     return {
         Sequence: WidgetSequence,
-        Preview: WidgetPreview,
-        Overview: WidgetOverview,
+        Variable: WidgetVariable,
+        VariableInfo: WidgetVariableInfo,
         Table: WidgetTable,
         HTML: WidgetHTML,
         Image: WidgetImage,
         FrequencyTable: WidgetFrequencyTable,
         FrequencyTableSmall: WidgetFrequencyTableSmall,
-        Dataset: WidgetDataset,
+        Warnings: WidgetWarnings,
         Sample: WidgetSample,
+        ToggleButton: WidgetToggleButton,
+        Collapse: WidgetCollapse,
     }
 
 
 def WidgetReport(structure: Renderable):
-    mapping = get_html_renderable_mapping()
+    mapping = get_widget_renderable_mapping()
     apply_renderable_mapping(mapping, structure, flavour=WidgetReport)
     return structure
 
@@ -117,40 +129,46 @@ def WidgetReport(structure: Renderable):
 def get_qt_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.flavours.qt import (
         QtSequence,
-        QtPreview,
-        QtOverview,
+        QtVariable,
+        QtVariableInfo,
         QtTable,
         QtImage,
         QtHTML,
         QtFrequencyTable,
         QtFrequencyTableSmall,
-        QtDataset,
+        QtWarnings,
         QtSample,
+        QtCollapse,
+        QtToggleButton,
     )
     from pandas_profiling.report.presentation.core import (
         Sequence,
-        Preview,
-        Overview,
+        Variable,
+        VariableInfo,
         Table,
         Image,
         HTML,
         FrequencyTable,
         FrequencyTableSmall,
-        Dataset,
+        Warnings,
         Sample,
+        Collapse,
+        ToggleButton,
     )
 
     return {
         Sequence: QtSequence,
-        Preview: QtPreview,
-        Overview: QtOverview,
+        Variable: QtVariable,
+        VariableInfo: QtVariableInfo,
         Table: QtTable,
         HTML: QtHTML,
         Image: QtImage,
         FrequencyTable: QtFrequencyTable,
         FrequencyTableSmall: QtFrequencyTableSmall,
-        Dataset: QtDataset,
+        Warnings: QtWarnings,
         Sample: QtSample,
+        Collapse: QtCollapse,
+        ToggleButton: QtToggleButton,
     }
 
 

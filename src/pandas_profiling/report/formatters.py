@@ -1,4 +1,6 @@
 """Formatters are mappings from object(s) to a string."""
+from typing import Dict, Callable
+
 from jinja2.utils import escape
 import numpy as np
 
@@ -110,3 +112,18 @@ def fmt(value) -> str:
         return fmt_numeric(value)
     else:
         return str(escape(value))
+
+
+def get_fmt_mapping() -> Dict[str, Callable]:
+    """Get a mapping from formatter name to the function
+
+    Returns: formatter mapping
+    """
+    return {
+        "fmt_percent": fmt_percent,
+        "fmt_bytesize": fmt_bytesize,
+        "fmt_numeric": fmt_numeric,
+        "fmt_array": fmt_array,
+        "fmt": fmt,
+        "raw": lambda x: x,
+    }

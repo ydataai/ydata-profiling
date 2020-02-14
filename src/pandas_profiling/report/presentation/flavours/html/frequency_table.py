@@ -1,5 +1,5 @@
 from pandas_profiling.report.presentation.flavours.html import templates
-from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
+from pandas_profiling.report.presentation.core import FrequencyTable
 
 
 class HTMLFrequencyTable(FrequencyTable):

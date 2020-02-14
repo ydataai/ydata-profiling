@@ -38,7 +38,7 @@ class HTMLSequence(Sequence):
             )
         elif self.sequence_type == &#34;tabs&#34;:
             return templates.template(&#34;sequence/tabs.html&#34;).render(
-                tabs=self.content[&#34;items&#34;]
+                tabs=self.content[&#34;items&#34;], anchor_id=self.content[&#34;anchor_id&#34;]
             )
         elif self.sequence_type == &#34;sections&#34;:
             return templates.template(&#34;sequence/sections.html&#34;).render(
@@ -81,7 +81,7 @@ inheritance.</p></section>
             )
         elif self.sequence_type == &#34;tabs&#34;:
             return templates.template(&#34;sequence/tabs.html&#34;).render(
-                tabs=self.content[&#34;items&#34;]
+                tabs=self.content[&#34;items&#34;], anchor_id=self.content[&#34;anchor_id&#34;]
             )
         elif self.sequence_type == &#34;sections&#34;:
             return templates.template(&#34;sequence/sections.html&#34;).render(
@@ -119,7 +119,7 @@ inheritance.</p></section>
         )
     elif self.sequence_type == &#34;tabs&#34;:
         return templates.template(&#34;sequence/tabs.html&#34;).render(
-            tabs=self.content[&#34;items&#34;]
+            tabs=self.content[&#34;items&#34;], anchor_id=self.content[&#34;anchor_id&#34;]
         )
     elif self.sequence_type == &#34;sections&#34;:
         return templates.template(&#34;sequence/sections.html&#34;).render(

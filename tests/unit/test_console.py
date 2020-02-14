@@ -35,6 +35,7 @@ def test_double_config(console_data, test_output_dir):
     with pytest.raises(ValueError) as e:
         console.main(
             [
+                "-s",
                 "--config_file",
                 str(get_config_default()),
                 "--minimal",

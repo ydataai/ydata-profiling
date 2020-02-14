@@ -33,10 +33,9 @@ from pandas_profiling.report.presentation.core import (
     Image,
     FrequencyTable,
     FrequencyTableSmall,
-    Preview,
     Sequence,
     Table,
-    Overview,
+    VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
 
@@ -56,7 +55,7 @@ def render_categorical(summary):
 
     # Top
     # Element composition
-    info = Overview(
+    info = VariableInfo(
         summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;Categorical&#34;, summary[&#34;warnings&#34;]
     )
 
@@ -66,30 +65,31 @@ def render_categorical(summary):
                 &#34;name&#34;: &#34;Distinct count&#34;,
                 &#34;value&#34;: summary[&#34;n_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Unique (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
                 &#34;value&#34;: summary[&#34;n_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
@@ -117,16 +117,19 @@ def render_categorical(summary):
                     &#34;name&#34;: &#34;Max length&#34;,
                     &#34;value&#34;: summary[&#34;max_length&#34;],
                     &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                    &#34;alert&#34;: False,
                 },
                 {
                     &#34;name&#34;: &#34;Mean length&#34;,
                     &#34;value&#34;: summary[&#34;mean_length&#34;],
                     &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                    &#34;alert&#34;: False,
                 },
                 {
                     &#34;name&#34;: &#34;Min length&#34;,
                     &#34;value&#34;: summary[&#34;min_length&#34;],
                     &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                    &#34;alert&#34;: False,
                 },
             ],
             name=&#34;Length&#34;,
@@ -237,7 +240,7 @@ def render_categorical(summary):
 
     # Top
     # Element composition
-    info = Overview(
+    info = VariableInfo(
         summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;Categorical&#34;, summary[&#34;warnings&#34;]
     )
 
@@ -247,30 +250,31 @@ def render_categorical(summary):
                 &#34;name&#34;: &#34;Distinct count&#34;,
                 &#34;value&#34;: summary[&#34;n_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Unique (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
                 &#34;value&#34;: summary[&#34;n_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
@@ -298,16 +302,19 @@ def render_categorical(summary):
                     &#34;name&#34;: &#34;Max length&#34;,
                     &#34;value&#34;: summary[&#34;max_length&#34;],
                     &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                    &#34;alert&#34;: False,
                 },
                 {
                     &#34;name&#34;: &#34;Mean length&#34;,
                     &#34;value&#34;: summary[&#34;mean_length&#34;],
                     &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                    &#34;alert&#34;: False,
                 },
                 {
                     &#34;name&#34;: &#34;Min length&#34;,
                     &#34;value&#34;: summary[&#34;min_length&#34;],
                     &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                    &#34;alert&#34;: False,
                 },
             ],
             name=&#34;Length&#34;,

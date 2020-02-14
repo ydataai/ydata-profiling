@@ -31,9 +31,8 @@ from pandas_profiling.report.presentation.core import (
     Table,
     Sequence,
     Image,
-    Preview,
     FrequencyTable,
-    Overview,
+    VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
 
@@ -48,7 +47,7 @@ def render_real(summary):
         name = &#34;Real number (&amp;Ropf;)&#34;
 
     # Top
-    info = Overview(summary[&#34;varid&#34;], summary[&#34;varname&#34;], name, summary[&#34;warnings&#34;])
+    info = VariableInfo(summary[&#34;varid&#34;], summary[&#34;varname&#34;], name, summary[&#34;warnings&#34;])
 
     table1 = Table(
         [
@@ -56,62 +55,63 @@ def render_real(summary):
                 &#34;name&#34;: &#34;Distinct count&#34;,
                 &#34;value&#34;: summary[&#34;n_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Unique (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
                 &#34;value&#34;: summary[&#34;n_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Infinite&#34;,
                 &#34;value&#34;: summary[&#34;n_infinite&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_infinite&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_infinite&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Infinite (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_infinite&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_infinite&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_infinite&#34; in summary[&#34;warn_fields&#34;],
             },
         ]
     )
 
     table2 = Table(
         [
-            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
             {
                 &#34;name&#34;: &#34;Zeros&#34;,
                 &#34;value&#34;: summary[&#34;n_zeros&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_zeros&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_zeros&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Zeros (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_zeros&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_zeros&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_zeros&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )
@@ -286,7 +286,7 @@ def render_real(summary):
         name = &#34;Real number (&amp;Ropf;)&#34;
 
     # Top
-    info = Overview(summary[&#34;varid&#34;], summary[&#34;varname&#34;], name, summary[&#34;warnings&#34;])
+    info = VariableInfo(summary[&#34;varid&#34;], summary[&#34;varname&#34;], name, summary[&#34;warnings&#34;])
 
     table1 = Table(
         [
@@ -294,62 +294,63 @@ def render_real(summary):
                 &#34;name&#34;: &#34;Distinct count&#34;,
                 &#34;value&#34;: summary[&#34;n_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Unique (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_unique&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_unique&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_unique&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
                 &#34;value&#34;: summary[&#34;n_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_missing&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_missing&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Infinite&#34;,
                 &#34;value&#34;: summary[&#34;n_infinite&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_infinite&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_infinite&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Infinite (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_infinite&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_infinite&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_infinite&#34; in summary[&#34;warn_fields&#34;],
             },
         ]
     )
 
     table2 = Table(
         [
-            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
             {
                 &#34;name&#34;: &#34;Zeros&#34;,
                 &#34;value&#34;: summary[&#34;n_zeros&#34;],
                 &#34;fmt&#34;: &#34;fmt&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;n_zeros&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;n_zeros&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Zeros (%)&#34;,
                 &#34;value&#34;: summary[&#34;p_zeros&#34;],
                 &#34;fmt&#34;: &#34;fmt_percent&#34;,
-                &#34;class&#34;: &#34;alert&#34; if &#34;p_zeros&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
+                &#34;alert&#34;: &#34;p_zeros&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
                 &#34;value&#34;: summary[&#34;memory_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;alert&#34;: False,
             },
         ]
     )

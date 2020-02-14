@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QPushButton
 
-from pandas_profiling.report.presentation.core.sample import Sample
+from pandas_profiling.report.presentation.core import Sample
 
 
 class QtSample(Sample):

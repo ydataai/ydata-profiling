@@ -1,0 +1,21 @@
+{% if anchor_id != 'toggle-correlation-description' %}
+    <div class="col-sm-12 text-right">
+        <button class="btn btn-default btn-sm" data-toggle="collapse" data-target="#bottom-{{ anchor_id }}, #minifreqtable{{ anchor_id }}" aria-expanded="true" aria-controls="collapseExample">{{ text }}</button>
+    </div>
+{% else %}
+    <button id="{{ anchor_id }}" class="btn btn-default btn-sm" style="float: right">{{ text }}</button>
+
+    <script>
+    var waitForJQuery = setInterval(function () {
+    if (typeof $ != 'undefined') {
+            $(function() {
+                $('#toggle-correlation-description').click(function () {
+                    $('.correlation-description').toggle();
+                    $('.correlation-diagram').toggleClass('col-sm-6').toggleClass('col-sm-12');
+                }).click();
+            });
+            clearInterval(waitForJQuery);
+        }
+    }, 10);
+    </script>
+{% endif %}

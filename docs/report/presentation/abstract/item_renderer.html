@@ -30,8 +30,8 @@ from pandas_profiling.report.presentation.abstract.renderable import Renderable
 
 
 class ItemRenderer(Renderable, ABC):
-    def __init__(self, item_type, content, name=None, anchor_id=None):
-        super().__init__(content, name, anchor_id)
+    def __init__(self, item_type, content, name=None, anchor_id=None, classes=None):
+        super().__init__(content, name, anchor_id, classes)
         self.item_type = item_type</code></pre>
 </details>
 </section>
@@ -46,7 +46,7 @@ class ItemRenderer(Renderable, ABC):
 <dl>
 <dt id="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer"><code class="flex name class">
 <span>class <span class="ident">ItemRenderer</span></span>
-<span>(</span><span>item_type, content, name=None, anchor_id=None)</span>
+<span>(</span><span>item_type, content, name=None, anchor_id=None, classes=None)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -56,8 +56,8 @@ inheritance.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ItemRenderer(Renderable, ABC):
-    def __init__(self, item_type, content, name=None, anchor_id=None):
-        super().__init__(content, name, anchor_id)
+    def __init__(self, item_type, content, name=None, anchor_id=None, classes=None):
+        super().__init__(content, name, anchor_id, classes)
         self.item_type = item_type</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -71,11 +71,13 @@ inheritance.</p></section>
 <li><a title="pandas_profiling.report.presentation.core.frequency_table_small.FrequencyTableSmall" href="../core/frequency_table_small.html#pandas_profiling.report.presentation.core.frequency_table_small.FrequencyTableSmall">FrequencyTableSmall</a></li>
 <li><a title="pandas_profiling.report.presentation.core.html.HTML" href="../core/html.html#pandas_profiling.report.presentation.core.html.HTML">HTML</a></li>
 <li><a title="pandas_profiling.report.presentation.core.image.Image" href="../core/image.html#pandas_profiling.report.presentation.core.image.Image">Image</a></li>
-<li><a title="pandas_profiling.report.presentation.core.preview.Preview" href="../core/preview.html#pandas_profiling.report.presentation.core.preview.Preview">Preview</a></li>
+<li><a title="pandas_profiling.report.presentation.core.variable.Variable" href="../core/variable.html#pandas_profiling.report.presentation.core.variable.Variable">Variable</a></li>
 <li><a title="pandas_profiling.report.presentation.core.table.Table" href="../core/table.html#pandas_profiling.report.presentation.core.table.Table">Table</a></li>
-<li><a title="pandas_profiling.report.presentation.core.overview.Overview" href="../core/overview.html#pandas_profiling.report.presentation.core.overview.Overview">Overview</a></li>
-<li><a title="pandas_profiling.report.presentation.core.dataset.Dataset" href="../core/dataset.html#pandas_profiling.report.presentation.core.dataset.Dataset">Dataset</a></li>
+<li><a title="pandas_profiling.report.presentation.core.variable_info.VariableInfo" href="../core/variable_info.html#pandas_profiling.report.presentation.core.variable_info.VariableInfo">VariableInfo</a></li>
 <li><a title="pandas_profiling.report.presentation.core.sample.Sample" href="../core/sample.html#pandas_profiling.report.presentation.core.sample.Sample">Sample</a></li>
+<li><a title="pandas_profiling.report.presentation.core.toggle_button.ToggleButton" href="../core/toggle_button.html#pandas_profiling.report.presentation.core.toggle_button.ToggleButton">ToggleButton</a></li>
+<li><a title="pandas_profiling.report.presentation.core.warnings.Warnings" href="../core/warnings.html#pandas_profiling.report.presentation.core.warnings.Warnings">Warnings</a></li>
+<li><a title="pandas_profiling.report.presentation.core.collapse.Collapse" href="../core/collapse.html#pandas_profiling.report.presentation.core.collapse.Collapse">Collapse</a></li>
 </ul>
 </dd>
 </dl>

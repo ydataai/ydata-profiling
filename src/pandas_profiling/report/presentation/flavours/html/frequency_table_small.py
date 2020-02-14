@@ -1,6 +1,4 @@
-from pandas_profiling.report.presentation.core.frequency_table_small import (
-    FrequencyTableSmall,
-)
+from pandas_profiling.report.presentation.core import FrequencyTableSmall
 from pandas_profiling.report.presentation.flavours.html import templates
 
 

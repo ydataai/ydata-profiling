@@ -5,9 +5,8 @@ from pandas_profiling.report.presentation.core import (
     FrequencyTable,
     Sequence,
     Image,
-    Preview,
     Table,
-    Overview,
+    VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
 
@@ -17,7 +16,7 @@ def render_count(summary):
     image_format = config["plot"]["image_format"].get(str)
 
     # Top
-    info = Overview(
+    info = VariableInfo(
         summary["varid"],
         summary["varname"],
         "Real number (&Ropf; / &Ropf;<sub>&ge;0</sub>)",
@@ -26,30 +25,55 @@ def render_count(summary):
 
     table1 = Table(
         [
-            {"name": "Distinct count", "value": summary["n_unique"], "fmt": "fmt"},
-            {"name": "Unique (%)", "value": summary["p_unique"], "fmt": "fmt_percent"},
-            {"name": "Missing", "value": summary["n_missing"], "fmt": "fmt"},
+            {
+                "name": "Distinct count",
+                "value": summary["n_unique"],
+                "fmt": "fmt",
+                "alert": False,
+            },
+            {
+                "name": "Unique (%)",
+                "value": summary["p_unique"],
+                "fmt": "fmt_percent",
+                "alert": False,
+            },
+            {
+                "name": "Missing",
+                "value": summary["n_missing"],
+                "fmt": "fmt",
+                "alert": False,
+            },
             {
                 "name": "Missing (%)",
                 "value": summary["p_missing"],
                 "fmt": "fmt_percent",
+                "alert": False,
             },
-            # {'name': 'Infinite', 'value': summary['n_infinite'], 'fmt': 'fmt'},
-            # {'name': 'Infinite (%)', 'value': summary['p_infinite'], 'fmt': 'fmt_percent'},
         ]
     )
 
     table2 = Table(
         [
-            {"name": "Mean", "value": summary["mean"], "fmt": "fmt"},
-            {"name": "Minimum", "value": summary["min"], "fmt": "fmt"},
-            {"name": "Maximum", "value": summary["max"], "fmt": "fmt"},
-            {"name": "Zeros", "value": summary["n_zeros"], "fmt": "fmt"},
-            {"name": "Zeros (%)", "value": summary["p_zeros"], "fmt": "fmt_percent"},
+            {"name": "Mean", "value": summary["mean"], "fmt": "fmt", "alert": False},
+            {"name": "Minimum", "value": summary["min"], "fmt": "fmt", "alert": False},
+            {"name": "Maximum", "value": summary["max"], "fmt": "fmt", "alert": False},
+            {
+                "name": "Zeros",
+                "value": summary["n_zeros"],
+                "fmt": "fmt",
+                "alert": False,
+            },
+            {
+                "name": "Zeros (%)",
+                "value": summary["p_zeros"],
+                "fmt": "fmt_percent",
+                "alert": False,
+            },
             {
                 "name": "Memory size",
                 "value": summary["memory_size"],
                 "fmt": "fmt_bytesize",
+                "alert": False,
             },
         ]
     )
@@ -68,26 +92,59 @@ def render_count(summary):
     quantile_statistics = {
         "name": "Quantile statistics",
         "items": [
-            {"name": "Minimum", "value": summary["min"], "fmt": "fmt_numeric"},
+            {
+                "name": "Minimum",
+                "value": summary["min"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
             {
                 "name": "5-th percentile",
                 "value": summary["quantile_5"],
                 "fmt": "fmt_numeric",
+                "alert": False,
             },
-            {"name": "Q1", "value": summary["quantile_25"], "fmt": "fmt_numeric"},
-            {"name": "median", "value": summary["quantile_50"], "fmt": "fmt_numeric"},
-            {"name": "Q3", "value": summary["quantile_75"], "fmt": "fmt_numeric"},
+            {
+                "name": "Q1",
+                "value": summary["quantile_25"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
+            {
+                "name": "median",
+                "value": summary["quantile_50"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
+            {
+                "name": "Q3",
+                "value": summary["quantile_75"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
             {
                 "name": "95-th percentile",
                 "value": summary["quantile_95"],
                 "fmt": "fmt_numeric",
+                "alert": False,
             },
-            {"name": "Maximum", "value": summary["max"], "fmt": "fmt_numeric"},
-            {"name": "Range", "value": summary["range"], "fmt": "fmt_numeric"},
+            {
+                "name": "Maximum",
+                "value": summary["max"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
+            {
+                "name": "Range",
+                "value": summary["range"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
             {
                 "name": "Interquartile range",
                 "value": summary["iqr"],
                 "fmt": "fmt_numeric",
+                "alert": False,
             },
         ],
     }

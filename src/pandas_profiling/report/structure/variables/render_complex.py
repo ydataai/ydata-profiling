@@ -3,10 +3,9 @@ from pandas_profiling.visualisation.plot import scatter_complex
 from pandas_profiling.report.presentation.core import (
     HTML,
     Image,
-    Preview,
     Sequence,
     Table,
-    Overview,
+    VariableInfo,
 )
 
 
@@ -15,7 +14,7 @@ def render_complex(summary):
     image_format = config["plot"]["image_format"].get(str)
 
     # Top
-    info = Overview(
+    info = VariableInfo(
         summary["varid"],
         summary["varname"],
         "Complex number (&Copf;)",

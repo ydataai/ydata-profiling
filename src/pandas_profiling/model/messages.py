@@ -151,9 +151,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={},
             )
         )
-        return messages
-
-    if description["distinct_count_with_nan"] <= 1:
+    elif description["distinct_count_with_nan"] <= 1:
         messages.append(
             Message(
                 column_name=col,
@@ -163,6 +161,10 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
+    if (
+        description["type"] == Variable.S_TYPE_UNSUPPORTED
+        or description["distinct_count_with_nan"] <= 1
+    ):
         messages.append(
             Message(
                 column_name=col,
@@ -171,8 +173,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={},
             )
         )
-
-    if description["distinct_count_without_nan"] == description["n"]:
+    elif description["distinct_count_without_nan"] == description["n"]:
         messages.append(
             Message(
                 column_name=col,
@@ -193,16 +194,17 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    # Unsupported
-    if description["type"] == Variable.S_TYPE_UNSUPPORTED:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.REJECTED,
-                values=description,
-                fields={},
-            )
+    # Date
+    if description["type"] == Variable.TYPE_DATE:
+        # Uniformity
+        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
+            float
         )
+        # chi_squared_threshold = 0.5
+        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
 
     # Categorical
     if description["type"] == Variable.TYPE_CAT:
@@ -324,9 +326,8 @@ def _date_parser(date_string):
 
 
 def warning_type_date(series):
-    with suppress(ValueError):
-        with suppress(TypeError):
-            series.apply(_date_parser)
-            return True
+    with suppress(ValueError, TypeError):
+        series.apply(_date_parser)
+        return True
 
     return False

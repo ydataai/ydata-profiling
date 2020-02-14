@@ -31,11 +31,15 @@ from pandas_profiling.report.presentation.core.image import Image
 
 class WidgetImage(Image):
     def render(self):
-        widget = widgets.HTML(
-            &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
-                image=self.content[&#34;image&#34;], alt=self.content[&#34;alt&#34;]
+        image = self.content[&#34;image&#34;]
+        if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+            image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
+        else:
+            image = &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
+                image=image, alt=self.content[&#34;alt&#34;]
             )
-        )
+
+        widget = widgets.HTML(image)
         if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
             caption = widgets.HTML(
                 &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(
@@ -69,11 +73,15 @@ inheritance.</p></section>
 </summary>
 <pre><code class="python">class WidgetImage(Image):
     def render(self):
-        widget = widgets.HTML(
-            &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
-                image=self.content[&#34;image&#34;], alt=self.content[&#34;alt&#34;]
+        image = self.content[&#34;image&#34;]
+        if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+            image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
+        else:
+            image = &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
+                image=image, alt=self.content[&#34;alt&#34;]
             )
-        )
+
+        widget = widgets.HTML(image)
         if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
             caption = widgets.HTML(
                 &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(
@@ -103,11 +111,15 @@ inheritance.</p></section>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render(self):
-    widget = widgets.HTML(
-        &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
-            image=self.content[&#34;image&#34;], alt=self.content[&#34;alt&#34;]
+    image = self.content[&#34;image&#34;]
+    if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+        image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
+    else:
+        image = &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
+            image=image, alt=self.content[&#34;alt&#34;]
         )
-    )
+
+    widget = widgets.HTML(image)
     if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
         caption = widgets.HTML(
             &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(

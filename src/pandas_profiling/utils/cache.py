@@ -12,4 +12,5 @@ def cache_file(file_name, url):
     if not (data_path / file_name).exists():
         data = requests.get(url)
         (data_path / file_name).write_bytes(data.content)
+
     return data_path / file_name

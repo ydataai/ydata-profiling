@@ -218,10 +218,9 @@ def get_var_type(series: pd.Series) -&gt; dict:
 
         # When the inferred type of the index is just &#34;mixed&#34; probably the types within the series are tuple, dict,
         # list and so on...
-        if (
-            series_description[&#34;value_counts_without_nan&#34;].index.inferred_type
-            == &#34;mixed&#34;
-        ):
+        if series_description[
+            &#34;value_counts_without_nan&#34;
+        ].index.inferred_type.startswith(&#34;mixed&#34;):
             raise TypeError(&#34;Not supported mixed type&#34;)
 
         if series_description[&#34;distinct_count_without_nan&#34;] == 0:
@@ -329,10 +328,9 @@ def get_var_type(series: pd.Series) -&gt; dict:
 
         # When the inferred type of the index is just &#34;mixed&#34; probably the types within the series are tuple, dict,
         # list and so on...
-        if (
-            series_description[&#34;value_counts_without_nan&#34;].index.inferred_type
-            == &#34;mixed&#34;
-        ):
+        if series_description[
+            &#34;value_counts_without_nan&#34;
+        ].index.inferred_type.startswith(&#34;mixed&#34;):
             raise TypeError(&#34;Not supported mixed type&#34;)
 
         if series_description[&#34;distinct_count_without_nan&#34;] == 0:
