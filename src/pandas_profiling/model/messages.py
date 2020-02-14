@@ -151,8 +151,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={},
             )
         )
-
-    if description["distinct_count_with_nan"] <= 1:
+    elif description["distinct_count_with_nan"] <= 1:
         messages.append(
             Message(
                 column_name=col,
