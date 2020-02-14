@@ -64,7 +64,6 @@ The following examples can give you an impression of what the package can do:
 * [Orange prices](http://pandas-profiling.github.io/pandas-profiling/examples/themes/united_report.html) and [Coal prices](http://pandas-profiling.github.io/pandas-profiling/examples/themes/flatly_report.html) (showcase report themes)
 * [Tutorial: report structure using Kaggle data (advanced)](http://pandas-profiling.github.io/pandas-profiling/examples/kaggle/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/kaggle/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb)
 
-
 ## Installation
 
 ### Using pip
