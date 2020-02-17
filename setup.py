@@ -51,7 +51,7 @@ setup(
         "requests==2.22.0",
     ],
     extras_require={
-        "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.1"],
+        "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.2"],
         "app": ["pyqt5==5.14.1"],
     },
     include_package_data=True,
