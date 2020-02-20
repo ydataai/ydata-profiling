@@ -45,7 +45,7 @@ setup(
         "phik==0.9.9",
         "astropy>=3.2.3",  # 4.0 for Python > 3.5
         "tangled-up-in-unicode==0.0.3",
-        "tqdm==4.42.0",
+        "tqdm==4.43.0",
         "kaggle==1.5.6",
         "ipywidgets==7.5.1",
         "requests==2.22.0",
