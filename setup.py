@@ -48,7 +48,7 @@ setup(
         "tqdm==4.43.0",
         "kaggle==1.5.6",
         "ipywidgets==7.5.1",
-        "requests==2.22.0",
+        "requests==2.23.0",
     ],
     extras_require={
         "notebook": ["jupyter-client==5.3.4", "jupyter-core==4.6.3"],
