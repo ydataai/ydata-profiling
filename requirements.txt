@@ -12,4 +12,4 @@ numpy>=1.16.0
 astropy>=3.2.3
 tangled-up-in-unicode==0.0.3
 tqdm==4.43.0
-statsmodels==0.11.0
+statsmodels==0.11.1
