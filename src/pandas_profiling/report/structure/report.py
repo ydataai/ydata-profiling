@@ -179,10 +179,8 @@ def get_scatter_matrix(scatter_matrix):
                 Image(
                     splot,
                     image_format=image_format,
-                    alt="{x_col} x {y_col}".format(x_col=x_col, y_col=y_col),
-                    anchor_id="interactions_{x_col}_{y_col}".format(
-                        x_col=x_col, y_col=y_col
-                    ),
+                    alt=f"{x_col} x {y_col}",
+                    anchor_id=f"interactions_{x_col}_{y_col}",
                     name=y_col,
                 )
             )
@@ -192,7 +190,7 @@ def get_scatter_matrix(scatter_matrix):
                 items,
                 sequence_type="tabs",
                 name=x_col,
-                anchor_id="interactions_{x_col}".format(x_col=x_col),
+                anchor_id=f"interactions_{x_col}",
             )
         )
     return titems

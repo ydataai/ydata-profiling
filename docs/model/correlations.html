@@ -153,14 +153,12 @@ def categorical_matrix(
 
 def warn_correlation(correlation_name, error):
     warnings.warn(
-        &#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.\n&#34;
-        &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}})`\n&#39;
-        &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
-        &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
-        &#34;(include the error message: &#39;{error}&#39;)&#34;.format(
-            correlation_name=correlation_name, error=error
-        )
+        f&#34;&#34;&#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.
+To hide this warning, disable the calculation
+(using `df.profile_report(correlations={{\&#34;{correlation_name}\&#34;: {{\&#34;calculate\&#34;: False}}}})`
+If this is problematic for your use case, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues
+(include the error message: &#39;{error}&#39;)&#34;&#34;&#34;
     )
 
 
@@ -201,11 +199,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
             disable=disable_progress_bar,
         ) as pbar:
             for correlation_name in correlation_names:
-                pbar.set_description_str(
-                    &#34;correlations [{correlation_name}]&#34;.format(
-                        correlation_name=correlation_name
-                    )
-                )
+                pbar.set_description_str(f&#34;correlations [{correlation_name}]&#34;)
 
                 if correlation_name in [&#34;pearson&#34;, &#34;spearman&#34;, &#34;kendall&#34;]:
                     try:
@@ -275,10 +269,13 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -&gt; dict:
                             except (ValueError, DataError, IndexError, TypeError) as e:
                                 warn_correlation(&#34;phi_k&#34;, e)
                 elif correlation_name in [&#34;cramers&#34;, &#34;recoded&#34;]:
-                    get_matrix = categorical_correlations[correlation_name]
-                    correlation = get_matrix(df, variables)
-                    if correlation is not None and len(correlation) &gt; 0:
-                        correlations[correlation_name] = correlation
+                    try:
+                        get_matrix = categorical_correlations[correlation_name]
+                        correlation = get_matrix(df, variables)
+                        if correlation is not None and len(correlation) &gt; 0:
+                            correlations[correlation_name] = correlation
+                    except (ValueError, AssertionError) as e:
+                        warn_correlation(correlation_name, e)
 
                 if correlation_name in correlations:
                     # Drop rows and columns with NaNs
@@ -399,11 +396,7 @@ def perform_check_correlation(
             disable=disable_progress_bar,
         ) as pbar:
             for correlation_name in correlation_names:
-                pbar.set_description_str(
-                    &#34;correlations [{correlation_name}]&#34;.format(
-                        correlation_name=correlation_name
-                    )
-                )
+                pbar.set_description_str(f&#34;correlations [{correlation_name}]&#34;)
 
                 if correlation_name in [&#34;pearson&#34;, &#34;spearman&#34;, &#34;kendall&#34;]:
                     try:
@@ -473,10 +466,13 @@ def perform_check_correlation(
                             except (ValueError, DataError, IndexError, TypeError) as e:
                                 warn_correlation(&#34;phi_k&#34;, e)
                 elif correlation_name in [&#34;cramers&#34;, &#34;recoded&#34;]:
-                    get_matrix = categorical_correlations[correlation_name]
-                    correlation = get_matrix(df, variables)
-                    if correlation is not None and len(correlation) &gt; 0:
-                        correlations[correlation_name] = correlation
+                    try:
+                        get_matrix = categorical_correlations[correlation_name]
+                        correlation = get_matrix(df, variables)
+                        if correlation is not None and len(correlation) &gt; 0:
+                            correlations[correlation_name] = correlation
+                    except (ValueError, AssertionError) as e:
+                        warn_correlation(correlation_name, e)
 
                 if correlation_name in correlations:
                     # Drop rows and columns with NaNs
@@ -776,14 +772,12 @@ def perform_check_correlation(
 </summary>
 <pre><code class="python">def warn_correlation(correlation_name, error):
     warnings.warn(
-        &#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.\n&#34;
-        &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(correlations={{&#34;{correlation_name}&#34;: {{&#34;calculate&#34;: False}}}})`\n&#39;
-        &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
-        &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
-        &#34;(include the error message: &#39;{error}&#39;)&#34;.format(
-            correlation_name=correlation_name, error=error
-        )
+        f&#34;&#34;&#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.
+To hide this warning, disable the calculation
+(using `df.profile_report(correlations={{\&#34;{correlation_name}\&#34;: {{\&#34;calculate\&#34;: False}}}})`
+If this is problematic for your use case, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues
+(include the error message: &#39;{error}&#39;)&#34;&#34;&#34;
     )</code></pre>
 </details>
 </dd>

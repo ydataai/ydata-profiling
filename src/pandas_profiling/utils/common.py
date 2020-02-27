@@ -36,7 +36,7 @@ def _copy(self, target):
     import shutil
 
     assert self.is_file()
-    shutil.copy(str(self), str(target))  # str() only there for Python < (3, 6)
+    shutil.copy(str(self), target)
 
 
 Path.copy = _copy  # type: ignore

@@ -36,6 +36,7 @@ from pandas_profiling.report.presentation.core import (
 
 
 def render_complex(summary):
+    varid = summary[&#34;varid&#34;]
     template_variables = {}
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
@@ -89,7 +90,7 @@ def render_complex(summary):
             alt=&#34;Scatterplot&#34;,
             caption=&#34;Scatterplot in the complex plane&#34;,
             name=&#34;Scatter&#34;,
-            anchor_id=&#34;{varid}scatter&#34;.format(varid=summary[&#34;varid&#34;]),
+            anchor_id=f&#34;{varid}scatter&#34;,
         )
     ]
 
@@ -117,6 +118,7 @@ def render_complex(summary):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render_complex(summary):
+    varid = summary[&#34;varid&#34;]
     template_variables = {}
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
@@ -170,7 +172,7 @@ def render_complex(summary):
             alt=&#34;Scatterplot&#34;,
             caption=&#34;Scatterplot in the complex plane&#34;,
             name=&#34;Scatter&#34;,
-            anchor_id=&#34;{varid}scatter&#34;.format(varid=summary[&#34;varid&#34;]),
+            anchor_id=f&#34;{varid}scatter&#34;,
         )
     ]
 

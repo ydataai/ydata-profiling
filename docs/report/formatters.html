@@ -42,9 +42,7 @@ def fmt_color(text: str, color: str) -&gt; str:
     Returns:
         A `&lt;span&gt;` that contains the colored text.
     &#34;&#34;&#34;
-    return u&#39;&lt;span style=&#34;color:{color}&#34;&gt;{text}&lt;/span&gt;&#39;.format(
-        color=color, text=str(text)
-    )
+    return f&#39;&lt;span style=&#34;color:{color}&#34;&gt;{text}&lt;/span&gt;&#39;
 
 
 def fmt_class(text: str, cls: str) -&gt; str:
@@ -57,7 +55,7 @@ def fmt_class(text: str, cls: str) -&gt; str:
     Returns:
         A `&lt;span&gt;` with a class added.
     &#34;&#34;&#34;
-    return u&#39;&lt;span class=&#34;{cls}&#34;&gt;{text}&lt;/span&gt;&#39;.format(cls=cls, text=str(text))
+    return f&#39;&lt;span class=&#34;{cls}&#34;&gt;{text}&lt;/span&gt;&#39;
 
 
 def fmt_bytesize(num: float, suffix: str = &#34;B&#34;) -&gt; str:
@@ -72,9 +70,9 @@ def fmt_bytesize(num: float, suffix: str = &#34;B&#34;) -&gt; str:
     &#34;&#34;&#34;
     for unit in [&#34;&#34;, &#34;Ki&#34;, &#34;Mi&#34;, &#34;Gi&#34;, &#34;Ti&#34;, &#34;Pi&#34;, &#34;Ei&#34;, &#34;Zi&#34;]:
         if abs(num) &lt; 1024.0:
-            return &#34;{:3.1f} {}{}&#34;.format(num, unit, suffix)
+            return f&#34;{num:3.1f} {unit}{suffix}&#34;
         num /= 1024.0
-    return &#34;{:.1f} {}{}&#34;.format(num, &#34;Yi&#34;, suffix)
+    return f&#34;{num:.1f} Yi{suffix}&#34;
 
 
 def fmt_percent(value: float, edge_cases: bool = True) -&gt; str:
@@ -88,13 +86,13 @@ def fmt_percent(value: float, edge_cases: bool = True) -&gt; str:
         The percentage with 1 point precision.
     &#34;&#34;&#34;
     if not (1.0 &gt;= value &gt;= 0.0):
-        raise ValueError(&#34;Value &#39;{}&#39; should be a ratio between 1 and 0.&#34;.format(value))
+        raise ValueError(f&#34;Value &#39;{value}&#39; should be a ratio between 1 and 0.&#34;)
     if edge_cases and round(value, 3) == 0 and value &gt; 0:
         return &#34;&lt; 0.1%&#34;
     if edge_cases and round(value, 3) == 1 and value &lt; 1:
         return &#34;&gt; 99.9%&#34;
 
-    return &#34;{:2.1f}%&#34;.format(value * 100)
+    return f&#34;{value*100:2.1f}%&#34;
 
 
 def fmt_numeric(value: float, precision=10) -&gt; str:
@@ -258,9 +256,9 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     &#34;&#34;&#34;
     for unit in [&#34;&#34;, &#34;Ki&#34;, &#34;Mi&#34;, &#34;Gi&#34;, &#34;Ti&#34;, &#34;Pi&#34;, &#34;Ei&#34;, &#34;Zi&#34;]:
         if abs(num) &lt; 1024.0:
-            return &#34;{:3.1f} {}{}&#34;.format(num, unit, suffix)
+            return f&#34;{num:3.1f} {unit}{suffix}&#34;
         num /= 1024.0
-    return &#34;{:.1f} {}{}&#34;.format(num, &#34;Yi&#34;, suffix)</code></pre>
+    return f&#34;{num:.1f} Yi{suffix}&#34;</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.formatters.fmt_class"><code class="name flex">
@@ -291,7 +289,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     Returns:
         A `&lt;span&gt;` with a class added.
     &#34;&#34;&#34;
-    return u&#39;&lt;span class=&#34;{cls}&#34;&gt;{text}&lt;/span&gt;&#39;.format(cls=cls, text=str(text))</code></pre>
+    return f&#39;&lt;span class=&#34;{cls}&#34;&gt;{text}&lt;/span&gt;&#39;</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.formatters.fmt_color"><code class="name flex">
@@ -322,9 +320,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     Returns:
         A `&lt;span&gt;` that contains the colored text.
     &#34;&#34;&#34;
-    return u&#39;&lt;span style=&#34;color:{color}&#34;&gt;{text}&lt;/span&gt;&#39;.format(
-        color=color, text=str(text)
-    )</code></pre>
+    return f&#39;&lt;span style=&#34;color:{color}&#34;&gt;{text}&lt;/span&gt;&#39;</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.formatters.fmt_numeric"><code class="name flex">
@@ -387,13 +383,13 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
         The percentage with 1 point precision.
     &#34;&#34;&#34;
     if not (1.0 &gt;= value &gt;= 0.0):
-        raise ValueError(&#34;Value &#39;{}&#39; should be a ratio between 1 and 0.&#34;.format(value))
+        raise ValueError(f&#34;Value &#39;{value}&#39; should be a ratio between 1 and 0.&#34;)
     if edge_cases and round(value, 3) == 0 and value &gt; 0:
         return &#34;&lt; 0.1%&#34;
     if edge_cases and round(value, 3) == 1 and value &lt; 1:
         return &#34;&gt; 99.9%&#34;
 
-    return &#34;{:2.1f}%&#34;.format(value * 100)</code></pre>
+    return f&#34;{value*100:2.1f}%&#34;</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.formatters.get_fmt_mapping"><code class="name flex">

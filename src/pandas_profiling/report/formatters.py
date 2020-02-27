@@ -15,9 +15,7 @@ def fmt_color(text: str, color: str) -> str:
     Returns:
         A `<span>` that contains the colored text.
     """
-    return u'<span style="color:{color}">{text}</span>'.format(
-        color=color, text=str(text)
-    )
+    return f'<span style="color:{color}">{text}</span>'
 
 
 def fmt_class(text: str, cls: str) -> str:
@@ -30,7 +28,7 @@ def fmt_class(text: str, cls: str) -> str:
     Returns:
         A `<span>` with a class added.
     """
-    return u'<span class="{cls}">{text}</span>'.format(cls=cls, text=str(text))
+    return f'<span class="{cls}">{text}</span>'
 
 
 def fmt_bytesize(num: float, suffix: str = "B") -> str:
@@ -45,9 +43,9 @@ def fmt_bytesize(num: float, suffix: str = "B") -> str:
     """
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
-            return "{:3.1f} {}{}".format(num, unit, suffix)
+            return f"{num:3.1f} {unit}{suffix}"
         num /= 1024.0
-    return "{:.1f} {}{}".format(num, "Yi", suffix)
+    return f"{num:.1f} Yi{suffix}"
 
 
 def fmt_percent(value: float, edge_cases: bool = True) -> str:
@@ -61,13 +59,13 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
         The percentage with 1 point precision.
     """
     if not (1.0 >= value >= 0.0):
-        raise ValueError("Value '{}' should be a ratio between 1 and 0.".format(value))
+        raise ValueError(f"Value '{value}' should be a ratio between 1 and 0.")
     if edge_cases and round(value, 3) == 0 and value > 0:
         return "< 0.1%"
     if edge_cases and round(value, 3) == 1 and value < 1:
         return "> 99.9%"
 
-    return "{:2.1f}%".format(value * 100)
+    return f"{value*100:2.1f}%"
 
 
 def fmt_numeric(value: float, precision=10) -> str:

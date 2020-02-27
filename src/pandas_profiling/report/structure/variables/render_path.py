@@ -8,6 +8,7 @@ from pandas_profiling.report.structure.variables.render_categorical import (
 
 
 def render_path(summary):
+    varid = summary["varid"]
     n_freq_table_max = config["n_freq_table_max"].get(int)
     image_format = config["plot"]["image_format"].get(str)
 
@@ -15,8 +16,8 @@ def render_path(summary):
 
     keys = ["name", "parent", "suffix", "stem"]
     for path_part in keys:
-        template_variables["freqtable_{}".format(path_part)] = freq_table(
-            freqtable=summary["{}_counts".format(path_part)],
+        template_variables[f"freqtable_{path_part}"] = freq_table(
+            freqtable=summary[f"{path_part}_counts"],
             n=summary["n"],
             max_number_to_print=n_freq_table_max,
         )
@@ -35,31 +36,31 @@ def render_path(summary):
     full = FrequencyTable(
         template_variables["freq_table_rows"],
         name="Full",
-        anchor_id="{varid}full_frequency".format(varid=summary["varid"]),
+        anchor_id=f"{varid}full_frequency",
     )
 
     stem = FrequencyTable(
         template_variables["freqtable_stem"],
         name="Stem",
-        anchor_id="{varid}stem_frequency".format(varid=summary["varid"]),
+        anchor_id=f"{varid}stem_frequency",
     )
 
     name = FrequencyTable(
         template_variables["freqtable_name"],
         name="Name",
-        anchor_id="{varid}name_frequency".format(varid=summary["varid"]),
+        anchor_id=f"{varid}name_frequency",
     )
 
     suffix = FrequencyTable(
         template_variables["freqtable_suffix"],
         name="Suffix",
-        anchor_id="{varid}suffix_frequency".format(varid=summary["varid"]),
+        anchor_id=f"{varid}suffix_frequency",
     )
 
     parent = FrequencyTable(
         template_variables["freqtable_parent"],
         name="Parent",
-        anchor_id="{varid}parent_frequency".format(varid=summary["varid"]),
+        anchor_id=f"{varid}parent_frequency",
     )
 
     template_variables["bottom"].content["items"].append(full)
@@ -73,11 +74,9 @@ def render_path(summary):
             histogram(summary["file_sizes"], summary, summary["histogram_bins"]),
             image_format=image_format,
             alt="File size",
-            caption="<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={})".format(
-                summary["histogram_bins"]
-            ),
+            caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={summary['histogram_bins']})",
             name="File size",
-            anchor_id="{varid}file_size_histogram".format(varid=summary["varid"]),
+            anchor_id=f"{varid}file_size_histogram",
         )
 
         # TODO: in SequeencyItem

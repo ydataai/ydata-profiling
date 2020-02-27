@@ -77,11 +77,10 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; List[Dict]:
         )
 
     if freq_other &gt; min_freq:
+        other_count = str(freqtable.count() - max_number_to_print)
         rows.append(
             {
-                &#34;label&#34;: &#34;Other values ({})&#34;.format(
-                    str(freqtable.count() - max_number_to_print)
-                ),
+                &#34;label&#34;: f&#34;Other values ({other_count})&#34;,
                 &#34;width&#34;: freq_other / max_freq,
                 &#34;count&#34;: freq_other,
                 # Hack for tables with combined...
@@ -281,11 +280,10 @@ def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; list:
         )
 
     if freq_other &gt; min_freq:
+        other_count = str(freqtable.count() - max_number_to_print)
         rows.append(
             {
-                &#34;label&#34;: &#34;Other values ({})&#34;.format(
-                    str(freqtable.count() - max_number_to_print)
-                ),
+                &#34;label&#34;: f&#34;Other values ({other_count})&#34;,
                 &#34;width&#34;: freq_other / max_freq,
                 &#34;count&#34;: freq_other,
                 # Hack for tables with combined...

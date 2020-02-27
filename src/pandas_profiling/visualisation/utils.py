@@ -53,9 +53,9 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
             plt.savefig(image_bytes, dpi=dpi, format=image_format)
             image_bytes.seek(0)
             base64_data = base64.b64encode(image_bytes.getvalue())
-            result_string = "data:{mime_type};base64,{image_data}".format(
-                mime_type=mime_types[image_format], image_data=quote(base64_data)
-            )
+            mime_type = mime_types[image_format]
+            image_data = quote(base64_data)
+            result_string = f"data:{mime_type};base64,{image_data}"
         plt.close()
     except RuntimeError:
         plt.close()

@@ -35,6 +35,7 @@ from pandas_profiling.report.presentation.core import (
 
 
 def render_date(summary):
+    varid = summary[&#34;varid&#34;]
     # TODO: render common?
     template_variables = {}
 
@@ -108,7 +109,7 @@ def render_date(summary):
                 alt=&#34;Histogram&#34;,
                 caption=&#34;Histogram&#34;,
                 name=&#34;Histogram&#34;,
-                anchor_id=&#34;{varid}histogram&#34;.format(varid=summary[&#34;varid&#34;]),
+                anchor_id=f&#34;{varid}histogram&#34;,
             )
         ],
         sequence_type=&#34;tabs&#34;,
@@ -137,6 +138,7 @@ def render_date(summary):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render_date(summary):
+    varid = summary[&#34;varid&#34;]
     # TODO: render common?
     template_variables = {}
 
@@ -210,7 +212,7 @@ def render_date(summary):
                 alt=&#34;Histogram&#34;,
                 caption=&#34;Histogram&#34;,
                 name=&#34;Histogram&#34;,
-                anchor_id=&#34;{varid}histogram&#34;.format(varid=summary[&#34;varid&#34;]),
+                anchor_id=f&#34;{varid}histogram&#34;,
             )
         ],
         sequence_type=&#34;tabs&#34;,

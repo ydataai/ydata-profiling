@@ -51,9 +51,7 @@ def parse_args(args: Union[list, None] = None) -&gt; argparse.Namespace:
 
     # Version
     parser.add_argument(
-        &#34;--version&#34;,
-        action=&#34;version&#34;,
-        version=&#34;%(prog)s {version}&#34;.format(version=__version__),
+        &#34;--version&#34;, action=&#34;version&#34;, version=f&#34;%(prog)s {__version__}&#34;
     )
 
     # Console specific
@@ -190,9 +188,7 @@ def main(args=None) -&gt; None:
 
     # Version
     parser.add_argument(
-        &#34;--version&#34;,
-        action=&#34;version&#34;,
-        version=&#34;%(prog)s {version}&#34;.format(version=__version__),
+        &#34;--version&#34;, action=&#34;version&#34;, version=f&#34;%(prog)s {__version__}&#34;
     )
 
     # Console specific

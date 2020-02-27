@@ -12,6 +12,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 
 
 def render_count(summary):
+    varid = summary["varid"]
     template_variables = render_common(summary)
     image_format = config["plot"]["image_format"].get(str)
 
@@ -187,9 +188,7 @@ def render_count(summary):
             histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
             image_format=image_format,
             alt="Histogram",
-            caption="<strong>Histogram with fixed size bins</strong> (bins={})".format(
-                summary["histogram_bins"]
-            ),
+            caption=f"<strong>Histogram with fixed size bins</strong> (bins={summary['histogram_bins']})",
             name="Histogram",
             anchor_id="histogram",
         )

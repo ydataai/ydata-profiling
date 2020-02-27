@@ -39,6 +39,7 @@ from pandas_profiling.report.presentation.core import (
 
 
 def render_url(summary):
+    varid = summary[&#34;varid&#34;]
     n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
 
     n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
@@ -51,8 +52,8 @@ def render_url(summary):
 
     keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
     for url_part in keys:
-        template_variables[&#34;freqtable_{}&#34;.format(url_part)] = freq_table(
-            freqtable=summary[&#34;{}_counts&#34;.format(url_part)],
+        template_variables[f&#34;freqtable_{url_part}&#34;] = freq_table(
+            freqtable=summary[f&#34;{url_part}_counts&#34;],
             n=summary[&#34;n&#34;],
             max_number_to_print=n_freq_table_max,
         )
@@ -60,32 +61,32 @@ def render_url(summary):
     full_frequency_table = FrequencyTable(
         template_variables[&#34;freq_table_rows&#34;],
         name=&#34;Full&#34;,
-        anchor_id=&#34;{varid}full_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}full_frequency&#34;,
     )
     scheme_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_scheme&#34;],
         name=&#34;Scheme&#34;,
-        anchor_id=&#34;{varid}scheme_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}scheme_frequency&#34;,
     )
     netloc_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_netloc&#34;],
         name=&#34;Netloc&#34;,
-        anchor_id=&#34;{varid}netloc_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}netloc_frequency&#34;,
     )
     path_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_path&#34;],
         name=&#34;Path&#34;,
-        anchor_id=&#34;{varid}path_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}path_frequency&#34;,
     )
     query_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_query&#34;],
         name=&#34;Query&#34;,
-        anchor_id=&#34;{varid}query_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}query_frequency&#34;,
     )
     fragment_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_fragment&#34;],
         name=&#34;Fragment&#34;,
-        anchor_id=&#34;{varid}fragment_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}fragment_frequency&#34;,
     )
 
     items = [
@@ -97,10 +98,7 @@ def render_url(summary):
         fragment_frequency_table,
     ]
     template_variables[&#34;bottom&#34;] = Sequence(
-        items,
-        sequence_type=&#34;tabs&#34;,
-        name=&#34;url stats&#34;,
-        anchor_id=&#34;{varid}urlstats&#34;.format(varid=summary[&#34;varid&#34;]),
+        items, sequence_type=&#34;tabs&#34;, name=&#34;url stats&#34;, anchor_id=f&#34;{varid}urlstats&#34;
     )
 
     # Element composition
@@ -167,6 +165,7 @@ def render_url(summary):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render_url(summary):
+    varid = summary[&#34;varid&#34;]
     n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
 
     n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
@@ -179,8 +178,8 @@ def render_url(summary):
 
     keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
     for url_part in keys:
-        template_variables[&#34;freqtable_{}&#34;.format(url_part)] = freq_table(
-            freqtable=summary[&#34;{}_counts&#34;.format(url_part)],
+        template_variables[f&#34;freqtable_{url_part}&#34;] = freq_table(
+            freqtable=summary[f&#34;{url_part}_counts&#34;],
             n=summary[&#34;n&#34;],
             max_number_to_print=n_freq_table_max,
         )
@@ -188,32 +187,32 @@ def render_url(summary):
     full_frequency_table = FrequencyTable(
         template_variables[&#34;freq_table_rows&#34;],
         name=&#34;Full&#34;,
-        anchor_id=&#34;{varid}full_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}full_frequency&#34;,
     )
     scheme_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_scheme&#34;],
         name=&#34;Scheme&#34;,
-        anchor_id=&#34;{varid}scheme_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}scheme_frequency&#34;,
     )
     netloc_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_netloc&#34;],
         name=&#34;Netloc&#34;,
-        anchor_id=&#34;{varid}netloc_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}netloc_frequency&#34;,
     )
     path_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_path&#34;],
         name=&#34;Path&#34;,
-        anchor_id=&#34;{varid}path_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}path_frequency&#34;,
     )
     query_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_query&#34;],
         name=&#34;Query&#34;,
-        anchor_id=&#34;{varid}query_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}query_frequency&#34;,
     )
     fragment_frequency_table = FrequencyTable(
         template_variables[&#34;freqtable_fragment&#34;],
         name=&#34;Fragment&#34;,
-        anchor_id=&#34;{varid}fragment_frequency&#34;.format(varid=summary[&#34;varid&#34;]),
+        anchor_id=f&#34;{varid}fragment_frequency&#34;,
     )
 
     items = [
@@ -225,10 +224,7 @@ def render_url(summary):
         fragment_frequency_table,
     ]
     template_variables[&#34;bottom&#34;] = Sequence(
-        items,
-        sequence_type=&#34;tabs&#34;,
-        name=&#34;url stats&#34;,
-        anchor_id=&#34;{varid}urlstats&#34;.format(varid=summary[&#34;varid&#34;]),
+        items, sequence_type=&#34;tabs&#34;, name=&#34;url stats&#34;, anchor_id=f&#34;{varid}urlstats&#34;
     )
 
     # Element composition

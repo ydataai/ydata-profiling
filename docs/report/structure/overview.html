@@ -93,15 +93,15 @@ def get_dataset_overview(summary):
 
 
 def get_dataset_reproduction(summary, date_start, date_end):
+    version = summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
+    config = quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
     return Table(
         [
             {&#34;name&#34;: &#34;Analysis started&#34;, &#34;value&#34;: date_start, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Analysis finished&#34;, &#34;value&#34;: date_end, &#34;fmt&#34;: &#34;fmt&#34;},
             {
                 &#34;name&#34;: &#34;Version&#34;,
-                &#34;value&#34;: &#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;.format(
-                    version=summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
-                ),
+                &#34;value&#34;: f&#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;,
                 &#34;fmt&#34;: &#34;raw&#34;,
             },
             {
@@ -111,9 +111,7 @@ def get_dataset_reproduction(summary, date_start, date_end):
             },
             {
                 &#34;name&#34;: &#34;Download configuration&#34;,
-                &#34;value&#34;: &#39;&lt;a download=&#34;config.yaml&#34; href=&#34;data:text/plain;charset=utf-8,{config}&#34;&gt;config.yaml&lt;/a&gt;&#39;.format(
-                    config=quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
-                ),
+                &#34;value&#34;: f&#39;&lt;a download=&#34;config.yaml&#34; href=&#34;data:text/plain;charset=utf-8,{config}&#34;&gt;config.yaml&lt;/a&gt;&#39;,
                 &#34;fmt&#34;: &#34;raw&#34;,
             },
         ],
@@ -123,11 +121,7 @@ def get_dataset_reproduction(summary, date_start, date_end):
 
 
 def get_dataset_warnings(warnings, count):
-    return Warnings(
-        warnings=warnings,
-        name=&#34;Warnings ({count})&#34;.format(count=count),
-        anchor_id=&#34;warnings&#34;,
-    )</code></pre>
+    return Warnings(warnings=warnings, name=f&#34;Warnings ({count})&#34;, anchor_id=&#34;warnings&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -219,15 +213,15 @@ def get_dataset_warnings(warnings, count):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_dataset_reproduction(summary, date_start, date_end):
+    version = summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
+    config = quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
     return Table(
         [
             {&#34;name&#34;: &#34;Analysis started&#34;, &#34;value&#34;: date_start, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Analysis finished&#34;, &#34;value&#34;: date_end, &#34;fmt&#34;: &#34;fmt&#34;},
             {
                 &#34;name&#34;: &#34;Version&#34;,
-                &#34;value&#34;: &#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;.format(
-                    version=summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
-                ),
+                &#34;value&#34;: f&#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;,
                 &#34;fmt&#34;: &#34;raw&#34;,
             },
             {
@@ -237,9 +231,7 @@ def get_dataset_warnings(warnings, count):
             },
             {
                 &#34;name&#34;: &#34;Download configuration&#34;,
-                &#34;value&#34;: &#39;&lt;a download=&#34;config.yaml&#34; href=&#34;data:text/plain;charset=utf-8,{config}&#34;&gt;config.yaml&lt;/a&gt;&#39;.format(
-                    config=quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
-                ),
+                &#34;value&#34;: f&#39;&lt;a download=&#34;config.yaml&#34; href=&#34;data:text/plain;charset=utf-8,{config}&#34;&gt;config.yaml&lt;/a&gt;&#39;,
                 &#34;fmt&#34;: &#34;raw&#34;,
             },
         ],
@@ -258,11 +250,7 @@ def get_dataset_warnings(warnings, count):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_dataset_warnings(warnings, count):
-    return Warnings(
-        warnings=warnings,
-        name=&#34;Warnings ({count})&#34;.format(count=count),
-        anchor_id=&#34;warnings&#34;,
-    )</code></pre>
+    return Warnings(warnings=warnings, name=f&#34;Warnings ({count})&#34;, anchor_id=&#34;warnings&#34;)</code></pre>
 </details>
 </dd>
 </dl>

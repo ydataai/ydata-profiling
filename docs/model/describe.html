@@ -29,7 +29,6 @@
 import multiprocessing.pool
 import multiprocessing
 import os
-import sys
 import warnings
 from pathlib import Path
 from typing import Tuple, Callable, Mapping
@@ -106,7 +105,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
     stats.update(
         {
-            &#34;{:.0%}&#34;.format(percentile): value
+            f&#34;{percentile:.0%}&#34;: value
             for percentile, value in series.quantile(quantiles).to_dict().items()
         }
     )
@@ -218,9 +217,7 @@ def describe_url_1d(series: pd.Series, series_description: dict) -&gt; dict:
     keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
     url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
     for name, part in url_parts.items():
-        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
-            part, name=name
-        ).value_counts()
+        stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
 
     # Only run if at least 1 non-missing value
     value_counts = series_description[&#34;value_counts_without_nan&#34;]
@@ -259,9 +256,7 @@ def describe_path_1d(series: pd.Series, series_description: dict) -&gt; dict:
         zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
     )
     for name, part in path_parts.items():
-        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
-            part, name=name
-        ).value_counts()
+        stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
 
     # Only run if at least 1 non-missing value
     value_counts = series_description[&#34;value_counts_without_nan&#34;]
@@ -473,14 +468,12 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
 
 def warn_missing(missing_name, error):
     warnings.warn(
-        &#34;There was an attempt to generate the {missing_name} missing values diagrams, but this failed.\n&#34;
-        &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(missing_diagrams={{&#34;{missing_name}&#34;: False}}`)\n&#39;
-        &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
-        &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
-        &#34;(include the error message: &#39;{error}&#39;)&#34;.format(
-            missing_name=missing_name, error=error
-        )
+        f&#34;&#34;&#34;There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
+To hide this warning, disable the calculation
+(using `df.profile_report(missing_diagrams={{&#34;{missing_name}&#34;: False}}`)
+If this is problematic for your use case, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues
+(include the error message: &#39;{error}&#39;)&#34;&#34;&#34;
     )
 
 
@@ -525,7 +518,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
             total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
         ) as pbar:
             for name, settings in missing_map.items():
-                pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
+                pbar.set_description_str(f&#34;missing [{name}]&#34;)
                 try:
                     if name != &#34;heatmap&#34; or (
                         table_stats[&#34;n_vars_with_missing&#34;]
@@ -570,15 +563,12 @@ def get_scatter_matrix(df, variables):
 
 def sort_column_names(dct: Mapping, sort: str):
     sort = sort.lower()
-    if sys.version_info &lt; (3, 6) and sort != &#34;none&#34;:
-        warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
-    else:
-        if sort.startswith(&#34;asc&#34;):
-            dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
-        elif sort.startswith(&#34;desc&#34;):
-            dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
-        elif sort != &#34;none&#34;:
-            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
+    if sort.startswith(&#34;asc&#34;):
+        dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
+    elif sort.startswith(&#34;desc&#34;):
+        dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
+    elif sort != &#34;none&#34;:
+        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
     return dct
 
 
@@ -1125,7 +1115,7 @@ bins. Read the docs:
     stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
     stats.update(
         {
-            &#34;{:.0%}&#34;.format(percentile): value
+            f&#34;{percentile:.0%}&#34;: value
             for percentile, value in series.quantile(quantiles).to_dict().items()
         }
     )
@@ -1197,9 +1187,7 @@ bins. Read the docs:
         zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
     )
     for name, part in path_parts.items():
-        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
-            part, name=name
-        ).value_counts()
+        stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
 
     # Only run if at least 1 non-missing value
     value_counts = series_description[&#34;value_counts_without_nan&#34;]
@@ -1427,9 +1415,7 @@ bins. Read the docs:
     keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
     url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
     for name, part in url_parts.items():
-        stats[&#34;{}_counts&#34;.format(name.lower())] = pd.Series(
-            part, name=name
-        ).value_counts()
+        stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
 
     # Only run if at least 1 non-missing value
     value_counts = series_description[&#34;value_counts_without_nan&#34;]
@@ -1499,7 +1485,7 @@ bins. Read the docs:
             total=len(missing_map), desc=&#34;missing&#34;, disable=disable_progress_bar
         ) as pbar:
             for name, settings in missing_map.items():
-                pbar.set_description_str(&#34;missing [{name}]&#34;.format(name=name))
+                pbar.set_description_str(f&#34;missing [{name}]&#34;)
                 try:
                     if name != &#34;heatmap&#34; or (
                         table_stats[&#34;n_vars_with_missing&#34;]
@@ -1594,15 +1580,12 @@ bins. Read the docs:
 </summary>
 <pre><code class="python">def sort_column_names(dct: Mapping, sort: str):
     sort = sort.lower()
-    if sys.version_info &lt; (3, 6) and sort != &#34;none&#34;:
-        warnings.warn(&#34;Sorting is supported from Python 3.6+&#34;)
-    else:
-        if sort.startswith(&#34;asc&#34;):
-            dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
-        elif sort.startswith(&#34;desc&#34;):
-            dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
-        elif sort != &#34;none&#34;:
-            raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
+    if sort.startswith(&#34;asc&#34;):
+        dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
+    elif sort.startswith(&#34;desc&#34;):
+        dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
+    elif sort != &#34;none&#34;:
+        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
     return dct</code></pre>
 </details>
 </dd>
@@ -1617,14 +1600,12 @@ bins. Read the docs:
 </summary>
 <pre><code class="python">def warn_missing(missing_name, error):
     warnings.warn(
-        &#34;There was an attempt to generate the {missing_name} missing values diagrams, but this failed.\n&#34;
-        &#34;To hide this warning, disable the calculation\n&#34;
-        &#39;(using `df.profile_report(missing_diagrams={{&#34;{missing_name}&#34;: False}}`)\n&#39;
-        &#34;If this is problematic for your use case, please report this as an issue:\n&#34;
-        &#34;https://github.com/pandas-profiling/pandas-profiling/issues\n&#34;
-        &#34;(include the error message: &#39;{error}&#39;)&#34;.format(
-            missing_name=missing_name, error=error
-        )
+        f&#34;&#34;&#34;There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
+To hide this warning, disable the calculation
+(using `df.profile_report(missing_diagrams={{&#34;{missing_name}&#34;: False}}`)
+If this is problematic for your use case, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues
+(include the error message: &#39;{error}&#39;)&#34;&#34;&#34;
     )</code></pre>
 </details>
 </dd>

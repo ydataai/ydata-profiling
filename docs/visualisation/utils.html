@@ -79,9 +79,9 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
             plt.savefig(image_bytes, dpi=dpi, format=image_format)
             image_bytes.seek(0)
             base64_data = base64.b64encode(image_bytes.getvalue())
-            result_string = &#34;data:{mime_type};base64,{image_data}&#34;.format(
-                mime_type=mime_types[image_format], image_data=quote(base64_data)
-            )
+            mime_type = mime_types[image_format]
+            image_data = quote(base64_data)
+            result_string = f&#34;data:{mime_type};base64,{image_data}&#34;
         plt.close()
     except RuntimeError:
         plt.close()
@@ -187,9 +187,9 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
             plt.savefig(image_bytes, dpi=dpi, format=image_format)
             image_bytes.seek(0)
             base64_data = base64.b64encode(image_bytes.getvalue())
-            result_string = &#34;data:{mime_type};base64,{image_data}&#34;.format(
-                mime_type=mime_types[image_format], image_data=quote(base64_data)
-            )
+            mime_type = mime_types[image_format]
+            image_data = quote(base64_data)
+            result_string = f&#34;data:{mime_type};base64,{image_data}&#34;
         plt.close()
     except RuntimeError:
         plt.close()

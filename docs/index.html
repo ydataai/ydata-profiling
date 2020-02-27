@@ -74,7 +74,7 @@ Therefore, we welcome you to support the project through GitHub! </p>
 <li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html">Colors</a> (a simple colors dataset)</li>
 <li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html">Russian Vocabulary</a> (demonstrates text analysis)</li>
 <li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/themes/united_report.html">Orange prices</a> and <a href="http://pandas-profiling.github.io/pandas-profiling/examples/themes/flatly_report.html">Coal prices</a> (showcase report themes)</li>
-<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/kaggle/modify_report_structure.ipynb">Tutorial: report structure using Kaggle data</a> (modify the report's structure for advanced usage) <a href="https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/kaggle/modify_report_structure.ipynb"><img alt="Open In Colab" src="https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667"></a> <a href="https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb"><img alt="Binder" src="https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667"></a></li>
+<li><a href="http://pandas-profiling.github.io/pandas-profiling/examples/kaggle/modify_report_structure.ipynb">Tutorial: report structure using Kaggle data (advanced)</a> (modify the report's structure) <a href="https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/kaggle/modify_report_structure.ipynb"><img alt="Open In Colab" src="https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667"></a> <a href="https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb"><img alt="Binder" src="https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667"></a></li>
 </ul>
 <h2 id="installation">Installation</h2>
 <h3 id="using-pip">Using pip</h3>
@@ -259,8 +259,6 @@ $ where pandas_profiling
 .. include:: ../../README.md
 &#34;&#34;&#34;
 import json
-import sys
-import warnings
 from pathlib import Path
 from datetime import datetime
 
@@ -289,12 +287,6 @@ class ProfileReport(object):
     &#34;&#34;&#34;the HTML representation of the report, without the wrapper (containing `&lt;head&gt;` etc.)&#34;&#34;&#34;
 
     def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
-        if sys.version_info &lt;= (3, 5):
-            warnings.warn(
-                &#34;This is the last release to support Python 3.5, please upgrade.&#34;,
-                category=DeprecationWarning,
-            )
-
         if config_file is not None and minimal:
             raise ValueError(
                 &#34;Arguments `config_file` and `minimal` are mutually exclusive.&#34;
@@ -452,14 +444,15 @@ class ProfileReport(object):
     def to_json(self) -&gt; str:
         class CustomEncoder(json.JSONEncoder):
             def default(self, o):
+                name = o.__class__.__name__
                 if isinstance(o, pd.core.series.Series) or isinstance(
                     o, pd.core.frame.DataFrame
                 ):
-                    return {&#34;__{}__&#34;.format(o.__class__.__name__): o.to_json()}
+                    return {f&#34;__{name}__&#34;: o.to_json()}
                 if isinstance(o, np.integer):
-                    return {&#34;__{}__&#34;.format(o.__class__.__name__): o.tolist()}
+                    return {f&#34;__{name}__&#34;: o.tolist()}
 
-                return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
+                return {f&#34;__{name}__&#34;: str(o)}
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
@@ -584,12 +577,6 @@ class ProfileReport(object):
     &#34;&#34;&#34;the HTML representation of the report, without the wrapper (containing `&lt;head&gt;` etc.)&#34;&#34;&#34;
 
     def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
-        if sys.version_info &lt;= (3, 5):
-            warnings.warn(
-                &#34;This is the last release to support Python 3.5, please upgrade.&#34;,
-                category=DeprecationWarning,
-            )
-
         if config_file is not None and minimal:
             raise ValueError(
                 &#34;Arguments `config_file` and `minimal` are mutually exclusive.&#34;
@@ -747,14 +734,15 @@ class ProfileReport(object):
     def to_json(self) -&gt; str:
         class CustomEncoder(json.JSONEncoder):
             def default(self, o):
+                name = o.__class__.__name__
                 if isinstance(o, pd.core.series.Series) or isinstance(
                     o, pd.core.frame.DataFrame
                 ):
-                    return {&#34;__{}__&#34;.format(o.__class__.__name__): o.to_json()}
+                    return {f&#34;__{name}__&#34;: o.to_json()}
                 if isinstance(o, np.integer):
-                    return {&#34;__{}__&#34;.format(o.__class__.__name__): o.tolist()}
+                    return {f&#34;__{name}__&#34;: o.tolist()}
 
-                return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
+                return {f&#34;__{name}__&#34;: str(o)}
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
@@ -1051,14 +1039,15 @@ for using with frameworks.</p>
 <pre><code class="python">def to_json(self) -&gt; str:
     class CustomEncoder(json.JSONEncoder):
         def default(self, o):
+            name = o.__class__.__name__
             if isinstance(o, pd.core.series.Series) or isinstance(
                 o, pd.core.frame.DataFrame
             ):
-                return {&#34;__{}__&#34;.format(o.__class__.__name__): o.to_json()}
+                return {f&#34;__{name}__&#34;: o.to_json()}
             if isinstance(o, np.integer):
-                return {&#34;__{}__&#34;.format(o.__class__.__name__): o.tolist()}
+                return {f&#34;__{name}__&#34;: o.tolist()}
 
-            return {&#34;__{}__&#34;.format(o.__class__.__name__): str(o)}
+            return {f&#34;__{name}__&#34;: str(o)}
 
     return json.dumps(self.description_set, indent=4, cls=CustomEncoder)</code></pre>
 </details>

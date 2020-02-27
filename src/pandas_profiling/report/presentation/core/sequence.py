@@ -12,12 +12,14 @@ class Sequence(Renderable):
         text = "Sequence\n"
         if "items" in self.content:
             for id, item in enumerate(self.content["items"]):
-                text += "- {}: {}\n".format(id, str(item).replace("\n", "\n\t"))
+                name = str(item).replace("\n", "\n\t")
+                text += f"- {id}: {name}\n"
         return text
 
     def __repr__(self) -> str:
         if "name" in self.content:
-            return "Sequence(name={name})".format(name=self.content["name"])
+            name = self.content["name"]
+            return f"Sequence(name={name})"
         else:
             return "Sequence"
 

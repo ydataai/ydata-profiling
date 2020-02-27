@@ -126,14 +126,12 @@ def categorical_matrix(
 
 def warn_correlation(correlation_name, error):
     warnings.warn(
-        "There was an attempt to calculate the {correlation_name} correlation, but this failed.\n"
-        "To hide this warning, disable the calculation\n"
-        '(using `df.profile_report(correlations={{"{correlation_name}": {{"calculate": False}}}})`\n'
-        "If this is problematic for your use case, please report this as an issue:\n"
-        "https://github.com/pandas-profiling/pandas-profiling/issues\n"
-        "(include the error message: '{error}')".format(
-            correlation_name=correlation_name, error=error
-        )
+        f"""There was an attempt to calculate the {correlation_name} correlation, but this failed.
+To hide this warning, disable the calculation
+(using `df.profile_report(correlations={{\"{correlation_name}\": {{\"calculate\": False}}}})`
+If this is problematic for your use case, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues
+(include the error message: '{error}')"""
     )
 
 
@@ -174,11 +172,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
             disable=disable_progress_bar,
         ) as pbar:
             for correlation_name in correlation_names:
-                pbar.set_description_str(
-                    "correlations [{correlation_name}]".format(
-                        correlation_name=correlation_name
-                    )
-                )
+                pbar.set_description_str(f"correlations [{correlation_name}]")
 
                 if correlation_name in ["pearson", "spearman", "kendall"]:
                     try:

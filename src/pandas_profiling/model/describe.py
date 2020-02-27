@@ -2,7 +2,6 @@
 import multiprocessing.pool
 import multiprocessing
 import os
-import sys
 import warnings
 from pathlib import Path
 from typing import Tuple, Callable, Mapping
@@ -79,7 +78,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     stats["range"] = stats["max"] - stats["min"]
     stats.update(
         {
-            "{:.0%}".format(percentile): value
+            f"{percentile:.0%}": value
             for percentile, value in series.quantile(quantiles).to_dict().items()
         }
     )
@@ -191,9 +190,7 @@ def describe_url_1d(series: pd.Series, series_description: dict) -> dict:
     keys = ["scheme", "netloc", "path", "query", "fragment"]
     url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
     for name, part in url_parts.items():
-        stats["{}_counts".format(name.lower())] = pd.Series(
-            part, name=name
-        ).value_counts()
+        stats[f"{name.lower()}_counts"] = pd.Series(part, name=name).value_counts()
 
     # Only run if at least 1 non-missing value
     value_counts = series_description["value_counts_without_nan"]
@@ -232,9 +229,7 @@ def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
         zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
     )
     for name, part in path_parts.items():
-        stats["{}_counts".format(name.lower())] = pd.Series(
-            part, name=name
-        ).value_counts()
+        stats[f"{name.lower()}_counts"] = pd.Series(part, name=name).value_counts()
 
     # Only run if at least 1 non-missing value
     value_counts = series_description["value_counts_without_nan"]
@@ -446,14 +441,12 @@ def describe_table(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
 
 def warn_missing(missing_name, error):
     warnings.warn(
-        "There was an attempt to generate the {missing_name} missing values diagrams, but this failed.\n"
-        "To hide this warning, disable the calculation\n"
-        '(using `df.profile_report(missing_diagrams={{"{missing_name}": False}}`)\n'
-        "If this is problematic for your use case, please report this as an issue:\n"
-        "https://github.com/pandas-profiling/pandas-profiling/issues\n"
-        "(include the error message: '{error}')".format(
-            missing_name=missing_name, error=error
-        )
+        f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
+To hide this warning, disable the calculation
+(using `df.profile_report(missing_diagrams={{"{missing_name}": False}}`)
+If this is problematic for your use case, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues
+(include the error message: '{error}')"""
     )
 
 
@@ -498,7 +491,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
             total=len(missing_map), desc="missing", disable=disable_progress_bar
         ) as pbar:
             for name, settings in missing_map.items():
-                pbar.set_description_str("missing [{name}]".format(name=name))
+                pbar.set_description_str(f"missing [{name}]")
                 try:
                     if name != "heatmap" or (
                         table_stats["n_vars_with_missing"]
@@ -543,15 +536,12 @@ def get_scatter_matrix(df, variables):
 
 def sort_column_names(dct: Mapping, sort: str):
     sort = sort.lower()
-    if sys.version_info < (3, 6) and sort != "none":
-        warnings.warn("Sorting is supported from Python 3.6+")
-    else:
-        if sort.startswith("asc"):
-            dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
-        elif sort.startswith("desc"):
-            dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
-        elif sort != "none":
-            raise ValueError('"sort" should be "ascending", "descending" or "None".')
+    if sort.startswith("asc"):
+        dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
+    elif sort.startswith("desc"):
+        dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
+    elif sort != "none":
+        raise ValueError('"sort" should be "ascending", "descending" or "None".')
     return dct
 
 

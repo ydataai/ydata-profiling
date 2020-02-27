@@ -35,17 +35,13 @@ class WidgetImage(Image):
         if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
             image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
         else:
-            image = &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
-                image=image, alt=self.content[&#34;alt&#34;]
-            )
+            alt = self.content[&#34;alt&#34;]
+            image = f&#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;
 
         widget = widgets.HTML(image)
         if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
-            caption = widgets.HTML(
-                &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(
-                    caption=self.content[&#34;caption&#34;]
-                )
-            )
+            caption = self.content[&#34;caption&#34;]
+            caption = widgets.HTML(f&#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;)
             return widgets.VBox([widget, caption])
         else:
             return widget</code></pre>
@@ -77,17 +73,13 @@ inheritance.</p></section>
         if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
             image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
         else:
-            image = &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
-                image=image, alt=self.content[&#34;alt&#34;]
-            )
+            alt = self.content[&#34;alt&#34;]
+            image = f&#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;
 
         widget = widgets.HTML(image)
         if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
-            caption = widgets.HTML(
-                &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(
-                    caption=self.content[&#34;caption&#34;]
-                )
-            )
+            caption = self.content[&#34;caption&#34;]
+            caption = widgets.HTML(f&#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;)
             return widgets.VBox([widget, caption])
         else:
             return widget</code></pre>
@@ -115,17 +107,13 @@ inheritance.</p></section>
     if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
         image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
     else:
-        image = &#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;.format(
-            image=image, alt=self.content[&#34;alt&#34;]
-        )
+        alt = self.content[&#34;alt&#34;]
+        image = f&#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;
 
     widget = widgets.HTML(image)
     if &#34;caption&#34; in self.content and self.content[&#34;caption&#34;] is not None:
-        caption = widgets.HTML(
-            &#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;.format(
-                caption=self.content[&#34;caption&#34;]
-            )
-        )
+        caption = self.content[&#34;caption&#34;]
+        caption = widgets.HTML(f&#39;&lt;p style=&#34;color: #999&#34;&gt;&lt;em&gt;{caption}&lt;/em&gt;&lt;/p&gt;&#39;)
         return widgets.VBox([widget, caption])
     else:
         return widget</code></pre>

@@ -95,17 +95,15 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
             plot.correlation_matrix(item, vmin=vmin),
             image_format=image_format,
             alt=name,
-            anchor_id=&#34;{key}_diagram&#34;.format(key=key),
+            anchor_id=f&#34;{key}_diagram&#34;,
             name=name,
             classes=&#34;correlation-diagram&#34;,
         )
 
         if len(description) &gt; 0:
             desc = HTML(
-                &#39;&lt;div style=&#34;padding:20px&#34; class=&#34;text-muted&#34;&gt;&lt;h3&gt;{name}&lt;/h3&gt;{description}&lt;/div&gt;&#39;.format(
-                    description=description, name=name
-                ),
-                anchor_id=&#34;{key}_html&#34;.format(key=key),
+                f&#39;&lt;div style=&#34;padding:20px&#34; class=&#34;text-muted&#34;&gt;&lt;h3&gt;{name}&lt;/h3&gt;{description}&lt;/div&gt;&#39;,
+                anchor_id=f&#34;{key}_html&#34;,
                 classes=&#34;correlation-description&#34;,
             )
 
@@ -214,17 +212,15 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
             plot.correlation_matrix(item, vmin=vmin),
             image_format=image_format,
             alt=name,
-            anchor_id=&#34;{key}_diagram&#34;.format(key=key),
+            anchor_id=f&#34;{key}_diagram&#34;,
             name=name,
             classes=&#34;correlation-diagram&#34;,
         )
 
         if len(description) &gt; 0:
             desc = HTML(
-                &#39;&lt;div style=&#34;padding:20px&#34; class=&#34;text-muted&#34;&gt;&lt;h3&gt;{name}&lt;/h3&gt;{description}&lt;/div&gt;&#39;.format(
-                    description=description, name=name
-                ),
-                anchor_id=&#34;{key}_html&#34;.format(key=key),
+                f&#39;&lt;div style=&#34;padding:20px&#34; class=&#34;text-muted&#34;&gt;&lt;h3&gt;{name}&lt;/h3&gt;{description}&lt;/div&gt;&#39;,
+                anchor_id=f&#34;{key}_html&#34;,
                 classes=&#34;correlation-description&#34;,
             )
 
