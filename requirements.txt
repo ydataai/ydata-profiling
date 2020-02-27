@@ -19,7 +19,6 @@ astropy==4.0
 tangled-up-in-unicode==0.0.4
 # Examples
 requests==2.23.0
-kaggle==1.5.6
 # Progress bar
 tqdm==4.43.0
 # Jupyter notebook
