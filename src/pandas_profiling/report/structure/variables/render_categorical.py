@@ -15,6 +15,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 
 
 def render_categorical(summary):
+    varid = summary["varid"]
     n_obs_cat = config["vars"]["cat"]["n_obs"].get(int)
     image_format = config["plot"]["image_format"].get(str)
 
@@ -78,7 +79,7 @@ def render_categorical(summary):
     frequency_table = FrequencyTable(
         template_variables["freq_table_rows"],
         name="Common Values",
-        anchor_id="{varid}common_values".format(varid=summary["varid"]),
+        anchor_id=f"{varid}common_values",
     )
 
     items.append(frequency_table)
@@ -107,7 +108,7 @@ def render_categorical(summary):
                 },
             ],
             name="Length",
-            anchor_id="{varid}lengthstats".format(varid=summary["varid"]),
+            anchor_id=f"{varid}lengthstats",
         )
 
         histogram_bins = 10
@@ -117,12 +118,12 @@ def render_categorical(summary):
             image_format=image_format,
             alt="Scatter",
             name="Length",
-            anchor_id="{varid}length".format(varid=summary["varid"]),
+            anchor_id=f"{varid}length",
         )
 
         tbl = Sequence(
             [length, length_table],
-            anchor_id="{varid}tbl".format(varid=summary["varid"]),
+            anchor_id=f"{varid}tbl",
             name="Length",
             sequence_type="grid",
         )
@@ -139,7 +140,7 @@ def render_categorical(summary):
                     freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
                 ),
                 name="Categories",
-                anchor_id="{varid}category_long_values".format(varid=summary["varid"]),
+                anchor_id=f"{varid}category_long_values",
             )
         )
 
@@ -150,7 +151,7 @@ def render_categorical(summary):
                     freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
                 ),
                 name="Scripts",
-                anchor_id="{varid}script_values".format(varid=summary["varid"]),
+                anchor_id=f"{varid}script_values",
             )
         )
 
@@ -161,7 +162,7 @@ def render_categorical(summary):
                     freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
                 ),
                 name="Blocks",
-                anchor_id="{varid}block_alias_values".format(varid=summary["varid"]),
+                anchor_id=f"{varid}block_alias_values",
             )
         )
 
@@ -169,15 +170,13 @@ def render_categorical(summary):
             citems,
             name="Characters",
             sequence_type="tabs",
-            anchor_id="{varid}characters".format(varid=summary["varid"]),
+            anchor_id=f"{varid}characters",
         )
 
         items.append(characters)
 
     template_variables["bottom"] = Sequence(
-        items,
-        sequence_type="tabs",
-        anchor_id="{varid}bottom".format(varid=summary["varid"]),
+        items, sequence_type="tabs", anchor_id=f"{varid}bottom"
     )
 
     return template_variables

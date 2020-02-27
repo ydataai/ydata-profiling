@@ -45,20 +45,12 @@ def get_notebook_iframe_srcdoc(profile):
     &#34;&#34;&#34;
     from IPython.core.display import HTML
 
-    iframe = &#34;&#34;&#34;
-                &lt;iframe
-                    width=&#34;{width}&#34;
-                    height=&#34;{height}&#34;
-                    srcdoc=&#34;{src}&#34;
-                    frameborder=&#34;0&#34;
-                    allowfullscreen
-                &gt;&lt;/iframe&gt;
-                &#34;&#34;&#34;
-    iframe = iframe.format(
-        width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-        height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
-        src=html.escape(profile.to_html()),
-    )
+    width = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str)
+    height = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str)
+    src = html.escape(profile.to_html())
+
+    iframe = f&#39;&lt;iframe width=&#34;{width}&#34; height=&#34;{height}&#34; srcdoc=&#34;{src}&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&#39;
+
     return HTML(iframe)
 
 
@@ -100,7 +92,7 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
         output = get_notebook_iframe_srcdoc(profile)
     else:
         raise ValueError(
-            &#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {}).&#39;.format(attribute)
+            f&#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {attribute}).&#39;
         )
 
     return output</code></pre>
@@ -149,7 +141,7 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
         output = get_notebook_iframe_srcdoc(profile)
     else:
         raise ValueError(
-            &#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {}).&#39;.format(attribute)
+            f&#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {attribute}).&#39;
         )
 
     return output</code></pre>
@@ -219,20 +211,12 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
     &#34;&#34;&#34;
     from IPython.core.display import HTML
 
-    iframe = &#34;&#34;&#34;
-                &lt;iframe
-                    width=&#34;{width}&#34;
-                    height=&#34;{height}&#34;
-                    srcdoc=&#34;{src}&#34;
-                    frameborder=&#34;0&#34;
-                    allowfullscreen
-                &gt;&lt;/iframe&gt;
-                &#34;&#34;&#34;
-    iframe = iframe.format(
-        width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-        height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
-        src=html.escape(profile.to_html()),
-    )
+    width = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str)
+    height = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str)
+    src = html.escape(profile.to_html())
+
+    iframe = f&#39;&lt;iframe width=&#34;{width}&#34; height=&#34;{height}&#34; srcdoc=&#34;{src}&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&#39;
+
     return HTML(iframe)</code></pre>
 </details>
 </dd>

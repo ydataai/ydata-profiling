@@ -116,15 +116,15 @@ class Message(object):
         # TODO: render in template
         name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
         if name == &#34;HIGH CORRELATION&#34;:
-            name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
-                num=len(self.values[&#34;fields&#34;]), title=&#34;, &#34;.join(self.values[&#34;fields&#34;])
-            )
+            num = len(self.values[&#34;fields&#34;])
+            title = &#34;, &#34;.join(self.values[&#34;fields&#34;])
+            name = f&#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;
         return name
 
     def __repr__(self):
-        return &#34;[{message_type}] warning on column {column}&#34;.format(
-            message_type=self.message_type.name, column=self.column_name
-        )
+        message_type = self.message_type.name
+        column = self.column_name
+        return f&#34;[{message_type}] warning on column {column}&#34;
 
 
 def check_table_messages(table: dict) -&gt; List[Message]:
@@ -180,8 +180,7 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 fields={},
             )
         )
-
-    if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
+    elif description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
             Message(
                 column_name=col,
@@ -203,8 +202,7 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 fields={},
             )
         )
-
-    if description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
+    elif description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
         messages.append(
             Message(
                 column_name=col,
@@ -486,8 +484,7 @@ def warning_type_date(series):
                 fields={},
             )
         )
-
-    if description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
+    elif description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
         messages.append(
             Message(
                 column_name=col,
@@ -509,8 +506,7 @@ def warning_type_date(series):
                 fields={},
             )
         )
-
-    if description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
+    elif description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
         messages.append(
             Message(
                 column_name=col,
@@ -706,15 +702,15 @@ def warning_type_date(series):
         # TODO: render in template
         name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
         if name == &#34;HIGH CORRELATION&#34;:
-            name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
-                num=len(self.values[&#34;fields&#34;]), title=&#34;, &#34;.join(self.values[&#34;fields&#34;])
-            )
+            num = len(self.values[&#34;fields&#34;])
+            title = &#34;, &#34;.join(self.values[&#34;fields&#34;])
+            name = f&#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;
         return name
 
     def __repr__(self):
-        return &#34;[{message_type}] warning on column {column}&#34;.format(
-            message_type=self.message_type.name, column=self.column_name
-        )</code></pre>
+        message_type = self.message_type.name
+        column = self.column_name
+        return f&#34;[{message_type}] warning on column {column}&#34;</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -731,9 +727,9 @@ def warning_type_date(series):
     # TODO: render in template
     name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
     if name == &#34;HIGH CORRELATION&#34;:
-        name = &#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;.format(
-            num=len(self.values[&#34;fields&#34;]), title=&#34;, &#34;.join(self.values[&#34;fields&#34;])
-        )
+        num = len(self.values[&#34;fields&#34;])
+        title = &#34;, &#34;.join(self.values[&#34;fields&#34;])
+        name = f&#39;&lt;abbr title=&#34;This variable has a high correlation with {num} fields: {title}&#34;&gt;HIGH CORRELATION&lt;/abbr&gt;&#39;
     return name</code></pre>
 </details>
 </dd>

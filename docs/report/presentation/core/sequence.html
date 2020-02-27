@@ -38,12 +38,14 @@ class Sequence(Renderable):
         text = &#34;Sequence\n&#34;
         if &#34;items&#34; in self.content:
             for id, item in enumerate(self.content[&#34;items&#34;]):
-                text += &#34;- {}: {}\n&#34;.format(id, str(item).replace(&#34;\n&#34;, &#34;\n\t&#34;))
+                name = str(item).replace(&#34;\n&#34;, &#34;\n\t&#34;)
+                text += f&#34;- {id}: {name}\n&#34;
         return text
 
     def __repr__(self) -&gt; str:
         if &#34;name&#34; in self.content:
-            return &#34;Sequence(name={name})&#34;.format(name=self.content[&#34;name&#34;])
+            name = self.content[&#34;name&#34;]
+            return f&#34;Sequence(name={name})&#34;
         else:
             return &#34;Sequence&#34;
 
@@ -87,12 +89,14 @@ inheritance.</p></section>
         text = &#34;Sequence\n&#34;
         if &#34;items&#34; in self.content:
             for id, item in enumerate(self.content[&#34;items&#34;]):
-                text += &#34;- {}: {}\n&#34;.format(id, str(item).replace(&#34;\n&#34;, &#34;\n\t&#34;))
+                name = str(item).replace(&#34;\n&#34;, &#34;\n\t&#34;)
+                text += f&#34;- {id}: {name}\n&#34;
         return text
 
     def __repr__(self) -&gt; str:
         if &#34;name&#34; in self.content:
-            return &#34;Sequence(name={name})&#34;.format(name=self.content[&#34;name&#34;])
+            name = self.content[&#34;name&#34;]
+            return f&#34;Sequence(name={name})&#34;
         else:
             return &#34;Sequence&#34;
 

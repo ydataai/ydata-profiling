@@ -27,7 +27,7 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Plot functions for the profiling report.&#34;&#34;&#34;
 
-from typing import Union
+from typing import Union, Optional
 
 import matplotlib
 import numpy as np
@@ -154,6 +154,28 @@ def get_cmap_half(cmap_name):
     return LinearSegmentedColormap.from_list(&#34;cmap_half&#34;, colors)
 
 
+def get_correlation_font_size(n_labels) -&gt; Optional[int]:
+    &#34;&#34;&#34;Dynamic label font sizes in correlation plots
+
+    Args:
+        n_labels: the number of labels
+
+    Returns:
+        A font size or None for the default font size
+    &#34;&#34;&#34;
+    if n_labels &gt; 100:
+        font_size = 4
+    elif n_labels &gt; 80:
+        font_size = 5
+    elif n_labels &gt; 50:
+        font_size = 6
+    elif n_labels &gt; 40:
+        font_size = 8
+    else:
+        return None
+    return font_size
+
+
 def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
     &#34;&#34;&#34;Plot image of a matrix correlation.
 
@@ -176,8 +198,10 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
     plt.colorbar(matrix_image)
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
-    axes_cor.set_xticklabels(labels, rotation=90)
-    axes_cor.set_yticklabels(labels)
+
+    font_size = get_correlation_font_size(len(labels))
+    axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
+    axes_cor.set_yticklabels(labels, fontsize=font_size)
     plt.subplots_adjust(bottom=0.2)
 
     return plot_360_n0sc0pe(plt)
@@ -286,8 +310,10 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
     plt.colorbar(matrix_image)
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
-    axes_cor.set_xticklabels(labels, rotation=90)
-    axes_cor.set_yticklabels(labels)
+
+    font_size = get_correlation_font_size(len(labels))
+    axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
+    axes_cor.set_yticklabels(labels, fontsize=font_size)
     plt.subplots_adjust(bottom=0.2)
 
     return plot_360_n0sc0pe(plt)</code></pre>
@@ -332,6 +358,47 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 
     # Create a new colormap from those colors
     return LinearSegmentedColormap.from_list(&#34;cmap_half&#34;, colors)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.get_correlation_font_size"><code class="name flex">
+<span>def <span class="ident">get_correlation_font_size</span></span>(<span>n_labels)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Dynamic label font sizes in correlation plots</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>n_labels</code></strong></dt>
+<dd>the number of labels</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A</code> <code>font</code> <code>size</code> or <code>None</code> <code>for</code> <code>the</code> default <code>font</code> <code>size</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_correlation_font_size(n_labels) -&gt; Optional[int]:
+    &#34;&#34;&#34;Dynamic label font sizes in correlation plots
+
+    Args:
+        n_labels: the number of labels
+
+    Returns:
+        A font size or None for the default font size
+    &#34;&#34;&#34;
+    if n_labels &gt; 100:
+        font_size = 4
+    elif n_labels &gt; 80:
+        font_size = 5
+    elif n_labels &gt; 50:
+        font_size = 6
+    elif n_labels &gt; 40:
+        font_size = 8
+    else:
+        return None
+    return font_size</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.plot.histogram"><code class="name flex">
@@ -526,9 +593,10 @@ Returns:</p></section>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="pandas_profiling.visualisation.plot.correlation_matrix" href="#pandas_profiling.visualisation.plot.correlation_matrix">correlation_matrix</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.get_cmap_half" href="#pandas_profiling.visualisation.plot.get_cmap_half">get_cmap_half</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.get_correlation_font_size" href="#pandas_profiling.visualisation.plot.get_correlation_font_size">get_correlation_font_size</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.histogram" href="#pandas_profiling.visualisation.plot.histogram">histogram</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.mini_histogram" href="#pandas_profiling.visualisation.plot.mini_histogram">mini_histogram</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.scatter_complex" href="#pandas_profiling.visualisation.plot.scatter_complex">scatter_complex</a></code></li>

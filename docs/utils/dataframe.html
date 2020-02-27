@@ -42,13 +42,11 @@ def warn_read(extension):
         extension: The extension that is not supported.
     &#34;&#34;&#34;
     warnings.warn(
-        &#34;There was an attempt to read a file with extension {extension}, we assume it to be in CSV format.\n&#34;
-        &#34;To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas\n&#34;
-        &#34;(docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)\n&#34;
-        &#34;If you think this extension should be supported, please report this as an issue:\n&#34;
-        &#34;https://github.com/pandas-profiling/pandas-profiling/issues&#34;.format(
-            extension=extension
-        )
+        f&#34;&#34;&#34;There was an attempt to read a file with extension {extension}, we assume it to be in CSV format.
+To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas
+(docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)
+If you think this extension should be supported, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues&#34;&#34;&#34;
     )
 
 
@@ -355,13 +353,11 @@ to be <code>df_index</code>.</p>
         extension: The extension that is not supported.
     &#34;&#34;&#34;
     warnings.warn(
-        &#34;There was an attempt to read a file with extension {extension}, we assume it to be in CSV format.\n&#34;
-        &#34;To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas\n&#34;
-        &#34;(docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)\n&#34;
-        &#34;If you think this extension should be supported, please report this as an issue:\n&#34;
-        &#34;https://github.com/pandas-profiling/pandas-profiling/issues&#34;.format(
-            extension=extension
-        )
+        f&#34;&#34;&#34;There was an attempt to read a file with extension {extension}, we assume it to be in CSV format.
+To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas
+(docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)
+If you think this extension should be supported, please report this as an issue:
+https://github.com/pandas-profiling/pandas-profiling/issues&#34;&#34;&#34;
     )</code></pre>
 </details>
 </dd>

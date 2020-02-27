@@ -11,6 +11,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 
 
 def render_boolean(summary):
+    varid = summary["varid"]
     n_obs_bool = config["vars"]["bool"]["n_obs"].get(int)
 
     # Prepare variables
@@ -71,13 +72,11 @@ def render_boolean(summary):
     freqtable = FrequencyTable(
         template_variables["freq_table_rows"],
         name="Frequency Table",
-        anchor_id="{varid}frequency_table".format(varid=summary["varid"]),
+        anchor_id=f"{varid}frequency_table",
     )
 
     template_variables["bottom"] = Sequence(
-        [freqtable],
-        sequence_type="tabs",
-        anchor_id="{varid}bottom".format(varid=summary["varid"]),
+        [freqtable], sequence_type="tabs", anchor_id=f"{varid}bottom"
     )
 
     return template_variables

@@ -24,9 +24,7 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
 
     # Version
     parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s {version}".format(version=__version__),
+        "--version", action="version", version=f"%(prog)s {__version__}"
     )
 
     # Console specific

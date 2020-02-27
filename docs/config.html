@@ -72,7 +72,7 @@ class Config(object):
                 else:
                     reference[key].set(value)
             else:
-                raise ValueError(&#39;Config parameter &#34;{}&#34; does not exist.&#39;.format(key))
+                raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
     def set_kwargs(self, kwargs) -&gt; None:
         &#34;&#34;&#34;
@@ -156,7 +156,7 @@ various ways (notably via argparse and kwargs).</p>
                 else:
                     reference[key].set(value)
             else:
-                raise ValueError(&#39;Config parameter &#34;{}&#34; does not exist.&#39;.format(key))
+                raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
     def set_kwargs(self, kwargs) -&gt; None:
         &#34;&#34;&#34;

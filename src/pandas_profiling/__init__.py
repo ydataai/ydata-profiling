@@ -3,8 +3,6 @@
 .. include:: ../../README.md
 """
 import json
-import sys
-import warnings
 from pathlib import Path
 from datetime import datetime
 
@@ -33,12 +31,6 @@ class ProfileReport(object):
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
     def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
-        if sys.version_info <= (3, 5):
-            warnings.warn(
-                "This is the last release to support Python 3.5, please upgrade.",
-                category=DeprecationWarning,
-            )
-
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
@@ -196,14 +188,15 @@ class ProfileReport(object):
     def to_json(self) -> str:
         class CustomEncoder(json.JSONEncoder):
             def default(self, o):
+                name = o.__class__.__name__
                 if isinstance(o, pd.core.series.Series) or isinstance(
                     o, pd.core.frame.DataFrame
                 ):
-                    return {"__{}__".format(o.__class__.__name__): o.to_json()}
+                    return {f"__{name}__": o.to_json()}
                 if isinstance(o, np.integer):
-                    return {"__{}__".format(o.__class__.__name__): o.tolist()}
+                    return {f"__{name}__": o.tolist()}
 
-                return {"__{}__".format(o.__class__.__name__): str(o)}
+                return {f"__{name}__": str(o)}
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 

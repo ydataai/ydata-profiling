@@ -45,7 +45,7 @@ class Config(object):
                 else:
                     reference[key].set(value)
             else:
-                raise ValueError('Config parameter "{}" does not exist.'.format(key))
+                raise ValueError(f'Config parameter "{key}" does not exist.')
 
     def set_kwargs(self, kwargs) -> None:
         """

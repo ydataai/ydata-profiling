@@ -18,20 +18,12 @@ def get_notebook_iframe_srcdoc(profile):
     """
     from IPython.core.display import HTML
 
-    iframe = """
-                <iframe
-                    width="{width}"
-                    height="{height}"
-                    srcdoc="{src}"
-                    frameborder="0"
-                    allowfullscreen
-                ></iframe>
-                """
-    iframe = iframe.format(
-        width=config["notebook"]["iframe"]["width"].get(str),
-        height=config["notebook"]["iframe"]["height"].get(str),
-        src=html.escape(profile.to_html()),
-    )
+    width = config["notebook"]["iframe"]["width"].get(str)
+    height = config["notebook"]["iframe"]["height"].get(str)
+    src = html.escape(profile.to_html())
+
+    iframe = f'<iframe width="{width}" height="{height}" srcdoc="{src}" frameborder="0" allowfullscreen></iframe>'
+
     return HTML(iframe)
 
 
@@ -73,7 +65,7 @@ def get_notebook_iframe(profile) -> CoreWidget:
         output = get_notebook_iframe_srcdoc(profile)
     else:
         raise ValueError(
-            'Iframe Attribute can be "src" or "srcdoc" (current: {}).'.format(attribute)
+            f'Iframe Attribute can be "src" or "srcdoc" (current: {attribute}).'
         )
 
     return output

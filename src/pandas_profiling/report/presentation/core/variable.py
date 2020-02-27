@@ -10,16 +10,19 @@ class Variable(ItemRenderer):
         top: Renderable,
         bottom: Union[Renderable, None] = None,
         ignore: bool = False,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(
             "variable", {"top": top, "bottom": bottom, "ignore": ignore}, **kwargs
         )
 
     def __str__(self):
+        top_text = str(self.content["top"]).replace("\n", "\n\t")
+        bottom_text = str(self.content["bottom"]).replace("\n", "\n\t")
+
         text = "Variable\n"
-        text += "- top: {}".format(str(self.content["top"]).replace("\n", "\n\t"))
-        text += "- bottom: {}".format(str(self.content["bottom"]).replace("\n", "\n\t"))
+        text += f"- top: {top_text}"
+        text += f"- bottom: {bottom_text}"
         return text
 
     def __repr__(self):

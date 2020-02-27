@@ -69,17 +69,15 @@ def get_correlation_items(summary) -> Optional[Renderable]:
             plot.correlation_matrix(item, vmin=vmin),
             image_format=image_format,
             alt=name,
-            anchor_id="{key}_diagram".format(key=key),
+            anchor_id=f"{key}_diagram",
             name=name,
             classes="correlation-diagram",
         )
 
         if len(description) > 0:
             desc = HTML(
-                '<div style="padding:20px" class="text-muted"><h3>{name}</h3>{description}</div>'.format(
-                    description=description, name=name
-                ),
-                anchor_id="{key}_html".format(key=key),
+                f'<div style="padding:20px" class="text-muted"><h3>{name}</h3>{description}</div>',
+                anchor_id=f"{key}_html",
                 classes="correlation-description",
             )
 

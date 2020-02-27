@@ -6,6 +6,7 @@ from pandas_profiling.report.structure.variables.render_path import render_path
 
 
 def render_path_image(summary):
+    varid = summary["varid"]
     n_freq_table_max = config["n_freq_table_max"].get(int)
     image_format = config["plot"]["image_format"].get(str)
 
@@ -18,25 +19,25 @@ def render_path_image(summary):
     keys = {"Image shape": "image_shape", "Exif keys": "exif_keys"}
 
     for title, key in keys.items():
-        template_variables["freqtable_{}".format(key)] = freq_table(
-            freqtable=summary["{}_counts".format(key)],
+        template_variables[f"freqtable_{key}"] = freq_table(
+            freqtable=summary[f"{key}_counts"],
             n=summary["n"],
             max_number_to_print=n_freq_table_max,
         )
 
     # TODO: add dropdown to switch to specific values
     exif_keys = FrequencyTable(
-        template_variables["freqtable_{}".format("exif_keys")],
+        template_variables["freqtable_exif_keys"],
         name="Exif keys",
-        anchor_id="{varid}exif_frequency".format(varid=summary["varid"]),
+        anchor_id=f"{varid}exif_frequency",
     )
 
     template_variables["bottom"].content["items"].append(exif_keys)
 
     image_shape_freq = FrequencyTable(
-        template_variables["freqtable_{}".format("image_shape")],
+        template_variables["freqtable_image_shape"],
         name="Frequency",
-        anchor_id="{varid}image_shape_frequency".format(varid=summary["varid"]),
+        anchor_id=f"{varid}image_shape_frequency",
     )
 
     image_shape_scatter = Image(
@@ -45,14 +46,14 @@ def render_path_image(summary):
         alt="Scatterplot of image sizes",
         caption="Scatterplot of image sizes",
         name="Scatter",
-        anchor_id="{varid}scatter".format(varid=summary["varid"]),
+        anchor_id=f"{varid}scatter",
     )
 
     image_shape = Sequence(
         [image_shape_freq, image_shape_scatter],
         sequence_type="tabs",
         name="Image shape",
-        anchor_id="{varid}image_shape".format(varid=summary["varid"]),
+        anchor_id=f"{varid}image_shape",
     )
 
     template_variables["bottom"].content["items"].append(image_shape)

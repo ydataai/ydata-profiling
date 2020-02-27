@@ -206,10 +206,8 @@ def get_scatter_matrix(scatter_matrix):
                 Image(
                     splot,
                     image_format=image_format,
-                    alt=&#34;{x_col} x {y_col}&#34;.format(x_col=x_col, y_col=y_col),
-                    anchor_id=&#34;interactions_{x_col}_{y_col}&#34;.format(
-                        x_col=x_col, y_col=y_col
-                    ),
+                    alt=f&#34;{x_col} x {y_col}&#34;,
+                    anchor_id=f&#34;interactions_{x_col}_{y_col}&#34;,
                     name=y_col,
                 )
             )
@@ -219,7 +217,7 @@ def get_scatter_matrix(scatter_matrix):
                 items,
                 sequence_type=&#34;tabs&#34;,
                 name=x_col,
-                anchor_id=&#34;interactions_{x_col}&#34;.format(x_col=x_col),
+                anchor_id=f&#34;interactions_{x_col}&#34;,
             )
         )
     return titems
@@ -537,10 +535,8 @@ def get_report_structure(
                 Image(
                     splot,
                     image_format=image_format,
-                    alt=&#34;{x_col} x {y_col}&#34;.format(x_col=x_col, y_col=y_col),
-                    anchor_id=&#34;interactions_{x_col}_{y_col}&#34;.format(
-                        x_col=x_col, y_col=y_col
-                    ),
+                    alt=f&#34;{x_col} x {y_col}&#34;,
+                    anchor_id=f&#34;interactions_{x_col}_{y_col}&#34;,
                     name=y_col,
                 )
             )
@@ -550,7 +546,7 @@ def get_report_structure(
                 items,
                 sequence_type=&#34;tabs&#34;,
                 name=x_col,
-                anchor_id=&#34;interactions_{x_col}&#34;.format(x_col=x_col),
+                anchor_id=f&#34;interactions_{x_col}&#34;,
             )
         )
     return titems</code></pre>
