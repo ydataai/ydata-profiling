@@ -7,6 +7,10 @@ source_root = Path(".")
 with (source_root / "README.md").open(encoding="utf-8") as f:
     long_description = f.read()
 
+# Read the requirements
+with (source_root / "requirements.txt").open(encoding="utf8") as f:
+    requirements = f.readlines()
+
 version = "2.6.0"
 
 with (source_root / "src" / "pandas_profiling" / "version.py").open(
@@ -31,26 +35,7 @@ setup(
     license="MIT",
     description="Generate profile report for pandas DataFrame",
     python_requires=">=3.6",
-    install_requires=[
-        "numpy>=1.16.0",
-        "scipy>=1.4.1",
-        "pandas==0.25.3",
-        "matplotlib==3.1.3",
-        "confuse==1.0.0",
-        "jinja2==2.11.1",
-        "visions==0.2.2",
-        # Related to HTML report
-        "htmlmin==0.1.12",
-        # Could be optional
-        "missingno==0.4.2",
-        "phik==0.9.9",
-        "astropy==4.0",
-        "tangled-up-in-unicode==0.0.3",
-        "tqdm==4.43.0",
-        "kaggle==1.5.6",
-        "ipywidgets==7.5.1",
-        "requests==2.23.0",
-    ],
+    install_requires=requirements,
     extras_require={
         "notebook": ["jupyter-client==6.0.0", "jupyter-core==4.6.3"],
         "app": ["pyqt5==5.14.1"],
