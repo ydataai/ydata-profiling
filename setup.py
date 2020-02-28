@@ -37,7 +37,7 @@ setup(
         "matplotlib>=3.0.3",  # 3.1.2 for Python > 3.5
         "confuse==1.0.0",
         "jinja2==2.11.1",
-        "visions==0.2.2",
+        "visions==0.2.3",
         # Related to HTML report
         "htmlmin==0.1.12",
         # Could be optional
