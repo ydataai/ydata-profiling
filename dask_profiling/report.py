@@ -114,7 +114,10 @@ def to_html(sample, stats_object):
 
         # If it's mixed between base types (str, int) convert to str. Pure "mixed" types are filtered during type discovery
         if "mixed" in freqtable.index.inferred_type:
-            freqtable.index = freqtable.index.astype(str)
+            try:
+                freqtable.index = freqtable.index.astype(str)
+            except TypeError:
+                freqtable.index = map(str, freqtable.index)
 
         sorted_freqTable = freqtable.sort_index()
 
