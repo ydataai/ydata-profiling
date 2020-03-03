@@ -42,26 +42,23 @@ def _plot_histogram(series, bins=10, figsize=(6, 4), facecolor='#337ab7'):
     matplotlib.AxesSubplot
         The plot.
     """
+    fig = plt.figure(figsize=figsize)
+    plot = fig.add_subplot(111)
+
     vartype = base.get_vartype(series)
     if vartype == base.TYPE_DATE:
         # Converts datetime to timestamp, so we can plot the histogram
         arr = series.map_partitions(lambda x: x.map(lambda y: y.timestamp())).to_dask_array()
         plot_hist, plot_bins = da.histogram(arr, bins=10, range=[arr.min(), arr.max()])
+        
         # TODO: Handle the conversion back to datetime
+        width = 0.7 * (plot_bins[1] - plot_bins[0])
+        center = (plot_bins[:-1] + plot_bins[1:]) / 2
+        plot.set_ylabel('Frequency')
+        
+        plot.bar(center, plot_hist, align='center', width=width, color=facecolor)
     else:
-        arr = series.to_dask_array()
-        arr_range = da.compute([arr.min(), arr.max()])[0]
-        plot_hist, plot_bins = da.histogram(arr, bins=10, range=arr_range)
-
-    width = 0.7 * (plot_bins[1] - plot_bins[0])
-    center = (plot_bins[:-1] + plot_bins[1:]) / 2
-
-    # TODO: These calls should be merged
-    fig = plt.figure(figsize=figsize)
-    plot = fig.add_subplot(111)
-    plot.set_ylabel('Frequency')
-    
-    plot.bar(center, plot_hist, align='center', width=width, color=facecolor)
+        plot.hist(series.dropna().values, bins=bins, facecolor=facecolor)
 
     return plot
 
