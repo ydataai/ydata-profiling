@@ -294,7 +294,7 @@ def describe_1d(data, **kwargs):
             # TYPE_CAT
             result.update(describe_categorical_1d(data))
 
-    return data.name, result
+    return result
 
 def multiprocess_func(x, **kwargs):
     return x[0], describe_1d(x[1], **kwargs)
@@ -386,7 +386,7 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
 
     ldesc = dict()
     for col in df.columns:
-        _, desc = describe_1d(df[col])
+        desc = describe_1d(df[col])
         ldesc[col] = desc
 
     # Get correlations
