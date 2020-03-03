@@ -129,6 +129,7 @@ def describe_boolean_1d(series):
         The description of the variable as a dict with keys being stats.
     """
     value_counts, distinct_count = base.get_groupby_statistic(series)
+    value_counts = value_counts.compute()  # TODO: compare .compute() and .head()
     top, freq = value_counts.index[0], value_counts.iloc[0]
     # The mean of boolean is an interesting information
     mean = series.mean()
