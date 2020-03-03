@@ -48,7 +48,7 @@ def _plot_histogram(series, bins=10, figsize=(6, 4), facecolor='#337ab7'):
     vartype = base.get_vartype(series)
     if vartype == base.TYPE_DATE:
         # Converts datetime to timestamp, so we can plot the histogram
-        arr = series.map_partitions(lambda x: x.map(lambda y: y.timestamp())).to_dask_array()
+        arr = series.dropna().map_partitions(lambda x: x.map(lambda y: y.timestamp())).to_dask_array()
         plot_hist, plot_bins = da.histogram(arr, bins=10, range=[arr.min(), arr.max()])
         
         # TODO: Handle the conversion back to datetime
