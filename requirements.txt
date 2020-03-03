@@ -12,7 +12,7 @@ htmlmin==0.1.12
 # Missing values
 missingno==0.4.2
 # Correlations
-phik==0.9.9
+phik==0.9.10
 # Dynamic histograms
 astropy==4.0
 # Text analysis
