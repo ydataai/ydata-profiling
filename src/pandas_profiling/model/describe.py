@@ -274,7 +274,7 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
     # number of non-NaN observations in the Series
     count = series.count()
     # number of infinite observations in the Series
-    n_infinite = count - series.count()
+    n_infinite = leng - count
 
     distinct_count = series_description["distinct_count_without_nan"]
 
