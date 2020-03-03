@@ -5,6 +5,7 @@ import unittest
 import datetime
 import numpy as np
 import pandas as pd
+import dask.dataframe as dd
 from pandas import Series
 import six
 import dask_profiling
@@ -38,6 +39,7 @@ class DataFrameTest(unittest.TestCase):
         }
         self.df = pd.DataFrame(self.data)
         self.df['somedate'] = pd.to_datetime(self.df['somedate'])
+        self.df = dd.from_pandas(self.df, npartitions=3)
 
         self.results = describe(self.df)
         self.test_dir = tempfile.mkdtemp()
@@ -271,7 +273,7 @@ class CategoricalDataTest(unittest.TestCase):
              'x': ['chien', 'chien', 'chien', 'chien', 'chat', 'chat', 'chameaux', 'chameaux'],
              'y': ['dog', 'dog', 'dog', 'dog', 'cat', 'cat', 'camel', 'camel'],
            }
-        self.df = pd.DataFrame(self.data)
+        self.df = dd.from_pandas(pd.DataFrame(self.data), npartitions=4)
         self.results = describe(self.df, check_recoded=True)
         self.assertEqual(self.results['variables'].loc['x']['type'], 'RECODED')
         self.assertEqual(
@@ -294,19 +296,19 @@ class Describe1dTest(unittest.TestCase):
     def test_unique(self):
         """Test the unique feature of 1D data"""
         # Unique values
-        self._assert_unique(pd.Series([1, 2]), True, 1)
+        self._assert_unique(dd.from_pandas(pd.Series([1, 2]), npartitions=2), True, 1)
         # Unique values all nan
-        self._assert_unique(pd.Series([np.nan]), True, 1)
+        self._assert_unique(dd.from_pandas(pd.Series([np.nan]), npartitions=1), True, 1)
         # Unique values including nan
-        self._assert_unique(pd.Series([1, 2, np.nan]), True, 1)
+        self._assert_unique(dd.from_pandas(pd.Series([1, 2, np.nan]), npartitions=2), True, 1)
         # Non unique values
-        self._assert_unique(pd.Series([1, 2, 2]), False, 2/3)
+        self._assert_unique(dd.from_pandas(pd.Series([1, 2, 2]), npartitions=2), False, 2/3)
         # Non unique nan
-        self._assert_unique(pd.Series([1, np.nan, np.nan]), False, 2/3)
+        self._assert_unique(dd.from_pandas(pd.Series([1, np.nan, np.nan]), npartitions=2), False, 2/3)
         # Non unique values including nan
-        self._assert_unique(pd.Series([1, 2, 2, np.nan]), False, 3/4)
+        self._assert_unique(dd.from_pandas(pd.Series([1, 2, 2, np.nan]), npartitions=2), False, 3/4)
         # Non unique values including non unique nan
-        self._assert_unique(pd.Series([1, 2, 2, np.nan, np.nan]), False, 3/5)
+        self._assert_unique(dd.from_pandas(pd.Series([1, 2, 2, np.nan, np.nan]), npartitions=2), False, 3/5)
 
     def _assert_unique(self, data, is_unique, p_unique):
         desc_1d = describe_1d(data)

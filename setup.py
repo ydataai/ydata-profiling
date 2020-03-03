@@ -14,23 +14,25 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='pandas-profiling',
+    name='dask-profiling',
     version='1.4.2',
     author='Jos Polfliet',
     author_email='jos.polfliet+panpro@gmail.com',
     packages=['dask_profiling'],
-    url='https://github.com/pandas-profiling/pandas-profiling',
+    url='https://github.com/brunompacheco/pandas-profiling',
     license='MIT',
-    description='Generate profile report for pandas DataFrame',
+    description='Generate profile report for dask DataFrame',
     install_requires=[
-        "pandas>=0.19",
+        # "pandas>=0.19",
+        "dask>=2.11.0",
         "matplotlib>=1.4",
         "jinja2>=2.8",
-        "six>=1.9"
+        "six>=1.9",
+        "scipy>=1.4.1"
     ],
     include_package_data = True,
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 2 - Pre-Alpha',
         'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: MIT License',
         'Environment :: Console',
@@ -46,7 +48,7 @@ setup(
         'Programming Language :: Python :: 3.7'
 
     ],
-    keywords='pandas data-science data-analysis python jupyter ipython',
+    keywords='dask data-science data-analysis python jupyter ipython',
     long_description=long_description,
     long_description_content_type='text/markdown'
 
