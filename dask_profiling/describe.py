@@ -415,9 +415,11 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
                         'correlation': corr
                     }
 
-        # TODO:
+        # TODO: implement crosstab for dask or find another way to check the recoding. 
+        # Perhaps, some approahc where we don't need to compare all the combinations 
+        # between the categories
         # if check_recoded:
-        #     categorical_variables = [(name, data) for (name, data) in df.iteritems() if base.get_vartype(data)=='CAT']
+        #     categorical_variables = [(df[col].name, df[col]) for col in df.columns if base.get_vartype(df[col])=='CAT']
         #     for (name1, data1), (name2, data2) in itertools.combinations(categorical_variables, 2):
         #         if correlation_overrides and name1 in correlation_overrides:
         #             continue
