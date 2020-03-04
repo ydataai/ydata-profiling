@@ -48,10 +48,8 @@ def get_groupby_statistic(data):
     value_counts_without_nan = data.dropna().value_counts()
     distinct_count_with_nan = value_counts_with_nan.count()
 
-    # DEACTIVATED (for now) BECAUSE OF .compute() COSTS
-    # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict, list and so on...
-    # if value_counts_without_nan.index.compute().inferred_type == "mixed":
-    #     raise TypeError('Not supported mixed type')
+    if value_counts_without_nan.index.head(50).inferred_type == "mixed":
+        raise TypeError('Not supported mixed type')
 
     result = [value_counts_without_nan, distinct_count_with_nan]
 
