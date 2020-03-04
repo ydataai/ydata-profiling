@@ -367,11 +367,12 @@ def describe(df, bins=10, check_correlation=True, correlation_threshold=0.9, cor
     # Clearing the cache before computing stats
     base.clear_cache()
 
-    # TODO: Improve this check, it'll take a LONG time this way
+    # TODO: Improve this check, it'd take a LONG time this way
     # if not pd.Index(np.arange(0, len(df))).equals(df.index.compute()):
     #     # Treat index as any other column
     #     df = df.reset_index()
-    df = df.reset_index()
+    if not isinstance(df.index.head(), pd.RangeIndex):
+        df = df.reset_index()
 
     kwargs.update({'bins': bins})
     # Describe all variables in a univariate way
