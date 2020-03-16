@@ -1,5 +1,5 @@
 scipy>=1.4.1
-pandas==0.25.3
+pandas==1.0.2
 matplotlib==3.2.0
 confuse==1.0.0
 jinja2==2.11.1
