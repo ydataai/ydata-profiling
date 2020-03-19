@@ -1,6 +1,6 @@
 scipy>=1.4.1
 pandas==0.25.3
-matplotlib==3.2.0
+matplotlib==3.2.1
 confuse==1.0.0
 jinja2==2.11.1
 visions==0.2.3
