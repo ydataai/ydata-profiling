@@ -37,7 +37,7 @@ setup(
     python_requires=">=3.6",
     install_requires=requirements,
     extras_require={
-        "notebook": ["jupyter-client==6.0.0", "jupyter-core==4.6.3"],
+        "notebook": ["jupyter-client==6.1.0", "jupyter-core==4.6.3"],
         "app": ["pyqt5==5.14.1"],
     },
     include_package_data=True,
