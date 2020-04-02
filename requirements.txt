@@ -14,7 +14,7 @@ missingno==0.4.2
 # Correlations
 phik==0.9.10
 # Dynamic histograms
-astropy==4.0
+astropy==4.0.1.post1
 # Text analysis
 tangled-up-in-unicode==0.0.4
 # Examples
