@@ -187,16 +187,22 @@ class ProfileReport(object):
 
     def to_json(self) -> str:
         class CustomEncoder(json.JSONEncoder):
-            def default(self, o):
-                name = o.__class__.__name__
-                if isinstance(o, pd.core.series.Series) or isinstance(
-                    o, pd.core.frame.DataFrame
-                ):
-                    return {f"__{name}__": o.to_json()}
-                if isinstance(o, np.integer):
-                    return {f"__{name}__": o.tolist()}
+            def key_to_json(self, data):
+                if data is None or isinstance(data, (bool, int, str)):
+                    return data
+                return str(data)
 
-                return {f"__{name}__": str(o)}
+            def default(self, o):
+                if isinstance(o, pd.core.series.Series):
+                    return self.default(o.to_dict())
+
+                if isinstance(o, np.integer):
+                    return o.tolist()
+
+                if isinstance(o, dict):
+                    return {self.key_to_json(key): self.default(o[key]) for key in o}
+
+                return str(o)
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
