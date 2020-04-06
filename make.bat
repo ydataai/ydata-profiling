@@ -34,8 +34,10 @@ IF "%1" == "examples" (
 
 IF "%1" == "pypi_package" (
 	make install
-    python setup.py sdist
-    twine upload dist/*
+    check-manifest
+    python setup.py sdist bdist_wheel
+    twine check dist/*
+    twine upload --skip-existing dist/*
     ECHO "PyPi package completed"
     GOTO end
 )

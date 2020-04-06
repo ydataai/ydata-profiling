@@ -9,6 +9,13 @@ test:
 	pytest --nbval tests/notebooks/
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 
+pypi_package:
+	make install
+	check-manifest
+	python setup.py sdist bdist_wheel
+	twine check dist/*
+	twine upload --skip-existing dist/*
+
 install:
 	pip install -e .
 

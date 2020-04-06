@@ -1,5 +1,23 @@
+# Requirements
+include requirements*.txt
+
+# Include license, Readme, etc.
 include LICENSE
+include *.md
+
+# Styles
 include src/pandas_profiling/visualisation/*.mplstyle
+
+# Templates and static resources
 recursive-include src/pandas_profiling/report/presentation/flavours/html/templates *.html *.js *.css
+
+# Configuration
 include src/pandas_profiling/*.yaml
-include README.md
+
+# Exclude development, testing and example code
+exclude .pre-commit-config.yaml
+include Makefile make.bat
+exclude docs examples tests
+recursive-exclude docs *
+recursive-exclude examples *
+recursive-exclude tests *
