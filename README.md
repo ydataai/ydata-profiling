@@ -76,10 +76,10 @@ You can install using the pip package manager by running
 
     pip install pandas-profiling[notebook,html]
     
-Alternatively, you could install directly from Github:
+Alternatively, you could install the latest version directly from Github:
 
     pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
-
+    
     
 ### Using conda
 
