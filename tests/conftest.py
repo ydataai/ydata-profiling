@@ -1,4 +1,5 @@
 import shutil
+import sys
 from pathlib import Path
 
 import pytest
@@ -7,6 +8,10 @@ from pandas_profiling.utils.cache import cache_file
 
 
 def pytest_configure(config):
+    config.addinivalue_line("markers", "linux: Test with linux")
+    config.addinivalue_line("markers", "win32: Test with windows")
+    config.addinivalue_line("markers", "darwin: Test with darwin")
+
     plugin = config.pluginmanager.getplugin("mypy")
     plugin.mypy_argv.append("--ignore-missing-imports")
 
@@ -28,3 +33,13 @@ def test_output_dir(tmpdir_factory):
     test_path = Path(str(tmpdir_factory.mktemp("test")))
     yield test_path
     shutil.rmtree(str(test_path))
+
+
+def pytest_runtest_setup(item):
+    platforms = {"darwin", "linux", "win32"}
+    supported_platforms = platforms.intersection(
+        mark.name for mark in item.iter_markers()
+    )
+    plat = sys.platform
+    if supported_platforms and plat not in supported_platforms:
+        pytest.skip("cannot run on platform {}".format(plat))

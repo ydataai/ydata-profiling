@@ -677,5 +677,6 @@ def test_describe_empty():
 
 
 def test_describe_list():
-    with pytest.raises(TypeError):
-        describe([1, 2, 3])
+    with pytest.raises(AttributeError):
+        with pytest.warns(UserWarning):
+            describe([1, 2, 3])
