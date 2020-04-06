@@ -3,6 +3,7 @@
 .. include:: ../../README.md
 """
 import json
+import warnings
 from pathlib import Path
 from datetime import datetime
 
@@ -134,7 +135,13 @@ class ProfileReport(object):
         elif output_file.suffix == ".json":
             data = self.to_json()
         else:
-            raise ValueError("Extension not supported (please use .html, .json)")
+            suffix = output_file.suffix
+            output_file = output_file.with_suffix(".html")
+            data = self.to_html()
+            warnings.warn(
+                f"Extension {suffix} not supported. For now we assume .html was intended. "
+                f"To remove this warning, please use .html or .json."
+            )
 
         with output_file.open("w", encoding="utf8") as f:
             f.write(data)
