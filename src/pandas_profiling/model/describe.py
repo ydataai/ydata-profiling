@@ -564,7 +564,7 @@ def describe(df: pd.DataFrame) -> dict:
             - messages: direct special attention to these patterns in your data.
     """
     if not isinstance(df, pd.DataFrame):
-        raise TypeError("df must be of type pandas.DataFrame")
+        warnings.warn("df is not of type pandas.DataFrame")
 
     if df.empty:
         raise ValueError("df can not be empty")

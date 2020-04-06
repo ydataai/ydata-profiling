@@ -16,9 +16,16 @@ def test_issue_120(get_data_file):
 
     report = ProfileReport(
         df,
-        correlations={"cramers": {"calculate": False}},
+        correlations={
+            "cramers": {"calculate": False},
+            "phi_k": {"calculate": False},
+            "kendall": {"calculate": False},
+            "spearman": {"calculate": False},
+            "pearson": {"calculate": False},
+            "recoded": {"calculate": False},
+        },
+        progress_bar=False,
+        pool_size=0,
         vars={"cat": {"check_composition": True}},
     )
-    html = report.to_html()
-    assert type(html) == str
-    assert "<p class=h4>Dataset statistics</p>" in html
+    assert report.description_set is not None
