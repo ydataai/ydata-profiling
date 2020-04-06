@@ -17,7 +17,7 @@ class Config(object):
     def __init__(self):
         """The config constructor should be called only once."""
         if self.config is None:
-            self.config = confuse.Configuration("PandasProfiling", __name__)
+            self.config = confuse.Configuration("PandasProfiling", __name__, read=False)
 
         self.set_file(str(get_config_default()))
 
