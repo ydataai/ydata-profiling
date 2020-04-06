@@ -26,7 +26,7 @@ def test_read_pandas_csv():
 
     assert str(e.value) in [
         "[Errno 2] File b'dataframe.csv' does not exist: b'dataframe.csv'",
-        "File dataframe.csv does not exist: 'dataframe.csv'",
+        "[Errno 2] File dataframe.csv does not exist: 'dataframe.csv'",
     ]
 
 

@@ -7,13 +7,14 @@ cache:
     - data/
 
 jobs:
-  include:
-    - python: 3.6
-    - python: 3.7
-    - python: 3.8
-    - python: 3.9-dev
   allow_failures:
     - python: 3.9-dev
+
+python:
+  - 3.6
+  - 3.7
+  - 3.8
+  - 3.9-dev
 
 env:
   - TEST=unit PANDAS="<1"
@@ -39,7 +40,7 @@ install:
   - check-manifest
   - python setup.py sdist bdist_wheel
   - twine check dist/*
-  - pip install -e .[notebook,app,html]
+  - pip install -e .[notebook,app]
 
 script:
   - if [ $TEST == 'unit' ]; then pytest --cov=. tests/unit/; fi
