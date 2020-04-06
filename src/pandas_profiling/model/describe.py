@@ -114,7 +114,11 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
     Returns:
         A dict containing calculated series description values.
     """
-    stats = {"min": series.min(), "max": series.max(), "histogram_data": series}
+    stats = {
+        "min": pd.Timestamp.to_pydatetime(series.min()),
+        "max": pd.Timestamp.to_pydatetime(series.max()),
+        "histogram_data": series,
+    }
 
     bins = config["plot"]["histogram"]["bins"].get(int)
     # Bins should never be larger than the number of distinct values
