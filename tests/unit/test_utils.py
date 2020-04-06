@@ -24,10 +24,10 @@ def test_read_pandas_csv():
     with pytest.raises(OSError) as e:
         read_pandas(p)
 
-    assert (
-        str(e.value)
-        == "[Errno 2] File b'dataframe.csv' does not exist: b'dataframe.csv'"
-    )
+    assert str(e.value) in [
+        "[Errno 2] File b'dataframe.csv' does not exist: b'dataframe.csv'",
+        "File dataframe.csv does not exist: 'dataframe.csv'",
+    ]
 
 
 def test_read_pandas_json():
