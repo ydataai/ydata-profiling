@@ -55,6 +55,8 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     """
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
+    n_infinite = len(series.loc[(~np.isfinite(series)) & series.notnull()])
+
     stats = {
         "mean": series.mean(),
         "std": series.std(),
@@ -68,11 +70,14 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         "n_zeros": (len(series) - np.count_nonzero(series)),
         "histogram_data": series,
         "scatter_data": series,  # For complex
+        "p_infinite": n_infinite / series_description["n"],
+        "n_infinite": n_infinite,
     }
 
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
-        histogram = np.histogram(series[series.notna()].values, bins="auto")[0]
+        with pd.option_context("mode.use_inf_as_na", True):
+            histogram = np.histogram(series[series.notna()].values, bins="auto")[0]
         stats["chi_squared"] = chisquare(histogram)
 
     stats["range"] = stats["max"] - stats["min"]
@@ -129,9 +134,10 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
 
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
-        histogram = np.histogram(
-            series[series.notna()].astype("int64").values, bins="auto"
-        )[0]
+        with pd.option_context("mode.use_inf_as_na", True):
+            histogram = np.histogram(
+                series[series.notna()].astype("int64").values, bins="auto"
+            )[0]
         stats["chi_squared"] = chisquare(histogram)
 
     return stats
@@ -274,11 +280,8 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
 
     # number of observations in the Series
     leng = len(series)
-    # TODO: fix infinite logic
     # number of non-NaN observations in the Series
     count = series.count()
-    # number of infinite observations in the Series
-    n_infinite = count - series.count()
 
     distinct_count = series_description["distinct_count_without_nan"]
 
@@ -289,8 +292,6 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
         "n_unique": distinct_count,
         "p_missing": 1 - count * 1.0 / leng,
         "n_missing": leng - count,
-        "p_infinite": n_infinite * 1.0 / leng,
-        "n_infinite": n_infinite,
         "is_unique": distinct_count == count,
         "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
         "p_unique": distinct_count * 1.0 / count,
@@ -315,16 +316,12 @@ def describe_unsupported(series: pd.Series, series_description: dict):
     leng = len(series)
     # number of non-NaN observations in the Series
     count = series.count()
-    # number of infinte observations in the Series
-    n_infinite = count - series.count()
 
     results_data = {
         "n": leng,
         "count": count,
         "p_missing": 1 - count * 1.0 / leng,
         "n_missing": leng - count,
-        "p_infinite": n_infinite * 1.0 / leng,
-        "n_infinite": n_infinite,
         "memory_size": series.memory_usage(),
     }
 
@@ -340,9 +337,6 @@ def describe_1d(series: pd.Series) -> dict:
     Returns:
         A Series containing calculated series description values.
     """
-
-    # Replace infinite values with NaNs to avoid issues with histograms later.
-    series.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
 
     # Infer variable types
     series_description = base.get_var_type(series)

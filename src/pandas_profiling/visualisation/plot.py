@@ -39,24 +39,24 @@ def _plot_histogram(
 
 
     """
-    if series_description["type"] == Variable.TYPE_DATE:
-        # Workaround for https://github.com/pandas-dev/pandas/issues/17372
-        fig = plt.figure(figsize=figsize)
-        plot = fig.add_subplot(111)
-        plot.set_ylabel("Frequency")
-        plot.hist(
-            series.dropna().values,
-            facecolor=config["html"]["style"]["primary_color"].get(str),
-            bins=bins,
-        )
-
-    else:
-        plot = series.plot(
-            kind="hist",
-            figsize=figsize,
-            facecolor=config["html"]["style"]["primary_color"].get(str),
-            bins=bins,
-        )
+    with pd.option_context("mode.use_inf_as_na", True):
+        if series_description["type"] == Variable.TYPE_DATE:
+            # Workaround for https://github.com/pandas-dev/pandas/issues/17372
+            fig = plt.figure(figsize=figsize)
+            plot = fig.add_subplot(111)
+            plot.set_ylabel("Frequency")
+            plot.hist(
+                series.dropna().values,
+                facecolor=config["html"]["style"]["primary_color"].get(str),
+                bins=bins,
+            )
+        else:
+            plot = series.plot(
+                kind="hist",
+                figsize=figsize,
+                facecolor=config["html"]["style"]["primary_color"].get(str),
+                bins=bins,
+            )
     return plot
 
 
