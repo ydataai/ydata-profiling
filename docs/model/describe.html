@@ -141,7 +141,11 @@ def describe_date_1d(series: pd.Series, series_description: dict) -&gt; dict:
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
-    stats = {&#34;min&#34;: series.min(), &#34;max&#34;: series.max(), &#34;histogram_data&#34;: series}
+    stats = {
+        &#34;min&#34;: pd.Timestamp.to_pydatetime(series.min()),
+        &#34;max&#34;: pd.Timestamp.to_pydatetime(series.max()),
+        &#34;histogram_data&#34;: series,
+    }
 
     bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
     # Bins should never be larger than the number of distinct values
@@ -587,7 +591,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
             - messages: direct special attention to these patterns in your data.
     &#34;&#34;&#34;
     if not isinstance(df, pd.DataFrame):
-        raise TypeError(&#34;df must be of type pandas.DataFrame&#34;)
+        warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
@@ -743,7 +747,7 @@ def describe(df: pd.DataFrame) -&gt; dict:
             - messages: direct special attention to these patterns in your data.
     &#34;&#34;&#34;
     if not isinstance(df, pd.DataFrame):
-        raise TypeError(&#34;df must be of type pandas.DataFrame&#34;)
+        warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
     if df.empty:
         raise ValueError(&#34;df can not be empty&#34;)
@@ -1027,7 +1031,11 @@ def describe(df: pd.DataFrame) -&gt; dict:
     Returns:
         A dict containing calculated series description values.
     &#34;&#34;&#34;
-    stats = {&#34;min&#34;: series.min(), &#34;max&#34;: series.max(), &#34;histogram_data&#34;: series}
+    stats = {
+        &#34;min&#34;: pd.Timestamp.to_pydatetime(series.min()),
+        &#34;max&#34;: pd.Timestamp.to_pydatetime(series.max()),
+        &#34;histogram_data&#34;: series,
+    }
 
     bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
     # Bins should never be larger than the number of distinct values

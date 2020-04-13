@@ -44,15 +44,26 @@ The pandas <code>df.describe()</code> function is great but a little basic for s
 <li><strong>Text analysis</strong> learn about categories (Uppercase, Space), scripts (Latin, Cyrillic) and blocks (ASCII) of text data.</li>
 </ul>
 <h2 id="announcements">Announcements</h2>
+<h3 id="new-in-v260">New in v2.6.0</h3>
+<h4 id="dependency-policy">Dependency policy</h4>
+<p>The current dependency policy is suboptimal. Pinning the dependencies is great for reproducibility (high guarantee to work), but on the downside requires frequent maintenance and introduces compatibility issues with other packages. Therefore, we are moving away from pinning dependencies and instead specify a minimum version. </p>
+<h4 id="pandas-v1">Pandas v1</h4>
+<p>Early releases of pandas v1 demonstrated many regressions that broke functionality (as acknowledged by the authors <a href="https://github.com/pandas-dev/pandas/issues/31523">here</a>. At this point, pandas is more stable and we notice high demand for compatibility. We move on to support pandas' latest versions. To ensure compatibility with both versions, we have extended the test matrix to test against both pandas 0.x.y and 1.x.y.</p>
+<h4 id="python-36-features">Python 3.6+ features</h4>
+<p>Python 3.6 introduces ordered dicts and f-strings, which we now rely on. This means that from pandas-profiling 2.6, you should minimally run Python 3.6. For users that for some reason cannot update, you can use pandas-profiling 2.5.0, but you unfortunately won't benefit from updates or maintenance.</p>
+<h4 id="extended-continuous-integration">Extended continuous integration</h4>
+<p>Starting from this release, we use Github Actions and Travis CI combined to increase maintainability.
+Travis CI handles the testing, Github Actions automates part of the development process by running black and building the docs.</p>
+<h3 id="support-pandas-profiling">Support <code>pandas-profiling</code></h3>
 <p>With your help, we got approved for <a href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
 It's extra exciting that GitHub <strong>matches your contribution</strong> for the first year.
 Therefore, we welcome you to support the project through GitHub! </p>
-<p>The v2.5.0 release includes many new features and stability improvements.</p>
+<p>Find more information here:</p>
 <ul>
 <li><a href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></li>
-<li><a href="https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.5.0">Read the release notes v2.5.0</a> </li>
+<li><a href="https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.6.0">Read the release notes v2.6.0</a> </li>
 </ul>
-<p><em>February 14, 2020 💘</em></p>
+<p><em>April 14, 2020 💘</em></p>
 <hr>
 <p><em>Contents:</em> <strong><a href="#examples">Examples</a></strong> |
 <strong><a href="#installation">Installation</a></strong> | <strong><a href="#documentation">Documentation</a></strong> |
@@ -84,7 +95,7 @@ Therefore, we welcome you to support the project through GitHub! </p>
 <p>You can install using the pip package manager by running</p>
 <pre><code>pip install pandas-profiling[notebook,html]
 </code></pre>
-<p>Alternatively, you could install directly from Github:</p>
+<p>Alternatively, you could install the latest version directly from Github:</p>
 <pre><code>pip install &lt;https://github.com/pandas-profiling/pandas-profiling/archive/master.zip&gt;
 </code></pre>
 <h3 id="using-conda">Using conda</h3>
@@ -259,6 +270,7 @@ $ where pandas_profiling
 .. include:: ../../README.md
 &#34;&#34;&#34;
 import json
+import warnings
 from pathlib import Path
 from datetime import datetime
 
@@ -390,7 +402,13 @@ class ProfileReport(object):
         elif output_file.suffix == &#34;.json&#34;:
             data = self.to_json()
         else:
-            raise ValueError(&#34;Extension not supported (please use .html, .json)&#34;)
+            suffix = output_file.suffix
+            output_file = output_file.with_suffix(&#34;.html&#34;)
+            data = self.to_html()
+            warnings.warn(
+                f&#34;Extension {suffix} not supported. For now we assume .html was intended. &#34;
+                f&#34;To remove this warning, please use .html or .json.&#34;
+            )
 
         with output_file.open(&#34;w&#34;, encoding=&#34;utf8&#34;) as f:
             f.write(data)
@@ -443,16 +461,22 @@ class ProfileReport(object):
 
     def to_json(self) -&gt; str:
         class CustomEncoder(json.JSONEncoder):
-            def default(self, o):
-                name = o.__class__.__name__
-                if isinstance(o, pd.core.series.Series) or isinstance(
-                    o, pd.core.frame.DataFrame
-                ):
-                    return {f&#34;__{name}__&#34;: o.to_json()}
-                if isinstance(o, np.integer):
-                    return {f&#34;__{name}__&#34;: o.tolist()}
+            def key_to_json(self, data):
+                if data is None or isinstance(data, (bool, int, str)):
+                    return data
+                return str(data)
 
-                return {f&#34;__{name}__&#34;: str(o)}
+            def default(self, o):
+                if isinstance(o, pd.core.series.Series):
+                    return self.default(o.to_dict())
+
+                if isinstance(o, np.integer):
+                    return o.tolist()
+
+                if isinstance(o, dict):
+                    return {self.key_to_json(key): self.default(o[key]) for key in o}
+
+                return str(o)
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
@@ -680,7 +704,13 @@ class ProfileReport(object):
         elif output_file.suffix == &#34;.json&#34;:
             data = self.to_json()
         else:
-            raise ValueError(&#34;Extension not supported (please use .html, .json)&#34;)
+            suffix = output_file.suffix
+            output_file = output_file.with_suffix(&#34;.html&#34;)
+            data = self.to_html()
+            warnings.warn(
+                f&#34;Extension {suffix} not supported. For now we assume .html was intended. &#34;
+                f&#34;To remove this warning, please use .html or .json.&#34;
+            )
 
         with output_file.open(&#34;w&#34;, encoding=&#34;utf8&#34;) as f:
             f.write(data)
@@ -733,16 +763,22 @@ class ProfileReport(object):
 
     def to_json(self) -&gt; str:
         class CustomEncoder(json.JSONEncoder):
-            def default(self, o):
-                name = o.__class__.__name__
-                if isinstance(o, pd.core.series.Series) or isinstance(
-                    o, pd.core.frame.DataFrame
-                ):
-                    return {f&#34;__{name}__&#34;: o.to_json()}
-                if isinstance(o, np.integer):
-                    return {f&#34;__{name}__&#34;: o.tolist()}
+            def key_to_json(self, data):
+                if data is None or isinstance(data, (bool, int, str)):
+                    return data
+                return str(data)
 
-                return {f&#34;__{name}__&#34;: str(o)}
+            def default(self, o):
+                if isinstance(o, pd.core.series.Series):
+                    return self.default(o.to_dict())
+
+                if isinstance(o, np.integer):
+                    return o.tolist()
+
+                if isinstance(o, dict):
+                    return {self.key_to_json(key): self.default(o[key]) for key in o}
+
+                return str(o)
 
         return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
 
@@ -962,7 +998,13 @@ You are welcome to contribute a pull request if you like this feature.</p></sect
     elif output_file.suffix == &#34;.json&#34;:
         data = self.to_json()
     else:
-        raise ValueError(&#34;Extension not supported (please use .html, .json)&#34;)
+        suffix = output_file.suffix
+        output_file = output_file.with_suffix(&#34;.html&#34;)
+        data = self.to_html()
+        warnings.warn(
+            f&#34;Extension {suffix} not supported. For now we assume .html was intended. &#34;
+            f&#34;To remove this warning, please use .html or .json.&#34;
+        )
 
     with output_file.open(&#34;w&#34;, encoding=&#34;utf8&#34;) as f:
         f.write(data)
@@ -1038,16 +1080,22 @@ for using with frameworks.</p>
 </summary>
 <pre><code class="python">def to_json(self) -&gt; str:
     class CustomEncoder(json.JSONEncoder):
-        def default(self, o):
-            name = o.__class__.__name__
-            if isinstance(o, pd.core.series.Series) or isinstance(
-                o, pd.core.frame.DataFrame
-            ):
-                return {f&#34;__{name}__&#34;: o.to_json()}
-            if isinstance(o, np.integer):
-                return {f&#34;__{name}__&#34;: o.tolist()}
+        def key_to_json(self, data):
+            if data is None or isinstance(data, (bool, int, str)):
+                return data
+            return str(data)
 
-            return {f&#34;__{name}__&#34;: str(o)}
+        def default(self, o):
+            if isinstance(o, pd.core.series.Series):
+                return self.default(o.to_dict())
+
+            if isinstance(o, np.integer):
+                return o.tolist()
+
+            if isinstance(o, dict):
+                return {self.key_to_json(key): self.default(o[key]) for key in o}
+
+            return str(o)
 
     return json.dumps(self.description_set, indent=4, cls=CustomEncoder)</code></pre>
 </details>
@@ -1120,7 +1168,17 @@ the Iframe.</p>
 <div class="toc">
 <ul>
 <li><a href="#pandas-profiling">Pandas Profiling</a><ul>
-<li><a href="#announcements">Announcements</a></li>
+<li><a href="#announcements">Announcements</a><ul>
+<li><a href="#new-in-v260">New in v2.6.0</a><ul>
+<li><a href="#dependency-policy">Dependency policy</a></li>
+<li><a href="#pandas-v1">Pandas v1</a></li>
+<li><a href="#python-36-features">Python 3.6+ features</a></li>
+<li><a href="#extended-continuous-integration">Extended continuous integration</a></li>
+</ul>
+</li>
+<li><a href="#support-pandas-profiling">Support pandas-profiling</a></li>
+</ul>
+</li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#installation">Installation</a><ul>
 <li><a href="#using-pip">Using pip</a></li>
