@@ -196,27 +196,16 @@ def get_scatter_matrix(scatter_matrix):
     return titems
 
 
-def get_dataset_items(summary, date_start, date_end, warnings):
+def get_dataset_items(
+    summary: dict, date_start: datetime, date_end: datetime, warnings: list
+) -> list:
     items = [
         get_dataset_overview(summary),
         get_dataset_reproduction(summary, date_start, date_end),
     ]
 
-    count = len(
-        [
-            warning
-            for warning in warnings
-            if warning.message_type
-            not in [
-                MessageType.UNIFORM,
-                MessageType.UNIQUE,
-                MessageType.REJECTED,
-                MessageType.CONSTANT,
-            ]
-        ]
-    )
-    if count > 0:
-        items.append(get_dataset_warnings(warnings, count))
+    if warnings:
+        items.append(get_dataset_warnings(warnings))
 
     return items
 

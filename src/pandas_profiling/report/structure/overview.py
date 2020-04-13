@@ -94,5 +94,7 @@ def get_dataset_reproduction(summary, date_start, date_end):
     )
 
 
-def get_dataset_warnings(warnings, count):
-    return Warnings(warnings=warnings, name=f"Warnings ({count})", anchor_id="warnings")
+def get_dataset_warnings(warnings: list) -> Warnings:
+    return Warnings(
+        warnings=warnings, name=f"Warnings ({len(warnings)})", anchor_id="warnings"
+    )
