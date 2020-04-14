@@ -1,5 +1,0 @@
-{% for item in items %}
-    <div class="col-sm-{% if (loop.last and loop.length == 3) or loop.length == 2 %}6{% else %}3{% endif %}{% if item.content['classes'] %} {{ item.content['classes'] }}{% endif %}">
-        {{ item.render() }}
-    </div>
-{% endfor %}
