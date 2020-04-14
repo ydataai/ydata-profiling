@@ -46,4 +46,4 @@ def test_example(get_data_file, test_output_dir):
         type(profile.get_description()) == dict
         and len(profile.get_description().items()) == 7
     ), "Unexpected result"
-    assert "<span class=badge>10</span>" in profile.to_html()
+    assert "<span class=badge>12</span>" in profile.to_html()
