@@ -1,6 +1,7 @@
 from urllib.parse import quote
 
-from pandas_profiling.report.presentation.core import HTML, Table, Sequence, Warnings
+from pandas_profiling import MessageType
+from pandas_profiling.report.presentation.core import Table, Sequence, Warnings
 
 
 def get_dataset_overview(summary):
@@ -95,6 +96,11 @@ def get_dataset_reproduction(summary, date_start, date_end):
 
 
 def get_dataset_warnings(warnings: list) -> Warnings:
-    return Warnings(
-        warnings=warnings, name=f"Warnings ({len(warnings)})", anchor_id="warnings"
+    count = len(
+        [
+            warning
+            for warning in warnings
+            if warning.message_type != MessageType.REJECTED
+        ]
     )
+    return Warnings(warnings=warnings, name=f"Warnings ({count})", anchor_id="warnings")
