@@ -1,5 +1,6 @@
 """Configuration for the package is handled in this wrapper for confuse."""
 import argparse
+import hashlib
 
 import confuse
 
@@ -65,6 +66,9 @@ class Config(object):
 
     def dump(self):
         return self.config.dump()
+
+    def md5(self):
+        return hashlib.md5(self.dump().encode()).hexdigest()
 
 
 config = Config()

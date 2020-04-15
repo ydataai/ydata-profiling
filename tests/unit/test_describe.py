@@ -1,6 +1,7 @@
-import pandas as pd
-import numpy as np
 import datetime
+
+import numpy as np
+import pandas as pd
 import pytest
 
 from pandas_profiling import config
@@ -8,7 +9,8 @@ from pandas_profiling.model.base import Variable
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-from pandas_profiling.model.describe import describe_1d, describe
+from pandas_profiling.model.statistic import describe_1d
+from pandas_profiling.model.describe import describe, ddescribe
 
 testdata = [
     # Unique values
@@ -626,57 +628,58 @@ def test_describe_df(describe_data, expected_results):
     describe_data_frame = pd.DataFrame(describe_data)
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
 
-    results = describe(describe_data_frame)
+    for results in [describe(describe_data_frame), ddescribe(describe_data_frame)]:
+        assert {
+                   "table",
+                   "variables",
+                   "correlations",
+                   "missing",
+                   "messages",
+                   "scatter",
+                   "package",
+               } == set(results.keys()), "Not in results"
 
-    assert {
-        "table",
-        "variables",
-        "correlations",
-        "missing",
-        "messages",
-        "scatter",
-        "package",
-    } == set(results.keys()), "Not in results"
+        assert {"BOOL": 5, "CAT": 3, "UNSUPPORTED": 4, "NUM": 2, "DATE": 1} == results[
+            "table"
+        ]["types"], "Variable analysis failed"
 
-    assert {"BOOL": 5, "CAT": 3, "UNSUPPORTED": 4, "NUM": 2, "DATE": 1} == results[
-        "table"
-    ]["types"], "Variable analysis failed"
+        # Loop over variables
+        for col in describe_data.keys():
+            for k, v in expected_results[col].items():
+                if v == check_is_NaN:
+                    assert (
+                                   k not in results["variables"][col]
+                           ) == True, "Value `{}` for key `{}` in column `{}` is not NaN".format(
+                        results["variables"][col][k], k, col
+                    )
+                elif isinstance(v, float):
+                    assert (
+                            pytest.approx(v) == results["variables"][col][k]
+                    ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
+                        results["variables"][col][k], k, col
+                    )
+                else:
+                    assert (
+                            v == results["variables"][col][k]
+                    ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
+                        results["variables"][col][k], k, col
+                    )
 
-    # Loop over variables
-    for col in describe_data.keys():
-        for k, v in expected_results[col].items():
-            if v == check_is_NaN:
+            if results["variables"][col]["type"].value in ["NUM", "DATE"]:
                 assert (
-                    k not in results["variables"][col]
-                ) == True, "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-            elif isinstance(v, float):
-                assert (
-                    pytest.approx(v) == results["variables"][col][k]
-                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-            else:
-                assert (
-                    v == results["variables"][col][k]
-                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-
-        if results["variables"][col]["type"].value in ["NUM", "DATE"]:
-            assert (
-                "histogram_data" in results["variables"][col]
-            ), "Mini-histogram missing for column {} ".format(col)
+                        "histogram_data" in results["variables"][col]
+                ), "Mini-histogram missing for column {} ".format(col)
 
 
 def test_describe_empty():
     empty_frame = pd.DataFrame()
-    with pytest.raises(ValueError):
-        describe(empty_frame)
+    for describe_function in [describe, ddescribe]:
+        with pytest.raises(ValueError):
+            describe_function(empty_frame)
 
 
 def test_describe_list():
-    with pytest.raises(AttributeError):
-        with pytest.warns(UserWarning):
-            describe([1, 2, 3])
+    for describe_function in [describe, ddescribe]:
+        with pytest.raises(AttributeError):
+            with pytest.warns(UserWarning):
+                describe_function([1, 2, 3])

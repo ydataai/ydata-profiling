@@ -1,6 +1,6 @@
 """This file add the console interface to the package."""
-from pathlib import Path
 import argparse
+from pathlib import Path
 from typing import Union
 
 from pandas_profiling.__init__ import __version__, ProfileReport

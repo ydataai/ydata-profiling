@@ -1,15 +1,13 @@
 from pandas_profiling.config import config
-from pandas_profiling.report.presentation.frequency_table_utils import freq_table
-
-from pandas_profiling.report.structure.variables import render_common
 from pandas_profiling.report.presentation.core import (
     Sequence,
     Table,
-    Variable,
     FrequencyTable,
     FrequencyTableSmall,
     VariableInfo,
 )
+from pandas_profiling.report.presentation.frequency_table_utils import freq_table
+from pandas_profiling.report.structure.variables import render_common
 
 
 def render_url(summary):

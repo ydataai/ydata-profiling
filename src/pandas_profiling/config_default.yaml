@@ -4,6 +4,9 @@ title: "Pandas Profiling Report"
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 
+# Use dask for describe
+use_dask: False
+
 # Show the progress bar
 progress_bar: True
 

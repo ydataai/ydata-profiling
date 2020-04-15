@@ -1,6 +1,5 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.formatters import fmt_array
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
     FrequencyTable,
     Sequence,
@@ -9,6 +8,7 @@ from pandas_profiling.report.presentation.core import (
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
+from pandas_profiling.visualisation.plot import mini_histogram, histogram
 
 
 def render_count(summary):

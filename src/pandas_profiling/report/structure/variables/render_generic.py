@@ -4,7 +4,6 @@ from pandas_profiling.report.presentation.core import (
     HTML,
     VariableInfo,
 )
-from pandas_profiling.report.structure.variables import render_common
 
 
 def render_generic(summary):

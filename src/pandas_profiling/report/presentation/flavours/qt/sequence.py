@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QTabWidget, QWidget
-from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QVBoxLayout
 
 from pandas_profiling.report.presentation.abstract.renderable import Renderable

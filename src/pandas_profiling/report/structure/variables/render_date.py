@@ -1,11 +1,11 @@
 from pandas_profiling.config import config
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
     Image,
     Sequence,
     Table,
     VariableInfo,
 )
+from pandas_profiling.visualisation.plot import mini_histogram, histogram
 
 
 def render_date(summary):

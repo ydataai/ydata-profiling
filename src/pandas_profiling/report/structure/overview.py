@@ -1,6 +1,6 @@
 from urllib.parse import quote
 
-from pandas_profiling import MessageType
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import Table, Sequence, Warnings
 
 

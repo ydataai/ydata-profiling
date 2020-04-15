@@ -1,6 +1,6 @@
-from typing import Union, Tuple
 import base64
 from io import BytesIO, StringIO
+from typing import Union, Tuple
 from urllib.parse import quote
 
 from pandas_profiling.config import config

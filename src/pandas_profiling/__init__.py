@@ -4,38 +4,42 @@
 """
 import json
 import warnings
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
-import pandas as pd
+import joblib
 import numpy as np
-from tqdm.auto import tqdm
+import pandas as pd
 
-from pandas_profiling.model.messages import MessageType
-from pandas_profiling.version import __version__
-from pandas_profiling.utils.dataframe import rename_index
-from pandas_profiling.utils.paths import get_config_default, get_config_minimal
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
+from pandas_profiling.utils.dataframe import rename_index
+from pandas_profiling.utils.paths import get_config_default, get_config_minimal
+from pandas_profiling.version import __version__
 
 
 class ProfileReport(object):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
-    
+
     Used has is it will output its content as an HTML report in a Jupyter notebook.
     """
 
     html = ""
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
-    def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
+    def __init__(
+            self, df=None, minimal=False, config_file: Path = None, lazy=True, **kwargs
+    ):
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
             )
+
+        if df is None and not lazy:
+            raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
         if minimal:
             config_file = get_config_minimal()
@@ -45,11 +49,49 @@ class ProfileReport(object):
         config.set_kwargs(kwargs)
 
         self.date_start = datetime.utcnow()
+        self.date_end = None
 
+        if lazy:  # save df, compute when needed
+            # [description_set, report] will compute when needed
+            self._description_set = None
+            self._report = None
+
+            if df is not None:
+                # preprocess df
+                self.df_hash = None  # Note that it's compute before preprocess df
+                self.df = self.preprocess(df)
+
+                # Build report structure
+                self.sample = self.get_sample(df)
+                self.title = config["title"].get(str)
+            else:  # waiting for load
+                self.df_hash = None
+                self.df = None
+                self.sample = {'head': None, 'tail': None}
+                self.title = None
+        else:  # do not save df content, compute now
+            self.df = None
+            # preprocess df
+            df = self.preprocess(df)
+            self.df_hash = joblib.hash(df)  # Note that it's compute after preprocess df
+
+            # description_set and report will compute now
+            self._description_set = describe_df(df)
+            self.date_end = datetime.utcnow()
+
+            # Build report structure
+            self.sample = self.get_sample(df)
+            self.title = config["title"].get(str)
+            self._report = get_report_structure(
+                self.date_start, self.date_end, self.sample, self.description_set
+            )
+
+    @staticmethod
+    def preprocess(df):
         # Treat index as any other column
         if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
+                not pd.Index(np.arange(0, len(df))).equals(df.index)
+                or df.index.dtype != np.int64
         ):
             df = df.reset_index()
 
@@ -58,25 +100,22 @@ class ProfileReport(object):
 
         # Ensure that columns are strings
         df.columns = df.columns.astype("str")
+        return df
 
-        # Get dataset statistics
-        description_set = describe_df(df)
+    @property
+    def description_set(self):
+        if self._description_set is None:
+            self._description_set = describe_df(self.df)
+            self.date_end = datetime.utcnow()
+        return self._description_set
 
-        # Build report structure
-        self.sample = self.get_sample(df)
-        self.title = config["title"].get(str)
-        self.description_set = description_set
-        self.date_end = datetime.utcnow()
-
-        disable_progress_bar = not config["progress_bar"].get(bool)
-
-        with tqdm(
-            total=1, desc="build report structure", disable=disable_progress_bar
-        ) as pbar:
-            self.report = get_report_structure(
-                self.date_start, self.date_end, self.sample, description_set
+    @property
+    def report(self):
+        if self._report is None:
+            self._report = get_report_structure(
+                self.date_start, self.date_end, self.sample, self.description_set
             )
-            pbar.update()
+        return self._report
 
     def get_sample(self, df: pd.DataFrame) -> dict:
         """Get head/tail samples based on the configuration
@@ -100,7 +139,7 @@ class ProfileReport(object):
 
     def get_description(self) -> dict:
         """Return the description (a raw statistical summary) of the dataset.
-        
+
         Returns:
             Dict containing a description for each variable in the DataFrame.
         """
@@ -120,7 +159,7 @@ class ProfileReport(object):
 
     def to_file(self, output_file: Path, silent: bool = True) -> None:
         """Write the report to a file.
-        
+
         By default a name is generated.
 
         Args:
@@ -134,6 +173,9 @@ class ProfileReport(object):
             data = self.to_html()
         elif output_file.suffix == ".json":
             data = self.to_json()
+        elif output_file.suffix == ".pp":
+            self.dump(output_file)
+            return
         else:
             suffix = output_file.suffix
             output_file = output_file.with_suffix(".html")
@@ -157,7 +199,7 @@ class ProfileReport(object):
 
         Returns:
             Profiling report html including wrapper.
-        
+
         """
         from pandas_profiling.report.presentation.flavours import HTMLReport
         from pandas_profiling.report.presentation.flavours.html import templates
@@ -245,14 +287,6 @@ class ProfileReport(object):
             )
         )
 
-    def _repr_html_(self):
-        """The ipython notebook widgets user interface gets called by the jupyter notebook."""
-        self.to_notebook_iframe()
-
-    def __repr__(self):
-        """Override so that Jupyter Notebook does not print the object."""
-        return ""
-
     def to_app(self):
         """
         (Experimental) PyQt5 user interface, not ready to be used.
@@ -271,3 +305,89 @@ class ProfileReport(object):
         app_widgets = QtReport(self.report).render()
 
         app = get_app(app, self.title, app_widgets)
+
+    def _repr_html_(self):
+        """The ipython notebook widgets user interface gets called by the jupyter notebook."""
+        self.to_notebook_iframe()
+
+    def __repr__(self):
+        """Override so that Jupyter Notebook does not print the object."""
+        return ""
+
+    def dumps(self) -> bytes:
+        """
+        Serialize ProfileReport and return bytes for reproducing ProfileReport or Caching.
+
+        Returns:
+            Bytes which contains hash of DataFrame, md5 of config, sample, _description_set and _report
+        """
+        import pickle
+
+        if self.df_hash is None:
+            self.df_hash = joblib.hash(self.df)
+        return pickle.dumps(
+            [
+                self.df_hash,
+                config.md5(),
+                self.sample,
+                self._description_set,
+                self._report,
+            ]
+        )
+
+    def loads(self, data: bytes):
+        """
+        Deserialize the bytes for reproducing ProfileReport or Caching.
+
+        Args:
+            data: The bytes of a serialize ProfileReport object.
+
+        Notes:
+            Load will fail if DataFrame or config unmatched
+
+        Returns:
+            self
+        """
+        import pickle
+
+        try:
+            df_hash, config_md5, sample, description_set, report = pickle.loads(data)
+        except Exception as e:
+            raise ValueError(f"Fail to load data:{e}")
+
+        if (
+                df_hash == self.df_hash or self.df_hash is None
+        ) and config.md5() == config_md5:
+            if self._description_set is None:
+                self._description_set = description_set
+            if self._report is None:
+                self._report = report
+            if self.sample['head'] is None or self.sample['tail'] is None:
+                self.sample = sample
+            self.df_hash = df_hash
+            self.title = config["title"].get(str)
+        else:
+            raise UserWarning("DataFrame of Config is not match")
+        return self
+
+    def dump(self, output_file: Path):
+        """
+        Dump ProfileReport to file
+        """
+        if not isinstance(output_file, Path):
+            output_file = Path(str(output_file))
+        with output_file.open("wb") as f:
+            f.write(self.dumps())
+
+    def load(self, load_file: Path):
+        """
+       Load ProfileReport from file
+
+       Notes:
+            Load will fail if DataFrame or config unmatched
+       """
+        if not isinstance(load_file, Path):
+            load_file = Path(str(load_file))
+        with load_file.open("rb") as f:
+            self.loads(f.read())
+        return self

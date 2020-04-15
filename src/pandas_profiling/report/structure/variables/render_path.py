@@ -1,10 +1,10 @@
 from pandas_profiling.config import config
-from pandas_profiling.report.presentation.frequency_table_utils import freq_table
-from pandas_profiling.visualisation.plot import histogram
 from pandas_profiling.report.presentation.core import Image, FrequencyTable
+from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_categorical import (
     render_categorical,
 )
+from pandas_profiling.visualisation.plot import histogram
 
 
 def render_path(summary):

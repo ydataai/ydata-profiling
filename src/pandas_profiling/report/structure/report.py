@@ -2,6 +2,8 @@
 from datetime import datetime
 from typing import List
 
+from tqdm import tqdm
+
 from pandas_profiling.config import config
 from pandas_profiling.model.base import (
     Boolean,
@@ -13,10 +15,18 @@ from pandas_profiling.model.base import (
     Url,
     AbsolutePath,
     ExistingPath,
-    ImagePath,
     Generic,
 )
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core import (
+    Image,
+    Sequence,
+    Sample,
+    Variable,
+    Collapse,
+    ToggleButton,
+)
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import (
     get_dataset_overview,
@@ -30,18 +40,8 @@ from pandas_profiling.report.structure.variables import (
     render_date,
     render_real,
     render_path,
-    render_path_image,
     render_url,
     render_generic,
-)
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
-from pandas_profiling.report.presentation.core import (
-    Image,
-    Sequence,
-    Sample,
-    Variable,
-    Collapse,
-    ToggleButton,
 )
 
 
@@ -226,57 +226,60 @@ def get_report_structure(
     Returns:
       The profile report in HTML format
     """
+    disable_progress_bar = not config["progress_bar"].get(bool)
+    with tqdm(
+        total=1, desc="build report structure", disable=disable_progress_bar
+    ) as pbar:
+        warnings = summary["messages"]
 
-    warnings = summary["messages"]
+        section_items = get_section_items()
 
-    section_items = get_section_items()
-
-    section_items.append(
-        Sequence(
-            get_dataset_items(summary, date_start, date_end, warnings),
-            sequence_type="tabs",
-            name="Overview",
-            anchor_id="overview",
+        section_items.append(
+            Sequence(
+                get_dataset_items(summary, date_start, date_end, warnings),
+                sequence_type="tabs",
+                name="Overview",
+                anchor_id="overview",
+            )
         )
-    )
-    section_items.append(
-        Sequence(
-            render_variables_section(summary),
-            sequence_type="accordion",
-            name="Variables",
-            anchor_id="variables",
+        section_items.append(
+            Sequence(
+                render_variables_section(summary),
+                sequence_type="accordion",
+                name="Variables",
+                anchor_id="variables",
+            )
         )
-    )
-    section_items.append(
-        Sequence(
-            get_scatter_matrix(summary["scatter"]),
-            sequence_type="tabs",
-            name="Interactions",
-            anchor_id="interactions",
+        section_items.append(
+            Sequence(
+                get_scatter_matrix(summary["scatter"]),
+                sequence_type="tabs",
+                name="Interactions",
+                anchor_id="interactions",
+            )
         )
-    )
 
-    corr = get_correlation_items(summary)
-    if corr is not None:
-        section_items.append(corr)
+        corr = get_correlation_items(summary)
+        if corr is not None:
+            section_items.append(corr)
 
-    section_items.append(
-        Sequence(
-            get_missing_items(summary),
-            sequence_type="tabs",
-            name="Missing values",
-            anchor_id="missing",
+        section_items.append(
+            Sequence(
+                get_missing_items(summary),
+                sequence_type="tabs",
+                name="Missing values",
+                anchor_id="missing",
+            )
         )
-    )
-    section_items.append(
-        Sequence(
-            get_sample_items(sample),
-            sequence_type="list",
-            name="Sample",
-            anchor_id="sample",
+        section_items.append(
+            Sequence(
+                get_sample_items(sample),
+                sequence_type="list",
+                name="Sample",
+                anchor_id="sample",
+            )
         )
-    )
 
-    sections = Sequence(section_items, name="Report", sequence_type="sections")
-
+        sections = Sequence(section_items, name="Report", sequence_type="sections")
+        pbar.update()
     return sections
