@@ -407,7 +407,8 @@ class ProfileReport(object):
 
             # warn if version not equal
             if (
-                loaded_description_set["package"]["pandas_profiling_version"]
+                loaded_description_set is not None
+                and loaded_description_set["package"]["pandas_profiling_version"]
                 != __version__
             ):
                 warnings.warn(
