@@ -11,11 +11,13 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from pandas_profiling.config import config
+from pandas_profiling.config import config, Config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.flavours.html import HTMLSequence
 from pandas_profiling.utils.dataframe import rename_index
 from pandas_profiling.utils.paths import get_config_default, get_config_minimal
 from pandas_profiling.version import __version__
@@ -31,7 +33,7 @@ class ProfileReport(object):
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
     def __init__(
-            self, df=None, minimal=False, config_file: Path = None, lazy=True, **kwargs
+        self, df=None, minimal=False, config_file: Path = None, lazy=True, **kwargs
     ):
         if config_file is not None and minimal:
             raise ValueError(
@@ -59,7 +61,9 @@ class ProfileReport(object):
             if df is not None:
                 # preprocess df
                 self.df = self.preprocess(df)
-                self.df_hash = joblib.hash(df)  # Note that it's compute after preprocess df
+                self.df_hash = joblib.hash(
+                    df
+                )  # Note that it's compute after preprocess df
 
                 # Build report structure
                 self.sample = self.get_sample(df)
@@ -67,7 +71,7 @@ class ProfileReport(object):
             else:  # waiting for load
                 self.df_hash = None
                 self.df = None
-                self.sample = {'head': None, 'tail': None}
+                self.sample = {"head": None, "tail": None}
                 self.title = None
         else:  # do not save df content, compute now
             self.df = None
@@ -90,8 +94,8 @@ class ProfileReport(object):
     def preprocess(df):
         # Treat index as any other column
         if (
-                not pd.Index(np.arange(0, len(df))).equals(df.index)
-                or df.index.dtype != np.int64
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
         ):
             df = df.reset_index()
 
@@ -319,31 +323,28 @@ class ProfileReport(object):
         Serialize ProfileReport and return bytes for reproducing ProfileReport or Caching.
 
         Returns:
-            Bytes which contains hash of DataFrame, md5 of config, sample, _description_set and _report
+            Bytes which contains hash of DataFrame, config, sample, _description_set and _report
         """
         import pickle
 
         if self.df_hash is None:
             self.df_hash = joblib.hash(self.df)
+        # Note: _description_set and _report may are None if they haven't been computed
         return pickle.dumps(
-            [
-                self.df_hash,
-                config.md5(),
-                self.sample,
-                self._description_set,
-                self._report,
-            ]
+            [self.df_hash, config, self.sample, self._description_set, self._report]
         )
 
-    def loads(self, data: bytes):
+    def loads(self, data: bytes, load_config: bool = False):
         """
         Deserialize the bytes for reproducing ProfileReport or Caching.
 
         Args:
             data: The bytes of a serialize ProfileReport object.
+            load_config: If set True, the config of current ProfileReport will be overwrite. Or it will check
+                            whether if config matched
 
         Notes:
-            Load will fail if DataFrame or config unmatched
+            Load will fail if DataFrame unmatched or config unmatched (while load_config is False)
 
         Returns:
             self
@@ -351,23 +352,80 @@ class ProfileReport(object):
         import pickle
 
         try:
-            df_hash, config_md5, sample, description_set, report = pickle.loads(data)
+            # load the bytes
+            (
+                df_hash,
+                loaded_config,
+                loaded_sample,
+                loaded_description_set,
+                loaded_report,
+            ) = pickle.loads(data)
         except Exception as e:
             raise ValueError(f"Fail to load data:{e}")
 
-        if (
-                df_hash == self.df_hash or self.df_hash is None
-        ) and config.md5() == config_md5:
+        # check if the loaded objects is what we want
+        if not all(
+            (
+                isinstance(df_hash, str),
+                isinstance(loaded_config, Config),
+                isinstance(loaded_sample, dict),
+                loaded_description_set is None
+                or isinstance(loaded_description_set, dict),
+                loaded_report is None or isinstance(loaded_report, HTMLSequence),
+            )
+        ):
+            raise ValueError(
+                f"Fail to load data: It may be damaged or from other version"
+            )
+
+        if (df_hash == self.df_hash or self.df_hash is None) and (
+            config == loaded_config or load_config
+        ):
+            # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
-                self._description_set = description_set
+                self._description_set = loaded_description_set
+            else:
+                warnings.warn(
+                    f"The description set of current ProfileReport is not None. It won't be overwrite."
+                )
             if self._report is None:
-                self._report = report
-            if self.sample['head'] is None or self.sample['tail'] is None:
-                self.sample = sample
+                self._report = loaded_report
+            else:
+                warnings.warn(
+                    f"The report of current ProfileReport is not None. It won't be overwrite."
+                )
+            if self.sample["head"] is None or self.sample["tail"] is None:
+                self.sample = loaded_sample
+            else:
+                warnings.warn(
+                    f"The samples of current ProfileReport is not None. It won't be overwrite."
+                )
+
+            # overwrite config if load_config set to True
+            if load_config:
+                config.update(loaded_config)
+
+            # warn if version not equal
+            if (
+                loaded_description_set["package"]["pandas_profiling_version"]
+                != __version__
+            ):
+                warnings.warn(
+                    f"Version unmatched from the loaded data. Currently running on pandas_profiling {__version__} "
+                    f"while loaded data is generated by pandas_profiling "
+                    f"{loaded_description_set['package']['pandas_profiling_version']}. "
+                    f"It may have some potential risk."
+                )
+
+            # set df_hash and title
             self.df_hash = df_hash
             self.title = config["title"].get(str)
+
         else:
-            raise UserWarning("DataFrame of Config is not match")
+            raise ValueError(
+                "DataFrame of Config is not match. If you want to overwrite current config, "
+                'try "load_config=True"'
+            )
         return self
 
     def dump(self, output_file: Path):
@@ -379,7 +437,7 @@ class ProfileReport(object):
         with output_file.open("wb") as f:
             f.write(self.dumps())
 
-    def load(self, load_file: Path):
+    def load(self, load_file: Path, load_config: bool = False):
         """
        Load ProfileReport from file
 
@@ -389,5 +447,5 @@ class ProfileReport(object):
         if not isinstance(load_file, Path):
             load_file = Path(str(load_file))
         with load_file.open("rb") as f:
-            self.loads(f.read())
+            self.loads(f.read(), load_config=load_config)
         return self

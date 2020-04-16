@@ -426,7 +426,7 @@ def get_series_descriptions(df, pbar):
         # TODO: use `Pool` for Linux-based systems
         with multiprocessing.pool.ThreadPool(pool_size) as executor:
             for i, (column, description) in enumerate(
-                    executor.imap_unordered(multiprocess_1d, args)
+                executor.imap_unordered(multiprocess_1d, args)
             ):
                 pbar.set_postfix_str(f"Describe variable:{column}")
                 series_description[column] = description
@@ -472,12 +472,12 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     }
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-            table_stats["n"] * table_stats["n_var"]
+        table_stats["n"] * table_stats["n_var"]
     )
 
     supported_columns = variable_stats.transpose()[
         variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-        ].index.tolist()
+    ].index.tolist()
     table_stats["n_duplicates"] = (
         sum(df.duplicated(subset=supported_columns))
         if len(supported_columns) > 0
@@ -542,7 +542,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         name: settings
         for name, settings in missing_map.items()
         if config["missing_diagrams"][name].get(bool)
-           and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+        and table_stats["n_vars_with_missing"] >= settings["min_missing"]
     }
     missing = {}
 
@@ -550,9 +550,9 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         for name, settings in missing_map.items():
             try:
                 if name != "heatmap" or (
-                        table_stats["n_vars_with_missing"]
-                        - table_stats["n_vars_all_missing"]
-                        >= settings["min_missing"]
+                    table_stats["n_vars_with_missing"]
+                    - table_stats["n_vars_all_missing"]
+                    >= settings["min_missing"]
                 ):
                     missing[name] = {
                         "name": settings["name"],

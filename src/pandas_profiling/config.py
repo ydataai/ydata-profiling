@@ -67,6 +67,14 @@ class Config(object):
     def dump(self):
         return self.config.dump()
 
+    def update(self, other):
+        if not isinstance(other, Config):
+            raise ValueError("Can only update config from a config object")
+        self.config = other.config
+
+    def __eq__(self, other):
+        return isinstance(other, Config) and self.md5() == other.md5()
+
     def md5(self):
         return hashlib.md5(self.dump().encode()).hexdigest()
 
