@@ -9,3 +9,4 @@ fastparquet>=0.3.3
 flake8
 check-manifest>=0.41
 twine>=3.1.1
+dask[complete]>=2.14.0
