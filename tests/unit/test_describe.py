@@ -630,14 +630,14 @@ def test_describe_df(describe_data, expected_results):
 
     for results in [describe(describe_data_frame), ddescribe(describe_data_frame)]:
         assert {
-                   "table",
-                   "variables",
-                   "correlations",
-                   "missing",
-                   "messages",
-                   "scatter",
-                   "package",
-               } == set(results.keys()), "Not in results"
+            "table",
+            "variables",
+            "correlations",
+            "missing",
+            "messages",
+            "scatter",
+            "package",
+        } == set(results.keys()), "Not in results"
 
         assert {"BOOL": 5, "CAT": 3, "UNSUPPORTED": 4, "NUM": 2, "DATE": 1} == results[
             "table"
@@ -648,26 +648,26 @@ def test_describe_df(describe_data, expected_results):
             for k, v in expected_results[col].items():
                 if v == check_is_NaN:
                     assert (
-                                   k not in results["variables"][col]
-                           ) == True, "Value `{}` for key `{}` in column `{}` is not NaN".format(
+                        k not in results["variables"][col]
+                    ) == True, "Value `{}` for key `{}` in column `{}` is not NaN".format(
                         results["variables"][col][k], k, col
                     )
                 elif isinstance(v, float):
                     assert (
-                            pytest.approx(v) == results["variables"][col][k]
+                        pytest.approx(v) == results["variables"][col][k]
                     ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
                         results["variables"][col][k], k, col
                     )
                 else:
                     assert (
-                            v == results["variables"][col][k]
+                        v == results["variables"][col][k]
                     ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
                         results["variables"][col][k], k, col
                     )
 
             if results["variables"][col]["type"].value in ["NUM", "DATE"]:
                 assert (
-                        "histogram_data" in results["variables"][col]
+                    "histogram_data" in results["variables"][col]
                 ), "Mini-histogram missing for column {} ".format(col)
 
 
