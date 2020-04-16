@@ -5,40 +5,13 @@ import pytest
 from pandas_profiling import ProfileReport
 
 
-def test_load(get_data_file, test_output_dir):
-    file_name = get_data_file(
-        "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
-    )
-
-    # For reproducibility
-    np.random.seed(7331)
-
-    df = pd.read_csv(file_name)
-
-    # Note: Pandas does not support dates before 1880, so we ignore these for this analysis
-    df["year"] = pd.to_datetime(df["year"], errors="coerce")
-
-    # Example: Constant variable
-    df["source"] = "NASA"
-
-    # Example: Boolean variable
-    df["boolean"] = np.random.choice([True, False], df.shape[0])
-
-    # Example: Mixed with base types
-    df["mixed"] = np.random.choice([1, "A"], df.shape[0])
-
-    # Example: Highly correlated variables
-    df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
-
-    # Example: Duplicate observations
-    duplicates_to_add = pd.DataFrame(df.iloc[0:10])
-    duplicates_to_add["name"] += " copy"
-
-    df = df.append(duplicates_to_add, ignore_index=True)
+def test_load(Meteorites_df, test_output_dir):
 
     profile1 = ProfileReport(
-        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, minimal=True
+        Meteorites_df,
+        title="NASA Meteorites",
+        samples={"head": 5, "tail": 5},
+        minimal=True,
     )
 
     test_output_path = test_output_dir / "NASA-Meteorites.pp"
@@ -70,7 +43,7 @@ def test_load_error():
     data = profile1.dumps()
 
     # config not match but load_config
-    ProfileReport(minimal=False).loads(data, load_config=True)
+    ProfileReport(minimal=False).loads(data, ignore_config=True)
 
     # config not match
     with pytest.raises(ValueError) as e:
@@ -83,7 +56,9 @@ def test_load_error():
 
     # df not match
     with pytest.raises(ValueError) as e:
-        ProfileReport(df=df[["a", "b"]], minimal=False).loads(data, load_config=True)
+        ProfileReport(df=df[["a", "b"]][:], minimal=False).loads(
+            data, ignore_config=True
+        )
 
     assert (
         str(e.value)

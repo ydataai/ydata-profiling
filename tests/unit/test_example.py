@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
+import pytest
 
 from pandas_profiling import ProfileReport
 
 
-def test_example(get_data_file, test_output_dir):
+@pytest.fixture
+def Meteorites_df(get_data_file):
     file_name = get_data_file(
         "meteorites.csv",
         "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
@@ -35,10 +37,16 @@ def test_example(get_data_file, test_output_dir):
     duplicates_to_add["name"] += " copy"
 
     df = df.append(duplicates_to_add, ignore_index=True)
+    return df
 
+
+def test_example(Meteorites_df, test_output_dir):
     output_file = test_output_dir / "profile.html"
     profile = ProfileReport(
-        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, minimal=True
+        Meteorites_df,
+        title="NASA Meteorites",
+        samples={"head": 5, "tail": 5},
+        minimal=True,
     )
     profile.to_file(output_file=output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"

@@ -48,6 +48,9 @@ class ProfileReport(object):
 
         if config_file:
             config.set_file(str(config_file))
+        else:
+            config.set_file(get_config_default())
+
         config.set_kwargs(kwargs)
 
         self.date_start = datetime.utcnow()
@@ -334,13 +337,13 @@ class ProfileReport(object):
             [self.df_hash, config, self.sample, self._description_set, self._report]
         )
 
-    def loads(self, data: bytes, load_config: bool = False):
+    def loads(self, data: bytes, ignore_config: bool = False):
         """
         Deserialize the bytes for reproducing ProfileReport or Caching.
 
         Args:
             data: The bytes of a serialize ProfileReport object.
-            load_config: If set True, the config of current ProfileReport will be overwrite. Or it will check
+            ignore_config: If set True, the config of current ProfileReport will be overwrite. Or it will check
                             whether if config matched
 
         Notes:
@@ -377,9 +380,8 @@ class ProfileReport(object):
             raise ValueError(
                 f"Fail to load data: It may be damaged or from other version"
             )
-
         if (df_hash == self.df_hash or self.df_hash is None) and (
-            config == loaded_config or load_config
+            ignore_config or config == loaded_config
         ):
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
@@ -402,7 +404,7 @@ class ProfileReport(object):
                 )
 
             # overwrite config if load_config set to True
-            if load_config:
+            if ignore_config:
                 config.update(loaded_config)
 
             # warn if version not equal
@@ -448,5 +450,5 @@ class ProfileReport(object):
         if not isinstance(load_file, Path):
             load_file = Path(str(load_file))
         with load_file.open("rb") as f:
-            self.loads(f.read(), load_config=load_config)
+            self.loads(f.read(), ignore_config=load_config)
         return self
