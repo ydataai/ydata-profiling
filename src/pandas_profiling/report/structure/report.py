@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import List
 
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import (

@@ -10,7 +10,6 @@ import pandas as pd
 from confuse import NotFoundError
 from pandas.core.base import DataError
 from scipy import stats
-from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable

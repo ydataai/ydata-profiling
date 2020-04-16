@@ -58,8 +58,8 @@ class ProfileReport(object):
 
             if df is not None:
                 # preprocess df
-                self.df_hash = None  # Note that it's compute before preprocess df
                 self.df = self.preprocess(df)
+                self.df_hash = joblib.hash(df)  # Note that it's compute after preprocess df
 
                 # Build report structure
                 self.sample = self.get_sample(df)

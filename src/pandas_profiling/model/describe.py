@@ -1,7 +1,7 @@
 import warnings
 
 import pandas as pd
-from tqdm.autonotebook import tqdm
+from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model.statistic import (
