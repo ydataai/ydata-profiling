@@ -71,6 +71,15 @@ class Config(object):
             raise ValueError("Can only update config from a config object")
         self.config = other.config
 
+    def clear(self):
+        self.config = confuse.Configuration("PandasProfiling", __name__, read=False)
+        self.set_file(str(get_config_default()))
+
+    @property
+    def is_default(self):
+        default_config = Config()
+        return self == default_config
+
     def __eq__(self, other):
         return isinstance(other, Config) and self.dump() == other.dump()
 

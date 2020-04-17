@@ -33,7 +33,7 @@ class ProfileReport(object):
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
     def __init__(
-        self, df=None, minimal=False, config_file: Path = None, lazy=True, **kwargs
+            self, df=None, minimal=False, config_file: Path = None, lazy=True, **kwargs
     ):
         if config_file is not None and minimal:
             raise ValueError(
@@ -43,13 +43,15 @@ class ProfileReport(object):
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
-        if minimal:
-            config_file = get_config_minimal()
+        if not config_file and not minimal and not config.is_default:
+            warnings.warn("The configuration of pandas profiling is universal, which will affect all ProfileReport "
+                          "in this progress. Currently configuration is not the default, if you want to restore "
+                          "default configuration, please run 'pandas_profiling.clear_config()'")
 
         if config_file:
             config.set_file(str(config_file))
-        else:
-            config.set_file(get_config_default())
+        elif minimal:
+            config.set_file(get_config_minimal())
 
         config.set_kwargs(kwargs)
 
@@ -97,8 +99,8 @@ class ProfileReport(object):
     def preprocess(df):
         # Treat index as any other column
         if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
+                not pd.Index(np.arange(0, len(df))).equals(df.index)
+                or df.index.dtype != np.int64
         ):
             df = df.reset_index()
 
@@ -109,22 +111,8 @@ class ProfileReport(object):
         df.columns = df.columns.astype("str")
         return df
 
-    @property
-    def description_set(self):
-        if self._description_set is None:
-            self._description_set = describe_df(self.df)
-            self.date_end = datetime.utcnow()
-        return self._description_set
-
-    @property
-    def report(self):
-        if self._report is None:
-            self._report = get_report_structure(
-                self.date_start, self.date_end, self.sample, self.description_set
-            )
-        return self._report
-
-    def get_sample(self, df: pd.DataFrame) -> dict:
+    @staticmethod
+    def get_sample(df: pd.DataFrame) -> dict:
         """Get head/tail samples based on the configuration
 
         Args:
@@ -143,6 +131,28 @@ class ProfileReport(object):
             sample["tail"] = df.tail(n=n_tail)
 
         return sample
+
+    @staticmethod
+    def clear_config():
+        """
+        Restore the configuration to default
+        """
+        config.clear()
+
+    @property
+    def description_set(self):
+        if self._description_set is None:
+            self._description_set = describe_df(self.df)
+            self.date_end = datetime.utcnow()
+        return self._description_set
+
+    @property
+    def report(self):
+        if self._report is None:
+            self._report = get_report_structure(
+                self.date_start, self.date_end, self.sample, self.description_set
+            )
+        return self._report
 
     def get_description(self) -> dict:
         """Return the description (a raw statistical summary) of the dataset.
@@ -347,7 +357,7 @@ class ProfileReport(object):
                             whether if config matched
 
         Notes:
-            Load will fail if DataFrame unmatched or config unmatched (while load_config is False)
+            Load will fail if DataFrame unmatched or config unmatched (while ignore_config is False)
 
         Returns:
             self
@@ -368,20 +378,23 @@ class ProfileReport(object):
 
         # check if the loaded objects is what we want
         if not all(
-            (
-                isinstance(df_hash, str),
-                isinstance(loaded_config, Config),
-                isinstance(loaded_sample, dict),
-                loaded_description_set is None
-                or isinstance(loaded_description_set, dict),
-                loaded_report is None or isinstance(loaded_report, HTMLSequence),
-            )
+                (
+                        isinstance(df_hash, str),
+                        isinstance(loaded_config, Config),
+                        isinstance(loaded_sample, dict),
+                        loaded_description_set is None
+                        or isinstance(loaded_description_set, dict),
+                        loaded_report is None or isinstance(loaded_report, HTMLSequence),
+                )
         ):
             raise ValueError(
                 f"Fail to load data: It may be damaged or from other version"
             )
+        print(ignore_config, config == loaded_config
+              , (config.is_default, self.title is None))
         if (df_hash == self.df_hash or self.df_hash is None) and (
-            ignore_config or config == loaded_config
+                ignore_config or config == loaded_config
+                or (config.is_default and self.title is None)  # load to an empty ProfileReport
         ):
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
@@ -398,20 +411,16 @@ class ProfileReport(object):
                 )
             if self.sample["head"] is None or self.sample["tail"] is None:
                 self.sample = loaded_sample
-            else:
-                warnings.warn(
-                    f"The samples of current ProfileReport is not None. It won't be overwrite."
-                )
 
-            # overwrite config if load_config set to True
+            # overwrite config if ignore_config set to True
             if ignore_config:
                 config.update(loaded_config)
 
             # warn if version not equal
             if (
-                loaded_description_set is not None
-                and loaded_description_set["package"]["pandas_profiling_version"]
-                != __version__
+                    loaded_description_set is not None
+                    and loaded_description_set["package"]["pandas_profiling_version"]
+                    != __version__
             ):
                 warnings.warn(
                     f"Version unmatched from the loaded data. Currently running on pandas_profiling {__version__} "
@@ -427,7 +436,7 @@ class ProfileReport(object):
         else:
             raise ValueError(
                 "DataFrame of Config is not match. If you want to overwrite current config, "
-                'try "load_config=True"'
+                'try "ignore_config=True"'
             )
         return self
 
@@ -440,7 +449,7 @@ class ProfileReport(object):
         with output_file.open("wb") as f:
             f.write(self.dumps())
 
-    def load(self, load_file: Path, load_config: bool = False):
+    def load(self, load_file: Path, ignore_config: bool = False):
         """
        Load ProfileReport from file
 
@@ -450,5 +459,8 @@ class ProfileReport(object):
         if not isinstance(load_file, Path):
             load_file = Path(str(load_file))
         with load_file.open("rb") as f:
-            self.loads(f.read(), ignore_config=load_config)
+            self.loads(f.read(), ignore_config=ignore_config)
         return self
+
+
+clear_config = ProfileReport.clear_config
