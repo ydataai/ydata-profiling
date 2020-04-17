@@ -596,6 +596,7 @@ def describe(df: pd.DataFrame) -> dict:
                     executor.imap_unordered(multiprocess_1d, args)
                 ):
                     series_description[column] = description
+                    pbar.set_postfix({'feature_name': column})
                     pbar.update()
 
             # Restore the original order
