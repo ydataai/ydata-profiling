@@ -6,6 +6,7 @@ import json
 import warnings
 from datetime import datetime
 from pathlib import Path
+from typing import Union
 
 import joblib
 import numpy as np
@@ -33,7 +34,12 @@ class ProfileReport(object):
     """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
 
     def __init__(
-            self, df=None, minimal=False, config_file: Path = None, lazy=True, **kwargs
+        self,
+        df=None,
+        minimal=False,
+        config_file: Union[Path, str] = None,
+        lazy=True,
+        **kwargs,
     ):
         if config_file is not None and minimal:
             raise ValueError(
@@ -44,9 +50,11 @@ class ProfileReport(object):
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
         if not config_file and not minimal and not config.is_default:
-            warnings.warn("The configuration of pandas profiling is universal, which will affect all ProfileReport "
-                          "in this progress. Currently configuration is not the default, if you want to restore "
-                          "default configuration, please run 'pandas_profiling.clear_config()'")
+            warnings.warn(
+                "The configuration of pandas profiling is universal, which will affect all ProfileReport "
+                "in this progress. Currently configuration is not the default, if you want to restore "
+                "default configuration, please run 'pandas_profiling.clear_config()'"
+            )
 
         if config_file:
             config.set_file(str(config_file))
@@ -99,8 +107,8 @@ class ProfileReport(object):
     def preprocess(df):
         # Treat index as any other column
         if (
-                not pd.Index(np.arange(0, len(df))).equals(df.index)
-                or df.index.dtype != np.int64
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
         ):
             df = df.reset_index()
 
@@ -174,7 +182,7 @@ class ProfileReport(object):
             if message.message_type == MessageType.REJECTED
         }
 
-    def to_file(self, output_file: Path, silent: bool = True) -> None:
+    def to_file(self, output_file: Union[Path, str], silent: bool = True) -> None:
         """Write the report to a file.
 
         By default a name is generated.
@@ -378,23 +386,24 @@ class ProfileReport(object):
 
         # check if the loaded objects is what we want
         if not all(
-                (
-                        isinstance(df_hash, str),
-                        isinstance(loaded_config, Config),
-                        isinstance(loaded_sample, dict),
-                        loaded_description_set is None
-                        or isinstance(loaded_description_set, dict),
-                        loaded_report is None or isinstance(loaded_report, HTMLSequence),
-                )
+            (
+                isinstance(df_hash, str),
+                isinstance(loaded_config, Config),
+                isinstance(loaded_sample, dict),
+                loaded_description_set is None
+                or isinstance(loaded_description_set, dict),
+                loaded_report is None or isinstance(loaded_report, HTMLSequence),
+            )
         ):
             raise ValueError(
                 f"Fail to load data: It may be damaged or from other version"
             )
-        print(ignore_config, config == loaded_config
-              , (config.is_default, self.title is None))
         if (df_hash == self.df_hash or self.df_hash is None) and (
-                ignore_config or config == loaded_config
-                or (config.is_default and self.title is None)  # load to an empty ProfileReport
+            ignore_config
+            or config == loaded_config
+            or (
+                config.is_default and self.title is None
+            )  # load to an empty ProfileReport
         ):
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
@@ -418,9 +427,9 @@ class ProfileReport(object):
 
             # warn if version not equal
             if (
-                    loaded_description_set is not None
-                    and loaded_description_set["package"]["pandas_profiling_version"]
-                    != __version__
+                loaded_description_set is not None
+                and loaded_description_set["package"]["pandas_profiling_version"]
+                != __version__
             ):
                 warnings.warn(
                     f"Version unmatched from the loaded data. Currently running on pandas_profiling {__version__} "
@@ -440,7 +449,7 @@ class ProfileReport(object):
             )
         return self
 
-    def dump(self, output_file: Path):
+    def dump(self, output_file: Union[Path, str]):
         """
         Dump ProfileReport to file
         """
@@ -449,7 +458,7 @@ class ProfileReport(object):
         with output_file.open("wb") as f:
             f.write(self.dumps())
 
-    def load(self, load_file: Path, ignore_config: bool = False):
+    def load(self, load_file: Union[Path, str], ignore_config: bool = False):
         """
        Load ProfileReport from file
 

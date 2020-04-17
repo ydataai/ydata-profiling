@@ -79,8 +79,8 @@ def test_load_error():
         ProfileReport(df, minimal=False).loads(data)
 
     assert (
-            str(e.value)
-            == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
+        str(e.value)
+        == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
     )
 
     # df not match
@@ -89,6 +89,6 @@ def test_load_error():
         ProfileReport(df=df[["a", "b"]], minimal=True).loads(data, ignore_config=True)
 
     assert (
-            str(e.value)
-            == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
+        str(e.value)
+        == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
     )
