@@ -86,7 +86,7 @@ plot:
 
     histogram:
 # is used for numeric variables
-        bayesian_blocks_bins: True
+        bayesian_blocks_bins: False
 
 # If 'bayesian_blocks_bins' fails to provide a valid number of bins.
         bins: 50
