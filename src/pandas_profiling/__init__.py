@@ -82,7 +82,7 @@ class ProfileReport(object):
                 self.sample = self.get_sample(df)
                 self.title = config["title"].get(str)
             else:  # waiting for load
-                self.df_hash = None
+                self.df_hash = -1
                 self.df = None
                 self.sample = {"head": None, "tail": None}
                 self.title = None
@@ -353,7 +353,7 @@ class ProfileReport(object):
         """
         import pickle
 
-        if self.df_hash is None:
+        if self.df_hash == -1:
             self.df_hash = int(hash_pandas_object(self.df).sum())
         # Note: _description_set and _report may are None if they haven't been computed
         return pickle.dumps(
@@ -403,7 +403,7 @@ class ProfileReport(object):
             raise ValueError(
                 f"Fail to load data: It may be damaged or from other version"
             )
-        if (df_hash == self.df_hash or self.df_hash is None) and (
+        if (df_hash == self.df_hash or self.df_hash == -1) and (
             ignore_config
             or config == loaded_config
             or (
