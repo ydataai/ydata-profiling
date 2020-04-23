@@ -115,7 +115,7 @@ Install by navigating to the proper directory and running
     
 ## Documentation
 
-The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/).
+The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
 
 ### Getting started
 
