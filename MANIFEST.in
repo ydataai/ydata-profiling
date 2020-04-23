@@ -17,7 +17,8 @@ include src/pandas_profiling/*.yaml
 # Exclude development, testing and example code
 exclude .pre-commit-config.yaml
 include Makefile make.bat
-exclude docs examples tests
+exclude docs examples tests docsrc
 recursive-exclude docs *
+recursive-exclude docsrc *
 recursive-exclude examples *
 recursive-exclude tests *

@@ -2,6 +2,8 @@
 setlocal enabledelayedexpansion
 
 IF "%1%" == "docs" (
+    mkdir docs/
+    robocopy .\docsrc\assets\ .\docs\assets\
     pdoc3 --html  --force --output-dir docs pandas_profiling
     robocopy .\docs\pandas_profiling .\docs /E /MOVE
     ECHO "Docs updated!"
