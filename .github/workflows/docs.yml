@@ -3,8 +3,7 @@ name: CI Build Documentation
 on:
   push:
     branches:
-      - disable
-#      - master
+      - master
 
 jobs:
   documentation:
@@ -52,14 +51,19 @@ jobs:
     - name: Build the documentation
       run: make docs
 
-    - name: Commit documentation changes
+    - name: Move the changes to the gh-pages branch
       run: |
         git add docs/
+        git stash
+        git checkout gh-pages
+        rm -rf docs/
+        git add docs/
+        git stash apply
         git commit -m "[skip ci] Updating documentation" -a || true
 
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        branch: master
+        branch: gh-pages
         directory: docs/
         github_token: ${{ secrets.GITHUB_TOKEN }}
