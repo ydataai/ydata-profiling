@@ -48,7 +48,13 @@ class Config(object):
 
         self.set_file(str(get_config_default()))
 
-    def set_file(self, file_name):
+    def set_file(self, file_name: str) -&gt; None:
+        &#34;&#34;&#34;
+        Set the config from a file
+
+        Args:
+            file_name: file name
+        &#34;&#34;&#34;
         if self.config is not None:
             self.config.set_file(file_name)
 
@@ -132,7 +138,13 @@ various ways (notably via argparse and kwargs).</p>
 
         self.set_file(str(get_config_default()))
 
-    def set_file(self, file_name):
+    def set_file(self, file_name: str) -&gt; None:
+        &#34;&#34;&#34;
+        Set the config from a file
+
+        Args:
+            file_name: file name
+        &#34;&#34;&#34;
         if self.config is not None:
             self.config.set_file(file_name)
 
@@ -228,15 +240,26 @@ various ways (notably via argparse and kwargs).</p>
 </details>
 </dd>
 <dt id="pandas_profiling.config.Config.set_file"><code class="name flex">
-<span>def <span class="ident">set_file</span></span>(<span>self, file_name)</span>
+<span>def <span class="ident">set_file</span></span>(<span>self, file_name: str) -> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Set the config from a file</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_name</code></strong></dt>
+<dd>file name</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_file(self, file_name):
+<pre><code class="python">def set_file(self, file_name: str) -&gt; None:
+    &#34;&#34;&#34;
+    Set the config from a file
+
+    Args:
+        file_name: file name
+    &#34;&#34;&#34;
     if self.config is not None:
         self.config.set_file(file_name)</code></pre>
 </details>
