@@ -1,6 +1,6 @@
 # Pandas Profiling
 
-![Pandas Profiling Logo Header](http://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png)
+![Pandas Profiling Logo Header](https://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png)
 
 [![Build Status](https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master)](https://travis-ci.com/pandas-profiling/pandas-profiling)
 [![Code Coverage](https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/pandas-profiling/pandas-profiling)
@@ -68,17 +68,17 @@ _Contents:_ **[Examples](#examples)** |
 
 The following examples can give you an impression of what the package can do:
 
-* [Census Income](http://pandas-profiling.github.io/pandas-profiling/examples/census/census_report.html) (US Adult Census data relating income)
-* [NASA Meteorites](http://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
-* [Titanic](http://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
-* [NZA](http://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
-* [Stata Auto](http://pandas-profiling.github.io/pandas-profiling/examples/stata_auto/stata_auto_report.html) (1978 Automobile data)
-* [Vektis](http://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
-* [Website Inaccessibility](http://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
-* [Colors](http://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html) (a simple colors dataset)
-* [Russian Vocabulary](http://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
-* [Orange prices](http://pandas-profiling.github.io/pandas-profiling/examples/themes/united_report.html) and [Coal prices](http://pandas-profiling.github.io/pandas-profiling/examples/themes/flatly_report.html) (showcase report themes)
-* [Tutorial: report structure using Kaggle data (advanced)](http://pandas-profiling.github.io/pandas-profiling/examples/kaggle/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/kaggle/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb)
+* [Census Income](https://pandas-profiling.github.io/pandas-profiling/examples/census/census_report.html) (US Adult Census data relating income)
+* [NASA Meteorites](https://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
+* [Titanic](https://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
+* [NZA](https://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
+* [Stata Auto](https://pandas-profiling.github.io/pandas-profiling/examples/stata_auto/stata_auto_report.html) (1978 Automobile data)
+* [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
+* [Website Inaccessibility](https://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
+* [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html) (a simple colors dataset)
+* [Russian Vocabulary](https://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
+* [Orange prices](https://pandas-profiling.github.io/pandas-profiling/examples/themes/united_report.html) and [Coal prices](https://pandas-profiling.github.io/pandas-profiling/examples/themes/flatly_report.html) (showcase report themes)
+* [Tutorial: report structure using Kaggle data (advanced)](https://pandas-profiling.github.io/pandas-profiling/examples/kaggle/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/kaggle/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb)
 
 ## Installation
 
@@ -140,7 +140,7 @@ profile = ProfileReport(df, title='Pandas Profiling Report', html={'style':{'ful
 We recommend generating reports interactively by using the Jupyter notebook. 
 There are two interfaces (see animations below): through widgets and through a HTML report.
 
-<img alt="Notebook Widgets" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/widgets.gif" width="800" />
+<img alt="Notebook Widgets" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/widgets.gif" width="800" />
 
 This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 ```python
@@ -149,7 +149,7 @@ profile.to_widgets()
 
 The HTML report can be included in a Juyter notebook:
 
-<img alt="HTML" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/iframe.gif" width="800" />
+<img alt="HTML" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/iframe.gif" width="800" />
 
 Run the following code:
 
@@ -272,7 +272,7 @@ Read more on getting involved in the [Contribution Guide](https://github.com/pan
     - Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"
     - Working Directory: $ProjectFileDir$
   
-<img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" />
+<img alt="PyCharm Integration" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" />
   
 To use the PyCharm Integration, right click on any dataset file:
 _External Tools_ > _Pandas Profiling_.
