@@ -10,7 +10,6 @@ from urllib.parse import urlsplit
 from tqdm.autonotebook import tqdm
 import numpy as np
 import pandas as pd
-from astropy.stats import bayesian_blocks
 from scipy.stats.stats import chisquare
 
 from pandas_profiling import __version__
@@ -93,6 +92,8 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
 
     bayesian_blocks_bins = config["plot"]["histogram"]["bayesian_blocks_bins"].get(bool)
     if bayesian_blocks_bins:
+        from astropy.stats import bayesian_blocks
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             ret = bayesian_blocks(stats["histogram_data"])
