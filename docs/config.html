@@ -44,7 +44,7 @@ class Config(object):
     def __init__(self):
         &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
-            self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__)
+            self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
 
         self.set_file(str(get_config_default()))
 
@@ -128,7 +128,7 @@ various ways (notably via argparse and kwargs).</p>
     def __init__(self):
         &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
-            self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__)
+            self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
 
         self.set_file(str(get_config_default()))
 
