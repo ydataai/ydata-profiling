@@ -90,7 +90,7 @@ The following examples can give you an impression of what the package can do:
 
 You can install using the pip package manager by running
 
-    pip install pandas-profiling[notebook,html]
+    pip install pandas-profiling[notebook]
     
 Alternatively, you could install the latest version directly from Github:
 
