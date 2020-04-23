@@ -1,6 +1,6 @@
 # Pandas Profiling
 
-![Pandas Profiling Logo Header](http://pandas-profiling.github.io/pandas-profiling/assets/logo_header.png)
+![Pandas Profiling Logo Header](http://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png)
 
 [![Build Status](https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master)](https://travis-ci.com/pandas-profiling/pandas-profiling)
 [![Code Coverage](https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/pandas-profiling/pandas-profiling)
@@ -140,7 +140,7 @@ profile = ProfileReport(df, title='Pandas Profiling Report', html={'style':{'ful
 We recommend generating reports interactively by using the Jupyter notebook. 
 There are two interfaces (see animations below): through widgets and through a HTML report.
 
-<img alt="Notebook Widgets" src="http://pandas-profiling.github.io/pandas-profiling/assets/widgets.gif" width="800" />
+<img alt="Notebook Widgets" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/widgets.gif" width="800" />
 
 This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 ```python
@@ -149,7 +149,7 @@ profile.to_widgets()
 
 The HTML report can be included in a Juyter notebook:
 
-<img alt="HTML" src="http://pandas-profiling.github.io/pandas-profiling/assets/iframe.gif" width="800" />
+<img alt="HTML" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/iframe.gif" width="800" />
 
 Run the following code:
 
@@ -272,7 +272,7 @@ Read more on getting involved in the [Contribution Guide](https://github.com/pan
     - Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"
     - Working Directory: $ProjectFileDir$
   
-<img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/assets/pycharm-integration.png" width="400" />
+<img alt="PyCharm Integration" src="http://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" />
   
 To use the PyCharm Integration, right click on any dataset file:
 _External Tools_ > _Pandas Profiling_.
