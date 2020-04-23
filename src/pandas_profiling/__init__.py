@@ -8,9 +8,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Union
 
-import joblib
 import numpy as np
 import pandas as pd
+from pandas.util import hash_pandas_object
 
 from pandas_profiling.config import config, Config
 from pandas_profiling.controller import pandas_decorator
@@ -74,8 +74,8 @@ class ProfileReport(object):
             if df is not None:
                 # preprocess df
                 self.df = self.preprocess(df)
-                self.df_hash = joblib.hash(
-                    df
+                self.df_hash = int(
+                    hash_pandas_object(df).sum()
                 )  # Note that it's compute after preprocess df
 
                 # Build report structure
@@ -90,7 +90,9 @@ class ProfileReport(object):
             self.df = None
             # preprocess df
             df = self.preprocess(df)
-            self.df_hash = joblib.hash(df)  # Note that it's compute after preprocess df
+            self.df_hash = int(
+                hash_pandas_object(df).sum()
+            )  # Note that it's compute after preprocess df
 
             # description_set and report will compute now
             self._description_set = describe_df(df)
@@ -157,6 +159,11 @@ class ProfileReport(object):
     @property
     def report(self):
         if self._report is None:
+
+            # Trigger description_set computation to set self.date_end
+            _ = self.description_set
+
+            # Compute self report
             self._report = get_report_structure(
                 self.date_start, self.date_end, self.sample, self.description_set
             )
@@ -185,10 +192,8 @@ class ProfileReport(object):
     def to_file(self, output_file: Union[Path, str], silent: bool = True) -> None:
         """Write the report to a file.
 
-        By default a name is generated.
-
         Args:
-            output_file: The name or the path of the file to generate including the extension (.html, .json).
+            output_file: The name or the path of the file to generate including the extension (.html, .json, .pp).
             silent: if False, opens the file in the default browser
         """
         if not isinstance(output_file, Path):
@@ -267,7 +272,7 @@ class ProfileReport(object):
                 return str(data)
 
             def default(self, o):
-                if isinstance(o, pd.core.series.Series):
+                if isinstance(o, pd.Series):
                     return self.default(o.to_dict())
 
                 if isinstance(o, np.integer):
@@ -349,7 +354,7 @@ class ProfileReport(object):
         import pickle
 
         if self.df_hash is None:
-            self.df_hash = joblib.hash(self.df)
+            self.df_hash = int(hash_pandas_object(self.df).sum())
         # Note: _description_set and _report may are None if they haven't been computed
         return pickle.dumps(
             [self.df_hash, config, self.sample, self._description_set, self._report]
@@ -387,7 +392,7 @@ class ProfileReport(object):
         # check if the loaded objects is what we want
         if not all(
             (
-                isinstance(df_hash, str),
+                isinstance(df_hash, int),
                 isinstance(loaded_config, Config),
                 isinstance(loaded_sample, dict),
                 loaded_description_set is None

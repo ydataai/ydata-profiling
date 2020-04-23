@@ -1,6 +1,6 @@
 import pytest
 
-from pandas_profiling.model.statistic import sort_column_names
+from pandas_profiling.model.summary import sort_column_names
 
 
 @pytest.fixture()

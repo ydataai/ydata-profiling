@@ -3,8 +3,8 @@ import itertools
 import warnings
 from contextlib import suppress
 from functools import partial
-from typing import Callable, Dict, List, Optional
-import phik
+from typing import Callable, Dict, List, Optional, Union
+
 import numpy as np
 import pandas as pd
 from confuse import NotFoundError
@@ -134,7 +134,9 @@ https://github.com/pandas-profiling/pandas-profiling/issues
     )
 
 
-def calculate_correlation(df: pd.DataFrame, variables: dict, correlation_name: str):
+def calculate_correlation(
+    df: pd.DataFrame, variables: dict, correlation_name: str
+) -> Union[pd.DataFrame, None]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
         (pearson, spearman, kendall, phi_k, cramers).
 
@@ -156,6 +158,8 @@ def calculate_correlation(df: pd.DataFrame, variables: dict, correlation_name: s
         except (ValueError, AssertionError) as e:
             warn_correlation(correlation_name, e)
     elif correlation_name in ["phi_k"]:
+        import phik
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             # Phi_k does not filter non-numerical with high cardinality

@@ -62,12 +62,27 @@ def test_load(get_data_file, test_output_dir):
 
 
 def test_load_error():
+    import warnings
+
+    warnings.filterwarnings("error")
+
     df = pd.DataFrame(
         {"a": [1, 2, 3, 1, 1, 1], "b": [1, 2, 3, 4, 5, 6], "c": [1, 2, 3, 4, 5, 6]}
     )
     profile1 = ProfileReport(df, minimal=True)
 
     data = profile1.dumps()
+
+    # config is minimal but instantiate a ProfileReport that doesn't seem to be the minimal
+    with pytest.raises(UserWarning) as e:
+        ProfileReport(df)
+
+    assert (
+        str(e.value)
+        == "The configuration of pandas profiling is universal, which will affect all ProfileReport "
+        "in this progress. Currently configuration is not the default, if you want to restore "
+        "default configuration, please run 'pandas_profiling.clear_config()'"
+    )
 
     # config not match but ignore_config
     ProfileReport.clear_config()
@@ -86,7 +101,9 @@ def test_load_error():
     # df not match
     with pytest.raises(ValueError) as e:
         ProfileReport.clear_config()
-        ProfileReport(df=df[["a", "b"]], minimal=True).loads(data, ignore_config=True)
+        ProfileReport(df=df[["a", "b"]][:], minimal=True).loads(
+            data, ignore_config=True
+        )
 
     assert (
         str(e.value)

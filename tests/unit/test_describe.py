@@ -9,7 +9,7 @@ from pandas_profiling.model.base import Variable
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-from pandas_profiling.model.statistic import describe_1d
+from pandas_profiling.model.summary import describe_1d
 from pandas_profiling.model.describe import describe
 
 testdata = [
