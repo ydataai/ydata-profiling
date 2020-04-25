@@ -53,21 +53,32 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         This method might print warnings, which we suppress.
         https://github.com/astropy/astropy/issues/4927
     """
+
+    def mad(arr):
+        """ Median Absolute Deviation: a "Robust" version of standard deviation.
+            Indices variability of the sample.
+            https://en.wikipedia.org/wiki/Median_absolute_deviation
+        """
+        return np.median(np.abs(arr - np.median(arr)))
+
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
     n_infinite = len(series.loc[(~np.isfinite(series)) & series.notnull()])
 
+    values = series.values
+    present_values = values[~np.isnan(values)]
+
     stats = {
-        "mean": series.mean(),
-        "std": series.std(),
-        "variance": series.var(),
-        "min": series.min(),
-        "max": series.max(),
-        "kurtosis": series.kurt(),
-        "skewness": series.skew(),
-        "sum": series.sum(),
-        "mad": series.mad(),
-        "n_zeros": (len(series) - np.count_nonzero(series)),
+        "mean": np.mean(present_values),
+        "std": np.std(present_values, ddof=1),
+        "variance": np.var(present_values, ddof=1),
+        "min": np.min(present_values),
+        "max": np.max(present_values),
+        "kurtosis": series.kurt(),  # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+        "skewness": series.skew(),  # Unbiased skew normalized by N-1
+        "sum": np.sum(present_values),
+        "mad": mad(present_values),
+        "n_zeros": (series_description["n"] - np.count_nonzero(present_values)),
         "histogram_data": series,
         "scatter_data": series,  # For complex
         "p_infinite": n_infinite / series_description["n"],
@@ -89,7 +100,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     )
     stats["iqr"] = stats["75%"] - stats["25%"]
     stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
-    stats["p_zeros"] = float(stats["n_zeros"]) / len(series)
+    stats["p_zeros"] = float(stats["n_zeros"]) / series_description["n"]
 
     bins = config["plot"]["histogram"]["bins"].get(int)
     # Bins should never be larger than the number of distinct values
@@ -279,19 +290,19 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
     """
 
     # number of observations in the Series
-    leng = len(series)
+    length = len(series)
     # number of non-NaN observations in the Series
     count = series.count()
 
     distinct_count = series_description["distinct_count_without_nan"]
 
     stats = {
-        "n": leng,
+        "n": length,
         "count": count,
         "distinct_count": distinct_count,
         "n_unique": distinct_count,
-        "p_missing": 1 - count * 1.0 / leng,
-        "n_missing": leng - count,
+        "p_missing": 1 - count * 1.0 / length,
+        "n_missing": length - count,
         "is_unique": distinct_count == count,
         "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
         "p_unique": distinct_count * 1.0 / count,
