@@ -22,7 +22,7 @@ sns.set_style(style="white")
 
 
 def _plot_histogram(
-    series: pd.Series,
+    series: np.ndarray,
     series_description: dict,
     bins: Union[int, np.ndarray],
     figsize: tuple = (6, 4),
@@ -39,35 +39,34 @@ def _plot_histogram(
 
 
     """
-    with pd.option_context("mode.use_inf_as_na", True):
-        if series_description["type"] == Variable.TYPE_DATE:
-            # Workaround for https://github.com/pandas-dev/pandas/issues/17372
-            fig = plt.figure(figsize=figsize)
-            plot = fig.add_subplot(111)
-            plot.set_ylabel("Frequency")
-            plot.hist(
-                series.dropna().values,
-                facecolor=config["html"]["style"]["primary_color"].get(str),
-                bins=bins,
-            )
-        else:
-            plot = series.plot(
-                kind="hist",
-                figsize=figsize,
-                facecolor=config["html"]["style"]["primary_color"].get(str),
-                bins=bins,
-            )
+    # if series_description["type"] == Variable.TYPE_DATE:
+    # Workaround for https://github.com/pandas-dev/pandas/issues/17372
+    fig = plt.figure(figsize=figsize)
+    plot = fig.add_subplot(111)
+    plot.set_ylabel("Frequency")
+    plot.hist(
+        series,  # .dropna().values,
+        facecolor=config["html"]["style"]["primary_color"].get(str),
+        bins=bins,
+    )
+    # else:
+    #     plot = series.plot(
+    #         kind="hist",
+    #         figsize=figsize,
+    #         facecolor=config["html"]["style"]["primary_color"].get(str),
+    #         bins=bins,
+    #     )
     return plot
 
 
 def histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot an histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
@@ -82,13 +81,13 @@ def histogram(
 
 
 def mini_histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot a small (mini) histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:

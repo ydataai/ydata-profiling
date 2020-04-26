@@ -62,10 +62,11 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
 
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
-    n_infinite = len(series.loc[(~np.isfinite(series)) & series.notnull()])
+    n_infinite = ((series == np.inf) | (series == -np.inf)).sum()
 
     values = series.values
     present_values = values[~np.isnan(values)]
+    finite_values = values[np.isfinite(values)]
 
     stats = {
         "mean": np.mean(present_values),
@@ -78,7 +79,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         "sum": np.sum(present_values),
         "mad": mad(present_values),
         "n_zeros": (series_description["n"] - np.count_nonzero(present_values)),
-        "histogram_data": series,
+        "histogram_data": finite_values,
         "scatter_data": series,  # For complex
         "p_infinite": n_infinite / series_description["n"],
         "n_infinite": n_infinite,
@@ -86,8 +87,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
 
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
-        with pd.option_context("mode.use_inf_as_na", True):
-            histogram = np.histogram(series[series.notna()].values, bins="auto")[0]
+        histogram, _ = np.histogram(finite_values, bins="auto")
         stats["chi_squared"] = chisquare(histogram)
 
     stats["range"] = stats["max"] - stats["min"]
@@ -146,10 +146,9 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
 
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
-        with pd.option_context("mode.use_inf_as_na", True):
-            histogram = np.histogram(
-                series[series.notna()].astype("int64").values, bins="auto"
-            )[0]
+        histogram, _ = np.histogram(
+            series[series.notna()].astype("int64").values, bins="auto"
+        )
         stats["chi_squared"] = chisquare(histogram)
 
     return stats
@@ -292,6 +291,7 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
 
     # number of observations in the Series
     length = len(series)
+
     # number of non-NaN observations in the Series
     count = series.count()
 
@@ -302,11 +302,11 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
         "count": count,
         "distinct_count": distinct_count,
         "n_unique": distinct_count,
-        "p_missing": 1 - count * 1.0 / length,
+        "p_missing": 1 - (count / length),
         "n_missing": length - count,
         "is_unique": distinct_count == count,
         "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
-        "p_unique": distinct_count * 1.0 / count,
+        "p_unique": distinct_count / count,
         "memory_size": series.memory_usage(),
     }
 
@@ -325,15 +325,16 @@ def describe_unsupported(series: pd.Series, series_description: dict):
     """
 
     # number of observations in the Series
-    leng = len(series)
+    length = len(series)
+
     # number of non-NaN observations in the Series
     count = series.count()
 
     results_data = {
-        "n": leng,
+        "n": length,
         "count": count,
-        "p_missing": 1 - count * 1.0 / leng,
-        "n_missing": leng - count,
+        "p_missing": 1 - count / length,
+        "n_missing": length - count,
         "memory_size": series.memory_usage(),
     }
 
@@ -350,7 +351,12 @@ def describe_1d(series: pd.Series) -> dict:
         A Series containing calculated series description values.
     """
 
+    # Make sure pd.NA is not in the series
+    series.fillna(np.nan, inplace=True)
+
     # Infer variable types
+    # TODO: use visions for type inference
+    # https://github.com/dylan-profiler/visions
     series_description = base.get_var_type(series)
 
     # Run type specific analysis
@@ -568,6 +574,7 @@ def describe(df: pd.DataFrame) -> dict:
             - correlations: correlation matrices.
             - missing: missing value diagrams.
             - messages: direct special attention to these patterns in your data.
+            - package: package details.
     """
     if not isinstance(df, pd.DataFrame):
         warnings.warn("df is not of type pandas.DataFrame")
