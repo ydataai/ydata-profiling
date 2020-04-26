@@ -4,6 +4,7 @@ from enum import Enum, unique
 from urllib.parse import urlparse
 
 import pandas as pd
+import numpy as np
 
 from pandas_profiling.config import config
 from pandas_profiling.utils.data_types import str_is_path
@@ -123,9 +124,11 @@ def is_numeric(series: pd.Series, series_description: dict) -> bool:
     Returns:
         True is the series is numeric type (NaNs allowed).
     """
-    return pd.api.types.is_numeric_dtype(series) and series_description[
-        "distinct_count_without_nan"
-    ] >= config["vars"]["num"]["low_categorical_threshold"].get(int)
+    return pd.api.types.is_numeric_dtype(series) and (
+        series_description["distinct_count_without_nan"]
+        >= config["vars"]["num"]["low_categorical_threshold"].get(int)
+        or any(np.inf == s or -np.inf == s for s in series)
+    )
 
 
 def is_url(series: pd.Series, series_description: dict) -> bool:

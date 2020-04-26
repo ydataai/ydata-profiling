@@ -52,26 +52,42 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         This method might print warnings, which we suppress.
         https://github.com/astropy/astropy/issues/4927
     """
+
+    def mad(arr):
+        """ Median Absolute Deviation: a "Robust" version of standard deviation.
+            Indices variability of the sample.
+            https://en.wikipedia.org/wiki/Median_absolute_deviation
+        """
+        return np.median(np.abs(arr - np.median(arr)))
+
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
+    n_infinite = ((series == np.inf) | (series == -np.inf)).sum()
+
+    values = series.values
+    present_values = values[~np.isnan(values)]
+    finite_values = values[np.isfinite(values)]
+
     stats = {
-        "mean": series.mean(),
-        "std": series.std(),
-        "variance": series.var(),
-        "min": series.min(),
-        "max": series.max(),
-        "kurtosis": series.kurt(),
-        "skewness": series.skew(),
-        "sum": series.sum(),
-        "mad": series.mad(),
-        "n_zeros": (len(series) - np.count_nonzero(series)),
-        "histogram_data": series,
+        "mean": np.mean(present_values),
+        "std": np.std(present_values, ddof=1),
+        "variance": np.var(present_values, ddof=1),
+        "min": np.min(present_values),
+        "max": np.max(present_values),
+        "kurtosis": series.kurt(),  # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+        "skewness": series.skew(),  # Unbiased skew normalized by N-1
+        "sum": np.sum(present_values),
+        "mad": mad(present_values),
+        "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
+        "histogram_data": finite_values,
         "scatter_data": series,  # For complex
+        "p_infinite": n_infinite / series_description["n"],
+        "n_infinite": n_infinite,
     }
 
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
-        histogram = np.histogram(series[series.notna()].values, bins="auto")[0]
+        histogram, _ = np.histogram(finite_values, bins="auto")
         stats["chi_squared"] = chisquare(histogram)
 
     stats["range"] = stats["max"] - stats["min"]
@@ -83,7 +99,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     )
     stats["iqr"] = stats["75%"] - stats["25%"]
     stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
-    stats["p_zeros"] = float(stats["n_zeros"]) / len(series)
+    stats["p_zeros"] = stats["n_zeros"] / series_description["n"]
 
     bins = config["plot"]["histogram"]["bins"].get(int)
     # Bins should never be larger than the number of distinct values
@@ -130,9 +146,9 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
 
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
-        histogram = np.histogram(
+        histogram, _ = np.histogram(
             series[series.notna()].astype("int64").values, bins="auto"
-        )[0]
+        )
         stats["chi_squared"] = chisquare(histogram)
 
     return stats
@@ -274,27 +290,23 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
     """
 
     # number of observations in the Series
-    leng = len(series)
-    # TODO: fix infinite logic
+    length = len(series)
+
     # number of non-NaN observations in the Series
     count = series.count()
-    # number of infinite observations in the Series
-    n_infinite = count - series.count()
 
     distinct_count = series_description["distinct_count_without_nan"]
 
     stats = {
-        "n": leng,
+        "n": length,
         "count": count,
         "distinct_count": distinct_count,
         "n_unique": distinct_count,
-        "p_missing": 1 - count * 1.0 / leng,
-        "n_missing": leng - count,
-        "p_infinite": n_infinite * 1.0 / leng,
-        "n_infinite": n_infinite,
+        "p_missing": 1 - (count / length),
+        "n_missing": length - count,
         "is_unique": distinct_count == count,
         "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
-        "p_unique": distinct_count * 1.0 / count,
+        "p_unique": distinct_count / count,
         "memory_size": series.memory_usage(),
     }
 
@@ -313,19 +325,16 @@ def describe_unsupported(series: pd.Series, series_description: dict):
     """
 
     # number of observations in the Series
-    leng = len(series)
+    length = len(series)
+
     # number of non-NaN observations in the Series
     count = series.count()
-    # number of infinte observations in the Series
-    n_infinite = count - series.count()
 
     results_data = {
-        "n": leng,
+        "n": length,
         "count": count,
-        "p_missing": 1 - count * 1.0 / leng,
-        "n_missing": leng - count,
-        "p_infinite": n_infinite * 1.0 / leng,
-        "n_infinite": n_infinite,
+        "p_missing": 1 - count / length,
+        "n_missing": length - count,
         "memory_size": series.memory_usage(),
     }
 
@@ -342,10 +351,12 @@ def describe_1d(series: pd.Series) -> dict:
         A Series containing calculated series description values.
     """
 
-    # Replace infinite values with NaNs to avoid issues with histograms later.
-    series.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
+    # Make sure pd.NA is not in the series
+    series.fillna(np.nan, inplace=True)
 
     # Infer variable types
+    # TODO: use visions for type inference
+    # https://github.com/dylan-profiler/visions
     series_description = base.get_var_type(series)
 
     # Run type specific analysis
@@ -563,6 +574,7 @@ def describe(df: pd.DataFrame) -> dict:
             - correlations: correlation matrices.
             - missing: missing value diagrams.
             - messages: direct special attention to these patterns in your data.
+            - package: package details.
     """
     if not isinstance(df, pd.DataFrame):
         warnings.warn("df is not of type pandas.DataFrame")
