@@ -78,7 +78,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         "skewness": series.skew(),  # Unbiased skew normalized by N-1
         "sum": np.sum(present_values),
         "mad": mad(present_values),
-        "n_zeros": (series_description["n"] - np.count_nonzero(present_values)),
+        "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
         "histogram_data": finite_values,
         "scatter_data": series,  # For complex
         "p_infinite": n_infinite / series_description["n"],
@@ -99,7 +99,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     )
     stats["iqr"] = stats["75%"] - stats["25%"]
     stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
-    stats["p_zeros"] = float(stats["n_zeros"]) / series_description["n"]
+    stats["p_zeros"] = stats["n_zeros"] / series_description["n"]
 
     bins = config["plot"]["histogram"]["bins"].get(int)
     # Bins should never be larger than the number of distinct values
