@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.patches import Patch
 
 from pandas.plotting import register_matplotlib_converters
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
@@ -106,11 +107,11 @@ def mini_histogram(
     return plot_360_n0sc0pe(plt)
 
 
-def get_cmap_half(cmap_name):
+def get_cmap_half(cmap):
     """Get the upper half of the color map
 
     Args:
-        cmap_name: the name of the color map
+        cmap: the color map
 
     Returns:
         A new color map based on the upper half of another color map
@@ -119,7 +120,6 @@ def get_cmap_half(cmap_name):
         https://stackoverflow.com/a/24746399/470433
     """
     # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
-    cmap = plt.get_cmap(cmap_name)
     colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
 
     # Create a new colormap from those colors
@@ -159,15 +159,27 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
       The resulting correlation matrix encoded as a string.
     """
     fig_cor, axes_cor = plt.subplots()
-    cmap = config["plot"]["correlation"]["cmap"].get(str)
+    cmap_name = config["plot"]["correlation"]["cmap"].get(str)
+    cmap_bad = config["plot"]["correlation"]["bad"].get(str)
+
+    cmap = plt.get_cmap(cmap_name)
     if vmin == 0:
         cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
 
     labels = data.columns
     matrix_image = axes_cor.imshow(
         data, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
     )
     plt.colorbar(matrix_image)
+
+    if data.isnull().values.any():
+        legend_elements = [Patch(facecolor=cmap(np.nan), label="invalid\ncoefficient")]
+
+        plt.legend(
+            handles=legend_elements, loc="upper right", handleheight=2.5,
+        )
+
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
 

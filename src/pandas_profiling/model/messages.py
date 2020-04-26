@@ -27,9 +27,6 @@ class MessageType(Enum):
     HIGH_CORRELATION = 3
     """This variable is highly correlated."""
 
-    RECODED = 4
-    """This variable is correlated (categorical)."""
-
     HIGH_CARDINALITY = 5
     """This variable has a high cardinality."""
 

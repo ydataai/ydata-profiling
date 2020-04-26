@@ -3,7 +3,7 @@
 ##   Check it out, it's an awesome library for plotting!
 
 patch.facecolor: 348ABD  # blue
-patch.edgecolor: EEEEEE
+# patch.edgecolor: EEEEEE
 patch.antialiased: True
 
 font.size: 10.0
@@ -16,7 +16,7 @@ figure.edgecolor: 0.50
 figure.facecolor: white
 text.color: .15
 axes.labelcolor: .15
-legend.frameon: False
+# legend.frameon: False
 legend.numpoints: 1
 legend.scatterpoints: 1
 xtick.direction: out

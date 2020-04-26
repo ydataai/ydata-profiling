@@ -19,7 +19,7 @@ pypi_package:
 	twine upload --skip-existing dist/*
 
 install:
-	pip install -e .
+	pip install -e .[notebook,app]
 
 lint:
 	black .
