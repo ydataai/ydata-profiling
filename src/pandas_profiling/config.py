@@ -21,7 +21,13 @@ class Config(object):
 
         self.set_file(str(get_config_default()))
 
-    def set_file(self, file_name):
+    def set_file(self, file_name: str) -> None:
+        """
+        Set the config from a file
+
+        Args:
+            file_name: file name
+        """
         if self.config is not None:
             self.config.set_file(file_name)
 
