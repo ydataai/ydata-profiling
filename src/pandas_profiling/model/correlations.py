@@ -40,19 +40,6 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     return corr
 
 
-def check_recoded(confusion_matrix, count: int) -> int:
-    """Check if two variables are recoded based on their crosstab.
-
-    Args:
-        confusion_matrix: Crosstab between two variables.
-        count:  The number of variables.
-
-    Returns:
-        Whether the variables are recoded.
-    """
-    return int(confusion_matrix.values.diagonal().sum() == count)
-
-
 def cramers_matrix(df: pd.DataFrame, variables: dict):
     """Calculate the Cramer's V correlation matrix.
 
@@ -66,19 +53,6 @@ def cramers_matrix(df: pd.DataFrame, variables: dict):
     return categorical_matrix(
         df, variables, partial(cramers_corrected_stat, correction=True)
     )
-
-
-def recoded_matrix(df: pd.DataFrame, variables: dict):
-    """Calculate the recoded correlation matrix.
-
-    Args:
-        df: The pandas DataFrame.
-        variables: A dict with column names mapped to variable type.
-
-    Returns:
-        A recoded matrix for categorical variables.
-    """
-    return categorical_matrix(df, variables, partial(check_recoded, count=len(df)))
 
 
 def categorical_matrix(
@@ -152,18 +126,11 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
 
     correlation_names = [
         correlation_name
-        for correlation_name in [
-            "pearson",
-            "spearman",
-            "kendall",
-            "phi_k",
-            "cramers",
-            "recoded",
-        ]
+        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers"]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
-    categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}
+    categorical_correlations = {"cramers": cramers_matrix}
 
     if len(correlation_names) > 0:
         with tqdm(
@@ -241,7 +208,7 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                                     ].reindex(index=column_order, columns=column_order)
                             except (ValueError, DataError, IndexError, TypeError) as e:
                                 warn_correlation("phi_k", e)
-                elif correlation_name in ["cramers", "recoded"]:
+                elif correlation_name in ["cramers"]:
                     try:
                         get_matrix = categorical_correlations[correlation_name]
                         correlation = get_matrix(df, variables)
@@ -250,11 +217,11 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                     except (ValueError, AssertionError) as e:
                         warn_correlation(correlation_name, e)
 
-                if correlation_name in correlations:
-                    # Drop rows and columns with NaNs
-                    correlations[correlation_name].dropna(inplace=True, how="all")
-                    if correlations[correlation_name].empty:
-                        del correlations[correlation_name]
+                if (
+                    correlation_name in correlations
+                    and correlations[correlation_name].empty
+                ):
+                    del correlations[correlation_name]
 
                 pbar.update()
 
@@ -280,7 +247,7 @@ def perform_check_correlation(
         threshold:.
 
     Returns:
-        The variables that are highly correlated or recoded.
+        The variables that are highly correlated.
     """
 
     corr = correlation_matrix.copy()

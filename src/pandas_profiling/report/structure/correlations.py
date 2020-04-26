@@ -51,13 +51,19 @@ def get_correlation_items(summary) -> Optional[Renderable]:
     concordant and discordant pairs of observations. <em>τ</em> is given by the number of concordant pairs minus the 
     discordant pairs divided by the total number of pairs."""
 
+    phi_k_description = """Phik (φk) is a new and practical correlation coefficient that works consistently between categorical, ordinal and interval variables, captures non-linear dependency and reverts to the Pearson correlation coefficient in case
+    of a bivariate normal input distribution. There is extensive documentation available <a href='https://phik.readthedocs.io/en/latest/index.html'>here</a>."""
+
+    cramers_description = """Cramér's V is an association measure for nominal random variables. The coefficient ranges from 0 to 1, with 0 indicating independence and 1 indicating perfect association.
+    The empirical estimators used for Cramér's V have been proved to be biased, even for large samples.
+    We use a bias-corrected measure that has been proposed by Bergsma in 2013 that can be found <a href='http://stats.lse.ac.uk/bergsma/pdf/cramerV3.pdf'>here</a>."""
+
     key_to_data = {
         "pearson": (-1, "Pearson's r", pearson_description),
         "spearman": (-1, "Spearman's ρ", spearman_description),
         "kendall": (-1, "Kendall's τ", kendall_description),
-        "phi_k": (0, "Phik (φk)", ""),
-        "cramers": (0, "Cramér's V (φc)", ""),
-        "recoded": (0, "Recoded", ""),
+        "phi_k": (0, "Phik (φk)", phi_k_description),
+        "cramers": (0, "Cramér's V (φc)", cramers_description),
     }
 
     image_format = config["plot"]["image_format"].get(str)
