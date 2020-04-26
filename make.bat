@@ -50,7 +50,7 @@ IF "%1" == "lint" (
 )
 
 IF "%1" == "install" (
-	pip install -e .
+	pip install -e .[notebook,app]
 	GOTO end
 )
 
