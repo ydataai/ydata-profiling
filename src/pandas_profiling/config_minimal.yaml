@@ -73,6 +73,7 @@ plot:
 
     correlation:
         cmap: 'bwr'
+        bad: '#000'
 
     missing:
         cmap: 'RdBu'
