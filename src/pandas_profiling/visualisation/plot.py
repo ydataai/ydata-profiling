@@ -164,10 +164,9 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     cmap_bad = config["plot"]["correlation"]["bad"].get(str)
 
     cmap = plt.get_cmap(cmap_name)
-    cmap.set_bad(cmap_bad)
-
     if vmin == 0:
         cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
 
     labels = data.columns
     matrix_image = axes_cor.imshow(
@@ -175,15 +174,12 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     )
     plt.colorbar(matrix_image)
 
-    legend_elements = [
-        Patch(facecolor=cmap(np.nan), label="invalid\ncoefficient")
-    ]
+    if data.isnull().values.any():
+        legend_elements = [Patch(facecolor=cmap(np.nan), label="invalid\ncoefficient")]
 
-    plt.legend(
-        handles=legend_elements,
-        loc="upper right",
-        handleheight=3,
-    )
+        plt.legend(
+            handles=legend_elements, loc="upper right", handleheight=2.5,
+        )
 
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))

@@ -78,7 +78,6 @@ def get_correlation_items(summary) -> Optional[Renderable]:
             anchor_id=f"{key}_diagram",
             name=name,
             classes="correlation-diagram",
-            caption="<em>Black cells indicate pairs without an invalid correlation coefficient.</em>",
         )
 
         if len(description) > 0:

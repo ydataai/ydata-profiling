@@ -217,7 +217,10 @@ def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
                     except (ValueError, AssertionError) as e:
                         warn_correlation(correlation_name, e)
 
-                if correlation_name in correlations and correlations[correlation_name].empty:
+                if (
+                    correlation_name in correlations
+                    and correlations[correlation_name].empty
+                ):
                     del correlations[correlation_name]
 
                 pbar.update()
