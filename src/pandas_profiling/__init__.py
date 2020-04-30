@@ -59,7 +59,7 @@ class ProfileReport(object):
         if config_file:
             config.set_file(str(config_file))
         elif minimal:
-            config.set_file(get_config_minimal())
+            config.set_file(str(get_config_minimal()))
 
         config.set_kwargs(kwargs)
 
