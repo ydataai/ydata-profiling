@@ -54,37 +54,31 @@ def describe_1d(series: pd.Series) -> dict:
 
     def describe_supported(series: pd.Series, series_description: dict) -> dict:
         """Describe a supported series.
-
         Args:
             series: The Series to describe.
             series_description: The dict containing the series description so far.
-
         Returns:
             A dict containing calculated series description values.
         """
 
         # number of observations in the Series
-        leng = len(series)
-        # TODO: fix infinite logic
+        length = len(series)
+
         # number of non-NaN observations in the Series
         count = series.count()
-        # number of infinite observations in the Series
-        n_infinite = count - series.count()
 
         distinct_count = series_description["distinct_count_without_nan"]
 
         stats = {
-            "n": leng,
+            "n": length,
             "count": count,
             "distinct_count": distinct_count,
             "n_unique": distinct_count,
-            "p_missing": 1 - count * 1.0 / leng,
-            "n_missing": leng - count,
-            "p_infinite": n_infinite * 1.0 / leng,
-            "n_infinite": n_infinite,
+            "p_missing": 1 - (count / length),
+            "n_missing": length - count,
             "is_unique": distinct_count == count,
             "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
-            "p_unique": distinct_count * 1.0 / count,
+            "p_unique": distinct_count / count,
             "memory_size": series.memory_usage(),
         }
 
@@ -92,29 +86,24 @@ def describe_1d(series: pd.Series) -> dict:
 
     def describe_unsupported(series: pd.Series, series_description: dict):
         """Describe an unsupported series.
-
         Args:
             series: The Series to describe.
             series_description: The dict containing the series description so far.
-
         Returns:
             A dict containing calculated series description values.
         """
 
         # number of observations in the Series
-        leng = len(series)
+        length = len(series)
+
         # number of non-NaN observations in the Series
         count = series.count()
-        # number of infinte observations in the Series
-        n_infinite = count - series.count()
 
         results_data = {
-            "n": leng,
+            "n": length,
             "count": count,
-            "p_missing": 1 - count * 1.0 / leng,
-            "n_missing": leng - count,
-            "p_infinite": n_infinite * 1.0 / leng,
-            "n_infinite": n_infinite,
+            "p_missing": 1 - count / length,
+            "n_missing": length - count,
             "memory_size": series.memory_usage(),
         }
 
@@ -122,45 +111,56 @@ def describe_1d(series: pd.Series) -> dict:
 
     def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         """Describe a numeric series.
-
         Args:
             series: The Series to describe.
             series_description: The dict containing the series description so far.
-
         Returns:
             A dict containing calculated series description values.
-
         Notes:
             When 'bins_type' is set to 'bayesian_blocks', astropy.stats.bayesian_blocks is used to determine the number of
             bins. Read the docs:
             https://docs.astropy.org/en/stable/visualization/histogram.html
             https://docs.astropy.org/en/stable/api/astropy.stats.bayesian_blocks.html
-
             This method might print warnings, which we suppress.
             https://github.com/astropy/astropy/issues/4927
         """
+
+        def mad(arr):
+            """ Median Absolute Deviation: a "Robust" version of standard deviation.
+                Indices variability of the sample.
+                https://en.wikipedia.org/wiki/Median_absolute_deviation
+            """
+            return np.median(np.abs(arr - np.median(arr)))
+
         quantiles = config["vars"]["num"]["quantiles"].get(list)
 
+        n_infinite = ((series == np.inf) | (series == -np.inf)).sum()
+
+        values = series.values
+        present_values = values[~np.isnan(values)]
+        finite_values = values[np.isfinite(values)]
+
         stats = {
-            "mean": series.mean(),
-            "std": series.std(),
-            "variance": series.var(),
-            "min": series.min(),
-            "max": series.max(),
+            "mean": np.mean(present_values),
+            "std": np.std(present_values, ddof=1),
+            "variance": np.var(present_values, ddof=1),
+            "min": np.min(present_values),
+            "max": np.max(present_values),
             "kurtosis": series.kurt(),
-            "skewness": series.skew(),
-            "sum": series.sum(),
-            "mad": series.mad(),
-            "n_zeros": (len(series) - np.count_nonzero(series)),
-            "histogram_data": series,
+            # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+            "skewness": series.skew(),  # Unbiased skew normalized by N-1
+            "sum": np.sum(present_values),
+            "mad": mad(present_values),
+            "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
+            "histogram_data": finite_values,
             "scatter_data": series,  # For complex
+            "p_infinite": n_infinite / series_description["n"],
+            "n_infinite": n_infinite,
         }
 
-        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-            float
-        )
+        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
         if chi_squared_threshold > 0.0:
-            histogram = np.histogram(series[series.notna()].values, bins="auto")[0]
+            histogram, _ = np.histogram(finite_values, bins="auto")
             stats["chi_squared"] = chisquare(histogram)
 
         stats["range"] = stats["max"] - stats["min"]
@@ -172,17 +172,17 @@ def describe_1d(series: pd.Series) -> dict:
         )
         stats["iqr"] = stats["75%"] - stats["25%"]
         stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
-        stats["p_zeros"] = float(stats["n_zeros"]) / len(series)
+        stats["p_zeros"] = stats["n_zeros"] / series_description["n"]
 
         bins = config["plot"]["histogram"]["bins"].get(int)
         # Bins should never be larger than the number of distinct values
         bins = min(series_description["distinct_count_with_nan"], bins)
         stats["histogram_bins"] = bins
 
-        bayesian_blocks_bins = config["plot"]["histogram"]["bayesian_blocks_bins"].get(
-            bool
-        )
+        bayesian_blocks_bins = config["plot"]["histogram"]["bayesian_blocks_bins"].get(bool)
         if bayesian_blocks_bins:
+            from astropy.stats import bayesian_blocks
+
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 ret = bayesian_blocks(stats["histogram_data"])
@@ -348,18 +348,20 @@ def describe_1d(series: pd.Series) -> dict:
         stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
         return stats
+        # Make sure pd.NA is not in the series
 
-    # Replace infinite values with NaNs to avoid issues with histograms later.
-    series.replace(to_replace=[np.inf, np.NINF, np.PINF], value=np.nan, inplace=True)
+    series.fillna(np.nan, inplace=True)
 
     # Infer variable types
-    series_descriptions = base.get_var_type(series)
+    # TODO: use visions for type inference
+    # https://github.com/dylan-profiler/visions
+    series_description = base.get_var_type(series)
 
     # Run type specific analysis
-    if series_descriptions["type"] == Variable.S_TYPE_UNSUPPORTED:
-        series_descriptions.update(describe_unsupported(series, series_descriptions))
+    if series_description["type"] == Variable.S_TYPE_UNSUPPORTED:
+        series_description.update(describe_unsupported(series, series_description))
     else:
-        series_descriptions.update(describe_supported(series, series_descriptions))
+        series_description.update(describe_supported(series, series_description))
 
         type_to_func = {
             Variable.TYPE_BOOL: describe_boolean_1d,
@@ -370,21 +372,21 @@ def describe_1d(series: pd.Series) -> dict:
             Variable.TYPE_PATH: describe_path_1d,
         }
 
-        if series_descriptions["type"] in type_to_func:
-            series_descriptions.update(
-                type_to_func[series_descriptions["type"]](series, series_descriptions)
+        if series_description["type"] in type_to_func:
+            series_description.update(
+                type_to_func[series_description["type"]](series, series_description)
             )
         else:
             raise ValueError("Unexpected type")
 
     # light weight of series_description
-    if "value_counts_with_nan" in series_descriptions.keys():
-        del series_descriptions["value_counts_with_nan"]
-    if "value_counts_without_nan" in series_descriptions.keys():
-        del series_descriptions["value_counts_without_nan"]
+    if "value_counts_with_nan" in series_description.keys():
+        del series_description["value_counts_with_nan"]
+    if "value_counts_without_nan" in series_description.keys():
+        del series_description["value_counts_without_nan"]
 
     # Return the description obtained
-    return series_descriptions
+    return series_description
 
 
 def get_series_description(series):
