@@ -3,6 +3,7 @@ import warnings
 import pandas as pd
 from tqdm.auto import tqdm
 
+
 from pandas_profiling.config import config as config
 from pandas_profiling.model.summary import (
     get_series_descriptions,
@@ -11,10 +12,10 @@ from pandas_profiling.model.summary import (
     get_missing_diagrams,
     get_messages,
     sort_column_names,
-    get_series_description,
 )
 from pandas_profiling.model.correlations import calculate_correlation
 from pandas_profiling.version import __version__
+
 
 
 def describe(df: pd.DataFrame) -> dict:
@@ -30,6 +31,7 @@ def describe(df: pd.DataFrame) -> dict:
             - correlations: correlation matrices.
             - missing: missing value diagrams.
             - messages: direct special attention to these patterns in your data.
+            - package: package details.
     """
 
     """ Those items with * make up description_set
@@ -71,7 +73,6 @@ def describe(df: pd.DataFrame) -> dict:
             "kendall",
             "phi_k",
             "cramers",
-            "recoded",
         ]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
@@ -82,9 +83,6 @@ def describe(df: pd.DataFrame) -> dict:
         total=number_of_task, desc="Describe", disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, pbar)
-        # Mapping from column name to variable type
-        sort = config["sort"].get(str)
-        series_description = sort_column_names(series_description, sort)
 
         pbar.set_postfix_str("Get variable types")
         variables = {
@@ -106,6 +104,8 @@ def describe(df: pd.DataFrame) -> dict:
                 df, variables, correlation_name
             )
             pbar.update()
+
+        # make sure correlations is not None
         correlations = {
             key: value for key, value in correlations.items() if value is not None
         }

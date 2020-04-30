@@ -1,4 +1,6 @@
 docs:
+	mkdir docs/
+	cp -a ./docsrc/assets/ ./docs/assets/
 	pdoc3 --html --force --output-dir docs pandas_profiling
 	mv docs/pandas_profiling/* docs
 	rmdir docs/pandas_profiling
@@ -17,7 +19,7 @@ pypi_package:
 	twine upload --skip-existing dist/*
 
 install:
-	pip install -e .
+	pip install -e .[notebook,app]
 
 lint:
 	black .

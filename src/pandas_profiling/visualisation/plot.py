@@ -8,11 +8,11 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.patches import Patch
 from pandas.plotting import register_matplotlib_converters
 from pkg_resources import resource_filename
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 
 register_matplotlib_converters()
@@ -21,10 +21,10 @@ sns.set_style(style="white")
 
 
 def _plot_histogram(
-    series: pd.Series,
-    series_description: dict,
-    bins: Union[int, np.ndarray],
-    figsize: tuple = (6, 4),
+        series: np.ndarray,
+        series_description: dict,
+        bins: Union[int, np.ndarray],
+        figsize: tuple = (6, 4),
 ):
     """Plot an histogram from the data and return the AxesSubplot object.
 
@@ -38,35 +38,34 @@ def _plot_histogram(
 
 
     """
-    if series_description["type"] == Variable.TYPE_DATE:
-        # Workaround for https://github.com/pandas-dev/pandas/issues/17372
-        fig = plt.figure(figsize=figsize)
-        plot = fig.add_subplot(111)
-        plot.set_ylabel("Frequency")
-        plot.hist(
-            series.dropna().values,
-            facecolor=config["html"]["style"]["primary_color"].get(str),
-            bins=bins,
-        )
-
-    else:
-        plot = series.plot(
-            kind="hist",
-            figsize=figsize,
-            facecolor=config["html"]["style"]["primary_color"].get(str),
-            bins=bins,
-        )
+    # if series_description["type"] == Variable.TYPE_DATE:
+    # Workaround for https://github.com/pandas-dev/pandas/issues/17372
+    fig = plt.figure(figsize=figsize)
+    plot = fig.add_subplot(111)
+    plot.set_ylabel("Frequency")
+    plot.hist(
+        series,  # .dropna().values,
+        facecolor=config["html"]["style"]["primary_color"].get(str),
+        bins=bins,
+    )
+    # else:
+    #     plot = series.plot(
+    #         kind="hist",
+    #         figsize=figsize,
+    #         facecolor=config["html"]["style"]["primary_color"].get(str),
+    #         bins=bins,
+    #     )
     return plot
 
 
 def histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot an histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
@@ -81,13 +80,13 @@ def histogram(
 
 
 def mini_histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot a small (mini) histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
@@ -106,11 +105,11 @@ def mini_histogram(
     return plot_360_n0sc0pe(plt)
 
 
-def get_cmap_half(cmap_name):
+def get_cmap_half(cmap):
     """Get the upper half of the color map
 
     Args:
-        cmap_name: the name of the color map
+        cmap: the color map
 
     Returns:
         A new color map based on the upper half of another color map
@@ -119,7 +118,6 @@ def get_cmap_half(cmap_name):
         https://stackoverflow.com/a/24746399/470433
     """
     # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
-    cmap = plt.get_cmap(cmap_name)
     colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
 
     # Create a new colormap from those colors
@@ -159,15 +157,27 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
       The resulting correlation matrix encoded as a string.
     """
     fig_cor, axes_cor = plt.subplots()
-    cmap = config["plot"]["correlation"]["cmap"].get(str)
+    cmap_name = config["plot"]["correlation"]["cmap"].get(str)
+    cmap_bad = config["plot"]["correlation"]["bad"].get(str)
+
+    cmap = plt.get_cmap(cmap_name)
     if vmin == 0:
         cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
 
     labels = data.columns
     matrix_image = axes_cor.imshow(
         data, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
     )
     plt.colorbar(matrix_image)
+
+    if data.isnull().values.any():
+        legend_elements = [Patch(facecolor=cmap(np.nan), label="invalid\ncoefficient")]
+
+        plt.legend(
+            handles=legend_elements, loc="upper right", handleheight=2.5,
+        )
+
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
 

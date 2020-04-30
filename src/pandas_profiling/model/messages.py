@@ -26,9 +26,6 @@ class MessageType(Enum):
     HIGH_CORRELATION = 3
     """This variable is highly correlated."""
 
-    RECODED = 4
-    """This variable is correlated (categorical)."""
-
     HIGH_CARDINALITY = 5
     """This variable has a high cardinality."""
 
@@ -182,17 +179,6 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    # Infinite values
-    if warning_value(description["p_infinite"]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.INFINITE,
-                values=description,
-                fields={"p_infinite", "n_infinite"},
-            )
-        )
-
     # Date
     if description["type"] == Variable.TYPE_DATE:
         # Uniformity
@@ -258,6 +244,17 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                     message_type=MessageType.SKEWED,
                     values=description,
                     fields={"skewness"},
+                )
+            )
+
+        # Infinite values
+        if warning_value(description["p_infinite"]):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.INFINITE,
+                    values=description,
+                    fields={"p_infinite", "n_infinite"},
                 )
             )
 

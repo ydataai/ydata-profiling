@@ -39,19 +39,6 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     return corr
 
 
-def check_recoded(confusion_matrix, count: int) -> int:
-    """Check if two variables are recoded based on their crosstab.
-
-    Args:
-        confusion_matrix: Crosstab between two variables.
-        count:  The number of variables.
-
-    Returns:
-        Whether the variables are recoded.
-    """
-    return int(confusion_matrix.values.diagonal().sum() == count)
-
-
 def cramers_matrix(df: pd.DataFrame, variables: dict):
     """Calculate the Cramer's V correlation matrix.
 
@@ -65,19 +52,6 @@ def cramers_matrix(df: pd.DataFrame, variables: dict):
     return categorical_matrix(
         df, variables, partial(cramers_corrected_stat, correction=True)
     )
-
-
-def recoded_matrix(df: pd.DataFrame, variables: dict):
-    """Calculate the recoded correlation matrix.
-
-    Args:
-        df: The pandas DataFrame.
-        variables: A dict with column names mapped to variable type.
-
-    Returns:
-        A recoded matrix for categorical variables.
-    """
-    return categorical_matrix(df, variables, partial(check_recoded, count=len(df)))
 
 
 def categorical_matrix(
@@ -146,15 +120,16 @@ def calculate_correlation(
             correlation_name:
 
         Returns:
-            The correlation matrices for the given correlation measures.
+            The correlation matrices for the given correlation measures. Return None if correlation is empty.
         """
-    categorical_correlations = {"cramers": cramers_matrix, "recoded": recoded_matrix}
+
+    categorical_correlations = {"cramers": cramers_matrix}
     correlation = None
+
     if correlation_name in ["pearson", "spearman", "kendall"]:
         try:
             correlation = df.corr(method=correlation_name)
-            if len(correlation) == 0:
-                correlation = None
+
         except (ValueError, AssertionError) as e:
             warn_correlation(correlation_name, e)
     elif correlation_name in ["phi_k"]:
@@ -190,7 +165,9 @@ def calculate_correlation(
 
             if len(selcols) > 1:
                 try:
-                    correlation = df[selcols].phik_matrix(interval_cols=intcols)
+                    correlation = df[selcols].phik_matrix(
+                        interval_cols=intcols
+                    )
 
                     # Only do this if the column_order is set
                     with suppress(NotFoundError):
@@ -198,34 +175,32 @@ def calculate_correlation(
                         column_order = config["column_order"].get(list)
 
                         # Get the Phi_k sorted order
-                        current_order = correlation.index.get_level_values(
-                            "var1"
-                        ).tolist()
+                        current_order = (
+                            correlation
+                            .index.get_level_values("var1")
+                            .tolist()
+                        )
 
                         # Intersection (some columns are not used in correlation)
-                        column_order = [x for x in column_order if x in current_order]
+                        column_order = [
+                            x for x in column_order if x in current_order
+                        ]
 
                         # Override the Phi_k sorting
-                        correlation = correlation.reindex(
-                            index=column_order, columns=column_order
-                        )
+                        correlation = correlation.reindex(index=column_order, columns=column_order)
                 except (ValueError, DataError, IndexError, TypeError) as e:
                     warn_correlation("phi_k", e)
-    elif correlation_name in ["cramers", "recoded"]:
+    elif correlation_name in ["cramers"]:
         try:
             get_matrix = categorical_correlations[correlation_name]
             correlation = get_matrix(df, variables)
-            if correlation is None or len(correlation) == 0:
-                correlation = None
         except (ValueError, AssertionError) as e:
             warn_correlation(correlation_name, e)
 
-    # Drop rows and columns with NaNs
-    if correlation is None or correlation.empty:
-        return None
-    else:
-        correlation.dropna(inplace=True, how="all")
-        return correlation
+
+    if correlation is None or len(correlation) <= 0:
+        correlation = None
+    return correlation
 
 
 def get_correlation_mapping() -> Dict[str, List[str]]:
@@ -247,7 +222,7 @@ def perform_check_correlation(
         threshold:.
 
     Returns:
-        The variables that are highly correlated or recoded.
+        The variables that are highly correlated.
     """
 
     corr = correlation_matrix.copy()
