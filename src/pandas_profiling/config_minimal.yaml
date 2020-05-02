@@ -99,6 +99,10 @@ n_obs_unique: 5
 n_extreme_obs: 5
 n_freq_table_max: 10
 
+# Configuration related to the duplicates
+duplicates:
+    head: 10
+
 # Configuration related to the samples area
 samples:
     head: 10
