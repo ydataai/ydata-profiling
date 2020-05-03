@@ -2,6 +2,8 @@
 from datetime import datetime
 from typing import List
 
+import pandas as pd
+
 from pandas_profiling.config import config
 from pandas_profiling.model.base import (
     AbsolutePath,
@@ -20,6 +22,7 @@ from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
     Collapse,
+    Duplicate,
     Image,
     Sample,
     Sequence,
@@ -43,6 +46,7 @@ from pandas_profiling.report.structure.variables import (
     render_real,
     render_url,
 )
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
 
 
 def get_missing_items(summary) -> list:
@@ -146,6 +150,28 @@ def render_variables_section(dataframe_summary: dict) -> list:
     return templs
 
 
+def get_duplicates_items(duplicates: pd.DataFrame):
+    """Create the list of duplicates items
+
+    Args:
+        duplicates: DataFrame of duplicates
+
+    Returns:
+        List of duplicates items to show in the interface.
+    """
+    items = []
+    if duplicates is not None:
+        items.append(
+            Duplicate(
+                duplicate=duplicates.to_html(
+                    classes="duplicate table table-striped"),
+                name='First rows by count',
+                anchor_id='duplicates',
+            )
+        )
+    return items
+
+
 def get_sample_items(sample: dict):
     """Create the list of sample items
 
@@ -226,7 +252,8 @@ def get_section_items() -> List[Renderable]:
 
 
 def get_report_structure(
-    date_start: datetime, date_end: datetime, sample: dict, summary: dict
+    date_start: datetime, date_end: datetime,
+    duplicates: pd.DataFrame, sample: dict, summary: dict
 ) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
@@ -277,6 +304,14 @@ def get_report_structure(
             sequence_type="tabs",
             name="Missing values",
             anchor_id="missing",
+        )
+    )
+    section_items.append(
+        Sequence(
+            get_duplicates_items(duplicates),
+            sequence_type="list",
+            name="Duplicate rows",
+            anchor_id="duplicate",
         )
     )
     section_items.append(

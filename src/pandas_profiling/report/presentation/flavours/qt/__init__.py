@@ -10,6 +10,10 @@ from pandas_profiling.report.presentation.flavours.qt.image import QtImage
 from pandas_profiling.report.presentation.flavours.qt.sample import QtSample
 from pandas_profiling.report.presentation.flavours.qt.sequence import QtSequence
 from pandas_profiling.report.presentation.flavours.qt.table import QtTable
+from pandas_profiling.report.presentation.flavours.qt.duplicate import QtDuplicate
+from pandas_profiling.report.presentation.flavours.qt.sample import QtSample
+from pandas_profiling.report.presentation.flavours.qt.warnings import QtWarnings
+from pandas_profiling.report.presentation.flavours.qt.collapse import QtCollapse
 from pandas_profiling.report.presentation.flavours.qt.toggle_button import (
     QtToggleButton,
 )

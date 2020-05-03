@@ -91,29 +91,29 @@ table.stats {
 
 
 /* Sample table */
-table.sample {
+table.sample, table.duplicate{
     border: 0;
     margin-bottom: 2em;
     margin-left: 1em;
 }
 
-.sample tr {
+.sample tr, .duplicate tr {
     border: 0;
 }
 
-.sample td, .sample th {
+.sample td, .sample th, .duplicate td, .duplicate th {
     padding: 0.5em;
     white-space: nowrap;
     border: none;
 
 }
 
-.sample thead {
+.sample thead, .duplicate thead {
     border-top: 0;
     border-bottom: 2px solid #ddd;
 }
 
-.sample td {
+.sample td, .duplicate td {
     width: 100%;
 }
 

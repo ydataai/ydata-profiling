@@ -40,6 +40,7 @@ def df(get_data_file):
 def test_modular_absent(df):
     profile = df.profile_report(
         title="Modular test",
+        duplicates={"head": 0},
         samples={"head": 0, "tail": 0},
         correlations={
             "pearson": {"calculate": False},
@@ -59,6 +60,7 @@ def test_modular_absent(df):
 
     html = profile.to_html()
     assert "Correlations</h1>" not in html
+    assert "Duplicate rows</h1>" not in html
     assert "Sample</h1>" not in html
     assert "Missing values</h1>" not in html
 
@@ -66,6 +68,7 @@ def test_modular_absent(df):
 def test_modular_present(df):
     profile = df.profile_report(
         title="Modular test",
+        duplicates={"head": 10},
         samples={"head": 10, "tail": 10},
         correlations={
             "pearson": {"calculate": True},
@@ -85,5 +88,6 @@ def test_modular_present(df):
 
     html = profile.to_html()
     assert "Correlations</h1>" in html
+    assert "Duplicate rows</h1>" in html
     assert "Sample</h1>" in html
     assert "Missing values</h1>" in html
