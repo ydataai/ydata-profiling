@@ -22,6 +22,7 @@ install:
 	pip install -e .[notebook,app]
 
 lint:
+	isort --apply
 	black .
 
 typing:

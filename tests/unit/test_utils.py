@@ -1,9 +1,9 @@
 from pathlib import Path
 
-import pytest
 import pandas as pd
+import pytest
 
-from pandas_profiling.utils.dataframe import read_pandas, warn_read, expand_mixed
+from pandas_profiling.utils.dataframe import expand_mixed, read_pandas, warn_read
 
 
 def test_read_pandas_parquet():

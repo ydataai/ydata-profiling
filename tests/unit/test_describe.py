@@ -1,14 +1,15 @@
-import pandas as pd
-import numpy as np
 import datetime
+
+import numpy as np
+import pandas as pd
 import pytest
 
 from pandas_profiling import config
 from pandas_profiling.model.base import Variable
+from pandas_profiling.model.describe import describe, describe_1d
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-from pandas_profiling.model.describe import describe_1d, describe
 
 testdata = [
     # Unique values

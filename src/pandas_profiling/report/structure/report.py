@@ -4,19 +4,28 @@ from typing import List
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import (
-    Boolean,
-    Real,
-    Count,
-    Complex,
-    Date,
-    Categorical,
-    Url,
     AbsolutePath,
+    Boolean,
+    Categorical,
+    Complex,
+    Count,
+    Date,
     ExistingPath,
-    ImagePath,
     Generic,
+    ImagePath,
+    Real,
+    Url,
 )
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core import (
+    Collapse,
+    Image,
+    Sample,
+    Sequence,
+    ToggleButton,
+    Variable,
+)
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import (
     get_dataset_overview,
@@ -28,20 +37,11 @@ from pandas_profiling.report.structure.variables import (
     render_categorical,
     render_complex,
     render_date,
-    render_real,
+    render_generic,
     render_path,
     render_path_image,
+    render_real,
     render_url,
-    render_generic,
-)
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
-from pandas_profiling.report.presentation.core import (
-    Image,
-    Sequence,
-    Sample,
-    Variable,
-    Collapse,
-    ToggleButton,
 )
 
 

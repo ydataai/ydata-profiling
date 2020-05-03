@@ -1,4 +1,4 @@
-from ipywidgets import widgets, GridspecLayout, VBox
+from ipywidgets import GridspecLayout, VBox, widgets
 
 from pandas_profiling.report.formatters import fmt_color, get_fmt_mapping
 from pandas_profiling.report.presentation.core.table import Table

@@ -1,21 +1,19 @@
 """Plot functions for the profiling report."""
 
-from typing import Union, Optional
+from typing import Optional, Union
 
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
-
 from pandas.plotting import register_matplotlib_converters
-from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 from pkg_resources import resource_filename
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
+from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 
 register_matplotlib_converters()
 matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))

@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Dict, List
 
 
 def freq_table(freqtable, n: int, max_number_to_print: int) -> List[Dict]:

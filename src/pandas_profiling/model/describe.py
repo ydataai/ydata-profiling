@@ -1,34 +1,33 @@
 """Compute statistical description of datasets."""
-import multiprocessing.pool
 import multiprocessing
+import multiprocessing.pool
 import os
 import warnings
 from pathlib import Path
-from typing import Tuple, Callable, Mapping
+from typing import Callable, Mapping, Tuple
 from urllib.parse import urlsplit
 
-from tqdm.autonotebook import tqdm
 import numpy as np
 import pandas as pd
 from scipy.stats.stats import chisquare
+from tqdm.autonotebook import tqdm
 
 from pandas_profiling import __version__
 from pandas_profiling.config import config as config
-from pandas_profiling.model.messages import (
-    check_variable_messages,
-    check_table_messages,
-    warning_type_date,
-    check_correlation_messages,
-)
-
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlations
+from pandas_profiling.model.messages import (
+    check_correlation_messages,
+    check_table_messages,
+    check_variable_messages,
+    warning_type_date,
+)
 from pandas_profiling.visualisation.missing import (
     missing_bar,
-    missing_matrix,
-    missing_heatmap,
     missing_dendrogram,
+    missing_heatmap,
+    missing_matrix,
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
 

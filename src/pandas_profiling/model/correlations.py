@@ -5,8 +5,8 @@ from contextlib import suppress
 from functools import partial
 from typing import Callable, Dict, List, Optional
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 from confuse import NotFoundError
 from pandas.core.base import DataError
 from scipy import stats

@@ -4,7 +4,6 @@ import pandas as pd
 
 from pandas_profiling import ProfileReport
 
-
 if __name__ == "__main__":
     df = pd.read_csv(
         r"https://raw.githubusercontent.com/aliceriot/russian-vocab/master/words.csv",
