@@ -12,6 +12,7 @@ from pandas_profiling.report.presentation.flavours.html.variable_info import (
     HTMLVariableInfo,
 )
 from pandas_profiling.report.presentation.flavours.html.html import HTMLHTML
+from pandas_profiling.report.presentation.flavours.html.duplicate import HTMLDuplicate
 from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
 from pandas_profiling.report.presentation.flavours.html.toggle_button import (
     HTMLToggleButton,

@@ -17,6 +17,7 @@ from pandas_profiling.utils.dataframe import rename_index
 from pandas_profiling.utils.paths import get_config_default, get_config_minimal
 from pandas_profiling.config import config
 from pandas_profiling.controller import pandas_decorator
+from pandas_profiling.model.base import Variable
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
@@ -62,7 +63,14 @@ class ProfileReport(object):
         # Get dataset statistics
         description_set = describe_df(df)
 
+        # Get supported columns
+        variable_stats = pd.DataFrame(description_set['variables'])
+        supported_columns = variable_stats.transpose()[
+            variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
+        ].index.tolist()
+
         # Build report structure
+        self.duplicates = self.get_duplicates(df, supported_columns)
         self.sample = self.get_sample(df)
         self.title = config["title"].get(str)
         self.description_set = description_set
@@ -74,9 +82,30 @@ class ProfileReport(object):
             total=1, desc="build report structure", disable=disable_progress_bar
         ) as pbar:
             self.report = get_report_structure(
-                self.date_start, self.date_end, self.sample, description_set
+                self.date_start, self.date_end, self.duplicates,
+                self.sample, description_set
             )
             pbar.update()
+
+    def get_duplicates(
+        self,
+        df: pd.DataFrame,
+        supported_columns: list
+    ) -> pd.DataFrame:
+        """Get duplicate rows and counts based on the configuration
+
+        Args:
+            df: the DataFrame to sample from.
+
+        Returns:
+            A Dataframe with the duplicate rows and their counts.
+        """
+        n_head = config["duplicates"]["head"].get(int)
+        if n_head > 0 and supported_columns:
+            return df[df.duplicated(subset=supported_columns, keep=False)]\
+                .groupby(supported_columns).size().reset_index(name='count')\
+                .nlargest(n_head, 'count')
+        return None
 
     def get_sample(self, df: pd.DataFrame) -> dict:
         """Get head/tail samples based on the configuration

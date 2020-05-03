@@ -8,6 +8,7 @@ from pandas_profiling.report.presentation.core.image import Image
 from pandas_profiling.report.presentation.core.variable import Variable
 from pandas_profiling.report.presentation.core.table import Table
 from pandas_profiling.report.presentation.core.variable_info import VariableInfo
+from pandas_profiling.report.presentation.core.duplicate import Duplicate
 from pandas_profiling.report.presentation.core.sample import Sample
 from pandas_profiling.report.presentation.core.toggle_button import ToggleButton
 from pandas_profiling.report.presentation.core.warnings import Warnings
