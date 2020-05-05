@@ -12,7 +12,6 @@ import pandas as pd
 from scipy.stats.stats import chisquare
 from tqdm.autonotebook import tqdm
 
-from pandas_profiling import __version__
 from pandas_profiling.config import config as config
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
@@ -23,6 +22,7 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
     warning_type_date,
 )
+from pandas_profiling.version import __version__
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,

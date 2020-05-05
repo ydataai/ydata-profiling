@@ -46,7 +46,6 @@ from pandas_profiling.report.structure.variables import (
     render_real,
     render_url,
 )
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
 
 
 def get_missing_items(summary) -> list:
@@ -163,10 +162,9 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     if duplicates is not None:
         items.append(
             Duplicate(
-                duplicate=duplicates.to_html(
-                    classes="duplicate table table-striped"),
-                name='First rows by count',
-                anchor_id='duplicates',
+                duplicate=duplicates.to_html(classes="duplicate table table-striped"),
+                name="First rows by count",
+                anchor_id="duplicates",
             )
         )
     return items
@@ -252,8 +250,11 @@ def get_section_items() -> List[Renderable]:
 
 
 def get_report_structure(
-    date_start: datetime, date_end: datetime,
-    duplicates: pd.DataFrame, sample: dict, summary: dict
+    date_start: datetime,
+    date_end: datetime,
+    duplicates: pd.DataFrame,
+    sample: dict,
+    summary: dict,
 ) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 

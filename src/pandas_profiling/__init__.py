@@ -63,7 +63,7 @@ class ProfileReport(object):
         description_set = describe_df(df)
 
         # Get supported columns
-        variable_stats = pd.DataFrame(description_set['variables'])
+        variable_stats = pd.DataFrame(description_set["variables"])
         supported_columns = variable_stats.transpose()[
             variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
         ].index.tolist()
@@ -81,16 +81,15 @@ class ProfileReport(object):
             total=1, desc="build report structure", disable=disable_progress_bar
         ) as pbar:
             self.report = get_report_structure(
-                self.date_start, self.date_end, self.duplicates,
-                self.sample, description_set
+                self.date_start,
+                self.date_end,
+                self.duplicates,
+                self.sample,
+                description_set,
             )
             pbar.update()
 
-    def get_duplicates(
-        self,
-        df: pd.DataFrame,
-        supported_columns: list
-    ) -> pd.DataFrame:
+    def get_duplicates(self, df: pd.DataFrame, supported_columns: list) -> pd.DataFrame:
         """Get duplicate rows and counts based on the configuration
 
         Args:
@@ -101,9 +100,13 @@ class ProfileReport(object):
         """
         n_head = config["duplicates"]["head"].get(int)
         if n_head > 0 and supported_columns:
-            return df[df.duplicated(subset=supported_columns, keep=False)]\
-                .groupby(supported_columns).size().reset_index(name='count')\
-                .nlargest(n_head, 'count')
+            return (
+                df[df.duplicated(subset=supported_columns, keep=False)]
+                .groupby(supported_columns)
+                .size()
+                .reset_index(name="count")
+                .nlargest(n_head, "count")
+            )
         return None
 
     def get_sample(self, df: pd.DataFrame) -> dict:

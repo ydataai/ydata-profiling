@@ -1,4 +1,5 @@
 from pandas_profiling.report.presentation.flavours.html.collapse import HTMLCollapse
+from pandas_profiling.report.presentation.flavours.html.duplicate import HTMLDuplicate
 from pandas_profiling.report.presentation.flavours.html.frequency_table import (
     HTMLFrequencyTable,
 )
@@ -7,7 +8,6 @@ from pandas_profiling.report.presentation.flavours.html.frequency_table_small im
 )
 from pandas_profiling.report.presentation.flavours.html.html import HTMLHTML
 from pandas_profiling.report.presentation.flavours.html.image import HTMLImage
-from pandas_profiling.report.presentation.flavours.html.duplicate import HTMLDuplicate
 from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
 from pandas_profiling.report.presentation.flavours.html.sequence import HTMLSequence
 from pandas_profiling.report.presentation.flavours.html.table import HTMLTable

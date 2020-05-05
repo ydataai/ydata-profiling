@@ -1,4 +1,7 @@
 from pandas_profiling.report.presentation.flavours.widget.collapse import WidgetCollapse
+from pandas_profiling.report.presentation.flavours.widget.duplicate import (
+    WidgetDuplicate,
+)
 from pandas_profiling.report.presentation.flavours.widget.frequency_table import (
     WidgetFrequencyTable,
 )
@@ -10,8 +13,6 @@ from pandas_profiling.report.presentation.flavours.widget.image import WidgetIma
 from pandas_profiling.report.presentation.flavours.widget.sample import WidgetSample
 from pandas_profiling.report.presentation.flavours.widget.sequence import WidgetSequence
 from pandas_profiling.report.presentation.flavours.widget.table import WidgetTable
-from pandas_profiling.report.presentation.flavours.widget.duplicate import WidgetDuplicate
-from pandas_profiling.report.presentation.flavours.widget.sample import WidgetSample
 from pandas_profiling.report.presentation.flavours.widget.toggle_button import (
     WidgetToggleButton,
 )
