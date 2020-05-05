@@ -26,7 +26,7 @@ class ProfileReport(Serialize, object):
 
     def __init__(
         self,
-        df,
+        df=None,
         minimal=False,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
@@ -54,11 +54,12 @@ class ProfileReport(Serialize, object):
         elif minimal:
             config.set_file(get_config_minimal())
         elif not config.is_default:
+            pass
             # TODO: logging instead of warning
-            warnings.warn(
-                "Currently configuration is not the default, if you want to restore "
-                "default configuration, please run 'pandas_profiling.clear_config()'"
-            )
+            # warnings.warn(
+            #     "Currently configuration is not the default, if you want to restore "
+            #     "default configuration, please run 'pandas_profiling.clear_config()'"
+            # )
 
         config.set_kwargs(kwargs)
 
