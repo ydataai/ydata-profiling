@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+
 from pandas_profiling import ProfileReport
 from pandas_profiling.utils.cache import cache_file
 

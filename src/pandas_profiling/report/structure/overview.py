@@ -1,6 +1,6 @@
 from urllib.parse import quote
 
-from pandas_profiling.report.presentation.core import HTML, Table, Sequence, Warnings
+from pandas_profiling.report.presentation.core import HTML, Sequence, Table, Warnings
 
 
 def get_dataset_overview(summary):

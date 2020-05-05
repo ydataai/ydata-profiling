@@ -1,17 +1,17 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
-from enum import Enum, unique
-from typing import List, Union
+import re
 import warnings
 from contextlib import suppress
-import re
-from dateutil.parser import parse
+from enum import Enum, unique
+from typing import List, Union
 
 import numpy as np
+from dateutil.parser import parse
 
-from pandas_profiling.model.correlations import perform_check_correlation
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
+from pandas_profiling.model.correlations import perform_check_correlation
 
 
 @unique

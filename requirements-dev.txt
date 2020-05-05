@@ -1,4 +1,5 @@
 black
+isort[requirements]
 pre-commit
-pdoc3
 twine
+pdoc3

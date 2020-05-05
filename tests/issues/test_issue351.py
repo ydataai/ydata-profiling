@@ -1,4 +1,5 @@
 import pandas as pd
+
 from pandas_profiling import ProfileReport
 from pandas_profiling.model.base import Variable
 

@@ -1,14 +1,14 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.formatters import fmt_array
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
-    Table,
-    Sequence,
-    Image,
     FrequencyTable,
+    Image,
+    Sequence,
+    Table,
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
+from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_real(summary):

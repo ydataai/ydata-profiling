@@ -1,11 +1,11 @@
-import pytest
 import numpy as np
+import pytest
 
 from pandas_profiling.report.formatters import (
-    fmt_color,
-    fmt_class,
-    fmt_bytesize,
     fmt_array,
+    fmt_bytesize,
+    fmt_class,
+    fmt_color,
     fmt_numeric,
 )
 
