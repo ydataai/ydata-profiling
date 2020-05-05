@@ -21,7 +21,8 @@ You can install using the pip package manager by running
 
 .. code-block:: console
 
-    pip install pandas-profiling[notebook]
+    pip install -U pandas-profiling[notebook]
+    jupyter nbextension enable --py widgetsnbextension
 
 
 Using conda
@@ -49,6 +50,26 @@ This creates a new conda environment containing the module.
 
         Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the main channel.
 
+Jupyter notebook/lab
+--------------------
+
+For the Jupyter widgets extension to work, which is used for Progress Bars and the widget interface, you might need to activate the extensions. Installing with conda will enable the extension for you for Jupyter Notebooks (not lab).
+
+For Jupyter notebooks:
+
+.. code-block::
+
+  jupyter nbextension enable --py widgetsnbextension
+
+For Jupyter lab:
+
+.. code-block::
+
+  conda install -c conda-forge nodejs
+  jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+
+More information is available at the `ipywidgets documentation <https://ipywidgets.readthedocs.io/en/stable/user_install.html>`_.
 
 From source
 -----------

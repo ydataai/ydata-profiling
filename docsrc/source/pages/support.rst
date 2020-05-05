@@ -7,7 +7,12 @@ Troubleshooting
 
 First, we need to know whether a problem is actually a bug in the code, or that it's caused by something else, such as your local environment. The first step is to create a new environment with a fresh installation. In many cases, the problem will be resolved by this step.
 
+Frequent issues
+~~~~~~~~~~~~~~~
+
 - This thread discusses conda installing older versions of the package: https://github.com/conda-forge/pandas-profiling-feedstock/issues/22.
+
+- When in a Jupyter environment, you see some text, such as ``IntSlider(value=0)`` or interactive ``(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))``, then the Jupyter Widgets are not activated. The :doc:`installation` page contains instructions on how to resolve this problem.
 
 Users with a request for help on how to use `pandas-profiling` should consider asking their question on stackoverflow. There is a specific tag for `pandas-profiling`:
 
