@@ -4,6 +4,7 @@ from enum import Enum, unique
 from typing import List, Union
 
 import numpy as np
+
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import perform_check_correlation
@@ -308,22 +309,10 @@ def warning_skewness(v: float) -> bool:
 
 
 def warning_type_date(series):
-    import re
-    from contextlib import suppress
-    from dateutil.parser import parse
+    from dateutil.parser import parse, ParserError
 
-    pattern = re.compile(r"[.\-:]")
-
-    def _date_parser(date_string):
-        pieces = re.split(pattern, date_string)
-
-        if len(pieces) < 3:
-            raise ValueError("Must have at least year, month and date passed")
-
-        return parse(date_string)
-
-    with suppress(ValueError, TypeError):
-        series.apply(_date_parser)
+    try:
+        series.apply(parse)
         return True
-
-    return False
+    except ParserError:
+        return False

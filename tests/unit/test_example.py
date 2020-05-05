@@ -44,6 +44,6 @@ def test_example(get_data_file, test_output_dir):
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
     assert (
         type(profile.get_description()) == dict
-        and len(profile.get_description().items()) == 7
+        and len(profile.get_description().items()) == 10
     ), "Unexpected result"
     assert "<span class=badge>12</span>" in profile.to_html()

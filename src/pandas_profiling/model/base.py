@@ -1,7 +1,7 @@
 """Common parts to all other modules, mainly utility functions."""
 import sys
 from enum import Enum, unique
-from urllib.parse import urlparse, ParseResult
+from urllib.parse import ParseResult, urlparse
 
 import numpy as np
 import pandas as pd
@@ -140,15 +140,14 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
     Returns:
         True is the series is url type (NaNs allowed).
     """
+
     def is_url_item(x):
         return isinstance(x, ParseResult) and all((x.netloc, x.scheme, x.path))
 
     if series_description["distinct_count_without_nan"] > 0:
         try:
             result = series[~series.isnull()].astype(str)
-            return all(
-                is_url_item(urlparse(x)) for x in result
-            )
+            return all(is_url_item(urlparse(x)) for x in result)
         except ValueError:
             return False
     else:

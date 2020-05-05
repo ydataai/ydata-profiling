@@ -14,6 +14,7 @@ Notebooks
 Articles
 --------
 
+- `The Covid 19 health issue <https://concillier.squarespace.com/datasets/covid-19>`_ (Concillier Kitungulu, April 20, 2020)
 - `Accelerate Your Exploratory Data Analysis With Pandas-Profiling <https://towardsdatascience.com/accelerate-your-exploratory-data-analysis-with-pandas-profiling-4eca0cb770d1>`_ (Sukanta Roy, April 19, 2020)
 - `Pandas-Profiling, explore your data faster in Python <https://www.datacourses.com/pandas-1150/>`_ (Gabriel Fuhr, May 31, 2020)
 - `Pandas One Line Magical Code for EDA: Pandas Profile Report <https://dzone.com/articles/pandas-one-line-magical-code-for-eda-pandas-profil>`_ (Sunil Kappal, July 8, 2019)
