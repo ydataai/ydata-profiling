@@ -1,5 +1,5 @@
 """Generate the report."""
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 import pandas as pd
@@ -220,10 +220,10 @@ def get_scatter_matrix(scatter_matrix):
     return titems
 
 
-def get_dataset_items(summary, date_start, date_end, warnings):
+def get_dataset_items(summary, date_start, date_end, duration, warnings):
     items = [
         get_dataset_overview(summary),
-        get_dataset_reproduction(summary, date_start, date_end),
+        get_dataset_reproduction(summary, date_start, date_end, duration),
     ]
 
     count = len(
@@ -252,6 +252,7 @@ def get_section_items() -> List[Renderable]:
 def get_report_structure(
     date_start: datetime,
     date_end: datetime,
+    duration: timedelta,
     duplicates: pd.DataFrame,
     sample: dict,
     summary: dict,
@@ -272,7 +273,7 @@ def get_report_structure(
 
     section_items.append(
         Sequence(
-            get_dataset_items(summary, date_start, date_end, warnings),
+            get_dataset_items(summary, date_start, date_end, duration, warnings),
             sequence_type="tabs",
             name="Overview",
             anchor_id="overview",

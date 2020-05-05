@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
-
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.describe import describe as describe_df
@@ -53,8 +52,8 @@ class ProfileReport(object):
 
         # Treat index as any other column
         if (
-                not pd.Index(np.arange(0, len(df))).equals(df.index)
-                or df.index.dtype != np.int64
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
         ):
             df = df.reset_index()
 
@@ -71,7 +70,7 @@ class ProfileReport(object):
         variable_stats = pd.DataFrame(description_set["variables"])
         supported_columns = variable_stats.transpose()[
             variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-            ].index.tolist()
+        ].index.tolist()
 
         # Build report structure
         self.duplicates = self.get_duplicates(df, supported_columns)
@@ -83,18 +82,21 @@ class ProfileReport(object):
         disable_progress_bar = not config["progress_bar"].get(bool)
 
         with tqdm(
-                total=1, desc="build report structure", disable=disable_progress_bar
+            total=1, desc="build report structure", disable=disable_progress_bar
         ) as pbar:
             self.report = get_report_structure(
                 self.date_start,
                 self.date_end,
+                self.date_end - self.date_start,
                 self.duplicates,
                 self.sample,
                 description_set,
             )
             pbar.update()
 
-    def get_duplicates(self, df: pd.DataFrame, supported_columns: list) -> Optional[pd.DataFrame]:
+    def get_duplicates(
+        self, df: pd.DataFrame, supported_columns: list
+    ) -> Optional[pd.DataFrame]:
         """Get duplicate rows and counts based on the configuration
 
         Args:
@@ -108,10 +110,10 @@ class ProfileReport(object):
         if n_head > 0 and supported_columns:
             return (
                 df[df.duplicated(subset=supported_columns, keep=False)]
-                    .groupby(supported_columns)
-                    .size()
-                    .reset_index(name="count")
-                    .nlargest(n_head, "count")
+                .groupby(supported_columns)
+                .size()
+                .reset_index(name="count")
+                .nlargest(n_head, "count")
             )
         return None
 
@@ -276,11 +278,15 @@ class ProfileReport(object):
         report = WidgetReport(self.report).render()
 
         # TODO: move to report structure
-        display(VBox([report,
-                HTML(
-                    'Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
-                )
-                      ])
+        display(
+            VBox(
+                [
+                    report,
+                    HTML(
+                        'Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
+                    ),
+                ]
+            )
         )
 
     def _repr_html_(self):

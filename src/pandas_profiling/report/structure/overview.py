@@ -66,13 +66,14 @@ def get_dataset_overview(summary):
     )
 
 
-def get_dataset_reproduction(summary, date_start, date_end):
+def get_dataset_reproduction(summary, date_start, date_end, duration):
     version = summary["package"]["pandas_profiling_version"]
     config = quote(summary["package"]["pandas_profiling_config"])
     return Table(
         [
             {"name": "Analysis started", "value": date_start, "fmt": "fmt"},
             {"name": "Analysis finished", "value": date_end, "fmt": "fmt"},
+            {"name": "Duration", "value": duration, "fmt": "fmt_timespan"},
             {
                 "name": "Version",
                 "value": f'<a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{version}</a>',
