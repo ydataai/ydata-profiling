@@ -3,8 +3,7 @@ from pathlib import Path
 from typing import Union
 
 from pandas_profiling.config import Config, config
-from pandas_profiling.report.presentation.flavours.html import HTMLSequence
-from pandas_profiling.utils.dataframe import hash_dataframe
+from pandas_profiling.report.presentation.core import Report
 from pandas_profiling.version import __version__
 
 
@@ -56,18 +55,17 @@ class Serialize(object):
         if not all(
             (
                 isinstance(df_hash, int),
-                isinstance(loaded_title, str),
+                loaded_title is None or isinstance(loaded_title, str),
                 isinstance(loaded_config, Config),
                 loaded_description_set is None
                 or isinstance(loaded_description_set, dict),
-                # TODO: May also be widget...
-                loaded_report is None or isinstance(loaded_report, HTMLSequence),
+                loaded_report is None or isinstance(loaded_report, Report),
             )
         ):
             raise ValueError(
                 f"Fail to load data: It may be damaged or from other version"
             )
-        if (df_hash == self.df_hash or self.df_hash == -1) and (
+        if (df_hash == self._df_hash or self._df_hash == -1) and (
             ignore_config
             or config == loaded_config
             or (
@@ -106,7 +104,7 @@ class Serialize(object):
                 )
 
             # set df_hash and title
-            self.df_hash = df_hash
+            self._df_hash = df_hash
             self._title = loaded_title
 
         else:

@@ -70,11 +70,7 @@ class ProfileReport(Serialize, object):
 
         if df is not None:
             # preprocess df
-            df = self.preprocess(df)
-
-        if lazy and df is not None:
-            # Store the df
-            self.df = df
+            self.df = self.preprocess(df)
 
         if not lazy:
             # Trigger building the report structure
@@ -83,6 +79,7 @@ class ProfileReport(Serialize, object):
     @property
     def description_set(self):
         if self._description_set is None:
+            _ = self.df_hash
             self._description_set = describe_df(self.title, self.df)
         return self._description_set
 
@@ -95,7 +92,7 @@ class ProfileReport(Serialize, object):
 
     @property
     def df_hash(self):
-        if self._df_hash is None:
+        if self._df_hash == -1:
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 
@@ -161,12 +158,12 @@ class ProfileReport(Serialize, object):
 
         # TODO: add exporting progress bar
 
-        mode = "w"
+        binary = False
         if output_file.suffix == ".json":
             data = self.to_json()
         elif output_file.suffix == ".pp":
             data = self.dumps()
-            mode = "wb"
+            binary = True
         else:
             data = self.to_html()
             if output_file.suffix != ".html":
@@ -177,8 +174,10 @@ class ProfileReport(Serialize, object):
                     f"To remove this warning, please use .html or .json."
                 )
 
-        with output_file.open(mode, encoding="utf8") as f:
-            f.write(data)
+        if binary:
+            output_file.write_bytes(data)
+        else:
+            output_file.write_text(data, encoding="utf-8")
 
         if not silent:
             try:
