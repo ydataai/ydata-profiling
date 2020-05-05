@@ -3,6 +3,7 @@ import warnings
 from pathlib import Path
 
 import pandas as pd
+from pandas.core.util.hashing import hash_pandas_object
 
 
 def warn_read(extension):
@@ -121,3 +122,7 @@ def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
 
             df = pd.concat([df, expanded], axis=1)
     return df
+
+
+def hash_dataframe(df):
+    return int(hash_pandas_object(df).sum())

@@ -1,4 +1,4 @@
-from typing import Union, Any
+from typing import Any, Union
 
 from pandas_profiling.report.presentation.abstract.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.abstract.renderable import Renderable

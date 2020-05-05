@@ -19,7 +19,7 @@
         {% include 'wrapper/navigation.html' %}
     {% endif %}
     <div class="content">
-    {{ content }}
+    {{ body.render() }}
     </div>
     {% include 'wrapper/footer.html' %}
     {% include 'wrapper/javascript.html' %}

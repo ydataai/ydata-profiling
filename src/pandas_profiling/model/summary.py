@@ -5,28 +5,27 @@ import multiprocessing.pool
 import os
 import warnings
 from pathlib import Path
-from typing import Tuple, Callable, Mapping
+from typing import Callable, Mapping, Tuple
 from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
-from astropy.stats import bayesian_blocks
 from scipy.stats.stats import chisquare
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import (
-    check_variable_messages,
-    check_table_messages,
-    warning_type_date,
     check_correlation_messages,
+    check_table_messages,
+    check_variable_messages,
+    warning_type_date,
 )
 from pandas_profiling.visualisation.missing import (
     missing_bar,
-    missing_matrix,
-    missing_heatmap,
     missing_dendrogram,
+    missing_heatmap,
+    missing_matrix,
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
 
@@ -146,9 +145,10 @@ def describe_1d(series: pd.Series) -> dict:
             "variance": np.var(present_values, ddof=1),
             "min": np.min(present_values),
             "max": np.max(present_values),
-            "kurtosis": series.kurt(),
             # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
-            "skewness": series.skew(),  # Unbiased skew normalized by N-1
+            "kurtosis": series.kurt(),
+            # Unbiased skew normalized by N-1
+            "skewness": series.skew(),
             "sum": np.sum(present_values),
             "mad": mad(present_values),
             "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
@@ -158,7 +158,9 @@ def describe_1d(series: pd.Series) -> dict:
             "n_infinite": n_infinite,
         }
 
-        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
+            float
+        )
         if chi_squared_threshold > 0.0:
             histogram, _ = np.histogram(finite_values, bins="auto")
             stats["chi_squared"] = chisquare(histogram)
@@ -179,7 +181,9 @@ def describe_1d(series: pd.Series) -> dict:
         bins = min(series_description["distinct_count_with_nan"], bins)
         stats["histogram_bins"] = bins
 
-        bayesian_blocks_bins = config["plot"]["histogram"]["bayesian_blocks_bins"].get(bool)
+        bayesian_blocks_bins = config["plot"]["histogram"]["bayesian_blocks_bins"].get(
+            bool
+        )
         if bayesian_blocks_bins:
             from astropy.stats import bayesian_blocks
 
@@ -502,6 +506,33 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     )
 
     return table_stats
+
+
+def get_sample(df: pd.DataFrame):
+    sample = {}
+    n_head = config["samples"]["head"].get(int)
+    if n_head > 0:
+        sample["head"] = df.head(n=n_head)
+
+    n_tail = config["samples"]["tail"].get(int)
+    if n_tail > 0:
+        sample["tail"] = df.tail(n=n_tail)
+
+    return sample
+
+
+def get_duplicates(df: pd.DataFrame, supported_columns):
+    n_head = config["duplicates"]["head"].get(int)
+
+    if n_head > 0 and supported_columns:
+        return (
+            df[df.duplicated(subset=supported_columns, keep=False)]
+            .groupby(supported_columns)
+            .size()
+            .reset_index(name="count")
+            .nlargest(n_head, "count")
+        )
+    return None
 
 
 def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:

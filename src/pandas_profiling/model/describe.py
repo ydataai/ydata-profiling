@@ -1,24 +1,25 @@
 import warnings
+from datetime import datetime
 
 import pandas as pd
-from tqdm.auto import tqdm
-
+from tqdm.autonotebook import tqdm
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.summary import (
-    get_series_descriptions,
-    get_scatter_matrix,
-    get_table_stats,
-    get_missing_diagrams,
-    get_messages,
-    sort_column_names,
-)
+from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.summary import (
+    get_duplicates,
+    get_messages,
+    get_missing_diagrams,
+    get_sample,
+    get_scatter_matrix,
+    get_series_descriptions,
+    get_table_stats,
+)
 from pandas_profiling.version import __version__
 
 
-
-def describe(df: pd.DataFrame) -> dict:
+def describe(title, df: pd.DataFrame) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -34,29 +35,6 @@ def describe(df: pd.DataFrame) -> dict:
             - package: package details.
     """
 
-    """ Those items with * make up description_set
-    +-------------------------------------------------------------+         +-------------+
-    |                       DataFrame                             |         |  Package*   |
-    +--+--------------+----------------+--------------+--------+--+         +-------------+
-       |              v                |              |        |
-       |     +--------+-------------+  |              |        |
-       |     |  series_description* |  |              |        |
-       |     +-----+--------------+-+  |              |        |
-       |           v              v    |              |        |
-       |     +-----+-----+    +---+------------+      |        |
-       |     | variables |    | variable_stats |      |        |
-       |     +-+----+----+    +-------------+--+      |        |
-       |       |    |                  |    |         |        |
-       v       v    +---------v   v----+    +------v  v        |
-      ++-------+-----+   +----+---+------+    +----+--+-----+  |
-      |correlations* |   |scatter_matrix*|    |table_stats* |  |
-      +---+----------+   +------+--------+    +--+--------+-+  |
-          v                     v                v        v    v
-      +---+---------------------+----------------+--+ +---+----+--+
-      |               messages*                     | |  missing* |
-      +---------------------------------------------+ +-----------+
-    """
-
     if not isinstance(df, pd.DataFrame):
         warnings.warn("df is not of type pandas.DataFrame")
 
@@ -65,22 +43,18 @@ def describe(df: pd.DataFrame) -> dict:
 
     disable_progress_bar = not config["progress_bar"].get(bool)
 
+    date_start = datetime.utcnow()
+
     correlation_names = [
         correlation_name
-        for correlation_name in [
-            "pearson",
-            "spearman",
-            "kendall",
-            "phi_k",
-            "cramers",
-        ]
+        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers",]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
     number_of_task = 7 + len(df.columns) + len(correlation_names)
 
     with tqdm(
-        total=number_of_task, desc="Describe", disable=disable_progress_bar
+        total=number_of_task, desc="Summarize Dataset", disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, pbar)
 
@@ -125,21 +99,49 @@ def describe(df: pd.DataFrame) -> dict:
         missing = get_missing_diagrams(df, table_stats)
         pbar.update()
 
+        # Sample
+        pbar.set_postfix_str("Take sample")
+        sample = get_sample(df)
+        pbar.update()
+
+        # Duplicates
+        pbar.set_postfix_str("Locating duplicates")
+        supported_columns = [
+            key
+            for key, value in series_description.items()
+            if value["type"] != Variable.S_TYPE_UNSUPPORTED
+        ]
+
+        duplicates = get_duplicates(df, supported_columns)
+        pbar.update()
+
         # Messages
-        pbar.set_postfix_str("Get messages")
+        pbar.set_postfix_str("Get messages/warnings")
         messages = get_messages(table_stats, series_description, correlations)
         pbar.update()
 
-        pbar.set_postfix_str("Get package info")
+        pbar.set_postfix_str("Get reproduction details")
         package = {
             "pandas_profiling_version": __version__,
             "pandas_profiling_config": config.dump(),
         }
         pbar.update()
-        pbar.set_postfix_str("Finished")
+
+        pbar.set_postfix_str("Completed")
+
+    date_end = datetime.utcnow()
+
+    analysis = {
+        "title": title,
+        "date_start": date_start,
+        "date_end": date_end,
+        "duration": date_end - date_start,
+    }
 
     return {
-        # Overall description
+        # Analysis metadata
+        "analysis": analysis,
+        # Overall dataset description
         "table": table_stats,
         # Per variable descriptions
         "variables": series_description,
@@ -153,4 +155,8 @@ def describe(df: pd.DataFrame) -> dict:
         "messages": messages,
         # Package
         "package": package,
+        # Sample
+        "sample": sample,
+        # Duplicates
+        "duplicates": duplicates,
     }

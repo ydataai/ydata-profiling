@@ -5,7 +5,7 @@ from pandas_profiling.report.presentation.core import (
     Table,
     VariableInfo,
 )
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
+from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_date(summary):

@@ -3,9 +3,12 @@ setlocal enabledelayedexpansion
 
 IF "%1%" == "docs" (
     mkdir docs/
+    :: pdoc3
     robocopy .\docsrc\assets\ .\docs\assets\
     pdoc3 --html  --force --output-dir docs pandas_profiling
     robocopy .\docs\pandas_profiling .\docs /E /MOVE
+    :: sphinx
+    cd docsrc/ && make github
     ECHO "Docs updated!"
     GOTO end
 )
@@ -45,6 +48,7 @@ IF "%1" == "pypi_package" (
 )
 
 IF "%1" == "lint" (
+    isort --apply
     black .
     GOTO end
 )

@@ -1,6 +1,6 @@
 """Plot functions for the profiling report."""
 
-from typing import Union, Optional
+from typing import Optional, Union
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -21,10 +21,10 @@ sns.set_style(style="white")
 
 
 def _plot_histogram(
-        series: np.ndarray,
-        series_description: dict,
-        bins: Union[int, np.ndarray],
-        figsize: tuple = (6, 4),
+    series: np.ndarray,
+    series_description: dict,
+    bins: Union[int, np.ndarray],
+    figsize: tuple = (6, 4),
 ):
     """Plot an histogram from the data and return the AxesSubplot object.
 
@@ -59,7 +59,7 @@ def _plot_histogram(
 
 
 def histogram(
-        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot an histogram of the data.
 
@@ -80,7 +80,7 @@ def histogram(
 
 
 def mini_histogram(
-        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot a small (mini) histogram of the data.
 

@@ -1,4 +1,5 @@
 from pandas_profiling.report.presentation.flavours.qt.collapse import QtCollapse
+from pandas_profiling.report.presentation.flavours.qt.duplicate import QtDuplicate
 from pandas_profiling.report.presentation.flavours.qt.frequency_table import (
     QtFrequencyTable,
 )

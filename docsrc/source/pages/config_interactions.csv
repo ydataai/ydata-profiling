@@ -1,0 +1,2 @@
+Parameter,Type,Default,Description
+``interactions.continuous``,boolean,True,"Generate a 2D scatter plot (or hexagonal binned plot) for all continuous variable pairs."

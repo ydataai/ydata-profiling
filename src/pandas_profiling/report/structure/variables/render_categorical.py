@@ -2,9 +2,9 @@ import pandas as pd
 
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
-    Image,
     FrequencyTable,
     FrequencyTableSmall,
+    Image,
     Sequence,
     Table,
     VariableInfo,

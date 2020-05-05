@@ -115,7 +115,7 @@ Install by navigating to the proper directory and running
     
 ## Documentation
 
-The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
+The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/rtd/). Previous documentation is still available [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
 
 ### Getting started
 
@@ -147,7 +147,7 @@ This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 profile.to_widgets()
 ```
 
-The HTML report can be included in a Juyter notebook:
+The HTML report can be included in a Jupyter notebook:
 
 <img alt="HTML" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/iframe.gif" width="800" />
 
@@ -161,7 +161,7 @@ profile.to_notebook_iframe()
 
 If you want to generate a HTML report file, save the `ProfileReport` to an object and use the `to_file()` function:
 ```python
-profile.to_file(output_file="your_report.html")
+profile.to_file("your_report.html")
 ```
 Alternatively, you can obtain the data as json:
 ```python
@@ -169,7 +169,7 @@ Alternatively, you can obtain the data as json:
 json_data = profile.to_json()
 
 # As a file
-profile.to_file(output_file="your_report.json")
+profile.to_file("your_report.json")
 ```
 
 ### Large datasets
@@ -180,7 +180,7 @@ Use the following syntax:
 
 ```python
 profile = ProfileReport(large_dataset, minimal=True)
-profile.to_file(output_file="output.html")
+profile.to_file("output.html")
 ```
 
 ### Command line usage

@@ -1,5 +1,7 @@
 """Configuration for the package is handled in this wrapper for confuse."""
 import argparse
+from pathlib import Path
+from typing import Union
 
 import confuse
 
@@ -17,11 +19,11 @@ class Config(object):
     def __init__(self):
         """The config constructor should be called only once."""
         if self.config is None:
-            self.config = confuse.Configuration("PandasProfiling", __name__, read=False)
+            self.clear()
+        else:
+            self.set_file(str(get_config_default()))
 
-        self.set_file(str(get_config_default()))
-
-    def set_file(self, file_name: str) -> None:
+    def set_file(self, file_name: Union[str, Path]) -> None:
         """
         Set the config from a file
 
@@ -29,7 +31,7 @@ class Config(object):
             file_name: file name
         """
         if self.config is not None:
-            self.config.set_file(file_name)
+            self.config.set_file(str(file_name))
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -> None:
         """

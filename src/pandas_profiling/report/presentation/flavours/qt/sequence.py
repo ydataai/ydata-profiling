@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QTabWidget, QWidget
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QPushButton, QTabWidget, QVBoxLayout, QWidget
 
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import Sequence

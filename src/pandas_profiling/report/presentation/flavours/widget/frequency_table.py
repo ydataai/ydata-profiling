@@ -1,4 +1,4 @@
-from ipywidgets import widgets, GridspecLayout, VBox
+from ipywidgets import GridspecLayout, VBox, widgets
 
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
 

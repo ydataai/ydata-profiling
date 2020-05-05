@@ -2,7 +2,7 @@ from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import FrequencyTable, Image, Sequence
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_path import render_path
-from pandas_profiling.visualisation.plot import scatter_series
+from pandas_profiling.visualisation.plot import histogram, scatter_series
 
 
 def render_path_image(summary):

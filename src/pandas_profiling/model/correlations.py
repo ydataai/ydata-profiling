@@ -165,9 +165,7 @@ def calculate_correlation(
 
             if len(selcols) > 1:
                 try:
-                    correlation = df[selcols].phik_matrix(
-                        interval_cols=intcols
-                    )
+                    correlation = df[selcols].phik_matrix(interval_cols=intcols)
 
                     # Only do this if the column_order is set
                     with suppress(NotFoundError):
@@ -175,19 +173,17 @@ def calculate_correlation(
                         column_order = config["column_order"].get(list)
 
                         # Get the Phi_k sorted order
-                        current_order = (
-                            correlation
-                            .index.get_level_values("var1")
-                            .tolist()
-                        )
+                        current_order = correlation.index.get_level_values(
+                            "var1"
+                        ).tolist()
 
                         # Intersection (some columns are not used in correlation)
-                        column_order = [
-                            x for x in column_order if x in current_order
-                        ]
+                        column_order = [x for x in column_order if x in current_order]
 
                         # Override the Phi_k sorting
-                        correlation = correlation.reindex(index=column_order, columns=column_order)
+                        correlation = correlation.reindex(
+                            index=column_order, columns=column_order
+                        )
                 except (ValueError, DataError, IndexError, TypeError) as e:
                     warn_correlation("phi_k", e)
     elif correlation_name in ["cramers"]:
@@ -197,9 +193,9 @@ def calculate_correlation(
         except (ValueError, AssertionError) as e:
             warn_correlation(correlation_name, e)
 
-
     if correlation is None or len(correlation) <= 0:
         correlation = None
+
     return correlation
 
 

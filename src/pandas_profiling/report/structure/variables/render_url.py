@@ -1,9 +1,10 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
-    Sequence,
-    Table,
     FrequencyTable,
     FrequencyTableSmall,
+    Sequence,
+    Table,
+    Variable,
     VariableInfo,
 )
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table

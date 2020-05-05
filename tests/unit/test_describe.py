@@ -6,11 +6,11 @@ import pytest
 
 from pandas_profiling import config
 from pandas_profiling.model.base import Variable
+from pandas_profiling.model.describe import describe
+from pandas_profiling.model.summary import describe_1d
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-from pandas_profiling.model.summary import describe_1d
-from pandas_profiling.model.describe import describe
 
 testdata = [
     # Unique values
@@ -533,6 +533,7 @@ def test_describe_df(describe_data, expected_results):
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
 
     results = describe(describe_data_frame)
+
     assert {
         "table",
         "variables",
