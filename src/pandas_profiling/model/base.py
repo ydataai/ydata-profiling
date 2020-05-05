@@ -1,13 +1,12 @@
 """Common parts to all other modules, mainly utility functions."""
 import sys
 from enum import Enum, unique
-from urllib.parse import urlparse
+from urllib.parse import urlparse, ParseResult
 
 import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.utils.data_types import str_is_path
 
 
 @unique
@@ -141,10 +140,15 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
     Returns:
         True is the series is url type (NaNs allowed).
     """
+    def is_url_item(x):
+        return isinstance(x, ParseResult) and all((x.netloc, x.scheme, x.path))
+
     if series_description["distinct_count_without_nan"] > 0:
         try:
-            result = series[~series.isnull()].astype(str).apply(urlparse)
-            return result.apply(lambda x: all([x.scheme, x.netloc, x.path])).all()
+            result = series[~series.isnull()].astype(str)
+            return all(
+                is_url_item(urlparse(x)) for x in result
+            )
         except ValueError:
             return False
     else:
@@ -152,10 +156,30 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
 
 
 def is_path(series, series_description) -> bool:
+    from pathlib import Path
+
+    def is_path_item(p: str):
+        """Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+
+        Args:
+            p: the Path
+
+        Returns:
+            True is is an absolute path
+        """
+        try:
+            path = Path(p)
+            if path.is_absolute():
+                return True
+            else:
+                return False
+        except TypeError:
+            return False
+
     if series_description["distinct_count_without_nan"] > 0:
         try:
-            result = series[~series.isnull()].astype(str).apply(str_is_path)
-            return result.all()
+            result = series[~series.isnull()].astype(str)
+            return all(is_path_item(x) for x in result)
         except ValueError:
             return False
     else:

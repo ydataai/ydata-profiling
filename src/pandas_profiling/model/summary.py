@@ -266,7 +266,9 @@ def describe_1d(series: pd.Series) -> dict:
             stats.update(text_summary(series))
             stats["length"] = series.str.len()
 
-        stats["date_warning"] = warning_type_date(series)
+        coerce_str_to_date = config["vars"]["cat"]["coerce_str_to_date"].get(bool)
+        if coerce_str_to_date:
+            stats["date_warning"] = warning_type_date(series)
 
         return stats
 

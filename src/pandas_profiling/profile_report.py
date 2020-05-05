@@ -76,6 +76,9 @@ class ProfileReport(Serialize, object):
             # Trigger building the report structure
             _ = self.report
 
+    def set_variables(self, **vars):
+        config.set_kwargs(vars)
+
     @property
     def description_set(self):
         if self._description_set is None:
