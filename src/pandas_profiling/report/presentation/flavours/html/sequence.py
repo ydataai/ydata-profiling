@@ -1,5 +1,4 @@
 from pandas_profiling.config import config
-
 from pandas_profiling.report.presentation.core.sequence import Sequence
 from pandas_profiling.report.presentation.flavours.html import templates
 

@@ -48,6 +48,7 @@ IF "%1" == "pypi_package" (
 )
 
 IF "%1" == "lint" (
+    isort --apply
     black .
     GOTO end
 )

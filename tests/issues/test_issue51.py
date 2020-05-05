@@ -4,11 +4,11 @@ https://github.com/pandas-profiling/pandas-profiling/issues/51
 """
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
-import pandas_profiling
 import requests
 
-import numpy as np
+import pandas_profiling
 
 
 def test_issue51(get_data_file):

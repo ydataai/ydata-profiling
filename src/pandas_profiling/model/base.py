@@ -3,8 +3,8 @@ import sys
 from enum import Enum, unique
 from urllib.parse import urlparse
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from pandas_profiling.config import config
 from pandas_profiling.utils.data_types import str_is_path

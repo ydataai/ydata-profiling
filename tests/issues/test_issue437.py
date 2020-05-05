@@ -2,8 +2,9 @@
 Test for issue 437:
 https://github.com/pandas-profiling/pandas-profiling/issues/437
 """
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 import pandas_profiling
 from pandas_profiling.model.base import Variable
 

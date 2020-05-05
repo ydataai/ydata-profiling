@@ -2,14 +2,12 @@
 Test for issue 72:
 https://github.com/pandas-profiling/pandas-profiling/issues/72
 """
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 import pandas_profiling
-from pandas_profiling.model.base import Variable
-
-
 from pandas_profiling.config import config
+from pandas_profiling.model.base import Variable
 
 
 def test_issue72_higher():

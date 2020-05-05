@@ -1,13 +1,13 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
-    Sequence,
     HTML,
-    Image,
-    ToggleButton,
     Collapse,
+    Image,
+    Sequence,
+    ToggleButton,
 )
 from pandas_profiling.visualisation import plot
 

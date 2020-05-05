@@ -1,8 +1,8 @@
 """Formatters are mappings from object(s) to a string."""
-from typing import Dict, Callable
+from typing import Callable, Dict
 
-from jinja2.utils import escape
 import numpy as np
+from jinja2.utils import escape
 
 
 def fmt_color(text: str, color: str) -> str:

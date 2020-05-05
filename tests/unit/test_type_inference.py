@@ -1,7 +1,7 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from pandas_profiling.model.base import get_var_type, Variable
+from pandas_profiling.model.base import Variable, get_var_type
 
 
 def test_numeric_with_inf():

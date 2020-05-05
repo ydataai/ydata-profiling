@@ -1,7 +1,7 @@
 from pandas_profiling.report.presentation.core import (
-    Table,
-    Sequence,
     HTML,
+    Sequence,
+    Table,
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables import render_common

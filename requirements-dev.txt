@@ -1,7 +1,8 @@
 black
+isort[requirements]
 pre-commit
-pdoc3
 twine
+pdoc3
 recommonmark>=0.6.0
 sphinx_rtd_theme>=0.4.3
 sphinx-autodoc-typehints>=1.10.3
