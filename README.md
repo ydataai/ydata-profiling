@@ -115,7 +115,7 @@ Install by navigating to the proper directory and running
     
 ## Documentation
 
-The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
+The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/rtd/). Previous documentation is still available [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
 
 ### Getting started
 
@@ -147,7 +147,7 @@ This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 profile.to_widgets()
 ```
 
-The HTML report can be included in a Juyter notebook:
+The HTML report can be included in a Jupyter notebook:
 
 <img alt="HTML" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/iframe.gif" width="800" />
 

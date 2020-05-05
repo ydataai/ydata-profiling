@@ -14,7 +14,7 @@ recursive-include src/pandas_profiling/report/presentation/flavours/html/templat
 # Configuration
 include src/pandas_profiling/*.yaml
 
-# Exclude development, testing and example code
+# Exclude development, docs, testing and example code
 exclude .pre-commit-config.yaml
 include Makefile make.bat
 exclude docs examples tests docsrc
