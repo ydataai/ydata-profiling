@@ -159,7 +159,7 @@ def get_duplicates_items(duplicates: pd.DataFrame):
         List of duplicates items to show in the interface.
     """
     items = []
-    if duplicates is not None:
+    if duplicates is not None and len(duplicates) > 0:
         items.append(
             Duplicate(
                 duplicate=duplicates.to_html(classes="duplicate table table-striped"),
