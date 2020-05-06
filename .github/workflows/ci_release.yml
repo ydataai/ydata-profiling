@@ -1,15 +1,15 @@
-name: CI Lint
+name: CI (release)
 
-# Automatically lint code on release branches
 on:
   push:
     branches:
       - v**
 
-jobs:
-  lint:
-    runs-on: ubuntu-latest
+defaults:
+  runs-on: ubuntu-latest
 
+jobs:
+  Lint:
     steps:
     - uses: actions/checkout@v2
       name: Checkout repo
@@ -61,9 +61,8 @@ jobs:
   #        repository: pandas-profiling/pandas-profiling
   #        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
-  documentation:
+  Documentation:
       needs: lint
-      runs-on: ubuntu-latest
 
       steps:
       - uses: actions/checkout@v2
@@ -109,17 +108,14 @@ jobs:
 
       - name: Move the changes to the gh-pages branch
         run: |
-          echo ${GITHUB_REF#refs/heads/}
-          echo ${GITHUB_REF##*/}
-          echo ${GITHUB_HEAD_REF##*/}
-          mv docs/ ${GITHUB_HEAD_REF##*/}/
+          mv docs/ ${GITHUB_REF##*/}/
           mkdir docs/
-          mv ${GITHUB_HEAD_REF##*/}/ docs/${GITHUB_HEAD_REF##*/}/
-          git add docs/${GITHUB_HEAD_REF##*/}/
+          mv ${GITHUB_REF##*/}/ docs/${GITHUB_REF##*/}/
+          git add docs/${GITHUB_REF##*/}/
           git stash
           git checkout gh-pages
-          rm -rf docs/${GITHUB_HEAD_REF##*/}/
-          git add docs/${GITHUB_HEAD_REF##*/}/
+          rm -rf docs/${GITHUB_REF##*/}/
+          git add docs/${GITHUB_REF##*/}/
           git stash apply
           git commit -m "[skip ci] Updating documentation" -a || true
 
