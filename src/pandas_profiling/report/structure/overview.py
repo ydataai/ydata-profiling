@@ -1,7 +1,7 @@
 from urllib.parse import quote
 
 from pandas_profiling.model.messages import MessageType
-from pandas_profiling.report.presentation.core import Sequence, Table, Warnings
+from pandas_profiling.report.presentation.core import Container, Table, Warnings
 
 
 def get_dataset_overview(summary):
@@ -59,7 +59,7 @@ def get_dataset_overview(summary):
         name="Variable types",
     )
 
-    return Sequence(
+    return Container(
         [dataset_info, dataset_types],
         anchor_id="dataset_overview",
         name="Overview",

@@ -1,8 +1,8 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
+    Container,
     FrequencyTable,
     FrequencyTableSmall,
-    Sequence,
     Table,
     Variable,
     VariableInfo,
@@ -70,7 +70,7 @@ def render_url(summary):
         query_frequency_table,
         fragment_frequency_table,
     ]
-    template_variables["bottom"] = Sequence(
+    template_variables["bottom"] = Container(
         items, sequence_type="tabs", name="url stats", anchor_id=f"{varid}urlstats"
     )
 
@@ -116,6 +116,6 @@ def render_url(summary):
 
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
-    template_variables["top"] = Sequence([info, table, fqm], sequence_type="grid")
+    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
 
     return template_variables

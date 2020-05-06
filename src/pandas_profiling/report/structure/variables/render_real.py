@@ -1,9 +1,9 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.formatters import fmt_array
 from pandas_profiling.report.presentation.core import (
+    Container,
     FrequencyTable,
     Image,
-    Sequence,
     Table,
     VariableInfo,
 )
@@ -100,7 +100,7 @@ def render_real(summary):
         alt="Mini histogram",
     )
 
-    template_variables["top"] = Sequence(
+    template_variables["top"] = Container(
         [info, table1, table2, mini_histo], sequence_type="grid"
     )
 
@@ -154,7 +154,7 @@ def render_real(summary):
         name="Descriptive statistics",
     )
 
-    statistics = Sequence(
+    statistics = Container(
         [quantile_statistics, descriptive_statistics],
         anchor_id=f"{varid}statistics",
         name="Statistics",
@@ -178,7 +178,7 @@ def render_real(summary):
         anchor_id=f"{varid}common_values",
     )
 
-    evs = Sequence(
+    evs = Container(
         [
             FrequencyTable(
                 template_variables["firstn_expanded"],
@@ -214,10 +214,10 @@ def render_real(summary):
 
         seqs.append(histo_dyn)
 
-    template_variables["bottom"] = Sequence(
+    template_variables["bottom"] = Container(
         [
             statistics,
-            Sequence(
+            Container(
                 seqs,
                 sequence_type="tabs",
                 name="Histogram(s)",

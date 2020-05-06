@@ -5,6 +5,7 @@ from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
+from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
@@ -160,28 +161,24 @@ class ProfileReport(Serialize, object):
         if not isinstance(output_file, Path):
             output_file = Path(str(output_file))
 
-        # TODO: add exporting progress bar
-
-        binary = False
-        if output_file.suffix == ".json":
-            data = self.to_json()
-        elif output_file.suffix == ".pp":
-            data = self.dumps()
-            binary = True
-        else:
-            data = self.to_html()
-            if output_file.suffix != ".html":
-                suffix = output_file.suffix
-                output_file = output_file.with_suffix(".html")
-                warnings.warn(
-                    f"Extension {suffix} not supported. For now we assume .html was intended. "
-                    f"To remove this warning, please use .html or .json."
-                )
-
-        if binary:
-            output_file.write_bytes(data)
-        else:
-            output_file.write_text(data, encoding="utf-8")
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(
+            total=1, desc="Export Root to File", disable=disable_progress_bar
+        ) as pbar:
+            if output_file.suffix == ".json":
+                output_file.write_text(self.to_json(), encoding="utf-8")
+            elif output_file.suffix == ".pp":
+                output_file.write_bytes(self.dumps())
+            else:
+                if output_file.suffix != ".html":
+                    suffix = output_file.suffix
+                    output_file = output_file.with_suffix(".html")
+                    warnings.warn(
+                        f"Extension {suffix} not supported. For now we assume .html was intended. "
+                        f"To remove this warning, please use .html or .json."
+                    )
+                output_file.write_text(self.to_html(), encoding="utf-8")
+            pbar.update()
 
         if not silent:
             try:

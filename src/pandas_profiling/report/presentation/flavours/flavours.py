@@ -16,12 +16,12 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         type annotated mapping dict
     """
     from pandas_profiling.report.presentation.flavours.html import (
-        HTMLSequence,
+        HTMLContainer,
         HTMLVariable,
         HTMLVariableInfo,
         HTMLTable,
         HTMLImage,
-        HTMLReport,
+        HTMLRoot,
         HTMLHTML,
         HTMLFrequencyTable,
         HTMLFrequencyTableSmall,
@@ -32,13 +32,13 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         HTMLCollapse,
     )
     from pandas_profiling.report.presentation.core import (
-        Sequence,
+        Container,
         Variable,
         VariableInfo,
         Table,
         Image,
         HTML,
-        Report,
+        Root,
         FrequencyTable,
         FrequencyTableSmall,
         Warnings,
@@ -49,12 +49,12 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     )
 
     return {
-        Sequence: HTMLSequence,
+        Container: HTMLContainer,
         Variable: HTMLVariable,
         VariableInfo: HTMLVariableInfo,
         Table: HTMLTable,
         HTML: HTMLHTML,
-        Report: HTMLReport,
+        Root: HTMLRoot,
         Image: HTMLImage,
         FrequencyTable: HTMLFrequencyTable,
         FrequencyTableSmall: HTMLFrequencyTableSmall,
@@ -82,13 +82,13 @@ def HTMLReport(structure: Renderable):
 
 def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.flavours.widget import (
-        WidgetSequence,
+        WidgetContainer,
         WidgetVariable,
         WidgetVariableInfo,
         WidgetTable,
         WidgetImage,
         WidgetHTML,
-        WidgetReport,
+        WidgetRoot,
         WidgetFrequencyTable,
         WidgetFrequencyTableSmall,
         WidgetDuplicate,
@@ -98,7 +98,7 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         WidgetCollapse,
     )
     from pandas_profiling.report.presentation.core import (
-        Sequence,
+        Container,
         Variable,
         VariableInfo,
         Table,
@@ -109,18 +109,18 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Warnings,
         Duplicate,
         Sample,
-        Report,
+        Root,
         ToggleButton,
         Collapse,
     )
 
     return {
-        Sequence: WidgetSequence,
+        Container: WidgetContainer,
         Variable: WidgetVariable,
         VariableInfo: WidgetVariableInfo,
         Table: WidgetTable,
         HTML: WidgetHTML,
-        Report: WidgetReport,
+        Root: WidgetRoot,
         Image: WidgetImage,
         FrequencyTable: WidgetFrequencyTable,
         FrequencyTableSmall: WidgetFrequencyTableSmall,
@@ -140,12 +140,12 @@ def WidgetReport(structure: Renderable):
 
 def get_qt_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.flavours.qt import (
-        QtSequence,
+        QtContainer,
         QtVariable,
         QtVariableInfo,
         QtTable,
         QtImage,
-        QtReport,
+        QtRoot,
         QtHTML,
         QtFrequencyTable,
         QtFrequencyTableSmall,
@@ -156,7 +156,7 @@ def get_qt_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         QtToggleButton,
     )
     from pandas_profiling.report.presentation.core import (
-        Sequence,
+        Container,
         Variable,
         VariableInfo,
         Table,
@@ -166,19 +166,19 @@ def get_qt_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         FrequencyTableSmall,
         Warnings,
         Duplicate,
-        Report,
+        Root,
         Sample,
         Collapse,
         ToggleButton,
     )
 
     return {
-        Sequence: QtSequence,
+        Container: QtContainer,
         Variable: QtVariable,
         VariableInfo: QtVariableInfo,
         Table: QtTable,
         HTML: QtHTML,
-        Report: QtReport,
+        Root: QtRoot,
         Image: QtImage,
         FrequencyTable: QtFrequencyTable,
         FrequencyTableSmall: QtFrequencyTableSmall,

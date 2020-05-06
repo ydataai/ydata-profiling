@@ -3,11 +3,17 @@ from pathlib import Path
 from typing import Union
 
 from pandas_profiling.config import Config, config
-from pandas_profiling.report.presentation.core import Report
+from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.version import __version__
 
 
 class Serialize(object):
+    df_hash = None
+    df = None
+    _report = None
+    _description_set = None
+    _title = None
+
     def dumps(self) -> bytes:
         """
         Serialize ProfileReport and return bytes for reproducing ProfileReport or Caching.
@@ -59,7 +65,7 @@ class Serialize(object):
                 isinstance(loaded_config, Config),
                 loaded_description_set is None
                 or isinstance(loaded_description_set, dict),
-                loaded_report is None or isinstance(loaded_report, Report),
+                loaded_report is None or isinstance(loaded_report, Root),
             )
         ):
             raise ValueError(
@@ -68,9 +74,7 @@ class Serialize(object):
         if (df_hash == self.df_hash) and (
             ignore_config
             or config == loaded_config
-            or (
-                config.is_default and self.df is None
-            )  # load to an empty ProfileReport
+            or (config.is_default and self.df is None)  # load to an empty ProfileReport
         ):
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
@@ -118,8 +122,11 @@ class Serialize(object):
         """
         Dump ProfileReport to file
         """
+        if not isinstance(output_file, Path):
+            output_file = Path(str(output_file))
+
         output_file = output_file.with_suffix(".pp")
-        self.to_file(output_file)
+        output_file.write_bytes(self.dumps())
 
     def load(self, load_file: Union[Path, str], ignore_config: bool = False):
         """

@@ -5,15 +5,11 @@ from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
+    Container,
     Image,
-    Sequence,
     ToggleButton,
 )
 from pandas_profiling.visualisation import plot
-
-
-def get_items() -> List[Renderable]:
-    return []
 
 
 def get_correlation_items(summary) -> Optional[Renderable]:
@@ -25,7 +21,7 @@ def get_correlation_items(summary) -> Optional[Renderable]:
     Returns:
         List of correlation items to show in the interface.
     """
-    items = get_items()
+    items: List[Renderable] = []
 
     pearson_description = (
         "The Pearson's correlation coefficient (<em>r</em>) is a measure of linear correlation "
@@ -87,7 +83,7 @@ def get_correlation_items(summary) -> Optional[Renderable]:
                 classes="correlation-description",
             )
 
-            tbl = Sequence(
+            tbl = Container(
                 [diagram, desc], anchor_id=key, name=name, sequence_type="grid"
             )
 
@@ -95,7 +91,7 @@ def get_correlation_items(summary) -> Optional[Renderable]:
         else:
             items.append(diagram)
 
-    corr = Sequence(
+    corr = Container(
         items,
         sequence_type="tabs",
         name="Correlations Tab",

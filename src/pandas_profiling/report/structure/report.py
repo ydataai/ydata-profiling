@@ -1,4 +1,6 @@
 """Generate the report."""
+from typing import List
+
 import pandas as pd
 from tqdm.auto import tqdm
 
@@ -20,14 +22,14 @@ from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
+    Container,
     Duplicate,
     Image,
     Sample,
-    Sequence,
     ToggleButton,
     Variable,
 )
-from pandas_profiling.report.presentation.core.report import Report
+from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import (
     get_dataset_overview,
@@ -207,7 +209,7 @@ def get_scatter_matrix(scatter_matrix):
             )
 
         titems.append(
-            Sequence(
+            Container(
                 items,
                 sequence_type="tabs",
                 name=x_col,
@@ -241,24 +243,24 @@ def get_report_structure(summary: dict) -> Renderable:
     """
     disable_progress_bar = not config["progress_bar"].get(bool)
     with tqdm(
-        total=1, desc="Generate Report Structure", disable=disable_progress_bar
+        total=1, desc="Generate Root Structure", disable=disable_progress_bar
     ) as pbar:
         warnings = summary["messages"]
 
-        section_items = [
-            Sequence(
+        section_items: List[Renderable] = [
+            Container(
                 get_dataset_items(summary, warnings),
                 sequence_type="tabs",
                 name="Overview",
                 anchor_id="overview",
             ),
-            Sequence(
+            Container(
                 render_variables_section(summary),
                 sequence_type="accordion",
                 name="Variables",
                 anchor_id="variables",
             ),
-            Sequence(
+            Container(
                 get_scatter_matrix(summary["scatter"]),
                 sequence_type="tabs",
                 name="Interactions",
@@ -271,7 +273,7 @@ def get_report_structure(summary: dict) -> Renderable:
             section_items.append(corr)
 
         section_items.append(
-            Sequence(
+            Container(
                 get_missing_items(summary),
                 sequence_type="tabs",
                 name="Missing values",
@@ -282,7 +284,7 @@ def get_report_structure(summary: dict) -> Renderable:
         sample_items = get_sample_items(summary["sample"])
         if len(sample_items) > 0:
             section_items.append(
-                Sequence(
+                Container(
                     items=sample_items,
                     sequence_type="list",
                     name="Sample",
@@ -293,7 +295,7 @@ def get_report_structure(summary: dict) -> Renderable:
         duplicate_items = get_duplicates_items(summary["duplicates"])
         if len(duplicate_items) > 0:
             section_items.append(
-                Sequence(
+                Container(
                     items=duplicate_items,
                     sequence_type="list",
                     name="Duplicate rows",
@@ -301,11 +303,11 @@ def get_report_structure(summary: dict) -> Renderable:
                 )
             )
 
-        sections = Sequence(section_items, name="Report", sequence_type="sections")
+        sections = Container(section_items, name="Root", sequence_type="sections")
         pbar.update()
 
     footer = HTML(
-        content='Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
+        content='Root generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
     )
 
-    return Report("Report", sections, footer)
+    return Root("Root", sections, footer)
