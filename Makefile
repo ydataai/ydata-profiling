@@ -6,7 +6,7 @@ docs:
 	mv docs/pandas_profiling/* docs
 	rmdir docs/pandas_profiling
 	# sphinx
-        cd docsrc/ && make github
+	cd docsrc/ && make github
 
 test:
 	pytest --black tests/unit/
