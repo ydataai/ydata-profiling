@@ -7,7 +7,8 @@ on:
       - never
 
 jobs:
-  lint:
+  PyPi Release:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     runs-on: ubuntu-latest
 
     steps:
@@ -45,7 +46,6 @@ jobs:
 
     # https://github.com/pypa/gh-action-pypi-publish
     - name: Publish a Python distribution to PyPI
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__

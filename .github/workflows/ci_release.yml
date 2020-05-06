@@ -5,11 +5,9 @@ on:
     branches:
       - v**
 
-defaults:
-  runs-on: ubuntu-latest
-
 jobs:
   Lint:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       name: Checkout repo
@@ -62,8 +60,8 @@ jobs:
   #        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   Documentation:
+      runs-on: ubuntu-latest
       needs: lint
-
       steps:
       - uses: actions/checkout@v2
 
