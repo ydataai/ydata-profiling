@@ -49,13 +49,12 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
+        branch: ${{ github.ref }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.head_ref }}
 
     - name: Repository Dispatch
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: pandas-profiling/pandas-profiling
         event-type: trigger-action
         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
