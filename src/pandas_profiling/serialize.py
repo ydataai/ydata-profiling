@@ -7,7 +7,7 @@ from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.version import __version__
 
 
-class Serialize( object ):
+class Serialize(object):
     df_hash = None
     df = None
     _report = None
