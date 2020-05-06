@@ -1,39 +1,42 @@
 import json
 import warnings
-from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
-from pandas_profiling.utils.dataframe import rename_index
-from pandas_profiling.utils.paths import get_config_default, get_config_minimal
-from pandas_profiling.version import __version__
+from pandas_profiling.serialize import Serialize
+from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
+from pandas_profiling.utils.paths import get_config_minimal
 
 
-class ProfileReport(object):
+class ProfileReport(Serialize, object):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
     """
 
-    html = ""
-    """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
-
-    def __init__(self, df, minimal=False, config_file: Path = None, **kwargs):
+    def __init__(
+        self,
+        df=None,
+        minimal=False,
+        config_file: Union[Path, str] = None,
+        lazy: bool = True,
+        **kwargs,
+    ):
         """Generate a ProfileReport based on a pandas DataFrame
 
         Args:
             df: the pandas DataFrame
             minimal: minimal mode is a default configuration with minimal computation
             config_file: a config file (.yml), mutually exclusive with `minimal`
+            lazy: compute when needed
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
         if config_file is not None and minimal:
@@ -41,101 +44,147 @@ class ProfileReport(object):
                 "Arguments `config_file` and `minimal` are mutually exclusive."
             )
 
-        if minimal:
-            config_file = get_config_minimal()
+        if df is None and not lazy:
+            raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
         if config_file:
-            config.set_file(str(config_file))
+            config.set_file(config_file)
+        elif minimal:
+            config.set_file(get_config_minimal())
+        elif not config.is_default:
+            pass
+            # TODO: logging instead of warning
+            # warnings.warn(
+            #     "Currently configuration is not the default, if you want to restore "
+            #     "default configuration, please run 'pandas_profiling.clear_config()'"
+            # )
+
         config.set_kwargs(kwargs)
 
-        self.date_start = datetime.utcnow()
+        self.df = None
+        self._df_hash = -1
+        self._description_set = None
+        self._title = None
+        self._report = None
+        self._html = None
+        self._widgets = None
+        self._json = None
 
-        # Treat index as any other column
-        if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
+        if df is not None:
+            # preprocess df
+            self.df = self.preprocess(df)
 
-        # Rename reserved column names
-        df = rename_index(df)
+        if not lazy:
+            # Trigger building the report structure
+            _ = self.report
 
-        # Ensure that columns are strings
-        df.columns = df.columns.astype("str")
+    def set_variable(self, key, value):
+        """Change a single configuration variable
 
-        # Get dataset statistics
-        description_set = describe_df(df)
+        Args:
+            key: configuration parameter name
+            value: the new value
 
-        # Get supported columns
-        variable_stats = pd.DataFrame(description_set["variables"])
-        supported_columns = variable_stats.transpose()[
-            variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-        ].index.tolist()
+        Examples:
+            >>> ProfileReport(df).set_variables("title", "NewTitle")
+            >>> ProfileReport(df).set_variables("html", {"minify_html": False})
 
-        # Build report structure
-        self.duplicates = self.get_duplicates(df, supported_columns)
-        self.sample = self.get_sample(df)
-        self.title = config["title"].get(str)
-        self.description_set = description_set
-        self.date_end = datetime.utcnow()
+        """
+        self.set_variables(**{key: value})
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
+    def set_variables(self, **vars):
+        """Change configuration variables (invalidates caches where necessary)
 
-        with tqdm(
-            total=1, desc="build report structure", disable=disable_progress_bar
-        ) as pbar:
-            self.report = get_report_structure(
-                self.date_start,
-                self.date_end,
-                self.date_end - self.date_start,
-                self.duplicates,
-                self.sample,
-                description_set,
-            )
-            pbar.update()
+        Args:
+            **vars: configuration parameters to change
 
-    def get_duplicates(
-        self, df: pd.DataFrame, supported_columns: list
-    ) -> Optional[pd.DataFrame]:
+        Examples:
+            >>> ProfileReport(df).set_variables(title="NewTitle", html={"minify_html": False})
+        """
+        changed = set(vars.keys())
+        if {"progress_bar", "pool_size"} >= changed:
+            # Cache can persist
+            pass
+        elif {"notebook"} >= changed:
+            self._widgets = None
+        elif {"html", "title"} >= changed:
+            self._html = None
+        else:
+            # In all other cases, empty cache
+            self._description_set = None
+            self._title = None
+            self._report = None
+            self._html = None
+            self._widgets = None
+            self._json = None
+
+        config.set_kwargs(vars)
+
+    @property
+    def description_set(self):
+        if self._description_set is None:
+            _ = self.df_hash
+            self._description_set = describe_df(self.title, self.df)
+        return self._description_set
+
+    @property
+    def title(self):
+        if self._title is None:
+            self._title = config["title"].get(str)
+
+        return self._title
+
+    @property
+    def df_hash(self):
+        if self._df_hash == -1 and self.df is not None:
+            self._df_hash = hash_dataframe(self.df)
+        return self._df_hash
+
+    @property
+    def report(self):
+        if self._report is None:
+            self._report = get_report_structure(self.description_set)
+        return self._report
+
+    @property
+    def html(self):
+        if self._html is None:
+            self._html = self._render_html()
+        return self._html
+
+    @property
+    def json(self):
+        if self._json is None:
+            self._json = self._render_json()
+        return self._json
+
+    @property
+    def widgets(self):
+        if self._widgets is None:
+            self._widgets = self._render_widgets()
+        return self._widgets
+
+    def get_duplicates(self, df=None) -> Optional[pd.DataFrame]:
         """Get duplicate rows and counts based on the configuration
 
         Args:
-            df: the DataFrame to sample from.
-            supported_columns: the subset of columns to consider for duplication
+            df: Deprecated, for compatibility
 
         Returns:
             A DataFrame with the duplicate rows and their counts.
         """
-        n_head = config["duplicates"]["head"].get(int)
-        if n_head > 0 and supported_columns:
-            return (
-                df[df.duplicated(subset=supported_columns, keep=False)]
-                .groupby(supported_columns)
-                .size()
-                .reset_index(name="count")
-                .nlargest(n_head, "count")
-            )
-        return None
+        return self.description_set["duplicates"]
 
-    def get_sample(self, df: pd.DataFrame) -> dict:
+    def get_sample(self, df=None) -> dict:
         """Get head/tail samples based on the configuration
 
         Args:
-            df: the DataFrame to sample from.
+            df: Deprecated, for compatibility
 
         Returns:
             A dict with the head and tail samples.
         """
-        sample = {}
-        n_head = config["samples"]["head"].get(int)
-        if n_head > 0:
-            sample["head"] = df.head(n=n_head)
-
-        n_tail = config["samples"]["tail"].get(int)
-        if n_tail > 0:
-            sample["tail"] = df.tail(n=n_tail)
-
-        return sample
+        return self.description_set["sample"]
 
     def get_description(self) -> dict:
         """Return the description (a raw statistical summary) of the dataset.
@@ -157,81 +206,87 @@ class ProfileReport(object):
             if message.message_type == MessageType.REJECTED
         }
 
-    def to_file(self, output_file: Path, silent: bool = True) -> None:
+    def to_file(self, output_file: Union[str, Path], silent: bool = True) -> None:
         """Write the report to a file.
 
         By default a name is generated.
 
         Args:
             output_file: The name or the path of the file to generate including the extension (.html, .json).
-            silent: if False, opens the file in the default browser
+            silent: if False, opens the file in the default browser or download it in a Google Colab environment
         """
         if not isinstance(output_file, Path):
             output_file = Path(str(output_file))
 
-        if output_file.suffix == ".html":
-            data = self.to_html()
-        elif output_file.suffix == ".json":
+        if output_file.suffix == ".json":
             data = self.to_json()
         else:
-            suffix = output_file.suffix
-            output_file = output_file.with_suffix(".html")
             data = self.to_html()
-            warnings.warn(
-                f"Extension {suffix} not supported. For now we assume .html was intended. "
-                f"To remove this warning, please use .html or .json."
-            )
+            if output_file.suffix != ".html":
+                suffix = output_file.suffix
+                output_file = output_file.with_suffix(".html")
+                warnings.warn(
+                    f"Extension {suffix} not supported. For now we assume .html was intended. "
+                    f"To remove this warning, please use .html or .json."
+                )
 
-        with output_file.open("w", encoding="utf8") as f:
-            f.write(data)
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(
+            total=1, desc="Export report to file", disable=disable_progress_bar
+        ) as pbar:
+            output_file.write_text(data, encoding="utf-8")
+            pbar.update()
 
         if not silent:
-            import webbrowser
+            try:
+                from google.colab import files
 
-            webbrowser.open_new_tab(output_file.absolute().as_uri())
+                files.download(output_file.absolute().as_uri())
+            except ModuleNotFoundError:
+                import webbrowser
 
-    def to_html(self) -> str:
-        """Generate and return complete template as lengthy string
-            for using with frameworks.
+                webbrowser.open_new_tab(output_file.absolute().as_uri())
 
-        Returns:
-            Profiling report html including wrapper.
-
-        """
+    def _render_html(self):
         from pandas_profiling.report.presentation.flavours import HTMLReport
-        from pandas_profiling.report.presentation.flavours.html import templates
 
-        use_local_assets = config["html"]["use_local_assets"].get(bool)
+        report = self.report
 
-        html = HTMLReport(self.report).render()
-
-        nav_items = [
-            (section.name, section.anchor_id)
-            for section in self.report.content["items"]
-        ]
-        # TODO: move to structure
-        wrapped_html = templates.template("wrapper/wrapper.html").render(
-            content=html,
-            title=self.title,
-            nav=config["html"]["navbar_show"].get(bool),
-            nav_items=nav_items,
-            version=__version__,
-            offline=use_local_assets,
-            primary_color=config["html"]["style"]["primary_color"].get(str),
-            logo=config["html"]["style"]["logo"].get(str),
-            theme=config["html"]["style"]["theme"].get(str),
-        )
-
-        minify_html = config["html"]["minify_html"].get(bool)
-        if minify_html:
-            from htmlmin.main import minify
-
-            wrapped_html = minify(
-                wrapped_html, remove_all_empty_space=True, remove_comments=True
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(total=1, desc="Render HTML", disable=disable_progress_bar) as pbar:
+            html = HTMLReport(report).render(
+                nav=config["html"]["navbar_show"].get(bool),
+                offline=config["html"]["use_local_assets"].get(bool),
+                primary_color=config["html"]["style"]["primary_color"].get(str),
+                logo=config["html"]["style"]["logo"].get(str),
+                theme=config["html"]["style"]["theme"].get(str),
+                title=self.description_set["analysis"]["title"],
+                date=self.description_set["analysis"]["date_start"],
+                version=self.description_set["package"]["pandas_profiling_version"],
             )
-        return wrapped_html
 
-    def to_json(self) -> str:
+            minify_html = config["html"]["minify_html"].get(bool)
+            if minify_html:
+                from htmlmin.main import minify
+
+                html = minify(html, remove_all_empty_space=True, remove_comments=True)
+            pbar.update()
+        return html
+
+    def _render_widgets(self):
+        from pandas_profiling.report.presentation.flavours import WidgetReport
+
+        report = self.report
+
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(
+            total=1, desc="Render JSON", disable=disable_progress_bar, leave=False
+        ) as pbar:
+            widgets = WidgetReport(report).render()
+            pbar.update()
+        return widgets
+
+    def _render_json(self):
         class CustomEncoder(json.JSONEncoder):
             def key_to_json(self, data):
                 if data is None or isinstance(data, (bool, int, str)):
@@ -239,7 +294,7 @@ class ProfileReport(object):
                 return str(data)
 
             def default(self, o):
-                if isinstance(o, pd.core.series.Series):
+                if isinstance(o, pd.Series):
                     return self.default(o.to_dict())
 
                 if isinstance(o, np.integer):
@@ -250,7 +305,32 @@ class ProfileReport(object):
 
                 return str(o)
 
-        return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
+        description = self.description_set
+
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
+            data = json.dumps(description, indent=4, cls=CustomEncoder)
+            pbar.update()
+        return data
+
+    def to_html(self) -> str:
+        """Generate and return complete template as lengthy string
+            for using with frameworks.
+
+        Returns:
+            Profiling report html including wrapper.
+
+        """
+        return self.html
+
+    def to_json(self) -> str:
+        """Represent the ProfileReport as a JSON string
+
+        Returns:
+            JSON string
+        """
+
+        return self.json
 
     def to_notebook_iframe(self):
         """Used to output the HTML representation to a Jupyter notebook.
@@ -271,23 +351,9 @@ class ProfileReport(object):
 
     def to_widgets(self):
         """The ipython notebook widgets user interface."""
-        from pandas_profiling.report.presentation.flavours import WidgetReport
-        from IPython.core.display import display, HTML
-        from ipywidgets import VBox
+        from IPython.core.display import display
 
-        report = WidgetReport(self.report).render()
-
-        # TODO: move to report structure
-        display(
-            VBox(
-                [
-                    report,
-                    HTML(
-                        'Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
-                    ),
-                ]
-            )
-        )
+        display(self.widgets)
 
     def _repr_html_(self):
         """The ipython notebook widgets user interface gets called by the jupyter notebook."""
@@ -302,6 +368,8 @@ class ProfileReport(object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         """
+        # TODO: _render_app
+        # TODO: make functional
         from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
 
@@ -313,5 +381,27 @@ class ProfileReport(object):
             app = QApplication([])
 
         app_widgets = QtReport(self.report).render()
-
         app = get_app(app, self.title, app_widgets)
+
+    @staticmethod
+    def preprocess(df):
+        # Treat index as any other column
+        if (
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
+        ):
+            df = df.reset_index()
+
+        # Rename reserved column names
+        df = rename_index(df)
+
+        # Ensure that columns are strings
+        df.columns = df.columns.astype("str")
+        return df
+
+    @staticmethod
+    def clear_config():
+        """
+        Restore the configuration to default
+        """
+        config.clear()

@@ -26,6 +26,7 @@ vars:
         n_obs: 5
 # Set to zero to disable
         chi_squared_threshold: 0.0
+        coerce_str_to_date: False
     bool:
         n_obs: 3
 

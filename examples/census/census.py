@@ -39,4 +39,4 @@ if __name__ == "__main__":
     df = df.replace("\\?", np.nan, regex=True)
 
     profile = ProfileReport(df, title="Census Dataset")
-    profile.to_file(output_file=Path("./census_report.html"))
+    profile.to_file(Path("./census_report.html"))

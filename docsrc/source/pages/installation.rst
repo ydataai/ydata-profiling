@@ -24,6 +24,13 @@ You can install using the pip package manager by running
     pip install -U pandas-profiling[notebook]
     jupyter nbextension enable --py widgetsnbextension
 
+If you are in a notebook (locally, at LambdaLabs, on Google Colab or Kaggle), you can run:
+
+.. code-block::
+
+    import sys
+    !{sys.executable} -m pip install -U pandas-profiling[notebook]
+    !jupyter nbextension enable --py widgetsnbextension
 
 Using conda
 -----------

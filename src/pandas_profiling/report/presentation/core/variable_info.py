@@ -10,6 +10,7 @@ class VariableInfo(ItemRenderer):
             {
                 "anchor_id": anchor_id,
                 "var_name": var_name,
+                "description": "",
                 "var_type": var_type,
                 "warnings": warnings,
             },

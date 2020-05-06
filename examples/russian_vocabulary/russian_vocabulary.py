@@ -12,4 +12,4 @@ if __name__ == "__main__":
     profile = ProfileReport(
         df, title="Russian 1000 most occurring words | Profile Report"
     )
-    profile.to_file(output_file=Path("./russian_vocabulary.html"))
+    profile.to_file(Path("./russian_vocabulary.html"))

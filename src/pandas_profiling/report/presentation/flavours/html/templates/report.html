@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Profile report generated with the `pandas-profiling` Python package">
+    <meta name="author" content="Simon Brugman and the open source community.">
+    <meta name="generator" content="Pandas Profiling v{{ version }}" />
+    <meta name="url" content="https://github.com/pandas-profiling/pandas-profiling">
+    <meta name="date" content="{{ date }}">
+
+    <title>{{ title }}</title>
+
+    {% include 'wrapper/style.html' %}
+</head>
+
+<body>
+    {% if nav == True %}
+        {% include 'wrapper/navigation.html' %}
+    {% endif %}
+    <div class="content">
+    {{ body.render() }}
+    </div>
+    {% include 'wrapper/footer.html' %}
+    {% include 'wrapper/javascript.html' %}
+</body>
+</html>

@@ -1,8 +1,8 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
     HTML,
+    Container,
     Image,
-    Sequence,
     Table,
     VariableInfo,
 )
@@ -52,7 +52,7 @@ def render_complex(summary):
 
     placeholder = HTML("")
 
-    template_variables["top"] = Sequence(
+    template_variables["top"] = Container(
         [info, table1, table2, placeholder], sequence_type="grid"
     )
 
@@ -68,7 +68,7 @@ def render_complex(summary):
         )
     ]
 
-    bottom = Sequence(items, sequence_type="tabs", anchor_id=summary["varid"])
+    bottom = Container(items, sequence_type="tabs", anchor_id=summary["varid"])
 
     template_variables["bottom"] = bottom
 

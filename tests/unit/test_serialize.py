@@ -1,0 +1,100 @@
+import numpy as np
+import pandas as pd
+import pytest
+
+from pandas_profiling import ProfileReport
+
+
+def test_load(get_data_file, test_output_dir):
+    file_name = get_data_file(
+        "meteorites.csv",
+        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+    )
+
+    # For reproducibility
+    np.random.seed(7331)
+
+    df = pd.read_csv(file_name)
+
+    # Note: Pandas does not support dates before 1880, so we ignore these for this analysis
+    df["year"] = pd.to_datetime(df["year"], errors="coerce")
+
+    # Example: Constant variable
+    df["source"] = "NASA"
+
+    # Example: Boolean variable
+    df["boolean"] = np.random.choice([True, False], df.shape[0])
+
+    # Example: Mixed with base types
+    df["mixed"] = np.random.choice([1, "A"], df.shape[0])
+
+    # Example: Highly correlated variables
+    df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
+
+    # Example: Duplicate observations
+    duplicates_to_add = pd.DataFrame(df.iloc[0:10])
+    duplicates_to_add["name"] += " copy"
+
+    df = df.append(duplicates_to_add, ignore_index=True)
+
+    profile1 = ProfileReport(
+        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, minimal=True
+    )
+
+    test_output_path = test_output_dir / "NASA-Meteorites.pp"
+    json1 = profile1.to_json()
+    profile1.dump(test_output_path)
+    _ = profile1.to_html()
+
+    assert test_output_path.exists(), "Output file does not exist"
+
+    profile2 = ProfileReport(df).load(test_output_path)
+    # json1 are compute before dumps, so _description_set should be the same
+    assert isinstance(profile2._description_set, dict)
+
+    # profile1 is lazy, html1 are compute after dumps, so report should be None
+    assert profile2._report is None
+
+    json2 = profile2.to_json()
+
+    # both profile should generate same output
+    assert json1 == json2
+
+
+def test_load_error():
+    import warnings
+
+    warnings.filterwarnings("error")
+
+    df = pd.DataFrame(
+        {"a": [1, 2, 3, 1, 1, 1], "b": [1, 2, 3, 4, 5, 6], "c": [1, 2, 3, 4, 5, 6]}
+    )
+    profile1 = ProfileReport(df, minimal=True)
+
+    data = profile1.dumps()
+
+    # config not match but ignore_config
+    ProfileReport.clear_config()
+    ProfileReport(df, minimal=False).loads(data, ignore_config=True)
+
+    # config not match
+    with pytest.raises(ValueError) as e:
+        ProfileReport.clear_config()
+        ProfileReport(df, minimal=False).loads(data)
+
+    assert (
+        str(e.value)
+        == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
+    )
+
+    # df not match
+    with pytest.raises(ValueError) as e:
+        ProfileReport.clear_config()
+        ProfileReport(df=df[["a", "b"]][:], minimal=True).loads(
+            data, ignore_config=True
+        )
+
+    assert (
+        str(e.value)
+        == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
+    )

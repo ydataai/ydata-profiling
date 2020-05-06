@@ -16,13 +16,16 @@ def test_json(data):
     report_json = report.to_json()
     data = json.loads(report_json)
     assert set(data.keys()) == {
+        "analysis",
+        "correlations",
+        "duplicates",
+        "messages",
+        "missing",
+        "package",
+        "sample",
+        "scatter",
         "table",
         "variables",
-        "correlations",
-        "missing",
-        "messages",
-        "scatter",
-        "package",
     }
 
 

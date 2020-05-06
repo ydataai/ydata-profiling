@@ -1,13 +1,9 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
-import re
-import warnings
-from contextlib import suppress
 from enum import Enum, unique
 from typing import List, Union
 
 import numpy as np
-from dateutil.parser import parse
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
@@ -194,7 +190,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
 
     # Categorical
     if description["type"] == Variable.TYPE_CAT:
-        if description["date_warning"]:
+        if "date_warning" in description and description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
@@ -312,19 +308,11 @@ def warning_skewness(v: float) -> bool:
     )
 
 
-def _date_parser(date_string):
-    pattern = re.compile(r"[.\-:]")
-    pieces = re.split(pattern, date_string)
-
-    if len(pieces) < 3:
-        raise ValueError("Must have at least year, month and date passed")
-
-    return parse(date_string)
-
-
 def warning_type_date(series):
-    with suppress(ValueError, TypeError):
-        series.apply(_date_parser)
-        return True
+    from dateutil.parser import parse, ParserError
 
-    return False
+    try:
+        series.apply(parse)
+        return True
+    except ParserError:
+        return False

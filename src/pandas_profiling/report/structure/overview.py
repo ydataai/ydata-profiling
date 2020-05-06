@@ -1,6 +1,7 @@
 from urllib.parse import quote
 
-from pandas_profiling.report.presentation.core import HTML, Sequence, Table, Warnings
+from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.presentation.core import Container, Table, Warnings
 
 
 def get_dataset_overview(summary):
@@ -58,7 +59,7 @@ def get_dataset_overview(summary):
         name="Variable types",
     )
 
-    return Sequence(
+    return Container(
         [dataset_info, dataset_types],
         anchor_id="dataset_overview",
         name="Overview",
@@ -66,9 +67,12 @@ def get_dataset_overview(summary):
     )
 
 
-def get_dataset_reproduction(summary, date_start, date_end, duration):
+def get_dataset_reproduction(summary):
     version = summary["package"]["pandas_profiling_version"]
     config = quote(summary["package"]["pandas_profiling_config"])
+    date_start = summary["analysis"]["date_start"]
+    date_end = summary["analysis"]["date_end"]
+    duration = summary["analysis"]["duration"]
     return Table(
         [
             {"name": "Analysis started", "value": date_start, "fmt": "fmt"},
@@ -95,5 +99,12 @@ def get_dataset_reproduction(summary, date_start, date_end, duration):
     )
 
 
-def get_dataset_warnings(warnings, count):
+def get_dataset_warnings(warnings: list) -> Warnings:
+    count = len(
+        [
+            warning
+            for warning in warnings
+            if warning.message_type != MessageType.REJECTED
+        ]
+    )
     return Warnings(warnings=warnings, name=f"Warnings ({count})", anchor_id="warnings")

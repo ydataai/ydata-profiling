@@ -1,7 +1,7 @@
-from typing import Dict, List
+from typing import Dict, Sequence
 
 
-def freq_table(freqtable, n: int, max_number_to_print: int) -> List[Dict]:
+def freq_table(freqtable, n: int, max_number_to_print: int) -> Sequence[Dict]:
     """Render the rows for a frequency table (value, count).
 
     Args:

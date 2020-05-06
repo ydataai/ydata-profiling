@@ -45,4 +45,4 @@ if __name__ == "__main__":
         html={"style": {"logo": logo_string}},
         correlations={"cramers": {"calculate": False}},
     )
-    profile.to_file(output_file=Path("./meteorites_report.html"))
+    profile.to_file(Path("./meteorites_report.html"))

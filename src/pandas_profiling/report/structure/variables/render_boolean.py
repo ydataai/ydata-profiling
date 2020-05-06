@@ -1,8 +1,8 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
+    Container,
     FrequencyTable,
     FrequencyTableSmall,
-    Sequence,
     Table,
     VariableInfo,
 )
@@ -67,7 +67,7 @@ def render_boolean(summary):
 
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
-    template_variables["top"] = Sequence([info, table, fqm], sequence_type="grid")
+    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
 
     freqtable = FrequencyTable(
         template_variables["freq_table_rows"],
@@ -75,7 +75,7 @@ def render_boolean(summary):
         anchor_id=f"{varid}frequency_table",
     )
 
-    template_variables["bottom"] = Sequence(
+    template_variables["bottom"] = Container(
         [freqtable], sequence_type="tabs", anchor_id=f"{varid}bottom"
     )
 

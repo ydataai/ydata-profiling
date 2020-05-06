@@ -2,10 +2,10 @@ import pandas as pd
 
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
+    Container,
     FrequencyTable,
     FrequencyTableSmall,
     Image,
-    Sequence,
     Table,
     VariableInfo,
 )
@@ -72,7 +72,7 @@ def render_categorical(summary):
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
     # TODO: settings 3,3,6
-    template_variables["top"] = Sequence([info, table, fqm], sequence_type="grid")
+    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
 
     # Bottom
     items = []
@@ -121,7 +121,7 @@ def render_categorical(summary):
             anchor_id=f"{varid}length",
         )
 
-        tbl = Sequence(
+        tbl = Container(
             [length, length_table],
             anchor_id=f"{varid}tbl",
             name="Length",
@@ -166,7 +166,7 @@ def render_categorical(summary):
             )
         )
 
-        characters = Sequence(
+        characters = Container(
             citems,
             name="Characters",
             sequence_type="tabs",
@@ -175,7 +175,7 @@ def render_categorical(summary):
 
         items.append(characters)
 
-    template_variables["bottom"] = Sequence(
+    template_variables["bottom"] = Container(
         items, sequence_type="tabs", anchor_id=f"{varid}bottom"
     )
 
