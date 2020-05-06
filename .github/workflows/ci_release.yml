@@ -109,11 +109,11 @@ jobs:
           mv docs/ ${GITHUB_REF##*/}/
           mkdir docs/
           mv ${GITHUB_REF##*/}/ docs/${GITHUB_REF##*/}/
-          git add docs/
+          git add docs/${GITHUB_REF##*/}/
           git stash
           git checkout gh-pages
           rm -rf docs/${GITHUB_REF##*/}/
-          git add docs/${GITHUB_REF##*/}/
+          git add docs/
           git stash apply
           git commit -m "[skip ci] Updating documentation" -a || true
 
