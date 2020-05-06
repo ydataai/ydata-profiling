@@ -1,0 +1,52 @@
+name: Deploy to PyPi
+
+# Automatically lint code on release branches
+on:
+  push:
+    branches:
+      - never
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout repo
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+
+    - uses: actions/cache@v1
+      name: Cache pip dependencies
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install pip dependencies
+      run: |
+         pip install --upgrade pip
+         pip install -r requirements.txt
+         pip install -r requirements-dev.txt
+         pip install -r requirements-test.txt
+
+    - name: Install
+      run: make install
+
+    - name: Make distribution
+      run: |
+        check-manifest
+        python setup.py sdist bdist_wheel
+        twine check dist/*
+
+    # https://github.com/pypa/gh-action-pypi-publish
+    - name: Publish a Python distribution to PyPI
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_password }}

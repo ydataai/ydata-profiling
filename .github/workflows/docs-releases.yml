@@ -52,9 +52,9 @@ jobs:
 
     - name: Move the changes to the gh-pages branch
       run: |
-        echo ${GITHUB_REF#refs/heads/}
-        echo ${GITHUB_REF##*/}
-        echo ${GITHUB_HEAD_REF##*/}
+#        echo ${GITHUB_REF#refs/heads/}
+#        echo ${GITHUB_REF##*/}
+#        echo ${GITHUB_HEAD_REF##*/}
         mv docs/ ${GITHUB_HEAD_REF##*/}/
         mkdir docs/
         mv ${GITHUB_HEAD_REF##*/}/ docs/${GITHUB_HEAD_REF##*/}/

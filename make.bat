@@ -38,7 +38,7 @@ IF "%1" == "examples" (
 )
 
 IF "%1" == "pypi_package" (
-	make install
+    make install
     check-manifest
     python setup.py sdist bdist_wheel
     twine check dist/*
