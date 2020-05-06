@@ -243,7 +243,7 @@ def get_report_structure(summary: dict) -> Renderable:
     """
     disable_progress_bar = not config["progress_bar"].get(bool)
     with tqdm(
-        total=1, desc="Generate Root Structure", disable=disable_progress_bar
+        total=1, desc="Generate report structure", disable=disable_progress_bar
     ) as pbar:
         warnings = summary["messages"]
 
@@ -307,7 +307,7 @@ def get_report_structure(summary: dict) -> Renderable:
         pbar.update()
 
     footer = HTML(
-        content='Root generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
+        content='Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
     )
 
     return Root("Root", sections, footer)

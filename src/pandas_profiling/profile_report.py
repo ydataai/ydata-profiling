@@ -22,9 +22,6 @@ class ProfileReport(Serialize, object):
     Used has is it will output its content as an HTML report in a Jupyter notebook.
     """
 
-    html = ""
-    """the HTML representation of the report, without the wrapper (containing `<head>` etc.)"""
-
     def __init__(
         self,
         df=None,
@@ -69,6 +66,9 @@ class ProfileReport(Serialize, object):
         self._description_set = None
         self._title = None
         self._report = None
+        self._html = None
+        self._widgets = None
+        self._json = None
 
         if df is not None:
             # preprocess df
@@ -78,7 +78,46 @@ class ProfileReport(Serialize, object):
             # Trigger building the report structure
             _ = self.report
 
+    def set_variable(self, key, value):
+        """Change a single configuration variable
+
+        Args:
+            key: configuration parameter name
+            value: the new value
+
+        Examples:
+            >>> ProfileReport(df).set_variables("title", "NewTitle")
+            >>> ProfileReport(df).set_variables("html", {"minify_html": False})
+
+        """
+        self.set_variables(**{key: value})
+
     def set_variables(self, **vars):
+        """Change configuration variables (invalidates caches where necessary)
+
+        Args:
+            **vars: configuration parameters to change
+
+        Examples:
+            >>> ProfileReport(df).set_variables(title="NewTitle", html={"minify_html": False})
+        """
+        changed = set(vars.keys())
+        if {"progress_bar", "pool_size"} >= changed:
+            # Cache can persist
+            pass
+        elif {"notebook"} >= changed:
+            self._widgets = None
+        elif {"html", "title"} >= changed:
+            self._html = None
+        else:
+            # In all other cases, empty cache
+            self._description_set = None
+            self._title = None
+            self._report = None
+            self._html = None
+            self._widgets = None
+            self._json = None
+
         config.set_kwargs(vars)
 
     @property
@@ -106,6 +145,24 @@ class ProfileReport(Serialize, object):
         if self._report is None:
             self._report = get_report_structure(self.description_set)
         return self._report
+
+    @property
+    def html(self):
+        if self._html is None:
+            self._html = self._render_html()
+        return self._html
+
+    @property
+    def json(self):
+        if self._json is None:
+            self._json = self._render_json()
+        return self._json
+
+    @property
+    def widgets(self):
+        if self._widgets is None:
+            self._widgets = self._render_widgets()
+        return self._widgets
 
     def get_duplicates(self, df=None) -> Optional[pd.DataFrame]:
         """Get duplicate rows and counts based on the configuration
@@ -161,23 +218,23 @@ class ProfileReport(Serialize, object):
         if not isinstance(output_file, Path):
             output_file = Path(str(output_file))
 
+        if output_file.suffix == ".json":
+            data = self.to_json()
+        else:
+            data = self.to_html()
+            if output_file.suffix != ".html":
+                suffix = output_file.suffix
+                output_file = output_file.with_suffix(".html")
+                warnings.warn(
+                    f"Extension {suffix} not supported. For now we assume .html was intended. "
+                    f"To remove this warning, please use .html or .json."
+                )
+
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
-            total=1, desc="Export Root to File", disable=disable_progress_bar
+            total=1, desc="Export report to file", disable=disable_progress_bar
         ) as pbar:
-            if output_file.suffix == ".json":
-                output_file.write_text(self.to_json(), encoding="utf-8")
-            elif output_file.suffix == ".pp":
-                output_file.write_bytes(self.dumps())
-            else:
-                if output_file.suffix != ".html":
-                    suffix = output_file.suffix
-                    output_file = output_file.with_suffix(".html")
-                    warnings.warn(
-                        f"Extension {suffix} not supported. For now we assume .html was intended. "
-                        f"To remove this warning, please use .html or .json."
-                    )
-                output_file.write_text(self.to_html(), encoding="utf-8")
+            output_file.write_text(data, encoding="utf-8")
             pbar.update()
 
         if not silent:
@@ -190,41 +247,46 @@ class ProfileReport(Serialize, object):
 
                 webbrowser.open_new_tab(output_file.absolute().as_uri())
 
-    def to_html(self) -> str:
-        """Generate and return complete template as lengthy string
-            for using with frameworks.
-
-        Returns:
-            Profiling report html including wrapper.
-
-        """
+    def _render_html(self):
         from pandas_profiling.report.presentation.flavours import HTMLReport
 
-        html = HTMLReport(self.report).render(
-            nav=config["html"]["navbar_show"].get(bool),
-            offline=config["html"]["use_local_assets"].get(bool),
-            primary_color=config["html"]["style"]["primary_color"].get(str),
-            logo=config["html"]["style"]["logo"].get(str),
-            theme=config["html"]["style"]["theme"].get(str),
-            title=self.description_set["analysis"]["title"],
-            date=self.description_set["analysis"]["date_start"],
-            version=self.description_set["package"]["pandas_profiling_version"],
-        )
+        report = self.report
 
-        minify_html = config["html"]["minify_html"].get(bool)
-        if minify_html:
-            from htmlmin.main import minify
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(total=1, desc="Render HTML", disable=disable_progress_bar) as pbar:
+            html = HTMLReport(report).render(
+                nav=config["html"]["navbar_show"].get(bool),
+                offline=config["html"]["use_local_assets"].get(bool),
+                primary_color=config["html"]["style"]["primary_color"].get(str),
+                logo=config["html"]["style"]["logo"].get(str),
+                theme=config["html"]["style"]["theme"].get(str),
+                title=self.description_set["analysis"]["title"],
+                date=self.description_set["analysis"]["date_start"],
+                version=self.description_set["package"]["pandas_profiling_version"],
+            )
 
-            html = minify(html, remove_all_empty_space=True, remove_comments=True)
+            minify_html = config["html"]["minify_html"].get(bool)
+            if minify_html:
+                from htmlmin.main import minify
+
+                html = minify(html, remove_all_empty_space=True, remove_comments=True)
+            pbar.update()
         return html
 
-    def to_json(self) -> str:
-        """Represent the ProfileReport as a JSON string
+    def _render_widgets(self):
+        from pandas_profiling.report.presentation.flavours import WidgetReport
 
-        Returns:
-            JSON string
-        """
+        report = self.report
 
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(
+            total=1, desc="Render JSON", disable=disable_progress_bar, leave=False
+        ) as pbar:
+            widgets = WidgetReport(report).render()
+            pbar.update()
+        return widgets
+
+    def _render_json(self):
         class CustomEncoder(json.JSONEncoder):
             def key_to_json(self, data):
                 if data is None or isinstance(data, (bool, int, str)):
@@ -243,7 +305,32 @@ class ProfileReport(Serialize, object):
 
                 return str(o)
 
-        return json.dumps(self.description_set, indent=4, cls=CustomEncoder)
+        description = self.description_set
+
+        disable_progress_bar = not config["progress_bar"].get(bool)
+        with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
+            data = json.dumps(description, indent=4, cls=CustomEncoder)
+            pbar.update()
+        return data
+
+    def to_html(self) -> str:
+        """Generate and return complete template as lengthy string
+            for using with frameworks.
+
+        Returns:
+            Profiling report html including wrapper.
+
+        """
+        return self.html
+
+    def to_json(self) -> str:
+        """Represent the ProfileReport as a JSON string
+
+        Returns:
+            JSON string
+        """
+
+        return self.json
 
     def to_notebook_iframe(self):
         """Used to output the HTML representation to a Jupyter notebook.
@@ -264,11 +351,9 @@ class ProfileReport(Serialize, object):
 
     def to_widgets(self):
         """The ipython notebook widgets user interface."""
-        from pandas_profiling.report.presentation.flavours import WidgetReport
         from IPython.core.display import display
 
-        report = WidgetReport(self.report).render()
-        display(report)
+        display(self.widgets)
 
     def _repr_html_(self):
         """The ipython notebook widgets user interface gets called by the jupyter notebook."""
@@ -283,6 +368,8 @@ class ProfileReport(Serialize, object):
         (Experimental) PyQt5 user interface, not ready to be used.
         You are welcome to contribute a pull request if you like this feature.
         """
+        # TODO: _render_app
+        # TODO: make functional
         from pandas_profiling.report.presentation.flavours.qt.app import get_app
         from pandas_profiling.report.presentation.flavours import QtReport
 
