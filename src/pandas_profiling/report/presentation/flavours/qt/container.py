@@ -1,7 +1,6 @@
-from PyQt5.QtWidgets import QPushButton, QTabWidget, QVBoxLayout, QWidget
-
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import Container
+from PyQt5.QtWidgets import QPushButton, QTabWidget, QVBoxLayout, QWidget
 
 
 def get_name(item: Renderable):

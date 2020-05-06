@@ -161,9 +161,7 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     if duplicates is not None and len(duplicates) > 0:
         items.append(
             Duplicate(
-                duplicate=duplicates,
-                name="Most frequent",
-                anchor_id="duplicates",
+                duplicate=duplicates, name="Most frequent", anchor_id="duplicates",
             )
         )
     return items
@@ -181,13 +179,7 @@ def get_sample_items(sample: dict):
     items = []
     names = {"head": "First rows", "tail": "Last rows"}
     for key, value in sample.items():
-        items.append(
-            Sample(
-                sample=value,
-                name=names[key],
-                anchor_id=key,
-            )
-        )
+        items.append(Sample(sample=value, name=names[key], anchor_id=key,))
     return items
 
 
