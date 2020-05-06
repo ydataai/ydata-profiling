@@ -12,6 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      name: Checkout repo
 
     - name: Configurating Git
       run: |
@@ -49,12 +50,13 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        branch: ${{ github.ref }}
+        branch: ${{ github.head_ref }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Repository Dispatch
+    - name: Trigger build of documentation and examples
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         event-type: trigger-action
+        repository: pandas-profiling/pandas-profiling
         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
