@@ -54,7 +54,7 @@ def describe(title, df: pd.DataFrame) -> dict:
     number_of_task = 7 + len(df.columns) + len(correlation_names)
 
     with tqdm(
-        total=number_of_task, desc="Summarize Dataset", disable=disable_progress_bar
+        total=number_of_task, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, pbar)
 

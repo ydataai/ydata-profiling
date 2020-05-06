@@ -280,7 +280,7 @@ class ProfileReport(Serialize, object):
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
-            total=1, desc="Render JSON", disable=disable_progress_bar, leave=False
+            total=1, desc="Render widgets", disable=disable_progress_bar, leave=False
         ) as pbar:
             widgets = WidgetReport(report).render()
             pbar.update()
@@ -347,10 +347,23 @@ class ProfileReport(Serialize, object):
         )
         from IPython.core.display import display
 
-        display(get_notebook_iframe(self))
+        # Ignore warning: https://github.com/ipython/ipython/pull/11350/files
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            display(get_notebook_iframe(self))
 
     def to_widgets(self):
         """The ipython notebook widgets user interface."""
+        try:
+            from google.colab import files
+
+            warnings.warn(
+                "Ipywidgets is not yet fully supported on Google Colab (https://github.com/googlecolab/colabtools/issues/60)."
+                "As an alternative, you can use the HTML report. See the documentation for more information."
+            )
+        except ModuleNotFoundError:
+            pass
+
         from IPython.core.display import display
 
         display(self.widgets)

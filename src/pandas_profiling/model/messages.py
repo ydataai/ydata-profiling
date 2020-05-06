@@ -1,6 +1,6 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
-from enum import Enum, unique
+from enum import Enum, auto, unique
 from typing import List, Union
 
 import numpy as np
@@ -14,46 +14,46 @@ from pandas_profiling.model.correlations import perform_check_correlation
 class MessageType(Enum):
     """Message Types"""
 
-    CONSTANT = 1
+    CONSTANT = auto()
     """This variable has a constant value."""
 
-    ZEROS = 2
+    ZEROS = auto()
     """This variable contains zeros."""
 
-    HIGH_CORRELATION = 3
+    HIGH_CORRELATION = auto()
     """This variable is highly correlated."""
 
-    HIGH_CARDINALITY = 5
+    HIGH_CARDINALITY = auto()
     """This variable has a high cardinality."""
 
-    UNSUPPORTED = 6
+    UNSUPPORTED = auto()
     """This variable is unsupported."""
 
-    DUPLICATES = 7
+    DUPLICATES = auto()
     """This variable contains duplicates."""
 
-    SKEWED = 8
+    SKEWED = auto()
     """This variable is highly skewed."""
 
-    MISSING = 9
+    MISSING = auto()
     """This variable contains missing values."""
 
-    INFINITE = 10
+    INFINITE = auto()
     """This variable contains infinite values."""
 
-    TYPE_DATE = 11
+    TYPE_DATE = auto()
     """This variable is likely a datetime, but treated as categorical."""
 
-    UNIQUE = 12
+    UNIQUE = auto()
     """This variable has unique values."""
 
-    CONSTANT_LENGTH = 13
+    CONSTANT_LENGTH = auto()
     """This variable has a constant length"""
 
-    REJECTED = 15
+    REJECTED = auto()
     """Variables are rejected if we do not want to consider them for further analysis."""
 
-    UNIFORM = 14
+    UNIFORM = auto()
     """The variable is uniformly distributed"""
 
 
@@ -182,8 +182,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
             float
         )
-        # chi_squared_threshold = 0.5
-        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
+        if "chi_squared" in description and description["chi_squared"][1] > chi_squared_threshold:
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
@@ -199,7 +198,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
             float
         )
-        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
+        if "chi_squared" in description and description["chi_squared"][1] > chi_squared_threshold:
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )

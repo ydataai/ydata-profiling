@@ -1,8 +1,13 @@
-from ipywidgets import widgets
+from IPython.core.display import display
+from ipywidgets import widgets, Output
 
 from pandas_profiling.report.presentation.core.duplicate import Duplicate
 
 
 class WidgetDuplicate(Duplicate):
     def render(self):
-        return widgets.VBox([widgets.HTML(self.content["duplicate"])])
+        out = Output()
+        with out:
+            display(self.content["duplicate"])
+
+        return widgets.VBox([out])

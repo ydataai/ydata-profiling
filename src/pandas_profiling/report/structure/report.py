@@ -161,7 +161,7 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     if duplicates is not None and len(duplicates) > 0:
         items.append(
             Duplicate(
-                duplicate=duplicates.to_html(classes="duplicate table table-striped"),
+                duplicate=duplicates,
                 name="Most frequent",
                 anchor_id="duplicates",
             )
@@ -183,7 +183,7 @@ def get_sample_items(sample: dict):
     for key, value in sample.items():
         items.append(
             Sample(
-                sample=value.to_html(classes="sample table table-striped"),
+                sample=value,
                 name=names[key],
                 anchor_id=key,
             )
