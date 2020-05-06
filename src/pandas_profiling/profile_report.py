@@ -96,7 +96,7 @@ class ProfileReport(Serialize, object):
 
     @property
     def df_hash(self):
-        if self._df_hash == -1:
+        if self._df_hash == -1 and self.df is not None:
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 

@@ -65,11 +65,11 @@ class Serialize(object):
             raise ValueError(
                 f"Fail to load data: It may be damaged or from other version"
             )
-        if (df_hash == self._df_hash or self._df_hash == -1) and (
+        if (df_hash == self.df_hash) and (
             ignore_config
             or config == loaded_config
             or (
-                config.is_default and self._title is None
+                config.is_default and self.df is None
             )  # load to an empty ProfileReport
         ):
             # Set description_set, report, sample if they are None，or raise an warning.
