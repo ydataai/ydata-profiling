@@ -108,6 +108,7 @@ jobs:
 
       - name: Move the changes to the gh-pages branch
         run: |
+          echo ${GITHUB_REF##*/}/
           mv docs/ ${GITHUB_REF##*/}/
           mkdir docs/
           mv ${GITHUB_REF##*/}/ docs/${GITHUB_REF##*/}/
