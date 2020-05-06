@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QPushButton
-
 from pandas_profiling.report.presentation.core import VariableInfo
+from PyQt5.QtWidgets import QPushButton
 
 
 class QtVariableInfo(VariableInfo):

@@ -1,5 +1,5 @@
 from IPython.core.display import display
-from ipywidgets import widgets, Output
+from ipywidgets import Output, widgets
 
 from pandas_profiling.report.presentation.core.duplicate import Duplicate
 

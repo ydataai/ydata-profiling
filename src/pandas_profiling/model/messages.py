@@ -182,7 +182,10 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
             float
         )
-        if "chi_squared" in description and description["chi_squared"][1] > chi_squared_threshold:
+        if (
+            "chi_squared" in description
+            and description["chi_squared"][1] > chi_squared_threshold
+        ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
@@ -198,7 +201,10 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
             float
         )
-        if "chi_squared" in description and description["chi_squared"][1] > chi_squared_threshold:
+        if (
+            "chi_squared" in description
+            and description["chi_squared"][1] > chi_squared_threshold
+        ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
