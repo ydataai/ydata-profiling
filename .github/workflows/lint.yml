@@ -49,6 +49,5 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-#        branch: master
-#        directory: docs/
+        branch: ${GITHUB_REF##*/}
         github_token: ${{ secrets.GITHUB_TOKEN }}
