@@ -1,9 +1,8 @@
 name: CI Build Documentation for Releases
 
 on:
-  push:
-    branches:
-      - v**
+  repository_dispatch:
+    types: [trigger-action]
 
 jobs:
   documentation:
