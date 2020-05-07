@@ -48,7 +48,7 @@ def test_load(get_data_file, test_output_dir):
 
     assert test_output_path.exists(), "Output file does not exist"
 
-    profile2 = ProfileReport(df).load(test_output_path)
+    profile2 = ProfileReport(df).load(test_output_path,ignore_config=True)
     # json1 are compute before dumps, so _description_set should be the same
     assert isinstance(profile2._description_set, dict)
 
@@ -74,12 +74,10 @@ def test_load_error():
     data = profile1.dumps()
 
     # config not match but ignore_config
-    ProfileReport.clear_config()
     ProfileReport(df, minimal=False).loads(data, ignore_config=True)
 
     # config not match
     with pytest.raises(ValueError) as e:
-        ProfileReport.clear_config()
         ProfileReport(df, minimal=False).loads(data)
 
     assert (
@@ -89,7 +87,6 @@ def test_load_error():
 
     # df not match
     with pytest.raises(ValueError) as e:
-        ProfileReport.clear_config()
         ProfileReport(df=df[["a", "b"]][:], minimal=True).loads(
             data, ignore_config=True
         )
