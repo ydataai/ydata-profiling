@@ -9,7 +9,7 @@ on:
 jobs:
   lint:
     name: Lint
-    if: startsWith(github.event.ref, 'v')
+    if: startsWith(github.event.ref, 'refs/heads/v')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
