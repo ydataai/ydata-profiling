@@ -10,7 +10,7 @@ jobs:
   lint:
     name: Lint
     # https://developer.github.com/v3/activity/events/types/#pushevent
-    if: startsWith(github.event.ref, 'refs/heads/release/v')
+    # if: startsWith(github.event.ref, 'refs/heads/release/v')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
