@@ -35,6 +35,13 @@ Using this workflow allows for better collaboration between contributors and aut
 
 In addition to the workflow described in the blog post, Github Actions lints the code automatically on the release branches and builds documentation from each push to the master branch. For now, we don't use hotfix branches.
 
+Branch naming:
+- develop: development branch
+- master: master branch
+- feature/[FEATURE NAME]: feature branches
+- release/v[VERSION]: releases
+- gh-pages: documentation and examples are hosted here
+
 .. figure::  ../_static/figure-git-workflow.svg
   :alt: Workflow
 
