@@ -111,7 +111,7 @@ class Serialize(object):
         else:
             raise ValueError(
                 "DataFrame or Config do not match with the current ProfileReport. "
-                'If you want to overwrite the current configuration, use \"ignore_config=True\"'
+                'If you want to overwrite the current configuration, use "ignore_config=True"'
             )
         return self
 
