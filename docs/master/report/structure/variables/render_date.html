@@ -25,13 +25,13 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from pandas_profiling.config import config
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
+    Container,
     Image,
-    Sequence,
     Table,
     VariableInfo,
 )
+from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_date(summary):
@@ -94,12 +94,12 @@ def render_date(summary):
         alt=&#34;Mini histogram&#34;,
     )
 
-    template_variables[&#34;top&#34;] = Sequence(
+    template_variables[&#34;top&#34;] = Container(
         [info, table1, table2, mini_histo], sequence_type=&#34;grid&#34;
     )
 
     # Bottom
-    bottom = Sequence(
+    bottom = Container(
         [
             Image(
                 histogram(
@@ -197,12 +197,12 @@ def render_date(summary):
         alt=&#34;Mini histogram&#34;,
     )
 
-    template_variables[&#34;top&#34;] = Sequence(
+    template_variables[&#34;top&#34;] = Container(
         [info, table1, table2, mini_histo], sequence_type=&#34;grid&#34;
     )
 
     # Bottom
-    bottom = Sequence(
+    bottom = Container(
         [
             Image(
                 histogram(

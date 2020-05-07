@@ -25,14 +25,14 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from pandas_profiling.config import config
-from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.presentation.core import (
-    Sequence,
-    Table,
-    FrequencyTableSmall,
+    Container,
     FrequencyTable,
+    FrequencyTableSmall,
+    Table,
     VariableInfo,
 )
+from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
 
 
@@ -93,7 +93,7 @@ def render_boolean(summary):
 
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
-    template_variables[&#34;top&#34;] = Sequence([info, table, fqm], sequence_type=&#34;grid&#34;)
+    template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
 
     freqtable = FrequencyTable(
         template_variables[&#34;freq_table_rows&#34;],
@@ -101,7 +101,7 @@ def render_boolean(summary):
         anchor_id=f&#34;{varid}frequency_table&#34;,
     )
 
-    template_variables[&#34;bottom&#34;] = Sequence(
+    template_variables[&#34;bottom&#34;] = Container(
         [freqtable], sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
     )
 
@@ -181,7 +181,7 @@ def render_boolean(summary):
 
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
-    template_variables[&#34;top&#34;] = Sequence([info, table, fqm], sequence_type=&#34;grid&#34;)
+    template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
 
     freqtable = FrequencyTable(
         template_variables[&#34;freq_table_rows&#34;],
@@ -189,7 +189,7 @@ def render_boolean(summary):
         anchor_id=f&#34;{varid}frequency_table&#34;,
     )
 
-    template_variables[&#34;bottom&#34;] = Sequence(
+    template_variables[&#34;bottom&#34;] = Container(
         [freqtable], sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
     )
 

@@ -24,7 +24,14 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from pandas_profiling.report.presentation.flavours.widget.frequency_table import (
+<pre><code class="python">from pandas_profiling.report.presentation.flavours.widget.collapse import WidgetCollapse
+from pandas_profiling.report.presentation.flavours.widget.container import (
+    WidgetContainer,
+)
+from pandas_profiling.report.presentation.flavours.widget.duplicate import (
+    WidgetDuplicate,
+)
+from pandas_profiling.report.presentation.flavours.widget.frequency_table import (
     WidgetFrequencyTable,
 )
 from pandas_profiling.report.presentation.flavours.widget.frequency_table_small import (
@@ -32,24 +39,31 @@ from pandas_profiling.report.presentation.flavours.widget.frequency_table_small 
 )
 from pandas_profiling.report.presentation.flavours.widget.html import WidgetHTML
 from pandas_profiling.report.presentation.flavours.widget.image import WidgetImage
-from pandas_profiling.report.presentation.flavours.widget.variable_info import (
-    WidgetVariableInfo,
-)
-from pandas_profiling.report.presentation.flavours.widget.variable import WidgetVariable
-from pandas_profiling.report.presentation.flavours.widget.sequence import WidgetSequence
-from pandas_profiling.report.presentation.flavours.widget.table import WidgetTable
+from pandas_profiling.report.presentation.flavours.widget.root import WidgetRoot
 from pandas_profiling.report.presentation.flavours.widget.sample import WidgetSample
+from pandas_profiling.report.presentation.flavours.widget.table import WidgetTable
 from pandas_profiling.report.presentation.flavours.widget.toggle_button import (
     WidgetToggleButton,
 )
-from pandas_profiling.report.presentation.flavours.widget.warnings import WidgetWarnings
-from pandas_profiling.report.presentation.flavours.widget.collapse import WidgetCollapse</code></pre>
+from pandas_profiling.report.presentation.flavours.widget.variable import WidgetVariable
+from pandas_profiling.report.presentation.flavours.widget.variable_info import (
+    WidgetVariableInfo,
+)
+from pandas_profiling.report.presentation.flavours.widget.warnings import WidgetWarnings</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
 <dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.widget.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.widget.collapse</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.widget.container" href="container.html">pandas_profiling.report.presentation.flavours.widget.container</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.widget.duplicate" href="duplicate.html">pandas_profiling.report.presentation.flavours.widget.duplicate</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -73,11 +87,11 @@ from pandas_profiling.report.presentation.flavours.widget.collapse import Widget
 <dd>
 <div class="desc"><p>Functionality related to displaying the profile report in Jupyter notebooks.</p></div>
 </dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.widget.sample" href="sample.html">pandas_profiling.report.presentation.flavours.widget.sample</a></code></dt>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.widget.root" href="root.html">pandas_profiling.report.presentation.flavours.widget.root</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.widget.sequence" href="sequence.html">pandas_profiling.report.presentation.flavours.widget.sequence</a></code></dt>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.widget.sample" href="sample.html">pandas_profiling.report.presentation.flavours.widget.sample</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -124,13 +138,15 @@ from pandas_profiling.report.presentation.flavours.widget.collapse import Widget
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.widget.collapse</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.widget.container" href="container.html">pandas_profiling.report.presentation.flavours.widget.container</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.widget.duplicate" href="duplicate.html">pandas_profiling.report.presentation.flavours.widget.duplicate</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.frequency_table" href="frequency_table.html">pandas_profiling.report.presentation.flavours.widget.frequency_table</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.frequency_table_small" href="frequency_table_small.html">pandas_profiling.report.presentation.flavours.widget.frequency_table_small</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.html" href="html.html">pandas_profiling.report.presentation.flavours.widget.html</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.image" href="image.html">pandas_profiling.report.presentation.flavours.widget.image</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.notebook" href="notebook.html">pandas_profiling.report.presentation.flavours.widget.notebook</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.widget.root" href="root.html">pandas_profiling.report.presentation.flavours.widget.root</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.sample" href="sample.html">pandas_profiling.report.presentation.flavours.widget.sample</a></code></li>
-<li><code><a title="pandas_profiling.report.presentation.flavours.widget.sequence" href="sequence.html">pandas_profiling.report.presentation.flavours.widget.sequence</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.table" href="table.html">pandas_profiling.report.presentation.flavours.widget.table</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.flavours.widget.toggle_button</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.variable" href="variable.html">pandas_profiling.report.presentation.flavours.widget.variable</a></code></li>

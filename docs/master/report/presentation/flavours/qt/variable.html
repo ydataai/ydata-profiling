@@ -25,7 +25,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from pandas_profiling.report.presentation.core import Variable
-from pandas_profiling.report.presentation.flavours.qt.sequence import QtSequence
+from pandas_profiling.report.presentation.flavours.qt.container import QtContainer
 
 
 class QtVariable(Variable):
@@ -34,7 +34,7 @@ class QtVariable(Variable):
             items = [self.content[&#34;top&#34;], self.content[&#34;bottom&#34;]]
         else:
             items = [self.content[&#34;top&#34;]]
-        return QtSequence(items, sequence_type=&#34;list&#34;).render()</code></pre>
+        return QtContainer(items, sequence_type=&#34;list&#34;).render()</code></pre>
 </details>
 </section>
 <section>
@@ -63,7 +63,7 @@ inheritance.</p></div>
             items = [self.content[&#34;top&#34;], self.content[&#34;bottom&#34;]]
         else:
             items = [self.content[&#34;top&#34;]]
-        return QtSequence(items, sequence_type=&#34;list&#34;).render()</code></pre>
+        return QtContainer(items, sequence_type=&#34;list&#34;).render()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -88,7 +88,7 @@ inheritance.</p></div>
         items = [self.content[&#34;top&#34;], self.content[&#34;bottom&#34;]]
     else:
         items = [self.content[&#34;top&#34;]]
-    return QtSequence(items, sequence_type=&#34;list&#34;).render()</code></pre>
+    return QtContainer(items, sequence_type=&#34;list&#34;).render()</code></pre>
 </details>
 </dd>
 </dl>

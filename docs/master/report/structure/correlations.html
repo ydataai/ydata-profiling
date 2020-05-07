@@ -24,22 +24,18 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Optional, List
+<pre><code class="python">from typing import List, Optional
 
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
-    Sequence,
     HTML,
+    Collapse,
+    Container,
     Image,
     ToggleButton,
-    Collapse,
 )
 from pandas_profiling.visualisation import plot
-
-
-def get_items() -&gt; List[Renderable]:
-    return []
 
 
 def get_correlation_items(summary) -&gt; Optional[Renderable]:
@@ -51,7 +47,7 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
     Returns:
         List of correlation items to show in the interface.
     &#34;&#34;&#34;
-    items = get_items()
+    items: List[Renderable] = []
 
     pearson_description = (
         &#34;The Pearson&#39;s correlation coefficient (&lt;em&gt;r&lt;/em&gt;) is a measure of linear correlation &#34;
@@ -77,13 +73,19 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
     concordant and discordant pairs of observations. &lt;em&gt;τ&lt;/em&gt; is given by the number of concordant pairs minus the 
     discordant pairs divided by the total number of pairs.&#34;&#34;&#34;
 
+    phi_k_description = &#34;&#34;&#34;Phik (φk) is a new and practical correlation coefficient that works consistently between categorical, ordinal and interval variables, captures non-linear dependency and reverts to the Pearson correlation coefficient in case
+    of a bivariate normal input distribution. There is extensive documentation available &lt;a href=&#39;https://phik.readthedocs.io/en/latest/index.html&#39;&gt;here&lt;/a&gt;.&#34;&#34;&#34;
+
+    cramers_description = &#34;&#34;&#34;Cramér&#39;s V is an association measure for nominal random variables. The coefficient ranges from 0 to 1, with 0 indicating independence and 1 indicating perfect association.
+    The empirical estimators used for Cramér&#39;s V have been proved to be biased, even for large samples.
+    We use a bias-corrected measure that has been proposed by Bergsma in 2013 that can be found &lt;a href=&#39;http://stats.lse.ac.uk/bergsma/pdf/cramerV3.pdf&#39;&gt;here&lt;/a&gt;.&#34;&#34;&#34;
+
     key_to_data = {
         &#34;pearson&#34;: (-1, &#34;Pearson&#39;s r&#34;, pearson_description),
         &#34;spearman&#34;: (-1, &#34;Spearman&#39;s ρ&#34;, spearman_description),
         &#34;kendall&#34;: (-1, &#34;Kendall&#39;s τ&#34;, kendall_description),
-        &#34;phi_k&#34;: (0, &#34;Phik (φk)&#34;, &#34;&#34;),
-        &#34;cramers&#34;: (0, &#34;Cramér&#39;s V (φc)&#34;, &#34;&#34;),
-        &#34;recoded&#34;: (0, &#34;Recoded&#34;, &#34;&#34;),
+        &#34;phi_k&#34;: (0, &#34;Phik (φk)&#34;, phi_k_description),
+        &#34;cramers&#34;: (0, &#34;Cramér&#39;s V (φc)&#34;, cramers_description),
     }
 
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
@@ -107,7 +109,7 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
                 classes=&#34;correlation-description&#34;,
             )
 
-            tbl = Sequence(
+            tbl = Container(
                 [diagram, desc], anchor_id=key, name=name, sequence_type=&#34;grid&#34;
             )
 
@@ -115,7 +117,7 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
         else:
             items.append(diagram)
 
-    corr = Sequence(
+    corr = Container(
         items,
         sequence_type=&#34;tabs&#34;,
         name=&#34;Correlations Tab&#34;,
@@ -168,7 +170,7 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
     Returns:
         List of correlation items to show in the interface.
     &#34;&#34;&#34;
-    items = get_items()
+    items: List[Renderable] = []
 
     pearson_description = (
         &#34;The Pearson&#39;s correlation coefficient (&lt;em&gt;r&lt;/em&gt;) is a measure of linear correlation &#34;
@@ -194,13 +196,19 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
     concordant and discordant pairs of observations. &lt;em&gt;τ&lt;/em&gt; is given by the number of concordant pairs minus the 
     discordant pairs divided by the total number of pairs.&#34;&#34;&#34;
 
+    phi_k_description = &#34;&#34;&#34;Phik (φk) is a new and practical correlation coefficient that works consistently between categorical, ordinal and interval variables, captures non-linear dependency and reverts to the Pearson correlation coefficient in case
+    of a bivariate normal input distribution. There is extensive documentation available &lt;a href=&#39;https://phik.readthedocs.io/en/latest/index.html&#39;&gt;here&lt;/a&gt;.&#34;&#34;&#34;
+
+    cramers_description = &#34;&#34;&#34;Cramér&#39;s V is an association measure for nominal random variables. The coefficient ranges from 0 to 1, with 0 indicating independence and 1 indicating perfect association.
+    The empirical estimators used for Cramér&#39;s V have been proved to be biased, even for large samples.
+    We use a bias-corrected measure that has been proposed by Bergsma in 2013 that can be found &lt;a href=&#39;http://stats.lse.ac.uk/bergsma/pdf/cramerV3.pdf&#39;&gt;here&lt;/a&gt;.&#34;&#34;&#34;
+
     key_to_data = {
         &#34;pearson&#34;: (-1, &#34;Pearson&#39;s r&#34;, pearson_description),
         &#34;spearman&#34;: (-1, &#34;Spearman&#39;s ρ&#34;, spearman_description),
         &#34;kendall&#34;: (-1, &#34;Kendall&#39;s τ&#34;, kendall_description),
-        &#34;phi_k&#34;: (0, &#34;Phik (φk)&#34;, &#34;&#34;),
-        &#34;cramers&#34;: (0, &#34;Cramér&#39;s V (φc)&#34;, &#34;&#34;),
-        &#34;recoded&#34;: (0, &#34;Recoded&#34;, &#34;&#34;),
+        &#34;phi_k&#34;: (0, &#34;Phik (φk)&#34;, phi_k_description),
+        &#34;cramers&#34;: (0, &#34;Cramér&#39;s V (φc)&#34;, cramers_description),
     }
 
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
@@ -224,7 +232,7 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
                 classes=&#34;correlation-description&#34;,
             )
 
-            tbl = Sequence(
+            tbl = Container(
                 [diagram, desc], anchor_id=key, name=name, sequence_type=&#34;grid&#34;
             )
 
@@ -232,7 +240,7 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
         else:
             items.append(diagram)
 
-    corr = Sequence(
+    corr = Container(
         items,
         sequence_type=&#34;tabs&#34;,
         name=&#34;Correlations Tab&#34;,
@@ -251,19 +259,6 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
         )
     else:
         return None</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.report.structure.correlations.get_items"><code class="name flex">
-<span>def <span class="ident">get_items</span></span>(<span>) -> List[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../presentation/abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_items() -&gt; List[Renderable]:
-    return []</code></pre>
 </details>
 </dd>
 </dl>
@@ -285,7 +280,6 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.report.structure.correlations.get_correlation_items" href="#pandas_profiling.report.structure.correlations.get_correlation_items">get_correlation_items</a></code></li>
-<li><code><a title="pandas_profiling.report.structure.correlations.get_items" href="#pandas_profiling.report.structure.correlations.get_items">get_items</a></code></li>
 </ul>
 </li>
 </ul>

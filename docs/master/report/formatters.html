@@ -26,10 +26,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Formatters are mappings from object(s) to a string.&#34;&#34;&#34;
-from typing import Dict, Callable
+from typing import Callable, Dict
 
-from jinja2.utils import escape
 import numpy as np
+from jinja2.utils import escape
 
 
 def fmt_color(text: str, color: str) -&gt; str:
@@ -95,6 +95,129 @@ def fmt_percent(value: float, edge_cases: bool = True) -&gt; str:
     return f&#34;{value*100:2.1f}%&#34;
 
 
+def fmt_timespan(num_seconds, detailed=False, max_units=3):
+    # From the `humanfriendly` module (without additional dependency)
+    # https://github.com/xolox/python-humanfriendly/
+    # Author: Peter Odding &lt;peter@peterodding.com&gt;
+    # URL: https://humanfriendly.readthedocs.io
+
+    from datetime import datetime, timedelta
+    import numbers
+    import decimal
+    import re
+    import math
+
+    time_units = (
+        dict(
+            divider=1e-9,
+            singular=&#34;nanosecond&#34;,
+            plural=&#34;nanoseconds&#34;,
+            abbreviations=[&#34;ns&#34;],
+        ),
+        dict(
+            divider=1e-6,
+            singular=&#34;microsecond&#34;,
+            plural=&#34;microseconds&#34;,
+            abbreviations=[&#34;us&#34;],
+        ),
+        dict(
+            divider=1e-3,
+            singular=&#34;millisecond&#34;,
+            plural=&#34;milliseconds&#34;,
+            abbreviations=[&#34;ms&#34;],
+        ),
+        dict(
+            divider=1,
+            singular=&#34;second&#34;,
+            plural=&#34;seconds&#34;,
+            abbreviations=[&#34;s&#34;, &#34;sec&#34;, &#34;secs&#34;],
+        ),
+        dict(
+            divider=60,
+            singular=&#34;minute&#34;,
+            plural=&#34;minutes&#34;,
+            abbreviations=[&#34;m&#34;, &#34;min&#34;, &#34;mins&#34;],
+        ),
+        dict(divider=60 * 60, singular=&#34;hour&#34;, plural=&#34;hours&#34;, abbreviations=[&#34;h&#34;]),
+        dict(divider=60 * 60 * 24, singular=&#34;day&#34;, plural=&#34;days&#34;, abbreviations=[&#34;d&#34;]),
+        dict(
+            divider=60 * 60 * 24 * 7,
+            singular=&#34;week&#34;,
+            plural=&#34;weeks&#34;,
+            abbreviations=[&#34;w&#34;],
+        ),
+        dict(
+            divider=60 * 60 * 24 * 7 * 52,
+            singular=&#34;year&#34;,
+            plural=&#34;years&#34;,
+            abbreviations=[&#34;y&#34;],
+        ),
+    )
+
+    def round_number(count, keep_width=False):
+        text = &#34;%.2f&#34; % float(count)
+        if not keep_width:
+            text = re.sub(&#34;0+$&#34;, &#34;&#34;, text)
+            text = re.sub(r&#34;\.$&#34;, &#34;&#34;, text)
+        return text
+
+    def coerce_seconds(value):
+        if isinstance(value, timedelta):
+            return value.total_seconds()
+        if not isinstance(value, numbers.Number):
+            msg = &#34;Failed to coerce value to number of seconds! (%r)&#34;
+            raise ValueError(format(msg, value))
+        return value
+
+    def concatenate(items):
+        items = list(items)
+        if len(items) &gt; 1:
+            return &#34;, &#34;.join(items[:-1]) + &#34; and &#34; + items[-1]
+        elif items:
+            return items[0]
+        else:
+            return &#34;&#34;
+
+    def pluralize(count, singular, plural=None):
+        if not plural:
+            plural = singular + &#34;s&#34;
+        return &#34;%s %s&#34; % (count, singular if math.floor(float(count)) == 1 else plural)
+
+    num_seconds = coerce_seconds(num_seconds)
+    if num_seconds &lt; 60 and not detailed:
+        # Fast path.
+        return pluralize(round_number(num_seconds), &#34;second&#34;)
+    else:
+        # Slow path.
+        result = []
+        num_seconds = decimal.Decimal(str(num_seconds))
+        relevant_units = list(reversed(time_units[0 if detailed else 3 :]))
+        for unit in relevant_units:
+            # Extract the unit count from the remaining time.
+            divider = decimal.Decimal(str(unit[&#34;divider&#34;]))
+            count = num_seconds / divider
+            num_seconds %= divider
+            # Round the unit count appropriately.
+            if unit != relevant_units[-1]:
+                # Integer rounding for all but the smallest unit.
+                count = int(count)
+            else:
+                # Floating point rounding for the smallest unit.
+                count = round_number(count)
+            # Only include relevant units in the result.
+            if count not in (0, &#34;0&#34;):
+                result.append(pluralize(count, unit[&#34;singular&#34;], unit[&#34;plural&#34;]))
+        if len(result) == 1:
+            # A single count/unit combination.
+            return result[0]
+        else:
+            if not detailed:
+                # Remove `insignificant&#39; data from the formatted timespan.
+                result = result[:max_units]
+            # Format the timespan in a readable way.
+            return concatenate(result)
+
+
 def fmt_numeric(value: float, precision=10) -&gt; str:
     &#34;&#34;&#34;Format any numeric value.
 
@@ -147,6 +270,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     return {
         &#34;fmt_percent&#34;: fmt_percent,
         &#34;fmt_bytesize&#34;: fmt_bytesize,
+        &#34;fmt_timespan&#34;: fmt_timespan,
         &#34;fmt_numeric&#34;: fmt_numeric,
         &#34;fmt_array&#34;: fmt_array,
         &#34;fmt&#34;: fmt,
@@ -392,6 +516,138 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     return f&#34;{value*100:2.1f}%&#34;</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.report.formatters.fmt_timespan"><code class="name flex">
+<span>def <span class="ident">fmt_timespan</span></span>(<span>num_seconds, detailed=False, max_units=3)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fmt_timespan(num_seconds, detailed=False, max_units=3):
+    # From the `humanfriendly` module (without additional dependency)
+    # https://github.com/xolox/python-humanfriendly/
+    # Author: Peter Odding &lt;peter@peterodding.com&gt;
+    # URL: https://humanfriendly.readthedocs.io
+
+    from datetime import datetime, timedelta
+    import numbers
+    import decimal
+    import re
+    import math
+
+    time_units = (
+        dict(
+            divider=1e-9,
+            singular=&#34;nanosecond&#34;,
+            plural=&#34;nanoseconds&#34;,
+            abbreviations=[&#34;ns&#34;],
+        ),
+        dict(
+            divider=1e-6,
+            singular=&#34;microsecond&#34;,
+            plural=&#34;microseconds&#34;,
+            abbreviations=[&#34;us&#34;],
+        ),
+        dict(
+            divider=1e-3,
+            singular=&#34;millisecond&#34;,
+            plural=&#34;milliseconds&#34;,
+            abbreviations=[&#34;ms&#34;],
+        ),
+        dict(
+            divider=1,
+            singular=&#34;second&#34;,
+            plural=&#34;seconds&#34;,
+            abbreviations=[&#34;s&#34;, &#34;sec&#34;, &#34;secs&#34;],
+        ),
+        dict(
+            divider=60,
+            singular=&#34;minute&#34;,
+            plural=&#34;minutes&#34;,
+            abbreviations=[&#34;m&#34;, &#34;min&#34;, &#34;mins&#34;],
+        ),
+        dict(divider=60 * 60, singular=&#34;hour&#34;, plural=&#34;hours&#34;, abbreviations=[&#34;h&#34;]),
+        dict(divider=60 * 60 * 24, singular=&#34;day&#34;, plural=&#34;days&#34;, abbreviations=[&#34;d&#34;]),
+        dict(
+            divider=60 * 60 * 24 * 7,
+            singular=&#34;week&#34;,
+            plural=&#34;weeks&#34;,
+            abbreviations=[&#34;w&#34;],
+        ),
+        dict(
+            divider=60 * 60 * 24 * 7 * 52,
+            singular=&#34;year&#34;,
+            plural=&#34;years&#34;,
+            abbreviations=[&#34;y&#34;],
+        ),
+    )
+
+    def round_number(count, keep_width=False):
+        text = &#34;%.2f&#34; % float(count)
+        if not keep_width:
+            text = re.sub(&#34;0+$&#34;, &#34;&#34;, text)
+            text = re.sub(r&#34;\.$&#34;, &#34;&#34;, text)
+        return text
+
+    def coerce_seconds(value):
+        if isinstance(value, timedelta):
+            return value.total_seconds()
+        if not isinstance(value, numbers.Number):
+            msg = &#34;Failed to coerce value to number of seconds! (%r)&#34;
+            raise ValueError(format(msg, value))
+        return value
+
+    def concatenate(items):
+        items = list(items)
+        if len(items) &gt; 1:
+            return &#34;, &#34;.join(items[:-1]) + &#34; and &#34; + items[-1]
+        elif items:
+            return items[0]
+        else:
+            return &#34;&#34;
+
+    def pluralize(count, singular, plural=None):
+        if not plural:
+            plural = singular + &#34;s&#34;
+        return &#34;%s %s&#34; % (count, singular if math.floor(float(count)) == 1 else plural)
+
+    num_seconds = coerce_seconds(num_seconds)
+    if num_seconds &lt; 60 and not detailed:
+        # Fast path.
+        return pluralize(round_number(num_seconds), &#34;second&#34;)
+    else:
+        # Slow path.
+        result = []
+        num_seconds = decimal.Decimal(str(num_seconds))
+        relevant_units = list(reversed(time_units[0 if detailed else 3 :]))
+        for unit in relevant_units:
+            # Extract the unit count from the remaining time.
+            divider = decimal.Decimal(str(unit[&#34;divider&#34;]))
+            count = num_seconds / divider
+            num_seconds %= divider
+            # Round the unit count appropriately.
+            if unit != relevant_units[-1]:
+                # Integer rounding for all but the smallest unit.
+                count = int(count)
+            else:
+                # Floating point rounding for the smallest unit.
+                count = round_number(count)
+            # Only include relevant units in the result.
+            if count not in (0, &#34;0&#34;):
+                result.append(pluralize(count, unit[&#34;singular&#34;], unit[&#34;plural&#34;]))
+        if len(result) == 1:
+            # A single count/unit combination.
+            return result[0]
+        else:
+            if not detailed:
+                # Remove `insignificant&#39; data from the formatted timespan.
+                result = result[:max_units]
+            # Format the timespan in a readable way.
+            return concatenate(result)</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.report.formatters.get_fmt_mapping"><code class="name flex">
 <span>def <span class="ident">get_fmt_mapping</span></span>(<span>) -> Dict[str, Callable]</span>
 </code></dt>
@@ -410,6 +666,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     return {
         &#34;fmt_percent&#34;: fmt_percent,
         &#34;fmt_bytesize&#34;: fmt_bytesize,
+        &#34;fmt_timespan&#34;: fmt_timespan,
         &#34;fmt_numeric&#34;: fmt_numeric,
         &#34;fmt_array&#34;: fmt_array,
         &#34;fmt&#34;: fmt,
@@ -442,6 +699,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
 <li><code><a title="pandas_profiling.report.formatters.fmt_color" href="#pandas_profiling.report.formatters.fmt_color">fmt_color</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_numeric" href="#pandas_profiling.report.formatters.fmt_numeric">fmt_numeric</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_percent" href="#pandas_profiling.report.formatters.fmt_percent">fmt_percent</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_timespan" href="#pandas_profiling.report.formatters.fmt_timespan">fmt_timespan</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.get_fmt_mapping" href="#pandas_profiling.report.formatters.get_fmt_mapping">get_fmt_mapping</a></code></li>
 </ul>
 </li>

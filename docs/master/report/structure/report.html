@@ -26,24 +26,37 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Generate the report.&#34;&#34;&#34;
-from datetime import datetime
 from typing import List
+
+import pandas as pd
+from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import (
-    Boolean,
-    Real,
-    Count,
-    Complex,
-    Date,
-    Categorical,
-    Url,
     AbsolutePath,
+    Boolean,
+    Categorical,
+    Complex,
+    Count,
+    Date,
     ExistingPath,
-    ImagePath,
     Generic,
+    Real,
+    Url,
 )
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core import (
+    HTML,
+    Collapse,
+    Container,
+    Duplicate,
+    Image,
+    Sample,
+    ToggleButton,
+    Variable,
+)
+from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import (
     get_dataset_overview,
@@ -55,20 +68,10 @@ from pandas_profiling.report.structure.variables import (
     render_categorical,
     render_complex,
     render_date,
-    render_real,
-    render_path,
-    render_path_image,
-    render_url,
     render_generic,
-)
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
-from pandas_profiling.report.presentation.core import (
-    Image,
-    Sequence,
-    Sample,
-    Variable,
-    Collapse,
-    ToggleButton,
+    render_path,
+    render_real,
+    render_url,
 )
 
 
@@ -110,7 +113,6 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
         Url: render_url,
         AbsolutePath: render_path,
         ExistingPath: render_path,
-        # ImagePath: render_path_image,
         Generic: render_generic,
     }
 
@@ -173,6 +175,25 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
     return templs
 
 
+def get_duplicates_items(duplicates: pd.DataFrame):
+    &#34;&#34;&#34;Create the list of duplicates items
+
+    Args:
+        duplicates: DataFrame of duplicates
+
+    Returns:
+        List of duplicates items to show in the interface.
+    &#34;&#34;&#34;
+    items = []
+    if duplicates is not None and len(duplicates) &gt; 0:
+        items.append(
+            Duplicate(
+                duplicate=duplicates, name=&#34;Most frequent&#34;, anchor_id=&#34;duplicates&#34;,
+            )
+        )
+    return items
+
+
 def get_sample_items(sample: dict):
     &#34;&#34;&#34;Create the list of sample items
 
@@ -185,13 +206,7 @@ def get_sample_items(sample: dict):
     items = []
     names = {&#34;head&#34;: &#34;First rows&#34;, &#34;tail&#34;: &#34;Last rows&#34;}
     for key, value in sample.items():
-        items.append(
-            Sample(
-                sample=value.to_html(classes=&#34;sample table table-striped&#34;),
-                name=names[key],
-                anchor_id=key,
-            )
-        )
+        items.append(Sample(sample=value, name=names[key], anchor_id=key,))
     return items
 
 
@@ -213,7 +228,7 @@ def get_scatter_matrix(scatter_matrix):
             )
 
         titems.append(
-            Sequence(
+            Container(
                 items,
                 sequence_type=&#34;tabs&#34;,
                 name=x_col,
@@ -223,38 +238,19 @@ def get_scatter_matrix(scatter_matrix):
     return titems
 
 
-def get_dataset_items(summary, date_start, date_end, warnings):
+def get_dataset_items(summary: dict, warnings: list) -&gt; list:
     items = [
         get_dataset_overview(summary),
-        get_dataset_reproduction(summary, date_start, date_end),
+        get_dataset_reproduction(summary),
     ]
 
-    count = len(
-        [
-            warning
-            for warning in warnings
-            if warning.message_type
-            not in [
-                MessageType.UNIFORM,
-                MessageType.UNIQUE,
-                MessageType.REJECTED,
-                MessageType.CONSTANT,
-            ]
-        ]
-    )
-    if count &gt; 0:
-        items.append(get_dataset_warnings(warnings, count))
+    if warnings:
+        items.append(get_dataset_warnings(warnings))
 
     return items
 
 
-def get_section_items() -&gt; List[Renderable]:
-    return []
-
-
-def get_report_structure(
-    date_start: datetime, date_end: datetime, sample: dict, summary: dict
-) -&gt; Renderable:
+def get_report_structure(summary: dict) -&gt; Renderable:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -264,60 +260,76 @@ def get_report_structure(
     Returns:
       The profile report in HTML format
     &#34;&#34;&#34;
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    with tqdm(
+        total=1, desc=&#34;Generate report structure&#34;, disable=disable_progress_bar
+    ) as pbar:
+        warnings = summary[&#34;messages&#34;]
 
-    warnings = summary[&#34;messages&#34;]
+        section_items: List[Renderable] = [
+            Container(
+                get_dataset_items(summary, warnings),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Overview&#34;,
+                anchor_id=&#34;overview&#34;,
+            ),
+            Container(
+                render_variables_section(summary),
+                sequence_type=&#34;accordion&#34;,
+                name=&#34;Variables&#34;,
+                anchor_id=&#34;variables&#34;,
+            ),
+            Container(
+                get_scatter_matrix(summary[&#34;scatter&#34;]),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Interactions&#34;,
+                anchor_id=&#34;interactions&#34;,
+            ),
+        ]
 
-    section_items = get_section_items()
+        corr = get_correlation_items(summary)
+        if corr is not None:
+            section_items.append(corr)
 
-    section_items.append(
-        Sequence(
-            get_dataset_items(summary, date_start, date_end, warnings),
-            sequence_type=&#34;tabs&#34;,
-            name=&#34;Overview&#34;,
-            anchor_id=&#34;overview&#34;,
+        section_items.append(
+            Container(
+                get_missing_items(summary),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Missing values&#34;,
+                anchor_id=&#34;missing&#34;,
+            )
         )
-    )
-    section_items.append(
-        Sequence(
-            render_variables_section(summary),
-            sequence_type=&#34;accordion&#34;,
-            name=&#34;Variables&#34;,
-            anchor_id=&#34;variables&#34;,
-        )
-    )
-    section_items.append(
-        Sequence(
-            get_scatter_matrix(summary[&#34;scatter&#34;]),
-            sequence_type=&#34;tabs&#34;,
-            name=&#34;Interactions&#34;,
-            anchor_id=&#34;interactions&#34;,
-        )
+
+        sample_items = get_sample_items(summary[&#34;sample&#34;])
+        if len(sample_items) &gt; 0:
+            section_items.append(
+                Container(
+                    items=sample_items,
+                    sequence_type=&#34;list&#34;,
+                    name=&#34;Sample&#34;,
+                    anchor_id=&#34;sample&#34;,
+                )
+            )
+
+        duplicate_items = get_duplicates_items(summary[&#34;duplicates&#34;])
+        if len(duplicate_items) &gt; 0:
+            section_items.append(
+                Container(
+                    items=duplicate_items,
+                    sequence_type=&#34;list&#34;,
+                    name=&#34;Duplicate rows&#34;,
+                    anchor_id=&#34;duplicate&#34;,
+                )
+            )
+
+        sections = Container(section_items, name=&#34;Root&#34;, sequence_type=&#34;sections&#34;)
+        pbar.update()
+
+    footer = HTML(
+        content=&#39;Report generated with &lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling&lt;/a&gt;.&#39;
     )
 
-    corr = get_correlation_items(summary)
-    if corr is not None:
-        section_items.append(corr)
-
-    section_items.append(
-        Sequence(
-            get_missing_items(summary),
-            sequence_type=&#34;tabs&#34;,
-            name=&#34;Missing values&#34;,
-            anchor_id=&#34;missing&#34;,
-        )
-    )
-    section_items.append(
-        Sequence(
-            get_sample_items(sample),
-            sequence_type=&#34;list&#34;,
-            name=&#34;Sample&#34;,
-            anchor_id=&#34;sample&#34;,
-        )
-    )
-
-    sections = Sequence(section_items, name=&#34;Report&#34;, sequence_type=&#34;sections&#34;)
-
-    return sections</code></pre>
+    return Root(&#34;Root&#34;, sections, footer)</code></pre>
 </details>
 </section>
 <section>
@@ -328,7 +340,7 @@ def get_report_structure(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.structure.report.get_dataset_items"><code class="name flex">
-<span>def <span class="ident">get_dataset_items</span></span>(<span>summary, date_start, date_end, warnings)</span>
+<span>def <span class="ident">get_dataset_items</span></span>(<span>summary: dict, warnings: list) -> list</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -336,28 +348,50 @@ def get_report_structure(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_dataset_items(summary, date_start, date_end, warnings):
+<pre><code class="python">def get_dataset_items(summary: dict, warnings: list) -&gt; list:
     items = [
         get_dataset_overview(summary),
-        get_dataset_reproduction(summary, date_start, date_end),
+        get_dataset_reproduction(summary),
     ]
 
-    count = len(
-        [
-            warning
-            for warning in warnings
-            if warning.message_type
-            not in [
-                MessageType.UNIFORM,
-                MessageType.UNIQUE,
-                MessageType.REJECTED,
-                MessageType.CONSTANT,
-            ]
-        ]
-    )
-    if count &gt; 0:
-        items.append(get_dataset_warnings(warnings, count))
+    if warnings:
+        items.append(get_dataset_warnings(warnings))
 
+    return items</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.structure.report.get_duplicates_items"><code class="name flex">
+<span>def <span class="ident">get_duplicates_items</span></span>(<span>duplicates: pandas.core.frame.DataFrame)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the list of duplicates items</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>duplicates</code></strong></dt>
+<dd>DataFrame of duplicates</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of duplicates items to show in the interface.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_duplicates_items(duplicates: pd.DataFrame):
+    &#34;&#34;&#34;Create the list of duplicates items
+
+    Args:
+        duplicates: DataFrame of duplicates
+
+    Returns:
+        List of duplicates items to show in the interface.
+    &#34;&#34;&#34;
+    items = []
+    if duplicates is not None and len(duplicates) &gt; 0:
+        items.append(
+            Duplicate(
+                duplicate=duplicates, name=&#34;Most frequent&#34;, anchor_id=&#34;duplicates&#34;,
+            )
+        )
     return items</code></pre>
 </details>
 </dd>
@@ -389,7 +423,7 @@ def get_report_structure(
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_report_structure"><code class="name flex">
-<span>def <span class="ident">get_report_structure</span></span>(<span>date_start: datetime.datetime, date_end: datetime.datetime, sample: dict, summary: dict) -> <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../presentation/abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></span>
+<span>def <span class="ident">get_report_structure</span></span>(<span>summary: dict) -> <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../presentation/abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a HTML report from summary statistics and a given sample.</p>
@@ -409,9 +443,7 @@ def get_report_structure(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_report_structure(
-    date_start: datetime, date_end: datetime, sample: dict, summary: dict
-) -&gt; Renderable:
+<pre><code class="python">def get_report_structure(summary: dict) -&gt; Renderable:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -421,60 +453,76 @@ def get_report_structure(
     Returns:
       The profile report in HTML format
     &#34;&#34;&#34;
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    with tqdm(
+        total=1, desc=&#34;Generate report structure&#34;, disable=disable_progress_bar
+    ) as pbar:
+        warnings = summary[&#34;messages&#34;]
 
-    warnings = summary[&#34;messages&#34;]
+        section_items: List[Renderable] = [
+            Container(
+                get_dataset_items(summary, warnings),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Overview&#34;,
+                anchor_id=&#34;overview&#34;,
+            ),
+            Container(
+                render_variables_section(summary),
+                sequence_type=&#34;accordion&#34;,
+                name=&#34;Variables&#34;,
+                anchor_id=&#34;variables&#34;,
+            ),
+            Container(
+                get_scatter_matrix(summary[&#34;scatter&#34;]),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Interactions&#34;,
+                anchor_id=&#34;interactions&#34;,
+            ),
+        ]
 
-    section_items = get_section_items()
+        corr = get_correlation_items(summary)
+        if corr is not None:
+            section_items.append(corr)
 
-    section_items.append(
-        Sequence(
-            get_dataset_items(summary, date_start, date_end, warnings),
-            sequence_type=&#34;tabs&#34;,
-            name=&#34;Overview&#34;,
-            anchor_id=&#34;overview&#34;,
+        section_items.append(
+            Container(
+                get_missing_items(summary),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Missing values&#34;,
+                anchor_id=&#34;missing&#34;,
+            )
         )
-    )
-    section_items.append(
-        Sequence(
-            render_variables_section(summary),
-            sequence_type=&#34;accordion&#34;,
-            name=&#34;Variables&#34;,
-            anchor_id=&#34;variables&#34;,
-        )
-    )
-    section_items.append(
-        Sequence(
-            get_scatter_matrix(summary[&#34;scatter&#34;]),
-            sequence_type=&#34;tabs&#34;,
-            name=&#34;Interactions&#34;,
-            anchor_id=&#34;interactions&#34;,
-        )
+
+        sample_items = get_sample_items(summary[&#34;sample&#34;])
+        if len(sample_items) &gt; 0:
+            section_items.append(
+                Container(
+                    items=sample_items,
+                    sequence_type=&#34;list&#34;,
+                    name=&#34;Sample&#34;,
+                    anchor_id=&#34;sample&#34;,
+                )
+            )
+
+        duplicate_items = get_duplicates_items(summary[&#34;duplicates&#34;])
+        if len(duplicate_items) &gt; 0:
+            section_items.append(
+                Container(
+                    items=duplicate_items,
+                    sequence_type=&#34;list&#34;,
+                    name=&#34;Duplicate rows&#34;,
+                    anchor_id=&#34;duplicate&#34;,
+                )
+            )
+
+        sections = Container(section_items, name=&#34;Root&#34;, sequence_type=&#34;sections&#34;)
+        pbar.update()
+
+    footer = HTML(
+        content=&#39;Report generated with &lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling&lt;/a&gt;.&#39;
     )
 
-    corr = get_correlation_items(summary)
-    if corr is not None:
-        section_items.append(corr)
-
-    section_items.append(
-        Sequence(
-            get_missing_items(summary),
-            sequence_type=&#34;tabs&#34;,
-            name=&#34;Missing values&#34;,
-            anchor_id=&#34;missing&#34;,
-        )
-    )
-    section_items.append(
-        Sequence(
-            get_sample_items(sample),
-            sequence_type=&#34;list&#34;,
-            name=&#34;Sample&#34;,
-            anchor_id=&#34;sample&#34;,
-        )
-    )
-
-    sections = Sequence(section_items, name=&#34;Report&#34;, sequence_type=&#34;sections&#34;)
-
-    return sections</code></pre>
+    return Root(&#34;Root&#34;, sections, footer)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_sample_items"><code class="name flex">
@@ -505,13 +553,7 @@ def get_report_structure(
     items = []
     names = {&#34;head&#34;: &#34;First rows&#34;, &#34;tail&#34;: &#34;Last rows&#34;}
     for key, value in sample.items():
-        items.append(
-            Sample(
-                sample=value.to_html(classes=&#34;sample table table-striped&#34;),
-                name=names[key],
-                anchor_id=key,
-            )
-        )
+        items.append(Sample(sample=value, name=names[key], anchor_id=key,))
     return items</code></pre>
 </details>
 </dd>
@@ -542,7 +584,7 @@ def get_report_structure(
             )
 
         titems.append(
-            Sequence(
+            Container(
                 items,
                 sequence_type=&#34;tabs&#34;,
                 name=x_col,
@@ -550,19 +592,6 @@ def get_report_structure(
             )
         )
     return titems</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.report.structure.report.get_section_items"><code class="name flex">
-<span>def <span class="ident">get_section_items</span></span>(<span>) -> List[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../presentation/abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_section_items() -&gt; List[Renderable]:
-    return []</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.render_variables_section"><code class="name flex">
@@ -600,7 +629,6 @@ def get_report_structure(
         Url: render_url,
         AbsolutePath: render_path,
         ExistingPath: render_path,
-        # ImagePath: render_path_image,
         Generic: render_generic,
     }
 
@@ -682,11 +710,11 @@ def get_report_structure(
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.report.structure.report.get_dataset_items" href="#pandas_profiling.report.structure.report.get_dataset_items">get_dataset_items</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.report.get_duplicates_items" href="#pandas_profiling.report.structure.report.get_duplicates_items">get_duplicates_items</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.get_missing_items" href="#pandas_profiling.report.structure.report.get_missing_items">get_missing_items</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.get_report_structure" href="#pandas_profiling.report.structure.report.get_report_structure">get_report_structure</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.get_sample_items" href="#pandas_profiling.report.structure.report.get_sample_items">get_sample_items</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.get_scatter_matrix" href="#pandas_profiling.report.structure.report.get_scatter_matrix">get_scatter_matrix</a></code></li>
-<li><code><a title="pandas_profiling.report.structure.report.get_section_items" href="#pandas_profiling.report.structure.report.get_section_items">get_section_items</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.report.render_variables_section" href="#pandas_profiling.report.structure.report.render_variables_section">render_variables_section</a></code></li>
 </ul>
 </li>

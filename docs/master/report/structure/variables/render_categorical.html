@@ -27,17 +27,17 @@
 <pre><code class="python">import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.report.presentation.frequency_table_utils import freq_table
-from pandas_profiling.visualisation.plot import histogram
 from pandas_profiling.report.presentation.core import (
-    Image,
+    Container,
     FrequencyTable,
     FrequencyTableSmall,
-    Sequence,
+    Image,
     Table,
     VariableInfo,
 )
+from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
+from pandas_profiling.visualisation.plot import histogram
 
 
 def render_categorical(summary):
@@ -98,7 +98,7 @@ def render_categorical(summary):
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
     # TODO: settings 3,3,6
-    template_variables[&#34;top&#34;] = Sequence([info, table, fqm], sequence_type=&#34;grid&#34;)
+    template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
 
     # Bottom
     items = []
@@ -147,7 +147,7 @@ def render_categorical(summary):
             anchor_id=f&#34;{varid}length&#34;,
         )
 
-        tbl = Sequence(
+        tbl = Container(
             [length, length_table],
             anchor_id=f&#34;{varid}tbl&#34;,
             name=&#34;Length&#34;,
@@ -192,7 +192,7 @@ def render_categorical(summary):
             )
         )
 
-        characters = Sequence(
+        characters = Container(
             citems,
             name=&#34;Characters&#34;,
             sequence_type=&#34;tabs&#34;,
@@ -201,7 +201,7 @@ def render_categorical(summary):
 
         items.append(characters)
 
-    template_variables[&#34;bottom&#34;] = Sequence(
+    template_variables[&#34;bottom&#34;] = Container(
         items, sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
     )
 
@@ -282,7 +282,7 @@ def render_categorical(summary):
     fqm = FrequencyTableSmall(mini_freq_table_rows)
 
     # TODO: settings 3,3,6
-    template_variables[&#34;top&#34;] = Sequence([info, table, fqm], sequence_type=&#34;grid&#34;)
+    template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
 
     # Bottom
     items = []
@@ -331,7 +331,7 @@ def render_categorical(summary):
             anchor_id=f&#34;{varid}length&#34;,
         )
 
-        tbl = Sequence(
+        tbl = Container(
             [length, length_table],
             anchor_id=f&#34;{varid}tbl&#34;,
             name=&#34;Length&#34;,
@@ -376,7 +376,7 @@ def render_categorical(summary):
             )
         )
 
-        characters = Sequence(
+        characters = Container(
             citems,
             name=&#34;Characters&#34;,
             sequence_type=&#34;tabs&#34;,
@@ -385,7 +385,7 @@ def render_categorical(summary):
 
         items.append(characters)
 
-    template_variables[&#34;bottom&#34;] = Sequence(
+    template_variables[&#34;bottom&#34;] = Container(
         items, sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
     )
 

@@ -24,14 +24,19 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ipywidgets import widgets
+<pre><code class="python">from IPython.core.display import display
+from ipywidgets import Output, widgets
 
 from pandas_profiling.report.presentation.core.sample import Sample
 
 
 class WidgetSample(Sample):
     def render(self):
-        return widgets.VBox([widgets.HTML(self.content[&#34;sample&#34;])])</code></pre>
+        out = Output()
+        with out:
+            display(self.content[&#34;sample&#34;])
+
+        return widgets.VBox([out])</code></pre>
 </details>
 </section>
 <section>
@@ -56,7 +61,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class WidgetSample(Sample):
     def render(self):
-        return widgets.VBox([widgets.HTML(self.content[&#34;sample&#34;])])</code></pre>
+        out = Output()
+        with out:
+            display(self.content[&#34;sample&#34;])
+
+        return widgets.VBox([out])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -77,7 +86,11 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render(self):
-    return widgets.VBox([widgets.HTML(self.content[&#34;sample&#34;])])</code></pre>
+    out = Output()
+    with out:
+        display(self.content[&#34;sample&#34;])
+
+    return widgets.VBox([out])</code></pre>
 </details>
 </dd>
 </dl>

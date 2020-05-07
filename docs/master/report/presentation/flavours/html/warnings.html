@@ -30,7 +30,24 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 class HTMLWarnings(Warnings):
     def render(self):
-        return templates.template(&#34;warnings.html&#34;).render(**self.content)</code></pre>
+        styles = {
+            &#34;constant&#34;: &#34;warning&#34;,
+            &#34;unsupported&#34;: &#34;warning&#34;,
+            &#34;type_date&#34;: &#34;warning&#34;,
+            &#34;constant_length&#34;: &#34;primary&#34;,
+            &#34;high_cardinality&#34;: &#34;primary&#34;,
+            &#34;unique&#34;: &#34;primary&#34;,
+            &#34;uniform&#34;: &#34;primary&#34;,
+            &#34;infinite&#34;: &#34;info&#34;,
+            &#34;zeros&#34;: &#34;info&#34;,
+            &#34;truncated&#34;: &#34;info&#34;,
+            &#34;missing&#34;: &#34;info&#34;,
+            &#34;skewed&#34;: &#34;info&#34;,
+            &#34;high_correlation&#34;: &#34;default&#34;,
+            &#34;duplicates&#34;: &#34;default&#34;,
+        }
+
+        return templates.template(&#34;warnings.html&#34;).render(**self.content, styles=styles)</code></pre>
 </details>
 </section>
 <section>
@@ -55,7 +72,24 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class HTMLWarnings(Warnings):
     def render(self):
-        return templates.template(&#34;warnings.html&#34;).render(**self.content)</code></pre>
+        styles = {
+            &#34;constant&#34;: &#34;warning&#34;,
+            &#34;unsupported&#34;: &#34;warning&#34;,
+            &#34;type_date&#34;: &#34;warning&#34;,
+            &#34;constant_length&#34;: &#34;primary&#34;,
+            &#34;high_cardinality&#34;: &#34;primary&#34;,
+            &#34;unique&#34;: &#34;primary&#34;,
+            &#34;uniform&#34;: &#34;primary&#34;,
+            &#34;infinite&#34;: &#34;info&#34;,
+            &#34;zeros&#34;: &#34;info&#34;,
+            &#34;truncated&#34;: &#34;info&#34;,
+            &#34;missing&#34;: &#34;info&#34;,
+            &#34;skewed&#34;: &#34;info&#34;,
+            &#34;high_correlation&#34;: &#34;default&#34;,
+            &#34;duplicates&#34;: &#34;default&#34;,
+        }
+
+        return templates.template(&#34;warnings.html&#34;).render(**self.content, styles=styles)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -76,7 +110,24 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render(self):
-    return templates.template(&#34;warnings.html&#34;).render(**self.content)</code></pre>
+    styles = {
+        &#34;constant&#34;: &#34;warning&#34;,
+        &#34;unsupported&#34;: &#34;warning&#34;,
+        &#34;type_date&#34;: &#34;warning&#34;,
+        &#34;constant_length&#34;: &#34;primary&#34;,
+        &#34;high_cardinality&#34;: &#34;primary&#34;,
+        &#34;unique&#34;: &#34;primary&#34;,
+        &#34;uniform&#34;: &#34;primary&#34;,
+        &#34;infinite&#34;: &#34;info&#34;,
+        &#34;zeros&#34;: &#34;info&#34;,
+        &#34;truncated&#34;: &#34;info&#34;,
+        &#34;missing&#34;: &#34;info&#34;,
+        &#34;skewed&#34;: &#34;info&#34;,
+        &#34;high_correlation&#34;: &#34;default&#34;,
+        &#34;duplicates&#34;: &#34;default&#34;,
+    }
+
+    return templates.template(&#34;warnings.html&#34;).render(**self.content, styles=styles)</code></pre>
 </details>
 </dd>
 </dl>

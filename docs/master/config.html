@@ -27,6 +27,8 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Configuration for the package is handled in this wrapper for confuse.&#34;&#34;&#34;
 import argparse
+from pathlib import Path
+from typing import Union
 
 import confuse
 
@@ -44,11 +46,11 @@ class Config(object):
     def __init__(self):
         &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
-            self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
+            self.clear()
+        else:
+            self.set_file(str(get_config_default()))
 
-        self.set_file(str(get_config_default()))
-
-    def set_file(self, file_name: str) -&gt; None:
+    def set_file(self, file_name: Union[str, Path]) -&gt; None:
         &#34;&#34;&#34;
         Set the config from a file
 
@@ -56,7 +58,7 @@ class Config(object):
             file_name: file name
         &#34;&#34;&#34;
         if self.config is not None:
-            self.config.set_file(file_name)
+            self.config.set_file(str(file_name))
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
         &#34;&#34;&#34;
@@ -99,6 +101,23 @@ class Config(object):
     def dump(self):
         return self.config.dump()
 
+    def update(self, other):
+        if not isinstance(other, Config):
+            raise ValueError(&#34;Can only update config from a config object&#34;)
+        self.config = other.config
+
+    def clear(self):
+        self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
+        self.set_file(str(get_config_default()))
+
+    @property
+    def is_default(self):
+        default_config = Config()
+        return self == default_config
+
+    def __eq__(self, other):
+        return isinstance(other, Config) and self.dump() == other.dump()
+
 
 config = Config()</code></pre>
 </details>
@@ -134,11 +153,11 @@ various ways (notably via argparse and kwargs).</p>
     def __init__(self):
         &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
         if self.config is None:
-            self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
+            self.clear()
+        else:
+            self.set_file(str(get_config_default()))
 
-        self.set_file(str(get_config_default()))
-
-    def set_file(self, file_name: str) -&gt; None:
+    def set_file(self, file_name: Union[str, Path]) -&gt; None:
         &#34;&#34;&#34;
         Set the config from a file
 
@@ -146,7 +165,7 @@ various ways (notably via argparse and kwargs).</p>
             file_name: file name
         &#34;&#34;&#34;
         if self.config is not None:
-            self.config.set_file(file_name)
+            self.config.set_file(str(file_name))
 
     def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
         &#34;&#34;&#34;
@@ -187,7 +206,24 @@ various ways (notably via argparse and kwargs).</p>
         self.config[key].set(value)
 
     def dump(self):
-        return self.config.dump()</code></pre>
+        return self.config.dump()
+
+    def update(self, other):
+        if not isinstance(other, Config):
+            raise ValueError(&#34;Can only update config from a config object&#34;)
+        self.config = other.config
+
+    def clear(self):
+        self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
+        self.set_file(str(get_config_default()))
+
+    @property
+    def is_default(self):
+        default_config = Config()
+        return self == default_config
+
+    def __eq__(self, other):
+        return isinstance(other, Config) and self.dump() == other.dump()</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -196,8 +232,38 @@ various ways (notably via argparse and kwargs).</p>
 <div class="desc"><p>The confuse.Configuration object.</p></div>
 </dd>
 </dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Config.is_default"><code class="name">var <span class="ident">is_default</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def is_default(self):
+    default_config = Config()
+    return self == default_config</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
+<dt id="pandas_profiling.config.Config.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear(self):
+    self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
+    self.set_file(str(get_config_default()))</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.config.Config.dump"><code class="name flex">
 <span>def <span class="ident">dump</span></span>(<span>self)</span>
 </code></dt>
@@ -240,7 +306,7 @@ various ways (notably via argparse and kwargs).</p>
 </details>
 </dd>
 <dt id="pandas_profiling.config.Config.set_file"><code class="name flex">
-<span>def <span class="ident">set_file</span></span>(<span>self, file_name: str) -> NoneType</span>
+<span>def <span class="ident">set_file</span></span>(<span>self, file_name: Union[str, pathlib.Path]) -> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Set the config from a file</p>
@@ -253,7 +319,7 @@ various ways (notably via argparse and kwargs).</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_file(self, file_name: str) -&gt; None:
+<pre><code class="python">def set_file(self, file_name: Union[str, Path]) -&gt; None:
     &#34;&#34;&#34;
     Set the config from a file
 
@@ -261,7 +327,7 @@ various ways (notably via argparse and kwargs).</p>
         file_name: file name
     &#34;&#34;&#34;
     if self.config is not None:
-        self.config.set_file(file_name)</code></pre>
+        self.config.set_file(str(file_name))</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.config.Config.set_kwargs"><code class="name flex">
@@ -289,6 +355,21 @@ various ways (notably via argparse and kwargs).</p>
     self._set_kwargs(self.config, kwargs)</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.config.Config.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, other):
+    if not isinstance(other, Config):
+        raise ValueError(&#34;Can only update config from a config object&#34;)
+    self.config = other.config</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -309,12 +390,15 @@ various ways (notably via argparse and kwargs).</p>
 <ul>
 <li>
 <h4><code><a title="pandas_profiling.config.Config" href="#pandas_profiling.config.Config">Config</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="pandas_profiling.config.Config.clear" href="#pandas_profiling.config.Config.clear">clear</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.config" href="#pandas_profiling.config.Config.config">config</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.dump" href="#pandas_profiling.config.Config.dump">dump</a></code></li>
+<li><code><a title="pandas_profiling.config.Config.is_default" href="#pandas_profiling.config.Config.is_default">is_default</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.set_args" href="#pandas_profiling.config.Config.set_args">set_args</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.set_file" href="#pandas_profiling.config.Config.set_file">set_file</a></code></li>
 <li><code><a title="pandas_profiling.config.Config.set_kwargs" href="#pandas_profiling.config.Config.set_kwargs">set_kwargs</a></code></li>
+<li><code><a title="pandas_profiling.config.Config.update" href="#pandas_profiling.config.Config.update">update</a></code></li>
 </ul>
 </li>
 </ul>

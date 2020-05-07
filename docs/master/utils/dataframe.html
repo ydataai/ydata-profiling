@@ -26,13 +26,11 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Utils for pandas DataFrames.&#34;&#34;&#34;
-import sys
 import warnings
 from pathlib import Path
 
+import joblib
 import pandas as pd
-
-from pandas_profiling.config import config
 
 
 def warn_read(extension):
@@ -150,7 +148,11 @@ def expand_mixed(df: pd.DataFrame, types=None) -&gt; pd.DataFrame:
             df.drop(columns=[column_name], inplace=True)
 
             df = pd.concat([df, expanded], axis=1)
-    return df</code></pre>
+    return df
+
+
+def hash_dataframe(df):
+    return joblib.hash(df)</code></pre>
 </details>
 </section>
 <section>
@@ -219,6 +221,19 @@ TODO: allow for expansion of nested data structures.</p></div>
 
             df = pd.concat([df, expanded], axis=1)
     return df</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.dataframe.hash_dataframe"><code class="name flex">
+<span>def <span class="ident">hash_dataframe</span></span>(<span>df)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def hash_dataframe(df):
+    return joblib.hash(df)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.dataframe.read_pandas"><code class="name flex">
@@ -376,6 +391,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues&#34;&#34;&#34;
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.utils.dataframe.expand_mixed" href="#pandas_profiling.utils.dataframe.expand_mixed">expand_mixed</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.hash_dataframe" href="#pandas_profiling.utils.dataframe.hash_dataframe">hash_dataframe</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.read_pandas" href="#pandas_profiling.utils.dataframe.read_pandas">read_pandas</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.rename_index" href="#pandas_profiling.utils.dataframe.rename_index">rename_index</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.warn_read" href="#pandas_profiling.utils.dataframe.warn_read">warn_read</a></code></li>

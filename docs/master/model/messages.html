@@ -29,67 +29,60 @@ values, high correlations).</p>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations).&#34;&#34;&#34;
-from enum import Enum, unique
+from enum import Enum, auto, unique
 from typing import List, Union
-import warnings
-from contextlib import suppress
-import re
-from dateutil.parser import parse
 
 import numpy as np
 
-from pandas_profiling.model.correlations import perform_check_correlation
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
+from pandas_profiling.model.correlations import perform_check_correlation
 
 
 @unique
 class MessageType(Enum):
     &#34;&#34;&#34;Message Types&#34;&#34;&#34;
 
-    CONSTANT = 1
+    CONSTANT = auto()
     &#34;&#34;&#34;This variable has a constant value.&#34;&#34;&#34;
 
-    ZEROS = 2
+    ZEROS = auto()
     &#34;&#34;&#34;This variable contains zeros.&#34;&#34;&#34;
 
-    HIGH_CORRELATION = 3
+    HIGH_CORRELATION = auto()
     &#34;&#34;&#34;This variable is highly correlated.&#34;&#34;&#34;
 
-    RECODED = 4
-    &#34;&#34;&#34;This variable is correlated (categorical).&#34;&#34;&#34;
-
-    HIGH_CARDINALITY = 5
+    HIGH_CARDINALITY = auto()
     &#34;&#34;&#34;This variable has a high cardinality.&#34;&#34;&#34;
 
-    UNSUPPORTED = 6
+    UNSUPPORTED = auto()
     &#34;&#34;&#34;This variable is unsupported.&#34;&#34;&#34;
 
-    DUPLICATES = 7
+    DUPLICATES = auto()
     &#34;&#34;&#34;This variable contains duplicates.&#34;&#34;&#34;
 
-    SKEWED = 8
+    SKEWED = auto()
     &#34;&#34;&#34;This variable is highly skewed.&#34;&#34;&#34;
 
-    MISSING = 9
+    MISSING = auto()
     &#34;&#34;&#34;This variable contains missing values.&#34;&#34;&#34;
 
-    INFINITE = 10
+    INFINITE = auto()
     &#34;&#34;&#34;This variable contains infinite values.&#34;&#34;&#34;
 
-    TYPE_DATE = 11
+    TYPE_DATE = auto()
     &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
 
-    UNIQUE = 12
+    UNIQUE = auto()
     &#34;&#34;&#34;This variable has unique values.&#34;&#34;&#34;
 
-    CONSTANT_LENGTH = 13
+    CONSTANT_LENGTH = auto()
     &#34;&#34;&#34;This variable has a constant length&#34;&#34;&#34;
 
-    REJECTED = 15
+    REJECTED = auto()
     &#34;&#34;&#34;Variables are rejected if we do not want to consider them for further analysis.&#34;&#34;&#34;
 
-    UNIFORM = 14
+    UNIFORM = auto()
     &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;
 
 
@@ -212,32 +205,23 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
             )
         )
 
-    # Infinite values
-    if warning_value(description[&#34;p_infinite&#34;]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.INFINITE,
-                values=description,
-                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
-            )
-        )
-
     # Date
     if description[&#34;type&#34;] == Variable.TYPE_DATE:
         # Uniformity
         chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
             float
         )
-        # chi_squared_threshold = 0.5
-        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+        if (
+            &#34;chi_squared&#34; in description
+            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
+        ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
     # Categorical
     if description[&#34;type&#34;] == Variable.TYPE_CAT:
-        if description[&#34;date_warning&#34;]:
+        if &#34;date_warning&#34; in description and description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
@@ -246,7 +230,10 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
         chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
             float
         )
-        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+        if (
+            &#34;chi_squared&#34; in description
+            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
+        ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
@@ -288,6 +275,17 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                     message_type=MessageType.SKEWED,
                     values=description,
                     fields={&#34;skewness&#34;},
+                )
+            )
+
+        # Infinite values
+        if warning_value(description[&#34;p_infinite&#34;]):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.INFINITE,
+                    values=description,
+                    fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
                 )
             )
 
@@ -344,22 +342,14 @@ def warning_skewness(v: float) -&gt; bool:
     )
 
 
-def _date_parser(date_string):
-    pattern = re.compile(r&#34;[.\-:]&#34;)
-    pieces = re.split(pattern, date_string)
-
-    if len(pieces) &lt; 3:
-        raise ValueError(&#34;Must have at least year, month and date passed&#34;)
-
-    return parse(date_string)
-
-
 def warning_type_date(series):
-    with suppress(ValueError, TypeError):
-        series.apply(_date_parser)
-        return True
+    from dateutil.parser import parse, ParserError
 
-    return False</code></pre>
+    try:
+        series.apply(parse)
+        return True
+    except ParserError:
+        return False</code></pre>
 </details>
 </section>
 <section>
@@ -516,32 +506,23 @@ def warning_type_date(series):
             )
         )
 
-    # Infinite values
-    if warning_value(description[&#34;p_infinite&#34;]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.INFINITE,
-                values=description,
-                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
-            )
-        )
-
     # Date
     if description[&#34;type&#34;] == Variable.TYPE_DATE:
         # Uniformity
         chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
             float
         )
-        # chi_squared_threshold = 0.5
-        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+        if (
+            &#34;chi_squared&#34; in description
+            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
+        ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
     # Categorical
     if description[&#34;type&#34;] == Variable.TYPE_CAT:
-        if description[&#34;date_warning&#34;]:
+        if &#34;date_warning&#34; in description and description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
             )
@@ -550,7 +531,10 @@ def warning_type_date(series):
         chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
             float
         )
-        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
+        if (
+            &#34;chi_squared&#34; in description
+            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
+        ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
@@ -592,6 +576,17 @@ def warning_type_date(series):
                     message_type=MessageType.SKEWED,
                     values=description,
                     fields={&#34;skewness&#34;},
+                )
+            )
+
+        # Infinite values
+        if warning_value(description[&#34;p_infinite&#34;]):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.INFINITE,
+                    values=description,
+                    fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
                 )
             )
 
@@ -644,11 +639,13 @@ def warning_type_date(series):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def warning_type_date(series):
-    with suppress(ValueError, TypeError):
-        series.apply(_date_parser)
-        return True
+    from dateutil.parser import parse, ParserError
 
-    return False</code></pre>
+    try:
+        series.apply(parse)
+        return True
+    except ParserError:
+        return False</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.warning_value"><code class="name flex">
@@ -748,49 +745,46 @@ def warning_type_date(series):
 <pre><code class="python">class MessageType(Enum):
     &#34;&#34;&#34;Message Types&#34;&#34;&#34;
 
-    CONSTANT = 1
+    CONSTANT = auto()
     &#34;&#34;&#34;This variable has a constant value.&#34;&#34;&#34;
 
-    ZEROS = 2
+    ZEROS = auto()
     &#34;&#34;&#34;This variable contains zeros.&#34;&#34;&#34;
 
-    HIGH_CORRELATION = 3
+    HIGH_CORRELATION = auto()
     &#34;&#34;&#34;This variable is highly correlated.&#34;&#34;&#34;
 
-    RECODED = 4
-    &#34;&#34;&#34;This variable is correlated (categorical).&#34;&#34;&#34;
-
-    HIGH_CARDINALITY = 5
+    HIGH_CARDINALITY = auto()
     &#34;&#34;&#34;This variable has a high cardinality.&#34;&#34;&#34;
 
-    UNSUPPORTED = 6
+    UNSUPPORTED = auto()
     &#34;&#34;&#34;This variable is unsupported.&#34;&#34;&#34;
 
-    DUPLICATES = 7
+    DUPLICATES = auto()
     &#34;&#34;&#34;This variable contains duplicates.&#34;&#34;&#34;
 
-    SKEWED = 8
+    SKEWED = auto()
     &#34;&#34;&#34;This variable is highly skewed.&#34;&#34;&#34;
 
-    MISSING = 9
+    MISSING = auto()
     &#34;&#34;&#34;This variable contains missing values.&#34;&#34;&#34;
 
-    INFINITE = 10
+    INFINITE = auto()
     &#34;&#34;&#34;This variable contains infinite values.&#34;&#34;&#34;
 
-    TYPE_DATE = 11
+    TYPE_DATE = auto()
     &#34;&#34;&#34;This variable is likely a datetime, but treated as categorical.&#34;&#34;&#34;
 
-    UNIQUE = 12
+    UNIQUE = auto()
     &#34;&#34;&#34;This variable has unique values.&#34;&#34;&#34;
 
-    CONSTANT_LENGTH = 13
+    CONSTANT_LENGTH = auto()
     &#34;&#34;&#34;This variable has a constant length&#34;&#34;&#34;
 
-    REJECTED = 15
+    REJECTED = auto()
     &#34;&#34;&#34;Variables are rejected if we do not want to consider them for further analysis.&#34;&#34;&#34;
 
-    UNIFORM = 14
+    UNIFORM = auto()
     &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -826,10 +820,6 @@ def warning_type_date(series):
 <dt id="pandas_profiling.model.messages.MessageType.MISSING"><code class="name">var <span class="ident">MISSING</span></code></dt>
 <dd>
 <div class="desc"><p>This variable contains missing values.</p></div>
-</dd>
-<dt id="pandas_profiling.model.messages.MessageType.RECODED"><code class="name">var <span class="ident">RECODED</span></code></dt>
-<dd>
-<div class="desc"><p>This variable is correlated (categorical).</p></div>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType.REJECTED"><code class="name">var <span class="ident">REJECTED</span></code></dt>
 <dd>
@@ -903,7 +893,6 @@ def warning_type_date(series):
 <li><code><a title="pandas_profiling.model.messages.MessageType.HIGH_CORRELATION" href="#pandas_profiling.model.messages.MessageType.HIGH_CORRELATION">HIGH_CORRELATION</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.INFINITE" href="#pandas_profiling.model.messages.MessageType.INFINITE">INFINITE</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.MISSING" href="#pandas_profiling.model.messages.MessageType.MISSING">MISSING</a></code></li>
-<li><code><a title="pandas_profiling.model.messages.MessageType.RECODED" href="#pandas_profiling.model.messages.MessageType.RECODED">RECODED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.REJECTED" href="#pandas_profiling.model.messages.MessageType.REJECTED">REJECTED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.SKEWED" href="#pandas_profiling.model.messages.MessageType.SKEWED">SKEWED</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.TYPE_DATE" href="#pandas_profiling.model.messages.MessageType.TYPE_DATE">TYPE_DATE</a></code></li>

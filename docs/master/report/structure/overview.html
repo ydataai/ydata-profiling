@@ -26,7 +26,8 @@
 </summary>
 <pre><code class="python">from urllib.parse import quote
 
-from pandas_profiling.report.presentation.core import HTML, Table, Sequence, Warnings
+from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.presentation.core import Container, Table, Warnings
 
 
 def get_dataset_overview(summary):
@@ -84,7 +85,7 @@ def get_dataset_overview(summary):
         name=&#34;Variable types&#34;,
     )
 
-    return Sequence(
+    return Container(
         [dataset_info, dataset_types],
         anchor_id=&#34;dataset_overview&#34;,
         name=&#34;Overview&#34;,
@@ -92,13 +93,17 @@ def get_dataset_overview(summary):
     )
 
 
-def get_dataset_reproduction(summary, date_start, date_end):
+def get_dataset_reproduction(summary):
     version = summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
     config = quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
+    date_start = summary[&#34;analysis&#34;][&#34;date_start&#34;]
+    date_end = summary[&#34;analysis&#34;][&#34;date_end&#34;]
+    duration = summary[&#34;analysis&#34;][&#34;duration&#34;]
     return Table(
         [
             {&#34;name&#34;: &#34;Analysis started&#34;, &#34;value&#34;: date_start, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Analysis finished&#34;, &#34;value&#34;: date_end, &#34;fmt&#34;: &#34;fmt&#34;},
+            {&#34;name&#34;: &#34;Duration&#34;, &#34;value&#34;: duration, &#34;fmt&#34;: &#34;fmt_timespan&#34;},
             {
                 &#34;name&#34;: &#34;Version&#34;,
                 &#34;value&#34;: f&#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;,
@@ -120,7 +125,14 @@ def get_dataset_reproduction(summary, date_start, date_end):
     )
 
 
-def get_dataset_warnings(warnings, count):
+def get_dataset_warnings(warnings: list) -&gt; Warnings:
+    count = len(
+        [
+            warning
+            for warning in warnings
+            if warning.message_type != MessageType.REJECTED
+        ]
+    )
     return Warnings(warnings=warnings, name=f&#34;Warnings ({count})&#34;, anchor_id=&#34;warnings&#34;)</code></pre>
 </details>
 </section>
@@ -195,7 +207,7 @@ def get_dataset_warnings(warnings, count):
         name=&#34;Variable types&#34;,
     )
 
-    return Sequence(
+    return Container(
         [dataset_info, dataset_types],
         anchor_id=&#34;dataset_overview&#34;,
         name=&#34;Overview&#34;,
@@ -204,7 +216,7 @@ def get_dataset_warnings(warnings, count):
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.overview.get_dataset_reproduction"><code class="name flex">
-<span>def <span class="ident">get_dataset_reproduction</span></span>(<span>summary, date_start, date_end)</span>
+<span>def <span class="ident">get_dataset_reproduction</span></span>(<span>summary)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -212,13 +224,17 @@ def get_dataset_warnings(warnings, count):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_dataset_reproduction(summary, date_start, date_end):
+<pre><code class="python">def get_dataset_reproduction(summary):
     version = summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
     config = quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
+    date_start = summary[&#34;analysis&#34;][&#34;date_start&#34;]
+    date_end = summary[&#34;analysis&#34;][&#34;date_end&#34;]
+    duration = summary[&#34;analysis&#34;][&#34;duration&#34;]
     return Table(
         [
             {&#34;name&#34;: &#34;Analysis started&#34;, &#34;value&#34;: date_start, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Analysis finished&#34;, &#34;value&#34;: date_end, &#34;fmt&#34;: &#34;fmt&#34;},
+            {&#34;name&#34;: &#34;Duration&#34;, &#34;value&#34;: duration, &#34;fmt&#34;: &#34;fmt_timespan&#34;},
             {
                 &#34;name&#34;: &#34;Version&#34;,
                 &#34;value&#34;: f&#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;,
@@ -241,7 +257,7 @@ def get_dataset_warnings(warnings, count):
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.overview.get_dataset_warnings"><code class="name flex">
-<span>def <span class="ident">get_dataset_warnings</span></span>(<span>warnings, count)</span>
+<span>def <span class="ident">get_dataset_warnings</span></span>(<span>warnings: list) -> <a title="pandas_profiling.report.presentation.core.warnings.Warnings" href="../presentation/core/warnings.html#pandas_profiling.report.presentation.core.warnings.Warnings">Warnings</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -249,7 +265,14 @@ def get_dataset_warnings(warnings, count):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_dataset_warnings(warnings, count):
+<pre><code class="python">def get_dataset_warnings(warnings: list) -&gt; Warnings:
+    count = len(
+        [
+            warning
+            for warning in warnings
+            if warning.message_type != MessageType.REJECTED
+        ]
+    )
     return Warnings(warnings=warnings, name=f&#34;Warnings ({count})&#34;, anchor_id=&#34;warnings&#34;)</code></pre>
 </details>
 </dd>

@@ -26,15 +26,15 @@
 </summary>
 <pre><code class="python">from pandas_profiling.config import config
 from pandas_profiling.report.formatters import fmt_array
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
+    Container,
     FrequencyTable,
-    Sequence,
     Image,
     Table,
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
+from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_count(summary):
@@ -112,7 +112,7 @@ def render_count(summary):
         alt=&#34;Mini histogram&#34;,
     )
 
-    template_variables[&#34;top&#34;] = Sequence(
+    template_variables[&#34;top&#34;] = Container(
         [info, table1, table2, mini_histo], sequence_type=&#34;grid&#34;
     )
 
@@ -226,7 +226,7 @@ def render_count(summary):
         anchor_id=&#34;common_values&#34;,
     )
 
-    evs = Sequence(
+    evs = Container(
         [
             FrequencyTable(
                 template_variables[&#34;firstn_expanded&#34;],
@@ -262,10 +262,10 @@ def render_count(summary):
 
         seqs.append(histo_dyn)
 
-    template_variables[&#34;bottom&#34;] = Sequence(
+    template_variables[&#34;bottom&#34;] = Container(
         [
             # statistics,
-            Sequence(
+            Container(
                 seqs, sequence_type=&#34;tabs&#34;, name=&#34;Histogram(s)&#34;, anchor_id=&#34;histograms&#34;
             ),
             fq,
@@ -369,7 +369,7 @@ def render_count(summary):
         alt=&#34;Mini histogram&#34;,
     )
 
-    template_variables[&#34;top&#34;] = Sequence(
+    template_variables[&#34;top&#34;] = Container(
         [info, table1, table2, mini_histo], sequence_type=&#34;grid&#34;
     )
 
@@ -483,7 +483,7 @@ def render_count(summary):
         anchor_id=&#34;common_values&#34;,
     )
 
-    evs = Sequence(
+    evs = Container(
         [
             FrequencyTable(
                 template_variables[&#34;firstn_expanded&#34;],
@@ -519,10 +519,10 @@ def render_count(summary):
 
         seqs.append(histo_dyn)
 
-    template_variables[&#34;bottom&#34;] = Sequence(
+    template_variables[&#34;bottom&#34;] = Container(
         [
             # statistics,
-            Sequence(
+            Container(
                 seqs, sequence_type=&#34;tabs&#34;, name=&#34;Histogram(s)&#34;, anchor_id=&#34;histograms&#34;
             ),
             fq,

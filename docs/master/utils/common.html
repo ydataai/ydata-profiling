@@ -28,6 +28,9 @@
 <pre><code class="python">&#34;&#34;&#34;Common util functions (e.g. missing in Python).&#34;&#34;&#34;
 import collections
 import zipfile
+
+# Monkeypatch bug in imagehdr
+from imghdr import tests
 from pathlib import Path
 from typing import Mapping
 
@@ -75,10 +78,6 @@ def extract_zip(outfile, effective_path):
             z.extractall(effective_path)
     except zipfile.BadZipFile as e:
         raise ValueError(&#34;Bad zip file&#34;, e)
-
-
-# Monkeypatch bug in imagehdr
-from imghdr import tests
 
 
 def test_jpeg1(h, f):

@@ -30,7 +30,12 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 class HTMLSample(Sample):
     def render(self):
-        return templates.template(&#34;sample.html&#34;).render(**self.content)</code></pre>
+        sample_html = self.content[&#34;sample&#34;].to_html(
+            classes=&#34;sample table table-striped&#34;
+        )
+        return templates.template(&#34;sample.html&#34;).render(
+            **self.content, sample_html=sample_html
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -55,7 +60,12 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class HTMLSample(Sample):
     def render(self):
-        return templates.template(&#34;sample.html&#34;).render(**self.content)</code></pre>
+        sample_html = self.content[&#34;sample&#34;].to_html(
+            classes=&#34;sample table table-striped&#34;
+        )
+        return templates.template(&#34;sample.html&#34;).render(
+            **self.content, sample_html=sample_html
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -76,7 +86,12 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render(self):
-    return templates.template(&#34;sample.html&#34;).render(**self.content)</code></pre>
+    sample_html = self.content[&#34;sample&#34;].to_html(
+        classes=&#34;sample table table-striped&#34;
+    )
+    return templates.template(&#34;sample.html&#34;).render(
+        **self.content, sample_html=sample_html
+    )</code></pre>
 </details>
 </dd>
 </dl>

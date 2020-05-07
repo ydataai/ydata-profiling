@@ -24,7 +24,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ipywidgets import widgets
+<pre><code class="python">import re
+
+from ipywidgets import widgets
 
 from pandas_profiling.report.presentation.core.image import Image
 
@@ -33,7 +35,9 @@ class WidgetImage(Image):
     def render(self):
         image = self.content[&#34;image&#34;]
         if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
-            image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
+            image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
+
+            image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)
         else:
             alt = self.content[&#34;alt&#34;]
             image = f&#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;
@@ -71,7 +75,9 @@ inheritance.</p></div>
     def render(self):
         image = self.content[&#34;image&#34;]
         if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
-            image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
+            image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
+
+            image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)
         else:
             alt = self.content[&#34;alt&#34;]
             image = f&#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;
@@ -105,7 +111,9 @@ inheritance.</p></div>
 <pre><code class="python">def render(self):
     image = self.content[&#34;image&#34;]
     if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
-        image.replace(&#34;svg &#34;, &#39;svg class=&#34;img-responsive center-img&#34;&#39;)
+        image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
+
+        image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)
     else:
         alt = self.content[&#34;alt&#34;]
         image = f&#39;&lt;img src=&#34;{image}&#34; alt=&#34;{alt}&#34; /&gt;&#39;

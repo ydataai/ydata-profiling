@@ -25,14 +25,14 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from pandas_profiling.config import config
-from pandas_profiling.visualisation.plot import scatter_complex
 from pandas_profiling.report.presentation.core import (
     HTML,
+    Container,
     Image,
-    Sequence,
     Table,
     VariableInfo,
 )
+from pandas_profiling.visualisation.plot import scatter_complex
 
 
 def render_complex(summary):
@@ -78,7 +78,7 @@ def render_complex(summary):
 
     placeholder = HTML(&#34;&#34;)
 
-    template_variables[&#34;top&#34;] = Sequence(
+    template_variables[&#34;top&#34;] = Container(
         [info, table1, table2, placeholder], sequence_type=&#34;grid&#34;
     )
 
@@ -94,7 +94,7 @@ def render_complex(summary):
         )
     ]
 
-    bottom = Sequence(items, sequence_type=&#34;tabs&#34;, anchor_id=summary[&#34;varid&#34;])
+    bottom = Container(items, sequence_type=&#34;tabs&#34;, anchor_id=summary[&#34;varid&#34;])
 
     template_variables[&#34;bottom&#34;] = bottom
 
@@ -160,7 +160,7 @@ def render_complex(summary):
 
     placeholder = HTML(&#34;&#34;)
 
-    template_variables[&#34;top&#34;] = Sequence(
+    template_variables[&#34;top&#34;] = Container(
         [info, table1, table2, placeholder], sequence_type=&#34;grid&#34;
     )
 
@@ -176,7 +176,7 @@ def render_complex(summary):
         )
     ]
 
-    bottom = Sequence(items, sequence_type=&#34;tabs&#34;, anchor_id=summary[&#34;varid&#34;])
+    bottom = Container(items, sequence_type=&#34;tabs&#34;, anchor_id=summary[&#34;varid&#34;])
 
     template_variables[&#34;bottom&#34;] = bottom
 

@@ -28,12 +28,12 @@
 <pre><code class="python">&#34;&#34;&#34;Common parts to all other modules, mainly utility functions.&#34;&#34;&#34;
 import sys
 from enum import Enum, unique
-from urllib.parse import urlparse
+from urllib.parse import ParseResult, urlparse
 
+import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.utils.data_types import str_is_path
 
 
 @unique
@@ -150,9 +150,11 @@ def is_numeric(series: pd.Series, series_description: dict) -&gt; bool:
     Returns:
         True is the series is numeric type (NaNs allowed).
     &#34;&#34;&#34;
-    return pd.api.types.is_numeric_dtype(series) and series_description[
-        &#34;distinct_count_without_nan&#34;
-    ] &gt;= config[&#34;vars&#34;][&#34;num&#34;][&#34;low_categorical_threshold&#34;].get(int)
+    return pd.api.types.is_numeric_dtype(series) and (
+        series_description[&#34;distinct_count_without_nan&#34;]
+        &gt;= config[&#34;vars&#34;][&#34;num&#34;][&#34;low_categorical_threshold&#34;].get(int)
+        or any(np.inf == s or -np.inf == s for s in series)
+    )
 
 
 def is_url(series: pd.Series, series_description: dict) -&gt; bool:
@@ -165,10 +167,14 @@ def is_url(series: pd.Series, series_description: dict) -&gt; bool:
     Returns:
         True is the series is url type (NaNs allowed).
     &#34;&#34;&#34;
+
+    def is_url_item(x):
+        return isinstance(x, ParseResult) and all((x.netloc, x.scheme, x.path))
+
     if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
         try:
-            result = series[~series.isnull()].astype(str).apply(urlparse)
-            return result.apply(lambda x: all([x.scheme, x.netloc, x.path])).all()
+            result = series[~series.isnull()].astype(str)
+            return all(is_url_item(urlparse(x)) for x in result)
         except ValueError:
             return False
     else:
@@ -176,10 +182,30 @@ def is_url(series: pd.Series, series_description: dict) -&gt; bool:
 
 
 def is_path(series, series_description) -&gt; bool:
+    from pathlib import Path
+
+    def is_path_item(p: str):
+        &#34;&#34;&#34;Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+
+        Args:
+            p: the Path
+
+        Returns:
+            True is is an absolute path
+        &#34;&#34;&#34;
+        try:
+            path = Path(p)
+            if path.is_absolute():
+                return True
+            else:
+                return False
+        except TypeError:
+            return False
+
     if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
         try:
-            result = series[~series.isnull()].astype(str).apply(str_is_path)
-            return result.all()
+            result = series[~series.isnull()].astype(str)
+            return all(is_path_item(x) for x in result)
         except ValueError:
             return False
     else:
@@ -470,9 +496,11 @@ datetime64.</p>
     Returns:
         True is the series is numeric type (NaNs allowed).
     &#34;&#34;&#34;
-    return pd.api.types.is_numeric_dtype(series) and series_description[
-        &#34;distinct_count_without_nan&#34;
-    ] &gt;= config[&#34;vars&#34;][&#34;num&#34;][&#34;low_categorical_threshold&#34;].get(int)</code></pre>
+    return pd.api.types.is_numeric_dtype(series) and (
+        series_description[&#34;distinct_count_without_nan&#34;]
+        &gt;= config[&#34;vars&#34;][&#34;num&#34;][&#34;low_categorical_threshold&#34;].get(int)
+        or any(np.inf == s or -np.inf == s for s in series)
+    )</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.base.is_path"><code class="name flex">
@@ -485,10 +513,30 @@ datetime64.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def is_path(series, series_description) -&gt; bool:
+    from pathlib import Path
+
+    def is_path_item(p: str):
+        &#34;&#34;&#34;Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+
+        Args:
+            p: the Path
+
+        Returns:
+            True is is an absolute path
+        &#34;&#34;&#34;
+        try:
+            path = Path(p)
+            if path.is_absolute():
+                return True
+            else:
+                return False
+        except TypeError:
+            return False
+
     if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
         try:
-            result = series[~series.isnull()].astype(str).apply(str_is_path)
-            return result.all()
+            result = series[~series.isnull()].astype(str)
+            return all(is_path_item(x) for x in result)
         except ValueError:
             return False
     else:
@@ -523,10 +571,14 @@ datetime64.</p>
     Returns:
         True is the series is url type (NaNs allowed).
     &#34;&#34;&#34;
+
+    def is_url_item(x):
+        return isinstance(x, ParseResult) and all((x.netloc, x.scheme, x.path))
+
     if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
         try:
-            result = series[~series.isnull()].astype(str).apply(urlparse)
-            return result.apply(lambda x: all([x.scheme, x.netloc, x.path])).all()
+            result = series[~series.isnull()].astype(str)
+            return all(is_url_item(urlparse(x)) for x in result)
         except ValueError:
             return False
     else:

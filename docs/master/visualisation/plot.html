@@ -27,21 +27,20 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Plot functions for the profiling report.&#34;&#34;&#34;
 
-from typing import Union, Optional
+from typing import Optional, Union
 
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
-
+from matplotlib.patches import Patch
 from pandas.plotting import register_matplotlib_converters
-from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 from pkg_resources import resource_filename
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
+from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 
 register_matplotlib_converters()
 matplotlib.style.use(resource_filename(__name__, &#34;pandas_profiling.mplstyle&#34;))
@@ -49,7 +48,7 @@ sns.set_style(style=&#34;white&#34;)
 
 
 def _plot_histogram(
-    series: pd.Series,
+    series: np.ndarray,
     series_description: dict,
     bins: Union[int, np.ndarray],
     figsize: tuple = (6, 4),
@@ -66,35 +65,34 @@ def _plot_histogram(
 
 
     &#34;&#34;&#34;
-    if series_description[&#34;type&#34;] == Variable.TYPE_DATE:
-        # Workaround for https://github.com/pandas-dev/pandas/issues/17372
-        fig = plt.figure(figsize=figsize)
-        plot = fig.add_subplot(111)
-        plot.set_ylabel(&#34;Frequency&#34;)
-        plot.hist(
-            series.dropna().values,
-            facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
-            bins=bins,
-        )
-
-    else:
-        plot = series.plot(
-            kind=&#34;hist&#34;,
-            figsize=figsize,
-            facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
-            bins=bins,
-        )
+    # if series_description[&#34;type&#34;] == Variable.TYPE_DATE:
+    # Workaround for https://github.com/pandas-dev/pandas/issues/17372
+    fig = plt.figure(figsize=figsize)
+    plot = fig.add_subplot(111)
+    plot.set_ylabel(&#34;Frequency&#34;)
+    plot.hist(
+        series,  # .dropna().values,
+        facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+        bins=bins,
+    )
+    # else:
+    #     plot = series.plot(
+    #         kind=&#34;hist&#34;,
+    #         figsize=figsize,
+    #         facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
+    #         bins=bins,
+    #     )
     return plot
 
 
 def histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -&gt; str:
     &#34;&#34;&#34;Plot an histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
@@ -109,13 +107,13 @@ def histogram(
 
 
 def mini_histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -&gt; str:
     &#34;&#34;&#34;Plot a small (mini) histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
@@ -134,11 +132,11 @@ def mini_histogram(
     return plot_360_n0sc0pe(plt)
 
 
-def get_cmap_half(cmap_name):
+def get_cmap_half(cmap):
     &#34;&#34;&#34;Get the upper half of the color map
 
     Args:
-        cmap_name: the name of the color map
+        cmap: the color map
 
     Returns:
         A new color map based on the upper half of another color map
@@ -147,7 +145,6 @@ def get_cmap_half(cmap_name):
         https://stackoverflow.com/a/24746399/470433
     &#34;&#34;&#34;
     # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
-    cmap = plt.get_cmap(cmap_name)
     colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
 
     # Create a new colormap from those colors
@@ -187,15 +184,27 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
       The resulting correlation matrix encoded as a string.
     &#34;&#34;&#34;
     fig_cor, axes_cor = plt.subplots()
-    cmap = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    cmap_name = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    cmap_bad = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;bad&#34;].get(str)
+
+    cmap = plt.get_cmap(cmap_name)
     if vmin == 0:
         cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
 
     labels = data.columns
     matrix_image = axes_cor.imshow(
         data, vmin=vmin, vmax=1, interpolation=&#34;nearest&#34;, cmap=cmap
     )
     plt.colorbar(matrix_image)
+
+    if data.isnull().values.any():
+        legend_elements = [Patch(facecolor=cmap(np.nan), label=&#34;invalid\ncoefficient&#34;)]
+
+        plt.legend(
+            handles=legend_elements, loc=&#34;upper right&#34;, handleheight=2.5,
+        )
+
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
 
@@ -299,15 +308,27 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
       The resulting correlation matrix encoded as a string.
     &#34;&#34;&#34;
     fig_cor, axes_cor = plt.subplots()
-    cmap = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    cmap_name = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    cmap_bad = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;bad&#34;].get(str)
+
+    cmap = plt.get_cmap(cmap_name)
     if vmin == 0:
         cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
 
     labels = data.columns
     matrix_image = axes_cor.imshow(
         data, vmin=vmin, vmax=1, interpolation=&#34;nearest&#34;, cmap=cmap
     )
     plt.colorbar(matrix_image)
+
+    if data.isnull().values.any():
+        legend_elements = [Patch(facecolor=cmap(np.nan), label=&#34;invalid\ncoefficient&#34;)]
+
+        plt.legend(
+            handles=legend_elements, loc=&#34;upper right&#34;, handleheight=2.5,
+        )
+
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
     axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
 
@@ -320,14 +341,14 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.plot.get_cmap_half"><code class="name flex">
-<span>def <span class="ident">get_cmap_half</span></span>(<span>cmap_name)</span>
+<span>def <span class="ident">get_cmap_half</span></span>(<span>cmap)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the upper half of the color map</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>cmap_name</code></strong></dt>
-<dd>the name of the color map</dd>
+<dt><strong><code>cmap</code></strong></dt>
+<dd>the color map</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -340,11 +361,11 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_cmap_half(cmap_name):
+<pre><code class="python">def get_cmap_half(cmap):
     &#34;&#34;&#34;Get the upper half of the color map
 
     Args:
-        cmap_name: the name of the color map
+        cmap: the color map
 
     Returns:
         A new color map based on the upper half of another color map
@@ -353,7 +374,6 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
         https://stackoverflow.com/a/24746399/470433
     &#34;&#34;&#34;
     # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
-    cmap = plt.get_cmap(cmap_name)
     colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
 
     # Create a new colormap from those colors
@@ -402,15 +422,15 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.plot.histogram"><code class="name flex">
-<span>def <span class="ident">histogram</span></span>(<span>series: pandas.core.series.Series, series_description: dict, bins: Union[int, numpy.ndarray]) -> str</span>
+<span>def <span class="ident">histogram</span></span>(<span>series: numpy.ndarray, series_description: dict, bins: Union[int, numpy.ndarray]) -> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Plot an histogram of the data.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt>series_description:</dt>
 <dt><strong><code>series</code></strong></dt>
 <dd>The data to plot.</dd>
+<dt>series_description:</dt>
 <dt><strong><code>bins</code></strong></dt>
 <dd>number of bins (int for equal size, ndarray for variable size)</dd>
 </dl>
@@ -421,13 +441,13 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -&gt; str:
     &#34;&#34;&#34;Plot an histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
@@ -442,15 +462,15 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.plot.mini_histogram"><code class="name flex">
-<span>def <span class="ident">mini_histogram</span></span>(<span>series: pandas.core.series.Series, series_description: dict, bins: Union[int, numpy.ndarray]) -> str</span>
+<span>def <span class="ident">mini_histogram</span></span>(<span>series: numpy.ndarray, series_description: dict, bins: Union[int, numpy.ndarray]) -> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Plot a small (mini) histogram of the data.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt>series_description:</dt>
 <dt><strong><code>series</code></strong></dt>
 <dd>The data to plot.</dd>
+<dt>series_description:</dt>
 <dt><strong><code>bins</code></strong></dt>
 <dd>number of bins (int for equal size, ndarray for variable size)</dd>
 </dl>
@@ -461,13 +481,13 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def mini_histogram(
-    series: pd.Series, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -&gt; str:
     &#34;&#34;&#34;Plot a small (mini) histogram of the data.
 
     Args:
-      series_description:
       series: The data to plot.
+      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
