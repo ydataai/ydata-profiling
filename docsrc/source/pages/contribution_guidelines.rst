@@ -40,6 +40,14 @@ In addition to the workflow described in the blog post, Github Actions lints the
 
   Git workflow for this project. Based on work by Vincent Driessen, Creative Commons BY-SA.
 
+Contributor License Agreement (CLA)
+-----------------------------------
+This package does not have a Contributor License Agreement (CLA), as the GitHub Terms of Service provides a sensible `explicit default <https://help.github.com/en/github/site-policy/github-terms-of-service#6-contributions-under-repository-license>`_:
+
+        Whenever you make a contribution to a repository containing notice of a license, you license your contribution under
+        the same terms, and you agree that you have the right to license your contribution under those terms.
+
+Read Github's `open source legal guide <https://opensource.guide/legal/#does-my-project-need-an-additional-contributor-agreement>`_ for further details.
 
 More information
 ----------------
