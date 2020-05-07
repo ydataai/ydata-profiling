@@ -1,10 +1,9 @@
 name: Deploy to PyPi
 
-# Automatically lint code on release branches
 on:
   push:
     branches:
-      - never
+      - master
 
 jobs:
   PyPi Release:
@@ -49,4 +48,4 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__
-        password: ${{ secrets.pypi_password }}
+        password: ${{ secrets.PYPI_TOKEN }}
