@@ -6,8 +6,9 @@ on:
       - master
 
 jobs:
-  PyPi Release:
+  release:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    name: PyPi Release
     runs-on: ubuntu-latest
 
     steps:
