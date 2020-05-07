@@ -1,7 +1,7 @@
 from pathlib import Path
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from pandas_profiling import ProfileReport
 from pandas_profiling.utils.cache import cache_file
@@ -45,4 +45,4 @@ if __name__ == "__main__":
         html={"style": {"logo": logo_string}},
         correlations={"cramers": {"calculate": False}},
     )
-    profile.to_file(output_file=Path("./meteorites_report.html"))
+    profile.to_file(Path("./meteorites_report.html"))

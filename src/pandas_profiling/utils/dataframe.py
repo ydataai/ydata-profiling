@@ -1,11 +1,9 @@
 """Utils for pandas DataFrames."""
-import sys
 import warnings
 from pathlib import Path
 
+import joblib
 import pandas as pd
-
-from pandas_profiling.config import config
 
 
 def warn_read(extension):
@@ -124,3 +122,7 @@ def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
 
             df = pd.concat([df, expanded], axis=1)
     return df
+
+
+def hash_dataframe(df):
+    return joblib.hash(df)

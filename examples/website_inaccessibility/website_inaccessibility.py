@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+
 from pandas_profiling import ProfileReport
 from pandas_profiling.utils.cache import cache_file
 
@@ -16,4 +17,4 @@ if __name__ == "__main__":
         title="Website Inaccessibility Test Lists",
         correlations={"cramers": {"calculate": False}},
     )
-    profile.to_file(output_file=Path("./website_inaccessibility_report.html"))
+    profile.to_file(Path("./website_inaccessibility_report.html"))

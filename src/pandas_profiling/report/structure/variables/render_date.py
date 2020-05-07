@@ -1,11 +1,11 @@
 from pandas_profiling.config import config
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
+    Container,
     Image,
-    Sequence,
     Table,
     VariableInfo,
 )
+from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_date(summary):
@@ -68,12 +68,12 @@ def render_date(summary):
         alt="Mini histogram",
     )
 
-    template_variables["top"] = Sequence(
+    template_variables["top"] = Container(
         [info, table1, table2, mini_histo], sequence_type="grid"
     )
 
     # Bottom
-    bottom = Sequence(
+    bottom = Container(
         [
             Image(
                 histogram(

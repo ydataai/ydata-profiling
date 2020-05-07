@@ -26,32 +26,36 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-### New in v2.6.0
+### Version v2.7.0 released
 
-#### Dependency policy
-The current dependency policy is suboptimal. Pinning the dependencies is great for reproducibility (high guarantee to work), but on the downside requires frequent maintenance and introduces compatibility issues with other packages. Therefore, we are moving away from pinning dependencies and instead specify a minimum version. 
+#### Performance
 
-#### Pandas v1
-Early releases of pandas v1 demonstrated many regressions that broke functionality (as acknowledged by the authors [here](https://github.com/pandas-dev/pandas/issues/31523). At this point, pandas is more stable and we notice high demand for compatibility. We move on to support pandas' latest versions. To ensure compatibility with both versions, we have extended the test matrix to test against both pandas 0.x.y and 1.x.y.
+There were several performance regressions pointed out to me recently when comparing 1.4.1 to 2.6.0.
+To that end, we benchmarked the code and found several minor features introducing disproportionate computational complexity.
+Version 2.7.0 optimizes these, giving significant performance improvements!
+Moreover, the default configuration is tweaked for towards the needs of the average user.
 
-#### Python 3.6+ features
-Python 3.6 introduces ordered dicts and f-strings, which we now rely on. This means that from pandas-profiling 2.6, you should minimally run Python 3.6. For users that for some reason cannot update, you can use pandas-profiling 2.5.0, but you unfortunately won't benefit from updates or maintenance.
+#### Phased builds and lazy loading
 
-#### Extended continuous integration
-Starting from this release, we use Github Actions and Travis CI combined to increase maintainability. 
-Travis CI handles the testing, Github Actions automates part of the development process by running black and building the docs.
+A report is built in phases, which allows for new exciting features such as caching, only re-rendering partial reports and lazily computing the report.
+Moreover, the progress bar provides more information on the building phase and step.
 
-### Support `pandas-profiling`
-With your help, we got approved for [GitHub Sponsors](https://github.com/sponsors/sbrugman)! 
+#### Documentation
+
+This version introduces [more elaborate documentation](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/index.html) powered by Sphinx. The previously used pdoc3 has been adequate initially, however misses functionality and extensibility. Several recurring topics are now documented, for instance the configuration parameters are documented and there are pages on big datasets, sensitive data, integrations and resources.
+
+#### Support `pandas-profiling`
+
+The development of ``pandas-profiling`` relies completely on contributions.
+If you find value in the package, we welcome you to support the project through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
 It's extra exciting that GitHub **matches your contribution** for the first year.
-Therefore, we welcome you to support the project through GitHub! 
 
 Find more information here:
 
+ - [Changelog v2.7.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-7-0)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
- - [Read the release notes v2.6.0](https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.6.0) 
 
- *April 14, 2020 💘*
+ *May 7, 2020 💘*
 
 ---
 
@@ -59,7 +63,7 @@ _Contents:_ **[Examples](#examples)** |
 **[Installation](#installation)** | **[Documentation](#documentation)** |
 **[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
 **[Advanced usage](#advanced-usage)** |
-**[Types](#types)** | **[How to contribute](#how-to-contribute)** |
+**[Types](#types)** | **[How to contribute](#contributing)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
 
 ---
@@ -68,17 +72,17 @@ _Contents:_ **[Examples](#examples)** |
 
 The following examples can give you an impression of what the package can do:
 
-* [Census Income](https://pandas-profiling.github.io/pandas-profiling/examples/census/census_report.html) (US Adult Census data relating income)
-* [NASA Meteorites](https://pandas-profiling.github.io/pandas-profiling/examples/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
-* [Titanic](https://pandas-profiling.github.io/pandas-profiling/examples/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
-* [NZA](https://pandas-profiling.github.io/pandas-profiling/examples/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
-* [Stata Auto](https://pandas-profiling.github.io/pandas-profiling/examples/stata_auto/stata_auto_report.html) (1978 Automobile data)
-* [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
-* [Website Inaccessibility](https://pandas-profiling.github.io/pandas-profiling/examples/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
-* [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/colors/colors_report.html) (a simple colors dataset)
-* [Russian Vocabulary](https://pandas-profiling.github.io/pandas-profiling/examples/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
-* [Orange prices](https://pandas-profiling.github.io/pandas-profiling/examples/themes/united_report.html) and [Coal prices](https://pandas-profiling.github.io/pandas-profiling/examples/themes/flatly_report.html) (showcase report themes)
-* [Tutorial: report structure using Kaggle data (advanced)](https://pandas-profiling.github.io/pandas-profiling/examples/kaggle/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/kaggle/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb)
+* [Census Income](https://pandas-profiling.github.io/pandas-profiling/examples/master/census/census_report.html) (US Adult Census data relating income)
+* [NASA Meteorites](https://pandas-profiling.github.io/pandas-profiling/master/examples/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/master/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmaster%2Fmeteorites%2Fmeteorites.ipynb)
+* [Titanic](https://pandas-profiling.github.io/pandas-profiling/examples/master/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/master/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmaster%2Ftitanic%2Ftitanic.ipynb)
+* [NZA](https://pandas-profiling.github.io/pandas-profiling/examples/master/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
+* [Stata Auto](https://pandas-profiling.github.io/pandas-profiling/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
+* [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
+* [Website Inaccessibility](https://pandas-profiling.github.io/pandas-profiling/examples/master/website_inaccessibility/website_inaccessibility_report.html) (demonstrates the URL type)
+* [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html) (a simple colors dataset)
+* [Russian Vocabulary](https://pandas-profiling.github.io/pandas-profiling/examples/master/russian_vocabulary/russian_vocabulary.html) (demonstrates text analysis)
+* [Orange prices](https://pandas-profiling.github.io/pandas-profiling/examples/master/themes/united_report.html) and [Coal prices](https://pandas-profiling.github.io/pandas-profiling/examples/master/themes/flatly_report.html) (showcase report themes)
+* [Tutorial: report structure using Kaggle data (advanced)](https://pandas-profiling.github.io/pandas-profiling/examples/master/kaggle/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/master/kaggle/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmaster%F2kaggle%2Fmodify_report_structure.ipynb)
 
 ## Installation
 
@@ -90,7 +94,7 @@ The following examples can give you an impression of what the package can do:
 
 You can install using the pip package manager by running
 
-    pip install pandas-profiling[notebook,html]
+    pip install pandas-profiling[notebook]
     
 Alternatively, you could install the latest version directly from Github:
 
@@ -115,7 +119,7 @@ Install by navigating to the proper directory and running
     
 ## Documentation
 
-The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/).
+The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/). Previous documentation is still available [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/).
 
 ### Getting started
 
@@ -140,16 +144,16 @@ profile = ProfileReport(df, title='Pandas Profiling Report', html={'style':{'ful
 We recommend generating reports interactively by using the Jupyter notebook. 
 There are two interfaces (see animations below): through widgets and through a HTML report.
 
-<img alt="Notebook Widgets" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/widgets.gif" width="800" />
+<img alt="Notebook Widgets" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/widgets.gif" width="800" />
 
 This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 ```python
 profile.to_widgets()
 ```
 
-The HTML report can be included in a Juyter notebook:
+The HTML report can be included in a Jupyter notebook:
 
-<img alt="HTML" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/iframe.gif" width="800" />
+<img alt="HTML" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/iframe.gif" width="800" />
 
 Run the following code:
 
@@ -161,7 +165,7 @@ profile.to_notebook_iframe()
 
 If you want to generate a HTML report file, save the `ProfileReport` to an object and use the `to_file()` function:
 ```python
-profile.to_file(output_file="your_report.html")
+profile.to_file("your_report.html")
 ```
 Alternatively, you can obtain the data as json:
 ```python
@@ -169,7 +173,7 @@ Alternatively, you can obtain the data as json:
 json_data = profile.to_json()
 
 # As a file
-profile.to_file(output_file="your_report.json")
+profile.to_file("your_report.json")
 ```
 
 ### Large datasets
@@ -180,7 +184,7 @@ Use the following syntax:
 
 ```python
 profile = ProfileReport(large_dataset, minimal=True)
-profile.to_file(output_file="output.html")
+profile.to_file("output.html")
 ```
 
 ### Command line usage
@@ -223,27 +227,9 @@ We have developed a type system for Python, tailored for data analysis: [visions
 Selecting the right typeset drastically reduces the complexity the code of your analysis.
 Future versions of `pandas-profiling` will have extended type support through `visions`!
 
-## How to contribute
+## Contributing
 
-[![Questions: Stackoverflow "pandas-profiling"](https://img.shields.io/badge/stackoverflow%20tag-pandas%20profiling-yellow)](https://stackoverflow.com/questions/tagged/pandas-profiling)
-
-The package is actively maintained and developed as open-source software. 
-If `pandas-profiling` was helpful or interesting to you, you might want to get involved. 
-There are several ways of contributing and helping our thousands of users.
-If you would like to be a industry partner or sponsor, please [drop us a line](mailto:pandasprofiling@gmail.com).
-
-The documentation is generated using [`pdoc3`](https://github.com/pdoc3/pdoc). 
-If you are contributing to this project, you can rebuild the documentation using:
-```
-make docs
-```
-or on Windows:
-```
-make.bat docs
-```
-
-Read more on getting involved in the [Contribution Guide](https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md).
-
+Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/v2.7.0/rtd/pages/contribution_guidelines.html).
 
 ## Editor integration
 ### PyCharm integration 

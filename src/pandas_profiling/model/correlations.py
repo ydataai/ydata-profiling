@@ -3,14 +3,13 @@ import itertools
 import warnings
 from contextlib import suppress
 from functools import partial
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Union
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 from confuse import NotFoundError
 from pandas.core.base import DataError
 from scipy import stats
-from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
@@ -109,132 +108,95 @@ https://github.com/pandas-profiling/pandas-profiling/issues
     )
 
 
-def calculate_correlations(df: pd.DataFrame, variables: dict) -> dict:
+def calculate_correlation(
+    df: pd.DataFrame, variables: dict, correlation_name: str
+) -> Union[pd.DataFrame, None]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramers).
+        (pearson, spearman, kendall, phi_k, cramers).
 
-    Args:
-        variables: A dict with column names and variable types.
-        df: The DataFrame with variables.
+        Args:
+            variables: A dict with column names and variable types.
+            df: The DataFrame with variables.
+            correlation_name:
 
-    Returns:
-        A dictionary containing the correlation matrices for each of the active correlation measures.
-    """
-    correlations = {}
-
-    disable_progress_bar = not config["progress_bar"].get(bool)
-
-    correlation_names = [
-        correlation_name
-        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers"]
-        if config["correlations"][correlation_name]["calculate"].get(bool)
-    ]
+        Returns:
+            The correlation matrices for the given correlation measures. Return None if correlation is empty.
+        """
 
     categorical_correlations = {"cramers": cramers_matrix}
+    correlation = None
 
-    if len(correlation_names) > 0:
-        with tqdm(
-            total=len(correlation_names),
-            desc="correlations",
-            disable=disable_progress_bar,
-        ) as pbar:
-            for correlation_name in correlation_names:
-                pbar.set_description_str(f"correlations [{correlation_name}]")
+    if correlation_name in ["pearson", "spearman", "kendall"]:
+        try:
+            correlation = df.corr(method=correlation_name)
 
-                if correlation_name in ["pearson", "spearman", "kendall"]:
-                    try:
-                        correlation = df.corr(method=correlation_name)
-                        if len(correlation) > 0:
-                            correlations[correlation_name] = correlation
-                    except (ValueError, AssertionError) as e:
-                        warn_correlation(correlation_name, e)
-                elif correlation_name in ["phi_k"]:
-                    import phik
+        except (ValueError, AssertionError) as e:
+            warn_correlation(correlation_name, e)
+    elif correlation_name in ["phi_k"]:
+        import phik
 
-                    with warnings.catch_warnings():
-                        warnings.simplefilter("ignore")
-                        # Phi_k does not filter non-numerical with high cardinality
-                        selcols = []
-                        intcols = []
-                        for col in df.columns.tolist():
-                            try:
-                                tmp = (
-                                    df[col]
-                                    .value_counts(dropna=False)
-                                    .reset_index()
-                                    .dropna()
-                                    .set_index("index")
-                                    .iloc[:, 0]
-                                )
-                                if tmp.index.inferred_type == "mixed":
-                                    continue
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            # Phi_k does not filter non-numerical with high cardinality
+            selcols = []
+            intcols = []
+            for col in df.columns.tolist():
+                try:
+                    tmp = (
+                        df[col]
+                        .value_counts(dropna=False)
+                        .reset_index()
+                        .dropna()
+                        .set_index("index")
+                        .iloc[:, 0]
+                    )
+                    if tmp.index.inferred_type == "mixed":
+                        continue
 
-                                if pd.api.types.is_numeric_dtype(df[col]):
-                                    intcols.append(col)
-                                    selcols.append(col)
-                                elif df[col].nunique() <= config[
-                                    "categorical_maximum_correlation_distinct"
-                                ].get(int):
-                                    selcols.append(col)
-                            except (TypeError, ValueError):
-                                continue
+                    if pd.api.types.is_numeric_dtype(df[col]):
+                        intcols.append(col)
+                        selcols.append(col)
+                    elif df[col].nunique() <= config[
+                        "categorical_maximum_correlation_distinct"
+                    ].get(int):
+                        selcols.append(col)
+                except (TypeError, ValueError):
+                    continue
 
-                        if len(selcols) > 1:
-                            try:
-                                correlations["phi_k"] = df[selcols].phik_matrix(
-                                    interval_cols=intcols
-                                )
+            if len(selcols) > 1:
+                try:
+                    correlation = df[selcols].phik_matrix(interval_cols=intcols)
 
-                                # Only do this if the column_order is set
-                                with suppress(NotFoundError):
-                                    # Get the preferred order
-                                    column_order = config["column_order"].get(list)
+                    # Only do this if the column_order is set
+                    with suppress(NotFoundError):
+                        # Get the preferred order
+                        column_order = config["column_order"].get(list)
 
-                                    # Get the Phi_k sorted order
-                                    current_order = (
-                                        correlations["phi_k"]
-                                        .index.get_level_values("var1")
-                                        .tolist()
-                                    )
+                        # Get the Phi_k sorted order
+                        current_order = correlation.index.get_level_values(
+                            "var1"
+                        ).tolist()
 
-                                    # Intersection (some columns are not used in correlation)
-                                    column_order = [
-                                        x for x in column_order if x in current_order
-                                    ]
+                        # Intersection (some columns are not used in correlation)
+                        column_order = [x for x in column_order if x in current_order]
 
-                                    # Override the Phi_k sorting
-                                    correlations["phi_k"] = correlations[
-                                        "phi_k"
-                                    ].reindex(index=column_order, columns=column_order)
-                            except (ValueError, DataError, IndexError, TypeError) as e:
-                                warn_correlation("phi_k", e)
-                elif correlation_name in ["cramers"]:
-                    try:
-                        get_matrix = categorical_correlations[correlation_name]
-                        correlation = get_matrix(df, variables)
-                        if correlation is not None and len(correlation) > 0:
-                            correlations[correlation_name] = correlation
-                    except (ValueError, AssertionError) as e:
-                        warn_correlation(correlation_name, e)
+                        # Override the Phi_k sorting
+                        correlation = correlation.reindex(
+                            index=column_order, columns=column_order
+                        )
+                except (ValueError, DataError, IndexError, TypeError) as e:
+                    warn_correlation("phi_k", e)
+    elif correlation_name in ["cramers"]:
+        try:
+            get_matrix = categorical_correlations[correlation_name]
+            correlation = get_matrix(df, variables)
+        except (ValueError, AssertionError) as e:
+            warn_correlation(correlation_name, e)
 
-                if (
-                    correlation_name in correlations
-                    and correlations[correlation_name].empty
-                ):
-                    del correlations[correlation_name]
+    if correlation is None or len(correlation) <= 0:
+        correlation = None
 
-                pbar.update()
-
-    return correlations
-
-
-def get_correlation_mapping() -> Dict[str, List[str]]:
-    """Workaround variable type annotations not being supported in Python 3.5
-
-    Returns:
-        type annotated empty dict
-    """
-    return {}
+    return correlation
 
 
 def perform_check_correlation(
@@ -256,7 +218,7 @@ def perform_check_correlation(
     # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
     # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]>threshold)]
 
-    mapping = get_correlation_mapping()
+    mapping: Dict[str, List[str]] = {}
     for x, corr_x in corr.iterrows():
         for y, corr in corr_x.iteritems():
             if x == y:

@@ -1,14 +1,14 @@
 from pandas_profiling.config import config
 from pandas_profiling.report.formatters import fmt_array
-from pandas_profiling.visualisation.plot import mini_histogram, histogram
 from pandas_profiling.report.presentation.core import (
+    Container,
     FrequencyTable,
-    Sequence,
     Image,
     Table,
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
+from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_count(summary):
@@ -86,7 +86,7 @@ def render_count(summary):
         alt="Mini histogram",
     )
 
-    template_variables["top"] = Sequence(
+    template_variables["top"] = Container(
         [info, table1, table2, mini_histo], sequence_type="grid"
     )
 
@@ -200,7 +200,7 @@ def render_count(summary):
         anchor_id="common_values",
     )
 
-    evs = Sequence(
+    evs = Container(
         [
             FrequencyTable(
                 template_variables["firstn_expanded"],
@@ -236,10 +236,10 @@ def render_count(summary):
 
         seqs.append(histo_dyn)
 
-    template_variables["bottom"] = Sequence(
+    template_variables["bottom"] = Container(
         [
             # statistics,
-            Sequence(
+            Container(
                 seqs, sequence_type="tabs", name="Histogram(s)", anchor_id="histograms"
             ),
             fq,

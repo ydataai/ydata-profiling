@@ -1,10 +1,9 @@
 from pandas_profiling.report.presentation.core import (
-    Table,
-    Sequence,
     HTML,
+    Container,
+    Table,
     VariableInfo,
 )
-from pandas_profiling.report.structure.variables import render_common
 
 
 def render_generic(summary):
@@ -41,6 +40,6 @@ def render_generic(summary):
     )
 
     return {
-        "top": Sequence([info, table, HTML("")], sequence_type="grid"),
+        "top": Container([info, table, HTML("")], sequence_type="grid"),
         "bottom": None,
     }

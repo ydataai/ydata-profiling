@@ -1,14 +1,16 @@
-import pandas as pd
-import numpy as np
 import datetime
+
+import numpy as np
+import pandas as pd
 import pytest
 
 from pandas_profiling import config
 from pandas_profiling.model.base import Variable
+from pandas_profiling.model.describe import describe
+from pandas_profiling.model.summary import describe_1d
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-from pandas_profiling.model.describe import describe_1d, describe
 
 testdata = [
     # Unique values
@@ -58,95 +60,22 @@ def recoding_data():
     return df
 
 
-# def test_recoding_reject(recoding_data):
-#     config["correlations"]["recoded"]["calculate"] = True
-#     config["correlations"]["recoded"]["warn_high_correlations"] = True
-#     results = describe(recoding_data)
-#
-#     assert (
-#         results["variables"]["y"]["type"] == Variable.S_TYPE_RECODED
-#         and results["variables"]["x"]["type"] == Variable.TYPE_CAT
-#     ) or (
-#         results["variables"]["x"]["type"] == Variable.S_TYPE_RECODED
-#         and results["variables"]["y"]["type"] == Variable.TYPE_CAT
-#     ), "Type is wrong"
-#     assert (
-#         "correlation_var" in results["variables"]["y"]
-#         and results["variables"]["y"]["correlation_var"] == "x"
-#     ) or (
-#         "correlation_var" in results["variables"]["x"]
-#         and results["variables"]["x"]["correlation_var"] == "y"
-#     ), "Values should be equal"
-#
-#     expected_results = {
-#         "n_cells_missing": 0.0,
-#         Variable.S_TYPE_UNIQUE.value: 0,
-#         Variable.S_TYPE_CONST.value: 0,
-#         "nvar": 2,
-#         Variable.S_TYPE_REJECTED.value: 1,
-#         "n": 8,
-#         Variable.S_TYPE_RECODED.value: 1,
-#         Variable.S_TYPE_CORR.value: 0,
-#         Variable.TYPE_DATE.value: 0,
-#         Variable.TYPE_NUM.value: 0,
-#         Variable.TYPE_CAT.value: 1,
-#         "n_duplicates": 5,
-#     }
-#     for key in expected_results:
-#         assert (
-#             results["table"][key] == expected_results[key]
-#         ), "recoding error {}".format(key)
-#
-#
-# def test_cramers_reject(recoding_data):
-#     recoding_data.loc[len(recoding_data)] = {"x": "chat", "y": "dog"}
-#     config["check_correlation_cramers"] = True
-#     config["correlation_threshold_cramers"] = 0.1
-#     config["correlations"]["cramers"] = True
-#     results = describe(recoding_data)
-#
-#     # The order of dicts is not preserved in Python 3.5 and not guaranteed in Python 3.6
-#     assert (
-#         results["variables"]["y"]["type"] == Variable.S_TYPE_CORR
-#         and results["variables"]["x"]["type"] == Variable.TYPE_CAT
-#     ) or (
-#         results["variables"]["x"]["type"] == Variable.S_TYPE_CORR
-#         and results["variables"]["y"]["type"] == Variable.TYPE_CAT
-#     ), "Type is wrong"
-#     assert (
-#         "correlation_var" in results["variables"]["y"]
-#         and results["variables"]["y"]["correlation_var"] == "x"
-#     ) or (
-#         "correlation_var" in results["variables"]["x"]
-#         and results["variables"]["x"]["correlation_var"] == "y"
-#     ), "Values should be equal"
-#
-#     expected_results = {
-#         "n_cells_missing": 0.0,
-#         Variable.S_TYPE_UNIQUE.value: 0,
-#         Variable.S_TYPE_CONST.value: 0,
-#         "nvar": 2,
-#         Variable.S_TYPE_REJECTED.value: 1,
-#         "n": 9,
-#         Variable.S_TYPE_RECODED.value: 0,
-#         Variable.S_TYPE_CORR.value: 1,
-#         Variable.TYPE_DATE.value: 0,
-#         Variable.TYPE_NUM.value: 0,
-#         Variable.TYPE_CAT.value: 1,
-#         "n_duplicates": 5,
-#     }
-#     for key in expected_results:
-#         assert (
-#             results["table"][key] == expected_results[key]
-#         ), "recoding error {}".format(key)
-
-
 @pytest.fixture
 def describe_data():
     data = {
         "id": [chr(97 + c) for c in range(1, 9)] + ["d"],
-        "x": [50, 50, -10, 0, 0, 5, 15, -3, None],
-        "y": [0.000001, 654.152, None, 15.984512, 3122, -3.1415926535, 111, 15.9, 13.5],
+        "x": [50, 50, -10, 0, 0, 5, 15, -3, np.nan],
+        "y": [
+            0.000001,
+            654.152,
+            np.nan,
+            15.984512,
+            3122,
+            -3.1415926535,
+            111,
+            15.9,
+            13.5,
+        ],
         "cat": [
             "a",
             "long text value",
@@ -233,8 +162,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 8,
             "freq": 2,
@@ -274,7 +201,7 @@ def expected_results():
             "iqr": 24.5,
             "is_unique": False,
             "kurtosis": -0.50292858929003803,
-            "mad": 18.71875,
+            "mad": 9.0,
             "max": 50.0,
             "mean": 13.375,
             "min": -10.0,
@@ -282,6 +209,8 @@ def expected_results():
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 6 / 8,
+            "n": 9,
+            "n_zeros": 2,
             "p_zeros": 0.2222222222222222,
             "range": 60.0,
             "skewness": 1.0851622393567653,
@@ -306,7 +235,7 @@ def expected_results():
             "iqr": 236.66299975000001,
             "is_unique": True,
             "kurtosis": 6.974137018717359,
-            "mad": 698.45081747834365,
+            "mad": 17.51305182675,
             "max": 3122.0,
             "mean": 491.17436504331249,
             "min": -3.1415926535000001,
@@ -314,6 +243,7 @@ def expected_results():
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 1,
+            "n_zeros": 0,
             "p_zeros": 0.0,
             "range": 3125.1415926535001,
             "skewness": 2.6156591135729266,
@@ -330,8 +260,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 8,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 6,
             "freq": 3,
@@ -364,8 +292,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 1,
             "freq": 9,
@@ -398,8 +324,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 1,
             "freq": 9,
@@ -432,8 +356,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 8,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 5,
             "freq": check_is_NaN,
@@ -463,8 +385,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 2,
             "freq": 6,
@@ -496,8 +416,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 8,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 2,
             "freq": 5,
@@ -529,8 +447,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 2,
             "freq": 5,
@@ -562,8 +478,6 @@ def expected_results():
             "75%": check_is_NaN,
             "95%": check_is_NaN,
             "count": 8,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "cv": check_is_NaN,
             "distinct_count": 2,
             "freq": 4,
@@ -588,32 +502,24 @@ def expected_results():
         },
         "list": {
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "n_missing": 0,
             "p_missing": 0,
             "type": Variable.S_TYPE_UNSUPPORTED,
         },
         "mixed": {
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "n_missing": 0,
             "p_missing": 0,
             "type": Variable.S_TYPE_UNSUPPORTED,
         },
         "dict": {
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "n_missing": 0,
             "p_missing": 0,
             "type": Variable.S_TYPE_UNSUPPORTED,
         },
         "tuple": {
             "count": 9,
-            "n_infinite": 0,
-            "p_infinite": 0,
             "n_missing": 0,
             "p_missing": 0,
             "type": Variable.S_TYPE_UNSUPPORTED,
@@ -626,16 +532,19 @@ def test_describe_df(describe_data, expected_results):
     describe_data_frame = pd.DataFrame(describe_data)
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
 
-    results = describe(describe_data_frame)
+    results = describe("title", describe_data_frame)
 
     assert {
+        "analysis",
         "table",
         "variables",
+        "scatter",
         "correlations",
         "missing",
         "messages",
-        "scatter",
         "package",
+        "sample",
+        "duplicates",
     } == set(results.keys()), "Not in results"
 
     assert {"BOOL": 5, "CAT": 3, "UNSUPPORTED": 4, "NUM": 2, "DATE": 1} == results[
@@ -673,10 +582,10 @@ def test_describe_df(describe_data, expected_results):
 def test_describe_empty():
     empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
-        describe(empty_frame)
+        describe("", empty_frame)
 
 
 def test_describe_list():
     with pytest.raises(AttributeError):
         with pytest.warns(UserWarning):
-            describe([1, 2, 3])
+            describe("", [1, 2, 3])

@@ -3,6 +3,7 @@ Test for issue XXX:
 https://github.com/pandas-profiling/pandas-profiling/issues/XXX
 """
 import pandas as pd
+
 import pandas_profiling
 
 

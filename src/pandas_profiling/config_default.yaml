@@ -26,6 +26,7 @@ vars:
         n_obs: 5
 # Set to zero to disable
         chi_squared_threshold: 0.999
+        coerce_str_to_date: False
     bool:
         n_obs: 3
 
@@ -88,7 +89,7 @@ plot:
 
     histogram:
 # is used for numeric variables
-        bayesian_blocks_bins: True
+        bayesian_blocks_bins: False
 
 # If 'bayesian_blocks_bins' fails to provide a valid number of bins.
         bins: 50
@@ -98,6 +99,10 @@ plot:
 n_obs_unique: 5
 n_extreme_obs: 5
 n_freq_table_max: 10
+
+# Configuration related to the duplicates
+duplicates:
+    head: 10
 
 # Configuration related to the samples area
 samples:

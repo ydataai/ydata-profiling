@@ -3,9 +3,12 @@ setlocal enabledelayedexpansion
 
 IF "%1%" == "docs" (
     mkdir docs/
+    :: pdoc3
     robocopy .\docsrc\assets\ .\docs\assets\
     pdoc3 --html  --force --output-dir docs pandas_profiling
     robocopy .\docs\pandas_profiling .\docs /E /MOVE
+    :: sphinx
+    cd docsrc/ && make github
     ECHO "Docs updated!"
     GOTO end
 )
@@ -35,7 +38,7 @@ IF "%1" == "examples" (
 )
 
 IF "%1" == "pypi_package" (
-	make install
+    make install
     check-manifest
     python setup.py sdist bdist_wheel
     twine check dist/*
@@ -45,6 +48,7 @@ IF "%1" == "pypi_package" (
 )
 
 IF "%1" == "lint" (
+    isort --apply
     black .
     GOTO end
 )
@@ -56,6 +60,11 @@ IF "%1" == "install" (
 
 if "%1" == "typing" (
 	pytest --mypy -m mypy .
+	GOTO end
+)
+
+IF "%1%" == "clean" (
+	ECHO "Not implemented yet"
 	GOTO end
 )
 

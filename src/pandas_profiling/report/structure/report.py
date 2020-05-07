@@ -1,22 +1,35 @@
 """Generate the report."""
-from datetime import datetime
 from typing import List
+
+import pandas as pd
+from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import (
-    Boolean,
-    Real,
-    Count,
-    Complex,
-    Date,
-    Categorical,
-    Url,
     AbsolutePath,
+    Boolean,
+    Categorical,
+    Complex,
+    Count,
+    Date,
     ExistingPath,
-    ImagePath,
     Generic,
+    Real,
+    Url,
 )
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core import (
+    HTML,
+    Collapse,
+    Container,
+    Duplicate,
+    Image,
+    Sample,
+    ToggleButton,
+    Variable,
+)
+from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import (
     get_dataset_overview,
@@ -28,20 +41,10 @@ from pandas_profiling.report.structure.variables import (
     render_categorical,
     render_complex,
     render_date,
-    render_real,
-    render_path,
-    render_path_image,
-    render_url,
     render_generic,
-)
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
-from pandas_profiling.report.presentation.core import (
-    Image,
-    Sequence,
-    Sample,
-    Variable,
-    Collapse,
-    ToggleButton,
+    render_path,
+    render_real,
+    render_url,
 )
 
 
@@ -83,7 +86,6 @@ def render_variables_section(dataframe_summary: dict) -> list:
         Url: render_url,
         AbsolutePath: render_path,
         ExistingPath: render_path,
-        # ImagePath: render_path_image,
         Generic: render_generic,
     }
 
@@ -146,6 +148,25 @@ def render_variables_section(dataframe_summary: dict) -> list:
     return templs
 
 
+def get_duplicates_items(duplicates: pd.DataFrame):
+    """Create the list of duplicates items
+
+    Args:
+        duplicates: DataFrame of duplicates
+
+    Returns:
+        List of duplicates items to show in the interface.
+    """
+    items = []
+    if duplicates is not None and len(duplicates) > 0:
+        items.append(
+            Duplicate(
+                duplicate=duplicates, name="Most frequent", anchor_id="duplicates",
+            )
+        )
+    return items
+
+
 def get_sample_items(sample: dict):
     """Create the list of sample items
 
@@ -158,13 +179,7 @@ def get_sample_items(sample: dict):
     items = []
     names = {"head": "First rows", "tail": "Last rows"}
     for key, value in sample.items():
-        items.append(
-            Sample(
-                sample=value.to_html(classes="sample table table-striped"),
-                name=names[key],
-                anchor_id=key,
-            )
-        )
+        items.append(Sample(sample=value, name=names[key], anchor_id=key,))
     return items
 
 
@@ -186,7 +201,7 @@ def get_scatter_matrix(scatter_matrix):
             )
 
         titems.append(
-            Sequence(
+            Container(
                 items,
                 sequence_type="tabs",
                 name=x_col,
@@ -196,38 +211,19 @@ def get_scatter_matrix(scatter_matrix):
     return titems
 
 
-def get_dataset_items(summary, date_start, date_end, warnings):
+def get_dataset_items(summary: dict, warnings: list) -> list:
     items = [
         get_dataset_overview(summary),
-        get_dataset_reproduction(summary, date_start, date_end),
+        get_dataset_reproduction(summary),
     ]
 
-    count = len(
-        [
-            warning
-            for warning in warnings
-            if warning.message_type
-            not in [
-                MessageType.UNIFORM,
-                MessageType.UNIQUE,
-                MessageType.REJECTED,
-                MessageType.CONSTANT,
-            ]
-        ]
-    )
-    if count > 0:
-        items.append(get_dataset_warnings(warnings, count))
+    if warnings:
+        items.append(get_dataset_warnings(warnings))
 
     return items
 
 
-def get_section_items() -> List[Renderable]:
-    return []
-
-
-def get_report_structure(
-    date_start: datetime, date_end: datetime, sample: dict, summary: dict
-) -> Renderable:
+def get_report_structure(summary: dict) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -237,57 +233,73 @@ def get_report_structure(
     Returns:
       The profile report in HTML format
     """
+    disable_progress_bar = not config["progress_bar"].get(bool)
+    with tqdm(
+        total=1, desc="Generate report structure", disable=disable_progress_bar
+    ) as pbar:
+        warnings = summary["messages"]
 
-    warnings = summary["messages"]
+        section_items: List[Renderable] = [
+            Container(
+                get_dataset_items(summary, warnings),
+                sequence_type="tabs",
+                name="Overview",
+                anchor_id="overview",
+            ),
+            Container(
+                render_variables_section(summary),
+                sequence_type="accordion",
+                name="Variables",
+                anchor_id="variables",
+            ),
+            Container(
+                get_scatter_matrix(summary["scatter"]),
+                sequence_type="tabs",
+                name="Interactions",
+                anchor_id="interactions",
+            ),
+        ]
 
-    section_items = get_section_items()
+        corr = get_correlation_items(summary)
+        if corr is not None:
+            section_items.append(corr)
 
-    section_items.append(
-        Sequence(
-            get_dataset_items(summary, date_start, date_end, warnings),
-            sequence_type="tabs",
-            name="Overview",
-            anchor_id="overview",
+        section_items.append(
+            Container(
+                get_missing_items(summary),
+                sequence_type="tabs",
+                name="Missing values",
+                anchor_id="missing",
+            )
         )
-    )
-    section_items.append(
-        Sequence(
-            render_variables_section(summary),
-            sequence_type="accordion",
-            name="Variables",
-            anchor_id="variables",
-        )
-    )
-    section_items.append(
-        Sequence(
-            get_scatter_matrix(summary["scatter"]),
-            sequence_type="tabs",
-            name="Interactions",
-            anchor_id="interactions",
-        )
+
+        sample_items = get_sample_items(summary["sample"])
+        if len(sample_items) > 0:
+            section_items.append(
+                Container(
+                    items=sample_items,
+                    sequence_type="list",
+                    name="Sample",
+                    anchor_id="sample",
+                )
+            )
+
+        duplicate_items = get_duplicates_items(summary["duplicates"])
+        if len(duplicate_items) > 0:
+            section_items.append(
+                Container(
+                    items=duplicate_items,
+                    sequence_type="list",
+                    name="Duplicate rows",
+                    anchor_id="duplicate",
+                )
+            )
+
+        sections = Container(section_items, name="Root", sequence_type="sections")
+        pbar.update()
+
+    footer = HTML(
+        content='Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
     )
 
-    corr = get_correlation_items(summary)
-    if corr is not None:
-        section_items.append(corr)
-
-    section_items.append(
-        Sequence(
-            get_missing_items(summary),
-            sequence_type="tabs",
-            name="Missing values",
-            anchor_id="missing",
-        )
-    )
-    section_items.append(
-        Sequence(
-            get_sample_items(sample),
-            sequence_type="list",
-            name="Sample",
-            anchor_id="sample",
-        )
-    )
-
-    sections = Sequence(section_items, name="Report", sequence_type="sections")
-
-    return sections
+    return Root("Root", sections, footer)
