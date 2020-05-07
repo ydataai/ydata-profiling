@@ -44,6 +44,7 @@ release = _GetApiWrapperVersion()
 # ones.
 extensions = [
     "recommonmark",
+    # "sphinx_multiversion",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
