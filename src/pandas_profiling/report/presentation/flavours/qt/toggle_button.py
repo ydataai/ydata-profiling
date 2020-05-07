@@ -1,5 +1,6 @@
-from pandas_profiling.report.presentation.core import ToggleButton
 from PyQt5.QtWidgets import QPushButton
+
+from pandas_profiling.report.presentation.core import ToggleButton
 
 
 class QtToggleButton(ToggleButton):

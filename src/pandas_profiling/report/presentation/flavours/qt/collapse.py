@@ -1,5 +1,6 @@
-from pandas_profiling.report.presentation.core import Collapse
 from PyQt5.QtWidgets import QPushButton
+
+from pandas_profiling.report.presentation.core import Collapse
 
 
 class QtCollapse(Collapse):

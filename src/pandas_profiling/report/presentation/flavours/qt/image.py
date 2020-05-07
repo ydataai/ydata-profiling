@@ -1,8 +1,9 @@
 import base64
 
-from pandas_profiling.report.presentation.core import Image
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
+
+from pandas_profiling.report.presentation.core import Image
 
 
 class QtImage(Image):

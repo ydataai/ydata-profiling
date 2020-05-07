@@ -1,6 +1,7 @@
+from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
+
 from pandas_profiling.report.formatters import fmt
 from pandas_profiling.report.presentation.core import Table
-from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
 
 
 def get_table(items):

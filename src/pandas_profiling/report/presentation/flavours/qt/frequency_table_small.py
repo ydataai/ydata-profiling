@@ -1,5 +1,6 @@
-from pandas_profiling.report.presentation.core import FrequencyTableSmall
 from PyQt5.QtWidgets import QPushButton
+
+from pandas_profiling.report.presentation.core import FrequencyTableSmall
 
 
 class QtFrequencyTableSmall(FrequencyTableSmall):

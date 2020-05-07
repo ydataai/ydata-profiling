@@ -14,6 +14,9 @@ test:
 	pytest --nbval tests/notebooks/
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 
+examples:
+	find ./examples -maxdepth 2 -type f -name "*.py" -execdir python {} \;
+
 pypi_package:
 	make install
 	check-manifest
