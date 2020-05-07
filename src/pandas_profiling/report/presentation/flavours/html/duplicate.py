@@ -7,4 +7,6 @@ class HTMLDuplicate(Duplicate):
         duplicate_html = self.content["duplicate"].to_html(
             classes="duplicate table table-striped"
         )
-        return templates.template("duplicate.html").render(**self.content, duplicate_html=duplicate_html)
+        return templates.template("duplicate.html").render(
+            **self.content, duplicate_html=duplicate_html
+        )

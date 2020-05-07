@@ -7,4 +7,6 @@ class HTMLSample(Sample):
         sample_html = self.content["sample"].to_html(
             classes="sample table table-striped"
         )
-        return templates.template("sample.html").render(**self.content, sample_html=sample_html)
+        return templates.template("sample.html").render(
+            **self.content, sample_html=sample_html
+        )
