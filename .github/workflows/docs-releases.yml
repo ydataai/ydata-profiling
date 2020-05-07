@@ -1,6 +1,0 @@
-#name: CI Build Documentation for Releases
-#
-#on:
-#  repository_dispatch:
-#    types: [trigger-action]
-#

@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - v**
-
+      # master
 jobs:
   Lint:
+    if: startsWith(github.ref, 'v.')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -51,14 +52,6 @@ jobs:
       with:
         branch: ${{ github.ref }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
-
-  #    - name: Trigger build of documentation and examples
-  #      uses: peter-evans/repository-dispatch@v1
-  #      with:
-  #        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-  #        event-type: trigger-action
-  #        repository: pandas-profiling/pandas-profiling
-  #        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   Documentation:
       runs-on: ubuntu-latest
