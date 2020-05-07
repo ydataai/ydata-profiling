@@ -101,23 +101,28 @@ jobs:
       - name: Build the documentation
         run: make docs
 
-      - name: Move the changes to the gh-pages branch
+      - name: Create branch name
         run: |
-          mv docs/ ${GITHUB_REF##*/}/
+          export BRANCH_NAME="${GITHUB_REF##*/}/"
+          echo "::set-env name=BRANCH_NAME::BRANCH_NAME"
+
+      - name: Move the changes to the gh-pages branch (release branch)
+        run: |
+          mv docs/ ${{ env.BRANCH_NAME }}
           mkdir docs/
-          mv ${GITHUB_REF##*/}/ docs/${GITHUB_REF##*/}/
-          mv examples/ ${GITHUB_REF##*/}/
+          mv ${{ env.BRANCH_NAME }} docs/${{ env.BRANCH_NAME }}
+          mv examples/ ${{ env.BRANCH_NAME }}
           mkdir examples/
-          mv ${GITHUB_REF##*/}/ examples/${GITHUB_REF##*/}/
-          git add -f docs/${GITHUB_REF##*/}/
-          git add -f examples/${GITHUB_REF##*/}/
-          git stash push -- docs/ examples/${GITHUB_REF##*/}/
+          mv ${{ env.BRANCH_NAME }} examples/${{ env.BRANCH_NAME }}
+          git add -f docs/${{ env.BRANCH_NAME }}
+          git add -f examples/${{ env.BRANCH_NAME }}
+          git stash push -- docs/ examples/${{ env.BRANCH_NAME }}
           git fetch origin gh-pages
           git checkout gh-pages
           touch .nojekyll
           git add .nojekyll
-          rm -rf docs/${GITHUB_REF##*/}/
-          rm -rf examples/${GITHUB_REF##*/}/
+          rm -rf docs/${{ env.BRANCH_NAME }}
+          rm -rf examples/${{ env.BRANCH_NAME }}
           git add docs/
           git add examples/
           git stash apply
@@ -127,5 +132,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: gh-pages
-          directory: ./
+          directory: .
           github_token: ${{ secrets.GITHUB_TOKEN }}

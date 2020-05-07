@@ -24,6 +24,7 @@ The following commands are supported:
         make examples
         make docs
         make test
+        make clean
         make typing
 
 
@@ -44,8 +45,10 @@ Branch naming:
 
 .. figure::  ../_static/figure-git-workflow.svg
   :alt: Workflow
+  :width: 80%
 
   Git workflow for this project. Based on work by Vincent Driessen, Creative Commons BY-SA.
+
 
 Contributor License Agreement (CLA)
 -----------------------------------
