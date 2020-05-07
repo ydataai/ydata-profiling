@@ -7,7 +7,7 @@ on:
       # master
 jobs:
   Lint:
-    if: startsWith(github.event.ref, 'refs/heads/v.')
+    if: startsWith(github.event.ref, 'v')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -91,11 +91,6 @@ jobs:
       - name: Update examples
         run: make examples
 
-#      - name: Commit examples
-#        run: |
-#          git add -u
-#          git commit -m "[skip ci] Examples" -a || true
-
       - name: Build the documentation
         run: make docs
 
@@ -113,14 +108,15 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
           touch .nojekyll
+          git add .nojekyll
           rm -rf docs/${GITHUB_REF##*/}/
           git add docs/
           git stash apply
-          git commit -m "[skip ci] Updating documentation" -a || true
+          git commit -m "[skip ci] Updating documentation and examples" -a || true
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           branch: gh-pages
-          directory: docs/
+          directory: ./
           github_token: ${{ secrets.GITHUB_TOKEN }}

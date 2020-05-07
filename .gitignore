@@ -74,7 +74,7 @@ ipynb_tmp/
 playground/
 
 # build data
-examples/**.html
+examples/*/*.html
 examples/*/*.csv
 docs/
 docsrc/_build/
