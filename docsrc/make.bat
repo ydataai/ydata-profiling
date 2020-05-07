@@ -31,7 +31,6 @@ goto end
 
 :github
 call make html
-copy NUL ..\docs\.nojekyll
 robocopy .\build\html ..\docs\rtd /E /MOVE
 rmdir .\build /s /q
 goto end

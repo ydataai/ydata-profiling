@@ -7,7 +7,7 @@ on:
       # master
 jobs:
   Lint:
-    if: startsWith(github.ref, 'v.')
+    if: startsWith(github.event.ref, 'refs/heads/v.')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -88,13 +88,13 @@ jobs:
       - name: Install the package
         run: make install
 
-  #    - name: Update examples
-  #      run: make examples
-  #
-  #    - name: Commit examples
-  #      run: |
-  #        git add -u
-  #        git commit -m "[skip ci] Examples" -a || true
+      - name: Update examples
+        run: make examples
+
+#      - name: Commit examples
+#        run: |
+#          git add -u
+#          git commit -m "[skip ci] Examples" -a || true
 
       - name: Build the documentation
         run: make docs
@@ -109,6 +109,7 @@ jobs:
           git stash -- docs/
           git fetch origin gh-pages
           git checkout gh-pages
+          touch .nojekyll
           rm -rf docs/${GITHUB_REF##*/}/
           git add docs/
           git stash apply
