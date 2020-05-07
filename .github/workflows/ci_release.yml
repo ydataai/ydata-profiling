@@ -5,8 +5,10 @@ on:
     branches:
       - v**
       # master
+
 jobs:
-  Lint:
+  lint:
+    name: Lint
     if: startsWith(github.event.ref, 'v')
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +55,8 @@ jobs:
         branch: ${{ github.ref }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  Documentation and Examples:
+  docs_and_examples:
+      name: Documentation and Examples
       runs-on: ubuntu-latest
       needs: lint
       steps:
