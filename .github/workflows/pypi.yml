@@ -1,16 +1,12 @@
 name: Deploy to PyPi
 
-# Trigger deployment to test
-
 on:
-  #release:
-  #    types: [created]
-  push:
-    branches: [master]
-
+  release:
+      types: [created]
+  
 jobs:
   release:
-    # if: github.event_name == 'release' && github.event.action == 'created'
+    if: github.event_name == 'release' && github.event.action == 'created'
     name: PyPi Release
     runs-on: ubuntu-latest
 
@@ -47,7 +43,6 @@ jobs:
         python setup.py sdist bdist_wheel
         twine check dist/*
 
-    # https://github.com/pypa/gh-action-pypi-publish
     - name: Publish a Python distribution to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
