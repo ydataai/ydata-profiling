@@ -117,7 +117,9 @@ jobs:
           touch .nojekyll
           git add .nojekyll
           rm -rf docs/${GITHUB_REF##*/}/
+          rm -rf examples/${GITHUB_REF##*/}/
           git add docs/
+          git add examples/
           git stash apply
           git commit -m "[skip ci] Updating documentation and examples" -a || true
 

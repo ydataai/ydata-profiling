@@ -1,4 +1,7 @@
+.PHONY: docs examples
+
 docs:
+	rm -rf docs/
 	mkdir docs/
 	# pdoc3
 	cp -a ./docsrc/assets/ ./docs/assets/
@@ -33,6 +36,9 @@ lint:
 
 typing:
 	pytest --mypy -m mypy .
+
+clean:
+	git rm --cached `git ls-files -i --exclude-from=.gitignore`
 
 all:
 	make lint

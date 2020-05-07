@@ -63,6 +63,11 @@ if "%1" == "typing" (
 	GOTO end
 )
 
+IF "%1%" == "clean" (
+	ECHO "Not implemented yet"
+	GOTO end
+)
+
 IF "%1%" == "all" (
     make lint
     make install
