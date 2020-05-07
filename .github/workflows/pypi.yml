@@ -1,13 +1,16 @@
 name: Deploy to PyPi
 
+# Trigger deployment to test
+
 on:
+  #release:
+  #    types: [created]
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   release:
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    # if: github.event_name == 'release' && github.event.action == 'created'
     name: PyPi Release
     runs-on: ubuntu-latest
 
