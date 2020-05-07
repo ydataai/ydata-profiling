@@ -86,14 +86,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Announcements</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#new-in-v2-6-0">New in v2.6.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#dependency-policy">Dependency policy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pandas-v1">Pandas v1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#python-3-6-features">Python 3.6+ features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#extended-continuous-integration">Extended continuous integration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#support-pandas-profiling">Support pandas-profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-v2-7-0-released">Version v2.7.0 released</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#phased-builds-and-lazy-loading">Phased builds and lazy loading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#support-pandas-profiling">Support <cite>pandas-profiling</cite></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#previous-announcements">Previous announcements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="big_data.html">Big Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Support and contribution</span></p>
 <ul>
@@ -204,34 +205,44 @@
             
   <div class="section" id="announcements">
 <h1>Announcements<a class="headerlink" href="#announcements" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="new-in-v2-6-0">
-<h2>New in v2.6.0<a class="headerlink" href="#new-in-v2-6-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="dependency-policy">
-<h3>Dependency policy<a class="headerlink" href="#dependency-policy" title="Permalink to this headline">¶</a></h3>
-<p>The current dependency policy is suboptimal. Pinning the dependencies is great for reproducibility (high guarantee to work), but on the downside requires frequent maintenance and introduces compatibility issues with other packages. Therefore, we are moving away from pinning dependencies and instead specify a minimum version.</p>
+<div class="section" id="version-v2-7-0-released">
+<h2>Version v2.7.0 released<a class="headerlink" href="#version-v2-7-0-released" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="performance">
+<h3>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h3>
+<p>There were several performance regressions pointed out to me recently when comparing 1.4.1 to 2.6.0.
+To that end, we benchmarked the code and found several minor features introducing disproportionate computational complexity.
+Version 2.7.0 optimizes these, giving significant performance improvements!
+Moreover, the default configuration is tweaked for towards the needs of the average user.</p>
 </div>
-<div class="section" id="pandas-v1">
-<h3>Pandas v1<a class="headerlink" href="#pandas-v1" title="Permalink to this headline">¶</a></h3>
-<p>Early releases of pandas v1 demonstrated many regressions that broke functionality (as acknowledged by the authors here. At this point, pandas is more stable and we notice high demand for compatibility. We move on to support pandas’ latest versions. To ensure compatibility with both versions, we have extended the test matrix to test against both pandas 0.x.y and 1.x.y.</p>
+<div class="section" id="phased-builds-and-lazy-loading">
+<h3>Phased builds and lazy loading<a class="headerlink" href="#phased-builds-and-lazy-loading" title="Permalink to this headline">¶</a></h3>
+<p>A report is built in phases, which allows for new exciting features such as caching, only re-rendering partial reports and lazily computing the report.
+Moreover, the progress bar provides more information on the building phase and step.</p>
 </div>
-<div class="section" id="python-3-6-features">
-<h3>Python 3.6+ features<a class="headerlink" href="#python-3-6-features" title="Permalink to this headline">¶</a></h3>
-<p>Python 3.6 introduces ordered dicts and f-strings, which we now rely on. This means that from pandas-profiling 2.6, you should minimally run Python 3.6. For users that for some reason cannot update, you can use pandas-profiling 2.5.0, but you unfortunately won’t benefit from updates or maintenance.</p>
-</div>
-<div class="section" id="extended-continuous-integration">
-<h3>Extended continuous integration<a class="headerlink" href="#extended-continuous-integration" title="Permalink to this headline">¶</a></h3>
-<p>Starting from this release, we use Github Actions and Travis CI combined to increase maintainability. Travis CI handles the testing, Github Actions automates part of the development process by running black and building the docs.</p>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<p>This version introduces <a class="reference external" href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/index.html">more elaborate documentation</a> powered by Sphinx.
+The previously used pdoc3 has been adequate initially, however misses functionality and extensibility.
+Several recurring topics are now documented, for instance the configuration parameters are documented and there are pages on big datasets, sensitive data, integrations and resources.</p>
 </div>
 <div class="section" id="support-pandas-profiling">
-<h3>Support pandas-profiling<a class="headerlink" href="#support-pandas-profiling" title="Permalink to this headline">¶</a></h3>
-<p>With your help, we got approved for GitHub Sponsors! It’s extra exciting that GitHub matches your contribution for the first year. Therefore, we welcome you to support the project through GitHub!</p>
+<h3>Support <cite>pandas-profiling</cite><a class="headerlink" href="#support-pandas-profiling" title="Permalink to this headline">¶</a></h3>
+<p>The development of <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> relies completely on contributions.
+If you find value in the package, we welcome you to support the project through <a class="reference external" href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
+It’s extra exciting that GitHub <strong>matches your contribution</strong> for the first year.</p>
 <p>Find more information here:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Sponsor</span> <span class="pre">the</span> <span class="pre">project</span> <span class="pre">on</span> <span class="pre">GitHub</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Read</span> <span class="pre">the</span> <span class="pre">release</span> <span class="pre">notes</span> <span class="pre">v2.6.0</span></code></p></li>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-7-0">Changelog v2.7.0</a></p></li>
+<li><p><a class="reference external" href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></p></li>
 </ul>
-<p>April 14, 2020 💘</p>
+<p><em>May 7, 2020 💘</em></p>
+</div></blockquote>
 </div>
+</div>
+<div class="section" id="previous-announcements">
+<h2>Previous announcements<a class="headerlink" href="#previous-announcements" title="Permalink to this headline">¶</a></h2>
+<p>Find previous announcements in the <a class="reference internal" href="announcement_archive.html"><span class="doc">Announcement archive</span></a>.</p>
 </div>
 </div>
 

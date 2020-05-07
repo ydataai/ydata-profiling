@@ -14,6 +14,7 @@
    pages/big_data
    pages/sensitive_data
    pages/integrations
+   pages/changelog
 
 .. toctree::
    :maxdepth: 3
