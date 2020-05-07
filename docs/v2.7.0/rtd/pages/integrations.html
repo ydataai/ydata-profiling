@@ -245,7 +245,14 @@ Read more on <a class="reference external" href="https://pandas.pydata.org/docs/
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Modin to Pandas</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Vaex to Pandas</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Convert vaex DataFrame to a pandas DataFrame</span>
+ <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_pandas_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Modin to Pandas</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert modin DataFrame to pandas DataFrame</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">_to_pandas</span><span class="p">()</span>
 
