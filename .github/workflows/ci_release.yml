@@ -9,6 +9,7 @@ on:
 jobs:
   lint:
     name: Lint
+    # https://developer.github.com/v3/activity/events/types/#pushevent
     if: startsWith(github.event.ref, 'refs/heads/v')
     runs-on: ubuntu-latest
     steps:
@@ -105,9 +106,9 @@ jobs:
           mv examples/ ${GITHUB_REF##*/}/
           mkdir examples/
           mv ${GITHUB_REF##*/}/ examples/${GITHUB_REF##*/}/
-          git add docs/${GITHUB_REF##*/}/
-          git add examples/${GITHUB_REF##*/}/
-          git stash -- docs/ examples/
+          git add -f docs/${GITHUB_REF##*/}/
+          git add -f examples/${GITHUB_REF##*/}/
+          git stash push -- docs/ examples/
           git fetch origin gh-pages
           git checkout gh-pages
           touch .nojekyll
