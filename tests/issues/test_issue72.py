@@ -12,12 +12,12 @@ from pandas_profiling.model.base import Variable
 
 def test_issue72_higher():
     # Showcase (and test) different ways of interfacing with config/profiling report
-    config["vars"]["num"]["low_categorical_threshold"].set(2)
-    config["correlations"]["recoded"]["calculate"].set(False)
-
     df = pd.DataFrame({"A": [1, 2, 3, 3]})
     df["B"] = df["A"].apply(str)
     report = pandas_profiling.ProfileReport(df)
+
+    report.config["vars"]["num"]["low_categorical_threshold"].set(2)
+    report.config["correlations"]["recoded"]["calculate"].set(False)
 
     # 3 > 2, so numerical
     assert report.get_description()["variables"]["A"]["type"] == Variable.TYPE_NUM

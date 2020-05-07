@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Config
+from pandas_profiling.config import register_config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
@@ -47,19 +48,13 @@ class ProfileReport(Serialize, object):
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
+        self.config = Config()
         if config_file:
-            config.set_file(config_file)
+            self.config.set_file(config_file)
         elif minimal:
-            config.set_file(get_config_minimal())
-        elif not config.is_default:
-            pass
-            # TODO: logging instead of warning
-            # warnings.warn(
-            #     "Currently configuration is not the default, if you want to restore "
-            #     "default configuration, please run 'pandas_profiling.clear_config()'"
-            # )
+            self.config.set_file(get_config_minimal())
 
-        config.set_kwargs(kwargs)
+        self.config.set_kwargs(kwargs)
 
         self.df = None
         self._df_hash = -1
@@ -118,9 +113,10 @@ class ProfileReport(Serialize, object):
             self._widgets = None
             self._json = None
 
-        config.set_kwargs(vars)
+        self.config.set_kwargs(vars)
 
     @property
+    @register_config
     def description_set(self):
         if self._description_set is None:
             _ = self.df_hash
@@ -130,7 +126,7 @@ class ProfileReport(Serialize, object):
     @property
     def title(self):
         if self._title is None:
-            self._title = config["title"].get(str)
+            self._title = self.config["title"].get(str)
 
         return self._title
 
@@ -141,24 +137,28 @@ class ProfileReport(Serialize, object):
         return self._df_hash
 
     @property
+    @register_config
     def report(self):
         if self._report is None:
             self._report = get_report_structure(self.description_set)
         return self._report
 
     @property
+    @register_config
     def html(self):
         if self._html is None:
             self._html = self._render_html()
         return self._html
 
     @property
+    @register_config
     def json(self):
         if self._json is None:
             self._json = self._render_json()
         return self._json
 
     @property
+    @register_config
     def widgets(self):
         if self._widgets is None:
             self._widgets = self._render_widgets()
@@ -230,7 +230,7 @@ class ProfileReport(Serialize, object):
                     f"To remove this warning, please use .html or .json."
                 )
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
+        disable_progress_bar = not self.config["progress_bar"].get(bool)
         with tqdm(
             total=1, desc="Export report to file", disable=disable_progress_bar
         ) as pbar:
@@ -252,20 +252,20 @@ class ProfileReport(Serialize, object):
 
         report = self.report
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
+        disable_progress_bar = not self.config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render HTML", disable=disable_progress_bar) as pbar:
             html = HTMLReport(report).render(
-                nav=config["html"]["navbar_show"].get(bool),
-                offline=config["html"]["use_local_assets"].get(bool),
-                primary_color=config["html"]["style"]["primary_color"].get(str),
-                logo=config["html"]["style"]["logo"].get(str),
-                theme=config["html"]["style"]["theme"].get(str),
+                nav=self.config["html"]["navbar_show"].get(bool),
+                offline=self.config["html"]["use_local_assets"].get(bool),
+                primary_color=self.config["html"]["style"]["primary_color"].get(str),
+                logo=self.config["html"]["style"]["logo"].get(str),
+                theme=self.config["html"]["style"]["theme"].get(str),
                 title=self.description_set["analysis"]["title"],
                 date=self.description_set["analysis"]["date_start"],
                 version=self.description_set["package"]["pandas_profiling_version"],
             )
 
-            minify_html = config["html"]["minify_html"].get(bool)
+            minify_html = self.config["html"]["minify_html"].get(bool)
             if minify_html:
                 from htmlmin.main import minify
 
@@ -278,7 +278,7 @@ class ProfileReport(Serialize, object):
 
         report = self.report
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
+        disable_progress_bar = not self.config["progress_bar"].get(bool)
         with tqdm(
             total=1, desc="Render widgets", disable=disable_progress_bar, leave=False
         ) as pbar:
@@ -307,7 +307,7 @@ class ProfileReport(Serialize, object):
 
         description = self.description_set
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
+        disable_progress_bar = not self.config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
             data = json.dumps(description, indent=4, cls=CustomEncoder)
             pbar.update()
@@ -412,9 +412,8 @@ class ProfileReport(Serialize, object):
         df.columns = df.columns.astype("str")
         return df
 
-    @staticmethod
-    def clear_config():
+    def clear_config(self):
         """
         Restore the configuration to default
         """
-        config.clear()
+        self.config.clear()

@@ -2,7 +2,7 @@ import warnings
 from pathlib import Path
 from typing import Union
 
-from pandas_profiling.config import Config, config
+from pandas_profiling.config import Config
 from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.version import __version__
 
@@ -13,6 +13,7 @@ class Serialize(object):
     _report = None
     _description_set = None
     _title = None
+    config = None
 
     def dumps(self) -> bytes:
         """
@@ -25,7 +26,7 @@ class Serialize(object):
 
         # Note: _description_set and _report may are None if they haven't been computed
         return pickle.dumps(
-            [self.df_hash, config, self._description_set, self._report, self._title]
+            [self.df_hash, self.config, self._description_set, self._report, self._title]
         )
 
     def loads(self, data: bytes, ignore_config: bool = False):
@@ -73,8 +74,8 @@ class Serialize(object):
             )
         if (df_hash == self.df_hash) and (
             ignore_config
-            or config == loaded_config
-            or (config.is_default and self.df is None)  # load to an empty ProfileReport
+            or self.config == loaded_config
+            or (self.config.is_default and self.df is None)  # load to an empty ProfileReport
         ):
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
@@ -92,7 +93,7 @@ class Serialize(object):
 
             # overwrite config if ignore_config set to True
             if ignore_config:
-                config.update(loaded_config)
+                self.config.update(loaded_config)
 
             # warn if version not equal
             if (
