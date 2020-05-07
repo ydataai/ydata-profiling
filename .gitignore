@@ -52,9 +52,6 @@ coverage.xml
 # Django stuff:
 *.log
 
-# Sphinx documentation
-docs/_build/
-
 # PyBuilder
 target/
 
@@ -67,10 +64,17 @@ target/
 # ipynb example stuff
 .ipynb_checkpoints/
 ipynb_tmp/
-examples/*/*.csv
 *.parquet
-playground/
 
 # mypy
 .mypy_cache/
+
+# playground
 /data/
+playground/
+
+# build data
+examples/**.html
+examples/*/*.csv
+docs/
+docsrc/_build/

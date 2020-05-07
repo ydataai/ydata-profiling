@@ -14,4 +14,4 @@ if __name__ == "__main__":
     df = pd.read_csv(file_name)
 
     profile = ProfileReport(df, title="Titanic Dataset")
-    profile.to_file(output_file=Path("./titanic_report.html"))
+    profile.to_file(Path("./titanic_report.html"))
