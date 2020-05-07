@@ -1,4 +1,4 @@
-name: CI (release)
+name: CI
 
 on:
   push:
@@ -111,7 +111,7 @@ jobs:
           mv ${GITHUB_REF##*/}/ examples/${GITHUB_REF##*/}/
           git add -f docs/${GITHUB_REF##*/}/
           git add -f examples/${GITHUB_REF##*/}/
-          git stash push -- docs/ examples/
+          git stash push -- docs/ examples/${GITHUB_REF##*/}/
           git fetch origin gh-pages
           git checkout gh-pages
           touch .nojekyll
