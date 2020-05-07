@@ -97,6 +97,19 @@ Interactions
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
+Using a custom configuration file
+---------------------------------
+
+To set the configuration of pandas-profiling using a custom file, you can start one of the sample configuration files below.
+Then, change the configuration to your liking.
+
+.. code-block:: python
+
+  from pandas_profiling import ProfileReport
+
+  profile = ProfileReport(df, configuration_file="your_config.yml")
+  profile.to_file("report.html")
+
 Sample configuration files
 --------------------------
 A great way to get an overview of the possible configuration is to look through sample configuration files.

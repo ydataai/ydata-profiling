@@ -95,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#missing-data-overview-plots">Missing data overview plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#correlations">Correlations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#interactions">Interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-a-custom-configuration-file">Using a custom configuration file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-configuration-files">Sample configuration files</a></li>
 </ul>
 </li>
@@ -120,6 +121,25 @@
             </summary>
         </a>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         </div>
       </div>
@@ -498,6 +518,17 @@
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="using-a-custom-configuration-file">
+<h2>Using a custom configuration file<a class="headerlink" href="#using-a-custom-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>To set the configuration of pandas-profiling using a custom file, you can start one of the sample configuration files below.
+Then, change the configuration to your liking.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">configuration_file</span><span class="o">=</span><span class="s2">&quot;your_config.yml&quot;</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="sample-configuration-files">
 <h2>Sample configuration files<a class="headerlink" href="#sample-configuration-files" title="Permalink to this headline">¶</a></h2>
