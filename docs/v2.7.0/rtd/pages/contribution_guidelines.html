@@ -227,6 +227,12 @@ Include the relevant issue number if applicable.</p></li>
 <p>The git workflow used in this project is based on <a class="reference external" href="https://nvie.com/posts/a-successful-git-branching-model/">this blog post</a>.
 Using this workflow allows for better collaboration between contributors and automation of repetitive tasks.</p>
 <p>In addition to the workflow described in the blog post, Github Actions lints the code automatically on the release branches and builds documentation from each push to the master branch. For now, we don’t use hotfix branches.</p>
+<p>Branch naming:
+- develop: development branch
+- master: master branch
+- feature/[FEATURE NAME]: feature branches
+- release/v[VERSION]: releases
+- gh-pages: documentation and examples are hosted here</p>
 <div class="figure align-default" id="id1">
 <img alt="Workflow" src="../_images/figure-git-workflow.svg" /><p class="caption"><span class="caption-text">Git workflow for this project. Based on work by Vincent Driessen, Creative Commons BY-SA.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
