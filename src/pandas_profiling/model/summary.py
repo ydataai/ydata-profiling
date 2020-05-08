@@ -4,6 +4,7 @@ import multiprocessing
 import multiprocessing.pool
 import os
 import warnings
+from datetime import datetime
 from pathlib import Path
 from typing import Callable, Mapping, Tuple
 from urllib.parse import urlsplit
@@ -11,6 +12,7 @@ from urllib.parse import urlsplit
 import numpy as np
 import pandas as pd
 from scipy.stats.stats import chisquare
+from visions.application.summaries.series import image_summary
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model import base
@@ -301,6 +303,16 @@ def describe_1d(series: pd.Series) -> dict:
 
         return stats
 
+    def describe_file_1d(series: pd.Series, series_description: dict) -> dict:
+        stats = {}
+        stats["file_sizes"] = series.map(lambda x: x.stat().st_size)
+        bins = config["plot"]["histogram"]["bins"].get(int)
+        bins = min(series_description["distinct_count_with_nan"], bins)
+        stats["histogram_bins"] = bins
+
+        stats["file_created"] = pd.Series(series.map(lambda x: datetime.fromtimestamp(x.stat().st_ctime).strftime('%Y-%m-%d %H:%M:%S')), name='file_created').value_counts()
+        return stats
+
     def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
         """Describe a path series.
 
@@ -331,12 +343,20 @@ def describe_1d(series: pd.Series) -> dict:
         for name, part in path_parts.items():
             stats[f"{name.lower()}_counts"] = pd.Series(part, name=name).value_counts()
 
+        stats.update(describe_file_1d(series, series_description))
+
         # Only run if at least 1 non-missing value
         value_counts = series_description["value_counts_without_nan"]
 
         stats["top"] = value_counts.index[0]
         stats["freq"] = value_counts.iloc[0]
 
+        return stats
+
+    def describe_image_1d(series: pd.Series, series_description: dict):
+        series_description.update(describe_path_1d(series, series_description))
+
+        stats = image_summary(series)
         return stats
 
     def describe_boolean_1d(series: pd.Series, series_description: dict) -> dict:
@@ -376,6 +396,8 @@ def describe_1d(series: pd.Series) -> dict:
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
             Variable.TYPE_PATH: describe_path_1d,
+            Variable.TYPE_IMAGE: describe_image_1d,
+            Variable.TYPE_FILE: describe_file_1d,
         }
 
         if series_description["type"] in type_to_func:

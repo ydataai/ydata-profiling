@@ -12,11 +12,11 @@ from pandas_profiling.model.base import (
     Complex,
     Count,
     Date,
-    ExistingPath,
+    FilePath,
     Generic,
     Real,
     Url,
-)
+    ImagePath)
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
@@ -45,7 +45,7 @@ from pandas_profiling.report.structure.variables import (
     render_path,
     render_real,
     render_url,
-)
+    render_path_image)
 
 
 def get_missing_items(summary) -> list:
@@ -85,7 +85,8 @@ def render_variables_section(dataframe_summary: dict) -> list:
         Categorical: render_categorical,
         Url: render_url,
         AbsolutePath: render_path,
-        ExistingPath: render_path,
+        FilePath: render_path,
+        ImagePath: render_path_image,
         Generic: render_generic,
     }
 

@@ -1,5 +1,5 @@
 from pandas_profiling.config import config
-from pandas_profiling.report.presentation.core import FrequencyTable, Image
+from pandas_profiling.report.presentation.core import FrequencyTable, Image, Container
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_categorical import (
     render_categorical,
@@ -53,7 +53,7 @@ def render_path(summary):
 
     suffix = FrequencyTable(
         template_variables["freqtable_suffix"],
-        name="Suffix",
+        name="Extension",
         anchor_id=f"{varid}suffix_frequency",
     )
 
@@ -63,23 +63,49 @@ def render_path(summary):
         anchor_id=f"{varid}parent_frequency",
     )
 
-    template_variables["bottom"].content["items"].append(full)
-    template_variables["bottom"].content["items"].append(stem)
-    template_variables["bottom"].content["items"].append(name)
-    template_variables["bottom"].content["items"].append(suffix)
-    template_variables["bottom"].content["items"].append(parent)
+    path_tab = Container(
+        [full, name, stem, suffix, parent],
+        name="Path",
+        sequence_type="tabs",
+        anchor_id=f"{varid}path",
+    )
 
-    if "file_sizes" in summary:
-        file_size_histogram = Image(
-            histogram(summary["file_sizes"], summary, summary["histogram_bins"]),
-            image_format=image_format,
-            alt="File size",
-            caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={summary['histogram_bins']})",
-            name="File size",
-            anchor_id=f"{varid}file_size_histogram",
+    template_variables["bottom"].content["items"].append(path_tab)
+
+    if "file_sizes" in summary or "file_created" in summary:
+        file_tabs = []
+        if "file_sizes" in summary:
+            file_size_histogram = Image(
+                histogram(summary["file_sizes"], summary, summary["histogram_bins"]),
+                image_format=image_format,
+                alt="Size",
+                caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={summary['histogram_bins']})",
+                name="File size",
+                anchor_id=f"{varid}file_size_histogram",
+            )
+            file_tabs.append(file_size_histogram)
+
+        if "file_created" in summary:
+            template_variables[f"file_created"] = freq_table(
+                freqtable=summary[f"file_created"],
+                n=summary["n"],
+                max_number_to_print=n_freq_table_max,
+            )
+
+            file_created = FrequencyTable(
+                template_variables["file_created"],
+                name="Created",
+                anchor_id=f"{varid}file_created",
+            )
+            file_tabs.append(file_created)
+
+        file_tab = Container(
+            file_tabs,
+            name="File",
+            sequence_type="tabs",
+            anchor_id=f"{varid}file",
         )
 
-        # TODO: in SequeencyItem
-        template_variables["bottom"].content["items"].append(file_size_histogram)
+        template_variables["bottom"].content["items"].append(file_tab)
 
     return template_variables

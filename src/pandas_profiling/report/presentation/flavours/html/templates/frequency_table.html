@@ -11,21 +11,27 @@
         </tr>
     </thead>
     <tbody>
-    {% for row in rows %}
-        <tr class="{{ row['extra_class'] }}">
-            <td class="fillremaining" title="{{ row['label'] | fmt }}">
-                {{ row['label'] | fmt }}
-            </td>
-            <td class="number">
-                {{ row['count'] }}
-            </td>
-            <td class="number">
-                {{ row['percentage'] | fmt_percent }}
-            </td>
-            <td class="bartd">
-                <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">&nbsp;</div>
-            </td>
+    {% if rows | length > 0 %}
+        {% for row in rows %}
+            <tr class="{{ row['extra_class'] }}">
+                <td class="fillremaining" title="{{ row['label'] | fmt }}">
+                    {{ row['label'] | fmt }}
+                </td>
+                <td class="number">
+                    {{ row['count'] }}
+                </td>
+                <td class="number">
+                    {{ row['percentage'] | fmt_percent }}
+                </td>
+                <td class="bartd">
+                    <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">&nbsp;</div>
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="4">No values found.</td>
         </tr>
-    {% endfor %}
+    {% endif %}
     </tbody>
 </table>

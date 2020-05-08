@@ -1,5 +1,5 @@
 """Common parts to all other modules, mainly utility functions."""
-import sys
+import imghdr
 from enum import Enum, unique
 from urllib.parse import ParseResult, urlparse
 
@@ -28,10 +28,16 @@ class Variable(Enum):
     TYPE_URL = "URL"
     """A URL variable"""
 
-    TYPE_PATH = "PATH"
-    """Absolute files"""
-
     TYPE_COMPLEX = "COMPLEX"
+
+    TYPE_PATH = "PATH"
+    """Absolute path"""
+
+    TYPE_FILE = "FILE"
+    """File (i.e. existing path)"""
+
+    TYPE_IMAGE = "IMAGE"
+    """Images"""
 
     S_TYPE_UNSUPPORTED = "UNSUPPORTED"
     """An unsupported variable"""
@@ -46,8 +52,8 @@ Date = Variable.TYPE_DATE
 Categorical = Variable.TYPE_CAT
 Url = Variable.TYPE_URL
 AbsolutePath = Variable.TYPE_PATH
-ExistingPath = Variable.TYPE_PATH
-ImagePath = Variable.TYPE_PATH
+FilePath = Variable.TYPE_FILE
+ImagePath = Variable.TYPE_IMAGE
 Generic = Variable.S_TYPE_UNSUPPORTED
 
 
@@ -167,11 +173,7 @@ def is_path(series, series_description) -> bool:
             True is is an absolute path
         """
         try:
-            path = Path(p)
-            if path.is_absolute():
-                return True
-            else:
-                return False
+            return Path(p).is_absolute()
         except TypeError:
             return False
 
@@ -179,6 +181,31 @@ def is_path(series, series_description) -> bool:
         try:
             result = series[~series.isnull()].astype(str)
             return all(is_path_item(x) for x in result)
+        except ValueError:
+            return False
+    else:
+        return False
+
+
+def is_image(series, series_description) -> bool:
+    def is_image_item(p: str):
+        """Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+
+        Args:
+            p: the Path
+
+        Returns:
+            True is is an absolute path
+        """
+        try:
+            return imghdr.what(p)
+        except TypeError:
+            return False
+
+    if series_description["distinct_count_without_nan"] > 0:
+        try:
+            result = series[~series.isnull()].astype(str)
+            return all(is_image_item(x) for x in result)
         except ValueError:
             return False
     else:
@@ -233,8 +260,12 @@ def get_var_type(series: pd.Series) -> dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
-        elif is_path(series, series_description) and sys.version_info[1] > 5:
-            var_type = Variable.TYPE_PATH
+        elif is_path(series, series_description):
+            # if exists: TYPE_FILE
+            if is_image(series, series_description):
+                var_type = Variable.TYPE_IMAGE
+            else:
+                var_type = Variable.TYPE_PATH
         else:
             var_type = Variable.TYPE_CAT
     except TypeError:

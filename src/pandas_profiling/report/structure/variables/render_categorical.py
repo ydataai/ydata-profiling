@@ -133,7 +133,9 @@ def render_categorical(summary):
         n_freq_table_max = config["n_freq_table_max"].get(int)
 
         citems = []
-        vc = pd.Series(summary["category_alias_values"]).value_counts()
+
+        categories = pd.Series(summary["category_alias_values"]).str.replace('_', ' ')
+        vc = categories.value_counts()
         citems.append(
             FrequencyTable(
                 freq_table(
