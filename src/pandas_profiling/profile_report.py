@@ -1,5 +1,6 @@
 import json
 import warnings
+from copy import deepcopy
 from pathlib import Path
 from typing import Optional, Union
 
@@ -58,12 +59,7 @@ class ProfileReport(Serialize, object):
 
         self.df = None
         self._df_hash = -1
-        self._description_set = None
-        self._title = None
-        self._report = None
-        self._html = None
-        self._widgets = None
-        self._json = None
+        self.empty_cache()
 
         if df is not None:
             # preprocess df
@@ -97,25 +93,29 @@ class ProfileReport(Serialize, object):
             >>> ProfileReport(df).set_variables(title="NewTitle", html={"minify_html": False})
         """
         changed = set(vars.keys())
-        if {"progress_bar", "pool_size"} >= changed:
+
+        if len({"progress_bar", "pool_size"} & changed) > 0:
             # Cache can persist
             pass
-        elif {"notebook"} >= changed:
+        if len({"notebook"} & changed) > 0:
             self._widgets = None
-        elif {"html", "title"} >= changed:
+        if len({"html", "title"} & changed) > 0:
             self._html = None
-        else:
+        if not {"progress_bar", "pool_size", "notebook", "html", "title"} >= changed:
             # In all other cases, empty cache
-            self._description_set = None
-            self._title = None
-            self._report = None
-            self._html = None
-            self._widgets = None
-            self._json = None
+            self.empty_cache()
 
         self.config.set_kwargs(vars)
 
-    @property
+    def empty_cache(self):
+        self._description_set = None
+        self._title = None
+        self._report = None
+        self._html = None
+        self._widgets = None
+        self._json = None
+
+    @property  # type:ignore
     @register_config
     def description_set(self):
         if self._description_set is None:
@@ -136,7 +136,7 @@ class ProfileReport(Serialize, object):
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 
-    @property
+    @property  # type:ignore
     @register_config
     def report(self):
         if self._report is None:
@@ -144,20 +144,19 @@ class ProfileReport(Serialize, object):
         return self._report
 
     @property
-    @register_config
     def html(self):
         if self._html is None:
             self._html = self._render_html()
         return self._html
 
-    @property
+    @property  # type:ignore
     @register_config
     def json(self):
         if self._json is None:
             self._json = self._render_json()
         return self._json
 
-    @property
+    @property  # type:ignore
     @register_config
     def widgets(self):
         if self._widgets is None:
@@ -250,7 +249,7 @@ class ProfileReport(Serialize, object):
     def _render_html(self):
         from pandas_profiling.report.presentation.flavours import HTMLReport
 
-        report = self.report
+        report = deepcopy(self.report)
 
         disable_progress_bar = not self.config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render HTML", disable=disable_progress_bar) as pbar:
@@ -417,3 +416,4 @@ class ProfileReport(Serialize, object):
         Restore the configuration to default
         """
         self.config.clear()
+        self.empty_cache()
