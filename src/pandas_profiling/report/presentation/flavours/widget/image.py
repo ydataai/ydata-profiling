@@ -9,11 +9,9 @@ class WidgetImage(Image):
     def render(self):
         image = self.content["image"]
         if self.content["image_format"] == "svg":
-            image = image.replace(
-                "svg ", 'svg style="max-width: 100%" '
-            )
+            image = image.replace("svg ", 'svg style="max-width: 100%" ')
 
-            image = re.sub('height="[\\d]+pt"', '', image)
+            image = re.sub('height="[\\d]+pt"', "", image)
         else:
             alt = self.content["alt"]
             image = f'<img src="{image}" alt="{alt}" />'

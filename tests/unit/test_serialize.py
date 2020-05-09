@@ -48,7 +48,7 @@ def test_load(get_data_file, test_output_dir):
 
     assert test_output_path.exists(), "Output file does not exist"
 
-    profile2 = ProfileReport(df).load(test_output_path,ignore_config=True)
+    profile2 = ProfileReport(df).load(test_output_path, ignore_config=True)
     # json1 are compute before dumps, so _description_set should be the same
     assert isinstance(profile2._description_set, dict)
 
