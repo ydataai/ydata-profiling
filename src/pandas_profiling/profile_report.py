@@ -1,6 +1,5 @@
 import json
 import warnings
-from copy import deepcopy
 from pathlib import Path
 from typing import Optional, Union
 
@@ -249,7 +248,7 @@ class ProfileReport(Serialize, object):
     def _render_html(self):
         from pandas_profiling.report.presentation.flavours import HTMLReport
 
-        report = deepcopy(self.report)
+        report = self.report
 
         disable_progress_bar = not self.config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render HTML", disable=disable_progress_bar) as pbar:
