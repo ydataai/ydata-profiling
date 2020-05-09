@@ -38,7 +38,7 @@ IF "%1" == "examples" (
 )
 
 IF "%1" == "pypi_package" (
-	make install
+    make install
     check-manifest
     python setup.py sdist bdist_wheel
     twine check dist/*
@@ -60,6 +60,11 @@ IF "%1" == "install" (
 
 if "%1" == "typing" (
 	pytest --mypy -m mypy .
+	GOTO end
+)
+
+IF "%1%" == "clean" (
+	ECHO "Not implemented yet"
 	GOTO end
 )
 

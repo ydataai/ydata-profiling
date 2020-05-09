@@ -61,7 +61,7 @@ script:
     fi
   - >
     if [ $TEST == 'typing' ];
-    then pytest --mypy -m mypy .;
+    then make typing;
     fi
   - >
     if [ $TEST == 'lint' ];

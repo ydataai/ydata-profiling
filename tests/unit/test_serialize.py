@@ -82,7 +82,7 @@ def test_load_error():
 
     assert (
         str(e.value)
-        == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
+        == 'DataFrame or Config do not match with the current ProfileReport. If you want to overwrite the current configuration, use "ignore_config=True"'
     )
 
     # df not match
@@ -93,5 +93,5 @@ def test_load_error():
 
     assert (
         str(e.value)
-        == 'DataFrame of Config is not match. If you want to overwrite current config, try "ignore_config=True"'
+        == 'DataFrame or Config do not match with the current ProfileReport. If you want to overwrite the current configuration, use "ignore_config=True"'
     )

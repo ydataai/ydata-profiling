@@ -13,9 +13,6 @@ help:
 
 github:
 	@make html
-	@rm -rf ../docs/
-	@mkdir ../docs
-	@touch ../docs/.nojekyll
 	@cp -a build/html/. ../docs/rtd
 	@rm -rf build
 

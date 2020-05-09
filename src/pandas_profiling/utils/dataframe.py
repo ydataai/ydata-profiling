@@ -2,8 +2,8 @@
 import warnings
 from pathlib import Path
 
+import joblib
 import pandas as pd
-from pandas.core.util.hashing import hash_pandas_object
 
 
 def warn_read(extension):
@@ -125,4 +125,4 @@ def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
 
 
 def hash_dataframe(df):
-    return int(hash_pandas_object(df).sum())
+    return joblib.hash(df)

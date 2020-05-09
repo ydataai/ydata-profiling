@@ -27,6 +27,12 @@ If you have data in another Python framework, you can use pandas-profiling by co
    df = df.compute()
 
 
+.. code-block:: python
+  :caption: Vaex to Pandas
+
+   # Convert vaex DataFrame to a pandas DataFrame
+   df = df.to_pandas_df()
+
 
 .. code-block:: python
   :caption: Modin to Pandas

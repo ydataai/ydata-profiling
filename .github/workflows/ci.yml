@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - release/v**
+      - master
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout repo
+
+    - name: Configurating Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git config --local core.autocrlf false
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+
+    - uses: actions/cache@v1
+      name: Cache pip dependencies
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install pip dependencies
+      run: |
+         pip install --upgrade pip
+         pip install -r requirements.txt
+         pip install -r requirements-dev.txt
+         pip install -r requirements-test.txt
+
+    - name: Install the package
+      run: make install
+
+    - name: Code formatting
+      run: make lint
+
+    - name: Commit documentation changes
+      run: |
+        git add -u
+        git commit -m "[skip ci] Code formatting" -a || true
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  docs_and_examples:
+      name: Documentation and Examples
+      runs-on: ubuntu-latest
+      needs: lint
+      steps:
+      - uses: actions/checkout@v2
+
+      - name: Configurating Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git config --local core.autocrlf false
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - uses: actions/cache@v1
+        name: Cache pip dependencies
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install pip dependencies
+        run: |
+           pip install --upgrade pip
+           pip install -r requirements.txt
+           pip install -r requirements-dev.txt
+           pip install -r requirements-test.txt
+
+      - name: Install the package
+        run: make install
+
+      - name: Update examples
+        run: make examples
+
+      - name: Build the documentation
+        run: make docs
+
+      - name: Create branch name
+        run: |
+          export BRANCH_NAME="${GITHUB_REF##*/}/"
+          echo "::set-env name=BRANCH_NAME::$BRANCH_NAME"
+
+      - name: Move the changes to the gh-pages branch (release branch)
+        run: |
+          mv docs/ ${{ env.BRANCH_NAME }}
+          mkdir docs/
+          mv ${{ env.BRANCH_NAME }} docs/${{ env.BRANCH_NAME }}
+          mv examples/ ${{ env.BRANCH_NAME }}
+          mkdir examples/
+          mv ${{ env.BRANCH_NAME }} examples/${{ env.BRANCH_NAME }}
+          git add -f docs/${{ env.BRANCH_NAME }}
+          git add -f examples/${{ env.BRANCH_NAME }}
+          git stash push -- docs/ examples/${{ env.BRANCH_NAME }}
+          git fetch origin gh-pages
+          git checkout gh-pages
+          touch .nojekyll
+          git add .nojekyll
+          rm -rf docs/${{ env.BRANCH_NAME }}
+          rm -rf examples/${{ env.BRANCH_NAME }}
+          git add docs/
+          git add examples/
+          git stash apply
+          git commit -m "[skip ci] Updating documentation and examples" -a || true
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: .
+          github_token: ${{ secrets.GITHUB_TOKEN }}

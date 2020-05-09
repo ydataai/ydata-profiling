@@ -40,6 +40,8 @@ Videos
 - `Data Science Tools - Data Profiling with Pandas (Simple Exploratory Data Analysis) <https://www.youtube.com/watch?v=C7cmeEvUDfo>`_
   (Jesse E. Agbe, Jun 20, 2019)
 
+- `Exploratory data analysis in python - PyCon 2017 <https://www.youtube.com/watch?v=W5WE9Db2RLU>`_ (Chloe Mawer, Jonathan Whitmore, May 18, 2017)
+
 Books
 -----
 
