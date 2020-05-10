@@ -36,6 +36,9 @@ def describe(title, df: pd.DataFrame) -> dict:
             - package: package details.
     """
 
+    if df is None:
+        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
+
     if not isinstance(df, pd.DataFrame):
         warnings.warn("df is not of type pandas.DataFrame")
 

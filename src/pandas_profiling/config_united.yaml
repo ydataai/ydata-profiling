@@ -32,6 +32,12 @@ vars:
         coerce_str_to_date: False
     bool:
         n_obs: 3
+    file:
+      active: False
+    image:
+      active: False
+      exif: True
+      hash: True
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: ascending
@@ -69,6 +75,7 @@ correlations:
 
 # Bivariate / Pairwise relations
 interactions:
+  targets: []
   continuous: True
 
 # For categorical
@@ -79,6 +86,8 @@ plot:
 # Image format (svg or png)
     image_format: "svg"
     dpi: 800
+
+    scatter_threshold: 1000
 
     correlation:
         cmap: 'RdBu'
@@ -129,6 +138,9 @@ html:
 
 # Offline support
     use_local_assets: True
+
+# If True, single file, else directory with assets
+    inline: True
 
 # Show navbar
     navbar_show: True
