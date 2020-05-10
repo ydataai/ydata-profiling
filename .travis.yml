@@ -10,7 +10,8 @@ jobs:
   allow_failures:
     - os: windows
     - os: osx
-    - python: "3.9-dev"
+    - os: linux
+      python: "3.9-dev"
 
   include:
     - os: linux
