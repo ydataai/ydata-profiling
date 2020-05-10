@@ -8,8 +8,7 @@ cache:
 
 jobs:
   allow_failures:
-    - python: 3.9-dev
-    - if: os = windows OR os = osx
+    - if: os = windows OR os = osx OR python = 3.9-dev
 
   include:
     - os: linux
