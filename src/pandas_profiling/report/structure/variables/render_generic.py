@@ -14,6 +14,7 @@ def render_generic(summary):
         warnings=summary["warnings"],
         var_type="Unsupported",
         var_name=summary["varname"],
+        description=summary["description"],
     )
 
     table = Table(

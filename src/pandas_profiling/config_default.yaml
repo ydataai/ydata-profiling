@@ -7,6 +7,9 @@ pool_size: 0
 # Show the progress bar
 progress_bar: True
 
+variables:
+  descriptions: {}
+
 # Per variable type description settings
 vars:
     num:
@@ -29,6 +32,12 @@ vars:
         coerce_str_to_date: False
     bool:
         n_obs: 3
+    file:
+        active: False
+    image:
+        active: False
+        exif: True
+        hash: True
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: None
@@ -66,6 +75,7 @@ correlations:
 
 # Bivariate / Pairwise relations
 interactions:
+  targets: []
   continuous: True
 
 # For categorical
@@ -77,9 +87,11 @@ plot:
     image_format: "svg"
     dpi: 800
 
+    scatter_threshold: 1000
+
     correlation:
         cmap: 'RdBu'
-        bad: '#000'
+        bad: '#000000'
 
     missing:
         cmap: 'RdBu'
@@ -126,6 +138,9 @@ html:
 
 # Offline support
     use_local_assets: True
+
+# If True, single file, else directory with assets
+    inline: True
 
 # Show navbar
     navbar_show: True

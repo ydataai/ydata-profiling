@@ -12,13 +12,18 @@ General settings
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
-The configuration can be changed in the following way:
+The configuration can be changed in the following ways:
 
 .. code-block:: python
   :caption: Configuration example
 
-  profile = df.profile_report(title='Pandas Profiling Report', pool_size=1)
-  profile.to_file(output_file="output.html")
+  # Change the config when creating the report
+  profile = df.profile_report(title="Pandas Profiling Report", pool_size=1)
+
+  # Change the config after
+  profile.set_variable("html.minify_html", False)
+
+  profile.to_file("output.html")
 
 Variable summary settings
 -------------------------
@@ -42,6 +47,15 @@ Variable summary settings
 	    }
   	}
   )
+
+  profile.set_variable('variables.descriptions',
+      {
+        'files': 'Files in the filesystem',
+        'datec': 'Creation date',
+        'datem': 'Modification date',
+      }
+  )
+
   profile.to_file("report.html")
 
 
@@ -89,6 +103,12 @@ Disable all correlations:
         },
     )
 
+    # or using a shorthand that is available for correlations
+       profile = df.profile_report(
+        title="Report without correlations",
+        correlations=None,
+    )
+
 Interactions
 ------------
 
@@ -118,3 +138,20 @@ The repository contains the following files:
 - `default configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_ (default),
 - `minimal configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (optimized for performance)
 - `dark themed configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml>`_ (customizing styles).
+
+Configuration shorthands
+------------------------
+
+It's possible to disable certain groups of features through configuration shorthands.
+
+.. code-block:: python
+
+    # Disable samples, correlations, missing diagrams and duplicates at once
+    r = ProfileReport(samples=None, correlations=None, missing_diagrams=None, duplicates=None)
+
+    # Or use the .set_variable method
+    r = ProfileReport()
+    r.set_variable("samples", None)
+    r.set_variable("duplicates", None)
+    r.set_variable("correlations", None)
+    r.set_variable("missing_diagrams", None)

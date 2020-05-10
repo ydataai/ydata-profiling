@@ -35,9 +35,35 @@ def df(get_data_file):
     return df
 
 
+def test_modular_description_set(df):
+    profile = df.profile_report(
+        title="Modular test",
+        duplicates={"head": 0},
+        samples={"head": 0, "tail": 0},
+        correlations={
+            "pearson": {"calculate": False},
+            "spearman": {"calculate": False},
+            "kendall": {"calculate": False},
+            "phi_k": {"calculate": False},
+            "cramers": {"calculate": False},
+            "recoded": {"calculate": False},
+        },
+        missing_diagrams={
+            "matrix": False,
+            "bar": False,
+            "dendrogram": False,
+            "heatmap": False,
+        },
+    )
+
+    html = profile.get_description()
+    print(html)
+
+
 def test_modular_absent(df):
     profile = df.profile_report(
         title="Modular test",
+        variables={"calculate": False},
         duplicates={"head": 0},
         samples={"head": 0, "tail": 0},
         correlations={

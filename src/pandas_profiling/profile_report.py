@@ -11,12 +11,12 @@ from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
-from pandas_profiling.serialize import Serialize
+from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
 from pandas_profiling.utils.paths import get_config_minimal
 
 
-class ProfileReport(Serialize, object):
+class ProfileReport(SerializeReport, object):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -82,15 +82,20 @@ class ProfileReport(Serialize, object):
         """Change a single configuration variable
 
         Args:
-            key: configuration parameter name
+            key: configuration parameter name. Accepts nested syntax, e.g. "html.minify_html"
             value: the new value
 
         Examples:
             >>> ProfileReport(df).set_variables("title", "NewTitle")
             >>> ProfileReport(df).set_variables("html", {"minify_html": False})
+            >>> ProfileReport(df).set_variables("html.minify_html", False)
 
         """
-        self.set_variables(**{key: value})
+        key = key.split(".")
+        for e in reversed(key[1:]):
+            value = {e: value}
+
+        config[key[0]] = value
 
     def set_variables(self, **vars):
         """Change configuration variables (invalidates caches where necessary)
@@ -221,7 +226,14 @@ class ProfileReport(Serialize, object):
         if output_file.suffix == ".json":
             data = self.to_json()
         else:
+            inline = config["html"]["inline"].get(bool)
+            if not inline:
+                Path("./assets/images").mkdir(parents=True, exist_ok=True)
+                Path("./assets/css").mkdir(exist_ok=True)
+                Path("./assets/js").mkdir(exist_ok=True)
+
             data = self.to_html()
+
             if output_file.suffix != ".html":
                 suffix = output_file.suffix
                 output_file = output_file.with_suffix(".html")
@@ -398,6 +410,18 @@ class ProfileReport(Serialize, object):
 
     @staticmethod
     def preprocess(df):
+        """Preprocess the dataframe
+
+        - Appends the index to the dataframe when it contains information
+        - Rename the "index" column to "df_index", if exists
+        - Convert the DataFrame's columns to str
+
+        Args:
+            df: the pandas DataFrame
+
+        Returns:
+            The preprocessed DataFrame
+        """
         # Treat index as any other column
         if (
             not pd.Index(np.arange(0, len(df))).equals(df.index)

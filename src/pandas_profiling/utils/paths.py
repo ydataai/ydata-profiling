@@ -30,4 +30,9 @@ def get_config_minimal() -> Path:
 
 
 def get_data_path() -> Path:
+    """Returns the path to the dataset cache ([root] / data)
+
+    Returns:
+        The path to the dataset cache
+    """
     return get_project_root() / "data"

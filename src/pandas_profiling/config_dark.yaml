@@ -7,6 +7,9 @@ pool_size: 0
 # Show the progress bar
 progress_bar: True
 
+variables:
+  descriptions: {}
+
 # Per variable type description settings
 vars:
     num:
@@ -79,7 +82,7 @@ plot:
 
     correlation:
         cmap: 'RdBu'
-        bad: '#000'
+        bad: '#000000'
 
     missing:
         cmap: 'RdBu'

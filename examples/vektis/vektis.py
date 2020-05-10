@@ -20,6 +20,5 @@ if __name__ == "__main__":
             "phi_k": {"calculate": False},
             "cramers": {"calculate": False},
         },
-        plot={"histogram": {"bayesian_blocks_bins": False}},
     )
     report.to_file(Path("vektis_report.html"))

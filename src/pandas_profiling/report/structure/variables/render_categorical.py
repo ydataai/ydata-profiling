@@ -2,6 +2,7 @@ import pandas as pd
 
 from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
+    HTML,
     Container,
     FrequencyTable,
     FrequencyTableSmall,
@@ -31,7 +32,11 @@ def render_categorical(summary):
     # Top
     # Element composition
     info = VariableInfo(
-        summary["varid"], summary["varname"], "Categorical", summary["warnings"]
+        summary["varid"],
+        summary["varname"],
+        "Categorical",
+        summary["warnings"],
+        summary["description"],
     )
 
     table = Table(
@@ -95,6 +100,12 @@ def render_categorical(summary):
                     "alert": False,
                 },
                 {
+                    "name": "Median length",
+                    "value": summary["median_length"],
+                    "fmt": "fmt_numeric",
+                    "alert": False,
+                },
+                {
                     "name": "Mean length",
                     "value": summary["mean_length"],
                     "fmt": "fmt_numeric",
@@ -121,58 +132,161 @@ def render_categorical(summary):
             anchor_id=f"{varid}length",
         )
 
-        tbl = Container(
+        length_tab = Container(
             [length, length_table],
             anchor_id=f"{varid}tbl",
             name="Length",
             sequence_type="grid",
         )
 
-        items.append(tbl)
+        items.append(length_tab)
 
         n_freq_table_max = config["n_freq_table_max"].get(int)
 
-        citems = []
-
-        categories = pd.Series(summary["category_alias_values"]).str.replace('_', ' ')
-        vc = categories.value_counts()
-        citems.append(
+        category_items = [
             FrequencyTable(
                 freq_table(
-                    freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
+                    freqtable=summary["category_alias_counts"],
+                    n=summary["category_alias_counts"].sum(),
+                    max_number_to_print=n_freq_table_max,
                 ),
-                name="Categories",
+                name="Most occurring categories",
                 anchor_id=f"{varid}category_long_values",
             )
-        )
-
-        vc = pd.Series(summary["script_values"]).value_counts()
-        citems.append(
-            FrequencyTable(
-                freq_table(
-                    freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
-                ),
-                name="Scripts",
-                anchor_id=f"{varid}script_values",
+        ]
+        for category_alias_name, category_alias_counts in summary[
+            "category_alias_char_counts"
+        ].items():
+            category_alias_name = category_alias_name.replace("_", " ")
+            category_items.append(
+                FrequencyTable(
+                    freq_table(
+                        freqtable=category_alias_counts,
+                        n=category_alias_counts.sum(),
+                        max_number_to_print=n_freq_table_max,
+                    ),
+                    name=f"Most frequent {category_alias_name} characters",
+                    anchor_id=f"{varid}category_alias_values_{category_alias_name}",
+                )
             )
-        )
 
-        vc = pd.Series(summary["block_alias_values"]).value_counts()
-        citems.append(
+        script_items = [
             FrequencyTable(
                 freq_table(
-                    freqtable=vc, n=vc.sum(), max_number_to_print=n_freq_table_max
+                    freqtable=summary["script_counts"],
+                    n=summary["script_counts"].sum(),
+                    max_number_to_print=n_freq_table_max,
                 ),
-                name="Blocks",
+                name="Most occurring scripts",
+                anchor_id=f"{varid}script_values",
+            ),
+        ]
+        for script_name, script_counts in summary["script_char_counts"].items():
+            script_items.append(
+                FrequencyTable(
+                    freq_table(
+                        freqtable=script_counts,
+                        n=script_counts.sum(),
+                        max_number_to_print=n_freq_table_max,
+                    ),
+                    name=f"Most frequent {script_name} characters",
+                    anchor_id=f"{varid}script_values_{script_name}",
+                )
+            )
+
+        block_items = [
+            FrequencyTable(
+                freq_table(
+                    freqtable=summary["block_alias_counts"],
+                    n=summary["block_alias_counts"].sum(),
+                    max_number_to_print=n_freq_table_max,
+                ),
+                name="Most occurring blocks",
                 anchor_id=f"{varid}block_alias_values",
             )
-        )
+        ]
+        for block_name, block_counts in summary["block_alias_char_counts"].items():
+            block_items.append(
+                FrequencyTable(
+                    freq_table(
+                        freqtable=block_counts,
+                        n=block_counts.sum(),
+                        max_number_to_print=n_freq_table_max,
+                    ),
+                    name=f"Most frequent {block_name} characters",
+                    anchor_id=f"{varid}block_alias_values_{block_name}",
+                )
+            )
+
+        citems = [
+            Container(
+                [
+                    Table(
+                        [
+                            {
+                                "name": "Unique unicode characters",
+                                "value": summary["n_characters"],
+                                "fmt": "fmt_numeric",
+                                "alert": False,
+                            },
+                            {
+                                "name": 'Unique unicode categories (<a target="_blank" href="https://en.wikipedia.org/wiki/Unicode_character_property#General_Category">?</a>)',
+                                "value": summary["n_category"],
+                                "fmt": "fmt_numeric",
+                                "alert": False,
+                            },
+                            {
+                                "name": 'Unique unicode scripts (<a target="_blank" href="https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode">?</a>)',
+                                "value": summary["n_scripts"],
+                                "fmt": "fmt_numeric",
+                                "alert": False,
+                            },
+                            {
+                                "name": 'Unique unicode blocks (<a target="_blank" href="https://en.wikipedia.org/wiki/Unicode_block">?</a>)',
+                                "value": summary["n_block_alias"],
+                                "fmt": "fmt_numeric",
+                                "alert": False,
+                            },
+                        ],
+                        name="Overview of Unicode Properties",
+                        caption="The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. ",
+                    ),
+                ],
+                anchor_id=f"{varid}character_overview",
+                name="Overview",
+                sequence_type="list",
+            ),
+            FrequencyTable(
+                freq_table(
+                    freqtable=summary["character_counts"],
+                    n=summary["character_counts"].sum(),
+                    max_number_to_print=n_freq_table_max,
+                ),
+                name="Characters",
+                anchor_id=f"{varid}characters",
+            ),
+            Container(
+                category_items,
+                name="Categories",
+                anchor_id=f"{varid}categories",
+                sequence_type="named_list",
+            ),
+            Container(
+                script_items,
+                name="Scripts",
+                anchor_id=f"{varid}scripts",
+                sequence_type="named_list",
+            ),
+            Container(
+                block_items,
+                name="Blocks",
+                anchor_id=f"{varid}blocks",
+                sequence_type="named_list",
+            ),
+        ]
 
         characters = Container(
-            citems,
-            name="Characters",
-            sequence_type="tabs",
-            anchor_id=f"{varid}characters",
+            citems, name="Unicode", sequence_type="tabs", anchor_id=f"{varid}unicode",
         )
 
         items.append(characters)

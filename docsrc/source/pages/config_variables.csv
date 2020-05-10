@@ -1,5 +1,6 @@
 Parameter,Type,Default,Description
 ``sort``,"None, asc or desc",None,"Sort the variables asc(ending), desc(ending) or None (leaves original sorting)."
+``variables.descriptions``,dict,{},"Ability to display a description alongside the descriptive statistics of each variable ({'var_name': 'Description'})."
 ``vars.num.quantiles``,list[float],"[0.05,0.25,0.5,0.75,0.95]","The quantiles to calculate. Note that .25, .5 and .75 are required for other metrics median and IQR."
 ``vars.num.skewness_threshold``,integer,20,"Warn if the skewness is above this threshold."
 ``vars.num.low_categorical_threshold``,integer,5,"If the number of distinct values is equal to or smaller than this number, then the series is considered to be categorical. Set to 0 to disable."

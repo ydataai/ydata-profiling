@@ -65,7 +65,13 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
         type=str,
         help="CSV file (or other file type supported by pandas) to profile",
     )
-    parser.add_argument("output_file", type=str, help="Output report file")
+    parser.add_argument(
+        "output_file",
+        type=str,
+        nargs="?",
+        help="Output report file. If empty, replaces the input_file's extension with .html and uses that.",
+        default=None,
+    )
 
     return parser.parse_args(args)
 
@@ -79,6 +85,8 @@ def main(args=None) -> None:
 
     # Parse the arguments
     args = parse_args(args)
+    if args.output_file is None:
+        args.output_file = str(Path(args.input_file).with_suffix(".html"))
     config.set_args(args, dots=True)
 
     # read the DataFrame
@@ -86,4 +94,4 @@ def main(args=None) -> None:
 
     # Generate the profiling report
     p = ProfileReport(df, minimal=args.minimal, config_file=args.config_file)
-    p.to_file(output_file=Path(args.output_file), silent=args.silent)
+    p.to_file(Path(args.output_file), silent=args.silent)

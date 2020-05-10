@@ -189,13 +189,26 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     return plot_360_n0sc0pe(plt)
 
 
-def scatter_complex(series) -> str:
+def scatter_complex(series: pd.Series) -> str:
+    """Scatter plot (or hexbin plot) from a series of complex values
+
+    Examples:
+        >>> complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+        >>> scatter_complex(complex_series)
+
+    Args:
+        series: the Series
+
+    Returns:
+        A string containing (a reference to) the image
+    """
     plt.ylabel("Imaginary")
     plt.xlabel("Real")
 
     color = config["html"]["style"]["primary_color"].get(str)
+    scatter_threshold = config["plot"]["scatter_threshold"].get(int)
 
-    if len(series) > 1000:
+    if len(series) > scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series.real, series.imag, cmap=cmap)
     else:
@@ -205,25 +218,26 @@ def scatter_complex(series) -> str:
 
 
 def scatter_series(series, x_label="Width", y_label="Height") -> str:
-    """
+    """Scatter plot (or hexbin plot) from one series of sequences with length 2
 
     Examples:
         >>> scatter_series(file_sizes, "Width", "Height")
 
     Args:
-        series:
-        x_label:
-        y_label:
+        series: the Series
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
 
     Returns:
-
+        A string containing (a reference to) the image
     """
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     color = config["html"]["style"]["primary_color"].get(str)
+    scatter_threshold = config["plot"]["scatter_threshold"].get(int)
 
-    if len(series) > 1000:
+    if len(series) > scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(*zip(*series.tolist()), cmap=cmap)
     else:
@@ -232,12 +246,29 @@ def scatter_series(series, x_label="Width", y_label="Height") -> str:
 
 
 def scatter_pairwise(series1, series2, x_label, y_label) -> str:
+    """Scatter plot (or hexbin plot) from two series
+
+    Examples:
+        >>> widths = pd.Series([800, 1024])
+        >>> heights = pd.Series([600, 768])
+        >>> scatter_series(widths, heights, "Width", "Height")
+
+    Args:
+        series1: the series corresponding to the x-axis
+        series2: the series corresponding to the y-axis
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    """
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     color = config["html"]["style"]["primary_color"].get(str)
+    scatter_threshold = config["plot"]["scatter_threshold"].get(int)
 
-    if len(series1) > 1000:
+    if len(series1) > scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:

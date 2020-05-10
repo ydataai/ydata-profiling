@@ -1,0 +1,181 @@
+import pandas as pd
+
+from pandas_profiling.config import config
+from pandas_profiling.report.presentation.core import (
+    Container,
+    FrequencyTable,
+    Image,
+    Table,
+)
+from pandas_profiling.report.presentation.frequency_table_utils import freq_table
+from pandas_profiling.report.structure.variables.render_file import render_file
+from pandas_profiling.visualisation.plot import scatter_series
+
+
+def render_image(summary):
+    varid = summary["varid"]
+    n_freq_table_max = config["n_freq_table_max"].get(int)
+
+    template_variables = render_file(summary)
+
+    # Top
+    template_variables["top"].content["items"][0].content["var_type"] = "Image"
+
+    # Bottom
+    image_items = []
+
+    """
+    Min Width           Min Height          Min Area
+    Mean Width          Mean Height         Mean Height
+    Median Width        Median Height       Median Height
+    Max Width           Max Height          Max Height
+    
+    All dimension properties are in pixels.
+    """
+
+    image_shape_items = [
+        Container(
+            [
+                Table(
+                    [
+                        {
+                            "name": "Min width",
+                            "value": summary["min_width"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                        {
+                            "name": "Median width",
+                            "value": summary["median_width"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                        {
+                            "name": "Max width",
+                            "value": summary["max_width"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                    ]
+                ),
+                Table(
+                    [
+                        {
+                            "name": "Min height",
+                            "value": summary["min_height"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                        {
+                            "name": "Median height",
+                            "value": summary["median_height"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                        {
+                            "name": "Max height",
+                            "value": summary["max_height"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                    ]
+                ),
+                Table(
+                    [
+                        {
+                            "name": "Min area",
+                            "value": summary["min_area"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                        {
+                            "name": "Median area",
+                            "value": summary["median_area"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                        {
+                            "name": "Max area",
+                            "value": summary["max_area"],
+                            "fmt": "fmt_numeric",
+                            "alert": False,
+                        },
+                    ]
+                ),
+            ],
+            anchor_id=f"{varid}tbl",
+            name="Overview",
+            sequence_type="grid",
+        ),
+        FrequencyTable(
+            freq_table(
+                freqtable=summary["image_dimensions"].value_counts(),
+                n=summary["n"],
+                max_number_to_print=n_freq_table_max,
+            ),
+            name="Common values",
+            anchor_id=f"{varid}image_dimensions_frequency",
+        ),
+        Image(
+            scatter_series(summary["image_dimensions"]),
+            image_format=config["plot"]["image_format"].get(str),
+            alt="Scatter plot of image sizes",
+            caption="Scatter plot of image sizes",
+            name="Scatter plot",
+            anchor_id=f"{varid}image_dimensions_scatter",
+        ),
+    ]
+
+    image_shape = Container(
+        image_shape_items,
+        sequence_type="named_list",
+        name="Dimensions",
+        anchor_id=f"{varid}image_dimensions",
+    )
+
+    if "exif_keys_counts" in summary:
+        exif_keys = FrequencyTable(
+            freq_table(
+                freqtable=pd.Series(summary["exif_keys_counts"]),
+                n=summary["n"],
+                max_number_to_print=n_freq_table_max,
+            ),
+            name="Exif keys",
+            anchor_id=f"{varid}exif_keys",
+        )
+
+        a = [exif_keys]
+        for key, counts in summary["exif_data"].items():
+            if key == "exif_keys":
+                continue
+
+            a.append(
+                FrequencyTable(
+                    freq_table(
+                        freqtable=counts,
+                        n=summary["n"],
+                        max_number_to_print=n_freq_table_max,
+                    ),
+                    name=key,
+                    anchor_id=f"{varid}_exif_{key}",
+                )
+            )
+
+        exif_data = Container(
+            a,
+            anchor_id=f"{varid}exif_data",
+            name="Exif data",
+            sequence_type="named_list",
+        )
+
+        image_items.append(exif_data)
+
+    image_items.append(image_shape)
+
+    image_tab = Container(
+        image_items, name="Image", sequence_type="tabs", anchor_id=f"{varid}image",
+    )
+
+    template_variables["bottom"].content["items"].append(image_tab)
+
+    return template_variables

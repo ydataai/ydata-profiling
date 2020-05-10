@@ -1,5 +1,6 @@
 """Common parts to all other modules, mainly utility functions."""
 import imghdr
+import os
 from enum import Enum, unique
 from urllib.parse import ParseResult, urlparse
 
@@ -161,52 +162,60 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
 
 
 def is_path(series, series_description) -> bool:
-    from pathlib import Path
+    """Is the series of the path type (i.e. absolute path)?
 
-    def is_path_item(p: str):
-        """Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+    Args:
+        series: Series
+        series_description: Series description
 
-        Args:
-            p: the Path
+    Returns:
+        True is the series is path type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] == 0:
+        return False
 
-        Returns:
-            True is is an absolute path
-        """
-        try:
-            return Path(p).is_absolute()
-        except TypeError:
-            return False
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.isabs(p) for p in result)
+    except (ValueError, TypeError):
+        return False
 
-    if series_description["distinct_count_without_nan"] > 0:
-        try:
-            result = series[~series.isnull()].astype(str)
-            return all(is_path_item(x) for x in result)
-        except ValueError:
-            return False
-    else:
+
+def is_file(series, series_description) -> bool:
+    """Is the series of the type "file" (i.e. existing paths)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the file type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] == 0:
+        return False
+
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.exists(p) for p in result)
+    except (ValueError, TypeError):
         return False
 
 
 def is_image(series, series_description) -> bool:
-    def is_image_item(p: str):
-        """Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+    """Is the series of the image type (i.e. "file" with image extensions)?
 
-        Args:
-            p: the Path
+    Args:
+        series: Series
+        series_description: Series description
 
-        Returns:
-            True is is an absolute path
-        """
-        try:
-            return imghdr.what(p)
-        except TypeError:
-            return False
-
+    Returns:
+        True is the series is of the image type (NaNs allowed).
+    """
     if series_description["distinct_count_without_nan"] > 0:
         try:
             result = series[~series.isnull()].astype(str)
-            return all(is_image_item(x) for x in result)
-        except ValueError:
+            return all(imghdr.what(p) for p in result)
+        except (TypeError, ValueError):
             return False
     else:
         return False
@@ -261,9 +270,15 @@ def get_var_type(series: pd.Series) -> dict:
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
         elif is_path(series, series_description):
-            # if exists: TYPE_FILE
-            if is_image(series, series_description):
-                var_type = Variable.TYPE_IMAGE
+            if config["vars"]["file"]["active"].get(bool) and is_file(
+                series, series_description
+            ):
+                if config["vars"]["image"]["active"].get(bool) and is_image(
+                    series, series_description
+                ):
+                    var_type = Variable.TYPE_IMAGE
+                else:
+                    var_type = Variable.TYPE_FILE
             else:
                 var_type = Variable.TYPE_PATH
         else:
