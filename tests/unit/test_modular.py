@@ -6,7 +6,7 @@ import pandas_profiling
 
 
 @pytest.fixture
-def df(get_data_file):
+def tdf(get_data_file):
     file_name = get_data_file(
         "meteorites.csv",
         "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
@@ -35,19 +35,12 @@ def df(get_data_file):
     return df
 
 
-def test_modular_description_set(df):
-    profile = df.profile_report(
+def test_modular_description_set(tdf):
+    profile = tdf.profile_report(
         title="Modular test",
-        duplicates={"head": 0},
+        duplicates=None,
         samples={"head": 0, "tail": 0},
-        correlations={
-            "pearson": {"calculate": False},
-            "spearman": {"calculate": False},
-            "kendall": {"calculate": False},
-            "phi_k": {"calculate": False},
-            "cramers": {"calculate": False},
-            "recoded": {"calculate": False},
-        },
+        correlations=None,
         missing_diagrams={
             "matrix": False,
             "bar": False,
@@ -60,8 +53,8 @@ def test_modular_description_set(df):
     print(html)
 
 
-def test_modular_absent(df):
-    profile = df.profile_report(
+def test_modular_absent(tdf):
+    profile = tdf.profile_report(
         title="Modular test",
         variables={"calculate": False},
         duplicates={"head": 0},
@@ -74,12 +67,7 @@ def test_modular_absent(df):
             "cramers": {"calculate": False},
             "recoded": {"calculate": False},
         },
-        missing_diagrams={
-            "matrix": False,
-            "bar": False,
-            "dendrogram": False,
-            "heatmap": False,
-        },
+        missing_diagrams=None,
     )
 
     html = profile.to_html()
@@ -89,8 +77,8 @@ def test_modular_absent(df):
     assert "Missing values</h1>" not in html
 
 
-def test_modular_present(df):
-    profile = df.profile_report(
+def test_modular_present(tdf):
+    profile = tdf.profile_report(
         title="Modular test",
         duplicates={"head": 10},
         samples={"head": 10, "tail": 10},

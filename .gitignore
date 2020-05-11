@@ -78,4 +78,4 @@ examples/*/*.html
 examples/*/*.csv
 docs/
 docsrc/_build/
-/docsrc/source/pages/api/_autosummary/
+docsrc/source/pages/api/_autosummary/

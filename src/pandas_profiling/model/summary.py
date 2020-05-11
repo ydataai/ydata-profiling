@@ -337,6 +337,7 @@ def describe_1d(series: pd.Series) -> dict:
             series = series.map(Path)
         else:
             series = series_description["p_series"]
+            del series_description["p_series"]
 
         stats = path_summary(series)
 
@@ -345,8 +346,6 @@ def describe_1d(series: pd.Series) -> dict:
 
         stats["top"] = value_counts.index[0]
         stats["freq"] = value_counts.iloc[0]
-
-        del series_description["p_series"]
 
         return stats
 
