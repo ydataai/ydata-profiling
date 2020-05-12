@@ -157,7 +157,7 @@ profile = ProfileReport(df, title="Pandas Profiling Report")
 
 ### Explore deeper
 
-You can configure the profile report in any way you like. The example code below loads the [explorative configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml), that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>).
+You can configure the profile report in any way you like. The example code below loads the [explorative configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml), that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml).
 
 ```python
 profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
