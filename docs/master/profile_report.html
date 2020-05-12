@@ -37,12 +37,15 @@ from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
-from pandas_profiling.serialize import Serialize
+from pandas_profiling.report.presentation.flavours.html.templates import (
+    create_html_assets,
+)
+from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
-from pandas_profiling.utils.paths import get_config_minimal
+from pandas_profiling.utils.paths import get_config
 
 
-class ProfileReport(Serialize, object):
+class ProfileReport(SerializeReport, object):
     &#34;&#34;&#34;Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -52,6 +55,7 @@ class ProfileReport(Serialize, object):
         self,
         df=None,
         minimal=False,
+        explorative=False,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
         **kwargs,
@@ -76,7 +80,9 @@ class ProfileReport(Serialize, object):
         if config_file:
             config.set_file(config_file)
         elif minimal:
-            config.set_file(get_config_minimal())
+            config.set_file(get_config(&#34;config_minimal.yaml&#34;))
+        elif explorative:
+            config.set_file(get_config(&#34;config_explorative.yaml&#34;))
         elif not config.is_default:
             pass
             # TODO: logging instead of warning
@@ -108,15 +114,20 @@ class ProfileReport(Serialize, object):
         &#34;&#34;&#34;Change a single configuration variable
 
         Args:
-            key: configuration parameter name
+            key: configuration parameter name. Accepts nested syntax, e.g. &#34;html.minify_html&#34;
             value: the new value
 
         Examples:
             &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;title&#34;, &#34;NewTitle&#34;)
             &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html&#34;, {&#34;minify_html&#34;: False})
+            &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
 
         &#34;&#34;&#34;
-        self.set_variables(**{key: value})
+        key = key.split(&#34;.&#34;)
+        for e in reversed(key[1:]):
+            value = {e: value}
+
+        self.set_variables(**{key[0]: value})
 
     def set_variables(self, **vars):
         &#34;&#34;&#34;Change configuration variables (invalidates caches where necessary)
@@ -128,14 +139,17 @@ class ProfileReport(Serialize, object):
             &gt;&gt;&gt; ProfileReport(df).set_variables(title=&#34;NewTitle&#34;, html={&#34;minify_html&#34;: False})
         &#34;&#34;&#34;
         changed = set(vars.keys())
-        if {&#34;progress_bar&#34;, &#34;pool_size&#34;} &gt;= changed:
+        if len({&#34;progress_bar&#34;, &#34;pool_size&#34;} &amp; changed) &gt; 0:
             # Cache can persist
             pass
-        elif {&#34;notebook&#34;} &gt;= changed:
+
+        if len({&#34;notebook&#34;} &amp; changed) &gt; 0:
             self._widgets = None
-        elif {&#34;html&#34;, &#34;title&#34;} &gt;= changed:
+
+        if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
             self._html = None
-        else:
+
+        if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;} &gt;= changed:
             # In all other cases, empty cache
             self._description_set = None
             self._title = None
@@ -144,12 +158,14 @@ class ProfileReport(Serialize, object):
             self._widgets = None
             self._json = None
 
-        config.set_kwargs(vars)
+        if len(vars) == 1:
+            config[list(vars.keys())[0]] = list(vars.values())[0]
+        else:
+            config.set_kwargs(vars)
 
     @property
     def description_set(self):
         if self._description_set is None:
-            _ = self.df_hash
             self._description_set = describe_df(self.title, self.df)
         return self._description_set
 
@@ -247,7 +263,13 @@ class ProfileReport(Serialize, object):
         if output_file.suffix == &#34;.json&#34;:
             data = self.to_json()
         else:
+            inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
+            if not inline:
+                config[&#34;html&#34;][&#34;file_name&#34;] = str(output_file)
+                create_html_assets(output_file)
+
             data = self.to_html()
+
             if output_file.suffix != &#34;.html&#34;:
                 suffix = output_file.suffix
                 output_file = output_file.with_suffix(&#34;.html&#34;)
@@ -283,6 +305,8 @@ class ProfileReport(Serialize, object):
             html = HTMLReport(report).render(
                 nav=config[&#34;html&#34;][&#34;navbar_show&#34;].get(bool),
                 offline=config[&#34;html&#34;][&#34;use_local_assets&#34;].get(bool),
+                inline=config[&#34;html&#34;][&#34;inline&#34;].get(bool),
+                file_name=Path(config[&#34;html&#34;][&#34;file_name&#34;].get(str)).stem,
                 primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
                 logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
                 theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
@@ -424,6 +448,18 @@ class ProfileReport(Serialize, object):
 
     @staticmethod
     def preprocess(df):
+        &#34;&#34;&#34;Preprocess the dataframe
+
+        - Appends the index to the dataframe when it contains information
+        - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
+        - Convert the DataFrame&#39;s columns to str
+
+        Args:
+            df: the pandas DataFrame
+
+        Returns:
+            The preprocessed DataFrame
+        &#34;&#34;&#34;
         # Treat index as any other column
         if (
             not pd.Index(np.arange(0, len(df))).equals(df.index)
@@ -457,7 +493,7 @@ class ProfileReport(Serialize, object):
 <dl>
 <dt id="pandas_profiling.profile_report.ProfileReport"><code class="flex name class">
 <span>class <span class="ident">ProfileReport</span></span>
-<span>(</span><span>df=None, minimal=False, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, **kwargs)</span>
+<span>(</span><span>df=None, minimal=False, explorative=False, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a profile report from a Dataset stored as a pandas <code>DataFrame</code>.</p>
@@ -480,7 +516,7 @@ class ProfileReport(Serialize, object):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ProfileReport(Serialize, object):
+<pre><code class="python">class ProfileReport(SerializeReport, object):
     &#34;&#34;&#34;Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -490,6 +526,7 @@ class ProfileReport(Serialize, object):
         self,
         df=None,
         minimal=False,
+        explorative=False,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
         **kwargs,
@@ -514,7 +551,9 @@ class ProfileReport(Serialize, object):
         if config_file:
             config.set_file(config_file)
         elif minimal:
-            config.set_file(get_config_minimal())
+            config.set_file(get_config(&#34;config_minimal.yaml&#34;))
+        elif explorative:
+            config.set_file(get_config(&#34;config_explorative.yaml&#34;))
         elif not config.is_default:
             pass
             # TODO: logging instead of warning
@@ -546,15 +585,20 @@ class ProfileReport(Serialize, object):
         &#34;&#34;&#34;Change a single configuration variable
 
         Args:
-            key: configuration parameter name
+            key: configuration parameter name. Accepts nested syntax, e.g. &#34;html.minify_html&#34;
             value: the new value
 
         Examples:
             &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;title&#34;, &#34;NewTitle&#34;)
             &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html&#34;, {&#34;minify_html&#34;: False})
+            &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
 
         &#34;&#34;&#34;
-        self.set_variables(**{key: value})
+        key = key.split(&#34;.&#34;)
+        for e in reversed(key[1:]):
+            value = {e: value}
+
+        self.set_variables(**{key[0]: value})
 
     def set_variables(self, **vars):
         &#34;&#34;&#34;Change configuration variables (invalidates caches where necessary)
@@ -566,14 +610,17 @@ class ProfileReport(Serialize, object):
             &gt;&gt;&gt; ProfileReport(df).set_variables(title=&#34;NewTitle&#34;, html={&#34;minify_html&#34;: False})
         &#34;&#34;&#34;
         changed = set(vars.keys())
-        if {&#34;progress_bar&#34;, &#34;pool_size&#34;} &gt;= changed:
+        if len({&#34;progress_bar&#34;, &#34;pool_size&#34;} &amp; changed) &gt; 0:
             # Cache can persist
             pass
-        elif {&#34;notebook&#34;} &gt;= changed:
+
+        if len({&#34;notebook&#34;} &amp; changed) &gt; 0:
             self._widgets = None
-        elif {&#34;html&#34;, &#34;title&#34;} &gt;= changed:
+
+        if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
             self._html = None
-        else:
+
+        if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;} &gt;= changed:
             # In all other cases, empty cache
             self._description_set = None
             self._title = None
@@ -582,12 +629,14 @@ class ProfileReport(Serialize, object):
             self._widgets = None
             self._json = None
 
-        config.set_kwargs(vars)
+        if len(vars) == 1:
+            config[list(vars.keys())[0]] = list(vars.values())[0]
+        else:
+            config.set_kwargs(vars)
 
     @property
     def description_set(self):
         if self._description_set is None:
-            _ = self.df_hash
             self._description_set = describe_df(self.title, self.df)
         return self._description_set
 
@@ -685,7 +734,13 @@ class ProfileReport(Serialize, object):
         if output_file.suffix == &#34;.json&#34;:
             data = self.to_json()
         else:
+            inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
+            if not inline:
+                config[&#34;html&#34;][&#34;file_name&#34;] = str(output_file)
+                create_html_assets(output_file)
+
             data = self.to_html()
+
             if output_file.suffix != &#34;.html&#34;:
                 suffix = output_file.suffix
                 output_file = output_file.with_suffix(&#34;.html&#34;)
@@ -721,6 +776,8 @@ class ProfileReport(Serialize, object):
             html = HTMLReport(report).render(
                 nav=config[&#34;html&#34;][&#34;navbar_show&#34;].get(bool),
                 offline=config[&#34;html&#34;][&#34;use_local_assets&#34;].get(bool),
+                inline=config[&#34;html&#34;][&#34;inline&#34;].get(bool),
+                file_name=Path(config[&#34;html&#34;][&#34;file_name&#34;].get(str)).stem,
                 primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
                 logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
                 theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
@@ -862,6 +919,18 @@ class ProfileReport(Serialize, object):
 
     @staticmethod
     def preprocess(df):
+        &#34;&#34;&#34;Preprocess the dataframe
+
+        - Appends the index to the dataframe when it contains information
+        - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
+        - Convert the DataFrame&#39;s columns to str
+
+        Args:
+            df: the pandas DataFrame
+
+        Returns:
+            The preprocessed DataFrame
+        &#34;&#34;&#34;
         # Treat index as any other column
         if (
             not pd.Index(np.arange(0, len(df))).equals(df.index)
@@ -885,7 +954,7 @@ class ProfileReport(Serialize, object):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="pandas_profiling.serialize.Serialize" href="serialize.html#pandas_profiling.serialize.Serialize">Serialize</a></li>
+<li><a title="pandas_profiling.serialize_report.SerializeReport" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport">SerializeReport</a></li>
 </ul>
 <h3>Static methods</h3>
 <dl>
@@ -910,13 +979,40 @@ def clear_config():
 <span>def <span class="ident">preprocess</span></span>(<span>df)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Preprocess the dataframe</p>
+<ul>
+<li>Appends the index to the dataframe when it contains information</li>
+<li>Rename the "index" column to "df_index", if exists</li>
+<li>Convert the DataFrame's columns to str</li>
+</ul>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong></dt>
+<dd>the pandas DataFrame</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The preprocessed DataFrame</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
 def preprocess(df):
+    &#34;&#34;&#34;Preprocess the dataframe
+
+    - Appends the index to the dataframe when it contains information
+    - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
+    - Convert the DataFrame&#39;s columns to str
+
+    Args:
+        df: the pandas DataFrame
+
+    Returns:
+        The preprocessed DataFrame
+    &#34;&#34;&#34;
     # Treat index as any other column
     if (
         not pd.Index(np.arange(0, len(df))).equals(df.index)
@@ -945,7 +1041,6 @@ def preprocess(df):
 <pre><code class="python">@property
 def description_set(self):
     if self._description_set is None:
-        _ = self.df_hash
         self._description_set = describe_df(self.title, self.df)
     return self._description_set</code></pre>
 </details>
@@ -1149,13 +1244,14 @@ def widgets(self):
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>key</code></strong></dt>
-<dd>configuration parameter name</dd>
+<dd>configuration parameter name. Accepts nested syntax, e.g. "html.minify_html"</dd>
 <dt><strong><code>value</code></strong></dt>
 <dd>the new value</dd>
 </dl>
 <h2 id="examples">Examples</h2>
 <pre><code class="python">&gt;&gt;&gt; ProfileReport(df).set_variables(&quot;title&quot;, &quot;NewTitle&quot;)
 &gt;&gt;&gt; ProfileReport(df).set_variables(&quot;html&quot;, {&quot;minify_html&quot;: False})
+&gt;&gt;&gt; ProfileReport(df).set_variables(&quot;html.minify_html&quot;, False)
 </code></pre></div>
 <details class="source">
 <summary>
@@ -1165,15 +1261,20 @@ def widgets(self):
     &#34;&#34;&#34;Change a single configuration variable
 
     Args:
-        key: configuration parameter name
+        key: configuration parameter name. Accepts nested syntax, e.g. &#34;html.minify_html&#34;
         value: the new value
 
     Examples:
         &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;title&#34;, &#34;NewTitle&#34;)
         &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html&#34;, {&#34;minify_html&#34;: False})
+        &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
 
     &#34;&#34;&#34;
-    self.set_variables(**{key: value})</code></pre>
+    key = key.split(&#34;.&#34;)
+    for e in reversed(key[1:]):
+        value = {e: value}
+
+    self.set_variables(**{key[0]: value})</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.set_variables"><code class="name flex">
@@ -1203,14 +1304,17 @@ def widgets(self):
         &gt;&gt;&gt; ProfileReport(df).set_variables(title=&#34;NewTitle&#34;, html={&#34;minify_html&#34;: False})
     &#34;&#34;&#34;
     changed = set(vars.keys())
-    if {&#34;progress_bar&#34;, &#34;pool_size&#34;} &gt;= changed:
+    if len({&#34;progress_bar&#34;, &#34;pool_size&#34;} &amp; changed) &gt; 0:
         # Cache can persist
         pass
-    elif {&#34;notebook&#34;} &gt;= changed:
+
+    if len({&#34;notebook&#34;} &amp; changed) &gt; 0:
         self._widgets = None
-    elif {&#34;html&#34;, &#34;title&#34;} &gt;= changed:
+
+    if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
         self._html = None
-    else:
+
+    if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;} &gt;= changed:
         # In all other cases, empty cache
         self._description_set = None
         self._title = None
@@ -1219,7 +1323,10 @@ def widgets(self):
         self._widgets = None
         self._json = None
 
-    config.set_kwargs(vars)</code></pre>
+    if len(vars) == 1:
+        config[list(vars.keys())[0]] = list(vars.values())[0]
+    else:
+        config.set_kwargs(vars)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.to_app"><code class="name flex">
@@ -1285,7 +1392,13 @@ You are welcome to contribute a pull request if you like this feature.</p></div>
     if output_file.suffix == &#34;.json&#34;:
         data = self.to_json()
     else:
+        inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
+        if not inline:
+            config[&#34;html&#34;][&#34;file_name&#34;] = str(output_file)
+            create_html_assets(output_file)
+
         data = self.to_html()
+
         if output_file.suffix != &#34;.html&#34;:
             suffix = output_file.suffix
             output_file = output_file.with_suffix(&#34;.html&#34;)
@@ -1424,12 +1537,12 @@ the Iframe.</p>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="pandas_profiling.serialize.Serialize" href="serialize.html#pandas_profiling.serialize.Serialize">Serialize</a></b></code>:
+<li><code><b><a title="pandas_profiling.serialize_report.SerializeReport" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport">SerializeReport</a></b></code>:
 <ul class="hlist">
-<li><code><a title="pandas_profiling.serialize.Serialize.dump" href="serialize.html#pandas_profiling.serialize.Serialize.dump">dump</a></code></li>
-<li><code><a title="pandas_profiling.serialize.Serialize.dumps" href="serialize.html#pandas_profiling.serialize.Serialize.dumps">dumps</a></code></li>
-<li><code><a title="pandas_profiling.serialize.Serialize.load" href="serialize.html#pandas_profiling.serialize.Serialize.load">load</a></code></li>
-<li><code><a title="pandas_profiling.serialize.Serialize.loads" href="serialize.html#pandas_profiling.serialize.Serialize.loads">loads</a></code></li>
+<li><code><a title="pandas_profiling.serialize_report.SerializeReport.dump" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport.dump">dump</a></code></li>
+<li><code><a title="pandas_profiling.serialize_report.SerializeReport.dumps" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport.dumps">dumps</a></code></li>
+<li><code><a title="pandas_profiling.serialize_report.SerializeReport.load" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport.load">load</a></code></li>
+<li><code><a title="pandas_profiling.serialize_report.SerializeReport.loads" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport.loads">loads</a></code></li>
 </ul>
 </li>
 </ul>

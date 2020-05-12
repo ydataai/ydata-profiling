@@ -26,17 +26,17 @@
 </summary>
 <pre><code class="python">from typing import Any
 
-from pandas_profiling.report.presentation.abstract.item_renderer import ItemRenderer
+from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class VariableInfo(ItemRenderer):
-    def __init__(self, anchor_id, var_name, var_type, warnings, **kwargs):
+    def __init__(self, anchor_id, var_name, var_type, warnings, description, **kwargs):
         super().__init__(
             &#34;variable_info&#34;,
             {
                 &#34;anchor_id&#34;: anchor_id,
                 &#34;var_name&#34;: var_name,
-                &#34;description&#34;: &#34;&#34;,
+                &#34;description&#34;: description,
                 &#34;var_type&#34;: var_type,
                 &#34;warnings&#34;: warnings,
             },
@@ -61,7 +61,7 @@ class VariableInfo(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.variable_info.VariableInfo"><code class="flex name class">
 <span>class <span class="ident">VariableInfo</span></span>
-<span>(</span><span>anchor_id, var_name, var_type, warnings, **kwargs)</span>
+<span>(</span><span>anchor_id, var_name, var_type, warnings, description, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -71,13 +71,13 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class VariableInfo(ItemRenderer):
-    def __init__(self, anchor_id, var_name, var_type, warnings, **kwargs):
+    def __init__(self, anchor_id, var_name, var_type, warnings, description, **kwargs):
         super().__init__(
             &#34;variable_info&#34;,
             {
                 &#34;anchor_id&#34;: anchor_id,
                 &#34;var_name&#34;: var_name,
-                &#34;description&#34;: &#34;&#34;,
+                &#34;description&#34;: description,
                 &#34;var_type&#34;: var_type,
                 &#34;warnings&#34;: warnings,
             },
@@ -92,8 +92,8 @@ inheritance.</p></div>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer" href="../abstract/item_renderer.html#pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer">ItemRenderer</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>

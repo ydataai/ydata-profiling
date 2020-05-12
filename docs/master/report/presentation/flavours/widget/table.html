@@ -44,12 +44,16 @@ def get_table(items):
         table[row_id, 0] = widgets.HTML(name)
         table[row_id, 1] = widgets.HTML(value)
 
-    return VBox([table])
+    return table
 
 
 class WidgetTable(Table):
     def render(self):
-        return get_table(self.content[&#34;rows&#34;])</code></pre>
+        items = [get_table(self.content[&#34;rows&#34;])]
+        if self.content[&#34;caption&#34;] is not None:
+            items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))
+
+        return VBox(items)</code></pre>
 </details>
 </section>
 <section>
@@ -82,7 +86,7 @@ class WidgetTable(Table):
         table[row_id, 0] = widgets.HTML(name)
         table[row_id, 1] = widgets.HTML(value)
 
-    return VBox([table])</code></pre>
+    return table</code></pre>
 </details>
 </dd>
 </dl>
@@ -92,7 +96,7 @@ class WidgetTable(Table):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.table.WidgetTable"><code class="flex name class">
 <span>class <span class="ident">WidgetTable</span></span>
-<span>(</span><span>rows, name=None, **kwargs)</span>
+<span>(</span><span>rows, name=None, caption=None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -103,13 +107,17 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class WidgetTable(Table):
     def render(self):
-        return get_table(self.content[&#34;rows&#34;])</code></pre>
+        items = [get_table(self.content[&#34;rows&#34;])]
+        if self.content[&#34;caption&#34;] is not None:
+            items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))
+
+        return VBox(items)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="pandas_profiling.report.presentation.core.table.Table" href="../../core/table.html#pandas_profiling.report.presentation.core.table.Table">Table</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer" href="../../abstract/item_renderer.html#pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer">ItemRenderer</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
@@ -124,7 +132,11 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def render(self):
-    return get_table(self.content[&#34;rows&#34;])</code></pre>
+    items = [get_table(self.content[&#34;rows&#34;])]
+    if self.content[&#34;caption&#34;] is not None:
+        items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))
+
+    return VBox(items)</code></pre>
 </details>
 </dd>
 </dl>

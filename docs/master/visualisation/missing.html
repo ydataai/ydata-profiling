@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
 <title>pandas_profiling.visualisation.missing API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Plotting functions for the missing values diagrams" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,11 +20,13 @@
 <h1 class="title">Module <code>pandas_profiling.visualisation.missing</code></h1>
 </header>
 <section id="section-intro">
+<p>Plotting functions for the missing values diagrams</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import matplotlib.pyplot as plt
+<pre><code class="python">&#34;&#34;&#34;Plotting functions for the missing values diagrams&#34;&#34;&#34;
+import matplotlib.pyplot as plt
 import pandas as pd
 from missingno import missingno
 
@@ -98,6 +100,7 @@ def missing_bar(data: pd.DataFrame) -&gt; str:
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.8, bottom=0.3)
+
     return plot_360_n0sc0pe(plt)
 
 
@@ -235,6 +238,7 @@ def missing_dendrogram(data: pd.DataFrame) -&gt; str:
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.8, bottom=0.3)
+
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>

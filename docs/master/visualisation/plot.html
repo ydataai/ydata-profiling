@@ -65,23 +65,12 @@ def _plot_histogram(
 
 
     &#34;&#34;&#34;
-    # if series_description[&#34;type&#34;] == Variable.TYPE_DATE:
-    # Workaround for https://github.com/pandas-dev/pandas/issues/17372
     fig = plt.figure(figsize=figsize)
     plot = fig.add_subplot(111)
     plot.set_ylabel(&#34;Frequency&#34;)
     plot.hist(
-        series,  # .dropna().values,
-        facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
-        bins=bins,
+        series, facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str), bins=bins,
     )
-    # else:
-    #     plot = series.plot(
-    #         kind=&#34;hist&#34;,
-    #         figsize=figsize,
-    #         facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
-    #         bins=bins,
-    #     )
     return plot
 
 
@@ -102,7 +91,6 @@ def histogram(
     plot = _plot_histogram(series, series_description, bins)
     plot.xaxis.set_tick_params(rotation=45)
     plot.figure.tight_layout()
-
     return plot_360_n0sc0pe(plt)
 
 
@@ -216,13 +204,26 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
     return plot_360_n0sc0pe(plt)
 
 
-def scatter_complex(series) -&gt; str:
+def scatter_complex(series: pd.Series) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from a series of complex values
+
+    Examples:
+        &gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+        &gt;&gt;&gt; scatter_complex(complex_series)
+
+    Args:
+        series: the Series
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
     plt.ylabel(&#34;Imaginary&#34;)
     plt.xlabel(&#34;Real&#34;)
 
     color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
 
-    if len(series) &gt; 1000:
+    if len(series) &gt; scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series.real, series.imag, cmap=cmap)
     else:
@@ -232,25 +233,26 @@ def scatter_complex(series) -&gt; str:
 
 
 def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&gt; str:
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from one series of sequences with length 2
 
     Examples:
         &gt;&gt;&gt; scatter_series(file_sizes, &#34;Width&#34;, &#34;Height&#34;)
 
     Args:
-        series:
-        x_label:
-        y_label:
+        series: the Series
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
 
     Returns:
-
+        A string containing (a reference to) the image
     &#34;&#34;&#34;
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
 
-    if len(series) &gt; 1000:
+    if len(series) &gt; scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(*zip(*series.tolist()), cmap=cmap)
     else:
@@ -259,12 +261,29 @@ def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&
 
 
 def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from two series
+
+    Examples:
+        &gt;&gt;&gt; widths = pd.Series([800, 1024])
+        &gt;&gt;&gt; heights = pd.Series([600, 768])
+        &gt;&gt;&gt; scatter_series(widths, heights, &#34;Width&#34;, &#34;Height&#34;)
+
+    Args:
+        series1: the series corresponding to the x-axis
+        series2: the series corresponding to the y-axis
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
 
-    if len(series1) &gt; 1000:
+    if len(series1) &gt; scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:
@@ -457,7 +476,6 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
     plot = _plot_histogram(series, series_description, bins)
     plot.xaxis.set_tick_params(rotation=45)
     plot.figure.tight_layout()
-
     return plot_360_n0sc0pe(plt)</code></pre>
 </details>
 </dd>
@@ -507,21 +525,48 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.plot.scatter_complex"><code class="name flex">
-<span>def <span class="ident">scatter_complex</span></span>(<span>series) -> str</span>
+<span>def <span class="ident">scatter_complex</span></span>(<span>series: pandas.core.series.Series) -> str</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Scatter plot (or hexbin plot) from a series of complex values</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="python">&gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+&gt;&gt;&gt; scatter_complex(complex_series)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>the Series</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A string containing (a reference to) the image</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def scatter_complex(series) -&gt; str:
+<pre><code class="python">def scatter_complex(series: pd.Series) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from a series of complex values
+
+    Examples:
+        &gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+        &gt;&gt;&gt; scatter_complex(complex_series)
+
+    Args:
+        series: the Series
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
     plt.ylabel(&#34;Imaginary&#34;)
     plt.xlabel(&#34;Real&#34;)
 
     color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
 
-    if len(series) &gt; 1000:
+    if len(series) &gt; scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series.real, series.imag, cmap=cmap)
     else:
@@ -534,18 +579,56 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 <span>def <span class="ident">scatter_pairwise</span></span>(<span>series1, series2, x_label, y_label) -> str</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Scatter plot (or hexbin plot) from two series</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="python">&gt;&gt;&gt; widths = pd.Series([800, 1024])
+&gt;&gt;&gt; heights = pd.Series([600, 768])
+&gt;&gt;&gt; scatter_series(widths, heights, &quot;Width&quot;, &quot;Height&quot;)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series1</code></strong></dt>
+<dd>the series corresponding to the x-axis</dd>
+<dt><strong><code>series2</code></strong></dt>
+<dd>the series corresponding to the y-axis</dd>
+<dt><strong><code>x_label</code></strong></dt>
+<dd>the label on the x-axis</dd>
+<dt><strong><code>y_label</code></strong></dt>
+<dd>the label on the y-axis</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A string containing (a reference to) the image</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from two series
+
+    Examples:
+        &gt;&gt;&gt; widths = pd.Series([800, 1024])
+        &gt;&gt;&gt; heights = pd.Series([600, 768])
+        &gt;&gt;&gt; scatter_series(widths, heights, &#34;Width&#34;, &#34;Height&#34;)
+
+    Args:
+        series1: the series corresponding to the x-axis
+        series2: the series corresponding to the y-axis
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
 
-    if len(series1) &gt; 1000:
+    if len(series1) &gt; scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:
@@ -557,38 +640,49 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 <span>def <span class="ident">scatter_series</span></span>(<span>series, x_label='Width', y_label='Height') -> str</span>
 </code></dt>
 <dd>
-<div class="desc"><h2 id="examples">Examples</h2>
+<div class="desc"><p>Scatter plot (or hexbin plot) from one series of sequences with length 2</p>
+<h2 id="examples">Examples</h2>
 <pre><code class="python">&gt;&gt;&gt; scatter_series(file_sizes, &quot;Width&quot;, &quot;Height&quot;)
 </code></pre>
 <h2 id="args">Args</h2>
-<p>series:
-x_label:
-y_label:
-Returns:</p></div>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>the Series</dd>
+<dt><strong><code>x_label</code></strong></dt>
+<dd>the label on the x-axis</dd>
+<dt><strong><code>y_label</code></strong></dt>
+<dd>the label on the y-axis</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A string containing (a reference to) the image</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&gt; str:
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from one series of sequences with length 2
 
     Examples:
         &gt;&gt;&gt; scatter_series(file_sizes, &#34;Width&#34;, &#34;Height&#34;)
 
     Args:
-        series:
-        x_label:
-        y_label:
+        series: the Series
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
 
     Returns:
-
+        A string containing (a reference to) the image
     &#34;&#34;&#34;
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
 
-    if len(series) &gt; 1000:
+    if len(series) &gt; scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(*zip(*series.tolist()), cmap=cmap)
     else:

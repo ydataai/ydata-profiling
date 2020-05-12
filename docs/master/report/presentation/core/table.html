@@ -26,12 +26,14 @@
 </summary>
 <pre><code class="python">from typing import Any
 
-from pandas_profiling.report.presentation.abstract.item_renderer import ItemRenderer
+from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class Table(ItemRenderer):
-    def __init__(self, rows, name=None, **kwargs):
-        super().__init__(&#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name}, **kwargs)
+    def __init__(self, rows, name=None, caption=None, **kwargs):
+        super().__init__(
+            &#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name, &#34;caption&#34;: caption}, **kwargs
+        )
 
     def __repr__(self):
         return &#34;Table&#34;
@@ -51,7 +53,7 @@ class Table(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.table.Table"><code class="flex name class">
 <span>class <span class="ident">Table</span></span>
-<span>(</span><span>rows, name=None, **kwargs)</span>
+<span>(</span><span>rows, name=None, caption=None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -61,8 +63,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Table(ItemRenderer):
-    def __init__(self, rows, name=None, **kwargs):
-        super().__init__(&#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name}, **kwargs)
+    def __init__(self, rows, name=None, caption=None, **kwargs):
+        super().__init__(
+            &#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name, &#34;caption&#34;: caption}, **kwargs
+        )
 
     def __repr__(self):
         return &#34;Table&#34;
@@ -72,8 +76,8 @@ inheritance.</p></div>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer" href="../abstract/item_renderer.html#pandas_profiling.report.presentation.abstract.item_renderer.ItemRenderer">ItemRenderer</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>

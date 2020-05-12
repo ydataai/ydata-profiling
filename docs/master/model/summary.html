@@ -29,7 +29,6 @@
 
 import multiprocessing
 import multiprocessing.pool
-import os
 import warnings
 from pathlib import Path
 from typing import Callable, Mapping, Tuple
@@ -38,6 +37,12 @@ from urllib.parse import urlsplit
 import numpy as np
 import pandas as pd
 from scipy.stats.stats import chisquare
+from visions.application.summaries.series import (
+    file_summary,
+    image_summary,
+    path_summary,
+    url_summary,
+)
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model import base
@@ -105,7 +110,7 @@ def describe_1d(series: pd.Series) -&gt; dict:
             &#34;is_unique&#34;: distinct_count == count,
             &#34;mode&#34;: series.mode().iloc[0] if count &gt; distinct_count &gt; 1 else series[0],
             &#34;p_unique&#34;: distinct_count / count,
-            &#34;memory_size&#34;: series.memory_usage(),
+            &#34;memory_size&#34;: series.memory_usage(config[&#34;memory_deep&#34;].get(bool)),
         }
 
         return stats
@@ -130,7 +135,7 @@ def describe_1d(series: pd.Series) -&gt; dict:
             &#34;count&#34;: count,
             &#34;p_missing&#34;: 1 - count / length,
             &#34;n_missing&#34;: length - count,
-            &#34;memory_size&#34;: series.memory_usage(),
+            &#34;memory_size&#34;: series.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)),
         }
 
         return results_data
@@ -282,16 +287,23 @@ def describe_1d(series: pd.Series) -&gt; dict:
         if chi_squared_threshold &gt; 0.0:
             stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
 
-        check_composition = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
-        if check_composition:
-            stats[&#34;max_length&#34;] = series.str.len().max()
-            stats[&#34;mean_length&#34;] = series.str.len().mean()
-            stats[&#34;min_length&#34;] = series.str.len().min()
+        check_length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
+        if check_length:
+            from visions.application.summaries.series.text_summary import length_summary
 
-            from visions.application.summaries.series.text_summary import text_summary
+            stats.update(length_summary(series))
 
-            stats.update(text_summary(series))
-            stats[&#34;length&#34;] = series.str.len()
+        check_unicode = config[&#34;vars&#34;][&#34;cat&#34;][&#34;unicode&#34;].get(bool)
+        if check_unicode:
+            from visions.application.summaries.series.text_summary import (
+                unicode_summary,
+            )
+
+            stats.update(unicode_summary(series))
+
+            stats[&#34;category_alias_counts&#34;].index = stats[
+                &#34;category_alias_counts&#34;
+            ].index.str.replace(&#34;_&#34;, &#34; &#34;)
 
         coerce_str_to_date = config[&#34;vars&#34;][&#34;cat&#34;][&#34;coerce_str_to_date&#34;].get(bool)
         if coerce_str_to_date:
@@ -311,20 +323,34 @@ def describe_1d(series: pd.Series) -&gt; dict:
         &#34;&#34;&#34;
         # Make sure we deal with strings (Issue #100)
         series = series[~series.isnull()].astype(str)
+        series = series.apply(urlsplit)
 
-        stats = {}
-
-        # Create separate columns for each URL part
-        keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
-        url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
-        for name, part in url_parts.items():
-            stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
+        stats = url_summary(series)
 
         # Only run if at least 1 non-missing value
         value_counts = series_description[&#34;value_counts_without_nan&#34;]
 
         stats[&#34;top&#34;] = value_counts.index[0]
         stats[&#34;freq&#34;] = value_counts.iloc[0]
+
+        return stats
+
+    def describe_file_1d(series: pd.Series, series_description: dict) -&gt; dict:
+        if &#34;p_series&#34; not in series_description:
+            series = series[~series.isnull()].astype(str)
+            series = series.map(Path)
+            series_description[&#34;p_series&#34;] = series
+        else:
+            series = series_description[&#34;p_series&#34;]
+
+        stats = file_summary(series)
+
+        # TODO: distinct counts for file_sizes
+        bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
+        bins = min(series_description[&#34;distinct_count_with_nan&#34;], bins)
+        stats[&#34;histogram_bins&#34;] = bins
+
+        series_description.update(describe_path_1d(series, series_description))
 
         return stats
 
@@ -341,28 +367,36 @@ def describe_1d(series: pd.Series) -&gt; dict:
         series_description.update(describe_categorical_1d(series, series_description))
 
         # Make sure we deal with strings (Issue #100)
-        series = series[~series.isnull()].astype(str)
-        series = series.map(Path)
+        if &#34;p_series&#34; not in series_description:
+            series = series[~series.isnull()].astype(str)
+            series = series.map(Path)
+        else:
+            series = series_description[&#34;p_series&#34;]
+            del series_description[&#34;p_series&#34;]
 
-        common_prefix = os.path.commonprefix(list(series))
-        if common_prefix == &#34;&#34;:
-            common_prefix = &#34;No common prefix&#34;
-
-        stats = {&#34;common_prefix&#34;: common_prefix}
-
-        # Create separate columns for each path part
-        keys = [&#34;stem&#34;, &#34;suffix&#34;, &#34;name&#34;, &#34;parent&#34;]
-        path_parts = dict(
-            zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
-        )
-        for name, part in path_parts.items():
-            stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
+        stats = path_summary(series)
 
         # Only run if at least 1 non-missing value
         value_counts = series_description[&#34;value_counts_without_nan&#34;]
 
         stats[&#34;top&#34;] = value_counts.index[0]
         stats[&#34;freq&#34;] = value_counts.iloc[0]
+
+        return stats
+
+    def describe_image_1d(series: pd.Series, series_description: dict):
+        if &#34;p_series&#34; not in series_description:
+            series = series[~series.isnull()].astype(str)
+            series = series.map(Path)
+            series_description[&#34;p_series&#34;] = series
+        else:
+            series = series_description[&#34;p_series&#34;]
+
+        extract_exif = config[&#34;vars&#34;][&#34;image&#34;][&#34;exif&#34;].get(bool)
+
+        stats = image_summary(series, extract_exif)
+
+        series_description.update(describe_file_1d(series, series_description))
 
         return stats
 
@@ -403,6 +437,8 @@ def describe_1d(series: pd.Series) -&gt; dict:
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
             Variable.TYPE_PATH: describe_path_1d,
+            Variable.TYPE_IMAGE: describe_image_1d,
+            Variable.TYPE_FILE: describe_file_1d,
         }
 
         if series_description[&#34;type&#34;] in type_to_func:
@@ -493,7 +529,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
     &#34;&#34;&#34;
     n = len(df)
 
-    memory_size = df.memory_usage(index=True, deep=True).sum()
+    memory_size = df.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)).sum()
     record_size = float(memory_size) / n
 
     table_stats = {
@@ -537,7 +573,15 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
     return table_stats
 
 
-def get_sample(df: pd.DataFrame):
+def get_sample(df: pd.DataFrame) -&gt; dict:
+    &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
+
+    Args:
+        df: the pandas DataFrame
+
+    Returns:
+        a dictionary with keys &#34;head&#34; and &#34;tail&#34;
+    &#34;&#34;&#34;
     sample = {}
     n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
     if n_head &gt; 0:
@@ -550,7 +594,16 @@ def get_sample(df: pd.DataFrame):
     return sample
 
 
-def get_duplicates(df: pd.DataFrame, supported_columns):
+def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
+
+    Args:
+        df: the Pandas DataFrame.
+        supported_columns: the columns to consider
+
+    Returns:
+        A subset of the DataFrame, ordered by occurrence.
+    &#34;&#34;&#34;
     n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
 
     if n_head &gt; 0 and supported_columns:
@@ -631,10 +684,13 @@ def get_scatter_matrix(df, variables):
         continuous_variables = [
             column for column, type in variables.items() if type == Variable.TYPE_NUM
         ]
-        scatter_matrix = {
-            x: {y: &#34;&#34; for y in continuous_variables} for x in continuous_variables
-        }
-        for x in continuous_variables:
+
+        targets = config[&#34;interactions&#34;][&#34;targets&#34;].get(list)
+        if len(targets) == 0:
+            targets = continuous_variables
+
+        scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
+        for x in targets:
             for y in continuous_variables:
                 scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
 
@@ -713,7 +769,7 @@ def get_messages(table_stats, series_description, correlations):
             &#34;is_unique&#34;: distinct_count == count,
             &#34;mode&#34;: series.mode().iloc[0] if count &gt; distinct_count &gt; 1 else series[0],
             &#34;p_unique&#34;: distinct_count / count,
-            &#34;memory_size&#34;: series.memory_usage(),
+            &#34;memory_size&#34;: series.memory_usage(config[&#34;memory_deep&#34;].get(bool)),
         }
 
         return stats
@@ -738,7 +794,7 @@ def get_messages(table_stats, series_description, correlations):
             &#34;count&#34;: count,
             &#34;p_missing&#34;: 1 - count / length,
             &#34;n_missing&#34;: length - count,
-            &#34;memory_size&#34;: series.memory_usage(),
+            &#34;memory_size&#34;: series.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)),
         }
 
         return results_data
@@ -890,16 +946,23 @@ def get_messages(table_stats, series_description, correlations):
         if chi_squared_threshold &gt; 0.0:
             stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
 
-        check_composition = config[&#34;vars&#34;][&#34;cat&#34;][&#34;check_composition&#34;].get(bool)
-        if check_composition:
-            stats[&#34;max_length&#34;] = series.str.len().max()
-            stats[&#34;mean_length&#34;] = series.str.len().mean()
-            stats[&#34;min_length&#34;] = series.str.len().min()
+        check_length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
+        if check_length:
+            from visions.application.summaries.series.text_summary import length_summary
 
-            from visions.application.summaries.series.text_summary import text_summary
+            stats.update(length_summary(series))
 
-            stats.update(text_summary(series))
-            stats[&#34;length&#34;] = series.str.len()
+        check_unicode = config[&#34;vars&#34;][&#34;cat&#34;][&#34;unicode&#34;].get(bool)
+        if check_unicode:
+            from visions.application.summaries.series.text_summary import (
+                unicode_summary,
+            )
+
+            stats.update(unicode_summary(series))
+
+            stats[&#34;category_alias_counts&#34;].index = stats[
+                &#34;category_alias_counts&#34;
+            ].index.str.replace(&#34;_&#34;, &#34; &#34;)
 
         coerce_str_to_date = config[&#34;vars&#34;][&#34;cat&#34;][&#34;coerce_str_to_date&#34;].get(bool)
         if coerce_str_to_date:
@@ -919,20 +982,34 @@ def get_messages(table_stats, series_description, correlations):
         &#34;&#34;&#34;
         # Make sure we deal with strings (Issue #100)
         series = series[~series.isnull()].astype(str)
+        series = series.apply(urlsplit)
 
-        stats = {}
-
-        # Create separate columns for each URL part
-        keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
-        url_parts = dict(zip(keys, zip(*series.map(urlsplit))))
-        for name, part in url_parts.items():
-            stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
+        stats = url_summary(series)
 
         # Only run if at least 1 non-missing value
         value_counts = series_description[&#34;value_counts_without_nan&#34;]
 
         stats[&#34;top&#34;] = value_counts.index[0]
         stats[&#34;freq&#34;] = value_counts.iloc[0]
+
+        return stats
+
+    def describe_file_1d(series: pd.Series, series_description: dict) -&gt; dict:
+        if &#34;p_series&#34; not in series_description:
+            series = series[~series.isnull()].astype(str)
+            series = series.map(Path)
+            series_description[&#34;p_series&#34;] = series
+        else:
+            series = series_description[&#34;p_series&#34;]
+
+        stats = file_summary(series)
+
+        # TODO: distinct counts for file_sizes
+        bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
+        bins = min(series_description[&#34;distinct_count_with_nan&#34;], bins)
+        stats[&#34;histogram_bins&#34;] = bins
+
+        series_description.update(describe_path_1d(series, series_description))
 
         return stats
 
@@ -949,28 +1026,36 @@ def get_messages(table_stats, series_description, correlations):
         series_description.update(describe_categorical_1d(series, series_description))
 
         # Make sure we deal with strings (Issue #100)
-        series = series[~series.isnull()].astype(str)
-        series = series.map(Path)
+        if &#34;p_series&#34; not in series_description:
+            series = series[~series.isnull()].astype(str)
+            series = series.map(Path)
+        else:
+            series = series_description[&#34;p_series&#34;]
+            del series_description[&#34;p_series&#34;]
 
-        common_prefix = os.path.commonprefix(list(series))
-        if common_prefix == &#34;&#34;:
-            common_prefix = &#34;No common prefix&#34;
-
-        stats = {&#34;common_prefix&#34;: common_prefix}
-
-        # Create separate columns for each path part
-        keys = [&#34;stem&#34;, &#34;suffix&#34;, &#34;name&#34;, &#34;parent&#34;]
-        path_parts = dict(
-            zip(keys, zip(*series.map(lambda x: [x.stem, x.suffix, x.name, x.parent])))
-        )
-        for name, part in path_parts.items():
-            stats[f&#34;{name.lower()}_counts&#34;] = pd.Series(part, name=name).value_counts()
+        stats = path_summary(series)
 
         # Only run if at least 1 non-missing value
         value_counts = series_description[&#34;value_counts_without_nan&#34;]
 
         stats[&#34;top&#34;] = value_counts.index[0]
         stats[&#34;freq&#34;] = value_counts.iloc[0]
+
+        return stats
+
+    def describe_image_1d(series: pd.Series, series_description: dict):
+        if &#34;p_series&#34; not in series_description:
+            series = series[~series.isnull()].astype(str)
+            series = series.map(Path)
+            series_description[&#34;p_series&#34;] = series
+        else:
+            series = series_description[&#34;p_series&#34;]
+
+        extract_exif = config[&#34;vars&#34;][&#34;image&#34;][&#34;exif&#34;].get(bool)
+
+        stats = image_summary(series, extract_exif)
+
+        series_description.update(describe_file_1d(series, series_description))
 
         return stats
 
@@ -1011,6 +1096,8 @@ def get_messages(table_stats, series_description, correlations):
             Variable.TYPE_CAT: describe_categorical_1d,
             Variable.TYPE_URL: describe_url_1d,
             Variable.TYPE_PATH: describe_path_1d,
+            Variable.TYPE_IMAGE: describe_image_1d,
+            Variable.TYPE_FILE: describe_file_1d,
         }
 
         if series_description[&#34;type&#34;] in type_to_func:
@@ -1031,15 +1118,33 @@ def get_messages(table_stats, series_description, correlations):
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>df: pandas.core.frame.DataFrame, supported_columns)</span>
+<span>def <span class="ident">get_duplicates</span></span>(<span>df: pandas.core.frame.DataFrame, supported_columns) -> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Obtain the most occurring duplicate rows in the DataFrame.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong></dt>
+<dd>the Pandas DataFrame.</dd>
+<dt><strong><code>supported_columns</code></strong></dt>
+<dd>the columns to consider</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A subset of the DataFrame, ordered by occurrence.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_duplicates(df: pd.DataFrame, supported_columns):
+<pre><code class="python">def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
+
+    Args:
+        df: the Pandas DataFrame.
+        supported_columns: the columns to consider
+
+    Returns:
+        A subset of the DataFrame, ordered by occurrence.
+    &#34;&#34;&#34;
     n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
 
     if n_head &gt; 0 and supported_columns:
@@ -1152,15 +1257,33 @@ def get_messages(table_stats, series_description, correlations):
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_sample"><code class="name flex">
-<span>def <span class="ident">get_sample</span></span>(<span>df: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">get_sample</span></span>(<span>df: pandas.core.frame.DataFrame) -> dict</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Obtains a sample from head and tail of the DataFrame</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong></dt>
+<dd>the pandas DataFrame</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>a dictionary with keys "head" and "tail"</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_sample(df: pd.DataFrame):
+<pre><code class="python">def get_sample(df: pd.DataFrame) -&gt; dict:
+    &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
+
+    Args:
+        df: the pandas DataFrame
+
+    Returns:
+        a dictionary with keys &#34;head&#34; and &#34;tail&#34;
+    &#34;&#34;&#34;
     sample = {}
     n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
     if n_head &gt; 0:
@@ -1187,10 +1310,13 @@ def get_messages(table_stats, series_description, correlations):
         continuous_variables = [
             column for column, type in variables.items() if type == Variable.TYPE_NUM
         ]
-        scatter_matrix = {
-            x: {y: &#34;&#34; for y in continuous_variables} for x in continuous_variables
-        }
-        for x in continuous_variables:
+
+        targets = config[&#34;interactions&#34;][&#34;targets&#34;].get(list)
+        if len(targets) == 0:
+            targets = continuous_variables
+
+        scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
+        for x in targets:
             for y in continuous_variables:
                 scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
 
@@ -1307,7 +1433,7 @@ def get_messages(table_stats, series_description, correlations):
     &#34;&#34;&#34;
     n = len(df)
 
-    memory_size = df.memory_usage(index=True, deep=True).sum()
+    memory_size = df.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)).sum()
     record_size = float(memory_size) / n
 
     table_stats = {

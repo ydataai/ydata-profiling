@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Big Datasets &mdash; pandas-profiling 2.7.1 documentation</title>
+  <title>Big Datasets &mdash; pandas-profiling 2.8.0 documentation</title>
   
 
   
@@ -105,6 +105,10 @@
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribution_guidelines.html">Contribution Guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
             
@@ -209,7 +213,7 @@ Whether a computation scales to big data not only depends on it’s complexity, 
 <h2>Minimal mode<a class="headerlink" href="#minimal-mode" title="Permalink to this headline">¶</a></h2>
 <p><cite>pandas-profiling</cite> includes a minimal configuration file, with more expensive computations turned off by default. This is a great starting point for larger datasets.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">large_dataset</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">output_file</span><span class="o">=</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>(Minimal mode was introduced in `pandas-profiling` v2.4.0)</em></p>
@@ -222,7 +226,7 @@ Whether a computation scales to big data not only depends on it’s complexity, 
 <span class="n">sample</span> <span class="o">=</span> <span class="n">large_dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
 
 <span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">output_file</span><span class="o">=</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

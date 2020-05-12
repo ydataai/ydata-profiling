@@ -26,7 +26,7 @@
 </summary>
 <pre><code class="python">from typing import Dict, Type
 
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 def apply_renderable_mapping(mapping, structure, flavour):
@@ -230,7 +230,7 @@ def QtReport(structure: Renderable):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.HTMLReport"><code class="name flex">
-<span>def <span class="ident">HTMLReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">HTMLReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds HTML flavour to Renderable</p>
@@ -256,7 +256,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.QtReport"><code class="name flex">
-<span>def <span class="ident">QtReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">QtReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -271,7 +271,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.WidgetReport"><code class="name flex">
-<span>def <span class="ident">WidgetReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">WidgetReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -301,7 +301,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.get_html_renderable_mapping"><code class="name flex">
-<span>def <span class="ident">get_html_renderable_mapping</span></span>(<span>) -> Dict[Type[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>]]</span>
+<span>def <span class="ident">get_html_renderable_mapping</span></span>(<span>) -> Dict[Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Workaround variable type annotations not being supported in Python 3.5</p>
@@ -372,7 +372,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.get_qt_renderable_mapping"><code class="name flex">
-<span>def <span class="ident">get_qt_renderable_mapping</span></span>(<span>) -> Dict[Type[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>]]</span>
+<span>def <span class="ident">get_qt_renderable_mapping</span></span>(<span>) -> Dict[Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -433,7 +433,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.get_widget_renderable_mapping"><code class="name flex">
-<span>def <span class="ident">get_widget_renderable_mapping</span></span>(<span>) -> Dict[Type[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>]]</span>
+<span>def <span class="ident">get_widget_renderable_mapping</span></span>(<span>) -> Dict[Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>

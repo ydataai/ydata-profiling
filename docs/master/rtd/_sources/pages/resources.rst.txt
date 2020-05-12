@@ -19,7 +19,8 @@ Articles
 - `Pandas-Profiling, explore your data faster in Python <https://www.datacourses.com/pandas-1150/>`_ (Gabriel Fuhr, May 31, 2020)
 - `Pandas One Line Magical Code for EDA: Pandas Profile Report <https://dzone.com/articles/pandas-one-line-magical-code-for-eda-pandas-profil>`_ (Sunil Kappal, July 8, 2019)
 - `Speed Up Your Exploratory Data Analysis With Pandas-Profiling <https://towardsdatascience.com/speed-up-your-exploratory-data-analysis-with-pandas-profiling-88b33dc53625>`_ (Lukas Frei, April 26, 2019)
-- `Data Profiling with pandas-profiling <https://www.leehonan.com/data-profiling-with-pandas-profiling/>`_, (Lee Honan, October 28, 2018)
+- `Pandas Exploratory Data Analysis: Data Profiling with one single command <https://kanoki.org/2019/01/15/pandas-exploratory-data-analysis-data-profiling/>`_ (Vinay Babu, January 15, 2019)
+- `Data Profiling with pandas-profiling <https://www.leehonan.com/data-profiling-with-pandas-profiling/>`_ (Lee Honan, October 28, 2018)
 - `3 Must-have tools if you're serious about machine learning <https://fizzylogic.nl/2018/08/21/5-must-have-tools-if-youre-serious-about-machine-learning/>`_ (Willem Meints, August 21, 2018)
 - `Exploratory Data Analysis of Craft Beers: Data Profiling <https://www.datacamp.com/community/tutorials/python-data-profiling>`_ (Jean-Nicholas Hould, April 13, 2017)
 

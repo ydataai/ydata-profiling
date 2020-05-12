@@ -152,6 +152,14 @@ def expand_mixed(df: pd.DataFrame, types=None) -&gt; pd.DataFrame:
 
 
 def hash_dataframe(df):
+    &#34;&#34;&#34;Hash a DataFrame (wrapper around joblib.hash, might change in the future)
+
+    Args:
+        df: the DataFrame
+
+    Returns:
+        The DataFrame&#39;s hash
+    &#34;&#34;&#34;
     return joblib.hash(df)</code></pre>
 </details>
 </section>
@@ -227,12 +235,30 @@ TODO: allow for expansion of nested data structures.</p></div>
 <span>def <span class="ident">hash_dataframe</span></span>(<span>df)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Hash a DataFrame (wrapper around joblib.hash, might change in the future)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong></dt>
+<dd>the DataFrame</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The DataFrame's hash</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def hash_dataframe(df):
+    &#34;&#34;&#34;Hash a DataFrame (wrapper around joblib.hash, might change in the future)
+
+    Args:
+        df: the DataFrame
+
+    Returns:
+        The DataFrame&#39;s hash
+    &#34;&#34;&#34;
     return joblib.hash(df)</code></pre>
 </details>
 </dd>

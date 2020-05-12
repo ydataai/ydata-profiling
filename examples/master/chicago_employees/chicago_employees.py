@@ -13,5 +13,5 @@ if __name__ == "__main__":
 
     df = pd.read_csv(file_name)
 
-    profile = ProfileReport(df, title="Chicago Employees")
-    profile.to_file(output_file=Path("./chicago_employees_report.html"))
+    profile = ProfileReport(df, title="Chicago Employees", explorative=True)
+    profile.to_file(Path("./chicago_employees_report.html"))

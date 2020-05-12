@@ -24,3 +24,10 @@
    pages/support
    pages/contribution_guidelines
    pages/resources
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Reference
+   :hidden:
+
+   pages/api

@@ -204,13 +204,34 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                 fields={&#34;n_unique&#34;, &#34;p_unique&#34;},
             )
         )
-
-    # Date
-    if description[&#34;type&#34;] == Variable.TYPE_DATE:
+    elif description[&#34;type&#34;] in [
+        Variable.TYPE_NUM,
+        Variable.TYPE_CAT,
+        Variable.TYPE_DATE,
+    ]:
         # Uniformity
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
+        if description[&#34;type&#34;] == Variable.TYPE_CAT:
+            # High cardinality
+            if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
+                &#34;cardinality_threshold&#34;
+            ].get(int):
+                messages.append(
+                    Message(
+                        column_name=col,
+                        message_type=MessageType.HIGH_CARDINALITY,
+                        values=description,
+                        fields={&#34;n_unique&#34;},
+                    )
+                )
+
+            chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+                float
+            )
+        else:
+            chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+                float
+            )
+
         if (
             &#34;chi_squared&#34; in description
             and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
@@ -224,31 +245,6 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
         if &#34;date_warning&#34; in description and description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
-            )
-
-        # Uniformity
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if (
-            &#34;chi_squared&#34; in description
-            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
-        ):
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
-            )
-
-        # High cardinality
-        if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
-            &#34;cardinality_threshold&#34;
-        ].get(int):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.HIGH_CARDINALITY,
-                    values=description,
-                    fields={&#34;n_unique&#34;},
-                )
             )
 
         # Constant length
@@ -287,15 +283,6 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
                     values=description,
                     fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
                 )
-            )
-
-        # Uniformity
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
         # Zeros
@@ -505,13 +492,34 @@ def warning_type_date(series):
                 fields={&#34;n_unique&#34;, &#34;p_unique&#34;},
             )
         )
-
-    # Date
-    if description[&#34;type&#34;] == Variable.TYPE_DATE:
+    elif description[&#34;type&#34;] in [
+        Variable.TYPE_NUM,
+        Variable.TYPE_CAT,
+        Variable.TYPE_DATE,
+    ]:
         # Uniformity
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
+        if description[&#34;type&#34;] == Variable.TYPE_CAT:
+            # High cardinality
+            if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
+                &#34;cardinality_threshold&#34;
+            ].get(int):
+                messages.append(
+                    Message(
+                        column_name=col,
+                        message_type=MessageType.HIGH_CARDINALITY,
+                        values=description,
+                        fields={&#34;n_unique&#34;},
+                    )
+                )
+
+            chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+                float
+            )
+        else:
+            chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+                float
+            )
+
         if (
             &#34;chi_squared&#34; in description
             and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
@@ -525,31 +533,6 @@ def warning_type_date(series):
         if &#34;date_warning&#34; in description and description[&#34;date_warning&#34;]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
-            )
-
-        # Uniformity
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if (
-            &#34;chi_squared&#34; in description
-            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
-        ):
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
-            )
-
-        # High cardinality
-        if description[&#34;distinct_count&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
-            &#34;cardinality_threshold&#34;
-        ].get(int):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.HIGH_CARDINALITY,
-                    values=description,
-                    fields={&#34;n_unique&#34;},
-                )
             )
 
         # Constant length
@@ -588,15 +571,6 @@ def warning_type_date(series):
                     values=description,
                     fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
                 )
-            )
-
-        # Uniformity
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if 0.0 &lt; chi_squared_threshold &lt; description[&#34;chi_squared&#34;][1]:
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
         # Zeros

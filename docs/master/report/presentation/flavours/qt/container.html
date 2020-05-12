@@ -24,10 +24,10 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PyQt5.QtWidgets import QPushButton, QTabWidget, QVBoxLayout, QWidget
+<pre><code class="python">from PyQt5.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import Container
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 def get_name(item: Renderable):
@@ -105,7 +105,7 @@ class QtContainer(Container):
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.qt.container.get_name"><code class="name flex">
-<span>def <span class="ident">get_name</span></span>(<span>item: <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">get_name</span></span>(<span>item: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -151,7 +151,7 @@ class QtContainer(Container):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.qt.container.QtContainer"><code class="flex name class">
 <span>class <span class="ident">QtContainer</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>], sequence_type: str, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -178,7 +178,7 @@ inheritance.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="pandas_profiling.report.presentation.core.container.Container" href="../../core/container.html#pandas_profiling.report.presentation.core.container.Container">Container</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>

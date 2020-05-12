@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting started &mdash; pandas-profiling 2.7.1 documentation</title>
+  <title>Getting started &mdash; pandas-profiling 2.8.0 documentation</title>
   
 
   
@@ -89,6 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#explore-deeper">Explore deeper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#jupyter-notebook">Jupyter notebook</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#saving-the-report">Saving the report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#command-line-usage">Command line usage</a></li>
@@ -105,6 +106,10 @@
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribution_guidelines.html">Contribution Guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
             
@@ -213,8 +218,16 @@ Start by loading in your pandas DataFrame, e.g. by using</p>
 </pre></div>
 </div>
 <p>To generate the report, run:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Pandas Profiling Report&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;style&#39;</span><span class="p">:{</span><span class="s1">&#39;full_width&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">}})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Pandas Profiling Report&#39;</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="section" id="explore-deeper">
+<h2>Explore deeper<a class="headerlink" href="#explore-deeper" title="Permalink to this headline">¶</a></h2>
+<p>You can configure the profile report in any way you like. The example code below loads the <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml">explorative configuration file</a>, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Pandas Profiling Report&#39;</span><span class="p">,</span> <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Learn more about configuring <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> on the <a class="reference internal" href="advanced_usage.html"><span class="doc">Advanced Usage</span></a> page.</p>
 </div>
 <div class="section" id="jupyter-notebook">
 <h2>Jupyter notebook<a class="headerlink" href="#jupyter-notebook" title="Permalink to this headline">¶</a></h2>
@@ -234,7 +247,7 @@ Start by loading in your pandas DataFrame, e.g. by using</p>
 <div class="section" id="saving-the-report">
 <h2>Saving the report<a class="headerlink" href="#saving-the-report" title="Permalink to this headline">¶</a></h2>
 <p>If you want to generate a HTML report file, save the <code class="docutils literal notranslate"><span class="pre">ProfileReport</span></code> to an object and use the <code class="docutils literal notranslate"><span class="pre">to_file()</span></code> function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">output_file</span><span class="o">=</span><span class="s2">&quot;your_report.html&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;your_report.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Alternatively, you can obtain the data as json:</p>
@@ -242,7 +255,7 @@ Start by loading in your pandas DataFrame, e.g. by using</p>
 <span class="n">json_data</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 
 <span class="c1"># As a file</span>
-<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">output_file</span><span class="o">=</span><span class="s2">&quot;your_report.json&quot;</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;your_report.json&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

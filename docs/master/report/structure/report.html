@@ -39,13 +39,13 @@ from pandas_profiling.model.base import (
     Complex,
     Count,
     Date,
-    ExistingPath,
+    FilePath,
     Generic,
+    ImagePath,
     Real,
     Url,
 )
 from pandas_profiling.model.messages import MessageType
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -56,6 +56,7 @@ from pandas_profiling.report.presentation.core import (
     ToggleButton,
     Variable,
 )
+from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import (
@@ -69,13 +70,23 @@ from pandas_profiling.report.structure.variables import (
     render_complex,
     render_date,
     render_generic,
+    render_image,
     render_path,
     render_real,
     render_url,
 )
+from pandas_profiling.report.structure.variables.render_file import render_file
 
 
 def get_missing_items(summary) -&gt; list:
+    &#34;&#34;&#34;Return the missing diagrams
+
+    Args:
+        summary: the dataframe summary
+
+    Returns:
+        A list with the missing diagrams
+    &#34;&#34;&#34;
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     items = []
     for key, item in summary[&#34;missing&#34;].items():
@@ -112,7 +123,8 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
         Categorical: render_categorical,
         Url: render_url,
         AbsolutePath: render_path,
-        ExistingPath: render_path,
+        FilePath: render_file,
+        ImagePath: render_image,
         Generic: render_generic,
     }
 
@@ -139,10 +151,13 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
             if warning.column_name == idx
         }
 
+        descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
+
         template_variables = {
             &#34;varname&#34;: idx,
             &#34;varid&#34;: hash(idx),
             &#34;warnings&#34;: warnings,
+            &#34;description&#34;: descriptions.get(idx, &#34;&#34;),
             &#34;warn_fields&#34;: warning_fields,
         }
 
@@ -210,7 +225,15 @@ def get_sample_items(sample: dict):
     return items
 
 
-def get_scatter_matrix(scatter_matrix):
+def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
+    &#34;&#34;&#34;Returns the interaction components for the report
+
+    Args:
+        scatter_matrix: a nested dict containing the scatter plots
+
+    Returns:
+        A list of components for the interaction section of the report
+    &#34;&#34;&#34;
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     titems = []
@@ -222,7 +245,7 @@ def get_scatter_matrix(scatter_matrix):
                     splot,
                     image_format=image_format,
                     alt=f&#34;{x_col} x {y_col}&#34;,
-                    anchor_id=f&#34;interactions_{x_col}_{y_col}&#34;,
+                    anchor_id=f&#34;interactions_{x_col.replace(&#39; &#39;, &#39;_&#39;)}_{y_col.replace(&#39; &#39;, &#39;_&#39;)}&#34;,
                     name=y_col,
                 )
             )
@@ -230,15 +253,25 @@ def get_scatter_matrix(scatter_matrix):
         titems.append(
             Container(
                 items,
-                sequence_type=&#34;tabs&#34;,
+                sequence_type=&#34;tabs&#34; if len(items) &lt;= 10 else &#34;select&#34;,
                 name=x_col,
-                anchor_id=f&#34;interactions_{x_col}&#34;,
+                nested=len(scatter_matrix) &gt; 10,
+                anchor_id=f&#34;interactions_{x_col.replace(&#39; &#39;, &#39;_&#39;)}&#34;,
             )
         )
     return titems
 
 
 def get_dataset_items(summary: dict, warnings: list) -&gt; list:
+    &#34;&#34;&#34;Returns the dataset overview (at the top of the report)
+
+    Args:
+        summary: the calculated summary
+        warnings: the warnings
+
+    Returns:
+        A list with components for the dataset overview (overview, reproduction, warnings)
+    &#34;&#34;&#34;
     items = [
         get_dataset_overview(summary),
         get_dataset_reproduction(summary),
@@ -279,26 +312,33 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                 name=&#34;Variables&#34;,
                 anchor_id=&#34;variables&#34;,
             ),
-            Container(
-                get_scatter_matrix(summary[&#34;scatter&#34;]),
-                sequence_type=&#34;tabs&#34;,
-                name=&#34;Interactions&#34;,
-                anchor_id=&#34;interactions&#34;,
-            ),
         ]
+
+        scatter_items = get_scatter_matrix(summary[&#34;scatter&#34;])
+        if len(scatter_items) &gt; 0:
+            section_items.append(
+                Container(
+                    scatter_items,
+                    sequence_type=&#34;tabs&#34; if len(scatter_items) &lt;= 10 else &#34;select&#34;,
+                    name=&#34;Interactions&#34;,
+                    anchor_id=&#34;interactions&#34;,
+                ),
+            )
 
         corr = get_correlation_items(summary)
         if corr is not None:
             section_items.append(corr)
 
-        section_items.append(
-            Container(
-                get_missing_items(summary),
-                sequence_type=&#34;tabs&#34;,
-                name=&#34;Missing values&#34;,
-                anchor_id=&#34;missing&#34;,
+        missing_items = get_missing_items(summary)
+        if len(missing_items) &gt; 0:
+            section_items.append(
+                Container(
+                    missing_items,
+                    sequence_type=&#34;tabs&#34;,
+                    name=&#34;Missing values&#34;,
+                    anchor_id=&#34;missing&#34;,
+                )
             )
-        )
 
         sample_items = get_sample_items(summary[&#34;sample&#34;])
         if len(sample_items) &gt; 0:
@@ -343,12 +383,33 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <span>def <span class="ident">get_dataset_items</span></span>(<span>summary: dict, warnings: list) -> list</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the dataset overview (at the top of the report)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>summary</code></strong></dt>
+<dd>the calculated summary</dd>
+<dt><strong><code>warnings</code></strong></dt>
+<dd>the warnings</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A list with components for the dataset overview (overview, reproduction, warnings)</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_dataset_items(summary: dict, warnings: list) -&gt; list:
+    &#34;&#34;&#34;Returns the dataset overview (at the top of the report)
+
+    Args:
+        summary: the calculated summary
+        warnings: the warnings
+
+    Returns:
+        A list with components for the dataset overview (overview, reproduction, warnings)
+    &#34;&#34;&#34;
     items = [
         get_dataset_overview(summary),
         get_dataset_reproduction(summary),
@@ -399,12 +460,30 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <span>def <span class="ident">get_missing_items</span></span>(<span>summary) -> list</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Return the missing diagrams</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>summary</code></strong></dt>
+<dd>the dataframe summary</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A list with the missing diagrams</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_missing_items(summary) -&gt; list:
+    &#34;&#34;&#34;Return the missing diagrams
+
+    Args:
+        summary: the dataframe summary
+
+    Returns:
+        A list with the missing diagrams
+    &#34;&#34;&#34;
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     items = []
     for key, item in summary[&#34;missing&#34;].items():
@@ -423,7 +502,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_report_structure"><code class="name flex">
-<span>def <span class="ident">get_report_structure</span></span>(<span>summary: dict) -> <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../presentation/abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></span>
+<span>def <span class="ident">get_report_structure</span></span>(<span>summary: dict) -> <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a HTML report from summary statistics and a given sample.</p>
@@ -472,26 +551,33 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                 name=&#34;Variables&#34;,
                 anchor_id=&#34;variables&#34;,
             ),
-            Container(
-                get_scatter_matrix(summary[&#34;scatter&#34;]),
-                sequence_type=&#34;tabs&#34;,
-                name=&#34;Interactions&#34;,
-                anchor_id=&#34;interactions&#34;,
-            ),
         ]
+
+        scatter_items = get_scatter_matrix(summary[&#34;scatter&#34;])
+        if len(scatter_items) &gt; 0:
+            section_items.append(
+                Container(
+                    scatter_items,
+                    sequence_type=&#34;tabs&#34; if len(scatter_items) &lt;= 10 else &#34;select&#34;,
+                    name=&#34;Interactions&#34;,
+                    anchor_id=&#34;interactions&#34;,
+                ),
+            )
 
         corr = get_correlation_items(summary)
         if corr is not None:
             section_items.append(corr)
 
-        section_items.append(
-            Container(
-                get_missing_items(summary),
-                sequence_type=&#34;tabs&#34;,
-                name=&#34;Missing values&#34;,
-                anchor_id=&#34;missing&#34;,
+        missing_items = get_missing_items(summary)
+        if len(missing_items) &gt; 0:
+            section_items.append(
+                Container(
+                    missing_items,
+                    sequence_type=&#34;tabs&#34;,
+                    name=&#34;Missing values&#34;,
+                    anchor_id=&#34;missing&#34;,
+                )
             )
-        )
 
         sample_items = get_sample_items(summary[&#34;sample&#34;])
         if len(sample_items) &gt; 0:
@@ -558,15 +644,33 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_scatter_matrix"><code class="name flex">
-<span>def <span class="ident">get_scatter_matrix</span></span>(<span>scatter_matrix)</span>
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>scatter_matrix: dict) -> list</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the interaction components for the report</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>scatter_matrix</code></strong></dt>
+<dd>a nested dict containing the scatter plots</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A list</code> of <code>components for the interaction section</code> of <code>the report</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_scatter_matrix(scatter_matrix):
+<pre><code class="python">def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
+    &#34;&#34;&#34;Returns the interaction components for the report
+
+    Args:
+        scatter_matrix: a nested dict containing the scatter plots
+
+    Returns:
+        A list of components for the interaction section of the report
+    &#34;&#34;&#34;
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
 
     titems = []
@@ -578,7 +682,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                     splot,
                     image_format=image_format,
                     alt=f&#34;{x_col} x {y_col}&#34;,
-                    anchor_id=f&#34;interactions_{x_col}_{y_col}&#34;,
+                    anchor_id=f&#34;interactions_{x_col.replace(&#39; &#39;, &#39;_&#39;)}_{y_col.replace(&#39; &#39;, &#39;_&#39;)}&#34;,
                     name=y_col,
                 )
             )
@@ -586,9 +690,10 @@ def get_report_structure(summary: dict) -&gt; Renderable:
         titems.append(
             Container(
                 items,
-                sequence_type=&#34;tabs&#34;,
+                sequence_type=&#34;tabs&#34; if len(items) &lt;= 10 else &#34;select&#34;,
                 name=x_col,
-                anchor_id=f&#34;interactions_{x_col}&#34;,
+                nested=len(scatter_matrix) &gt; 10,
+                anchor_id=f&#34;interactions_{x_col.replace(&#39; &#39;, &#39;_&#39;)}&#34;,
             )
         )
     return titems</code></pre>
@@ -628,7 +733,8 @@ def get_report_structure(summary: dict) -&gt; Renderable:
         Categorical: render_categorical,
         Url: render_url,
         AbsolutePath: render_path,
-        ExistingPath: render_path,
+        FilePath: render_file,
+        ImagePath: render_image,
         Generic: render_generic,
     }
 
@@ -655,10 +761,13 @@ def get_report_structure(summary: dict) -&gt; Renderable:
             if warning.column_name == idx
         }
 
+        descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
+
         template_variables = {
             &#34;varname&#34;: idx,
             &#34;varid&#34;: hash(idx),
             &#34;warnings&#34;: warnings,
+            &#34;description&#34;: descriptions.get(idx, &#34;&#34;),
             &#34;warn_fields&#34;: warning_fields,
         }
 

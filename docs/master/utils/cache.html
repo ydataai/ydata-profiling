@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
 <title>pandas_profiling.utils.cache API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Dataset cache utility functions" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,17 +20,30 @@
 <h1 class="title">Module <code>pandas_profiling.utils.cache</code></h1>
 </header>
 <section id="section-intro">
+<p>Dataset cache utility functions</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import requests
+<pre><code class="python">&#34;&#34;&#34;Dataset cache utility functions&#34;&#34;&#34;
+from pathlib import Path
+
+import requests
 
 from pandas_profiling.utils.paths import get_data_path
 
 
-def cache_file(file_name, url):
-    # Cache all datasets here
+def cache_file(file_name: str, url: str) -&gt; Path:
+    &#34;&#34;&#34;Check if file_name already is in the data path, otherwise download it from url.
+
+    Args:
+        file_name: the file name
+        url: the URL of the dataset
+
+    Returns:
+        The relative path to the dataset
+    &#34;&#34;&#34;
+
     data_path = get_data_path()
     data_path.mkdir(exist_ok=True)
 
@@ -50,16 +63,37 @@ def cache_file(file_name, url):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.utils.cache.cache_file"><code class="name flex">
-<span>def <span class="ident">cache_file</span></span>(<span>file_name, url)</span>
+<span>def <span class="ident">cache_file</span></span>(<span>file_name: str, url: str) -> pathlib.Path</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Check if file_name already is in the data path, otherwise download it from url.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_name</code></strong></dt>
+<dd>the file name</dd>
+<dt><strong><code>url</code></strong></dt>
+<dd>the URL of the dataset</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The relative path to the dataset</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def cache_file(file_name, url):
-    # Cache all datasets here
+<pre><code class="python">def cache_file(file_name: str, url: str) -&gt; Path:
+    &#34;&#34;&#34;Check if file_name already is in the data path, otherwise download it from url.
+
+    Args:
+        file_name: the file name
+        url: the URL of the dataset
+
+    Returns:
+        The relative path to the dataset
+    &#34;&#34;&#34;
+
     data_path = get_data_path()
     data_path.mkdir(exist_ok=True)
 

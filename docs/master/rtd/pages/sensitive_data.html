@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Sensitive data &mdash; pandas-profiling 2.7.1 documentation</title>
+  <title>Sensitive data &mdash; pandas-profiling 2.8.0 documentation</title>
   
 
   
@@ -100,6 +100,10 @@
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribution_guidelines.html">Contribution Guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
             
@@ -195,8 +199,8 @@
             
   <div class="section" id="sensitive-data">
 <h1>Sensitive data<a class="headerlink" href="#sensitive-data" title="Permalink to this headline">¶</a></h1>
-<p>When dealing with sensitive data, such as private health records, sharing a report that includes a sample would violate patient’s privacy. The sample can be disabled with the following settings:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">samples</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;head&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;tail&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<p>When dealing with sensitive data, such as private health records, sharing a report that includes a sample would violate patient’s privacy. The sample as well as duplicate rows are configurable. We can disable them using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">duplicates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Moreover, <cite>pandas-profiling</cite> does not send data to external services, making it suitable for private data.</p>

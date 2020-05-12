@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
 <title>pandas_profiling.visualisation.utils API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Plotting utility functions." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,12 +20,16 @@
 <h1 class="title">Module <code>pandas_profiling.visualisation.utils</code></h1>
 </header>
 <section id="section-intro">
+<p>Plotting utility functions.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import base64
+<pre><code class="python">&#34;&#34;&#34;Plotting utility functions.&#34;&#34;&#34;
+import base64
+import uuid
 from io import BytesIO, StringIO
+from pathlib import Path
 from typing import Tuple, Union
 from urllib.parse import quote
 
@@ -48,6 +52,21 @@ def hex_to_rgb(hex: str) -&gt; Tuple[float, ...]:
     )
 
 
+def base64_image(image: bytes, mime_type: str):
+    &#34;&#34;&#34;Encode the image for an URL using base64
+
+    Args:
+        image: the image
+        mime_type: the mime type
+
+    Returns:
+        A string starting with &#34;data:{mime_type};base64,&#34;
+    &#34;&#34;&#34;
+    base64_data = base64.b64encode(image)
+    image_data = quote(base64_data)
+    return f&#34;data:{mime_type};base64,{image_data}&#34;
+
+
 def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&gt; str:
     &#34;&#34;&#34;Quickscope the plot to a base64 encoded string.
 
@@ -59,29 +78,45 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
     Returns:
         A base64 encoded version of the plot in the specified image format.
     &#34;&#34;&#34;
+
     if image_format is None:
         image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-    dpi = config[&#34;plot&#34;][&#34;dpi&#34;].get(int)
-
     if image_format not in [&#34;svg&#34;, &#34;png&#34;]:
         raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
+
+    inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
 
     mime_types = {&#34;png&#34;: &#34;image/png&#34;, &#34;svg&#34;: &#34;image/svg+xml&#34;}
 
     try:
-        if image_format == &#34;svg&#34;:
-            image_str = StringIO()
-            plt.savefig(image_str, format=image_format)
-            image_str.seek(0)
-            result_string = image_str.getvalue()
+        if inline:
+            if image_format == &#34;svg&#34;:
+                image_str = StringIO()
+                plt.savefig(image_str, format=image_format)
+                image_str.seek(0)
+                result_string = image_str.getvalue()
+            else:
+                image_bytes = BytesIO()
+                plt.savefig(
+                    image_bytes, dpi=config[&#34;plot&#34;][&#34;dpi&#34;].get(int), format=image_format
+                )
+                image_bytes.seek(0)
+                result_string = base64_image(
+                    image_bytes.getvalue(), mime_types[image_format]
+                )
         else:
-            image_bytes = BytesIO()
-            plt.savefig(image_bytes, dpi=dpi, format=image_format)
-            image_bytes.seek(0)
-            base64_data = base64.b64encode(image_bytes.getvalue())
-            mime_type = mime_types[image_format]
-            image_data = quote(base64_data)
-            result_string = f&#34;data:{mime_type};base64,{image_data}&#34;
+            file_path = Path(config[&#34;html&#34;][&#34;file_name&#34;].get(str))
+            suffix = f&#34;_assets/images/{uuid.uuid4().hex}.{image_format}&#34;
+            args = {
+                &#34;fname&#34;: f&#34;{file_path.with_suffix(&#39;&#39;)}{suffix}&#34;,
+                &#34;format&#34;: image_format,
+            }
+
+            if image_format == &#34;png&#34;:
+                args[&#34;dpi&#34;] = config[&#34;plot&#34;][&#34;dpi&#34;].get(int)
+
+            plt.savefig(**args)
+            result_string = f&#34;{file_path.stem}{suffix}&#34;
         plt.close()
     except RuntimeError:
         plt.close()
@@ -104,6 +139,42 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.visualisation.utils.base64_image"><code class="name flex">
+<span>def <span class="ident">base64_image</span></span>(<span>image: bytes, mime_type: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Encode the image for an URL using base64</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>image</code></strong></dt>
+<dd>the image</dd>
+<dt><strong><code>mime_type</code></strong></dt>
+<dd>the mime type</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A string starting with "data:{mime_type};base64,"</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def base64_image(image: bytes, mime_type: str):
+    &#34;&#34;&#34;Encode the image for an URL using base64
+
+    Args:
+        image: the image
+        mime_type: the mime type
+
+    Returns:
+        A string starting with &#34;data:{mime_type};base64,&#34;
+    &#34;&#34;&#34;
+    base64_data = base64.b64encode(image)
+    image_data = quote(base64_data)
+    return f&#34;data:{mime_type};base64,{image_data}&#34;</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.visualisation.utils.hex_to_rgb"><code class="name flex">
 <span>def <span class="ident">hex_to_rgb</span></span>(<span>hex: str) -> Tuple[float, ...]</span>
 </code></dt>
@@ -167,29 +238,45 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
     Returns:
         A base64 encoded version of the plot in the specified image format.
     &#34;&#34;&#34;
+
     if image_format is None:
         image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-    dpi = config[&#34;plot&#34;][&#34;dpi&#34;].get(int)
-
     if image_format not in [&#34;svg&#34;, &#34;png&#34;]:
         raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
+
+    inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
 
     mime_types = {&#34;png&#34;: &#34;image/png&#34;, &#34;svg&#34;: &#34;image/svg+xml&#34;}
 
     try:
-        if image_format == &#34;svg&#34;:
-            image_str = StringIO()
-            plt.savefig(image_str, format=image_format)
-            image_str.seek(0)
-            result_string = image_str.getvalue()
+        if inline:
+            if image_format == &#34;svg&#34;:
+                image_str = StringIO()
+                plt.savefig(image_str, format=image_format)
+                image_str.seek(0)
+                result_string = image_str.getvalue()
+            else:
+                image_bytes = BytesIO()
+                plt.savefig(
+                    image_bytes, dpi=config[&#34;plot&#34;][&#34;dpi&#34;].get(int), format=image_format
+                )
+                image_bytes.seek(0)
+                result_string = base64_image(
+                    image_bytes.getvalue(), mime_types[image_format]
+                )
         else:
-            image_bytes = BytesIO()
-            plt.savefig(image_bytes, dpi=dpi, format=image_format)
-            image_bytes.seek(0)
-            base64_data = base64.b64encode(image_bytes.getvalue())
-            mime_type = mime_types[image_format]
-            image_data = quote(base64_data)
-            result_string = f&#34;data:{mime_type};base64,{image_data}&#34;
+            file_path = Path(config[&#34;html&#34;][&#34;file_name&#34;].get(str))
+            suffix = f&#34;_assets/images/{uuid.uuid4().hex}.{image_format}&#34;
+            args = {
+                &#34;fname&#34;: f&#34;{file_path.with_suffix(&#39;&#39;)}{suffix}&#34;,
+                &#34;format&#34;: image_format,
+            }
+
+            if image_format == &#34;png&#34;:
+                args[&#34;dpi&#34;] = config[&#34;plot&#34;][&#34;dpi&#34;].get(int)
+
+            plt.savefig(**args)
+            result_string = f&#34;{file_path.stem}{suffix}&#34;
         plt.close()
     except RuntimeError:
         plt.close()
@@ -223,6 +310,7 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.visualisation.utils.base64_image" href="#pandas_profiling.visualisation.utils.base64_image">base64_image</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.utils.hex_to_rgb" href="#pandas_profiling.visualisation.utils.hex_to_rgb">hex_to_rgb</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.utils.plot_360_n0sc0pe" href="#pandas_profiling.visualisation.utils.plot_360_n0sc0pe">plot_360_n0sc0pe</a></code></li>
 </ul>

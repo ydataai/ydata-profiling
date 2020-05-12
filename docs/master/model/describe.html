@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
 <title>pandas_profiling.model.describe API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Organize the calculation of statistics for each series in this DataFrame." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,11 +20,13 @@
 <h1 class="title">Module <code>pandas_profiling.model.describe</code></h1>
 </header>
 <section id="section-intro">
+<p>Organize the calculation of statistics for each series in this DataFrame.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import warnings
+<pre><code class="python">&#34;&#34;&#34;Organize the calculation of statistics for each series in this DataFrame.&#34;&#34;&#34;
+import warnings
 from datetime import datetime
 
 import pandas as pd
@@ -61,6 +63,9 @@ def describe(title, df: pd.DataFrame) -&gt; dict:
             - package: package details.
     &#34;&#34;&#34;
 
+    if df is None:
+        raise ValueError(&#34;Can not describe a `lazy` ProfileReport without a DataFrame.&#34;)
+
     if not isinstance(df, pd.DataFrame):
         warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
@@ -77,10 +82,10 @@ def describe(title, df: pd.DataFrame) -&gt; dict:
         if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
     ]
 
-    number_of_task = 7 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
 
     with tqdm(
-        total=number_of_task, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
+        total=number_of_tasks, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, pbar)
 
@@ -239,6 +244,9 @@ def describe(title, df: pd.DataFrame) -&gt; dict:
             - package: package details.
     &#34;&#34;&#34;
 
+    if df is None:
+        raise ValueError(&#34;Can not describe a `lazy` ProfileReport without a DataFrame.&#34;)
+
     if not isinstance(df, pd.DataFrame):
         warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
@@ -255,10 +263,10 @@ def describe(title, df: pd.DataFrame) -&gt; dict:
         if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
     ]
 
-    number_of_task = 7 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
 
     with tqdm(
-        total=number_of_task, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
+        total=number_of_tasks, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, pbar)
 

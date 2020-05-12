@@ -44,5 +44,6 @@ if __name__ == "__main__":
         title="NASA Meteorites",
         html={"style": {"logo": logo_string}},
         correlations={"cramers": {"calculate": False}},
+        explorative=True,
     )
     profile.to_file(Path("./meteorites_report.html"))

@@ -26,7 +26,8 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Common parts to all other modules, mainly utility functions.&#34;&#34;&#34;
-import sys
+import imghdr
+import os
 from enum import Enum, unique
 from urllib.parse import ParseResult, urlparse
 
@@ -55,10 +56,16 @@ class Variable(Enum):
     TYPE_URL = &#34;URL&#34;
     &#34;&#34;&#34;A URL variable&#34;&#34;&#34;
 
-    TYPE_PATH = &#34;PATH&#34;
-    &#34;&#34;&#34;Absolute files&#34;&#34;&#34;
-
     TYPE_COMPLEX = &#34;COMPLEX&#34;
+
+    TYPE_PATH = &#34;PATH&#34;
+    &#34;&#34;&#34;Absolute path&#34;&#34;&#34;
+
+    TYPE_FILE = &#34;FILE&#34;
+    &#34;&#34;&#34;File (i.e. existing path)&#34;&#34;&#34;
+
+    TYPE_IMAGE = &#34;IMAGE&#34;
+    &#34;&#34;&#34;Images&#34;&#34;&#34;
 
     S_TYPE_UNSUPPORTED = &#34;UNSUPPORTED&#34;
     &#34;&#34;&#34;An unsupported variable&#34;&#34;&#34;
@@ -73,8 +80,8 @@ Date = Variable.TYPE_DATE
 Categorical = Variable.TYPE_CAT
 Url = Variable.TYPE_URL
 AbsolutePath = Variable.TYPE_PATH
-ExistingPath = Variable.TYPE_PATH
-ImagePath = Variable.TYPE_PATH
+FilePath = Variable.TYPE_FILE
+ImagePath = Variable.TYPE_IMAGE
 Generic = Variable.S_TYPE_UNSUPPORTED
 
 
@@ -182,31 +189,60 @@ def is_url(series: pd.Series, series_description: dict) -&gt; bool:
 
 
 def is_path(series, series_description) -&gt; bool:
-    from pathlib import Path
+    &#34;&#34;&#34;Is the series of the path type (i.e. absolute path)?
 
-    def is_path_item(p: str):
-        &#34;&#34;&#34;Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+    Args:
+        series: Series
+        series_description: Series description
 
-        Args:
-            p: the Path
+    Returns:
+        True is the series is path type (NaNs allowed).
+    &#34;&#34;&#34;
+    if series_description[&#34;distinct_count_without_nan&#34;] == 0:
+        return False
 
-        Returns:
-            True is is an absolute path
-        &#34;&#34;&#34;
-        try:
-            path = Path(p)
-            if path.is_absolute():
-                return True
-            else:
-                return False
-        except TypeError:
-            return False
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.isabs(p) for p in result)
+    except (ValueError, TypeError):
+        return False
 
+
+def is_file(series, series_description) -&gt; bool:
+    &#34;&#34;&#34;Is the series of the type &#34;file&#34; (i.e. existing paths)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the file type (NaNs allowed).
+    &#34;&#34;&#34;
+    if series_description[&#34;distinct_count_without_nan&#34;] == 0:
+        return False
+
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.exists(p) for p in result)
+    except (ValueError, TypeError):
+        return False
+
+
+def is_image(series, series_description) -&gt; bool:
+    &#34;&#34;&#34;Is the series of the image type (i.e. &#34;file&#34; with image extensions)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the image type (NaNs allowed).
+    &#34;&#34;&#34;
     if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
         try:
             result = series[~series.isnull()].astype(str)
-            return all(is_path_item(x) for x in result)
-        except ValueError:
+            return all(imghdr.what(p) for p in result)
+        except (TypeError, ValueError):
             return False
     else:
         return False
@@ -260,8 +296,18 @@ def get_var_type(series: pd.Series) -&gt; dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
-        elif is_path(series, series_description) and sys.version_info[1] &gt; 5:
-            var_type = Variable.TYPE_PATH
+        elif is_path(series, series_description):
+            if config[&#34;vars&#34;][&#34;file&#34;][&#34;active&#34;].get(bool) and is_file(
+                series, series_description
+            ):
+                if config[&#34;vars&#34;][&#34;image&#34;][&#34;active&#34;].get(bool) and is_image(
+                    series, series_description
+                ):
+                    var_type = Variable.TYPE_IMAGE
+                else:
+                    var_type = Variable.TYPE_FILE
+            else:
+                var_type = Variable.TYPE_PATH
         else:
             var_type = Variable.TYPE_CAT
     except TypeError:
@@ -370,8 +416,18 @@ def get_var_type(series: pd.Series) -&gt; dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
-        elif is_path(series, series_description) and sys.version_info[1] &gt; 5:
-            var_type = Variable.TYPE_PATH
+        elif is_path(series, series_description):
+            if config[&#34;vars&#34;][&#34;file&#34;][&#34;active&#34;].get(bool) and is_file(
+                series, series_description
+            ):
+                if config[&#34;vars&#34;][&#34;image&#34;][&#34;active&#34;].get(bool) and is_image(
+                    series, series_description
+                ):
+                    var_type = Variable.TYPE_IMAGE
+                else:
+                    var_type = Variable.TYPE_FILE
+            else:
+                var_type = Variable.TYPE_PATH
         else:
             var_type = Variable.TYPE_CAT
     except TypeError:
@@ -468,6 +524,82 @@ datetime64.</p>
     return is_date_value</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.model.base.is_file"><code class="name flex">
+<span>def <span class="ident">is_file</span></span>(<span>series, series_description) -> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Is the series of the type "file" (i.e. existing paths)?</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>Series</dd>
+<dt><strong><code>series_description</code></strong></dt>
+<dd>Series description</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>True is the series is of the file type (NaNs allowed).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_file(series, series_description) -&gt; bool:
+    &#34;&#34;&#34;Is the series of the type &#34;file&#34; (i.e. existing paths)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the file type (NaNs allowed).
+    &#34;&#34;&#34;
+    if series_description[&#34;distinct_count_without_nan&#34;] == 0:
+        return False
+
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.exists(p) for p in result)
+    except (ValueError, TypeError):
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.base.is_image"><code class="name flex">
+<span>def <span class="ident">is_image</span></span>(<span>series, series_description) -> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Is the series of the image type (i.e. "file" with image extensions)?</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>Series</dd>
+<dt><strong><code>series_description</code></strong></dt>
+<dd>Series description</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>True is the series is of the image type (NaNs allowed).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_image(series, series_description) -&gt; bool:
+    &#34;&#34;&#34;Is the series of the image type (i.e. &#34;file&#34; with image extensions)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the image type (NaNs allowed).
+    &#34;&#34;&#34;
+    if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
+        try:
+            result = series[~series.isnull()].astype(str)
+            return all(imghdr.what(p) for p in result)
+        except (TypeError, ValueError):
+            return False
+    else:
+        return False</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.base.is_numeric"><code class="name flex">
 <span>def <span class="ident">is_numeric</span></span>(<span>series: pandas.core.series.Series, series_description: dict) -> bool</span>
 </code></dt>
@@ -507,39 +639,37 @@ datetime64.</p>
 <span>def <span class="ident">is_path</span></span>(<span>series, series_description) -> bool</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Is the series of the path type (i.e. absolute path)?</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>Series</dd>
+<dt><strong><code>series_description</code></strong></dt>
+<dd>Series description</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>True is the series is path type (NaNs allowed).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def is_path(series, series_description) -&gt; bool:
-    from pathlib import Path
+    &#34;&#34;&#34;Is the series of the path type (i.e. absolute path)?
 
-    def is_path_item(p: str):
-        &#34;&#34;&#34;Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+    Args:
+        series: Series
+        series_description: Series description
 
-        Args:
-            p: the Path
+    Returns:
+        True is the series is path type (NaNs allowed).
+    &#34;&#34;&#34;
+    if series_description[&#34;distinct_count_without_nan&#34;] == 0:
+        return False
 
-        Returns:
-            True is is an absolute path
-        &#34;&#34;&#34;
-        try:
-            path = Path(p)
-            if path.is_absolute():
-                return True
-            else:
-                return False
-        except TypeError:
-            return False
-
-    if series_description[&#34;distinct_count_without_nan&#34;] &gt; 0:
-        try:
-            result = series[~series.isnull()].astype(str)
-            return all(is_path_item(x) for x in result)
-        except ValueError:
-            return False
-    else:
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.isabs(p) for p in result)
+    except (ValueError, TypeError):
         return False</code></pre>
 </details>
 </dd>
@@ -618,10 +748,16 @@ datetime64.</p>
     TYPE_URL = &#34;URL&#34;
     &#34;&#34;&#34;A URL variable&#34;&#34;&#34;
 
-    TYPE_PATH = &#34;PATH&#34;
-    &#34;&#34;&#34;Absolute files&#34;&#34;&#34;
-
     TYPE_COMPLEX = &#34;COMPLEX&#34;
+
+    TYPE_PATH = &#34;PATH&#34;
+    &#34;&#34;&#34;Absolute path&#34;&#34;&#34;
+
+    TYPE_FILE = &#34;FILE&#34;
+    &#34;&#34;&#34;File (i.e. existing path)&#34;&#34;&#34;
+
+    TYPE_IMAGE = &#34;IMAGE&#34;
+    &#34;&#34;&#34;Images&#34;&#34;&#34;
 
     S_TYPE_UNSUPPORTED = &#34;UNSUPPORTED&#34;
     &#34;&#34;&#34;An unsupported variable&#34;&#34;&#34;</code></pre>
@@ -652,13 +788,21 @@ datetime64.</p>
 <dd>
 <div class="desc"><p>A date variable</p></div>
 </dd>
+<dt id="pandas_profiling.model.base.Variable.TYPE_FILE"><code class="name">var <span class="ident">TYPE_FILE</span></code></dt>
+<dd>
+<div class="desc"><p>File (i.e. existing path)</p></div>
+</dd>
+<dt id="pandas_profiling.model.base.Variable.TYPE_IMAGE"><code class="name">var <span class="ident">TYPE_IMAGE</span></code></dt>
+<dd>
+<div class="desc"><p>Images</p></div>
+</dd>
 <dt id="pandas_profiling.model.base.Variable.TYPE_NUM"><code class="name">var <span class="ident">TYPE_NUM</span></code></dt>
 <dd>
 <div class="desc"><p>A numeric variable</p></div>
 </dd>
 <dt id="pandas_profiling.model.base.Variable.TYPE_PATH"><code class="name">var <span class="ident">TYPE_PATH</span></code></dt>
 <dd>
-<div class="desc"><p>Absolute files</p></div>
+<div class="desc"><p>Absolute path</p></div>
 </dd>
 <dt id="pandas_profiling.model.base.Variable.TYPE_URL"><code class="name">var <span class="ident">TYPE_URL</span></code></dt>
 <dd>
@@ -686,6 +830,8 @@ datetime64.</p>
 <li><code><a title="pandas_profiling.model.base.get_var_type" href="#pandas_profiling.model.base.get_var_type">get_var_type</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_boolean" href="#pandas_profiling.model.base.is_boolean">is_boolean</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_date" href="#pandas_profiling.model.base.is_date">is_date</a></code></li>
+<li><code><a title="pandas_profiling.model.base.is_file" href="#pandas_profiling.model.base.is_file">is_file</a></code></li>
+<li><code><a title="pandas_profiling.model.base.is_image" href="#pandas_profiling.model.base.is_image">is_image</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_numeric" href="#pandas_profiling.model.base.is_numeric">is_numeric</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_path" href="#pandas_profiling.model.base.is_path">is_path</a></code></li>
 <li><code><a title="pandas_profiling.model.base.is_url" href="#pandas_profiling.model.base.is_url">is_url</a></code></li>
@@ -701,6 +847,8 @@ datetime64.</p>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_CAT" href="#pandas_profiling.model.base.Variable.TYPE_CAT">TYPE_CAT</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_COMPLEX" href="#pandas_profiling.model.base.Variable.TYPE_COMPLEX">TYPE_COMPLEX</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_DATE" href="#pandas_profiling.model.base.Variable.TYPE_DATE">TYPE_DATE</a></code></li>
+<li><code><a title="pandas_profiling.model.base.Variable.TYPE_FILE" href="#pandas_profiling.model.base.Variable.TYPE_FILE">TYPE_FILE</a></code></li>
+<li><code><a title="pandas_profiling.model.base.Variable.TYPE_IMAGE" href="#pandas_profiling.model.base.Variable.TYPE_IMAGE">TYPE_IMAGE</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_NUM" href="#pandas_profiling.model.base.Variable.TYPE_NUM">TYPE_NUM</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_PATH" href="#pandas_profiling.model.base.Variable.TYPE_PATH">TYPE_PATH</a></code></li>
 <li><code><a title="pandas_profiling.model.base.Variable.TYPE_URL" href="#pandas_profiling.model.base.Variable.TYPE_URL">TYPE_URL</a></code></li>

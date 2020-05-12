@@ -47,17 +47,38 @@ def get_config_default() -&gt; Path:
     return Path(__file__).parent.parent / &#34;config_default.yaml&#34;
 
 
-def get_config_minimal() -&gt; Path:
-    &#34;&#34;&#34;Returns the path to the minimal config file.
+def get_config(file_name) -&gt; Path:
+    &#34;&#34;&#34;Returns the path a config file.
 
     Returns:
-        The path to the default config file.
+        The path to a config file.
     &#34;&#34;&#34;
-    return Path(__file__).parent.parent / &#34;config_minimal.yaml&#34;
+    return Path(__file__).parent.parent / file_name
 
 
 def get_data_path() -&gt; Path:
-    return get_project_root() / &#34;data&#34;</code></pre>
+    &#34;&#34;&#34;Returns the path to the dataset cache ([root] / data)
+
+    Returns:
+        The path to the dataset cache
+    &#34;&#34;&#34;
+    return get_project_root() / &#34;data&#34;
+
+
+def get_html_template_path() -&gt; Path:
+    &#34;&#34;&#34;Returns the path to the HTML templates
+
+    Returns:
+        The path to the HTML templates
+    &#34;&#34;&#34;
+    return (
+        Path(__file__).parent.parent
+        / &#34;report&#34;
+        / &#34;presentation&#34;
+        / &#34;flavours&#34;
+        / &#34;html&#34;
+        / &#34;templates&#34;
+    )</code></pre>
 </details>
 </section>
 <section>
@@ -67,6 +88,26 @@ def get_data_path() -&gt; Path:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.utils.paths.get_config"><code class="name flex">
+<span>def <span class="ident">get_config</span></span>(<span>file_name) -> pathlib.Path</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the path a config file.</p>
+<h2 id="returns">Returns</h2>
+<p>The path to a config file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_config(file_name) -&gt; Path:
+    &#34;&#34;&#34;Returns the path a config file.
+
+    Returns:
+        The path to a config file.
+    &#34;&#34;&#34;
+    return Path(__file__).parent.parent / file_name</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.utils.paths.get_config_default"><code class="name flex">
 <span>def <span class="ident">get_config_default</span></span>(<span>) -> pathlib.Path</span>
 </code></dt>
@@ -87,37 +128,57 @@ def get_data_path() -&gt; Path:
     return Path(__file__).parent.parent / &#34;config_default.yaml&#34;</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.utils.paths.get_config_minimal"><code class="name flex">
-<span>def <span class="ident">get_config_minimal</span></span>(<span>) -> pathlib.Path</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns the path to the minimal config file.</p>
-<h2 id="returns">Returns</h2>
-<p>The path to the default config file.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_config_minimal() -&gt; Path:
-    &#34;&#34;&#34;Returns the path to the minimal config file.
-
-    Returns:
-        The path to the default config file.
-    &#34;&#34;&#34;
-    return Path(__file__).parent.parent / &#34;config_minimal.yaml&#34;</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.utils.paths.get_data_path"><code class="name flex">
 <span>def <span class="ident">get_data_path</span></span>(<span>) -> pathlib.Path</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the path to the dataset cache ([root] / data)</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The path to the dataset cache</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_data_path() -&gt; Path:
+    &#34;&#34;&#34;Returns the path to the dataset cache ([root] / data)
+
+    Returns:
+        The path to the dataset cache
+    &#34;&#34;&#34;
     return get_project_root() / &#34;data&#34;</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.paths.get_html_template_path"><code class="name flex">
+<span>def <span class="ident">get_html_template_path</span></span>(<span>) -> pathlib.Path</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the path to the HTML templates</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The path to the HTML templates</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_html_template_path() -&gt; Path:
+    &#34;&#34;&#34;Returns the path to the HTML templates
+
+    Returns:
+        The path to the HTML templates
+    &#34;&#34;&#34;
+    return (
+        Path(__file__).parent.parent
+        / &#34;report&#34;
+        / &#34;presentation&#34;
+        / &#34;flavours&#34;
+        / &#34;html&#34;
+        / &#34;templates&#34;
+    )</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.paths.get_project_root"><code class="name flex">
@@ -158,9 +219,10 @@ def get_data_path() -&gt; Path:
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.utils.paths.get_config" href="#pandas_profiling.utils.paths.get_config">get_config</a></code></li>
 <li><code><a title="pandas_profiling.utils.paths.get_config_default" href="#pandas_profiling.utils.paths.get_config_default">get_config_default</a></code></li>
-<li><code><a title="pandas_profiling.utils.paths.get_config_minimal" href="#pandas_profiling.utils.paths.get_config_minimal">get_config_minimal</a></code></li>
 <li><code><a title="pandas_profiling.utils.paths.get_data_path" href="#pandas_profiling.utils.paths.get_data_path">get_data_path</a></code></li>
+<li><code><a title="pandas_profiling.utils.paths.get_html_template_path" href="#pandas_profiling.utils.paths.get_html_template_path">get_html_template_path</a></code></li>
 <li><code><a title="pandas_profiling.utils.paths.get_project_root" href="#pandas_profiling.utils.paths.get_project_root">get_project_root</a></code></li>
 </ul>
 </li>

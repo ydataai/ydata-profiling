@@ -26,8 +26,8 @@
 </summary>
 <pre><code class="python">from ipywidgets import widgets
 
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core.container import Container
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 def get_name(item: Renderable):
@@ -52,6 +52,10 @@ def get_tabs(items):
 
 
 def get_list(items):
+    return widgets.VBox([item.render() for item in items])
+
+
+def get_named_list(items):
     return widgets.VBox(
         [
             widgets.VBox(
@@ -95,6 +99,8 @@ class WidgetContainer(Container):
     def render(self):
         if self.sequence_type == &#34;list&#34;:
             widget = get_list(self.content[&#34;items&#34;])
+        elif self.sequence_type == &#34;named_list&#34;:
+            widget = get_named_list(self.content[&#34;items&#34;])
         elif self.sequence_type in [&#34;tabs&#34;, &#34;sections&#34;]:
             widget = get_tabs(self.content[&#34;items&#34;])
         elif self.sequence_type == &#34;accordion&#34;:
@@ -147,18 +153,11 @@ class WidgetContainer(Container):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_list(items):
-    return widgets.VBox(
-        [
-            widgets.VBox(
-                [widgets.HTML(f&#34;&lt;strong&gt;{get_name(item)}&lt;/strong&gt;&#34;), item.render()]
-            )
-            for item in items
-        ]
-    )</code></pre>
+    return widgets.VBox([item.render() for item in items])</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_name"><code class="name flex">
-<span>def <span class="ident">get_name</span></span>(<span>item: <a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">get_name</span></span>(<span>item: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -171,6 +170,26 @@ class WidgetContainer(Container):
         return item.name
     else:
         return item.anchor_id</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.widget.container.get_named_list"><code class="name flex">
+<span>def <span class="ident">get_named_list</span></span>(<span>items)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_named_list(items):
+    return widgets.VBox(
+        [
+            widgets.VBox(
+                [widgets.HTML(f&#34;&lt;strong&gt;{get_name(item)}&lt;/strong&gt;&#34;), item.render()]
+            )
+            for item in items
+        ]
+    )</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_row"><code class="name flex">
@@ -227,7 +246,7 @@ class WidgetContainer(Container):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.WidgetContainer"><code class="flex name class">
 <span>class <span class="ident">WidgetContainer</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a>], sequence_type: str, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -240,6 +259,8 @@ inheritance.</p></div>
     def render(self):
         if self.sequence_type == &#34;list&#34;:
             widget = get_list(self.content[&#34;items&#34;])
+        elif self.sequence_type == &#34;named_list&#34;:
+            widget = get_named_list(self.content[&#34;items&#34;])
         elif self.sequence_type in [&#34;tabs&#34;, &#34;sections&#34;]:
             widget = get_tabs(self.content[&#34;items&#34;])
         elif self.sequence_type == &#34;accordion&#34;:
@@ -254,7 +275,7 @@ inheritance.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="pandas_profiling.report.presentation.core.container.Container" href="../../core/container.html#pandas_profiling.report.presentation.core.container.Container">Container</a></li>
-<li><a title="pandas_profiling.report.presentation.abstract.renderable.Renderable" href="../../abstract/renderable.html#pandas_profiling.report.presentation.abstract.renderable.Renderable">Renderable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
@@ -271,6 +292,8 @@ inheritance.</p></div>
 <pre><code class="python">def render(self):
     if self.sequence_type == &#34;list&#34;:
         widget = get_list(self.content[&#34;items&#34;])
+    elif self.sequence_type == &#34;named_list&#34;:
+        widget = get_named_list(self.content[&#34;items&#34;])
     elif self.sequence_type in [&#34;tabs&#34;, &#34;sections&#34;]:
         widget = get_tabs(self.content[&#34;items&#34;])
     elif self.sequence_type == &#34;accordion&#34;:
@@ -300,10 +323,11 @@ inheritance.</p></div>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.container.get_accordion" href="#pandas_profiling.report.presentation.flavours.widget.container.get_accordion">get_accordion</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.container.get_list" href="#pandas_profiling.report.presentation.flavours.widget.container.get_list">get_list</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.container.get_name" href="#pandas_profiling.report.presentation.flavours.widget.container.get_name">get_name</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.widget.container.get_named_list" href="#pandas_profiling.report.presentation.flavours.widget.container.get_named_list">get_named_list</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.container.get_row" href="#pandas_profiling.report.presentation.flavours.widget.container.get_row">get_row</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget.container.get_tabs" href="#pandas_profiling.report.presentation.flavours.widget.container.get_tabs">get_tabs</a></code></li>
 </ul>

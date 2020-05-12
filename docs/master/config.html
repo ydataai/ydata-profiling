@@ -82,6 +82,37 @@ class Config(object):
             else:
                 raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
+    _shorthands = {
+        &#34;samples&#34;: {&#34;head&#34;: 0, &#34;tail&#34;: 0},
+        &#34;duplicates&#34;: {&#34;head&#34;: 0},
+        &#34;interactions&#34;: {&#34;targets&#34;: [], &#34;continuous&#34;: False},
+        &#34;missing_diagrams&#34;: {
+            &#34;bar&#34;: False,
+            &#34;matrix&#34;: False,
+            &#34;heatmap&#34;: False,
+            &#34;dendrogram&#34;: False,
+        },
+        &#34;correlations&#34;: {
+            &#34;pearson&#34;: {&#34;calculate&#34;: False},
+            &#34;spearman&#34;: {&#34;calculate&#34;: False},
+            &#34;kendall&#34;: {&#34;calculate&#34;: False},
+            &#34;phi_k&#34;: {&#34;calculate&#34;: False},
+            &#34;cramers&#34;: {&#34;calculate&#34;: False},
+        },
+    }
+
+    def _handle_shorthands(self, kwargs):
+        for key, value in self._shorthands.items():
+            if key in kwargs and kwargs[key] is None:
+                kwargs[key] = value
+        return kwargs
+
+    def _handle_shorthand(self, key, value):
+        if key in self._shorthands and value is None:
+            return self._shorthands[key]
+        else:
+            return value
+
     def set_kwargs(self, kwargs) -&gt; None:
         &#34;&#34;&#34;
         Helper function to set config variables based on kwargs.
@@ -90,12 +121,15 @@ class Config(object):
             kwargs: the arguments passed to the .profile_report() function
 
         &#34;&#34;&#34;
+        kwargs = self._handle_shorthands(kwargs)
+
         self._set_kwargs(self.config, kwargs)
 
     def __getitem__(self, item):
         return self.config[item]
 
     def __setitem__(self, key, value):
+        value = self._handle_shorthand(key, value)
         self.config[key].set(value)
 
     def dump(self):
@@ -189,6 +223,37 @@ various ways (notably via argparse and kwargs).</p>
             else:
                 raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
+    _shorthands = {
+        &#34;samples&#34;: {&#34;head&#34;: 0, &#34;tail&#34;: 0},
+        &#34;duplicates&#34;: {&#34;head&#34;: 0},
+        &#34;interactions&#34;: {&#34;targets&#34;: [], &#34;continuous&#34;: False},
+        &#34;missing_diagrams&#34;: {
+            &#34;bar&#34;: False,
+            &#34;matrix&#34;: False,
+            &#34;heatmap&#34;: False,
+            &#34;dendrogram&#34;: False,
+        },
+        &#34;correlations&#34;: {
+            &#34;pearson&#34;: {&#34;calculate&#34;: False},
+            &#34;spearman&#34;: {&#34;calculate&#34;: False},
+            &#34;kendall&#34;: {&#34;calculate&#34;: False},
+            &#34;phi_k&#34;: {&#34;calculate&#34;: False},
+            &#34;cramers&#34;: {&#34;calculate&#34;: False},
+        },
+    }
+
+    def _handle_shorthands(self, kwargs):
+        for key, value in self._shorthands.items():
+            if key in kwargs and kwargs[key] is None:
+                kwargs[key] = value
+        return kwargs
+
+    def _handle_shorthand(self, key, value):
+        if key in self._shorthands and value is None:
+            return self._shorthands[key]
+        else:
+            return value
+
     def set_kwargs(self, kwargs) -&gt; None:
         &#34;&#34;&#34;
         Helper function to set config variables based on kwargs.
@@ -197,12 +262,15 @@ various ways (notably via argparse and kwargs).</p>
             kwargs: the arguments passed to the .profile_report() function
 
         &#34;&#34;&#34;
+        kwargs = self._handle_shorthands(kwargs)
+
         self._set_kwargs(self.config, kwargs)
 
     def __getitem__(self, item):
         return self.config[item]
 
     def __setitem__(self, key, value):
+        value = self._handle_shorthand(key, value)
         self.config[key].set(value)
 
     def dump(self):
@@ -352,6 +420,8 @@ def is_default(self):
         kwargs: the arguments passed to the .profile_report() function
 
     &#34;&#34;&#34;
+    kwargs = self._handle_shorthands(kwargs)
+
     self._set_kwargs(self.config, kwargs)</code></pre>
 </details>
 </dd>

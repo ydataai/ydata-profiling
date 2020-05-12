@@ -48,7 +48,13 @@ def render_real(summary):
         name = &#34;Real number (&amp;Ropf;)&#34;
 
     # Top
-    info = VariableInfo(summary[&#34;varid&#34;], summary[&#34;varname&#34;], name, summary[&#34;warnings&#34;])
+    info = VariableInfo(
+        summary[&#34;varid&#34;],
+        summary[&#34;varname&#34;],
+        name,
+        summary[&#34;warnings&#34;],
+        summary[&#34;description&#34;],
+    )
 
     table1 = Table(
         [
@@ -286,7 +292,13 @@ def render_real(summary):
         name = &#34;Real number (&amp;Ropf;)&#34;
 
     # Top
-    info = VariableInfo(summary[&#34;varid&#34;], summary[&#34;varname&#34;], name, summary[&#34;warnings&#34;])
+    info = VariableInfo(
+        summary[&#34;varid&#34;],
+        summary[&#34;varname&#34;],
+        name,
+        summary[&#34;warnings&#34;],
+        summary[&#34;description&#34;],
+    )
 
     table1 = Table(
         [

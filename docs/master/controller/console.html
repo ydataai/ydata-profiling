@@ -69,6 +69,13 @@ def parse_args(args: Union[list, None] = None) -&gt; argparse.Namespace:
         action=&#34;store_true&#34;,
     )
 
+    parser.add_argument(
+        &#34;-e&#34;,
+        &#34;--explorative&#34;,
+        help=&#34;Explorative configuration featuring unicode, file and image analysis&#34;,
+        action=&#34;store_true&#34;,
+    )
+
     # Config
     parser.add_argument(
         &#34;--pool_size&#34;, type=int, default=0, help=&#34;Number of CPU cores to use&#34;
@@ -92,7 +99,13 @@ def parse_args(args: Union[list, None] = None) -&gt; argparse.Namespace:
         type=str,
         help=&#34;CSV file (or other file type supported by pandas) to profile&#34;,
     )
-    parser.add_argument(&#34;output_file&#34;, type=str, help=&#34;Output report file&#34;)
+    parser.add_argument(
+        &#34;output_file&#34;,
+        type=str,
+        nargs=&#34;?&#34;,
+        help=&#34;Output report file. If empty, replaces the input_file&#39;s extension with .html and uses that.&#34;,
+        default=None,
+    )
 
     return parser.parse_args(args)
 
@@ -106,14 +119,21 @@ def main(args=None) -&gt; None:
 
     # Parse the arguments
     args = parse_args(args)
+    if args.output_file is None:
+        args.output_file = str(Path(args.input_file).with_suffix(&#34;.html&#34;))
     config.set_args(args, dots=True)
 
     # read the DataFrame
     df = read_pandas(Path(args.input_file))
 
     # Generate the profiling report
-    p = ProfileReport(df, minimal=args.minimal, config_file=args.config_file)
-    p.to_file(output_file=Path(args.output_file), silent=args.silent)</code></pre>
+    p = ProfileReport(
+        df,
+        minimal=args.minimal,
+        explorative=args.explorative,
+        config_file=args.config_file,
+    )
+    p.to_file(Path(args.output_file), silent=args.silent)</code></pre>
 </details>
 </section>
 <section>
@@ -146,14 +166,21 @@ def main(args=None) -&gt; None:
 
     # Parse the arguments
     args = parse_args(args)
+    if args.output_file is None:
+        args.output_file = str(Path(args.input_file).with_suffix(&#34;.html&#34;))
     config.set_args(args, dots=True)
 
     # read the DataFrame
     df = read_pandas(Path(args.input_file))
 
     # Generate the profiling report
-    p = ProfileReport(df, minimal=args.minimal, config_file=args.config_file)
-    p.to_file(output_file=Path(args.output_file), silent=args.silent)</code></pre>
+    p = ProfileReport(
+        df,
+        minimal=args.minimal,
+        explorative=args.explorative,
+        config_file=args.config_file,
+    )
+    p.to_file(Path(args.output_file), silent=args.silent)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.controller.console.parse_args"><code class="name flex">
@@ -206,6 +233,13 @@ def main(args=None) -&gt; None:
         action=&#34;store_true&#34;,
     )
 
+    parser.add_argument(
+        &#34;-e&#34;,
+        &#34;--explorative&#34;,
+        help=&#34;Explorative configuration featuring unicode, file and image analysis&#34;,
+        action=&#34;store_true&#34;,
+    )
+
     # Config
     parser.add_argument(
         &#34;--pool_size&#34;, type=int, default=0, help=&#34;Number of CPU cores to use&#34;
@@ -229,7 +263,13 @@ def main(args=None) -&gt; None:
         type=str,
         help=&#34;CSV file (or other file type supported by pandas) to profile&#34;,
     )
-    parser.add_argument(&#34;output_file&#34;, type=str, help=&#34;Output report file&#34;)
+    parser.add_argument(
+        &#34;output_file&#34;,
+        type=str,
+        nargs=&#34;?&#34;,
+        help=&#34;Output report file. If empty, replaces the input_file&#39;s extension with .html and uses that.&#34;,
+        default=None,
+    )
 
     return parser.parse_args(args)</code></pre>
 </details>

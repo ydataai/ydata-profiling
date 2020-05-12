@@ -102,7 +102,11 @@ def render_url(summary):
 
     # Element composition
     info = VariableInfo(
-        summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;URL&#34;, summary[&#34;warnings&#34;]
+        summary[&#34;varid&#34;],
+        summary[&#34;varname&#34;],
+        &#34;URL&#34;,
+        summary[&#34;warnings&#34;],
+        summary[&#34;description&#34;],
     )
 
     table = Table(
@@ -228,7 +232,11 @@ def render_url(summary):
 
     # Element composition
     info = VariableInfo(
-        summary[&#34;varid&#34;], summary[&#34;varname&#34;], &#34;URL&#34;, summary[&#34;warnings&#34;]
+        summary[&#34;varid&#34;],
+        summary[&#34;varname&#34;],
+        &#34;URL&#34;,
+        summary[&#34;warnings&#34;],
+        summary[&#34;description&#34;],
     )
 
     table = Table(
