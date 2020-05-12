@@ -294,3 +294,27 @@ select.multiple{
 .named-list-item{
     padding: 1em;
 }
+
+/* not printing tabs */
+@media print {
+    .tab-content > .tab-pane, .collapse {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        /*page-break-after: always;*/
+        page-break-after: right;
+        page-break-before: avoid;
+    }
+
+    .nav-pills, .nav-tabs, button[data-toggle="collapse"], .mini, .col-sm-3 img {
+        display:none !important;
+    }
+
+    a[download="config.yml"]:after {
+        content: none !important;
+    }
+
+    .row {
+        border: 0 !important;
+    }
+}
