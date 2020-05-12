@@ -218,7 +218,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
                     splot,
                     image_format=image_format,
                     alt=f"{x_col} x {y_col}",
-                    anchor_id=f"interactions_{x_col}_{y_col}",
+                    anchor_id=f"interactions_{x_col.replace(' ', '_')}_{y_col.replace(' ', '_')}",
                     name=y_col,
                 )
             )
@@ -229,7 +229,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
                 sequence_type="tabs" if len(items) <= 10 else "select",
                 name=x_col,
                 nested=len(scatter_matrix) > 10,
-                anchor_id=f"interactions_{x_col}",
+                anchor_id=f"interactions_{x_col.replace(' ', '_')}",
             )
         )
     return titems
