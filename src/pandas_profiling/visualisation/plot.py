@@ -38,23 +38,12 @@ def _plot_histogram(
 
 
     """
-    # if series_description["type"] == Variable.TYPE_DATE:
-    # Workaround for https://github.com/pandas-dev/pandas/issues/17372
     fig = plt.figure(figsize=figsize)
     plot = fig.add_subplot(111)
     plot.set_ylabel("Frequency")
     plot.hist(
-        series,  # .dropna().values,
-        facecolor=config["html"]["style"]["primary_color"].get(str),
-        bins=bins,
+        series, facecolor=config["html"]["style"]["primary_color"].get(str), bins=bins,
     )
-    # else:
-    #     plot = series.plot(
-    #         kind="hist",
-    #         figsize=figsize,
-    #         facecolor=config["html"]["style"]["primary_color"].get(str),
-    #         bins=bins,
-    #     )
     return plot
 
 
@@ -75,7 +64,6 @@ def histogram(
     plot = _plot_histogram(series, series_description, bins)
     plot.xaxis.set_tick_params(rotation=45)
     plot.figure.tight_layout()
-
     return plot_360_n0sc0pe(plt)
 
 

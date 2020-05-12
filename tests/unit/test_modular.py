@@ -41,6 +41,7 @@ def test_modular_description_set(tdf):
         duplicates=None,
         samples={"head": 0, "tail": 0},
         correlations=None,
+        interactions=None,
         missing_diagrams={
             "matrix": False,
             "bar": False,
@@ -56,9 +57,9 @@ def test_modular_description_set(tdf):
 def test_modular_absent(tdf):
     profile = tdf.profile_report(
         title="Modular test",
-        variables={"calculate": False},
         duplicates={"head": 0},
         samples={"head": 0, "tail": 0},
+        interactions=None,
         correlations={
             "pearson": {"calculate": False},
             "spearman": {"calculate": False},
@@ -82,6 +83,7 @@ def test_modular_present(tdf):
         title="Modular test",
         duplicates={"head": 10},
         samples={"head": 10, "tail": 10},
+        interactions={"targets": ["mass (g)"], "continuous": True},
         correlations={
             "pearson": {"calculate": True},
             "spearman": {"calculate": True},

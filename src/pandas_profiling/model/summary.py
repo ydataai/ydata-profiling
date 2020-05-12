@@ -260,11 +260,19 @@ def describe_1d(series: pd.Series) -> dict:
         if chi_squared_threshold > 0.0:
             stats["chi_squared"] = list(chisquare(value_counts.values))
 
-        check_composition = config["vars"]["cat"]["check_composition"].get(bool)
-        if check_composition:
-            from visions.application.summaries.series.text_summary import text_summary
+        check_length = config["vars"]["cat"]["length"].get(bool)
+        if check_length:
+            from visions.application.summaries.series.text_summary import length_summary
 
-            stats.update(text_summary(series))
+            stats.update(length_summary(series))
+
+        check_unicode = config["vars"]["cat"]["unicode"].get(bool)
+        if check_unicode:
+            from visions.application.summaries.series.text_summary import (
+                unicode_summary,
+            )
+
+            stats.update(unicode_summary(series))
 
             stats["category_alias_counts"].index = stats[
                 "category_alias_counts"

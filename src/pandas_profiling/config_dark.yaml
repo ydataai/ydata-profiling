@@ -24,7 +24,8 @@ vars:
 # Set to zero to disable
         chi_squared_threshold: 0.0
     cat:
-        check_composition: True
+        length: True
+        unicode: True
         cardinality_threshold: 50
         n_obs: 5
 # Set to zero to disable
@@ -33,11 +34,11 @@ vars:
     bool:
         n_obs: 3
     file:
-      active: False
+        active: False
     image:
-      active: False
-      exif: True
-      hash: True
+        active: False
+        exif: True
+        hash: True
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: ascending
@@ -144,6 +145,9 @@ html:
 
 # Show navbar
     navbar_show: True
+
+# For internal use
+    file_name: None
 
 # Styling options for the HTML report
     style:

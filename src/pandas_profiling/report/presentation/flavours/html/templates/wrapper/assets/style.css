@@ -39,7 +39,6 @@ body {
     margin-left: 0;
 }
 
-
 .col-md-12 {
     padding-left: 2em;
 }
@@ -73,43 +72,39 @@ table.example_values {
 }
 
 /* STATS */
-table.stats {
+table.stats, table.sample, table.duplicate{
+    border: 0;
+}
+
+.stats tr, .sample tr, .duplicate tr {
+    border: 0;
+}
+
+.stats th, .stats td{
+    color: #555;
     border: 0;
 }
 
 .stats th {
-    border: 0;
     padding: 0 2em 0 0;
-    color: #555;
     font-weight: 600;
 }
 
-.stats tr {
-    border: 0;
-}
-
 .stats td {
-    color: #555;
     padding: 1px;
-    border: 0;
 }
 
 
 /* Sample table */
 table.sample, table.duplicate{
-    border: 0;
     margin-bottom: 2em;
     margin-left: 1em;
-}
-
-.sample tr, .duplicate tr {
-    border: 0;
 }
 
 .sample td, .sample th, .duplicate td, .duplicate th {
     padding: 0.5em;
     white-space: nowrap;
-    border: none;
+    border: 0;
 
 }
 
@@ -145,19 +140,6 @@ table.freq th, table.freq tr, table.freq td {
     overflow: hidden;
     text-overflow: ellipsis;
 
-}
-
-td.fillremaining {
-    width: auto;
-    max-width: none;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-td.number, th.number {
-    text-align: right;
 }
 
 /* Freq mini */
@@ -200,10 +182,20 @@ table.freq.mini {
     table-layout: fixed;
 }
 
-.freq td.number{
-    width: 100px;
+.freq tr td:nth-child(1), .freq tr th:nth-child(1){
+    width: auto;
+    max-width: none;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.freq td.bartd, .frequency-percentage{
+
+.freq:not(.mini) tr td:nth-child(2), .freq:not(.mini) tr td:nth-child(3), .freq:not(.mini) tr th:nth-child(2), .freq:not(.mini) tr th:nth-child(3){
+    width: 100px;
+    text-align: right;
+}
+.freq:not(.mini) tr td:nth-child(4), .freq:not(.mini) tr th:nth-child(4){
     width:200px;
 }
 
@@ -249,7 +241,7 @@ table.freq.mini {
 }
 
 .table-responsive{
-    overflow:scroll;
+    overflow: scroll;
     width: 100%;
     overflow-y: hidden;
 }

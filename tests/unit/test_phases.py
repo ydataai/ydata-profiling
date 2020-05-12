@@ -8,4 +8,7 @@ def test_phases_empty():
     with pytest.raises(ValueError) as e:
         profile.to_html()
 
-    assert e.value.args[0] == "Can not describe a `lazy` ProfileReport without a DataFrame."
+    assert (
+        e.value.args[0]
+        == "Can not describe a `lazy` ProfileReport without a DataFrame."
+    )

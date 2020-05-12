@@ -20,8 +20,20 @@ To generate the report, run:
 
 .. code-block:: python
 
-        profile = ProfileReport(df, title='Pandas Profiling Report', html={'style':{'full_width':True}})
+        profile = ProfileReport(df, title='Pandas Profiling Report')
 
+
+Explore deeper
+--------------
+
+You can configure the profile report in any way you like. The example code below loads the `explorative configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml>`_, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the `default configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_.
+
+.. code-block:: python
+
+        profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
+
+
+Learn more about configuring ``pandas-profiling`` on the :doc:`advanced_usage` page.
 
 Jupyter notebook
 ----------------
@@ -53,7 +65,7 @@ If you want to generate a HTML report file, save the ``ProfileReport`` to an obj
 
 .. code-block:: python
 
-        profile.to_file(output_file="your_report.html")
+        profile.to_file("your_report.html")
 
 Alternatively, you can obtain the data as json:
 
@@ -63,7 +75,7 @@ Alternatively, you can obtain the data as json:
         json_data = profile.to_json()
 
         # As a file
-        profile.to_file(output_file="your_report.json")
+        profile.to_file("your_report.json")
 
 
 

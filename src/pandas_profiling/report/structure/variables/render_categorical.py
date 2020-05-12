@@ -89,8 +89,8 @@ def render_categorical(summary):
 
     items.append(frequency_table)
 
-    check_compositions = config["vars"]["cat"]["check_composition"].get(bool)
-    if check_compositions:
+    check_length = config["vars"]["cat"]["length"].get(bool)
+    if check_length:
         length_table = Table(
             [
                 {
@@ -141,6 +141,8 @@ def render_categorical(summary):
 
         items.append(length_tab)
 
+    check_unicode = config["vars"]["cat"]["unicode"].get(bool)
+    if check_unicode:
         n_freq_table_max = config["n_freq_table_max"].get(int)
 
         category_items = [
@@ -256,14 +258,21 @@ def render_categorical(summary):
                 name="Overview",
                 sequence_type="list",
             ),
-            FrequencyTable(
-                freq_table(
-                    freqtable=summary["character_counts"],
-                    n=summary["character_counts"].sum(),
-                    max_number_to_print=n_freq_table_max,
-                ),
+            Container(
+                [
+                    FrequencyTable(
+                        freq_table(
+                            freqtable=summary["character_counts"],
+                            n=summary["character_counts"].sum(),
+                            max_number_to_print=n_freq_table_max,
+                        ),
+                        name="Most occurring characters",
+                        anchor_id=f"{varid}character_frequency",
+                    ),
+                ],
                 name="Characters",
                 anchor_id=f"{varid}characters",
+                sequence_type="named_list",
             ),
             Container(
                 category_items,

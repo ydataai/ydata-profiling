@@ -24,7 +24,8 @@ vars:
 # Set to zero to disable
         chi_squared_threshold: 0.0
     cat:
-        check_composition: False
+        length: False
+        unicode: False
         cardinality_threshold: 50
         n_obs: 5
 # Set to zero to disable
@@ -144,6 +145,9 @@ html:
 
 # Show navbar
     navbar_show: True
+
+# For internal use
+    file_name: None
 
 # Styling options for the HTML report
     style:

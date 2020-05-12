@@ -2,6 +2,7 @@
 import base64
 import uuid
 from io import BytesIO, StringIO
+from pathlib import Path
 from typing import Tuple, Union
 from urllib.parse import quote
 
@@ -56,7 +57,6 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
     if image_format not in ["svg", "png"]:
         raise ValueError('Can only 360 n0sc0pe "png" or "svg" format.')
 
-    dpi = config["plot"]["dpi"].get(int)
     inline = config["html"]["inline"].get(bool)
 
     mime_types = {"png": "image/png", "svg": "image/svg+xml"}
@@ -70,20 +70,26 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
                 result_string = image_str.getvalue()
             else:
                 image_bytes = BytesIO()
-                plt.savefig(image_bytes, dpi=dpi, format=image_format)
+                plt.savefig(
+                    image_bytes, dpi=config["plot"]["dpi"].get(int), format=image_format
+                )
                 image_bytes.seek(0)
                 result_string = base64_image(
                     image_bytes.getvalue(), mime_types[image_format]
                 )
         else:
-            if image_format == "svg":
-                file_name = f"./assets/images/{uuid.uuid4().hex}.svg"
-                plt.savefig(file_name, format=image_format)
-                result_string = file_name
-            else:
-                file_name = f"./assets/images/{uuid.uuid4().hex}.png"
-                plt.savefig(file_name, dpi=dpi, format=image_format)
-                result_string = file_name
+            file_path = Path(config["html"]["file_name"].get(str))
+            suffix = f"_assets/images/{uuid.uuid4().hex}.{image_format}"
+            args = {
+                "fname": f"{file_path.with_suffix('')}{suffix}",
+                "format": image_format,
+            }
+
+            if image_format == "png":
+                args["dpi"] = config["plot"]["dpi"].get(int)
+
+            plt.savefig(**args)
+            result_string = f"{file_path.stem}{suffix}"
         plt.close()
     except RuntimeError:
         plt.close()

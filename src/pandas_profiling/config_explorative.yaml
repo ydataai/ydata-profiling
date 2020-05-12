@@ -34,14 +34,14 @@ vars:
     bool:
         n_obs: 3
     file:
-        active: False
+        active: True
     image:
-        active: False
+        active: True
         exif: True
         hash: True
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
-sort: ascending
+sort: None
 
 # which diagrams to show
 missing_diagrams:
@@ -109,9 +109,9 @@ plot:
 # Also used for equal size histogram
 
 # The number of observations to show
-n_obs_unique: 5
-n_extreme_obs: 5
-n_freq_table_max: 10
+n_obs_unique: 10
+n_extreme_obs: 10
+n_freq_table_max: 25
 
 # Configuration related to the duplicates
 duplicates:
@@ -151,7 +151,7 @@ html:
 
 # Styling options for the HTML report
     style:
-      full_width: False
+      theme: None
       logo: ""
-      theme: "united"
-      primary_color: "#d34615"
+      primary_color: "#337ab7"
+      full_width: False

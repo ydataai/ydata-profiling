@@ -11,9 +11,12 @@ from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
+from pandas_profiling.report.presentation.flavours.html.templates import (
+    create_html_assets,
+)
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
-from pandas_profiling.utils.paths import get_config_minimal
+from pandas_profiling.utils.paths import get_config
 
 
 class ProfileReport(SerializeReport, object):
@@ -26,6 +29,7 @@ class ProfileReport(SerializeReport, object):
         self,
         df=None,
         minimal=False,
+        explorative=False,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
         **kwargs,
@@ -50,7 +54,9 @@ class ProfileReport(SerializeReport, object):
         if config_file:
             config.set_file(config_file)
         elif minimal:
-            config.set_file(get_config_minimal())
+            config.set_file(get_config("config_minimal.yaml"))
+        elif explorative:
+            config.set_file(get_config("config_explorative.yaml"))
         elif not config.is_default:
             pass
             # TODO: logging instead of warning
@@ -228,9 +234,8 @@ class ProfileReport(SerializeReport, object):
         else:
             inline = config["html"]["inline"].get(bool)
             if not inline:
-                Path("./assets/images").mkdir(parents=True, exist_ok=True)
-                Path("./assets/css").mkdir(exist_ok=True)
-                Path("./assets/js").mkdir(exist_ok=True)
+                config["html"]["file_name"] = str(output_file)
+                create_html_assets(output_file)
 
             data = self.to_html()
 
@@ -269,6 +274,8 @@ class ProfileReport(SerializeReport, object):
             html = HTMLReport(report).render(
                 nav=config["html"]["navbar_show"].get(bool),
                 offline=config["html"]["use_local_assets"].get(bool),
+                inline=config["html"]["inline"].get(bool),
+                file_name=Path(config["html"]["file_name"].get(str)).stem,
                 primary_color=config["html"]["style"]["primary_color"].get(str),
                 logo=config["html"]["style"]["logo"].get(str),
                 theme=config["html"]["style"]["theme"].get(str),

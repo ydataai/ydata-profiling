@@ -42,7 +42,8 @@ Variable summary settings
   	vars={
 	    'num':{'low_categorical_threshold': 0},
 	    'cat':{
-	      'check_composition':False,
+	      'length':True,
+	      'unicode':False,
 	      'n_obs': 5,
 	    }
   	}
@@ -117,6 +118,14 @@ Interactions
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
+The HTML Report
+---------------
+
+.. csv-table::
+   :file: config_html.csv
+   :widths: 30, 200, 200, 200
+   :header-rows: 1
+
 Using a custom configuration file
 ---------------------------------
 
@@ -136,8 +145,9 @@ A great way to get an overview of the possible configuration is to look through 
 The repository contains the following files:
 
 - `default configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_ (default),
-- `minimal configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (optimized for performance)
-- `dark themed configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml>`_ (customizing styles).
+- `explorative configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml>`_ (with text, file and image features enabled),
+- `minimal configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
+- `dark themed configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml>`_ and `orange themed configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_united.yaml>`_ (example of customizing styles).
 
 Configuration shorthands
 ------------------------
@@ -147,7 +157,7 @@ It's possible to disable certain groups of features through configuration shorth
 .. code-block:: python
 
     # Disable samples, correlations, missing diagrams and duplicates at once
-    r = ProfileReport(samples=None, correlations=None, missing_diagrams=None, duplicates=None)
+    r = ProfileReport(samples=None, correlations=None, missing_diagrams=None, duplicates=None, interactions=None)
 
     # Or use the .set_variable method
     r = ProfileReport()
@@ -155,3 +165,4 @@ It's possible to disable certain groups of features through configuration shorth
     r.set_variable("duplicates", None)
     r.set_variable("correlations", None)
     r.set_variable("missing_diagrams", None)
+    r.set_variable("interactions", None)
