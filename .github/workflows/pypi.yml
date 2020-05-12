@@ -3,7 +3,7 @@ name: Deploy to PyPi
 on:
   release:
       types: [created]
-  
+
 jobs:
   release:
     if: github.event_name == 'release' && github.event.action == 'created'

@@ -1,7 +1,7 @@
 from typing import Any
 
-from pandas_profiling.report.presentation.abstract.item_renderer import ItemRenderer
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 class Root(ItemRenderer):

@@ -125,4 +125,12 @@ def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
 
 
 def hash_dataframe(df):
+    """Hash a DataFrame (wrapper around joblib.hash, might change in the future)
+
+    Args:
+        df: the DataFrame
+
+    Returns:
+        The DataFrame's hash
+    """
     return joblib.hash(df)

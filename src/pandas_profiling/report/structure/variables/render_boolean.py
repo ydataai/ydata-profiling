@@ -28,6 +28,7 @@ def render_boolean(summary):
         warnings=summary["warnings"],
         var_type="Boolean",
         var_name=summary["varname"],
+        description=summary["description"],
     )
 
     table = Table(

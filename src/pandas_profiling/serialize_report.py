@@ -7,7 +7,9 @@ from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.version import __version__
 
 
-class Serialize(object):
+class SerializeReport(object):
+    """Extend the report to be able to dump and load reports."""
+
     df_hash = None
     df = None
     _df_hash = None

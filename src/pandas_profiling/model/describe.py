@@ -1,3 +1,4 @@
+"""Organize the calculation of statistics for each series in this DataFrame."""
 import warnings
 from datetime import datetime
 
@@ -35,6 +36,9 @@ def describe(title, df: pd.DataFrame) -> dict:
             - package: package details.
     """
 
+    if df is None:
+        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
+
     if not isinstance(df, pd.DataFrame):
         warnings.warn("df is not of type pandas.DataFrame")
 
@@ -51,10 +55,10 @@ def describe(title, df: pd.DataFrame) -> dict:
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
-    number_of_task = 7 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
 
     with tqdm(
-        total=number_of_task, desc="Summarize dataset", disable=disable_progress_bar
+        total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, pbar)
 

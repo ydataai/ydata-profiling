@@ -20,14 +20,35 @@ def get_config_default() -> Path:
     return Path(__file__).parent.parent / "config_default.yaml"
 
 
-def get_config_minimal() -> Path:
-    """Returns the path to the minimal config file.
+def get_config(file_name) -> Path:
+    """Returns the path a config file.
 
     Returns:
-        The path to the default config file.
+        The path to a config file.
     """
-    return Path(__file__).parent.parent / "config_minimal.yaml"
+    return Path(__file__).parent.parent / file_name
 
 
 def get_data_path() -> Path:
+    """Returns the path to the dataset cache ([root] / data)
+
+    Returns:
+        The path to the dataset cache
+    """
     return get_project_root() / "data"
+
+
+def get_html_template_path() -> Path:
+    """Returns the path to the HTML templates
+
+    Returns:
+        The path to the HTML templates
+    """
+    return (
+        Path(__file__).parent.parent
+        / "report"
+        / "presentation"
+        / "flavours"
+        / "html"
+        / "templates"
+    )

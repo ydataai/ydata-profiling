@@ -3,7 +3,7 @@
         <button class="btn btn-default btn-sm" data-toggle="collapse" data-target="#bottom-{{ anchor_id }}, #minifreqtable{{ anchor_id }}" aria-expanded="true" aria-controls="collapseExample">{{ text }}</button>
     </div>
 {% else %}
-    <button id="{{ anchor_id }}" class="btn btn-default btn-sm" style="float: right">{{ text }}</button>
+    <button id="{{ anchor_id }}" class="btn btn-default btn-sm" style="float: right" data-toggle="collapse">{{ text }}</button>
 
     <script>
     var waitForJQuery = setInterval(function () {

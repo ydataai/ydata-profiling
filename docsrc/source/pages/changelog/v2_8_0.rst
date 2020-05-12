@@ -1,0 +1,45 @@
+Changelog v2.8.0
+----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Expanded the Unicode analysis capabilities: next to the most occurring unicode scripts, categories and blocks, it's now possible to inspect the most frequent characters for each of them.
+- ProfileReport.set_variable now accepts nested parameters such as ``report.set_variable("variables.descriptions", {"var1": "Identifier"})``.
+- Ability to have descriptions of the variables alongside the descriptive statistics (`#232 <https://github.com/pandas-profiling/pandas-profiling/issues/232>`_, `#402 <https://github.com/pandas-profiling/pandas-profiling/issues/402>`_).
+- **Config**: Introducing config shorthands.
+- **Config**: ``plot.scatter_threshold`` allows for configuration above what value scatter plots are replace with hexbin plots.
+- **Config**: ``html.inline`` allows for rendering assets as vector images to package export as folder and file (similar to exporting a website). (`#452 <https://github.com/pandas-profiling/pandas-profiling/issues/452>`_).
+- It's now possible to specify which interactions to compute to filter out un-needed interactions between columns (`#451 <https://github.com/pandas-profiling/pandas-profiling/issues/451>`_).
+- When the ``output_file`` is omitted in the CLI, it uses the ``input_file`` with HTML extensions. This can be useful when profiling of a complete directory from the command line, e.g. ``find . -type f -name "*.csv" -exec pandas_profiling {} \;``.
+- **Config**: Split the ``vars.cat.check_composition`` in ``vars.cat.unicode`` and ``vars.cat.length`` for more control on the summaries.
+- **Config**: Included a new configuration sample file ``config_explorative.yml``, including ``Text`` (length distribution, unicode information),  ``File`` (file size, creation time), ``Image`` (dimensions, exif information).
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+- Resolved color ValueError on Mac (`#464 <https://github.com/pandas-profiling/pandas-profiling/issues/464>`_).
+- **Style**: too many interactions overflowed tabs. Now they elegantly turn into a select control.
+- Unique variables are always uniform and have high cardinality, hence we can remove the redundant labels.
+- The counts for unicode properties were based on unique characters, instead of following the original frequency distribution.
+- Slimmed down the HTML by removing classes and more effective CSS.
+
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- **CI**: Added macOS and Windows to the testing environments (experimental).
+- **CI**: Added python3.9-dev to the testing environment (experimental).
+- **CI**: Reduced the number of permutations for code formatting and type checking.
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+- API documentation is now available.
+
+⚠️  Deprecated
+^^^^^^^^^^^^^^^^^
+- The ``bayesian_bins`` parameter will be removed in the next release.
+
+🚨 Breaking changes
+^^^^^^^^^^^^^^^^^^^
+- **Config**: ``vars.cat.check_composition`` is replaced by ``vars.cat.unicode`` and ``vars.cat.length``.
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+- Update ``visions`` to ``0.4.4`` for more informative Unicode summaries.

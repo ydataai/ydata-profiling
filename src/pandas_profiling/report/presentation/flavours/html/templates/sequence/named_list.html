@@ -1,0 +1,8 @@
+{% if items | length > 0 %}
+    {% for item in items %}
+        <div class="row named-list-item">
+            <h4>{{ item['name'] }}</h4>
+            {{ item.render() }}
+        </div>
+    {% endfor %}
+{% endif %}

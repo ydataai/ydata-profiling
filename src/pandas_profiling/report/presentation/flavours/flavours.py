@@ -1,6 +1,6 @@
 from typing import Dict, Type
 
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 def apply_renderable_mapping(mapping, structure, flavour):

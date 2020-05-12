@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 from pandas_profiling.config import config
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -9,6 +8,7 @@ from pandas_profiling.report.presentation.core import (
     Image,
     ToggleButton,
 )
+from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
 
 

@@ -4,7 +4,7 @@ pandas>=0.25.3,!=1.0.1,!=1.0.0,!=1.0.2
 matplotlib>=3.2.0
 confuse>=1.0.0
 jinja2>=2.11.1
-visions[type_image_path]==0.4.1
+visions[type_image_path]==0.4.4
 numpy>=1.16.0
 # Could be optional
 # Related to HTML report
@@ -16,7 +16,7 @@ phik>=0.9.10
 # Dynamic histograms
 astropy>=4.0
 # Text analysis
-tangled-up-in-unicode>=0.0.4
+tangled-up-in-unicode>=0.0.6
 # Examples
 requests>=2.23.0
 # Progress bar

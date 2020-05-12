@@ -1,5 +1,8 @@
+"""Plotting utility functions."""
 import base64
+import uuid
 from io import BytesIO, StringIO
+from pathlib import Path
 from typing import Tuple, Union
 from urllib.parse import quote
 
@@ -22,6 +25,21 @@ def hex_to_rgb(hex: str) -> Tuple[float, ...]:
     )
 
 
+def base64_image(image: bytes, mime_type: str):
+    """Encode the image for an URL using base64
+
+    Args:
+        image: the image
+        mime_type: the mime type
+
+    Returns:
+        A string starting with "data:{mime_type};base64,"
+    """
+    base64_data = base64.b64encode(image)
+    image_data = quote(base64_data)
+    return f"data:{mime_type};base64,{image_data}"
+
+
 def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> str:
     """Quickscope the plot to a base64 encoded string.
 
@@ -33,29 +51,45 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
     Returns:
         A base64 encoded version of the plot in the specified image format.
     """
+
     if image_format is None:
         image_format = config["plot"]["image_format"].get(str)
-    dpi = config["plot"]["dpi"].get(int)
-
     if image_format not in ["svg", "png"]:
         raise ValueError('Can only 360 n0sc0pe "png" or "svg" format.')
+
+    inline = config["html"]["inline"].get(bool)
 
     mime_types = {"png": "image/png", "svg": "image/svg+xml"}
 
     try:
-        if image_format == "svg":
-            image_str = StringIO()
-            plt.savefig(image_str, format=image_format)
-            image_str.seek(0)
-            result_string = image_str.getvalue()
+        if inline:
+            if image_format == "svg":
+                image_str = StringIO()
+                plt.savefig(image_str, format=image_format)
+                image_str.seek(0)
+                result_string = image_str.getvalue()
+            else:
+                image_bytes = BytesIO()
+                plt.savefig(
+                    image_bytes, dpi=config["plot"]["dpi"].get(int), format=image_format
+                )
+                image_bytes.seek(0)
+                result_string = base64_image(
+                    image_bytes.getvalue(), mime_types[image_format]
+                )
         else:
-            image_bytes = BytesIO()
-            plt.savefig(image_bytes, dpi=dpi, format=image_format)
-            image_bytes.seek(0)
-            base64_data = base64.b64encode(image_bytes.getvalue())
-            mime_type = mime_types[image_format]
-            image_data = quote(base64_data)
-            result_string = f"data:{mime_type};base64,{image_data}"
+            file_path = Path(config["html"]["file_name"].get(str))
+            suffix = f"_assets/images/{uuid.uuid4().hex}.{image_format}"
+            args = {
+                "fname": f"{file_path.with_suffix('')}{suffix}",
+                "format": image_format,
+            }
+
+            if image_format == "png":
+                args["dpi"] = config["plot"]["dpi"].get(int)
+
+            plt.savefig(**args)
+            result_string = f"{file_path.stem}{suffix}"
         plt.close()
     except RuntimeError:
         plt.close()

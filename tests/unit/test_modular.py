@@ -6,7 +6,7 @@ import pandas_profiling
 
 
 @pytest.fixture
-def df(get_data_file):
+def tdf(get_data_file):
     file_name = get_data_file(
         "meteorites.csv",
         "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
@@ -35,11 +35,31 @@ def df(get_data_file):
     return df
 
 
-def test_modular_absent(df):
-    profile = df.profile_report(
+def test_modular_description_set(tdf):
+    profile = tdf.profile_report(
+        title="Modular test",
+        duplicates=None,
+        samples={"head": 0, "tail": 0},
+        correlations=None,
+        interactions=None,
+        missing_diagrams={
+            "matrix": False,
+            "bar": False,
+            "dendrogram": False,
+            "heatmap": False,
+        },
+    )
+
+    html = profile.get_description()
+    print(html)
+
+
+def test_modular_absent(tdf):
+    profile = tdf.profile_report(
         title="Modular test",
         duplicates={"head": 0},
         samples={"head": 0, "tail": 0},
+        interactions=None,
         correlations={
             "pearson": {"calculate": False},
             "spearman": {"calculate": False},
@@ -48,12 +68,7 @@ def test_modular_absent(df):
             "cramers": {"calculate": False},
             "recoded": {"calculate": False},
         },
-        missing_diagrams={
-            "matrix": False,
-            "bar": False,
-            "dendrogram": False,
-            "heatmap": False,
-        },
+        missing_diagrams=None,
     )
 
     html = profile.to_html()
@@ -63,11 +78,12 @@ def test_modular_absent(df):
     assert "Missing values</h1>" not in html
 
 
-def test_modular_present(df):
-    profile = df.profile_report(
+def test_modular_present(tdf):
+    profile = tdf.profile_report(
         title="Modular test",
         duplicates={"head": 10},
         samples={"head": 10, "tail": 10},
+        interactions={"targets": ["mass (g)"], "continuous": True},
         correlations={
             "pearson": {"calculate": True},
             "spearman": {"calculate": True},
