@@ -21,7 +21,7 @@ The following examples can give you an impression of what the package can do:
 Showcasing specific features
 ----------------------------
 
-- `Russian Vocabulary <https://pandas-profiling.github.io/pandas-profiling/examples/master/features/russian_vocabulary.html>`_ (demonstrates text analysis)
+- `Russian Vocabulary <https://pandas-profiling.github.io/pandas-profiling/examples/master/features/russian_vocabulary.html>`_ (demonstrates unicode text analysis)
 
 - `Cats and Dogs <https://pandas-profiling.github.io/pandas-profiling/examples/master/features/cats-and-dogs.html>`_ (demonstrates image analysis from the file system, `source <https://pandas-profiling.github.io/pandas-profiling/examples/master/features/images_cats_and_dogs.py>`__)
 

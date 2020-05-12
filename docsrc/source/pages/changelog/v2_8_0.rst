@@ -32,6 +32,10 @@ Changelog v2.8.0
 ^^^^^^^^^^^^^^^^
 - API documentation is now available.
 
+⚠️  Deprecated
+^^^^^^^^^^^^^^^^^
+- The ``bayesian_bins`` parameter will be removed in the next release.
+
 🚨 Breaking changes
 ^^^^^^^^^^^^^^^^^^^
 - **Config**: ``vars.cat.check_composition`` is replaced by ``vars.cat.unicode`` and ``vars.cat.length``.

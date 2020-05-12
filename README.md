@@ -29,7 +29,10 @@ For each column the following statistics - if relevant for the column type - are
 
 ### Version v2.8.0 released
 
-...
+News for users working with image datasets: ``pandas-profiling`` now has build-in supports for Files and Images.
+Moreover, the text analysis features have also been reworked, providing more informative statistics.
+
+For a better feel, have a look at the [examples](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/examples.html#showcasing-specific-features) section in the docs or read the changelog for a complete view of the changes.
 
 ### Version v2.7.0 released
 

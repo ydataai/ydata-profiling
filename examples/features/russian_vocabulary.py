@@ -10,6 +10,8 @@ if __name__ == "__main__":
         names=["russian", "english", "part of speech"],
     )
     profile = ProfileReport(
-        df, title="Russian 1000 most occurring words | Profile Report"
+        df,
+        title="Russian 1000 most occurring words | Profile Report",
+        vars={"cat": {"unicode": True}},
     )
     profile.to_file("russian_vocabulary.html")

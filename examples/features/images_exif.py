@@ -39,7 +39,7 @@ profile = df.profile_report(
     samples=None,
     missing_diagrams=None,
     # Enable files and images (off by default, as it uses relatively expensive computations when not interested)
-    explorative=True
+    explorative=True,
 )
 # We can also configure the report like this
 profile.set_variable(
