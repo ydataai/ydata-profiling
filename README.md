@@ -23,11 +23,13 @@ For each column the following statistics - if relevant for the column type - are
 * **Correlations** highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices
 * **Missing values** matrix, count, heatmap and dendrogram of missing values
 * **Text analysis** learn about categories (Uppercase, Space), scripts (Latin, Cyrillic) and blocks (ASCII) of text data.
+* **File and Image analysis** extract file sizes, creation dates and dimensions and scan for truncated images or those containing EXIF information.
 
 ## Announcements
 
 ### Version v2.8.0 released
 
+...
 
 ### Version v2.7.0 released
 
@@ -56,6 +58,7 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 Find more information here:
 
  - [Changelog v2.7.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-7-0)
+ - [Changelog v2.8.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-8-0)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
  *May 7, 2020 💘*
@@ -251,7 +254,7 @@ Future versions of `pandas-profiling` will have extended type support through `v
 
 ## Contributing
 
-Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/v2.7.0/rtd/pages/contribution_guidelines.html).
+Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html).
 
 ## Editor integration
 ### PyCharm integration 
