@@ -1,8 +1,10 @@
 <p class="h4" title="{{ var_name }}"><a
         href="#pp_var_{{ anchor_id }}">{{ var_name }}</a><br/>
     <small>{{ var_type }}</small>
-    {{ description }}
 </p>
 {% for warning in warnings %}
     <code>{{ warning }}</code><br />
 {% endfor %}
+<p class="variable-description">
+    {{ description }}
+</p>

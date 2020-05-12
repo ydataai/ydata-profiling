@@ -1,11 +1,13 @@
 from typing import Any, Sequence
 
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 class Container(Renderable):
-    def __init__(self, items: Sequence[Renderable], sequence_type: str, **kwargs):
-        super().__init__({"items": items}, **kwargs)
+    def __init__(
+        self, items: Sequence[Renderable], sequence_type: str, nested=False, **kwargs
+    ):
+        super().__init__({"items": items, "nested": nested}, **kwargs)
         self.sequence_type = sequence_type
 
     def __str__(self) -> str:

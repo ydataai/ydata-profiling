@@ -1,3 +1,4 @@
+"""Plotting functions for the missing values diagrams"""
 import matplotlib.pyplot as plt
 import pandas as pd
 from missingno import missingno
@@ -72,6 +73,7 @@ def missing_bar(data: pd.DataFrame) -> str:
     for ax0 in plt.gcf().get_axes():
         ax0.grid(False)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.8, bottom=0.3)
+
     return plot_360_n0sc0pe(plt)
 
 

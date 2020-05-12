@@ -1,5 +1,6 @@
 """Common parts to all other modules, mainly utility functions."""
-import sys
+import imghdr
+import os
 from enum import Enum, unique
 from urllib.parse import ParseResult, urlparse
 
@@ -28,10 +29,16 @@ class Variable(Enum):
     TYPE_URL = "URL"
     """A URL variable"""
 
-    TYPE_PATH = "PATH"
-    """Absolute files"""
-
     TYPE_COMPLEX = "COMPLEX"
+
+    TYPE_PATH = "PATH"
+    """Absolute path"""
+
+    TYPE_FILE = "FILE"
+    """File (i.e. existing path)"""
+
+    TYPE_IMAGE = "IMAGE"
+    """Images"""
 
     S_TYPE_UNSUPPORTED = "UNSUPPORTED"
     """An unsupported variable"""
@@ -46,8 +53,8 @@ Date = Variable.TYPE_DATE
 Categorical = Variable.TYPE_CAT
 Url = Variable.TYPE_URL
 AbsolutePath = Variable.TYPE_PATH
-ExistingPath = Variable.TYPE_PATH
-ImagePath = Variable.TYPE_PATH
+FilePath = Variable.TYPE_FILE
+ImagePath = Variable.TYPE_IMAGE
 Generic = Variable.S_TYPE_UNSUPPORTED
 
 
@@ -155,31 +162,60 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
 
 
 def is_path(series, series_description) -> bool:
-    from pathlib import Path
+    """Is the series of the path type (i.e. absolute path)?
 
-    def is_path_item(p: str):
-        """Detects if the variable contains absolute paths. If so, we distinguish paths that exist and paths that are images.
+    Args:
+        series: Series
+        series_description: Series description
 
-        Args:
-            p: the Path
+    Returns:
+        True is the series is path type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] == 0:
+        return False
 
-        Returns:
-            True is is an absolute path
-        """
-        try:
-            path = Path(p)
-            if path.is_absolute():
-                return True
-            else:
-                return False
-        except TypeError:
-            return False
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.isabs(p) for p in result)
+    except (ValueError, TypeError):
+        return False
 
+
+def is_file(series, series_description) -> bool:
+    """Is the series of the type "file" (i.e. existing paths)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the file type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] == 0:
+        return False
+
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.exists(p) for p in result)
+    except (ValueError, TypeError):
+        return False
+
+
+def is_image(series, series_description) -> bool:
+    """Is the series of the image type (i.e. "file" with image extensions)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the image type (NaNs allowed).
+    """
     if series_description["distinct_count_without_nan"] > 0:
         try:
             result = series[~series.isnull()].astype(str)
-            return all(is_path_item(x) for x in result)
-        except ValueError:
+            return all(imghdr.what(p) for p in result)
+        except (TypeError, ValueError):
             return False
     else:
         return False
@@ -233,8 +269,18 @@ def get_var_type(series: pd.Series) -> dict:
             var_type = Variable.TYPE_DATE
         elif is_url(series, series_description):
             var_type = Variable.TYPE_URL
-        elif is_path(series, series_description) and sys.version_info[1] > 5:
-            var_type = Variable.TYPE_PATH
+        elif is_path(series, series_description):
+            if config["vars"]["file"]["active"].get(bool) and is_file(
+                series, series_description
+            ):
+                if config["vars"]["image"]["active"].get(bool) and is_image(
+                    series, series_description
+                ):
+                    var_type = Variable.TYPE_IMAGE
+                else:
+                    var_type = Variable.TYPE_FILE
+            else:
+                var_type = Variable.TYPE_PATH
         else:
             var_type = Variable.TYPE_CAT
     except TypeError:

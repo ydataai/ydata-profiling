@@ -40,10 +40,10 @@ def test_example(get_data_file, test_output_dir):
     profile = ProfileReport(
         df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, minimal=True
     )
-    profile.to_file(output_file=output_file)
+    profile.to_file(output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
     assert (
         type(profile.get_description()) == dict
         and len(profile.get_description().items()) == 10
     ), "Unexpected result"
-    assert "<span class=badge>12</span>" in profile.to_html()
+    assert "<span class=badge>11</span>" in profile.to_html()

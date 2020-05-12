@@ -7,22 +7,38 @@ cache:
     - data/
 
 jobs:
-  allow_failures:
-    - python: 3.9-dev
+  include:
+    - os: linux
+      name: "Python 3.9-dev on Linux"
+      language: bash
+      python: 3.9-dev
+      env: TEST=examples PANDAS=">=1"
+    - os: windows
+      name: "Python 3.8 on Windows"
+      language: bash
+      python: 3.8
+      env: TEST=examples PANDAS=">=1"
+    - os: osx
+      name: "Python 3.8 on osx"
+      language: bash
+      python: 3.8
+      env: TEST=examples PANDAS=">=1"
+
+    allow_failures:
+      - os: windows
+      - os: osx
+      - name: "Python 3.9-dev on Linux"
 
 python:
   - 3.6
   - 3.7
   - 3.8
-#  - 3.9-dev
 
 env:
   - TEST=unit PANDAS="<1"
   - TEST=issue PANDAS="<1"
   - TEST=console PANDAS="<1"
   - TEST=examples PANDAS="<1"
-  - TEST=lint PANDAS="<1"
-  - TEST=typing PANDAS="<1"
   - TEST=unit PANDAS=">=1"
   - TEST=issue PANDAS=">=1"
   - TEST=console PANDAS=">=1"

@@ -175,13 +175,34 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={"n_unique", "p_unique"},
             )
         )
-
-    # Date
-    if description["type"] == Variable.TYPE_DATE:
+    elif description["type"] in [
+        Variable.TYPE_NUM,
+        Variable.TYPE_CAT,
+        Variable.TYPE_DATE,
+    ]:
         # Uniformity
-        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-            float
-        )
+        if description["type"] == Variable.TYPE_CAT:
+            # High cardinality
+            if description["distinct_count"] > config["vars"]["cat"][
+                "cardinality_threshold"
+            ].get(int):
+                messages.append(
+                    Message(
+                        column_name=col,
+                        message_type=MessageType.HIGH_CARDINALITY,
+                        values=description,
+                        fields={"n_unique"},
+                    )
+                )
+
+            chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
+                float
+            )
+        else:
+            chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
+                float
+            )
+
         if (
             "chi_squared" in description
             and description["chi_squared"][1] > chi_squared_threshold
@@ -195,31 +216,6 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         if "date_warning" in description and description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
-            )
-
-        # Uniformity
-        chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
-            float
-        )
-        if (
-            "chi_squared" in description
-            and description["chi_squared"][1] > chi_squared_threshold
-        ):
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
-            )
-
-        # High cardinality
-        if description["distinct_count"] > config["vars"]["cat"][
-            "cardinality_threshold"
-        ].get(int):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.HIGH_CARDINALITY,
-                    values=description,
-                    fields={"n_unique"},
-                )
             )
 
         # Constant length
@@ -258,15 +254,6 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                     values=description,
                     fields={"p_infinite", "n_infinite"},
                 )
-            )
-
-        # Uniformity
-        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-            float
-        )
-        if 0.0 < chi_squared_threshold < description["chi_squared"][1]:
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
         # Zeros

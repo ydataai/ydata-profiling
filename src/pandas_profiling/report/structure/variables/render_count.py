@@ -22,6 +22,7 @@ def render_count(summary):
         summary["varname"],
         "Real number (&Ropf; / &Ropf;<sub>&ge;0</sub>)",
         summary["warnings"],
+        summary["description"],
     )
 
     table1 = Table(

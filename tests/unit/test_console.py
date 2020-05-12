@@ -30,6 +30,12 @@ def test_console_minimal(console_data, test_output_dir):
     assert report.exists(), "Report should exist"
 
 
+def test_console_explorative(console_data, test_output_dir):
+    report = test_output_dir / "test_explorative.html"
+    console.main(["-s", "--explorative", str(console_data), str(report)])
+    assert report.exists(), "Report should exist"
+
+
 def test_double_config(console_data, test_output_dir):
     report = test_output_dir / "test_double_config.html"
     with pytest.raises(ValueError) as e:

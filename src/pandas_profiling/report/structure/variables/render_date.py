@@ -17,7 +17,11 @@ def render_date(summary):
 
     # Top
     info = VariableInfo(
-        summary["varid"], summary["varname"], "Date", summary["warnings"]
+        summary["varid"],
+        summary["varname"],
+        "Date",
+        summary["warnings"],
+        summary["description"],
     )
 
     table1 = Table(

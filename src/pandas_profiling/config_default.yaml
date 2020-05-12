@@ -7,6 +7,9 @@ pool_size: 0
 # Show the progress bar
 progress_bar: True
 
+variables:
+  descriptions: {}
+
 # Per variable type description settings
 vars:
     num:
@@ -21,7 +24,8 @@ vars:
 # Set to zero to disable
         chi_squared_threshold: 0.999
     cat:
-        check_composition: True
+        length: True
+        unicode: False
         cardinality_threshold: 50
         n_obs: 5
 # Set to zero to disable
@@ -29,6 +33,12 @@ vars:
         coerce_str_to_date: False
     bool:
         n_obs: 3
+    file:
+        active: False
+    image:
+        active: False
+        exif: True
+        hash: True
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: None
@@ -66,6 +76,7 @@ correlations:
 
 # Bivariate / Pairwise relations
 interactions:
+  targets: []
   continuous: True
 
 # For categorical
@@ -77,9 +88,11 @@ plot:
     image_format: "svg"
     dpi: 800
 
+    scatter_threshold: 1000
+
     correlation:
         cmap: 'RdBu'
-        bad: '#000'
+        bad: '#000000'
 
     missing:
         cmap: 'RdBu'
@@ -99,6 +112,9 @@ plot:
 n_obs_unique: 5
 n_extreme_obs: 5
 n_freq_table_max: 10
+
+# Use `deep` flag for memory_usage
+memory_deep: False
 
 # Configuration related to the duplicates
 duplicates:
@@ -127,8 +143,14 @@ html:
 # Offline support
     use_local_assets: True
 
+# If True, single file, else directory with assets
+    inline: True
+
 # Show navbar
     navbar_show: True
+
+# For internal use
+    file_name: None
 
 # Styling options for the HTML report
     style:
