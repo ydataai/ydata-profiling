@@ -163,7 +163,7 @@ You can configure the profile report in any way you like. The example code below
 profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
 ```
 
-Learn more about configuring `pandas-profiling` on the [Advanced_usage](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/advanced_usage.html) page.
+Learn more about configuring `pandas-profiling` on the [Advanced usage](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html) page.
 
 #### Jupyter Notebook
 
