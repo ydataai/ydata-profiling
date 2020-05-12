@@ -182,7 +182,7 @@ table.freq.mini {
     table-layout: fixed;
 }
 
-.freq tr td:nth-child(1), .freq tr th:nth-child(1){
+.freq:not(.mini) tr td:nth-child(1), .freq:not(.mini) tr th:nth-child(1){
     width: auto;
     max-width: none;
 

@@ -132,7 +132,10 @@ class ProfileReport(SerializeReport, object):
             self._widgets = None
             self._json = None
 
-        config.set_kwargs(vars)
+        if len(vars) == 1:
+            config[list(vars.keys())[0]] = list(vars.values())[0]
+        else:
+            config.set_kwargs(vars)
 
     @property
     def description_set(self):
