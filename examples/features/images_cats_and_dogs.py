@@ -1,6 +1,6 @@
-import kaggle
 import pandas as pd
 
+import kaggle
 import pandas_profiling
 from pandas_profiling.utils.paths import get_data_path
 

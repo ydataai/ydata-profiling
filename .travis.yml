@@ -10,17 +10,14 @@ jobs:
   include:
   - os: linux
     name: "Python 3.9-dev on Linux"
-    language: bash
     python: 3.9-dev
     env: TEST=examples PANDAS=">=1"
   - os: windows
     name: "Python 3.8 on Windows"
-    language: bash
     python: 3.8
     env: TEST=examples PANDAS=">=1"
   - os: osx
     name: "Python 3.8 on osx"
-    language: bash
     python: 3.8
     env: TEST=examples PANDAS=">=1"
 
