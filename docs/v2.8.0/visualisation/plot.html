@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>pandas_profiling.visualisation.plot API documentation</title>
+<meta name="description" content="Plot functions for the profiling report." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pandas_profiling.visualisation.plot</code></h1>
+</header>
+<section id="section-intro">
+<p>Plot functions for the profiling report.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Plot functions for the profiling report.&#34;&#34;&#34;
+
+from typing import Optional, Union
+
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.patches import Patch
+from pandas.plotting import register_matplotlib_converters
+from pkg_resources import resource_filename
+
+from pandas_profiling.config import config
+from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
+
+register_matplotlib_converters()
+matplotlib.style.use(resource_filename(__name__, &#34;pandas_profiling.mplstyle&#34;))
+sns.set_style(style=&#34;white&#34;)
+
+
+def _plot_histogram(
+    series: np.ndarray,
+    series_description: dict,
+    bins: Union[int, np.ndarray],
+    figsize: tuple = (6, 4),
+):
+    &#34;&#34;&#34;Plot an histogram from the data and return the AxesSubplot object.
+
+    Args:
+        series: The data to plot
+        figsize: The size of the figure (width, height) in inches, default (6,4)
+        bins: number of bins (int for equal size, ndarray for variable size)
+
+    Returns:
+        The histogram plot.
+
+
+    &#34;&#34;&#34;
+    fig = plt.figure(figsize=figsize)
+    plot = fig.add_subplot(111)
+    plot.set_ylabel(&#34;Frequency&#34;)
+    plot.hist(
+        series, facecolor=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str), bins=bins,
+    )
+    return plot
+
+
+def histogram(
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+) -&gt; str:
+    &#34;&#34;&#34;Plot an histogram of the data.
+
+    Args:
+      series: The data to plot.
+      series_description:
+      bins: number of bins (int for equal size, ndarray for variable size)
+
+    Returns:
+      The resulting histogram encoded as a string.
+
+    &#34;&#34;&#34;
+    plot = _plot_histogram(series, series_description, bins)
+    plot.xaxis.set_tick_params(rotation=45)
+    plot.figure.tight_layout()
+    return plot_360_n0sc0pe(plt)
+
+
+def mini_histogram(
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+) -&gt; str:
+    &#34;&#34;&#34;Plot a small (mini) histogram of the data.
+
+    Args:
+      series: The data to plot.
+      series_description:
+      bins: number of bins (int for equal size, ndarray for variable size)
+
+    Returns:
+      The resulting mini histogram encoded as a string.
+    &#34;&#34;&#34;
+    plot = _plot_histogram(series, series_description, bins, figsize=(2, 1.5))
+    plot.axes.get_yaxis().set_visible(False)
+    plot.set_facecolor(&#34;w&#34;)
+
+    xticks = plot.xaxis.get_major_ticks()
+    for tick in xticks:
+        tick.label1.set_fontsize(8)
+    plot.xaxis.set_tick_params(rotation=45)
+    plot.figure.tight_layout()
+
+    return plot_360_n0sc0pe(plt)
+
+
+def get_cmap_half(cmap):
+    &#34;&#34;&#34;Get the upper half of the color map
+
+    Args:
+        cmap: the color map
+
+    Returns:
+        A new color map based on the upper half of another color map
+
+    References:
+        https://stackoverflow.com/a/24746399/470433
+    &#34;&#34;&#34;
+    # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
+    colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
+
+    # Create a new colormap from those colors
+    return LinearSegmentedColormap.from_list(&#34;cmap_half&#34;, colors)
+
+
+def get_correlation_font_size(n_labels) -&gt; Optional[int]:
+    &#34;&#34;&#34;Dynamic label font sizes in correlation plots
+
+    Args:
+        n_labels: the number of labels
+
+    Returns:
+        A font size or None for the default font size
+    &#34;&#34;&#34;
+    if n_labels &gt; 100:
+        font_size = 4
+    elif n_labels &gt; 80:
+        font_size = 5
+    elif n_labels &gt; 50:
+        font_size = 6
+    elif n_labels &gt; 40:
+        font_size = 8
+    else:
+        return None
+    return font_size
+
+
+def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
+    &#34;&#34;&#34;Plot image of a matrix correlation.
+
+    Args:
+      data: The matrix correlation to plot.
+      vmin: Minimum value of value range.
+
+    Returns:
+      The resulting correlation matrix encoded as a string.
+    &#34;&#34;&#34;
+    fig_cor, axes_cor = plt.subplots()
+    cmap_name = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    cmap_bad = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;bad&#34;].get(str)
+
+    cmap = plt.get_cmap(cmap_name)
+    if vmin == 0:
+        cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
+
+    labels = data.columns
+    matrix_image = axes_cor.imshow(
+        data, vmin=vmin, vmax=1, interpolation=&#34;nearest&#34;, cmap=cmap
+    )
+    plt.colorbar(matrix_image)
+
+    if data.isnull().values.any():
+        legend_elements = [Patch(facecolor=cmap(np.nan), label=&#34;invalid\ncoefficient&#34;)]
+
+        plt.legend(
+            handles=legend_elements, loc=&#34;upper right&#34;, handleheight=2.5,
+        )
+
+    axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
+    axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
+
+    font_size = get_correlation_font_size(len(labels))
+    axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
+    axes_cor.set_yticklabels(labels, fontsize=font_size)
+    plt.subplots_adjust(bottom=0.2)
+
+    return plot_360_n0sc0pe(plt)
+
+
+def scatter_complex(series: pd.Series) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from a series of complex values
+
+    Examples:
+        &gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+        &gt;&gt;&gt; scatter_complex(complex_series)
+
+    Args:
+        series: the Series
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
+    plt.ylabel(&#34;Imaginary&#34;)
+    plt.xlabel(&#34;Real&#34;)
+
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
+
+    if len(series) &gt; scatter_threshold:
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series.real, series.imag, cmap=cmap)
+    else:
+        plt.scatter(series.real, series.imag, color=color)
+
+    return plot_360_n0sc0pe(plt)
+
+
+def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from one series of sequences with length 2
+
+    Examples:
+        &gt;&gt;&gt; scatter_series(file_sizes, &#34;Width&#34;, &#34;Height&#34;)
+
+    Args:
+        series: the Series
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
+
+    if len(series) &gt; scatter_threshold:
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(*zip(*series.tolist()), cmap=cmap)
+    else:
+        plt.scatter(*zip(*series.tolist()), color=color)
+    return plot_360_n0sc0pe(plt)
+
+
+def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from two series
+
+    Examples:
+        &gt;&gt;&gt; widths = pd.Series([800, 1024])
+        &gt;&gt;&gt; heights = pd.Series([600, 768])
+        &gt;&gt;&gt; scatter_series(widths, heights, &#34;Width&#34;, &#34;Height&#34;)
+
+    Args:
+        series1: the series corresponding to the x-axis
+        series2: the series corresponding to the y-axis
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
+
+    if len(series1) &gt; scatter_threshold:
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
+    else:
+        plt.scatter(series1.tolist(), series2.tolist(), color=color)
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pandas_profiling.visualisation.plot.correlation_matrix"><code class="name flex">
+<span>def <span class="ident">correlation_matrix</span></span>(<span>data: pandas.core.frame.DataFrame, vmin: int = -1) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot image of a matrix correlation.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong></dt>
+<dd>The matrix correlation to plot.</dd>
+<dt><strong><code>vmin</code></strong></dt>
+<dd>Minimum value of value range.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The resulting correlation matrix encoded as a string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -&gt; str:
+    &#34;&#34;&#34;Plot image of a matrix correlation.
+
+    Args:
+      data: The matrix correlation to plot.
+      vmin: Minimum value of value range.
+
+    Returns:
+      The resulting correlation matrix encoded as a string.
+    &#34;&#34;&#34;
+    fig_cor, axes_cor = plt.subplots()
+    cmap_name = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;cmap&#34;].get(str)
+    cmap_bad = config[&#34;plot&#34;][&#34;correlation&#34;][&#34;bad&#34;].get(str)
+
+    cmap = plt.get_cmap(cmap_name)
+    if vmin == 0:
+        cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
+
+    labels = data.columns
+    matrix_image = axes_cor.imshow(
+        data, vmin=vmin, vmax=1, interpolation=&#34;nearest&#34;, cmap=cmap
+    )
+    plt.colorbar(matrix_image)
+
+    if data.isnull().values.any():
+        legend_elements = [Patch(facecolor=cmap(np.nan), label=&#34;invalid\ncoefficient&#34;)]
+
+        plt.legend(
+            handles=legend_elements, loc=&#34;upper right&#34;, handleheight=2.5,
+        )
+
+    axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
+    axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
+
+    font_size = get_correlation_font_size(len(labels))
+    axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
+    axes_cor.set_yticklabels(labels, fontsize=font_size)
+    plt.subplots_adjust(bottom=0.2)
+
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.get_cmap_half"><code class="name flex">
+<span>def <span class="ident">get_cmap_half</span></span>(<span>cmap)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the upper half of the color map</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>cmap</code></strong></dt>
+<dd>the color map</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A new color map based on the upper half</code> of <code>another color map</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="references">References</h2>
+<p><a href="https://stackoverflow.com/a/24746399/470433">https://stackoverflow.com/a/24746399/470433</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_cmap_half(cmap):
+    &#34;&#34;&#34;Get the upper half of the color map
+
+    Args:
+        cmap: the color map
+
+    Returns:
+        A new color map based on the upper half of another color map
+
+    References:
+        https://stackoverflow.com/a/24746399/470433
+    &#34;&#34;&#34;
+    # Evaluate an existing colormap from 0.5 (midpoint) to 1 (upper end)
+    colors = cmap(np.linspace(0.5, 1, cmap.N // 2))
+
+    # Create a new colormap from those colors
+    return LinearSegmentedColormap.from_list(&#34;cmap_half&#34;, colors)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.get_correlation_font_size"><code class="name flex">
+<span>def <span class="ident">get_correlation_font_size</span></span>(<span>n_labels) -> Union[int, NoneType]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Dynamic label font sizes in correlation plots</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>n_labels</code></strong></dt>
+<dd>the number of labels</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A font size</code> or <code>None for the default font size</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_correlation_font_size(n_labels) -&gt; Optional[int]:
+    &#34;&#34;&#34;Dynamic label font sizes in correlation plots
+
+    Args:
+        n_labels: the number of labels
+
+    Returns:
+        A font size or None for the default font size
+    &#34;&#34;&#34;
+    if n_labels &gt; 100:
+        font_size = 4
+    elif n_labels &gt; 80:
+        font_size = 5
+    elif n_labels &gt; 50:
+        font_size = 6
+    elif n_labels &gt; 40:
+        font_size = 8
+    else:
+        return None
+    return font_size</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.histogram"><code class="name flex">
+<span>def <span class="ident">histogram</span></span>(<span>series: numpy.ndarray, series_description: dict, bins: Union[int, numpy.ndarray]) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot an histogram of the data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>The data to plot.</dd>
+<dt>series_description:</dt>
+<dt><strong><code>bins</code></strong></dt>
+<dd>number of bins (int for equal size, ndarray for variable size)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The resulting histogram encoded as a string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def histogram(
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+) -&gt; str:
+    &#34;&#34;&#34;Plot an histogram of the data.
+
+    Args:
+      series: The data to plot.
+      series_description:
+      bins: number of bins (int for equal size, ndarray for variable size)
+
+    Returns:
+      The resulting histogram encoded as a string.
+
+    &#34;&#34;&#34;
+    plot = _plot_histogram(series, series_description, bins)
+    plot.xaxis.set_tick_params(rotation=45)
+    plot.figure.tight_layout()
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.mini_histogram"><code class="name flex">
+<span>def <span class="ident">mini_histogram</span></span>(<span>series: numpy.ndarray, series_description: dict, bins: Union[int, numpy.ndarray]) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot a small (mini) histogram of the data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>The data to plot.</dd>
+<dt>series_description:</dt>
+<dt><strong><code>bins</code></strong></dt>
+<dd>number of bins (int for equal size, ndarray for variable size)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The resulting mini histogram encoded as a string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mini_histogram(
+    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+) -&gt; str:
+    &#34;&#34;&#34;Plot a small (mini) histogram of the data.
+
+    Args:
+      series: The data to plot.
+      series_description:
+      bins: number of bins (int for equal size, ndarray for variable size)
+
+    Returns:
+      The resulting mini histogram encoded as a string.
+    &#34;&#34;&#34;
+    plot = _plot_histogram(series, series_description, bins, figsize=(2, 1.5))
+    plot.axes.get_yaxis().set_visible(False)
+    plot.set_facecolor(&#34;w&#34;)
+
+    xticks = plot.xaxis.get_major_ticks()
+    for tick in xticks:
+        tick.label1.set_fontsize(8)
+    plot.xaxis.set_tick_params(rotation=45)
+    plot.figure.tight_layout()
+
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.scatter_complex"><code class="name flex">
+<span>def <span class="ident">scatter_complex</span></span>(<span>series: pandas.core.series.Series) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scatter plot (or hexbin plot) from a series of complex values</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="python">&gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+&gt;&gt;&gt; scatter_complex(complex_series)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>the Series</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A string containing (a reference to) the image</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scatter_complex(series: pd.Series) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from a series of complex values
+
+    Examples:
+        &gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+        &gt;&gt;&gt; scatter_complex(complex_series)
+
+    Args:
+        series: the Series
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
+    plt.ylabel(&#34;Imaginary&#34;)
+    plt.xlabel(&#34;Real&#34;)
+
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
+
+    if len(series) &gt; scatter_threshold:
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series.real, series.imag, cmap=cmap)
+    else:
+        plt.scatter(series.real, series.imag, color=color)
+
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.scatter_pairwise"><code class="name flex">
+<span>def <span class="ident">scatter_pairwise</span></span>(<span>series1, series2, x_label, y_label) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scatter plot (or hexbin plot) from two series</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="python">&gt;&gt;&gt; widths = pd.Series([800, 1024])
+&gt;&gt;&gt; heights = pd.Series([600, 768])
+&gt;&gt;&gt; scatter_series(widths, heights, &quot;Width&quot;, &quot;Height&quot;)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series1</code></strong></dt>
+<dd>the series corresponding to the x-axis</dd>
+<dt><strong><code>series2</code></strong></dt>
+<dd>the series corresponding to the y-axis</dd>
+<dt><strong><code>x_label</code></strong></dt>
+<dd>the label on the x-axis</dd>
+<dt><strong><code>y_label</code></strong></dt>
+<dd>the label on the y-axis</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A string containing (a reference to) the image</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from two series
+
+    Examples:
+        &gt;&gt;&gt; widths = pd.Series([800, 1024])
+        &gt;&gt;&gt; heights = pd.Series([600, 768])
+        &gt;&gt;&gt; scatter_series(widths, heights, &#34;Width&#34;, &#34;Height&#34;)
+
+    Args:
+        series1: the series corresponding to the x-axis
+        series2: the series corresponding to the y-axis
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
+
+    if len(series1) &gt; scatter_threshold:
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
+    else:
+        plt.scatter(series1.tolist(), series2.tolist(), color=color)
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.visualisation.plot.scatter_series"><code class="name flex">
+<span>def <span class="ident">scatter_series</span></span>(<span>series, x_label='Width', y_label='Height') -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scatter plot (or hexbin plot) from one series of sequences with length 2</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="python">&gt;&gt;&gt; scatter_series(file_sizes, &quot;Width&quot;, &quot;Height&quot;)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>the Series</dd>
+<dt><strong><code>x_label</code></strong></dt>
+<dd>the label on the x-axis</dd>
+<dt><strong><code>y_label</code></strong></dt>
+<dd>the label on the y-axis</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A string containing (a reference to) the image</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scatter_series(series, x_label=&#34;Width&#34;, y_label=&#34;Height&#34;) -&gt; str:
+    &#34;&#34;&#34;Scatter plot (or hexbin plot) from one series of sequences with length 2
+
+    Examples:
+        &gt;&gt;&gt; scatter_series(file_sizes, &#34;Width&#34;, &#34;Height&#34;)
+
+    Args:
+        series: the Series
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    &#34;&#34;&#34;
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    color = config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str)
+    scatter_threshold = config[&#34;plot&#34;][&#34;scatter_threshold&#34;].get(int)
+
+    if len(series) &gt; scatter_threshold:
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(*zip(*series.tolist()), cmap=cmap)
+    else:
+        plt.scatter(*zip(*series.tolist()), color=color)
+    return plot_360_n0sc0pe(plt)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pandas_profiling.visualisation" href="index.html">pandas_profiling.visualisation</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.visualisation.plot.correlation_matrix" href="#pandas_profiling.visualisation.plot.correlation_matrix">correlation_matrix</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.get_cmap_half" href="#pandas_profiling.visualisation.plot.get_cmap_half">get_cmap_half</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.get_correlation_font_size" href="#pandas_profiling.visualisation.plot.get_correlation_font_size">get_correlation_font_size</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.histogram" href="#pandas_profiling.visualisation.plot.histogram">histogram</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.mini_histogram" href="#pandas_profiling.visualisation.plot.mini_histogram">mini_histogram</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.scatter_complex" href="#pandas_profiling.visualisation.plot.scatter_complex">scatter_complex</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.scatter_pairwise" href="#pandas_profiling.visualisation.plot.scatter_pairwise">scatter_pairwise</a></code></li>
+<li><code><a title="pandas_profiling.visualisation.plot.scatter_series" href="#pandas_profiling.visualisation.plot.scatter_series">scatter_series</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

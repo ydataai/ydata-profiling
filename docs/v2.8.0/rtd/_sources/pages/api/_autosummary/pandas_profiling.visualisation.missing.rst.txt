@@ -1,0 +1,26 @@
+pandas\_profiling.visualisation.missing
+=======================================
+
+.. automodule:: pandas_profiling.visualisation.missing
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_font_size
+      missing_bar
+      missing_dendrogram
+      missing_heatmap
+      missing_matrix
+   
+   
+
+   
+   
+   
+
+   
+   
+   
