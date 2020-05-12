@@ -83,7 +83,7 @@ def describe_1d(series: pd.Series) -> dict:
             "is_unique": distinct_count == count,
             "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
             "p_unique": distinct_count / count,
-            "memory_size": series.memory_usage(),
+            "memory_size": series.memory_usage(config["memory_deep"].get(bool)),
         }
 
         return stats
@@ -108,7 +108,7 @@ def describe_1d(series: pd.Series) -> dict:
             "count": count,
             "p_missing": 1 - count / length,
             "n_missing": length - count,
-            "memory_size": series.memory_usage(),
+            "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }
 
         return results_data
@@ -502,7 +502,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     """
     n = len(df)
 
-    memory_size = df.memory_usage(index=True, deep=True).sum()
+    memory_size = df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
     record_size = float(memory_size) / n
 
     table_stats = {

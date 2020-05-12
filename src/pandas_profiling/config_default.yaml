@@ -113,6 +113,9 @@ n_obs_unique: 5
 n_extreme_obs: 5
 n_freq_table_max: 10
 
+# Use `deep` flag for memory_usage
+memory_deep: False
+
 # Configuration related to the duplicates
 duplicates:
     head: 10

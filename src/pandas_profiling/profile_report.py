@@ -134,7 +134,6 @@ class ProfileReport(SerializeReport, object):
     @property
     def description_set(self):
         if self._description_set is None:
-            _ = self.df_hash
             self._description_set = describe_df(self.title, self.df)
         return self._description_set
 
