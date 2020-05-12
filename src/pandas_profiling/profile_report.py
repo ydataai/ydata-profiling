@@ -101,7 +101,7 @@ class ProfileReport(SerializeReport, object):
         for e in reversed(key[1:]):
             value = {e: value}
 
-        config[key[0]] = value
+        self.set_variables(**{key[0]: value})
 
     def set_variables(self, **vars):
         """Change configuration variables (invalidates caches where necessary)
@@ -113,14 +113,17 @@ class ProfileReport(SerializeReport, object):
             >>> ProfileReport(df).set_variables(title="NewTitle", html={"minify_html": False})
         """
         changed = set(vars.keys())
-        if {"progress_bar", "pool_size"} >= changed:
+        if len({"progress_bar", "pool_size"} & changed) > 0:
             # Cache can persist
             pass
-        elif {"notebook"} >= changed:
+
+        if len({"notebook"} & changed) > 0:
             self._widgets = None
-        elif {"html", "title"} >= changed:
+
+        if len({"html", "title"} & changed) > 0:
             self._html = None
-        else:
+
+        if not {"progress_bar", "pool_size", "notebook", "html", "title"} >= changed:
             # In all other cases, empty cache
             self._description_set = None
             self._title = None

@@ -38,6 +38,8 @@ profile = df.profile_report(
     correlations=None,
     samples=None,
     missing_diagrams=None,
+    # Enable files and images (off by default, as it uses relatively expensive computations when not interested)
+    explorative=True
 )
 # We can also configure the report like this
 profile.set_variable(
@@ -46,12 +48,6 @@ profile.set_variable(
         "files": "The 5 Celebrity Faces Dataset found on Kaggle (dansbecker/5-celebrity-faces-dataset)."
     },
 )
-#
-# profile.set_variable("plot.scatter_threshold", 25000)
-
-# Enable files and images (off by default, as it uses relatively expensive computations when not interested)
-profile.set_variable("vars.file.active", True)
-profile.set_variable("vars.image.active", True)
 
 # Save the report
 profile.to_file("celebrity-faces.html")
