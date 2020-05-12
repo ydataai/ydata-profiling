@@ -15,10 +15,14 @@ jobs:
   - os: windows
     name: "Python 3.8 on Windows"
     python: 3.8
+    language: sh
     env: TEST=examples PANDAS=">=1"
+    before_install:
+    - choco install python3
+    - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
   - os: osx
-    name: "Python 3.8 on osx"
-    python: 3.8
+    name: "Python 3.7 on osx"
+    python: 3.7
     env: TEST=examples PANDAS=">=1"
 
   allow_failures:
