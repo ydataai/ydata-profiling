@@ -23,3 +23,6 @@ requests>=2.23.0
 tqdm>=4.43.0
 # Jupyter notebook
 ipywidgets>=7.5.1
+
+# density
+seaborn
