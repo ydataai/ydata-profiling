@@ -21,10 +21,10 @@ sns.set_style(style="white")
 
 
 def _plot_histogram(
-    series: np.ndarray,
-    series_description: dict,
-    bins: Union[int, np.ndarray],
-    figsize: tuple = (6, 4),
+        series: np.ndarray,
+        series_description: dict,
+        bins: Union[int, np.ndarray],
+        figsize: tuple = (6, 4),
 ):
     """Plot an histogram from the data and return the AxesSubplot object.
 
@@ -48,7 +48,7 @@ def _plot_histogram(
 
 
 def histogram(
-    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot an histogram of the data.
 
@@ -68,7 +68,7 @@ def histogram(
 
 
 def mini_histogram(
-    series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot a small (mini) histogram of the data.
 
@@ -261,4 +261,40 @@ def scatter_pairwise(series1, series2, x_label, y_label) -> str:
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:
         plt.scatter(series1.tolist(), series2.tolist(), color=color)
+    return plot_360_n0sc0pe(plt)
+
+
+import seaborn as sns
+
+
+def density(series, group, x_label, g_label) -> str:
+    """Scatter plot (or hexbin plot) from two series
+
+    Examples:
+        >>> widths = pd.Series([1000, 100, 10, 20, 21])
+        >>> group = pd.Series(['a', 'a', 'a', 'b', 'b'])
+        >>> scatter_series(widths, group, "Width", "Height")
+
+    Args:
+        series: the series corresponding to the x-axis
+        group: the series corresponding to the y-axis
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    """
+    plt.xlabel(x_label)
+    plt.ylabel(g_label)
+    df = series.to_frame(x_label)
+    df[g_label] = group
+    color = config["html"]["style"]["primary_color"].get(str)
+    # scatter_threshold = config["plot"]["scatter_threshold"].get(int)
+
+    # if len(series1) > scatter_threshold:
+    #     cmap = sns.light_palette(color, as_cmap=True)
+    #     plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
+    # else:
+    sns.pairplot(df, hue=g_label)
+    # plt.scatter(series.tolist(), group.tolist(), color=color)
     return plot_360_n0sc0pe(plt)

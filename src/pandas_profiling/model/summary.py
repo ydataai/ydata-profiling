@@ -32,7 +32,7 @@ from pandas_profiling.visualisation.missing import (
     missing_heatmap,
     missing_matrix,
 )
-from pandas_profiling.visualisation.plot import scatter_pairwise
+from pandas_profiling.visualisation.plot import scatter_pairwise, density
 
 
 def sort_column_names(dct: Mapping, sort: str):
@@ -657,15 +657,19 @@ def get_scatter_matrix(df, variables):
         continuous_variables = [
             column for column, type in variables.items() if type == Variable.TYPE_NUM
         ]
+        all_variables = [column for column, type in variables.items()]
 
         targets = config["interactions"]["targets"].get(list)
         if len(targets) == 0:
-            targets = continuous_variables
+            targets = all_variables
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
         for x in targets:
             for y in continuous_variables:
-                scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                if x in continuous_variables:
+                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                else:
+                    scatter_matrix[x][y] = density(df[y], df[x], y, x)
 
     else:
         scatter_matrix = {}
