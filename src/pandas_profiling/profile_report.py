@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
-from pandas_profiling.config import Config
+from pandas_profiling.config import Config, ConfigManager
 from pandas_profiling.config import register_config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
@@ -393,6 +393,8 @@ class ProfileReport(Serialize, object):
 
         app_widgets = QtReport(self.report).render()
         app = get_app(app, self.title, app_widgets)
+
+    config_widget = ConfigManager.widgetConfig
 
     @staticmethod
     def preprocess(df):

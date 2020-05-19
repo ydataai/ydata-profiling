@@ -29,5 +29,14 @@ def get_config_minimal() -> Path:
     return Path(__file__).parent.parent / "config_minimal.yaml"
 
 
+def get_config_buffer() -> Path:
+    """Returns the path to the buffer config file.
+
+    Returns:
+        The path to the buffer config file.
+    """
+    return Path(__file__).parent.parent / "config_buffer.yaml"
+
+
 def get_data_path() -> Path:
     return get_project_root() / "data"

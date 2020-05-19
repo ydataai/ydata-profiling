@@ -16,7 +16,7 @@ class ConfigManager:
             config.clear()
 
     @classmethod
-    def build_wrapper(cls, func):
+    def build_register_wrapper(cls, func):
         def wrapper(pp):
             ConfigManager.register(pp.config)
             res = func(pp)
@@ -24,3 +24,9 @@ class ConfigManager:
             return res
 
         return wrapper
+
+    @staticmethod
+    def widgetConfig(pp):
+        from pandas_profiling.config.ConfigWidget import WidgetConfig
+
+        return WidgetConfig(pp).build_widgets()
