@@ -1,3 +1,5 @@
+from typing import Union, Dict
+
 import ipywidgets as widgets
 from IPython.display import display
 
@@ -36,7 +38,7 @@ class ConfigParameter:
 
 
 class ConfigWidget:
-    config_buffer = {}
+    config_buffer: Dict[str, Union[bool, int, str]] = {}
 
     def __init__(self, profile_report):
         self.profile_report = profile_report
