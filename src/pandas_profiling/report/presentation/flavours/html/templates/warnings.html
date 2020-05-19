@@ -1,4 +1,5 @@
 <table class="table table-condensed list-warnings">
+    <p class="h4">Warnings</p>
     {% for message in warnings %}
         {% if message.message_type.name != "REJECTED" %}
             <tr{% if loop.first %} style="border-top:0"{% endif %}>

@@ -17,7 +17,7 @@ Minimal mode
 .. code-block:: python
 
   profile = ProfileReport(large_dataset, minimal=True)
-  profile.to_file(output_file="output.html")
+  profile.to_file("output.html")
 
 
 *(Minimal mode was introduced in `pandas-profiling` v2.4.0)*
@@ -36,7 +36,7 @@ Sample
   sample = large_dataset.sample(10000)
 
   profile = ProfileReport(sample, minimal=True)
-  profile.to_file(output_file="output.html")
+  profile.to_file("output.html")
 
 
 

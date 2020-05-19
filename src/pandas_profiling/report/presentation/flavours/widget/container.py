@@ -1,7 +1,7 @@
 from ipywidgets import widgets
 
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core.container import Container
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 def get_name(item: Renderable):
@@ -26,6 +26,10 @@ def get_tabs(items):
 
 
 def get_list(items):
+    return widgets.VBox([item.render() for item in items])
+
+
+def get_named_list(items):
     return widgets.VBox(
         [
             widgets.VBox(
@@ -69,6 +73,8 @@ class WidgetContainer(Container):
     def render(self):
         if self.sequence_type == "list":
             widget = get_list(self.content["items"])
+        elif self.sequence_type == "named_list":
+            widget = get_named_list(self.content["items"])
         elif self.sequence_type in ["tabs", "sections"]:
             widget = get_tabs(self.content["items"])
         elif self.sequence_type == "accordion":

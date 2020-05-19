@@ -38,5 +38,5 @@ if __name__ == "__main__":
     # Prepare missing values
     df = df.replace("\\?", np.nan, regex=True)
 
-    profile = ProfileReport(df, title="Census Dataset")
+    profile = ProfileReport(df, title="Census Dataset", explorative=True)
     profile.to_file(Path("./census_report.html"))

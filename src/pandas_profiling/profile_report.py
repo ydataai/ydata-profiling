@@ -12,12 +12,15 @@ from pandas_profiling.config import register_config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
-from pandas_profiling.serialize import Serialize
+from pandas_profiling.report.presentation.flavours.html.templates import (
+    create_html_assets,
+)
+from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
-from pandas_profiling.utils.paths import get_config_minimal
+from pandas_profiling.utils.paths import get_config
 
 
-class ProfileReport(Serialize, object):
+class ProfileReport(SerializeReport, object):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -27,6 +30,7 @@ class ProfileReport(Serialize, object):
         self,
         df=None,
         minimal=False,
+        explorative=False,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
         **kwargs,
@@ -52,7 +56,9 @@ class ProfileReport(Serialize, object):
         if config_file:
             self.config.set_file(config_file)
         elif minimal:
-            self.config.set_file(get_config_minimal())
+            self.config.set_file(get_config("config_minimal.yaml"))
+        elif explorative:
+            self.config.set_file(get_config("config_explorative.yaml"))
 
         self.config.set_kwargs(kwargs)
 
@@ -72,15 +78,20 @@ class ProfileReport(Serialize, object):
         """Change a single configuration variable
 
         Args:
-            key: configuration parameter name
+            key: configuration parameter name. Accepts nested syntax, e.g. "html.minify_html"
             value: the new value
 
         Examples:
             >>> ProfileReport(df).set_variables("title", "NewTitle")
             >>> ProfileReport(df).set_variables("html", {"minify_html": False})
+            >>> ProfileReport(df).set_variables("html.minify_html", False)
 
         """
-        self.set_variables(**{key: value})
+        key = key.split(".")
+        for e in reversed(key[1:]):
+            value = {e: value}
+
+        self.set_variables(**{key[0]: value})
 
     def set_variables(self, **vars):
         """Change configuration variables (invalidates caches where necessary)
@@ -92,7 +103,6 @@ class ProfileReport(Serialize, object):
             >>> ProfileReport(df).set_variables(title="NewTitle", html={"minify_html": False})
         """
         changed = set(vars.keys())
-
         if len({"progress_bar", "pool_size"} & changed) > 0:
             # Cache can persist
             pass
@@ -100,11 +110,15 @@ class ProfileReport(Serialize, object):
             self._widgets = None
         if len({"html", "title"} & changed) > 0:
             self._html = None
+
         if not {"progress_bar", "pool_size", "notebook", "html", "title"} >= changed:
             # In all other cases, empty cache
             self.empty_cache()
 
-        self.config.set_kwargs(vars)
+        if len(vars) == 1:
+            self.config[list(vars.keys())[0]] = list(vars.values())[0]
+        else:
+            self.config.set_kwargs(vars)
 
     def empty_cache(self):
         self._description_set = None
@@ -118,7 +132,6 @@ class ProfileReport(Serialize, object):
     @register_config
     def description_set(self):
         if self._description_set is None:
-            _ = self.df_hash
             self._description_set = describe_df(self.title, self.df)
         return self._description_set
 
@@ -142,7 +155,8 @@ class ProfileReport(Serialize, object):
             self._report = get_report_structure(self.description_set)
         return self._report
 
-    @property
+    @property  # type:ignore
+    @register_config
     def html(self):
         if self._html is None:
             self._html = self._render_html()
@@ -204,6 +218,7 @@ class ProfileReport(Serialize, object):
             if message.message_type == MessageType.REJECTED
         }
 
+    @register_config
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -> None:
         """Write the report to a file.
 
@@ -219,7 +234,13 @@ class ProfileReport(Serialize, object):
         if output_file.suffix == ".json":
             data = self.to_json()
         else:
+            inline = self.config["html"]["inline"].get(bool)
+            if not inline:
+                self.config["html"]["file_name"] = str(output_file)
+                create_html_assets(output_file)
+
             data = self.to_html()
+
             if output_file.suffix != ".html":
                 suffix = output_file.suffix
                 output_file = output_file.with_suffix(".html")
@@ -255,6 +276,8 @@ class ProfileReport(Serialize, object):
             html = HTMLReport(report).render(
                 nav=self.config["html"]["navbar_show"].get(bool),
                 offline=self.config["html"]["use_local_assets"].get(bool),
+                inline=self.config["html"]["inline"].get(bool),
+                file_name=Path(self.config["html"]["file_name"].get(str)).stem,
                 primary_color=self.config["html"]["style"]["primary_color"].get(str),
                 logo=self.config["html"]["style"]["logo"].get(str),
                 theme=self.config["html"]["style"]["theme"].get(str),
@@ -398,6 +421,18 @@ class ProfileReport(Serialize, object):
 
     @staticmethod
     def preprocess(df):
+        """Preprocess the dataframe
+
+        - Appends the index to the dataframe when it contains information
+        - Rename the "index" column to "df_index", if exists
+        - Convert the DataFrame's columns to str
+
+        Args:
+            df: the pandas DataFrame
+
+        Returns:
+            The preprocessed DataFrame
+        """
         # Treat index as any other column
         if (
             not pd.Index(np.arange(0, len(df))).equals(df.index)

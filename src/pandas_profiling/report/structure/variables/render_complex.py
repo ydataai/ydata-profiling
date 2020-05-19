@@ -20,6 +20,7 @@ def render_complex(summary):
         summary["varname"],
         "Complex number (&Copf;)",
         summary["warnings"],
+        summary["description"],
     )
 
     table1 = Table(

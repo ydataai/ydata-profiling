@@ -1,6 +1,6 @@
 from abc import ABC
 
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 class ItemRenderer(Renderable, ABC):

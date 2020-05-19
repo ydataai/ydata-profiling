@@ -2,15 +2,14 @@ import warnings
 from pathlib import Path
 from typing import Union
 
-import pandas as pd
-
 from pandas_profiling.config import Config
-from pandas_profiling.report.presentation.abstract.renderable import Renderable
 from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.version import __version__
 
 
-class Serialize(object):
+class SerializeReport(object):
+    """Extend the report to be able to dump and load reports."""
+
     df_hash = None
     df = None
     _df_hash = None

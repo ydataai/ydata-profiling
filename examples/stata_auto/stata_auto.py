@@ -11,5 +11,5 @@ if __name__ == "__main__":
     df = pd.read_stata(file_name)
 
     # Length left out due to correlation with weight.
-    report = ProfileReport(df, title="1978 Automobile dataset")
+    report = ProfileReport(df, title="1978 Automobile dataset", explorative=True)
     report.to_file(Path("stata_auto_report.html"))

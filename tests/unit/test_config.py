@@ -32,3 +32,38 @@ def test_config_mutiprocess():
     assert profile0_json != profile1_json
     assert profile0_title == "minimal-report"
     assert profile1_title == "default-report"
+
+
+def test_set_variable():
+    r = ProfileReport(pool_size=3)
+    assert r.config["pool_size"].get(int) == 3
+    assert r.config["html"]["minify_html"].get(bool)
+    r.set_variable("pool_size", 1)
+    assert r.config["pool_size"].get(int) == 1
+    r.set_variable("html.minify_html", False)
+    assert not r.config["html"]["minify_html"].get(bool)
+    r.set_variable("html", {"minify_html": True})
+    assert r.config["html"]["minify_html"].get(bool)
+
+
+def test_config_shorthands():
+    r = ProfileReport(
+        samples=None, correlations=None, missing_diagrams=None, duplicates=None
+    )
+    assert r.config["samples"]["head"].get(int) == 0
+    assert r.config["samples"]["tail"].get(int) == 0
+    assert r.config["duplicates"]["head"].get(int) == 0
+    assert not r.config["correlations"]["spearman"]["calculate"].get(bool)
+    assert not r.config["missing_diagrams"]["bar"].get(bool)
+
+    r = ProfileReport()
+    r.set_variable("samples", None)
+    r.set_variable("duplicates", None)
+    r.set_variable("correlations", None)
+    r.set_variable("missing_diagrams", None)
+
+    assert r.config["samples"]["head"].get(int) == 0
+    assert r.config["samples"]["tail"].get(int) == 0
+    assert r.config["duplicates"]["head"].get(int) == 0
+    assert not r.config["correlations"]["spearman"]["calculate"].get(bool)
+    assert not r.config["missing_diagrams"]["bar"].get(bool)

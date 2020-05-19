@@ -55,6 +55,37 @@ class Config(object):
             else:
                 raise ValueError(f'Config parameter "{key}" does not exist.')
 
+    _shorthands = {
+        "samples": {"head": 0, "tail": 0},
+        "duplicates": {"head": 0},
+        "interactions": {"targets": [], "continuous": False},
+        "missing_diagrams": {
+            "bar": False,
+            "matrix": False,
+            "heatmap": False,
+            "dendrogram": False,
+        },
+        "correlations": {
+            "pearson": {"calculate": False},
+            "spearman": {"calculate": False},
+            "kendall": {"calculate": False},
+            "phi_k": {"calculate": False},
+            "cramers": {"calculate": False},
+        },
+    }
+
+    def _handle_shorthands(self, kwargs):
+        for key, value in self._shorthands.items():
+            if key in kwargs and kwargs[key] is None:
+                kwargs[key] = value
+        return kwargs
+
+    def _handle_shorthand(self, key, value):
+        if key in self._shorthands and value is None:
+            return self._shorthands[key]
+        else:
+            return value
+
     def set_kwargs(self, kwargs) -> None:
         """
         Helper function to set config variables based on kwargs.
@@ -63,12 +94,15 @@ class Config(object):
             kwargs: the arguments passed to the .profile_report() function
 
         """
+        kwargs = self._handle_shorthands(kwargs)
+
         self._set_kwargs(self.config, kwargs)
 
     def __getitem__(self, item):
         return self.config[item]
 
     def __setitem__(self, key, value):
+        value = self._handle_shorthand(key, value)
         self.config[key].set(value)
 
     def dump(self):

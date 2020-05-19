@@ -1,0 +1,7 @@
+Changelog v2.7.1
+----------------
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+
+- Fix version of ``visions`` due to breaking changes in new summarization functions.
