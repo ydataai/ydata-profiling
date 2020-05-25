@@ -95,6 +95,9 @@ jobs:
 
       - name: Update examples
         run: make examples
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
 
       - name: Build the documentation
         run: make docs
