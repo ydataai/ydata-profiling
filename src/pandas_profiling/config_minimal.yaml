@@ -108,6 +108,10 @@ plot:
 # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
         force_labels: True
 
+    pie:
+# display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+      max_unique: 0
+
     histogram:
         x_axis_labels: True
 
