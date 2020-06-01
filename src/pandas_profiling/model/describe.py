@@ -20,6 +20,31 @@ from pandas_profiling.model.summary import (
 from pandas_profiling.version import __version__
 
 
+def check_optional_modules_present():
+    """Check if optional modules are present when activated in the configuration."""
+    errors = []
+    if config["correlations"]["ppscore"]["calculate"].get(bool):
+        try:
+            import ppscore
+        except ImportError:
+            errors.append(("correlations.ppscore.calculate", "ppscore"))
+
+    if config["plot"]["histogram"]["bayesian_blocks_bins"].get(bool):
+        try:
+            import astropy
+        except ImportError:
+            errors.append(("plot.histogram.bayesian_blocks_bins", "astropy"))
+
+    if len(errors) > 0:
+        message = f"{len(errors)} packages missing."
+        for error in errors:
+            message += f"""
+            The setting of `{error[0]} = True` requires the `{error[1]}` package to be installed.
+            Either install the package (`pip install {error[1]}`) or disable the feature by setting the parameter to `False`.
+            """
+        raise ImportError(message)
+
+
 def describe(title, df: pd.DataFrame) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
@@ -46,6 +71,8 @@ def describe(title, df: pd.DataFrame) -> dict:
         raise ValueError("df can not be empty")
 
     disable_progress_bar = not config["progress_bar"].get(bool)
+
+    check_optional_modules_present()
 
     date_start = datetime.utcnow()
 

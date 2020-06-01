@@ -122,10 +122,8 @@ def render_categorical(summary):
             anchor_id=f"{varid}lengthstats",
         )
 
-        histogram_bins = 10
-
         length = Image(
-            histogram(summary["length"], summary, histogram_bins),
+            histogram(*summary["histogram_length"]),
             image_format=image_format,
             alt="Scatter",
             name="Length",

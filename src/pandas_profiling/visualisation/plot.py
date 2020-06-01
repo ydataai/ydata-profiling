@@ -21,10 +21,9 @@ sns.set_style(style="white")
 
 
 def _plot_histogram(
-        series: np.ndarray,
-        series_description: dict,
-        bins: Union[int, np.ndarray],
-        figsize: tuple = (6, 4),
+    series: np.ndarray,
+    bins: Union[int, np.ndarray],
+    figsize: tuple = (6, 4),
 ):
     """Plot an histogram from the data and return the AxesSubplot object.
 
@@ -41,46 +40,48 @@ def _plot_histogram(
     fig = plt.figure(figsize=figsize)
     plot = fig.add_subplot(111)
     plot.set_ylabel("Frequency")
-    plot.hist(
-        series, facecolor=config["html"]["style"]["primary_color"].get(str), bins=bins,
+
+    # we have precomputed the histograms...
+    diff = np.diff(bins)
+    plot.bar(
+        bins[:-1] + diff / 2, series, diff,
+        facecolor=config["html"]["style"]["primary_color"].get(str),
     )
     return plot
 
 
 def histogram(
-        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot an histogram of the data.
 
     Args:
       series: The data to plot.
-      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
       The resulting histogram encoded as a string.
 
     """
-    plot = _plot_histogram(series, series_description, bins)
+    plot = _plot_histogram(series, bins)
     plot.xaxis.set_tick_params(rotation=45)
     plot.figure.tight_layout()
     return plot_360_n0sc0pe(plt)
 
 
 def mini_histogram(
-        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
+    series: np.ndarray, bins: Union[int, np.ndarray]
 ) -> str:
     """Plot a small (mini) histogram of the data.
 
     Args:
       series: The data to plot.
-      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
       The resulting mini histogram encoded as a string.
     """
-    plot = _plot_histogram(series, series_description, bins, figsize=(2, 1.5))
+    plot = _plot_histogram(series, bins, figsize=(2, 1.5))
     plot.axes.get_yaxis().set_visible(False)
     plot.set_facecolor("w")
 

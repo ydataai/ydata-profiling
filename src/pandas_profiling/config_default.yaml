@@ -105,8 +105,9 @@ plot:
         bayesian_blocks_bins: False
 
 # If 'bayesian_blocks_bins' fails to provide a valid number of bins.
-        bins: 50
-# Also used for equal size histogram
+# Also used for equal size histogram (0 for auto)
+        bins: 0
+
 
 # The number of observations to show
 n_obs_unique: 5
