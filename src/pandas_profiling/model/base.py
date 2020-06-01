@@ -6,6 +6,7 @@ from urllib.parse import ParseResult, urlparse
 
 import numpy as np
 import pandas as pd
+import visions
 
 from pandas_profiling.config import config
 
@@ -44,7 +45,6 @@ class Variable(Enum):
     """An unsupported variable"""
 
 
-# Temporary mapping
 Boolean = Variable.TYPE_BOOL
 Real = Variable.TYPE_NUM
 Count = Variable.TYPE_NUM
@@ -97,13 +97,15 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
     keys = series_description["value_counts_without_nan"].keys()
     if pd.api.types.is_bool_dtype(keys):
         return True
-    elif (
+
+    if (
         1 <= series_description["distinct_count_without_nan"] <= 2
         and pd.api.types.is_numeric_dtype(series)
         and series[~series.isnull()].between(0, 1).all()
     ):
         return True
-    elif 1 <= series_description["distinct_count_without_nan"] <= 4:
+
+    if 1 <= series_description["distinct_count_without_nan"] <= 4:
         unique_values = set([str(value).lower() for value in keys.values])
         accepted_combinations = [
             ["y", "n"],
@@ -151,13 +153,10 @@ def is_url(series: pd.Series, series_description: dict) -> bool:
     def is_url_item(x):
         return isinstance(x, ParseResult) and all((x.netloc, x.scheme, x.path))
 
-    if series_description["distinct_count_without_nan"] > 0:
-        try:
-            result = series[~series.isnull()].astype(str)
-            return all(is_url_item(urlparse(x)) for x in result)
-        except ValueError:
-            return False
-    else:
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(is_url_item(urlparse(x)) for x in result)
+    except ValueError:
         return False
 
 
@@ -171,8 +170,6 @@ def is_path(series, series_description) -> bool:
     Returns:
         True is the series is path type (NaNs allowed).
     """
-    if series_description["distinct_count_without_nan"] == 0:
-        return False
 
     try:
         result = series[~series.isnull()].astype(str)
@@ -191,8 +188,6 @@ def is_file(series, series_description) -> bool:
     Returns:
         True is the series is of the file type (NaNs allowed).
     """
-    if series_description["distinct_count_without_nan"] == 0:
-        return False
 
     try:
         result = series[~series.isnull()].astype(str)
@@ -211,29 +206,12 @@ def is_image(series, series_description) -> bool:
     Returns:
         True is the series is of the image type (NaNs allowed).
     """
-    if series_description["distinct_count_without_nan"] > 0:
-        try:
-            result = series[~series.isnull()].astype(str)
-            return all(imghdr.what(p) for p in result)
-        except (TypeError, ValueError):
-            return False
-    else:
+
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(imghdr.what(p) for p in result)
+    except (TypeError, ValueError):
         return False
-
-
-def is_date(series) -> bool:
-    """Is the variable of type datetime? Throws a warning if the series looks like a datetime, but is not typed as
-    datetime64.
-
-    Args:
-        series: Series
-
-    Returns:
-        True if the variable is of type datetime.
-    """
-    is_date_value = pd.api.types.is_datetime64_dtype(series)
-
-    return is_date_value
 
 
 def get_var_type(series: pd.Series) -> dict:
@@ -256,18 +234,17 @@ def get_var_type(series: pd.Series) -> dict:
         if series_description[
             "value_counts_without_nan"
         ].index.inferred_type.startswith("mixed"):
-            raise TypeError("Not supported mixed type")
-
-        if series_description["distinct_count_without_nan"] == 0:
+            var_type = Variable.S_TYPE_UNSUPPORTED
+        elif series_description["distinct_count_without_nan"] == 0:
             # Empty
             var_type = Variable.S_TYPE_UNSUPPORTED
         elif is_boolean(series, series_description):
             var_type = Variable.TYPE_BOOL
         elif is_numeric(series, series_description):
             var_type = Variable.TYPE_NUM
-        elif is_date(series):
+        elif series in visions.DateTime:
             var_type = Variable.TYPE_DATE
-        elif is_url(series, series_description):
+        elif config["vars"]["url"]["active"].get(bool) and is_url(series, series_description):
             var_type = Variable.TYPE_URL
         elif is_path(series, series_description):
             if config["vars"]["file"]["active"].get(bool) and is_file(

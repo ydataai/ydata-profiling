@@ -33,6 +33,8 @@ vars:
         coerce_str_to_date: False
     bool:
         n_obs: 3
+    url:
+        active: True
     file:
         active: False
     image:
