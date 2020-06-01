@@ -1,0 +1,31 @@
+Changelog v2.9.0
+----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Correlations are scaled to magnitude, insignificant entries are crossed out
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+-
+
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Optional modules are not installed automatically (`astropy`). The user is warned when activating missing modules.
+- Histograms used to be calculated at view time (single thread) and are now computed in parallel.
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+-
+
+⚠️  Deprecated
+^^^^^^^^^^^^^^^^^
+- old correlations. Can get it with ``correlations.use_old`` = True
+
+🚨 Breaking changes
+^^^^^^^^^^^^^^^^^^^
+- astropy not by default
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+-
