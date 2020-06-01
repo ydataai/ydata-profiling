@@ -145,6 +145,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
     elif description["distinct_count_with_nan"] <= 1:
+        description['mode'] = description["value_counts"].iloc[0]
         messages.append(
             Message(
                 column_name=col,
@@ -183,7 +184,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         # Uniformity
         if description["type"] == Variable.TYPE_CAT:
             # High cardinality
-            if description["distinct_count"] > config["vars"]["cat"][
+            if description["n_unique"] > config["vars"]["cat"][
                 "cardinality_threshold"
             ].get(int):
                 messages.append(
