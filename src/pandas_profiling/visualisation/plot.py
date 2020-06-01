@@ -13,6 +13,7 @@ from pandas.plotting import register_matplotlib_converters
 from pkg_resources import resource_filename
 
 from pandas_profiling.config import config
+from playground.warm.heatmap_stable import correlation_plot
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 
 register_matplotlib_converters()
@@ -112,50 +113,39 @@ def get_cmap_half(cmap):
     return LinearSegmentedColormap.from_list("cmap_half", colors)
 
 
-def get_correlation_font_size(n_labels) -> Optional[int]:
-    """Dynamic label font sizes in correlation plots
-
-    Args:
-        n_labels: the number of labels
-
-    Returns:
-        A font size or None for the default font size
+def old_correlations(
+    data: pd.DataFrame, cmap: LinearSegmentedColormap, vmin: int = -1, vmax: int = 1
+) -> str:
     """
-    if n_labels > 100:
-        font_size = 4
-    elif n_labels > 80:
-        font_size = 5
-    elif n_labels > 50:
-        font_size = 6
-    elif n_labels > 40:
-        font_size = 8
-    else:
-        return None
-    return font_size
-
-
-def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
-    """Plot image of a matrix correlation.
-
-    Args:
-      data: The matrix correlation to plot.
-      vmin: Minimum value of value range.
-
-    Returns:
-      The resulting correlation matrix encoded as a string.
+    Deprecated
     """
+
+    def get_correlation_font_size(n_labels) -> Optional[int]:
+        """Dynamic label font sizes in correlation plots
+
+        Args:
+            n_labels: the number of labels
+
+        Returns:
+            A font size or None for the default font size
+        """
+        if n_labels > 100:
+            font_size = 4
+        elif n_labels > 80:
+            font_size = 5
+        elif n_labels > 50:
+            font_size = 6
+        elif n_labels > 40:
+            font_size = 8
+        else:
+            return None
+        return font_size
+
     fig_cor, axes_cor = plt.subplots()
-    cmap_name = config["plot"]["correlation"]["cmap"].get(str)
-    cmap_bad = config["plot"]["correlation"]["bad"].get(str)
-
-    cmap = plt.get_cmap(cmap_name)
-    if vmin == 0:
-        cmap = get_cmap_half(cmap)
-    cmap.set_bad(cmap_bad)
 
     labels = data.columns
     matrix_image = axes_cor.imshow(
-        data, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
+        data, vmin=vmin, vmax=vmax, interpolation="nearest", cmap=cmap
     )
     plt.colorbar(matrix_image)
 
@@ -173,6 +163,40 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
     axes_cor.set_yticklabels(labels, fontsize=font_size)
     plt.subplots_adjust(bottom=0.2)
+
+
+def correlation_matrix(data: pd.DataFrame, vmin: int = -1, vmax: int = 1, use_old=False) -> str:
+    """Plot image of a matrix correlation.
+
+    Args:
+      data: The matrix correlation to plot.
+      vmin: Minimum value of value range.
+
+    Returns:
+      The resulting correlation matrix encoded as a string.
+    """
+
+    cmap_name = config["plot"]["correlation"]["cmap"].get(str)
+    cmap_bad = config["plot"]["correlation"]["bad"].get(str)
+
+    cmap = plt.get_cmap(cmap_name)
+    if vmin == 0:
+        cmap = get_cmap_half(cmap)
+    cmap.set_bad(cmap_bad)
+
+    if use_old or config["plot"]["correlation"]["use_old"].get(bool):
+        old_correlations(data, cmap, vmin, vmax)
+    else:
+        correlation_plot(
+            data,
+            color_range=(vmin, vmax),
+            cmap=cmap,
+            annot=config["plot"]["correlation"]['annotate'].get(bool),
+            rotation=90,
+            fig_size=(6, 6),
+            cbar_bins=6 if vmin == 0 else 9,
+        )
+        plt.subplots_adjust(bottom=0.2, left=0.2)
 
     return plot_360_n0sc0pe(plt)
 

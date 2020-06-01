@@ -54,21 +54,33 @@ def get_correlation_items(summary) -> Optional[Renderable]:
     The empirical estimators used for Cramér's V have been proved to be biased, even for large samples.
     We use a bias-corrected measure that has been proposed by Bergsma in 2013 that can be found <a href='http://stats.lse.ac.uk/bergsma/pdf/cramerV3.pdf'>here</a>."""
 
+    pps_description = """Not a correlation, as it's not symmetric. 
+    The score is calculated using only 1 feature trying to predict the target column. This means there are no interaction effects between the scores of various features. Note that this is in contrast to feature importance
+    The score is calculated on the test sets of a 5-fold crossvalidation
+    All rows which have a missing value in the feature or the target column are dropped
+    In case that the dataset has more than 5,000 rows the score is only calculated on a random subset of 5,000 rows with a fixed random seed
+    There is no grid search for optimal model parameters"""
+
     key_to_data = {
-        "pearson": (-1, "Pearson's r", pearson_description),
-        "spearman": (-1, "Spearman's ρ", spearman_description),
-        "kendall": (-1, "Kendall's τ", kendall_description),
-        "phi_k": (0, "Phik (φk)", phi_k_description),
-        "cramers": (0, "Cramér's V (φc)", cramers_description),
+        "pearson": (-1, 1, "Pearson's r", pearson_description),
+        "spearman": (-1, 1, "Spearman's ρ", spearman_description),
+        "kendall": (-1, 1, "Kendall's τ", kendall_description),
+        "phi_k": (0, 1, "Phik (φk)", phi_k_description),
+        "phi_k_significance": (-5, 5, "Phik (φk significance)", "..."),
+        "cramers": (0, 1, "Cramér's V (φc)", cramers_description),
+        "ppscore": (0, 1, "Predictive Power Score", pps_description),
     }
 
     image_format = config["plot"]["image_format"].get(str)
 
     for key, item in summary["correlations"].items():
-        vmin, name, description = key_to_data[key]
+        if key.endswith("_significance"):
+            continue
+
+        vmin, vmax, name, description = key_to_data[key]
 
         diagram = Image(
-            plot.correlation_matrix(item, vmin=vmin),
+            plot.correlation_matrix(item, vmin=vmin, vmax=vmax),
             image_format=image_format,
             alt=name,
             anchor_id=f"{key}_diagram",
@@ -91,6 +103,19 @@ def get_correlation_items(summary) -> Optional[Renderable]:
         else:
             items.append(diagram)
 
+        if key == "phi_k" and "phi_k_significance" in summary["correlations"]:
+            vmin, vmax, name, description = key_to_data["phi_k_significance"]
+
+            diagram = Image(
+                plot.correlation_matrix(item, vmin=vmin, vmax=vmax, use_old=True),
+                image_format=image_format,
+                alt=name,
+                anchor_id=f"phi_k_significance_diagram",
+                name=name,
+                classes="correlation-diagram",
+            )
+            items.append(diagram)
+
     corr = Container(
         items,
         sequence_type="tabs",
@@ -108,5 +133,5 @@ def get_correlation_items(summary) -> Optional[Renderable]:
         return Collapse(
             name="Correlations", anchor_id="correlations", button=btn, item=corr
         )
-    else:
-        return None
+
+    return None

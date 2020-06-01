@@ -64,10 +64,19 @@ correlations:
     phi_k:
       calculate: True
       warn_high_correlations: False
+    phi_k_significance:
+      calculate: True
+      significance_method: asymptotic
+      warn_high_correlations: False
     cramers:
       calculate: True
       warn_high_correlations: True
       threshold: 0.9
+    ppscore:
+      calculate: False
+      warn_high_correlations: False
+      threshold: 0.0
+      sample_size: 5000
     # Deprecated: do not use
     recoded:
       calculate: False
@@ -91,8 +100,10 @@ plot:
     scatter_threshold: 1000
 
     correlation:
+        annotate: False
         cmap: 'RdBu'
         bad: '#000000'
+        use_old: False
 
     missing:
         cmap: 'RdBu'

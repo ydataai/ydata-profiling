@@ -51,7 +51,14 @@ def describe(title, df: pd.DataFrame) -> dict:
 
     correlation_names = [
         correlation_name
-        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers",]
+        for correlation_name in [
+            "pearson",
+            "spearman",
+            "kendall",
+            "phi_k",
+            "cramers",
+            "ppscore",
+        ]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
@@ -78,8 +85,8 @@ def describe(title, df: pd.DataFrame) -> dict:
         correlations = {}
         for correlation_name in correlation_names:
             pbar.set_postfix_str(f"Calculate {correlation_name} correlation")
-            correlations[correlation_name] = calculate_correlation(
-                df, variables, correlation_name
+            correlations[correlation_name], _ = calculate_correlation(
+                df, variables, series_description, correlation_name
             )
             pbar.update()
 
