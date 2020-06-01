@@ -97,11 +97,8 @@ def render_real(summary):
         ]
     )
 
-    histogram_bins = 10
-
-    # TODO: replace with SmallImage...
     mini_histo = Image(
-        mini_histogram(summary["histogram_data"], summary, histogram_bins),
+        mini_histogram(*summary["histogram"]),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -113,11 +110,11 @@ def render_real(summary):
     quantile_statistics = Table(
         [
             {"name": "Minimum", "value": summary["min"], "fmt": "fmt_numeric"},
-            {"name": "5-th percentile", "value": summary["5%"], "fmt": "fmt_numeric"},
-            {"name": "Q1", "value": summary["25%"], "fmt": "fmt_numeric"},
-            {"name": "median", "value": summary["50%"], "fmt": "fmt_numeric"},
-            {"name": "Q3", "value": summary["75%"], "fmt": "fmt_numeric"},
-            {"name": "95-th percentile", "value": summary["95%"], "fmt": "fmt_numeric"},
+            {"name": "5-th percentile", "value": summary["quantile_5"], "fmt": "fmt_numeric"},
+            {"name": "Q1", "value": summary["quantile_25"], "fmt": "fmt_numeric"},
+            {"name": "median", "value": summary["quantile_50"], "fmt": "fmt_numeric"},
+            {"name": "Q3", "value": summary["quantile_75"], "fmt": "fmt_numeric"},
+            {"name": "95-th percentile", "value": summary["quantile_95"], "fmt": "fmt_numeric"},
             {"name": "Maximum", "value": summary["max"], "fmt": "fmt_numeric"},
             {"name": "Range", "value": summary["range"], "fmt": "fmt_numeric"},
             {
@@ -169,10 +166,10 @@ def render_real(summary):
 
     seqs = [
         Image(
-            histogram(summary["histogram_data"], summary, histogram_bins),
+            histogram(*summary["histogram"]),
             image_format=image_format,
             alt="Histogram",
-            caption=f"<strong>Histogram with fixed size bins</strong> (bins={histogram_bins})",
+            caption=f"<strong>Histogram with fixed size bins</strong> (bins={summary['histogram'][1]})",
             name="Histogram",
             anchor_id=f"{varid}histogram",
         )
@@ -206,7 +203,6 @@ def render_real(summary):
         histo_dyn = Image(
             histogram(
                 summary["histogram_data"],
-                summary,
                 summary["histogram_bins_bayesian_blocks"],
             ),
             image_format=image_format,

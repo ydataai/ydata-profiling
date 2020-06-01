@@ -12,7 +12,6 @@ from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_count(summary):
-    varid = summary["varid"]
     template_variables = render_common(summary)
     image_format = config["plot"]["image_format"].get(str)
 
@@ -80,9 +79,8 @@ def render_count(summary):
         ]
     )
 
-    # TODO: replace with SmallImage...
     mini_histo = Image(
-        mini_histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
+        mini_histogram(*summary["histogram"]),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -173,23 +171,12 @@ def render_count(summary):
         ],
     }
 
-    # TODO: Make sections data structure
-    # statistics = ItemRenderer(
-    #     'statistics',
-    #     'Statistics',
-    #     'table',
-    #     [
-    #         quantile_statistics,
-    #         descriptive_statistics
-    #     ]
-    # )
-
     seqs = [
         Image(
-            histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
+            histogram(*summary["histogram"]),
             image_format=image_format,
             alt="Histogram",
-            caption=f"<strong>Histogram with fixed size bins</strong> (bins={summary['histogram_bins']})",
+            caption=f"<strong>Histogram with fixed size bins</strong> (bins={summary['histogram'][1]})",
             name="Histogram",
             anchor_id="histogram",
         )
@@ -222,14 +209,12 @@ def render_count(summary):
     if "histogram_bins_bayesian_blocks" in summary:
         histo_dyn = Image(
             histogram(
-                summary["histogram_data"],
-                summary,
-                summary["histogram_bins_bayesian_blocks"],
+                *summary["histogram_bayesian_blocks"],
             ),
             image_format=image_format,
             alt="Histogram",
             caption='<strong>Histogram with variable size bins</strong> (bins={}, <a href="https://ui.adsabs.harvard.edu/abs/2013ApJ...764..167S/abstract" target="_blank">"bayesian blocks"</a> binning strategy used)'.format(
-                fmt_array(summary["histogram_bins_bayesian_blocks"], threshold=5)
+                fmt_array(summary["histogram_bayesian_blocks"][1], threshold=5)
             ),
             name="Dynamic Histogram",
             anchor_id="dynamic_histogram",

@@ -19,10 +19,10 @@ def render_file(summary):
     file_tabs = []
     if "file_size" in summary:
         file_size_histogram = Image(
-            histogram(summary["file_size"], summary, summary["histogram_bins"]),
+            histogram(*summary["histogram_file_size"]),
             image_format=image_format,
             alt="Size",
-            caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={summary['histogram_bins']})",
+            caption=f"<strong>Histogram of file sizes (in bytes)</strong>",
             name="File size",
             anchor_id=f"{varid}file_size_histogram",
         )
