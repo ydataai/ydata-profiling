@@ -1,345 +1,292 @@
-"""Generate the report."""
-from typing import List
+"""Common parts to all other modules, mainly utility functions."""
+import imghdr
+import os
+from enum import Enum, unique
+from urllib.parse import ParseResult, urlparse
 
+import numpy as np
 import pandas as pd
-from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import (
-    AbsolutePath,
-    Boolean,
-    Categorical,
-    Complex,
-    Count,
-    Date,
-    FilePath,
-    Generic,
-    ImagePath,
-    Real,
-    Url,
-)
-from pandas_profiling.model.messages import MessageType
-from pandas_profiling.report.presentation.core import (
-    HTML,
-    Collapse,
-    Container,
-    Duplicate,
-    Image,
-    Sample,
-    ToggleButton,
-    Variable,
-)
-from pandas_profiling.report.presentation.core.renderable import Renderable
-from pandas_profiling.report.presentation.core.root import Root
-from pandas_profiling.report.structure.correlations import get_correlation_items
-from pandas_profiling.report.structure.overview import (
-    get_dataset_overview,
-    get_dataset_reproduction,
-    get_dataset_warnings,
-)
-from pandas_profiling.report.structure.variables import (
-    render_boolean,
-    render_categorical,
-    render_complex,
-    render_date,
-    render_generic,
-    render_image,
-    render_path,
-    render_real,
-    render_url,
-)
-from pandas_profiling.report.structure.variables.render_file import render_file
 
+from visions import (Categorical, Boolean, Float, DateTime, URL, Complex, Path, File, Image, Integer, Generic,
+                     Object)
 
-def get_missing_items(summary) -> list:
-    """Return the missing diagrams
+from visions.typesets.typeset import VisionsTypeset
 
-    Args:
-        summary: the dataframe summary
-
-    Returns:
-        A list with the missing diagrams
-    """
-    image_format = config["plot"]["image_format"].get(str)
-    items = []
-    for key, item in summary["missing"].items():
-        items.append(
-            # TODO: Add informative caption
-            Image(
-                item["matrix"],
-                image_format=image_format,
-                alt=item["name"],
-                name=item["name"],
-                anchor_id=key,
-            )
-        )
-
-    return items
-
-
-# TODO: split in per variable function
-def render_variables_section(dataframe_summary: dict) -> list:
-    """Render the HTML for each of the variables in the DataFrame.
-
-    Args:
-        dataframe_summary: The statistics for each variable.
-
-    Returns:
-        The rendered HTML, where each row represents a variable.
-    """
-    type_to_func = {
-        Boolean: render_boolean,
-        Real: render_real,
-        Count: render_real,
-        Complex: render_complex,
-        Date: render_date,
-        Categorical: render_categorical,
-        Url: render_url,
-        AbsolutePath: render_path,
-        FilePath: render_file,
-        ImagePath: render_image,
-        Generic: render_generic,
-    }
-
-    templs = []
-
-    for idx, summary in dataframe_summary["variables"].items():
-        # Common template variables
-        warnings = [
-            warning.fmt()
-            for warning in dataframe_summary["messages"]
-            if warning.column_name == idx
-        ]
-
-        warning_fields = {
-            field
-            for warning in dataframe_summary["messages"]
-            if warning.column_name == idx
-            for field in warning.fields
+class ProfilingTypeSet(VisionsTypeset):
+    """Base typeset for pandas-profiling"""
+    def __init__(self):
+        types = {
+            Categorical,
+            Boolean,
+            Float,
+            DateTime,
+            URL,
+            Complex,
+            Path,
+            File,
+            Image,
+            Integer,
+            Object
         }
+        super().__init__(types)
 
-        warning_types = {
-            warning.message_type
-            for warning in dataframe_summary["messages"]
-            if warning.column_name == idx
-        }
+pp_typeset = ProfilingTypeSet()
 
-        descriptions = config["variables"]["descriptions"].get(dict)
+@unique
+class Variable(Enum):
+    """The possible types of variables in the Profiling Report."""
 
-        template_variables = {
-            "varname": idx,
-            "varid": hash(idx),
-            "warnings": warnings,
-            "description": descriptions.get(idx, ""),
-            "warn_fields": warning_fields,
-        }
+    TYPE_CAT = Categorical
+    """A categorical variable"""
 
-        template_variables.update(summary)
+    TYPE_BOOL = Boolean
+    """A boolean variable"""
 
-        # Per type template variables
-        template_variables.update(type_to_func[summary["type"]](template_variables))
+    TYPE_NUM = Float
+    """A numeric variable"""
 
-        # Ignore these
-        if config["reject_variables"].get(bool):
-            ignore = MessageType.REJECTED in warning_types
-        else:
-            ignore = False
+    TYPE_DATE = DateTime
+    """A date variable"""
 
-        bottom = None
-        if "bottom" in template_variables and template_variables["bottom"] is not None:
-            btn = ToggleButton("Toggle details", anchor_id=template_variables["varid"])
-            bottom = Collapse(btn, template_variables["bottom"])
+    TYPE_URL = URL
+    """A URL variable"""
 
-        var = Variable(
-            template_variables["top"],
-            bottom=bottom,
-            anchor_id=template_variables["varid"],
-            name=idx,
-            ignore=ignore,
-        )
+    TYPE_COMPLEX = Complex
 
-        templs.append(var)
+    TYPE_PATH = Path
+    """Absolute path"""
 
-    return templs
+    TYPE_FILE = File
+    """File (i.e. existing path)"""
+
+    TYPE_IMAGE = Image
+    """Images"""
+
+    S_TYPE_UNSUPPORTED = "UNSUPPORTED"
+    """An unsupported variable"""
 
 
-def get_duplicates_items(duplicates: pd.DataFrame):
-    """Create the list of duplicates items
-
-    Args:
-        duplicates: DataFrame of duplicates
-
-    Returns:
-        List of duplicates items to show in the interface.
-    """
-    items = []
-    if duplicates is not None and len(duplicates) > 0:
-        items.append(
-            Duplicate(
-                duplicate=duplicates, name="Most frequent", anchor_id="duplicates",
-            )
-        )
-    return items
+# Temporary mapping
+Boolean = Variable.TYPE_BOOL
+Real = Variable.TYPE_NUM
+Count = Variable.TYPE_NUM
+Complex = Variable.TYPE_COMPLEX
+Date = Variable.TYPE_DATE
+Categorical = Variable.TYPE_CAT
+Url = Variable.TYPE_URL
+AbsolutePath = Variable.TYPE_PATH
+FilePath = Variable.TYPE_FILE
+ImagePath = Variable.TYPE_IMAGE
+Generic = Variable.S_TYPE_UNSUPPORTED
 
 
-def get_sample_items(sample: dict):
-    """Create the list of sample items
+def get_counts(series: pd.Series) -> dict:
+    """Counts the values in a series (with and without NaN, distinct).
 
     Args:
-        sample: dict of samples
+        series: Series for which we want to calculate the values.
 
     Returns:
-        List of sample items to show in the interface.
+        A dictionary with the count values (with and without NaN, distinct).
     """
-    items = []
-    names = {"head": "First rows", "tail": "Last rows"}
-    for key, value in sample.items():
-        items.append(Sample(sample=value, name=names[key], anchor_id=key,))
-    return items
-
-
-def get_scatter_matrix(scatter_matrix: dict) -> list:
-    """Returns the interaction components for the report
-
-    Args:
-        scatter_matrix: a nested dict containing the scatter plots
-
-    Returns:
-        A list of components for the interaction section of the report
-    """
-    image_format = config["plot"]["image_format"].get(str)
-
-    titems = []
-    for x_col, y_cols in scatter_matrix.items():
-        items = []
-        for y_col, splot in y_cols.items():
-            items.append(
-                Image(
-                    splot,
-                    image_format=image_format,
-                    alt=f"{x_col} x {y_col}",
-                    anchor_id=f"interactions_{x_col.replace(' ', '_')}_{y_col.replace(' ', '_')}",
-                    name=y_col,
-                )
-            )
-
-        titems.append(
-            Container(
-                items,
-                sequence_type="tabs" if len(items) <= 10 else "select",
-                name=x_col,
-                nested=len(scatter_matrix) > 10,
-                anchor_id=f"interactions_{x_col.replace(' ', '_')}",
-            )
-        )
-    return titems
-
-
-def get_dataset_items(summary: dict, warnings: list) -> list:
-    """Returns the dataset overview (at the top of the report)
-
-    Args:
-        summary: the calculated summary
-        warnings: the warnings
-
-    Returns:
-        A list with components for the dataset overview (overview, reproduction, warnings)
-    """
-    items = [
-        get_dataset_overview(summary),
-        get_dataset_reproduction(summary),
-    ]
-
-    if warnings:
-        items.append(get_dataset_warnings(warnings))
-
-    return items
-
-
-def get_report_structure(summary: dict) -> Renderable:
-    """Generate a HTML report from summary statistics and a given sample.
-
-    Args:
-      sample: A dict containing the samples to print.
-      summary: Statistics to use for the overview, variables, correlations and missing values.
-
-    Returns:
-      The profile report in HTML format
-    """
-    disable_progress_bar = not config["progress_bar"].get(bool)
-    with tqdm(
-        total=1, desc="Generate report structure", disable=disable_progress_bar
-    ) as pbar:
-        warnings = summary["messages"]
-
-        section_items: List[Renderable] = [
-            Container(
-                get_dataset_items(summary, warnings),
-                sequence_type="tabs",
-                name="Overview",
-                anchor_id="overview",
-            ),
-            Container(
-                render_variables_section(summary),
-                sequence_type="accordion",
-                name="Variables",
-                anchor_id="variables",
-            ),
-        ]
-
-        scatter_items = get_scatter_matrix(summary["scatter"])
-        if len(scatter_items) > 0:
-            section_items.append(
-                Container(
-                    scatter_items,
-                    sequence_type="tabs" if len(scatter_items) <= 10 else "select",
-                    name="Interactions",
-                    anchor_id="interactions",
-                ),
-            )
-
-        corr = get_correlation_items(summary)
-        if corr is not None:
-            section_items.append(corr)
-
-        missing_items = get_missing_items(summary)
-        if len(missing_items) > 0:
-            section_items.append(
-                Container(
-                    missing_items,
-                    sequence_type="tabs",
-                    name="Missing values",
-                    anchor_id="missing",
-                )
-            )
-
-        sample_items = get_sample_items(summary["sample"])
-        if len(sample_items) > 0:
-            section_items.append(
-                Container(
-                    items=sample_items,
-                    sequence_type="list",
-                    name="Sample",
-                    anchor_id="sample",
-                )
-            )
-
-        duplicate_items = get_duplicates_items(summary["duplicates"])
-        if len(duplicate_items) > 0:
-            section_items.append(
-                Container(
-                    items=duplicate_items,
-                    sequence_type="list",
-                    name="Duplicate rows",
-                    anchor_id="duplicate",
-                )
-            )
-
-        sections = Container(section_items, name="Root", sequence_type="sections")
-        pbar.update()
-
-    footer = HTML(
-        content='Report generated with <a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling</a>.'
+    value_counts_with_nan = series.value_counts(dropna=False)
+    value_counts_without_nan = (
+        value_counts_with_nan.reset_index().dropna().set_index("index").iloc[:, 0]
     )
 
-    return Root("Root", sections, footer)
+    distinct_count_with_nan = value_counts_with_nan.count()
+    distinct_count_without_nan = value_counts_without_nan.count()
+
+    return {
+        "value_counts": value_counts_without_nan,  # Alias
+        "value_counts_with_nan": value_counts_with_nan,
+        "value_counts_without_nan": value_counts_without_nan,
+        "distinct_count_with_nan": distinct_count_with_nan,
+        "distinct_count_without_nan": distinct_count_without_nan,
+    }
+
+
+def is_boolean(series: pd.Series, series_description: dict) -> bool:
+    """Is the series boolean type?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is boolean type in the broad sense (e.g. including yes/no, NaNs allowed).
+    """
+    keys = series_description["value_counts_without_nan"].keys()
+    if pd.api.types.is_bool_dtype(keys):
+        return True
+    elif (
+        1 <= series_description["distinct_count_without_nan"] <= 2
+        and pd.api.types.is_numeric_dtype(series)
+        and series[~series.isnull()].between(0, 1).all()
+    ):
+        return True
+    elif 1 <= series_description["distinct_count_without_nan"] <= 4:
+        unique_values = set([str(value).lower() for value in keys.values])
+        accepted_combinations = [
+            ["y", "n"],
+            ["yes", "no"],
+            ["true", "false"],
+            ["t", "f"],
+        ]
+
+        if len(unique_values) == 2 and any(
+            [unique_values == set(bools) for bools in accepted_combinations]
+        ):
+            return True
+
+    return False
+
+
+def is_numeric(series: pd.Series, series_description: dict) -> bool:
+    """Is the series numeric type?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is numeric type (NaNs allowed).
+    """
+    return pd.api.types.is_numeric_dtype(series) and (
+        series_description["distinct_count_without_nan"]
+        >= config["vars"]["num"]["low_categorical_threshold"].get(int)
+        or any(np.inf == s or -np.inf == s for s in series)
+    )
+
+
+def is_url(series: pd.Series, series_description: dict) -> bool:
+    """Is the series url type?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is url type (NaNs allowed).
+    """
+
+    def is_url_item(x):
+        return isinstance(x, ParseResult) and all((x.netloc, x.scheme, x.path))
+
+    if series_description["distinct_count_without_nan"] > 0:
+        try:
+            result = series[~series.isnull()].astype(str)
+            return all(is_url_item(urlparse(x)) for x in result)
+        except ValueError:
+            return False
+    else:
+        return False
+
+
+def is_path(series, series_description) -> bool:
+    """Is the series of the path type (i.e. absolute path)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is path type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] == 0:
+        return False
+
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.isabs(p) for p in result)
+    except (ValueError, TypeError):
+        return False
+
+
+def is_file(series, series_description) -> bool:
+    """Is the series of the type "file" (i.e. existing paths)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the file type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] == 0:
+        return False
+
+    try:
+        result = series[~series.isnull()].astype(str)
+        return all(os.path.exists(p) for p in result)
+    except (ValueError, TypeError):
+        return False
+
+
+def is_image(series, series_description) -> bool:
+    """Is the series of the image type (i.e. "file" with image extensions)?
+
+    Args:
+        series: Series
+        series_description: Series description
+
+    Returns:
+        True is the series is of the image type (NaNs allowed).
+    """
+    if series_description["distinct_count_without_nan"] > 0:
+        try:
+            result = series[~series.isnull()].astype(str)
+            return all(imghdr.what(p) for p in result)
+        except (TypeError, ValueError):
+            return False
+    else:
+        return False
+
+
+def is_date(series) -> bool:
+    """Is the variable of type datetime? Throws a warning if the series looks like a datetime, but is not typed as
+    datetime64.
+
+    Args:
+        series: Series
+
+    Returns:
+        True if the variable is of type datetime.
+    """
+    is_date_value = pd.api.types.is_datetime64_dtype(series)
+
+    return is_date_value
+
+
+def get_var_type(series: pd.Series) -> dict:
+    """Get the variable type of a series.
+
+    Args:
+        series: Series for which we want to infer the variable type.
+
+    Returns:
+        The series updated with the variable type included.
+    """
+
+    series_description = {}
+
+    try:
+        series_description = get_counts(series)
+
+        # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
+        # list and so on...
+        if series_description[
+            "value_counts_without_nan"
+        ].index.inferred_type.startswith("mixed"):
+            raise TypeError("Not supported mixed type")
+
+        var_type = pp_typeset.detect_series_type(series)
+        
+    except TypeError:
+        var_type = Generic
+
+    series_description.update({"type": var_type})
+
+    return series_description

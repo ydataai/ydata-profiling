@@ -34,6 +34,9 @@ from pandas_profiling.visualisation.missing import (
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
 
+from visions import (Categorical, Boolean, Float, DateTime, URL, Complex, Path, File, Image, Integer, 
+                     Object, Generic)
+
 
 def sort_column_names(dct: Mapping, sort: str):
     sort = sort.lower()
@@ -404,14 +407,16 @@ def describe_1d(series: pd.Series) -> dict:
         series_description.update(describe_supported(series, series_description))
 
         type_to_func = {
-            Variable.TYPE_BOOL: describe_boolean_1d,
-            Variable.TYPE_NUM: describe_numeric_1d,
-            Variable.TYPE_DATE: describe_date_1d,
-            Variable.TYPE_CAT: describe_categorical_1d,
-            Variable.TYPE_URL: describe_url_1d,
-            Variable.TYPE_PATH: describe_path_1d,
-            Variable.TYPE_IMAGE: describe_image_1d,
-            Variable.TYPE_FILE: describe_file_1d,
+            Boolean: describe_boolean_1d,
+            Float: describe_numeric_1d,
+            Integer: describe_numeric_1d,
+            Object: describe_categorical_1d,
+            DateTime: describe_date_1d,
+            Categorical: describe_categorical_1d,
+            URL: describe_url_1d,
+            Path: describe_path_1d,
+            Image: describe_image_1d,
+            File: describe_file_1d,
         }
 
         if series_description["type"] in type_to_func:
@@ -534,14 +539,10 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     )
 
     # Variable type counts
-    table_stats.update({k.value: 0 for k in Variable})
-    table_stats.update(
-        {
-            "types": dict(
-                variable_stats.loc["type"].apply(lambda x: x.value).value_counts()
-            )
-        }
-    )
+    from pandas_profiling.model.base import pp_typeset
+    table_stats["types"] = variable_stats.loc["type"].value_counts().to_dict()
+    for k in pp_typeset.types:
+        table_stats["types"].setdefault(k, 0)
 
     return table_stats
 
