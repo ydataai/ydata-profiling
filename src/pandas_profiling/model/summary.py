@@ -399,32 +399,30 @@ def describe_1d(series: pd.Series) -> dict:
     # TODO: use visions for type inference
     # https://github.com/dylan-profiler/visions
     series_description = base.get_var_type(series)
-
+    series_type = series_description["type"]
     # Run type specific analysis
-    if series_description["type"] == Variable.S_TYPE_UNSUPPORTED:
+    if series_type == Variable.S_TYPE_UNSUPPORTED.value:
         series_description.update(describe_unsupported(series, series_description))
     else:
         series_description.update(describe_supported(series, series_description))
 
         type_to_func = {
-            Boolean: describe_boolean_1d,
-            Float: describe_numeric_1d,
-            Integer: describe_numeric_1d,
-            Object: describe_categorical_1d,
-            DateTime: describe_date_1d,
-            Categorical: describe_categorical_1d,
-            URL: describe_url_1d,
-            Path: describe_path_1d,
-            Image: describe_image_1d,
-            File: describe_file_1d,
+            Variable.TYPE_BOOL.value: describe_boolean_1d,
+            Variable.TYPE_NUM.value: describe_numeric_1d,
+            Variable.TYPE_DATE.value: describe_date_1d,
+            Variable.TYPE_URL.value: describe_url_1d,
+            Variable.TYPE_PATH.value: describe_path_1d,
+            Variable.TYPE_IMAGE.value: describe_image_1d,
+            Variable.TYPE_FILE.value: describe_file_1d,
+            Variable.TYPE_CAT.value: describe_categorical_1d,
         }
 
-        if series_description["type"] in type_to_func:
-            series_description.update(
-                type_to_func[series_description["type"]](series, series_description)
-            )
-        else:
-            raise ValueError("Unexpected type")
+        if series_type not in type_to_func:
+            raise ValueError(f"Unexpected series type '{series_type}'")
+
+        summary = type_to_func[series_type](series, series_description)
+        series_description.update(summary)
+    
 
     # light weight of series_description
     if "value_counts_with_nan" in series_description.keys():
@@ -539,10 +537,9 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     )
 
     # Variable type counts
-    from pandas_profiling.model.base import pp_typeset
     table_stats["types"] = variable_stats.loc["type"].value_counts().to_dict()
-    for k in pp_typeset.types:
-        table_stats["types"].setdefault(k, 0)
+    for k in Variable:
+        table_stats["types"].setdefault(k.value, 0)
 
     return table_stats
 

@@ -10,41 +10,76 @@ import pandas as pd
 from pandas_profiling.config import config
 
 from visions import (Categorical, Boolean, Float, DateTime, URL, Complex, Path, File, Image, Integer, Generic,
-                     Object)
+                     Object, String)
 
 from visions.typesets.typeset import VisionsTypeset
+from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
+import visions as vis
+
+
+
+class Numeric(vis.types.VisionsBaseType):
+    """**Numeric** implementation of :class:`visions.types.type.VisionsBaseType`.
+
+    Examples:
+        >>> x = pd.Series([1, 2, 3])
+        >>> x in visions.Integer
+        True
+    """
+
+    @classmethod
+    def get_relations(cls):
+        relations = [
+            IdentityRelation(cls, Generic),
+        ]
+        return relations
+
+    @classmethod
+    def contains_op(cls, series: pd.Series) -> bool:
+        return pd.api.types.is_numeric_dtype(series)
+
+
+PP_bool_map = [{'yes': True, 'no': False},
+                {'y': True, 'n': False},
+                {'true': True, 'false': False},
+                {'t': True, 'f': False}]
+Bool = vis.Boolean.make_string_coercion('PP', PP_bool_map)
+
 
 class ProfilingTypeSet(VisionsTypeset):
     """Base typeset for pandas-profiling"""
     def __init__(self):
+  
         types = {
-            Categorical,
-            Boolean,
-            Float,
+            Bool,
+            Numeric,
             DateTime,
             URL,
             Complex,
             Path,
-            File,
-            Image,
-            Integer,
-            Object
+            Object,
+            String,
         }
+
+        if config["vars"]["file"]["active"].get(bool):
+            types.add(File)
+            if config["vars"]["image"]["active"].get(bool):
+                types.add(Image)
+
         super().__init__(types)
 
-pp_typeset = ProfilingTypeSet()
 
 @unique
 class Variable(Enum):
     """The possible types of variables in the Profiling Report."""
 
-    TYPE_CAT = Categorical
+    TYPE_CAT = "CAT"
     """A categorical variable"""
 
-    TYPE_BOOL = Boolean
+    TYPE_BOOL = Bool
     """A boolean variable"""
 
-    TYPE_NUM = Float
+    TYPE_NUM = Numeric
     """A numeric variable"""
 
     TYPE_DATE = DateTime
@@ -54,6 +89,7 @@ class Variable(Enum):
     """A URL variable"""
 
     TYPE_COMPLEX = Complex
+    """A Complex variable"""
 
     TYPE_PATH = Path
     """Absolute path"""
@@ -64,22 +100,20 @@ class Variable(Enum):
     TYPE_IMAGE = Image
     """Images"""
 
-    S_TYPE_UNSUPPORTED = "UNSUPPORTED"
+    S_TYPE_UNSUPPORTED = Generic
     """An unsupported variable"""
 
+    #TYPE_REAL = TYPE_NUM
 
-# Temporary mapping
-Boolean = Variable.TYPE_BOOL
-Real = Variable.TYPE_NUM
-Count = Variable.TYPE_NUM
-Complex = Variable.TYPE_COMPLEX
-Date = Variable.TYPE_DATE
-Categorical = Variable.TYPE_CAT
-Url = Variable.TYPE_URL
-AbsolutePath = Variable.TYPE_PATH
-FilePath = Variable.TYPE_FILE
-ImagePath = Variable.TYPE_IMAGE
-Generic = Variable.S_TYPE_UNSUPPORTED
+    #TYPE_COUNT = TYPE_NUM
+
+    #TYPE_ABSOLUTEPATH = TYPE_PATH
+
+    #TYPE_FILEPATH = TYPE_FILE
+
+    #TYPE_IMAGEPATH = TYPE_IMAGE
+
+    #TYPE_GENERIC = S_TYPE_UNSUPPORTED
 
 
 def get_counts(series: pd.Series) -> dict:
@@ -105,6 +139,7 @@ def get_counts(series: pd.Series) -> dict:
         "value_counts_without_nan": value_counts_without_nan,
         "distinct_count_with_nan": distinct_count_with_nan,
         "distinct_count_without_nan": distinct_count_without_nan,
+        "has_inf": any(x in value_counts_with_nan for x in [np.inf, -np.inf])
     }
 
 
@@ -271,7 +306,7 @@ def get_var_type(series: pd.Series) -> dict:
     """
 
     series_description = {}
-
+    typeset = ProfilingTypeSet()
     try:
         series_description = get_counts(series)
 
@@ -281,12 +316,21 @@ def get_var_type(series: pd.Series) -> dict:
             "value_counts_without_nan"
         ].index.inferred_type.startswith("mixed"):
             raise TypeError("Not supported mixed type")
-
-        var_type = pp_typeset.detect_series_type(series)
         
-    except TypeError:
-        var_type = Generic
 
+        var_type = typeset.infer_series_type(series) if series_description["distinct_count_without_nan"] > 0 else Variable.S_TYPE_UNSUPPORTED.value
+
+        if var_type is Variable.TYPE_NUM.value:
+            categorical_threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
+            disctinct_count = series_description["distinct_count_without_nan"]
+            
+            if (disctinct_count < categorical_threshold) and not series_description["has_inf"]:
+                var_type = Variable.TYPE_CAT.value
+        elif var_type not in [x.value for x in Variable]:
+            var_type = Variable.TYPE_CAT.value
+
+    except TypeError:
+        var_type = Variable.S_TYPE_UNSUPPORTED.value
     series_description.update({"type": var_type})
 
     return series_description
