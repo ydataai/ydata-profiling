@@ -53,6 +53,8 @@ class ProfilingTypeSet(VisionsTypeset):
         types = {
             Bool,
             Numeric,
+            Integer,
+            Float,
             DateTime,
             URL,
             Complex,
@@ -115,6 +117,14 @@ class Variable(Enum):
 
     #TYPE_GENERIC = S_TYPE_UNSUPPORTED
 
+    @classmethod
+    def get_by_value(cls, value):
+        for val in cls:
+            if val.value == value:
+                return val
+        
+        raise ValueError(f"No value {value}")
+
 
 def get_counts(series: pd.Series) -> dict:
     """Counts the values in a series (with and without NaN, distinct).
@@ -133,13 +143,19 @@ def get_counts(series: pd.Series) -> dict:
     distinct_count_with_nan = value_counts_with_nan.count()
     distinct_count_without_nan = value_counts_without_nan.count()
 
+    def infinity_test():
+        try:
+            return any(x in value_counts_with_nan for x in [np.inf, -np.inf])
+        except:
+            return False
+    
     return {
         "value_counts": value_counts_without_nan,  # Alias
         "value_counts_with_nan": value_counts_with_nan,
         "value_counts_without_nan": value_counts_without_nan,
         "distinct_count_with_nan": distinct_count_with_nan,
         "distinct_count_without_nan": distinct_count_without_nan,
-        "has_inf": any(x in value_counts_with_nan for x in [np.inf, -np.inf])
+        "has_inf": infinity_test(),
     }
 
 
@@ -307,30 +323,37 @@ def get_var_type(series: pd.Series) -> dict:
 
     series_description = {}
     typeset = ProfilingTypeSet()
+    # TODO: Remove this big try block
     try:
         series_description = get_counts(series)
-
-        # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
-        # list and so on...
-        if series_description[
-            "value_counts_without_nan"
-        ].index.inferred_type.startswith("mixed"):
-            raise TypeError("Not supported mixed type")
-        
-
-        var_type = typeset.infer_series_type(series) if series_description["distinct_count_without_nan"] > 0 else Variable.S_TYPE_UNSUPPORTED.value
-
-        if var_type is Variable.TYPE_NUM.value:
-            categorical_threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
-            disctinct_count = series_description["distinct_count_without_nan"]
-            
-            if (disctinct_count < categorical_threshold) and not series_description["has_inf"]:
-                var_type = Variable.TYPE_CAT.value
-        elif var_type not in [x.value for x in Variable]:
-            var_type = Variable.TYPE_CAT.value
-
     except TypeError:
-        var_type = Variable.S_TYPE_UNSUPPORTED.value
-    series_description.update({"type": var_type})
+        var_type = Variable.S_TYPE_UNSUPPORTED
+        series_description.update({"type": var_type})
+        return series_description
+    
+    # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
+    # list and so on...
+    if series_description["value_counts_without_nan"].index.inferred_type.startswith("mixed"):
+        raise TypeError("Not supported mixed type")
+    
+    if series_description["distinct_count_without_nan"] == 0:
+        var_type = Variable.S_TYPE_UNSUPPORTED
+    else:
+        var_type = typeset.infer_series_type(series)
+        if var_type is Integer or var_type is Float:
+            var_type = Numeric
 
+        if var_type not in [x.value for x in Variable]:
+            var_type = Variable.TYPE_CAT
+        else:
+            var_type = Variable.get_by_value(var_type)
+
+    if var_type is Variable.TYPE_NUM:
+        categorical_threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
+        disctinct_count = series_description["distinct_count_without_nan"]
+        
+        if (disctinct_count < categorical_threshold) and not series_description["has_inf"]:
+            var_type = Variable.TYPE_CAT
+
+    series_description.update({"type": var_type})
     return series_description

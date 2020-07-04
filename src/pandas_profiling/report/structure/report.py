@@ -73,14 +73,14 @@ def render_variables_section(dataframe_summary: dict) -> list:
         The rendered HTML, where each row represents a variable.
     """
     type_to_func = {
-        ppb.Variable.TYPE_BOOL.value: render_boolean,
-        ppb.Variable.TYPE_NUM.value: render_real,
-        ppb.Variable.TYPE_COMPLEX.value: render_complex,
-        ppb.Variable.TYPE_DATE.value: render_date,
-        ppb.Variable.TYPE_CAT.value: render_categorical,
-        ppb.Variable.TYPE_URL.value: render_url,
-        ppb.Variable.TYPE_FILE.value: render_file,
-        ppb.Variable.TYPE_IMAGE.value: render_image,
+        ppb.Variable.TYPE_BOOL: render_boolean,
+        ppb.Variable.TYPE_NUM: render_real,
+        ppb.Variable.TYPE_COMPLEX: render_complex,
+        ppb.Variable.TYPE_DATE: render_date,
+        ppb.Variable.TYPE_CAT: render_categorical,
+        ppb.Variable.TYPE_URL: render_url,
+        ppb.Variable.TYPE_FILE: render_file,
+        ppb.Variable.TYPE_IMAGE: render_image,
         #AbsolutePath: render_path,
         #FilePath: render_file,
         #ImagePath: render_image,

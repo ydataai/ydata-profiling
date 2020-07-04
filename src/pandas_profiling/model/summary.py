@@ -401,20 +401,20 @@ def describe_1d(series: pd.Series) -> dict:
     series_description = base.get_var_type(series)
     series_type = series_description["type"]
     # Run type specific analysis
-    if series_type == Variable.S_TYPE_UNSUPPORTED.value:
+    if series_type == Variable.S_TYPE_UNSUPPORTED:
         series_description.update(describe_unsupported(series, series_description))
     else:
         series_description.update(describe_supported(series, series_description))
 
         type_to_func = {
-            Variable.TYPE_BOOL.value: describe_boolean_1d,
-            Variable.TYPE_NUM.value: describe_numeric_1d,
-            Variable.TYPE_DATE.value: describe_date_1d,
-            Variable.TYPE_URL.value: describe_url_1d,
-            Variable.TYPE_PATH.value: describe_path_1d,
-            Variable.TYPE_IMAGE.value: describe_image_1d,
-            Variable.TYPE_FILE.value: describe_file_1d,
-            Variable.TYPE_CAT.value: describe_categorical_1d,
+            Variable.TYPE_BOOL: describe_boolean_1d,
+            Variable.TYPE_NUM: describe_numeric_1d,
+            Variable.TYPE_DATE: describe_date_1d,
+            Variable.TYPE_URL: describe_url_1d,
+            Variable.TYPE_PATH: describe_path_1d,
+            Variable.TYPE_IMAGE: describe_image_1d,
+            Variable.TYPE_FILE: describe_file_1d,
+            Variable.TYPE_CAT: describe_categorical_1d,
         }
 
         if series_type not in type_to_func:
