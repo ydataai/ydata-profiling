@@ -9,15 +9,10 @@ import pandas as pd
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
-from pandas.plotting import register_matplotlib_converters
-from pkg_resources import resource_filename
 
 from pandas_profiling.config import config
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
-
-register_matplotlib_converters()
-matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
-sns.set_style(style="white")
+from pandas_profiling.visualisation.context import manage_matplotlib_context
 
 
 def _plot_histogram(
@@ -47,6 +42,7 @@ def _plot_histogram(
     return plot
 
 
+@manage_matplotlib_context()
 def histogram(
         series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
@@ -67,6 +63,7 @@ def histogram(
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def mini_histogram(
         series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
 ) -> str:
@@ -134,6 +131,7 @@ def get_correlation_font_size(n_labels) -> Optional[int]:
     return font_size
 
 
+@manage_matplotlib_context()
 def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     """Plot image of a matrix correlation.
 
@@ -177,6 +175,7 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def scatter_complex(series: pd.Series) -> str:
     """Scatter plot (or hexbin plot) from a series of complex values
 
@@ -205,6 +204,7 @@ def scatter_complex(series: pd.Series) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def scatter_series(series, x_label="Width", y_label="Height") -> str:
     """Scatter plot (or hexbin plot) from one series of sequences with length 2
 
@@ -233,6 +233,7 @@ def scatter_series(series, x_label="Width", y_label="Height") -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def scatter_pairwise(series1, series2, x_label, y_label) -> str:
     """Scatter plot (or hexbin plot) from two series
 
