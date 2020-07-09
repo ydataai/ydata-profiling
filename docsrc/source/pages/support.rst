@@ -38,4 +38,4 @@ You should provide the minimal information to reproduce this bug. `This guide <h
         - Package manager (e.g. pip, conda conda info)
         - packages (pip freeze > packages.txt or conda list)
 
-- a sample or description of the dataset (df.head(), df.info())
+- a sample or description of the dataset ``df.head(), df.info()``
