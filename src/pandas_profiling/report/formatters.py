@@ -74,11 +74,11 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     # Author: Peter Odding <peter@peterodding.com>
     # URL: https://humanfriendly.readthedocs.io
 
-    from datetime import datetime, timedelta
-    import numbers
     import decimal
-    import re
     import math
+    import numbers
+    import re
+    from datetime import datetime, timedelta
 
     time_units = (
         dict(
@@ -191,7 +191,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
             return concatenate(result)
 
 
-def fmt_numeric(value: float, precision=10) -> str:
+def fmt_numeric(value: float, precision=6) -> str:
     """Format any numeric value.
 
     Args:

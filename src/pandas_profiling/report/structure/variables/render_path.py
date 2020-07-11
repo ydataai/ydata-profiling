@@ -9,6 +9,7 @@ from pandas_profiling.report.structure.variables.render_categorical import (
 def render_path(summary):
     varid = summary["varid"]
     n_freq_table_max = config["n_freq_table_max"].get(int)
+    redact = config["vars"]["cat"]["redact"].get(bool)
 
     template_variables = render_categorical(summary)
 
@@ -78,31 +79,37 @@ def render_path(summary):
             template_variables["freq_table_rows"],
             name="Full",
             anchor_id=f"{varid}full_frequency",
+            redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_stem"],
             name="Stem",
             anchor_id=f"{varid}stem_frequency",
+            redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_name"],
             name="Name",
             anchor_id=f"{varid}name_frequency",
+            redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_suffix"],
             name="Extension",
             anchor_id=f"{varid}suffix_frequency",
+            redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_parent"],
             name="Parent",
             anchor_id=f"{varid}parent_frequency",
+            redact=redact,
         ),
         FrequencyTable(
             template_variables["freqtable_anchor"],
             name="Anchor",
             anchor_id=f"{varid}anchor_frequency",
+            redact=redact,
         ),
     ]
 

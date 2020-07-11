@@ -31,14 +31,17 @@ def test_example(get_data_file, test_output_dir):
     df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
 
     # Example: Duplicate observations
-    duplicates_to_add = pd.DataFrame(df.iloc[0:10])
-    duplicates_to_add["name"] += " copy"
+    duplicates_to_add = pd.DataFrame(df.iloc[0:10].copy())
 
     df = df.append(duplicates_to_add, ignore_index=True)
 
     output_file = test_output_dir / "profile.html"
     profile = ProfileReport(
-        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, minimal=True
+        df,
+        title="NASA Meteorites",
+        samples={"head": 5, "tail": 5},
+        duplicates={"head": 10},
+        minimal=True,
     )
     profile.to_file(output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
@@ -46,4 +49,4 @@ def test_example(get_data_file, test_output_dir):
         type(profile.get_description()) == dict
         and len(profile.get_description().items()) == 10
     ), "Unexpected result"
-    assert "<span class=badge>11</span>" in profile.to_html()
+    assert "<span class=badge>12</span>" in profile.to_html()

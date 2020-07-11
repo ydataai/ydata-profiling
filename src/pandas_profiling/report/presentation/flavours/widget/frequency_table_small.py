@@ -7,7 +7,7 @@ from pandas_profiling.report.presentation.core.frequency_table_small import (
 
 class WidgetFrequencyTableSmall(FrequencyTableSmall):
     def render(self):
-        return frequency_table_nb(self.content)
+        return frequency_table_nb(self.content["rows"])
 
 
 def frequency_table_nb(rows):

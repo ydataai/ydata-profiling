@@ -31,7 +31,7 @@ install:
 	pip install -e .[notebook,app]
 
 lint:
-	isort --apply
+	isort --profile black .
 	black .
 
 typing:

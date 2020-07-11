@@ -43,10 +43,10 @@ def render_complex(summary):
 
     table2 = Table(
         [
-            {"name": "Mean", "value": summary["mean"], "fmt": "fmt"},
-            {"name": "Minimum", "value": summary["min"], "fmt": "fmt"},
-            {"name": "Maximum", "value": summary["max"], "fmt": "fmt"},
-            {"name": "Zeros", "value": summary["n_zeros"], "fmt": "fmt"},
+            {"name": "Mean", "value": summary["mean"], "fmt": "fmt_numeric"},
+            {"name": "Minimum", "value": summary["min"], "fmt": "fmt_numeric"},
+            {"name": "Maximum", "value": summary["max"], "fmt": "fmt_numeric"},
+            {"name": "Zeros", "value": summary["n_zeros"], "fmt": "fmt_numeric"},
             {"name": "Zeros (%)", "value": summary["p_zeros"], "fmt": "fmt_percent"},
         ]
     )

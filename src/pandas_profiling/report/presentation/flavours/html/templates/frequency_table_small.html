@@ -2,7 +2,11 @@
     <table class="mini freq">
         {% for row in rows %}
             <tr class="{{ row['extra_class'] }}">
-                <th width="50%">{{ row['label'] | fmt }}</th>
+                <th width="50%">
+                      {% if not redact %}
+                        {{ row['label'] | fmt }}
+                      {% endif %}
+                </th>
                 <td width="50%">
                     <div class="bar"
                          style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}"
@@ -11,13 +15,13 @@
                          data-html="true"
                          data-delay=500
                          {#  title="Percentage: {{ row['percentage'] | fmt_percent }}" #} >
-                        {% if row['width'] > 0.20 %}
-                            {{ row['count'] }}
+                        {% if row['width'] > 0.10 %}
+                            {{ row['count'] }}&nbsp;
                         {% else %}
                             &nbsp;
                         {% endif %}
                     </div>
-                    {% if row['width'] <= 0.20 %}
+                    {% if row['width'] <= 0.10 %}
                         {{ row['count'] }}
                     {% endif %}
                 </td>
