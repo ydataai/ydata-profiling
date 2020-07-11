@@ -271,3 +271,20 @@ def scatter_pairwise(series1, series2, x_label, y_label) -> str:
     else:
         plt.scatter(series1.tolist(), series2.tolist(), color=color)
     return plot_360_n0sc0pe(plt)
+
+
+@manage_matplotlib_context()
+def pie_plot(data, legend_kws=None):
+    if legend_kws is None:
+        legend_kws = {}
+
+    def func(pct, allvals):
+        absolute = int(pct / 100.0 * np.sum(allvals))
+        return "{:.1f}%\n({:d})".format(pct, absolute)
+
+    wedges, _, _ = plt.pie(
+        data, autopct=lambda pct: func(pct, data), textprops=dict(color="w")
+    )
+    plt.legend(wedges, data.index.values, **legend_kws)
+
+    return plot_360_n0sc0pe(plt)

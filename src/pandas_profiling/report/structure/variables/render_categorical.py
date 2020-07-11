@@ -9,7 +9,7 @@ from pandas_profiling.report.presentation.core import (
 )
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import histogram
+from pandas_profiling.visualisation.plot import histogram, pie_plot
 
 
 def render_categorical_length(summary, varid, image_format):
@@ -234,8 +234,6 @@ def render_categorical(summary):
 
     template_variables = render_common(summary)
 
-    # Top
-    # Element composition
     info = VariableInfo(
         summary["varid"],
         summary["varname"],
@@ -299,6 +297,18 @@ def render_categorical(summary):
             redact=redact,
         )
     ]
+
+    max_unique = config["plot"]["pie"]["max_unique"].get(int)
+    if max_unique > 0 and summary["n_unique"] <= max_unique:
+        items.append(
+            Image(
+                pie_plot(summary["value_counts"], legend_kws={"loc": "upper right"}),
+                image_format=image_format,
+                alt="Chart",
+                name="Chart",
+                anchor_id=f"{varid}pie_chart",
+            )
+        )
 
     check_length = config["vars"]["cat"]["length"].get(bool)
     if check_length:
