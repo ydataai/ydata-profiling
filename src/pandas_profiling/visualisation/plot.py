@@ -38,7 +38,7 @@ def _plot_histogram(
     # we have precomputed the histograms...
     diff = np.diff(bins)
     plot.bar(
-        bins[:-1] + diff / 2,
+        bins[:-1] + diff / 2,  # type: ignore
         series,
         diff,
         facecolor=config["html"]["style"]["primary_color"].get(str),

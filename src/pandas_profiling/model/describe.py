@@ -109,14 +109,14 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         # Sample
         pbar.set_postfix_str("Take sample")
         if sample is None:
-            sample = get_sample(df)
+            samples = get_sample(df)
         else:
             if "name" not in sample:
                 sample["name"] = None
             if "caption" not in sample:
                 sample["caption"] = None
 
-            sample = [
+            samples = [
                 Sample("custom", sample["data"], sample["name"], sample["caption"])
             ]
         pbar.update()
@@ -173,7 +173,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         # Package
         "package": package,
         # Sample
-        "sample": sample,
+        "sample": samples,
         # Duplicates
         "duplicates": duplicates,
     }

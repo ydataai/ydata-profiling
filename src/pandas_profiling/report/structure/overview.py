@@ -97,6 +97,7 @@ def get_dataset_schema(metadata) -> Optional[Table]:
 
         if len(about_dataset) > 0:
             return Table(about_dataset, name="Dataset", anchor_id="metadata_dataset")
+    return None
 
 
 def get_dataset_reproduction(summary: dict, metadata: dict):
