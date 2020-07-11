@@ -32,13 +32,12 @@ def test_load(get_data_file, test_output_dir):
     df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
 
     # Example: Duplicate observations
-    duplicates_to_add = pd.DataFrame(df.iloc[0:10])
-    duplicates_to_add["name"] += " copy"
+    duplicates_to_add = pd.DataFrame(df.iloc[0:10].copy())
 
     df = df.append(duplicates_to_add, ignore_index=True)
 
     profile1 = ProfileReport(
-        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, minimal=True
+        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, duplicates={"head": 10}, minimal=True
     )
 
     test_output_path = test_output_dir / "NASA-Meteorites.pp"

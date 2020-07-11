@@ -198,25 +198,25 @@ def render_categorical_unicode(summary, varid, redact):
             ],
             name="Characters",
             anchor_id=f"{varid}characters",
-            sequence_type="list",
+            sequence_type="named_list",
         ),
         Container(
             category_items,
             name="Categories",
             anchor_id=f"{varid}categories",
-            sequence_type="list",
+            sequence_type="named_list",
         ),
         Container(
             script_items,
             name="Scripts",
             anchor_id=f"{varid}scripts",
-            sequence_type="list",
+            sequence_type="named_list",
         ),
         Container(
             block_items,
             name="Blocks",
             anchor_id=f"{varid}blocks",
-            sequence_type="list",
+            sequence_type="named_list",
         ),
     ]
 
