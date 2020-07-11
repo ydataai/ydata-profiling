@@ -18,6 +18,7 @@ Changelog v2.9.0rc1
 👷‍♂️ Internal Improvements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - Histograms used to be calculated at view time (single thread) and are now computed in parallel.
+- Matplotlib's rcParams are now modified through the contextmanager [`#494 <https://github.com/pandas-profiling/pandas-profiling/issues/494>`_].
 
 📖 Documentation
 ^^^^^^^^^^^^^^^^

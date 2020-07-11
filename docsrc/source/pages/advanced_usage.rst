@@ -136,7 +136,7 @@ Then, change the configuration to your liking.
 
   from pandas_profiling import ProfileReport
 
-  profile = ProfileReport(df, configuration_file="your_config.yml")
+  profile = ProfileReport(df, config_file="your_config.yml")
   profile.to_file("report.html")
 
 Sample configuration files

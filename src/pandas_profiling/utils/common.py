@@ -1,7 +1,7 @@
 """Common util functions (e.g. missing in Python)."""
 import collections
-from datetime import datetime, timedelta
 import zipfile
+from datetime import datetime, timedelta
 
 # Monkeypatch bug in imagehdr
 from imghdr import tests

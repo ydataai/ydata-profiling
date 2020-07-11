@@ -1,7 +1,6 @@
 """Plot functions for the profiling report."""
 from typing import Optional, Union
 
-import matplotlib
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -9,16 +8,11 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
-from pandas.plotting import register_matplotlib_converters
-from pkg_resources import resource_filename
 
 from pandas_profiling.config import config
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
+from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
-
-register_matplotlib_converters()
-matplotlib.style.use(resource_filename(__name__, "pandas_profiling.mplstyle"))
-sns.set_style(style="white")
 
 
 def _plot_histogram(
@@ -51,6 +45,7 @@ def _plot_histogram(
     )
 
     if date:
+
         def format_fn(tick_val, tick_pos):
             return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
 
@@ -62,6 +57,7 @@ def _plot_histogram(
     return plot
 
 
+@manage_matplotlib_context()
 def histogram(series: np.ndarray, bins: Union[int, np.ndarray], date=False) -> str:
     """Plot an histogram of the data.
 
@@ -79,6 +75,7 @@ def histogram(series: np.ndarray, bins: Union[int, np.ndarray], date=False) -> s
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def mini_histogram(series: np.ndarray, bins: Union[int, np.ndarray], date=False) -> str:
     """Plot a small (mini) histogram of the data.
 
@@ -142,6 +139,7 @@ def get_correlation_font_size(n_labels) -> Optional[int]:
     return font_size
 
 
+@manage_matplotlib_context()
 def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     """Plot image of a matrix correlation.
 
@@ -185,6 +183,7 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def scatter_complex(series: pd.Series) -> str:
     """Scatter plot (or hexbin plot) from a series of complex values
 
@@ -213,6 +212,7 @@ def scatter_complex(series: pd.Series) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def scatter_series(series, x_label="Width", y_label="Height") -> str:
     """Scatter plot (or hexbin plot) from one series of sequences with length 2
 
@@ -241,6 +241,7 @@ def scatter_series(series, x_label="Width", y_label="Height") -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def scatter_pairwise(series1, series2, x_label, y_label) -> str:
     """Scatter plot (or hexbin plot) from two series
 
