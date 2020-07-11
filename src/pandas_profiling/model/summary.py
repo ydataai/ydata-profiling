@@ -117,7 +117,6 @@ def describe_1d(series: pd.Series) -> dict:
 
         return results_data
 
-
     def histogram_compute(finite_values, n_unique, name="histogram"):
         stats = {}
         bins = config["plot"]["histogram"]["bins"].get(int)
@@ -174,6 +173,7 @@ def describe_1d(series: pd.Series) -> dict:
             This method might print warnings, which we suppress.
             https://github.com/astropy/astropy/issues/4927
         """
+
         def mad(arr):
             """ Median Absolute Deviation: a "Robust" version of standard deviation.
                 Indices variability of the sample.
@@ -194,8 +194,12 @@ def describe_1d(series: pd.Series) -> dict:
 
         if isinstance(series.dtype, _IntegerDtype):
             stats = numeric_stats_pandas(series)
-            present_values = series.loc[series.notnull()].astype(str(series.dtype).lower())
-            stats["n_zeros"] = (series_description["count"] - np.count_nonzero(present_values))
+            present_values = series.loc[series.notnull()].astype(
+                str(series.dtype).lower()
+            )
+            stats["n_zeros"] = series_description["count"] - np.count_nonzero(
+                present_values
+            )
             stats["histogram_data"] = present_values
             finite_values = present_values
         else:
@@ -205,12 +209,14 @@ def describe_1d(series: pd.Series) -> dict:
             stats = numeric_stats_numpy(present_values)
             stats["histogram_data"] = finite_values
 
-        stats.update({
-            "mad": mad(present_values),
-            "scatter_data": series,  # For complex
-            "p_infinite": n_infinite / series_description["n"],
-            "n_infinite": n_infinite
-        })
+        stats.update(
+            {
+                "mad": mad(present_values),
+                "scatter_data": series,  # For complex
+                "p_infinite": n_infinite / series_description["n"],
+                "n_infinite": n_infinite,
+            }
+        )
 
         chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
             float
