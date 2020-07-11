@@ -13,6 +13,7 @@
    pages/advanced_usage
    pages/big_data
    pages/sensitive_data
+   pages/metadata
    pages/integrations
    pages/changelog
 

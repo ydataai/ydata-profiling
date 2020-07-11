@@ -1,3 +1,4 @@
+from typing import Optional
 from urllib.parse import quote
 
 from pandas_profiling.model.messages import MessageType
@@ -67,25 +68,52 @@ def get_dataset_overview(summary):
     )
 
 
-def get_dataset_reproduction(summary):
+def get_dataset_schema(metadata) -> Optional[Table]:
+    if len(metadata) > 0 or any(len(value) > 0 for value in metadata.values()):
+        about_dataset = []
+        for key in ["description", "creator", "author", "url"]:
+            if key in metadata and len(metadata[key]) > 0:
+                about_dataset.append(
+                    {"name": key.capitalize(), "value": metadata[key], "fmt": "fmt"}
+                )
+
+        if "copyright_holder" in metadata and len(metadata["copyright_holder"]) > 0:
+            if "copyright_year" not in metadata:
+                about_dataset.append(
+                    {
+                        "name": "Copyright",
+                        "value": f"(c) {metadata['copyright_holder']}",
+                        "fmt": "fmt",
+                    }
+                )
+            else:
+                about_dataset.append(
+                    {
+                        "name": "Copyright",
+                        "value": f"(c) {metadata['copyright_holder']} {metadata['copyright_year']}",
+                        "fmt": "fmt",
+                    }
+                )
+
+        if len(about_dataset) > 0:
+            return Table(about_dataset, name="Dataset", anchor_id="metadata_dataset")
+
+
+def get_dataset_reproduction(summary: dict, metadata: dict):
     version = summary["package"]["pandas_profiling_version"]
     config = quote(summary["package"]["pandas_profiling_config"])
     date_start = summary["analysis"]["date_start"]
     date_end = summary["analysis"]["date_end"]
     duration = summary["analysis"]["duration"]
-    return Table(
+
+    reproduction_table = Table(
         [
             {"name": "Analysis started", "value": date_start, "fmt": "fmt"},
             {"name": "Analysis finished", "value": date_end, "fmt": "fmt"},
             {"name": "Duration", "value": duration, "fmt": "fmt_timespan"},
             {
-                "name": "Version",
+                "name": "Software version",
                 "value": f'<a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{version}</a>',
-                "fmt": "raw",
-            },
-            {
-                "name": "Command line",
-                "value": "<code>pandas_profiling --config_file config.yaml [YOUR_FILE.csv]</code>",
                 "fmt": "raw",
             },
             {
@@ -95,7 +123,18 @@ def get_dataset_reproduction(summary):
             },
         ],
         name="Reproduction",
-        anchor_id="reproduction",
+        anchor_id="metadata_reproduction",
+    )
+
+    dataset_table = get_dataset_schema(metadata)
+
+    items = []
+    if dataset_table:
+        items.append(dataset_table)
+    items.append(reproduction_table)
+
+    return Container(
+        items, name="Metadata", anchor_id="metadata", sequence_type="grid",
     )
 
 

@@ -318,3 +318,13 @@ select.multiple{
         border: 0 !important;
     }
 }
+
+.text-placeholder {
+    display: inline-block;
+    background-color: #444;
+    height: 12px;
+    border-radius: 100px;
+    margin: 5px 0;
+    min-width: 200px;
+    opacity: .1;
+}

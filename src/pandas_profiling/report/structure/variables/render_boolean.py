@@ -16,11 +16,6 @@ def render_boolean(summary):
 
     # Prepare variables
     template_variables = render_common(summary)
-    mini_freq_table_rows = freq_table(
-        freqtable=summary["value_counts"],
-        n=summary["n"],
-        max_number_to_print=n_obs_bool,
-    )
 
     # Element composition
     info = VariableInfo(
@@ -66,7 +61,14 @@ def render_boolean(summary):
         ]
     )
 
-    fqm = FrequencyTableSmall(mini_freq_table_rows)
+    fqm = FrequencyTableSmall(
+        freq_table(
+            freqtable=summary["value_counts"],
+            n=summary["n"],
+            max_number_to_print=n_obs_bool,
+        ),
+        redact=False,
+    )
 
     template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
 
@@ -74,6 +76,7 @@ def render_boolean(summary):
         template_variables["freq_table_rows"],
         name="Frequency Table",
         anchor_id=f"{varid}frequency_table",
+        redact=False,
     )
 
     template_variables["bottom"] = Container(

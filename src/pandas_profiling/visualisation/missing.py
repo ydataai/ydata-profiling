@@ -1,6 +1,6 @@
 """Plotting functions for the missing values diagrams"""
-import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib import pyplot as plt
 from missingno import missingno
 
 from pandas_profiling.config import config

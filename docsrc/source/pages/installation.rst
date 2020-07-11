@@ -32,6 +32,8 @@ If you are in a notebook (locally, at LambdaLabs, on Google Colab or Kaggle), yo
     !{sys.executable} -m pip install -U pandas-profiling[notebook]
     !jupyter nbextension enable --py widgetsnbextension
 
+You may have to restart the kernel or runtime.
+
 Using conda
 -----------
 

@@ -1,18 +1,19 @@
 """Plot functions for the profiling report."""
-
 from typing import Optional, Union
 
 import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
+from matplotlib.ticker import FuncFormatter
 from pandas.plotting import register_matplotlib_converters
 from pkg_resources import resource_filename
 
 from pandas_profiling.config import config
+from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 
 register_matplotlib_converters()
@@ -21,10 +22,10 @@ sns.set_style(style="white")
 
 
 def _plot_histogram(
-        series: np.ndarray,
-        series_description: dict,
-        bins: Union[int, np.ndarray],
-        figsize: tuple = (6, 4),
+    series: np.ndarray,
+    bins: Union[int, np.ndarray],
+    figsize: tuple = (6, 4),
+    date=False,
 ):
     """Plot an histogram from the data and return the AxesSubplot object.
 
@@ -35,59 +36,66 @@ def _plot_histogram(
 
     Returns:
         The histogram plot.
-
-
     """
     fig = plt.figure(figsize=figsize)
     plot = fig.add_subplot(111)
     plot.set_ylabel("Frequency")
-    plot.hist(
-        series, facecolor=config["html"]["style"]["primary_color"].get(str), bins=bins,
+
+    # we have precomputed the histograms...
+    diff = np.diff(bins)
+    plot.bar(
+        bins[:-1] + diff / 2,
+        series,
+        diff,
+        facecolor=config["html"]["style"]["primary_color"].get(str),
     )
+
+    if date:
+        def format_fn(tick_val, tick_pos):
+            return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
+
+        plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
+
+    if not config["plot"]["histogram"]["x_axis_labels"].get(bool):
+        plot.set_xticklabels([])
+
     return plot
 
 
-def histogram(
-        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
-) -> str:
+def histogram(series: np.ndarray, bins: Union[int, np.ndarray], date=False) -> str:
     """Plot an histogram of the data.
 
     Args:
       series: The data to plot.
-      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
       The resulting histogram encoded as a string.
 
     """
-    plot = _plot_histogram(series, series_description, bins)
-    plot.xaxis.set_tick_params(rotation=45)
+    plot = _plot_histogram(series, bins, date=date)
+    plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
     return plot_360_n0sc0pe(plt)
 
 
-def mini_histogram(
-        series: np.ndarray, series_description: dict, bins: Union[int, np.ndarray]
-) -> str:
+def mini_histogram(series: np.ndarray, bins: Union[int, np.ndarray], date=False) -> str:
     """Plot a small (mini) histogram of the data.
 
     Args:
       series: The data to plot.
-      series_description:
       bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
       The resulting mini histogram encoded as a string.
     """
-    plot = _plot_histogram(series, series_description, bins, figsize=(2, 1.5))
+    plot = _plot_histogram(series, bins, figsize=(3, 2.25), date=date)
     plot.axes.get_yaxis().set_visible(False)
     plot.set_facecolor("w")
 
-    xticks = plot.xaxis.get_major_ticks()
-    for tick in xticks:
-        tick.label1.set_fontsize(8)
-    plot.xaxis.set_tick_params(rotation=45)
+    for tick in plot.xaxis.get_major_ticks():
+        tick.label1.set_fontsize(6 if date else 8)
+    plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
 
     return plot_360_n0sc0pe(plt)
@@ -261,40 +269,4 @@ def scatter_pairwise(series1, series2, x_label, y_label) -> str:
         plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
     else:
         plt.scatter(series1.tolist(), series2.tolist(), color=color)
-    return plot_360_n0sc0pe(plt)
-
-
-import seaborn as sns
-
-
-def density(series, group, x_label, g_label) -> str:
-    """Scatter plot (or hexbin plot) from two series
-
-    Examples:
-        >>> widths = pd.Series([1000, 100, 10, 20, 21])
-        >>> group = pd.Series(['a', 'a', 'a', 'b', 'b'])
-        >>> scatter_series(widths, group, "Width", "Height")
-
-    Args:
-        series: the series corresponding to the x-axis
-        group: the series corresponding to the y-axis
-        x_label: the label on the x-axis
-        y_label: the label on the y-axis
-
-    Returns:
-        A string containing (a reference to) the image
-    """
-    plt.xlabel(x_label)
-    plt.ylabel(g_label)
-    df = series.to_frame(x_label)
-    df[g_label] = group
-    color = config["html"]["style"]["primary_color"].get(str)
-    # scatter_threshold = config["plot"]["scatter_threshold"].get(int)
-
-    # if len(series1) > scatter_threshold:
-    #     cmap = sns.light_palette(color, as_cmap=True)
-    #     plt.hexbin(series1.tolist(), series2.tolist(), gridsize=15, cmap=cmap)
-    # else:
-    sns.pairplot(df, hue=g_label)
-    # plt.scatter(series.tolist(), group.tolist(), color=color)
     return plot_360_n0sc0pe(plt)

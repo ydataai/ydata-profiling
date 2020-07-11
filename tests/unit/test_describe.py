@@ -205,7 +205,6 @@ def expected_results():
             "max": 50.0,
             "mean": 13.375,
             "min": -10.0,
-            "mode": 0.0,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 6 / 8,
@@ -239,7 +238,6 @@ def expected_results():
             "max": 3122.0,
             "mean": 491.17436504331249,
             "min": -3.1415926535000001,
-            "mode": 9.9999999999999995e-07,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 1,
@@ -272,7 +270,6 @@ def expected_results():
             "mean": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "mode": "c",
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 6 / 8,
@@ -304,7 +301,6 @@ def expected_results():
             "mean": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "mode": 1.0,
             "n_missing": 0,
             "p_missing": 0.0,
             "p_unique": 0.1111111111111111,
@@ -336,7 +332,6 @@ def expected_results():
             "mean": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "mode": u"some constant text $ % value {obj} ",
             "n_missing": 0,
             "p_missing": 0.0,
             "p_unique": 0.1111111111111111,
@@ -366,7 +361,6 @@ def expected_results():
             "max": datetime.datetime(2022, 1, 1, 13, 57),
             "mean": check_is_NaN,
             "min": datetime.datetime(1898, 1, 2),
-            "mode": datetime.datetime(1950, 12, 9),
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 5 / 8,
@@ -396,7 +390,6 @@ def expected_results():
             "max": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "mode": True,
             "n_missing": 0,
             "p_missing": 0,
             "p_unique": 2 / 9,
@@ -427,7 +420,6 @@ def expected_results():
             "max": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "mode": False,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 2 / 8,
@@ -458,7 +450,6 @@ def expected_results():
             "max": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "mode": True,
             "n_missing": 0,
             "p_missing": 0,
             "p_unique": 2 / 9,
@@ -487,7 +478,6 @@ def expected_results():
             "mad": check_is_NaN,
             "max": check_is_NaN,
             "min": check_is_NaN,
-            "mode": False,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_unique": 2 / 8,
@@ -575,8 +565,8 @@ def test_describe_df(describe_data, expected_results):
 
         if results["variables"][col]["type"].value in ["NUM", "DATE"]:
             assert (
-                "histogram_data" in results["variables"][col]
-            ), "Mini-histogram missing for column {} ".format(col)
+                "histogram" in results["variables"][col]
+            ), "Histogram missing for column {} ".format(col)
 
 
 def test_describe_empty():

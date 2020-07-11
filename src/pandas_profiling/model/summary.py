@@ -4,7 +4,7 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from pathlib import Path
-from typing import Callable, Mapping, Tuple
+from typing import Callable, Mapping, Optional, Tuple
 from urllib.parse import urlsplit
 
 import numpy as np
@@ -15,6 +15,10 @@ from visions.application.summaries.series import (
     image_summary,
     path_summary,
     url_summary,
+)
+from visions.application.summaries.series.text_summary import (
+    length_summary,
+    unicode_summary,
 )
 
 from pandas_profiling.config import config as config
@@ -32,7 +36,7 @@ from pandas_profiling.visualisation.missing import (
     missing_heatmap,
     missing_matrix,
 )
-from pandas_profiling.visualisation.plot import scatter_pairwise, density
+from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def sort_column_names(dct: Mapping, sort: str):
@@ -77,11 +81,10 @@ def describe_1d(series: pd.Series) -> dict:
             "n": length,
             "count": count,
             "distinct_count": distinct_count,
-            "n_unique": distinct_count,
             "p_missing": 1 - (count / length),
             "n_missing": length - count,
             "is_unique": distinct_count == count,
-            "mode": series.mode().iloc[0] if count > distinct_count > 1 else series[0],
+            "n_unique": distinct_count,
             "p_unique": distinct_count / count,
             "memory_size": series.memory_usage(config["memory_deep"].get(bool)),
         }
@@ -112,6 +115,18 @@ def describe_1d(series: pd.Series) -> dict:
         }
 
         return results_data
+
+    def histogram_compute(finite_values, n_unique, name="histogram"):
+        stats = {}
+        bins = config["plot"]["histogram"]["bins"].get(int)
+        bins = "auto" if bins == 0 else min(bins, n_unique)
+        stats[name] = np.histogram(finite_values, bins)
+
+        max_bins = config["plot"]["histogram"]["max_bins"].get(int)
+        if bins == "auto" and len(stats[name][1]) > max_bins:
+            stats[name] = np.histogram(finite_values, max_bins)
+
+        return stats
 
     def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         """Describe a numeric series.
@@ -157,7 +172,6 @@ def describe_1d(series: pd.Series) -> dict:
             "sum": np.sum(present_values),
             "mad": mad(present_values),
             "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
-            "histogram_data": finite_values,
             "scatter_data": series,  # For complex
             "p_infinite": n_infinite / series_description["n"],
             "n_infinite": n_infinite,
@@ -181,24 +195,17 @@ def describe_1d(series: pd.Series) -> dict:
         stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
         stats["p_zeros"] = stats["n_zeros"] / series_description["n"]
 
-        bins = config["plot"]["histogram"]["bins"].get(int)
-        # Bins should never be larger than the number of distinct values
-        bins = min(series_description["distinct_count_with_nan"], bins)
-        stats["histogram_bins"] = bins
+        stats["monotonic_increase"] = series.is_monotonic_increasing
+        stats["monotonic_decrease"] = series.is_monotonic_decreasing
 
-        bayesian_blocks_bins = config["plot"]["histogram"]["bayesian_blocks_bins"].get(
-            bool
+        stats["monotonic_increase_strict"] = (
+            stats["monotonic_increase"] and series.is_unique
         )
-        if bayesian_blocks_bins:
-            from astropy.stats import bayesian_blocks
+        stats["monotonic_decrease_strict"] = (
+            stats["monotonic_decrease"] and series.is_unique
+        )
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                ret = bayesian_blocks(stats["histogram_data"])
-
-                # Sanity check
-                if not np.isnan(ret).any() and ret.size > 1:
-                    stats["histogram_bins_bayesian_blocks"] = ret
+        stats.update(histogram_compute(finite_values, series_description["n_unique"]))
 
         return stats
 
@@ -215,25 +222,20 @@ def describe_1d(series: pd.Series) -> dict:
         stats = {
             "min": pd.Timestamp.to_pydatetime(series.min()),
             "max": pd.Timestamp.to_pydatetime(series.max()),
-            "histogram_data": series,
         }
 
-        bins = config["plot"]["histogram"]["bins"].get(int)
-        # Bins should never be larger than the number of distinct values
-        bins = min(series_description["distinct_count_with_nan"], bins)
-        stats["histogram_bins"] = bins
-
         stats["range"] = stats["max"] - stats["min"]
+
+        values = series[series.notnull()].values.astype(np.int64) // 10 ** 9
 
         chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
             float
         )
         if chi_squared_threshold > 0.0:
-            histogram = np.histogram(
-                series[series.notna()].astype("int64").values, bins="auto"
-            )[0]
+            histogram, _ = np.histogram(values, bins="auto")
             stats["chi_squared"] = chisquare(histogram)
 
+        stats.update(histogram_compute(values, series_description["n_unique"]))
         return stats
 
     def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict:
@@ -262,16 +264,15 @@ def describe_1d(series: pd.Series) -> dict:
 
         check_length = config["vars"]["cat"]["length"].get(bool)
         if check_length:
-            from visions.application.summaries.series.text_summary import length_summary
-
             stats.update(length_summary(series))
+            stats.update(
+                histogram_compute(
+                    stats["length"], stats["length"].nunique(), name="histogram_length"
+                )
+            )
 
         check_unicode = config["vars"]["cat"]["unicode"].get(bool)
         if check_unicode:
-            from visions.application.summaries.series.text_summary import (
-                unicode_summary,
-            )
-
             stats.update(unicode_summary(series))
 
             stats["category_alias_counts"].index = stats[
@@ -318,12 +319,14 @@ def describe_1d(series: pd.Series) -> dict:
 
         stats = file_summary(series)
 
-        # TODO: distinct counts for file_sizes
-        bins = config["plot"]["histogram"]["bins"].get(int)
-        bins = min(series_description["distinct_count_with_nan"], bins)
-        stats["histogram_bins"] = bins
-
         series_description.update(describe_path_1d(series, series_description))
+        stats.update(
+            histogram_compute(
+                stats["file_size"],
+                stats["file_size"].nunique(),
+                name="histogram_file_size",
+            )
+        )
 
         return stats
 
@@ -388,8 +391,8 @@ def describe_1d(series: pd.Series) -> dict:
         stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
         return stats
-        # Make sure pd.NA is not in the series
 
+    # Make sure pd.NA is not in the series
     series.fillna(np.nan, inplace=True)
 
     # Infer variable types
@@ -546,28 +549,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     return table_stats
 
 
-def get_sample(df: pd.DataFrame) -> dict:
-    """Obtains a sample from head and tail of the DataFrame
-
-    Args:
-        df: the pandas DataFrame
-
-    Returns:
-        a dictionary with keys "head" and "tail"
-    """
-    sample = {}
-    n_head = config["samples"]["head"].get(int)
-    if n_head > 0:
-        sample["head"] = df.head(n=n_head)
-
-    n_tail = config["samples"]["tail"].get(int)
-    if n_tail > 0:
-        sample["tail"] = df.tail(n=n_tail)
-
-    return sample
-
-
-def get_duplicates(df: pd.DataFrame, supported_columns) -> pd.DataFrame:
+def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -657,20 +639,16 @@ def get_scatter_matrix(df, variables):
         continuous_variables = [
             column for column, type in variables.items() if type == Variable.TYPE_NUM
         ]
-        all_variables = [column for column, type in variables.items()]
 
         targets = config["interactions"]["targets"].get(list)
         if len(targets) == 0:
-            targets = all_variables
+            targets = continuous_variables
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
                     scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
-                else:
-                    scatter_matrix[x][y] = density(df[y], df[x], y, x)
-
     else:
         scatter_matrix = {}
 
