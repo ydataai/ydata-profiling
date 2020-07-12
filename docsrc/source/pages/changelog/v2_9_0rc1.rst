@@ -8,11 +8,13 @@ Changelog v2.9.0rc1
 - Introduce shorthands for groups of parameters for styles and explorative mode [`#499 <https://github.com/pandas-profiling/pandas-profiling/issues/499>`_].
 - Metadata of a dataset can be added to the report (see documentation).
 - Numeric columns now report monotonicity information.
+- A pie chart can be generated for boolean and (low) categorical columns.
 
 🐛 Bug fixes
 ^^^^^^^^^^^^
 - NaT in date columns were interpreted as a date in 1680 by histograms [`#507 <https://github.com/pandas-profiling/pandas-profiling/issues/507>`_].
 - ValueError: ('widget type not understood', 'select') [`#493 <https://github.com/pandas-profiling/pandas-profiling/issues/493>`_].
+- Fixed regression in working with pandas' nullable integers [`#502 <https://github.com/pandas-profiling/pandas-profiling/issues/502>`_].
 - Formatting of precision of numeric values has been improved in a few places.
 
 👷‍♂️ Internal Improvements

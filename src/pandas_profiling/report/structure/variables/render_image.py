@@ -15,6 +15,7 @@ from pandas_profiling.visualisation.plot import scatter_series
 def render_image(summary):
     varid = summary["varid"]
     n_freq_table_max = config["n_freq_table_max"].get(int)
+    redact = config["vars"]["cat"]["redact"].get(bool)
 
     template_variables = render_file(summary)
 
@@ -123,6 +124,7 @@ def render_image(summary):
             ),
             name="Common values",
             anchor_id=f"{varid}image_dimensions_frequency",
+            redact=False,
         ),
     ]
 
@@ -143,6 +145,7 @@ def render_image(summary):
                 ),
                 name="Exif keys",
                 anchor_id=f"{varid}exif_keys",
+                redact=redact,
             )
         ]
         for key, counts in summary["exif_data"].items():
@@ -158,17 +161,18 @@ def render_image(summary):
                     ),
                     name=key,
                     anchor_id=f"{varid}_exif_{key}",
+                    redact=redact,
                 )
             )
 
-        exif_data = Container(
-            items,
-            anchor_id=f"{varid}exif_data",
-            name="Exif data",
-            sequence_type="named_list",
+        image_items.append(
+            Container(
+                items,
+                anchor_id=f"{varid}exif_data",
+                name="Exif data",
+                sequence_type="named_list",
+            )
         )
-
-        image_items.append(exif_data)
 
     image_items.append(image_shape)
 
