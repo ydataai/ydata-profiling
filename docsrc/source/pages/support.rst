@@ -34,8 +34,9 @@ You should provide the minimal information to reproduce this bug. `This guide <h
 
         - operating system (e.g. Windows, Linux, Mac)
         - Python version (e.g. 3.7)
-        - Jupyter notebook( or cloud services like Google Colab,Kaggle Kernels,etc), console or IDE (such as PyCharm,VS Code,etc)
-        - Package manager (e.g. ``pip --version`` or ``conda info``)
+        - Jupyter notebook( or cloud services like Google Colab, Kaggle Kernels, etc), console or IDE (such as PyCharm,VS Code,etc)
+        - package manager (e.g. ``pip --version`` or ``conda info``)
         - packages (``pip freeze > packages.txt`` or ``conda list``)
 
-- a sample or description of the dataset ``df.head()`` and  ``df.info()``
+- a sample of the dataset (``df.sample()`` or ``df.head()``)
+- a description of the dataset (``df.info()``)
