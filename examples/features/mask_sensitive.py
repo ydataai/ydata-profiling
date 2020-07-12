@@ -28,9 +28,8 @@ if __name__ == "__main__":
         }
     )
 
-    # Length left out due to correlation with weight.
     report = ProfileReport(
-        df.sample(frac=0.05),
+        df.sample(frac=0.25),
         title="Masked data",
         dataset=dict(
             description="This profiling report was generated using a sample of 5% of the original dataset.",
