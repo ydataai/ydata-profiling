@@ -37,7 +37,11 @@ def test_load(get_data_file, test_output_dir):
     df = df.append(duplicates_to_add, ignore_index=True)
 
     profile1 = ProfileReport(
-        df, title="NASA Meteorites", samples={"head": 5, "tail": 5}, duplicates={"head": 10}, minimal=True
+        df,
+        title="NASA Meteorites",
+        samples={"head": 5, "tail": 5},
+        duplicates={"head": 10},
+        minimal=True,
     )
 
     test_output_path = test_output_dir / "NASA-Meteorites.pp"
