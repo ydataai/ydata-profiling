@@ -181,13 +181,6 @@ def describe_1d(series: pd.Series) -> dict:
             """
             return np.median(np.abs(arr - np.median(arr)))
 
-        def mad(arr):
-            """ Median Absolute Deviation: a "Robust" version of standard deviation.	
-                Indices variability of the sample.
-                https://en.wikipedia.org/wiki/Median_absolute_deviation
-            """
-            return np.median(np.abs(arr - np.median(arr)))
-
         quantiles = config["vars"]["num"]["quantiles"].get(list)
 
         n_infinite = ((series == np.inf) | (series == -np.inf)).sum()

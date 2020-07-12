@@ -3,9 +3,9 @@ from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
     FrequencyTableSmall,
+    Image,
     Table,
     VariableInfo,
-    Image,
 )
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
