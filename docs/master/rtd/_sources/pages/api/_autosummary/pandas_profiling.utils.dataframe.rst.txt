@@ -5,6 +5,10 @@ pandas\_profiling.utils.dataframe
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -24,3 +28,6 @@ pandas\_profiling.utils.dataframe
    
    
    
+
+
+

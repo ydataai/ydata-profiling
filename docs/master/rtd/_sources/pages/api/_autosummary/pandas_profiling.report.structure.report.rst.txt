@@ -5,6 +5,10 @@ pandas\_profiling.report.structure.report
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -26,3 +30,6 @@ pandas\_profiling.report.structure.report
    
    
    
+
+
+

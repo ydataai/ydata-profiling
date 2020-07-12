@@ -5,12 +5,17 @@ pandas\_profiling.report.structure.overview
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
    
       get_dataset_overview
       get_dataset_reproduction
+      get_dataset_schema
       get_dataset_warnings
    
    
@@ -22,3 +27,6 @@ pandas\_profiling.report.structure.overview
    
    
    
+
+
+

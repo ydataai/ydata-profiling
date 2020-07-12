@@ -136,7 +136,7 @@ Then, change the configuration to your liking.
 
   from pandas_profiling import ProfileReport
 
-  profile = ProfileReport(df, configuration_file="your_config.yml")
+  profile = ProfileReport(df, config_file="your_config.yml")
   profile.to_file("report.html")
 
 Sample configuration files
@@ -145,9 +145,7 @@ A great way to get an overview of the possible configuration is to look through 
 The repository contains the following files:
 
 - `default configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_ (default),
-- `explorative configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml>`_ (with text, file and image features enabled),
 - `minimal configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
-- `dark themed configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml>`_ and `orange themed configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_united.yaml>`_ (example of customizing styles).
 
 Configuration shorthands
 ------------------------

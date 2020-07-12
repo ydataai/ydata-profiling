@@ -1,15 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Support &mdash; pandas-profiling 2.8.0 documentation</title>
+  <title>Support &mdash; pandas-profiling 2.9.0rc1 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
   
@@ -17,7 +21,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Contribution Guidelines" href="contribution_guidelines.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
           
 
           
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
     
@@ -92,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="big_data.html">Big Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
@@ -145,6 +148,7 @@
 
 
         </div>
+        
       </div>
     </nav>
 
@@ -183,7 +187,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Support</li>
     
@@ -225,18 +229,19 @@
 <p>You should provide the minimal information to reproduce this bug. <a class="reference external" href="http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports">This guide</a> can help crafting a minimal bug report. Please include:</p>
 <ul>
 <li><p>the minimal code you are using to generate the report</p></li>
-<li><p>which environment you are using:</p>
+<li><p>Which environment you are using:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>operating system (e.g. Windows, Linux, Mac)</p></li>
 <li><p>Python version (e.g. 3.7)</p></li>
-<li><p>jupyter notebook, console or IDE such as PyCharm</p></li>
-<li><p>Package manager (e.g. pip, conda conda info)</p></li>
-<li><p>packages (pip freeze &gt; packages.txt or conda list)</p></li>
+<li><p>Jupyter notebook( or cloud services like Google Colab, Kaggle Kernels, etc), console or IDE (such as PyCharm,VS Code,etc)</p></li>
+<li><p>package manager (e.g. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">--version</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">info</span></code>)</p></li>
+<li><p>packages (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">freeze</span> <span class="pre">&gt;</span> <span class="pre">packages.txt</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">list</span></code>)</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p>a sample or description of the dataset (df.head(), df.info())</p></li>
+<li><p>a sample of the dataset (<code class="docutils literal notranslate"><span class="pre">df.sample()</span></code> or <code class="docutils literal notranslate"><span class="pre">df.head()</span></code>)</p></li>
+<li><p>a description of the dataset (<code class="docutils literal notranslate"><span class="pre">df.info()</span></code>)</p></li>
 </ul>
 </div>
 </div>
@@ -261,11 +266,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Simon Brugman
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -276,7 +289,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -5,6 +5,10 @@ pandas\_profiling.model.summary
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -13,7 +17,6 @@ pandas\_profiling.model.summary
       get_duplicates
       get_messages
       get_missing_diagrams
-      get_sample
       get_scatter_matrix
       get_series_description
       get_series_descriptions
@@ -29,3 +32,6 @@ pandas\_profiling.model.summary
    
    
    
+
+
+

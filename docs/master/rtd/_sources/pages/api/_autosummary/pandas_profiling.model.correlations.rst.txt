@@ -5,6 +5,10 @@ pandas\_profiling.model.correlations
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -25,3 +29,6 @@ pandas\_profiling.model.correlations
    
    
    
+
+
+

@@ -5,6 +5,10 @@ pandas\_profiling.visualisation.plot
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -14,6 +18,7 @@ pandas\_profiling.visualisation.plot
       get_correlation_font_size
       histogram
       mini_histogram
+      pie_plot
       scatter_complex
       scatter_pairwise
       scatter_series
@@ -27,3 +32,6 @@ pandas\_profiling.visualisation.plot
    
    
    
+
+
+

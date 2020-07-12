@@ -5,6 +5,10 @@ pandas\_profiling.model.messages
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -32,3 +36,6 @@ pandas\_profiling.model.messages
    
    
    
+
+
+

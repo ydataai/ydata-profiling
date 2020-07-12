@@ -5,6 +5,10 @@ pandas\_profiling.visualisation.utils
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -22,3 +26,6 @@ pandas\_profiling.visualisation.utils
    
    
    
+
+
+

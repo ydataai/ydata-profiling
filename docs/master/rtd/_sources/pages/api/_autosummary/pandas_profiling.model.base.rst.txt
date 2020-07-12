@@ -5,6 +5,10 @@ pandas\_profiling.model.base
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -34,3 +38,6 @@ pandas\_profiling.model.base
    
    
    
+
+
+

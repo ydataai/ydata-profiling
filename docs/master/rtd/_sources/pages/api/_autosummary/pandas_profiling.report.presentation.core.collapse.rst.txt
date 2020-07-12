@@ -9,6 +9,10 @@ pandas\_profiling.report.presentation.core.collapse
 
    
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
@@ -20,3 +24,6 @@ pandas\_profiling.report.presentation.core.collapse
    
    
    
+
+
+

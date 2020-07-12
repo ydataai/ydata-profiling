@@ -5,6 +5,10 @@ pandas\_profiling.controller.console
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -21,3 +25,6 @@ pandas\_profiling.controller.console
    
    
    
+
+
+

@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.8.1" />
+<meta name="generator" content="pdoc 0.8.3" />
 <title>pandas_profiling.report.structure.overview API documentation</title>
 <meta name="description" content="" />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
 <body>
 <main>
@@ -24,7 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from urllib.parse import quote
+<pre><code class="python">from typing import Optional
+from urllib.parse import quote
 
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import Container, Table, Warnings
@@ -93,25 +96,53 @@ def get_dataset_overview(summary):
     )
 
 
-def get_dataset_reproduction(summary):
+def get_dataset_schema(metadata) -&gt; Optional[Table]:
+    if len(metadata) &gt; 0 or any(len(value) &gt; 0 for value in metadata.values()):
+        about_dataset = []
+        for key in [&#34;description&#34;, &#34;creator&#34;, &#34;author&#34;, &#34;url&#34;]:
+            if key in metadata and len(metadata[key]) &gt; 0:
+                about_dataset.append(
+                    {&#34;name&#34;: key.capitalize(), &#34;value&#34;: metadata[key], &#34;fmt&#34;: &#34;fmt&#34;}
+                )
+
+        if &#34;copyright_holder&#34; in metadata and len(metadata[&#34;copyright_holder&#34;]) &gt; 0:
+            if &#34;copyright_year&#34; not in metadata:
+                about_dataset.append(
+                    {
+                        &#34;name&#34;: &#34;Copyright&#34;,
+                        &#34;value&#34;: f&#34;(c) {metadata[&#39;copyright_holder&#39;]}&#34;,
+                        &#34;fmt&#34;: &#34;fmt&#34;,
+                    }
+                )
+            else:
+                about_dataset.append(
+                    {
+                        &#34;name&#34;: &#34;Copyright&#34;,
+                        &#34;value&#34;: f&#34;(c) {metadata[&#39;copyright_holder&#39;]} {metadata[&#39;copyright_year&#39;]}&#34;,
+                        &#34;fmt&#34;: &#34;fmt&#34;,
+                    }
+                )
+
+        if len(about_dataset) &gt; 0:
+            return Table(about_dataset, name=&#34;Dataset&#34;, anchor_id=&#34;metadata_dataset&#34;)
+    return None
+
+
+def get_dataset_reproduction(summary: dict, metadata: dict):
     version = summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
     config = quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
     date_start = summary[&#34;analysis&#34;][&#34;date_start&#34;]
     date_end = summary[&#34;analysis&#34;][&#34;date_end&#34;]
     duration = summary[&#34;analysis&#34;][&#34;duration&#34;]
-    return Table(
+
+    reproduction_table = Table(
         [
             {&#34;name&#34;: &#34;Analysis started&#34;, &#34;value&#34;: date_start, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Analysis finished&#34;, &#34;value&#34;: date_end, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Duration&#34;, &#34;value&#34;: duration, &#34;fmt&#34;: &#34;fmt_timespan&#34;},
             {
-                &#34;name&#34;: &#34;Version&#34;,
+                &#34;name&#34;: &#34;Software version&#34;,
                 &#34;value&#34;: f&#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;,
-                &#34;fmt&#34;: &#34;raw&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Command line&#34;,
-                &#34;value&#34;: &#34;&lt;code&gt;pandas_profiling --config_file config.yaml [YOUR_FILE.csv]&lt;/code&gt;&#34;,
                 &#34;fmt&#34;: &#34;raw&#34;,
             },
             {
@@ -121,7 +152,18 @@ def get_dataset_reproduction(summary):
             },
         ],
         name=&#34;Reproduction&#34;,
-        anchor_id=&#34;reproduction&#34;,
+        anchor_id=&#34;metadata_reproduction&#34;,
+    )
+
+    dataset_table = get_dataset_schema(metadata)
+
+    items = []
+    if dataset_table:
+        items.append(dataset_table)
+    items.append(reproduction_table)
+
+    return Container(
+        items, name=&#34;Metadata&#34;, anchor_id=&#34;metadata&#34;, sequence_type=&#34;grid&#34;,
     )
 
 
@@ -216,7 +258,7 @@ def get_dataset_warnings(warnings: list) -&gt; Warnings:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.overview.get_dataset_reproduction"><code class="name flex">
-<span>def <span class="ident">get_dataset_reproduction</span></span>(<span>summary)</span>
+<span>def <span class="ident">get_dataset_reproduction</span></span>(<span>summary: dict, metadata: dict)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -224,25 +266,21 @@ def get_dataset_warnings(warnings: list) -&gt; Warnings:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_dataset_reproduction(summary):
+<pre><code class="python">def get_dataset_reproduction(summary: dict, metadata: dict):
     version = summary[&#34;package&#34;][&#34;pandas_profiling_version&#34;]
     config = quote(summary[&#34;package&#34;][&#34;pandas_profiling_config&#34;])
     date_start = summary[&#34;analysis&#34;][&#34;date_start&#34;]
     date_end = summary[&#34;analysis&#34;][&#34;date_end&#34;]
     duration = summary[&#34;analysis&#34;][&#34;duration&#34;]
-    return Table(
+
+    reproduction_table = Table(
         [
             {&#34;name&#34;: &#34;Analysis started&#34;, &#34;value&#34;: date_start, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Analysis finished&#34;, &#34;value&#34;: date_end, &#34;fmt&#34;: &#34;fmt&#34;},
             {&#34;name&#34;: &#34;Duration&#34;, &#34;value&#34;: duration, &#34;fmt&#34;: &#34;fmt_timespan&#34;},
             {
-                &#34;name&#34;: &#34;Version&#34;,
+                &#34;name&#34;: &#34;Software version&#34;,
                 &#34;value&#34;: f&#39;&lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling v{version}&lt;/a&gt;&#39;,
-                &#34;fmt&#34;: &#34;raw&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Command line&#34;,
-                &#34;value&#34;: &#34;&lt;code&gt;pandas_profiling --config_file config.yaml [YOUR_FILE.csv]&lt;/code&gt;&#34;,
                 &#34;fmt&#34;: &#34;raw&#34;,
             },
             {
@@ -252,12 +290,64 @@ def get_dataset_warnings(warnings: list) -&gt; Warnings:
             },
         ],
         name=&#34;Reproduction&#34;,
-        anchor_id=&#34;reproduction&#34;,
+        anchor_id=&#34;metadata_reproduction&#34;,
+    )
+
+    dataset_table = get_dataset_schema(metadata)
+
+    items = []
+    if dataset_table:
+        items.append(dataset_table)
+    items.append(reproduction_table)
+
+    return Container(
+        items, name=&#34;Metadata&#34;, anchor_id=&#34;metadata&#34;, sequence_type=&#34;grid&#34;,
     )</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.report.structure.overview.get_dataset_schema"><code class="name flex">
+<span>def <span class="ident">get_dataset_schema</span></span>(<span>metadata) ‑> Union[<a title="pandas_profiling.report.presentation.core.table.Table" href="../presentation/core/table.html#pandas_profiling.report.presentation.core.table.Table">Table</a>, NoneType]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_dataset_schema(metadata) -&gt; Optional[Table]:
+    if len(metadata) &gt; 0 or any(len(value) &gt; 0 for value in metadata.values()):
+        about_dataset = []
+        for key in [&#34;description&#34;, &#34;creator&#34;, &#34;author&#34;, &#34;url&#34;]:
+            if key in metadata and len(metadata[key]) &gt; 0:
+                about_dataset.append(
+                    {&#34;name&#34;: key.capitalize(), &#34;value&#34;: metadata[key], &#34;fmt&#34;: &#34;fmt&#34;}
+                )
+
+        if &#34;copyright_holder&#34; in metadata and len(metadata[&#34;copyright_holder&#34;]) &gt; 0:
+            if &#34;copyright_year&#34; not in metadata:
+                about_dataset.append(
+                    {
+                        &#34;name&#34;: &#34;Copyright&#34;,
+                        &#34;value&#34;: f&#34;(c) {metadata[&#39;copyright_holder&#39;]}&#34;,
+                        &#34;fmt&#34;: &#34;fmt&#34;,
+                    }
+                )
+            else:
+                about_dataset.append(
+                    {
+                        &#34;name&#34;: &#34;Copyright&#34;,
+                        &#34;value&#34;: f&#34;(c) {metadata[&#39;copyright_holder&#39;]} {metadata[&#39;copyright_year&#39;]}&#34;,
+                        &#34;fmt&#34;: &#34;fmt&#34;,
+                    }
+                )
+
+        if len(about_dataset) &gt; 0:
+            return Table(about_dataset, name=&#34;Dataset&#34;, anchor_id=&#34;metadata_dataset&#34;)
+    return None</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.report.structure.overview.get_dataset_warnings"><code class="name flex">
-<span>def <span class="ident">get_dataset_warnings</span></span>(<span>warnings: list) -> <a title="pandas_profiling.report.presentation.core.warnings.Warnings" href="../presentation/core/warnings.html#pandas_profiling.report.presentation.core.warnings.Warnings">Warnings</a></span>
+<span>def <span class="ident">get_dataset_warnings</span></span>(<span>warnings: list) ‑> <a title="pandas_profiling.report.presentation.core.warnings.Warnings" href="../presentation/core/warnings.html#pandas_profiling.report.presentation.core.warnings.Warnings">Warnings</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -296,6 +386,7 @@ def get_dataset_warnings(warnings: list) -&gt; Warnings:
 <ul class="">
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_overview" href="#pandas_profiling.report.structure.overview.get_dataset_overview">get_dataset_overview</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_reproduction" href="#pandas_profiling.report.structure.overview.get_dataset_reproduction">get_dataset_reproduction</a></code></li>
+<li><code><a title="pandas_profiling.report.structure.overview.get_dataset_schema" href="#pandas_profiling.report.structure.overview.get_dataset_schema">get_dataset_schema</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_warnings" href="#pandas_profiling.report.structure.overview.get_dataset_warnings">get_dataset_warnings</a></code></li>
 </ul>
 </li>
@@ -303,9 +394,7 @@ def get_dataset_warnings(warnings: list) -&gt; Warnings:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.3</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>

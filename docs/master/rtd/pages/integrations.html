@@ -1,15 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Integrations &mdash; pandas-profiling 2.8.0 documentation</title>
+  <title>Integrations &mdash; pandas-profiling 2.9.0rc1 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
   
@@ -17,7 +21,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,15 +35,10 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Changelog" href="changelog.html" />
-    <link rel="prev" title="Sensitive data" href="sensitive_data.html" /> 
+    <link rel="prev" title="Metadata" href="metadata.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
           
 
           
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
     
@@ -92,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="big_data.html">Big Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Integrations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pandas">Pandas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-frameworks">Other frameworks</a></li>
@@ -100,7 +103,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#jupyter-lab-notebook">Jupyter Lab/Notebook</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#command-line">Command line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyqt-experimental">PyQt (experimental)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#streamlit-suggestion">Streamlit (suggestion)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#streamlit-panel">Streamlit / Panel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#cloud-integrations">Cloud Integrations</a><ul>
@@ -165,6 +168,7 @@
 
 
         </div>
+        
       </div>
     </nav>
 
@@ -203,7 +207,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Integrations</li>
     
@@ -310,9 +314,9 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 </pre></div>
 </div>
 </div>
-<div class="section" id="streamlit-suggestion">
-<h3>Streamlit (suggestion)<a class="headerlink" href="#streamlit-suggestion" title="Permalink to this headline">¶</a></h3>
-<p>View progress at <a class="reference external" href="https://github.com/streamlit/streamlit/issues/693">https://github.com/streamlit/streamlit/issues/693</a>.</p>
+<div class="section" id="streamlit-panel">
+<h3>Streamlit / Panel<a class="headerlink" href="#streamlit-panel" title="Permalink to this headline">¶</a></h3>
+<p>For more information of how to use <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> with Streamlit or Panel, see the <a class="reference external" href="https://github.com/streamlit/streamlit/issues/693">https://github.com/streamlit/streamlit/issues/693</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/491">https://github.com/pandas-profiling/pandas-profiling/issues/491</a>.</p>
 </div>
 </div>
 <div class="section" id="cloud-integrations">
@@ -426,7 +430,7 @@ For standard formatted CSV files that can be read immediately by pandas, you can
         <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="sensitive_data.html" class="btn btn-neutral float-left" title="Sensitive data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="metadata.html" class="btn btn-neutral float-left" title="Metadata" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -435,11 +439,19 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Simon Brugman
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -450,7 +462,6 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

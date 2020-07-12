@@ -5,10 +5,15 @@ pandas\_profiling.utils.common
 
    
    
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
    
+      convert_timestamp_to_datetime
       extract_zip
       test_jpeg1
       test_jpeg2
@@ -24,3 +29,6 @@ pandas\_profiling.utils.common
    
    
    
+
+
+
