@@ -1,0 +1,41 @@
+pandas\_profiling.model.messages
+================================
+
+.. automodule:: pandas_profiling.model.messages
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      check_correlation_messages
+      check_table_messages
+      check_variable_messages
+      warning_skewness
+      warning_type_date
+      warning_value
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Message
+      MessageType
+   
+   
+
+   
+   
+   
+
+
+
