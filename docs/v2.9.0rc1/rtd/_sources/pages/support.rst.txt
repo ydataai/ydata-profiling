@@ -30,12 +30,12 @@ You should provide the minimal information to reproduce this bug. `This guide <h
 
 - the minimal code you are using to generate the report
 
-- which environment you are using:
+- Which environment you are using:
 
         - operating system (e.g. Windows, Linux, Mac)
         - Python version (e.g. 3.7)
-        - jupyter notebook, console or IDE such as PyCharm
-        - Package manager (e.g. pip, conda conda info)
-        - packages (pip freeze > packages.txt or conda list)
+        - Jupyter notebook( or cloud services like Google Colab,Kaggle Kernels,etc), console or IDE (such as PyCharm,VS Code,etc)
+        - Package manager (e.g. ``pip --version`` or ``conda info``)
+        - packages (``pip freeze > packages.txt`` or ``conda list``)
 
-- a sample or description of the dataset (df.head(), df.info())
+- a sample or description of the dataset ``df.head()`` and  ``df.info()``
