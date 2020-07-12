@@ -1,5 +1,12 @@
 # Title of the document
 title: "Pandas Profiling Report"
+dataset:
+  description: ""
+  creator: ""
+  author: ""
+  copyright_holder: ""
+  copyright_year: ""
+  url: ""
 
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
@@ -31,6 +38,7 @@ vars:
 # Set to zero to disable
         chi_squared_threshold: 0.999
         coerce_str_to_date: False
+        redact: False
     bool:
         n_obs: 3
     file:
@@ -100,13 +108,18 @@ plot:
 # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
         force_labels: True
 
-    histogram:
-# is used for numeric variables
-        bayesian_blocks_bins: False
+    pie:
+# display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+        max_unique: 10
 
-# If 'bayesian_blocks_bins' fails to provide a valid number of bins.
+    histogram:
+        x_axis_labels: True
+
+# Number of bins (set to 0 to automatically detect the bin size)
         bins: 50
-# Also used for equal size histogram
+
+# Maximum number of bins (when bins=0)
+        max_bins: 250
 
 # The number of observations to show
 n_obs_unique: 5

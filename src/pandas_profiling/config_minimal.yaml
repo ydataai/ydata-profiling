@@ -1,5 +1,12 @@
 # Title of the document
 title: "Pandas Profiling Report"
+dataset:
+  description: ""
+  creator: ""
+  author: ""
+  copyright_holder: ""
+  copyright_year: ""
+  url: ""
 
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
@@ -31,6 +38,7 @@ vars:
 # Set to zero to disable
         chi_squared_threshold: 0.0
         coerce_str_to_date: False
+        redact: False
     bool:
         n_obs: 3
     file:
@@ -91,7 +99,7 @@ plot:
     scatter_threshold: 1000
 
     correlation:
-        cmap: 'bwr'
+        cmap: 'RdBu'
         bad: '#000000'
 
     missing:
@@ -100,18 +108,26 @@ plot:
 # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
         force_labels: True
 
-    histogram:
-# is used for numeric variables
-        bayesian_blocks_bins: False
+    pie:
+# display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+      max_unique: 0
 
-# If 'bayesian_blocks_bins' fails to provide a valid number of bins.
+    histogram:
+        x_axis_labels: True
+
+# Number of bins (set to 0 to automatically detect the bin size)
         bins: 50
-# Also used for equal size histogram
+
+# Maximum number of bins (when bins=0)
+        max_bins: 250
 
 # The number of observations to show
 n_obs_unique: 5
 n_extreme_obs: 5
 n_freq_table_max: 10
+
+# Use `deep` flag for memory_usage
+memory_deep: False
 
 # Configuration related to the duplicates
 duplicates:
@@ -124,9 +140,6 @@ samples:
 
 # Configuration related to the rejection of variables
 reject_variables: True
-
-# Use `deep` flag for memory_usage
-memory_deep: False
 
 # When in a Jupyter notebook
 notebook:

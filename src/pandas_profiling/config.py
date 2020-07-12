@@ -33,6 +33,35 @@ class Config(object):
         if self.config is not None:
             self.config.set_file(str(file_name))
 
+    _arg_groups = {
+        "sensitive": {
+            "samples": None,
+            "duplicates": None,
+            "vars": {"cat": {"redact": True}},
+        },
+        "dark_mode": {
+            "html": {"style": {"theme": "flatly", "primary_color": "#2c3e50",}}
+        },
+        "orange_mode": {
+            "html": {"style": {"theme": "united", "primary_color": "#d34615",}}
+        },
+        "explorative": {
+            "vars": {
+                "cat": {"unicode": True},
+                "file": {"active": True},
+                "image": {"active": True,},
+            },
+            "n_obs_unique": 10,
+            "n_extreme_obs": 10,
+            "n_freq_table_max": 25,
+            "memory_deep": True,
+        },
+    }
+
+    def set_arg_group(self, name):
+        for key, value in self._arg_groups[name].items():
+            self.set_kwargs({key: value})
+
     def set_args(self, namespace: argparse.Namespace, dots: bool) -> None:
         """
         Set config variables based on the argparse Namespace object.
@@ -56,6 +85,14 @@ class Config(object):
                 raise ValueError(f'Config parameter "{key}" does not exist.')
 
     _shorthands = {
+        "dataset": dict(
+            creator="",
+            author="",
+            description="",
+            copyright_holder="",
+            copyright_year="",
+            url="",
+        ),
         "samples": {"head": 0, "tail": 0},
         "duplicates": {"head": 0},
         "interactions": {"targets": [], "continuous": False},

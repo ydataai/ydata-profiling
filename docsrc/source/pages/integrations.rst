@@ -102,11 +102,10 @@ Ensure to install ``pyqt5``. Via pip use the extras ``app``:
   pip install pandas-profiling[app]
 
 
-Streamlit (suggestion)
-~~~~~~~~~~~~~~~~~~~~~~
+Streamlit / Panel
+~~~~~~~~~~~~~~~~~
 
-View progress at https://github.com/streamlit/streamlit/issues/693.
-
+For more information of how to use ``pandas-profiling`` with Streamlit or Panel, see the https://github.com/streamlit/streamlit/issues/693 and https://github.com/pandas-profiling/pandas-profiling/issues/491.
 
 Cloud Integrations
 ------------------

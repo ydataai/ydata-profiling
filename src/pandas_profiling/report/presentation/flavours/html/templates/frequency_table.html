@@ -1,6 +1,3 @@
-{% if name %}
-    <p class="h4">{{ name }}</p>
-{% endif %}
 <table class="freq table table-hover table-striped">
     <thead>
         <tr>
@@ -14,7 +11,11 @@
     {% if rows | length > 0 %}
         {% for row in rows %}
             <tr class="{{ row['extra_class'] }}">
-                <td title="{{ row['label'] | fmt }}">{{ row['label'] | fmt }}</td>
+                {% if row['extra_class'] | length == 0 and redact %}
+                    <td title="Redacted value"><div class="text-placeholder"></div></td>
+                {% else %}
+                    <td title="{{ row['label'] | fmt }}">{{ row['label'] | fmt }}</td>
+                {% endif %}
                 <td>{{ row['count'] }}</td>
                 <td>{{ row['percentage'] | fmt_percent }}</td>
                 <td><div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">&nbsp;</div></td>

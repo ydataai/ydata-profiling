@@ -1,6 +1,7 @@
 """Organize the calculation of statistics for each series in this DataFrame."""
 import warnings
 from datetime import datetime
+from typing import Optional
 
 import pandas as pd
 from tqdm.auto import tqdm
@@ -8,11 +9,11 @@ from tqdm.auto import tqdm
 from pandas_profiling.config import config as config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
     get_duplicates,
     get_messages,
     get_missing_diagrams,
-    get_sample,
     get_scatter_matrix,
     get_series_descriptions,
     get_table_stats,
@@ -20,11 +21,13 @@ from pandas_profiling.model.summary import (
 from pandas_profiling.version import __version__
 
 
-def describe(title, df: pd.DataFrame) -> dict:
+def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
+        title: report title
         df: DataFrame.
+        sample: optional, dict with custom sample
 
     Returns:
         This function returns a dictionary containing:
@@ -105,7 +108,17 @@ def describe(title, df: pd.DataFrame) -> dict:
 
         # Sample
         pbar.set_postfix_str("Take sample")
-        sample = get_sample(df)
+        if sample is None:
+            samples = get_sample(df)
+        else:
+            if "name" not in sample:
+                sample["name"] = None
+            if "caption" not in sample:
+                sample["caption"] = None
+
+            samples = [
+                Sample("custom", sample["data"], sample["name"], sample["caption"])
+            ]
         pbar.update()
 
         # Duplicates
@@ -160,7 +173,7 @@ def describe(title, df: pd.DataFrame) -> dict:
         # Package
         "package": package,
         # Sample
-        "sample": sample,
+        "sample": samples,
         # Duplicates
         "duplicates": duplicates,
     }

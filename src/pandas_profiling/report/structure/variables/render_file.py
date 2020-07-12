@@ -18,15 +18,16 @@ def render_file(summary):
 
     file_tabs = []
     if "file_size" in summary:
-        file_size_histogram = Image(
-            histogram(summary["file_size"], summary, summary["histogram_bins"]),
-            image_format=image_format,
-            alt="Size",
-            caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={summary['histogram_bins']})",
-            name="File size",
-            anchor_id=f"{varid}file_size_histogram",
+        file_tabs.append(
+            Image(
+                histogram(*summary["histogram_file_size"]),
+                image_format=image_format,
+                alt="Size",
+                caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={len(summary['histogram_file_size'][1]) - 1})",
+                name="File size",
+                anchor_id=f"{varid}file_size_histogram",
+            )
         )
-        file_tabs.append(file_size_histogram)
 
     file_dates = {
         "file_created_time": "Created",
@@ -36,16 +37,18 @@ def render_file(summary):
 
     for file_date_id, description in file_dates.items():
         if file_date_id in summary:
-            file_date_hist = FrequencyTable(
-                freq_table(
-                    freqtable=summary[file_date_id].value_counts(),
-                    n=summary["n"],
-                    max_number_to_print=n_freq_table_max,
-                ),
-                name=description,
-                anchor_id=f"{varid}{file_date_id}",
+            file_tabs.append(
+                FrequencyTable(
+                    freq_table(
+                        freqtable=summary[file_date_id].value_counts(),
+                        n=summary["n"],
+                        max_number_to_print=n_freq_table_max,
+                    ),
+                    name=description,
+                    anchor_id=f"{varid}{file_date_id}",
+                    redact=False,
+                )
             )
-            file_tabs.append(file_date_hist)
 
     file_tab = Container(
         file_tabs, name="File", sequence_type="tabs", anchor_id=f"{varid}file",

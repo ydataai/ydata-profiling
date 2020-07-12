@@ -1,4 +1,5 @@
 """Generate the report."""
+import re
 from typing import List
 
 import pandas as pd
@@ -192,9 +193,12 @@ def get_sample_items(sample: dict):
         List of sample items to show in the interface.
     """
     items = []
-    names = {"head": "First rows", "tail": "Last rows"}
-    for key, value in sample.items():
-        items.append(Sample(sample=value, name=names[key], anchor_id=key,))
+    for obj in sample:
+        items.append(
+            Sample(
+                sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption
+            )
+        )
     return items
 
 
@@ -210,6 +214,12 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
     image_format = config["plot"]["image_format"].get(str)
 
     titems = []
+
+    alphanum = re.compile("[^a-zA-Z\s]")
+
+    def clean_name(name):
+        return alphanum.sub("", name).replace(" ", "_")
+
     for x_col, y_cols in scatter_matrix.items():
         items = []
         for y_col, splot in y_cols.items():
@@ -218,7 +228,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
                     splot,
                     image_format=image_format,
                     alt=f"{x_col} x {y_col}",
-                    anchor_id=f"interactions_{x_col.replace(' ', '_')}_{y_col.replace(' ', '_')}",
+                    anchor_id=f"interactions_{clean_name(x_col)}_{clean_name(y_col)}",
                     name=y_col,
                 )
             )
@@ -229,7 +239,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
                 sequence_type="tabs" if len(items) <= 10 else "select",
                 name=x_col,
                 nested=len(scatter_matrix) > 10,
-                anchor_id=f"interactions_{x_col.replace(' ', '_')}",
+                anchor_id=f"interactions_{clean_name(x_col)}",
             )
         )
     return titems
@@ -245,9 +255,13 @@ def get_dataset_items(summary: dict, warnings: list) -> list:
     Returns:
         A list with components for the dataset overview (overview, reproduction, warnings)
     """
+    metadata = {
+        key: config["dataset"][key].get(str) for key in config["dataset"].keys()
+    }
+
     items = [
         get_dataset_overview(summary),
-        get_dataset_reproduction(summary),
+        get_dataset_reproduction(summary, metadata),
     ]
 
     if warnings:

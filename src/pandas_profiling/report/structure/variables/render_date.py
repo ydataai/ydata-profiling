@@ -67,7 +67,7 @@ def render_date(summary):
     )
 
     mini_histo = Image(
-        mini_histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
+        mini_histogram(*summary["histogram"], date=True),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -80,12 +80,10 @@ def render_date(summary):
     bottom = Container(
         [
             Image(
-                histogram(
-                    summary["histogram_data"], summary, summary["histogram_bins"]
-                ),
+                histogram(*summary["histogram"], date=True),
                 image_format=image_format,
                 alt="Histogram",
-                caption="Histogram",
+                caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
                 name="Histogram",
                 anchor_id=f"{varid}histogram",
             )

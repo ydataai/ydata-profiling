@@ -1,5 +1,5 @@
-black
-isort[requirements]
+black>=19.10b0
+isort>=5.0.7
 pre-commit
 twine
 pdoc3

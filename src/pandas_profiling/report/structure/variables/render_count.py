@@ -56,9 +56,24 @@ def render_count(summary):
 
     table2 = Table(
         [
-            {"name": "Mean", "value": summary["mean"], "fmt": "fmt", "alert": False},
-            {"name": "Minimum", "value": summary["min"], "fmt": "fmt", "alert": False},
-            {"name": "Maximum", "value": summary["max"], "fmt": "fmt", "alert": False},
+            {
+                "name": "Mean",
+                "value": summary["mean"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
+            {
+                "name": "Minimum",
+                "value": summary["min"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
+            {
+                "name": "Maximum",
+                "value": summary["max"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
             {
                 "name": "Zeros",
                 "value": summary["n_zeros"],
@@ -80,9 +95,8 @@ def render_count(summary):
         ]
     )
 
-    # TODO: replace with SmallImage...
     mini_histo = Image(
-        mini_histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
+        mini_histogram(*summary["histogram"]),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -186,10 +200,10 @@ def render_count(summary):
 
     seqs = [
         Image(
-            histogram(summary["histogram_data"], summary, summary["histogram_bins"]),
+            histogram(*summary["histogram"]),
             image_format=image_format,
             alt="Histogram",
-            caption=f"<strong>Histogram with fixed size bins</strong> (bins={summary['histogram_bins']})",
+            caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
             name="Histogram",
             anchor_id="histogram",
         )
@@ -199,6 +213,7 @@ def render_count(summary):
         template_variables["freq_table_rows"],
         name="Common values",
         anchor_id="common_values",
+        redact=False,
     )
 
     evs = Container(
@@ -207,35 +222,19 @@ def render_count(summary):
                 template_variables["firstn_expanded"],
                 name="Minimum 5 values",
                 anchor_id="firstn",
+                redact=False,
             ),
             FrequencyTable(
                 template_variables["lastn_expanded"],
                 name="Maximum 5 values",
                 anchor_id="lastn",
+                redact=False,
             ),
         ],
         sequence_type="tabs",
         name="Extreme values",
         anchor_id="extreme_values",
     )
-
-    if "histogram_bins_bayesian_blocks" in summary:
-        histo_dyn = Image(
-            histogram(
-                summary["histogram_data"],
-                summary,
-                summary["histogram_bins_bayesian_blocks"],
-            ),
-            image_format=image_format,
-            alt="Histogram",
-            caption='<strong>Histogram with variable size bins</strong> (bins={}, <a href="https://ui.adsabs.harvard.edu/abs/2013ApJ...764..167S/abstract" target="_blank">"bayesian blocks"</a> binning strategy used)'.format(
-                fmt_array(summary["histogram_bins_bayesian_blocks"], threshold=5)
-            ),
-            name="Dynamic Histogram",
-            anchor_id="dynamic_histogram",
-        )
-
-        seqs.append(histo_dyn)
 
     template_variables["bottom"] = Container(
         [

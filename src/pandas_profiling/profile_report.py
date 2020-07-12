@@ -30,6 +30,10 @@ class ProfileReport(SerializeReport, object):
         df=None,
         minimal=False,
         explorative=False,
+        sensitive=False,
+        dark_mode=False,
+        orange_mode=False,
+        sample=None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
         **kwargs,
@@ -55,8 +59,6 @@ class ProfileReport(SerializeReport, object):
             config.set_file(config_file)
         elif minimal:
             config.set_file(get_config("config_minimal.yaml"))
-        elif explorative:
-            config.set_file(get_config("config_explorative.yaml"))
         elif not config.is_default:
             pass
             # TODO: logging instead of warning
@@ -64,12 +66,21 @@ class ProfileReport(SerializeReport, object):
             #     "Currently configuration is not the default, if you want to restore "
             #     "default configuration, please run 'pandas_profiling.clear_config()'"
             # )
+        if explorative:
+            config.set_arg_group("explorative")
+        if sensitive:
+            config.set_arg_group("sensitive")
+        if dark_mode:
+            config.set_arg_group("dark_mode")
+        if orange_mode:
+            config.set_arg_group("orange_mode")
 
         config.set_kwargs(kwargs)
 
         self.df = None
         self._df_hash = -1
         self._description_set = None
+        self._sample = sample
         self._title = None
         self._report = None
         self._html = None
@@ -140,7 +151,7 @@ class ProfileReport(SerializeReport, object):
     @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.df)
+            self._description_set = describe_df(self.title, self.df, self._sample)
         return self._description_set
 
     @property
@@ -366,10 +377,11 @@ class ProfileReport(SerializeReport, object):
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
+        from IPython.core.display import display
+
         from pandas_profiling.report.presentation.flavours.widget.notebook import (
             get_notebook_iframe,
         )
-        from IPython.core.display import display
 
         # Ignore warning: https://github.com/ipython/ipython/pull/11350/files
         with warnings.catch_warnings():
@@ -407,11 +419,11 @@ class ProfileReport(SerializeReport, object):
         """
         # TODO: _render_app
         # TODO: make functional
-        from pandas_profiling.report.presentation.flavours.qt.app import get_app
-        from pandas_profiling.report.presentation.flavours import QtReport
-
         from PyQt5 import QtCore
         from PyQt5.QtWidgets import QApplication
+
+        from pandas_profiling.report.presentation.flavours import QtReport
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
 
         app = QtCore.QCoreApplication.instance()
         if app is None:

@@ -1,6 +1,7 @@
 """Common util functions (e.g. missing in Python)."""
 import collections
 import zipfile
+from datetime import datetime, timedelta
 
 # Monkeypatch bug in imagehdr
 from imghdr import tests
@@ -80,3 +81,10 @@ def test_jpeg3(h, f):
 tests.append(test_jpeg1)
 tests.append(test_jpeg2)
 tests.append(test_jpeg3)
+
+
+def convert_timestamp_to_datetime(timestamp: int) -> datetime:
+    if timestamp >= 0:
+        return datetime.fromtimestamp(timestamp)
+    else:
+        return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))

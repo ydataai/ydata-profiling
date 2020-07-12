@@ -1,9 +1,10 @@
 """Plotting functions for the missing values diagrams"""
-import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib import pyplot as plt
 from missingno import missingno
 
 from pandas_profiling.config import config
+from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
@@ -31,6 +32,7 @@ def get_font_size(data):
     return font_size
 
 
+@manage_matplotlib_context()
 def missing_matrix(data: pd.DataFrame) -> str:
     """Generate missing values matrix plot
 
@@ -53,6 +55,7 @@ def missing_matrix(data: pd.DataFrame) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def missing_bar(data: pd.DataFrame) -> str:
     """Generate missing values bar plot.
 
@@ -77,6 +80,7 @@ def missing_bar(data: pd.DataFrame) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def missing_heatmap(data: pd.DataFrame) -> str:
     """Generate missing values heatmap plot.
 
@@ -113,6 +117,7 @@ def missing_heatmap(data: pd.DataFrame) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@manage_matplotlib_context()
 def missing_dendrogram(data: pd.DataFrame) -> str:
     """Generate a dendrogram plot for missing values.
 
