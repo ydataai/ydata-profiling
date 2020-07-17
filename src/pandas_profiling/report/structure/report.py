@@ -6,19 +6,7 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import (
-    AbsolutePath,
-    Boolean,
-    Categorical,
-    Complex,
-    Count,
-    Date,
-    FilePath,
-    Generic,
-    ImagePath,
-    Real,
-    Url,
-)
+
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import (
     HTML,
@@ -88,19 +76,9 @@ def render_variables_section(dataframe_summary: dict) -> list:
     Returns:
         The rendered HTML, where each row represents a variable.
     """
-    type_to_func = {
-        Boolean: render_boolean,
-        Real: render_real,
-        Count: render_real,
-        Complex: render_complex,
-        Date: render_date,
-        Categorical: render_categorical,
-        Url: render_url,
-        AbsolutePath: render_path,
-        FilePath: render_file,
-        ImagePath: render_image,
-        Generic: render_generic,
-    }
+    # TODO: Temporary hack
+    from pandas_profiling.model.handler import default_handler
+    handler = default_handler()
 
     templs = []
 
@@ -138,7 +116,8 @@ def render_variables_section(dataframe_summary: dict) -> list:
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(type_to_func[summary["type"]](template_variables))
+        rendering = handler.render(template_variables, summary["type"])
+        template_variables.update(rendering)
 
         # Ignore these
         if config["reject_variables"].get(bool):

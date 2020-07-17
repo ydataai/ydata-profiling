@@ -8,54 +8,10 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import config
+from pandas_profiling.model.typeset import ProfilingTypeSet, Object
 
 
-@unique
-class Variable(Enum):
-    """The possible types of variables in the Profiling Report."""
-
-    TYPE_CAT = "CAT"
-    """A categorical variable"""
-
-    TYPE_BOOL = "BOOL"
-    """A boolean variable"""
-
-    TYPE_NUM = "NUM"
-    """A numeric variable"""
-
-    TYPE_DATE = "DATE"
-    """A date variable"""
-
-    TYPE_URL = "URL"
-    """A URL variable"""
-
-    TYPE_COMPLEX = "COMPLEX"
-
-    TYPE_PATH = "PATH"
-    """Absolute path"""
-
-    TYPE_FILE = "FILE"
-    """File (i.e. existing path)"""
-
-    TYPE_IMAGE = "IMAGE"
-    """Images"""
-
-    S_TYPE_UNSUPPORTED = "UNSUPPORTED"
-    """An unsupported variable"""
-
-
-# Temporary mapping
-Boolean = Variable.TYPE_BOOL
-Real = Variable.TYPE_NUM
-Count = Variable.TYPE_NUM
-Complex = Variable.TYPE_COMPLEX
-Date = Variable.TYPE_DATE
-Categorical = Variable.TYPE_CAT
-Url = Variable.TYPE_URL
-AbsolutePath = Variable.TYPE_PATH
-FilePath = Variable.TYPE_FILE
-ImagePath = Variable.TYPE_IMAGE
-Generic = Variable.S_TYPE_UNSUPPORTED
+typeset = ProfilingTypeSet()
 
 
 def get_counts(series: pd.Series) -> dict:
@@ -246,46 +202,6 @@ def get_var_type(series: pd.Series) -> dict:
         The series updated with the variable type included.
     """
 
-    series_description = {}
-
-    try:
-        series_description = get_counts(series)
-
-        # When the inferred type of the index is just "mixed" probably the types within the series are tuple, dict,
-        # list and so on...
-        if series_description[
-            "value_counts_without_nan"
-        ].index.inferred_type.startswith("mixed"):
-            raise TypeError("Not supported mixed type")
-
-        if series_description["distinct_count_without_nan"] == 0:
-            # Empty
-            var_type = Variable.S_TYPE_UNSUPPORTED
-        elif is_boolean(series, series_description):
-            var_type = Variable.TYPE_BOOL
-        elif is_numeric(series, series_description):
-            var_type = Variable.TYPE_NUM
-        elif is_date(series):
-            var_type = Variable.TYPE_DATE
-        elif is_url(series, series_description):
-            var_type = Variable.TYPE_URL
-        elif is_path(series, series_description):
-            if config["vars"]["file"]["active"].get(bool) and is_file(
-                series, series_description
-            ):
-                if config["vars"]["image"]["active"].get(bool) and is_image(
-                    series, series_description
-                ):
-                    var_type = Variable.TYPE_IMAGE
-                else:
-                    var_type = Variable.TYPE_FILE
-            else:
-                var_type = Variable.TYPE_PATH
-        else:
-            var_type = Variable.TYPE_CAT
-    except TypeError:
-        var_type = Variable.S_TYPE_UNSUPPORTED
-
-    series_description.update({"type": var_type})
-
+    series_description = get_counts(series)
+    series_description['type'] = typeset.detect_series_type(series)
     return series_description

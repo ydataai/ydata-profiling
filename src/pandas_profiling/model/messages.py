@@ -6,7 +6,6 @@ from typing import List, Union
 import numpy as np
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import perform_check_correlation
 
 
@@ -123,7 +122,8 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
-
+    # TODO: Hack
+    from pandas_profiling.model.typeset import Generic, Numeric, Category, Date
     # Missing
     if warning_value(description["p_missing"]):
         messages.append(
@@ -135,7 +135,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    if description["type"] == Variable.S_TYPE_UNSUPPORTED:
+    if description["type"] == Generic:
         messages.append(
             Message(
                 column_name=col,
@@ -156,7 +156,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         )
 
     if (
-        description["type"] == Variable.S_TYPE_UNSUPPORTED
+        description["type"] == Generic
         or description["distinct_count_with_nan"] <= 1
     ):
         messages.append(
@@ -177,12 +177,12 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
     elif description["type"] in [
-        Variable.TYPE_NUM,
-        Variable.TYPE_CAT,
-        Variable.TYPE_DATE,
+        Numeric,
+        Category,
+        Date,
     ]:
         # Uniformity
-        if description["type"] == Variable.TYPE_CAT:
+        if description["type"] == Category:
             # High cardinality
             if description["n_unique"] > config["vars"]["cat"][
                 "cardinality_threshold"
@@ -213,7 +213,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
 
     # Categorical
-    if description["type"] == Variable.TYPE_CAT:
+    if description["type"] == Category:
         if "date_warning" in description and description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
@@ -234,7 +234,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
 
     # Numerical
-    if description["type"] == Variable.TYPE_NUM:
+    if description["type"] == Numeric:
         # Skewness
         if warning_skewness(description["skewness"]):
             messages.append(

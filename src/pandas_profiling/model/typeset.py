@@ -16,6 +16,11 @@ from visions.types import VisionsBaseType
 from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
 
 
+# TODO: Hack
+Object = vis.Object
+Generic = vis.Generic
+
+
 class Category(VisionsBaseType):
     """**Category** implementation of :class:`visions.types.VisionsBaseType`.
 
@@ -119,7 +124,7 @@ class Date(vis.DateTime):
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
-            IdentityRelation(cls, vis.Object),
+            IdentityRelation(cls, vis.Generic),
             InferenceRelation(cls, Category, relationship=is_date, transformer=pd.to_datetime,),
         ]
 

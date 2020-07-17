@@ -7,7 +7,6 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
@@ -123,10 +122,12 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
 
         # Duplicates
         pbar.set_postfix_str("Locating duplicates")
+        #T ODO: Hack
+        from pandas_profiling.model.typeset import Generic
         supported_columns = [
             key
             for key, value in series_description.items()
-            if value["type"] != Variable.S_TYPE_UNSUPPORTED
+            if value["type"] != Generic
         ]
 
         duplicates = get_duplicates(df, supported_columns)

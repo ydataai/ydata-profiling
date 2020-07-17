@@ -12,7 +12,7 @@ from pandas.core.base import DataError
 from scipy import stats
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
+
 
 
 def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
@@ -67,10 +67,12 @@ def categorical_matrix(
     Returns:
         A correlation matrix for categorical variables.
     """
+    # TODO: hack
+    from pandas_profiling.model.typeset import Category
     categoricals = {
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
-        if variable_type == Variable.TYPE_CAT
+        if variable_type == Category
         # TODO: solve in type system
         and config["categorical_maximum_correlation_distinct"].get(int)
         >= df[column_name].nunique()
