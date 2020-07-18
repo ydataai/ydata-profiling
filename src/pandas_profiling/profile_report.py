@@ -36,6 +36,7 @@ class ProfileReport(SerializeReport, object):
         sample=None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
+        definition_file: str=None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -45,6 +46,7 @@ class ProfileReport(SerializeReport, object):
             minimal: minimal mode is a default configuration with minimal computation
             config_file: a config file (.yml), mutually exclusive with `minimal`
             lazy: compute when needed
+            definition_file: file where column definition is placed
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
         if config_file is not None and minimal:
@@ -90,6 +92,8 @@ class ProfileReport(SerializeReport, object):
         if df is not None:
             # preprocess df
             self.df = self.preprocess(df)
+
+        self._definition_file = definition_file if definition_file is not None else None
 
         if not lazy:
             # Trigger building the report structure
@@ -170,7 +174,7 @@ class ProfileReport(SerializeReport, object):
     @property
     def report(self):
         if self._report is None:
-            self._report = get_report_structure(self.description_set)
+            self._report = get_report_structure(self.description_set, self._definition_file)
         return self._report
 
     @property
