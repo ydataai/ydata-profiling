@@ -183,6 +183,25 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     return items
 
 
+def get_definition_items(definitions: pd.DataFrame):
+    """Create the list of duplicates items
+
+    Args:
+        definitions: DataFrame of column definitions
+
+    Returns:
+        List of column definitions to show in the interface.
+    """
+    items = []
+    if definitions is not None and len(definitions) > 0:
+        items.append(
+            Duplicate(
+                duplicate=definitions, name="Columns", anchor_id="definitions",
+            )
+        )
+    return items
+
+
 def get_sample_items(sample: dict):
     """Create the list of sample items
 
@@ -346,6 +365,17 @@ def get_report_structure(summary: dict) -> Renderable:
                     sequence_type="list",
                     name="Duplicate rows",
                     anchor_id="duplicate",
+                )
+            )
+
+        definition_items = get_definition_items(summary["definitions"])
+        if len(definition_items) > 0:
+            section_items.append(
+                Container(
+                    items=definition_items,
+                    sequence_type="list",
+                    name="Column definitions",
+                    anchor_id="definition",
                 )
             )
 

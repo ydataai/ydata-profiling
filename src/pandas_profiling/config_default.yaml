@@ -8,6 +8,9 @@ dataset:
   copyright_year: ""
   url: ""
 
+# Whether to include column definitions
+definition_file: True
+
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 

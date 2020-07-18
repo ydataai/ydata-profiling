@@ -12,6 +12,7 @@ from pandas_profiling.model.correlations import calculate_correlation
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
     get_duplicates,
+    get_definitions,
     get_messages,
     get_missing_diagrams,
     get_scatter_matrix,
@@ -21,13 +22,14 @@ from pandas_profiling.model.summary import (
 from pandas_profiling.version import __version__
 
 
-def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
+def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None, definition_file: Optional[str] = None) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
         title: report title
         df: DataFrame.
         sample: optional, dict with custom sample
+        definition_file: optional, path where the column definition file is stored
 
     Returns:
         This function returns a dictionary containing:
@@ -37,6 +39,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
             - missing: missing value diagrams.
             - messages: direct special attention to these patterns in your data.
             - package: package details.
+            - definitions: column definitions.
     """
 
     if df is None:
@@ -137,6 +140,12 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         messages = get_messages(table_stats, series_description, correlations)
         pbar.update()
 
+        # Column definitions
+        pbar.set_postfix_str("Get column definitions")
+        definitions = get_definitions(definition_file)
+        pbar.update()
+
+
         pbar.set_postfix_str("Get reproduction details")
         package = {
             "pandas_profiling_version": __version__,
@@ -176,4 +185,6 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         "sample": samples,
         # Duplicates
         "duplicates": duplicates,
+        # Column definitions
+        "definitions": definitions
     }
