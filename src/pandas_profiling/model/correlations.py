@@ -70,8 +70,8 @@ def categorical_matrix(
         for column_name, variable_type in variables.items()
         if variable_type.categorical
         # TODO: solve in type system
-        and config["categorical_maximum_correlation_distinct"].get(int)
-        >= df[column_name].nunique()
+        and config["categorical_maximum_correlation_distinct"].get(int) 
+        >= df[column_name].value_counts().shape[0]
         > 1
     }
 

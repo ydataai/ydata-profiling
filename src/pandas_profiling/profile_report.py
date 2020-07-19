@@ -173,7 +173,7 @@ class ProfileReport(SerializeReport, object):
     @property
     def report(self):
         if self._report is None:
-            self._report = get_report_structure(self.description_set)
+            self._report = get_report_structure(self.description_set, self.handler)
         return self._report
 
     @property

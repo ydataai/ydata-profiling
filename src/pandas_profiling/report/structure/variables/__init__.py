@@ -11,3 +11,4 @@ from pandas_profiling.report.structure.variables.render_image import render_imag
 from pandas_profiling.report.structure.variables.render_path import render_path
 from pandas_profiling.report.structure.variables.render_real import render_real
 from pandas_profiling.report.structure.variables.render_url import render_url
+from pandas_profiling.report.structure.variables.render_file import render_file

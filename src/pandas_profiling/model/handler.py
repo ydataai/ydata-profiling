@@ -1,7 +1,7 @@
 from pandas_profiling.model import typeset as ppt
 from pandas_profiling.model import summary_methods as pps
 from pandas_profiling.model.base import get_counts
-from pandas_profiling.report.structure import report as ppr
+from pandas_profiling.report.structure.variables import *
 
 
 class ProfilingHandler:
@@ -42,16 +42,16 @@ def default_handler():
         ppt.Complex: pps.describe_complex_1d,
     }
     render_map = {
-        ppt.Bool: ppr.render_boolean,
-        ppt.Numeric: ppr.render_real,
+        ppt.Bool: render_boolean,
+        ppt.Numeric: render_real,
         #Count: ppr.render_real,
-        ppt.Complex: ppr.render_complex,
-        ppt.Date: ppr.render_date,
-        ppt.Category: ppr.render_categorical,
-        ppt.URL: ppr.render_url,
-        ppt.Path: ppr.render_path,
-        ppt.File: ppr.render_file,
-        ppt.Image: ppr.render_image,
-        ppt.Generic: ppr.render_generic,
+        ppt.Complex: render_complex,
+        ppt.Date: render_date,
+        ppt.Category: render_categorical,
+        ppt.URL: render_url,
+        ppt.Path: render_path,
+        ppt.File: render_file,
+        ppt.Image: render_image,
+        ppt.Generic: render_generic,
     }
     return ProfilingHandler(typeset, summary_map, render_map, {})

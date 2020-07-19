@@ -39,6 +39,7 @@ from pandas_profiling.report.structure.variables import (
 )
 from pandas_profiling.report.structure.variables.render_file import render_file
 
+from pandas_profiling.model.handler import ProfilingHandler
 
 def get_missing_items(summary) -> list:
     """Return the missing diagrams
@@ -65,9 +66,8 @@ def get_missing_items(summary) -> list:
 
     return items
 
-
 # TODO: split in per variable function
-def render_variables_section(dataframe_summary: dict) -> list:
+def render_variables_section(dataframe_summary: dict, handler: ProfilingHandler) -> list:
     """Render the HTML for each of the variables in the DataFrame.
 
     Args:
@@ -116,7 +116,10 @@ def render_variables_section(dataframe_summary: dict) -> list:
         template_variables.update(summary)
 
         # Per type template variables
-        rendering = handler.render(template_variables, summary["type"])
+        if summary['hashable']:
+            rendering = handler.render(template_variables, summary["type"])
+        else:
+            rendering = render_generic(template_variables)
         template_variables.update(rendering)
 
         # Ignore these
@@ -249,7 +252,7 @@ def get_dataset_items(summary: dict, warnings: list) -> list:
     return items
 
 
-def get_report_structure(summary: dict) -> Renderable:
+def get_report_structure(summary: dict, handler: ProfilingHandler) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -273,7 +276,7 @@ def get_report_structure(summary: dict) -> Renderable:
                 anchor_id="overview",
             ),
             Container(
-                render_variables_section(summary),
+                render_variables_section(summary, ProfilingHandler),
                 sequence_type="accordion",
                 name="Variables",
                 anchor_id="variables",

@@ -22,7 +22,7 @@ from pandas_profiling.visualisation.missing import (
 )
 from pandas_profiling.model.summary_methods import *
 from pandas_profiling.visualisation.plot import scatter_pairwise
-
+from pandas_profiling.model.typeset import Generic
 
 def sort_column_names(dct: Mapping, sort: str):
     sort = sort.lower()
@@ -145,14 +145,9 @@ def get_table_stats(df: pd.DataFrame, handler: ProfilingHandler, variable_stats:
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
         table_stats["n"] * table_stats["n_var"]
     )
-    # TODO: Hack(s)
-    from pandas_profiling.model.typeset import Generic
-    from pandas_profiling.model.handler import default_handler
-    handler = default_handler()
-
-    supported_columns = variable_stats.transpose()[
-        variable_stats.transpose().type != Generic
-    ].index.tolist()
+    # TODO: Relies on notion of "supported" vs. "unsupported"
+    # duplicated hashes things
+    supported_columns = variable_stats.T[variable_stats.T.hashable == True].index.tolist()
     table_stats["n_duplicates"] = (
         sum(df.duplicated(subset=supported_columns))
         if len(supported_columns) > 0

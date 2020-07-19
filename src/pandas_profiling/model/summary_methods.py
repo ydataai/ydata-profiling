@@ -39,9 +39,10 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
 
     # number of non-NaN observations in the Series
     count = series.count()
-
-    distinct_count = series_description["distinct_count_without_nan"]
-
+    try:
+        distinct_count = series_description["distinct_count_without_nan"]
+    except:
+        print(series.name, series_description)
     stats = {
         "n": length,
         "count": count,

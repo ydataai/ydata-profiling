@@ -7,7 +7,7 @@ import numpy as np
 
 from pandas_profiling.config import config
 from pandas_profiling.model.correlations import perform_check_correlation
-
+from pandas_profiling.model.typeset import Generic
 
 @unique
 class MessageType(Enum):
@@ -122,8 +122,6 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
-    # TODO: Hack
-    from pandas_profiling.model.typeset import Generic, Numeric, Category, Date
     # Missing
     if warning_value(description["p_missing"]):
         messages.append(
@@ -135,7 +133,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    if description["type"] == Generic:
+    if description["type"] == Generic or not description['hashable']:
         messages.append(
             Message(
                 column_name=col,
@@ -157,7 +155,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
 
     if (
         description["type"] == Generic
-        or description["distinct_count_with_nan"] <= 1
+        or (description['hashable'] and description["distinct_count_with_nan"] <= 1)
     ):
         messages.append(
             Message(
@@ -176,44 +174,31 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={"n_unique", "p_unique"},
             )
         )
-    elif description["type"] in [
-        Numeric,
-        Category,
-        Date,
-    ]:
-        # Uniformity
-        if description["type"] == Category:
-            # High cardinality
-            if description["n_unique"] > config["vars"]["cat"][
-                "cardinality_threshold"
-            ].get(int):
-                messages.append(
-                    Message(
-                        column_name=col,
-                        message_type=MessageType.HIGH_CARDINALITY,
-                        values=description,
-                        fields={"n_unique"},
-                    )
+    elif description["type"].categorical:
+        # High cardinality
+        if description["n_unique"] > config["vars"]["cat"]["cardinality_threshold"].get(int):
+            messages.append(
+                Message(
+                    column_name=col,
+                    message_type=MessageType.HIGH_CARDINALITY,
+                    values=description,
+                    fields={"n_unique"},
                 )
-
-            chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
-                float
-            )
-        else:
-            chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-                float
             )
 
-        if (
-            "chi_squared" in description
-            and description["chi_squared"][1] > chi_squared_threshold
-        ):
+        chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
+            float
+        )
+    elif description['type'].continuous:
+        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+
+        if ("chi_squared" in description and description["chi_squared"][1] > chi_squared_threshold):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
     # Categorical
-    if description["type"] == Category:
+    if description["type"].categorical:
         if "date_warning" in description and description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
@@ -234,7 +219,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
 
     # Numerical
-    if description["type"] == Numeric:
+    if description["type"].continuous:
         # Skewness
         if warning_skewness(description["skewness"]):
             messages.append(
