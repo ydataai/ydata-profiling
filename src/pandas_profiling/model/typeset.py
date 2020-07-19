@@ -20,12 +20,17 @@ from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
 Object = vis.Object
 Generic = vis.Generic
 
+#
+class ProfilingTypeCategories:
+    continuous = False
+    categorical = False
 
-class Category(VisionsBaseType):
+class Category(VisionsBaseType, ProfilingTypeCategories):
     """**Category** implementation of :class:`visions.types.VisionsBaseType`.
 
     Examples:
     """
+    categorical = True
 
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
@@ -52,7 +57,8 @@ def to_path(series: pd.Series) -> pd.Series:
     return series.apply(pathlib.PurePath)
 
 
-class Path(vis.Path):
+class Path(vis.Path, ProfilingTypeCategories):
+    categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         relations = [
@@ -64,13 +70,15 @@ class Path(vis.Path):
         return relations
 
 
-class File(vis.File):
+class File(vis.File, ProfilingTypeCategories):
+    categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, Path)]
 
 
-class Image(vis.Image):
+class Image(vis.Image, ProfilingTypeCategories):
+    categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, File)]
@@ -88,7 +96,8 @@ def to_url(series: pd.Series) -> pd.Series:
     return series.apply(urlparse)
 
 
-class URL(vis.URL):
+class URL(vis.URL, ProfilingTypeCategories):
+    categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, vis.Object),
@@ -103,7 +112,8 @@ def test_string_is_complex(series) -> bool:
         return False
 
 
-class Complex(vis.Complex):
+class Complex(vis.Complex, ProfilingTypeCategories):
+    continuous = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
@@ -120,7 +130,8 @@ def is_date(series):
         return False
 
 
-class Date(vis.DateTime):
+class Date(vis.DateTime, ProfilingTypeCategories):
+    categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
@@ -129,7 +140,8 @@ class Date(vis.DateTime):
         ]
 
 
-class Numeric(vis.VisionsBaseType):
+class Numeric(vis.VisionsBaseType, ProfilingTypeCategories):
+    continuous = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, vis.Generic)]
@@ -153,7 +165,8 @@ def string_to_bool(series):
     return series.str.lower().map(PP_bool_map)
 
 
-class Bool(vis.Boolean):
+class Bool(vis.Boolean, ProfilingTypeCategories):
+    categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [

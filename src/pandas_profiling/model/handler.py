@@ -1,5 +1,5 @@
 from pandas_profiling.model import typeset as ppt
-from pandas_profiling.model import summary as pps
+from pandas_profiling.model import summary_methods as pps
 from pandas_profiling.model.base import get_counts
 from pandas_profiling.report.structure import report as ppr
 

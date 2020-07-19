@@ -17,10 +17,11 @@ from pandas_profiling.model.summary import (
     get_series_descriptions,
     get_table_stats,
 )
+from pandas_profiling.model.handler import ProfilingHandler
 from pandas_profiling.version import __version__
 
 
-def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
+def describe(title: str, handler: ProfilingHandler, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -62,7 +63,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
     with tqdm(
         total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
-        series_description = get_series_descriptions(df, pbar)
+        series_description = get_series_descriptions(df, handler, pbar)
 
         pbar.set_postfix_str("Get variable types")
         variables = {
@@ -97,7 +98,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
 
         # Table statistics
         pbar.set_postfix_str("Get table statistics")
-        table_stats = get_table_stats(df, variable_stats)
+        table_stats = get_table_stats(df, handler, variable_stats)
         pbar.update()
 
         # missing diagrams

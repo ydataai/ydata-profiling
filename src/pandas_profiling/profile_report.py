@@ -8,6 +8,7 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
+from pandas_profiling.model.handler import default_handler
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
@@ -28,6 +29,7 @@ class ProfileReport(SerializeReport, object):
     def __init__(
         self,
         df=None,
+        handler=None,
         minimal=False,
         explorative=False,
         sensitive=False,
@@ -86,6 +88,7 @@ class ProfileReport(SerializeReport, object):
         self._html = None
         self._widgets = None
         self._json = None
+        self.handler = handler if handler is not None else default_handler()
 
         if df is not None:
             # preprocess df
@@ -151,7 +154,7 @@ class ProfileReport(SerializeReport, object):
     @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.df, self._sample)
+            self._description_set = describe_df(self.title, self.handler, self.df, self._sample)
         return self._description_set
 
     @property
