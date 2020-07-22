@@ -1,14 +1,13 @@
 """Common parts to all other modules, mainly utility functions."""
 import imghdr
 import os
-from enum import Enum, unique
 from urllib.parse import ParseResult, urlparse
 
 import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.model.typeset import ProfilingTypeSet, Object
+from pandas_profiling.model.typeset import ProfilingTypeSet
 
 
 typeset = ProfilingTypeSet()

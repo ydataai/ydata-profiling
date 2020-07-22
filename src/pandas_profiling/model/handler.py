@@ -1,7 +1,6 @@
 from pandas_profiling.model import typeset as ppt
 from pandas_profiling.model import summary_methods as pps
 from pandas_profiling.model.base import get_counts
-from pandas_profiling.report.structure.variables import *
 
 
 class ProfilingHandler:
@@ -20,6 +19,10 @@ class ProfilingHandler:
     def summarize(self, series, dtype=None, series_description={}):
         if dtype is None:
             dtype = self.typeset.detect_series_type(series)
+
+        if dtype.__name__ == 'Generic':
+            import warnings
+            warnings.warn(f"{series.name} inferred as Generic")
         return self.summary_map[dtype](series, series_description)
 
     def render(self, template, dtype):
@@ -41,6 +44,10 @@ def default_handler():
         ppt.File: pps.describe_file_1d,
         ppt.Complex: pps.describe_complex_1d,
     }
+
+    from pandas_profiling.report.structure.variables import render_boolean, render_real, render_complex, render_date, \
+    render_categorical, render_url, render_path, render_file, render_image, render_generic
+
     render_map = {
         ppt.Bool: render_boolean,
         ppt.Numeric: render_real,

@@ -14,16 +14,18 @@ import visions as vis
 from visions.typesets.typeset import VisionsTypeset
 from visions.types import VisionsBaseType
 from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
+from visions.utils.series_utils import nullable_series_contains
 
 
 # TODO: Hack
 Object = vis.Object
 Generic = vis.Generic
 
-#
+# attribute mixin
 class ProfilingTypeCategories:
     continuous = False
     categorical = False
+
 
 class Category(VisionsBaseType, ProfilingTypeCategories):
     """**Category** implementation of :class:`visions.types.VisionsBaseType`.
@@ -96,12 +98,18 @@ def to_url(series: pd.Series) -> pd.Series:
     return series.apply(urlparse)
 
 
-class URL(vis.URL, ProfilingTypeCategories):
+class URL(VisionsBaseType, ProfilingTypeCategories):
     categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
-        return [IdentityRelation(cls, vis.Object),
-                InferenceRelation(cls, Category, relationship=test_url, transformer=to_url),]
+        return [IdentityRelation(cls, Category)]
+
+    @classmethod
+    @nullable_series_contains
+    def contains_op(cls, series: pd.Series) -> bool:
+        return all(
+            isinstance(y, ParseResult) and all((y.netloc, y.scheme)) for x in series for y in [urlparse(x)]
+        )
 
 
 def test_string_is_complex(series) -> bool:
@@ -193,16 +201,18 @@ class ProfilingTypeSet(VisionsTypeset):
             Bool,
             Numeric,
             Date,
-            URL,
             Complex,
-            Path,
             vis.Object,
             Category,
         }
 
+        if config["vars"]["path"]["active"].get(bool):
+            types.add(Path)
         if config["vars"]["file"]["active"].get(bool):
             types.add(File)
-            if config["vars"]["image"]["active"].get(bool):
-                types.add(Image)
+        if config["vars"]["image"]["active"].get(bool):
+            types.add(Image)
+        if config["vars"]["url"]["active"].get(bool):
+            types.add(URL)
 
         super().__init__(types)

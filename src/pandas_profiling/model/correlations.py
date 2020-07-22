@@ -13,6 +13,7 @@ from scipy import stats
 
 from pandas_profiling.config import config
 
+
 def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     """Calculate the Cramer's V corrected stat for two variables.
 
