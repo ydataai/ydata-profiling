@@ -18,13 +18,30 @@ from visions.utils.series_utils import nullable_series_contains
 
 
 # TODO: Hack
-Object = vis.Object
 Generic = vis.Generic
 
 # attribute mixin
 class ProfilingTypeCategories:
     continuous = False
     categorical = False
+
+
+class Object(VisionsBaseType):
+    """**Object** implementation of :class:`visions.types.type.VisionsBaseType`.
+
+    Examples:
+        >>> x = pd.Series(['a', 1, np.nan])
+        >>> x in visions.Object
+        True
+    """
+
+    @classmethod
+    def get_relations(cls) -> Sequence[TypeRelation]:
+        return [IdentityRelation(cls, Generic)]
+
+    @classmethod
+    def contains_op(cls, series: pd.Series) -> bool:
+        return pdt.is_object_dtype(series) or pdt.is_categorical_dtype(series)
 
 
 class Category(VisionsBaseType, ProfilingTypeCategories):
@@ -36,11 +53,11 @@ class Category(VisionsBaseType, ProfilingTypeCategories):
 
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
-        return [IdentityRelation(cls, vis.Object)]
+        return [IdentityRelation(cls, Object)]
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
-        is_valid_dtype = pdt.is_categorical_dtype(series) or pdt.is_string_dtype(series)
+        is_valid_dtype = pdt.is_categorical_dtype(series) # or pdt.is_string_dtype(series)
         if is_valid_dtype:
             return True
 
@@ -64,7 +81,7 @@ class Path(vis.Path, ProfilingTypeCategories):
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         relations = [
-            IdentityRelation(cls, vis.Object),
+            IdentityRelation(cls, Object),
             InferenceRelation(
                 cls, Category, relationship=string_is_path, transformer=to_path
             ),
@@ -202,7 +219,7 @@ class ProfilingTypeSet(VisionsTypeset):
             Numeric,
             Date,
             Complex,
-            vis.Object,
+            Object,
             Category,
         }
 

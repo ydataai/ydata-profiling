@@ -20,9 +20,6 @@ class ProfilingHandler:
         if dtype is None:
             dtype = self.typeset.detect_series_type(series)
 
-        if dtype.__name__ == 'Generic':
-            import warnings
-            warnings.warn(f"{series.name} inferred as Generic")
         return self.summary_map[dtype](series, series_description)
 
     def render(self, template, dtype):

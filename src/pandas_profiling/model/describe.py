@@ -66,6 +66,15 @@ def describe(title: str, handler: ProfilingHandler, df: pd.DataFrame, sample: Op
         series_description = get_series_descriptions(df, handler, pbar)
 
         hashable_series = [k for k, v in series_description.items() if v['hashable']]
+
+        # TODO: Hack
+        # from pandas_profiling.model.typeset import Generic
+        # supported_columns = [
+        #     key
+        #     for key, value in series_description.items()
+        #     if value["type"] != Generic
+        # ]
+
         pbar.set_postfix_str("Get variable types")
         variables = {
             column: description["type"]
@@ -125,14 +134,6 @@ def describe(title: str, handler: ProfilingHandler, df: pd.DataFrame, sample: Op
 
         # Duplicates
         pbar.set_postfix_str("Locating duplicates")
-        # TODO: Hack
-        from pandas_profiling.model.typeset import Generic
-        supported_columns = [
-            key
-            for key, value in series_description.items()
-            if value["type"] != Generic
-        ]
-
         duplicates = get_duplicates(df, hashable_series)
         pbar.update()
 
