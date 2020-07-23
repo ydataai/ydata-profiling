@@ -1,8 +1,8 @@
+import imghdr
 from typing import Sequence
 import os
 import numpy as np
 import pandas as pd
-import pathlib 
 
 from urllib.parse import ParseResult, urlparse
 
@@ -26,24 +26,6 @@ class ProfilingTypeCategories:
     categorical = False
 
 
-class Object(VisionsBaseType):
-    """**Object** implementation of :class:`visions.types.type.VisionsBaseType`.
-
-    Examples:
-        >>> x = pd.Series(['a', 1, np.nan])
-        >>> x in visions.Object
-        True
-    """
-
-    @classmethod
-    def get_relations(cls) -> Sequence[TypeRelation]:
-        return [IdentityRelation(cls, Generic)]
-
-    @classmethod
-    def contains_op(cls, series: pd.Series) -> bool:
-        return pdt.is_object_dtype(series) or pdt.is_categorical_dtype(series)
-
-
 class Category(VisionsBaseType, ProfilingTypeCategories):
     """**Category** implementation of :class:`visions.types.VisionsBaseType`.
 
@@ -53,7 +35,15 @@ class Category(VisionsBaseType, ProfilingTypeCategories):
 
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
-        return [IdentityRelation(cls, Object)]
+        return [
+            IdentityRelation(cls, Generic),
+            InferenceRelation(
+                cls,
+                Numeric,
+                relationship=lambda s: s.nunique() < config["vars"]["num"]["low_categorical_threshold"].get(int),
+                transformer=lambda s: s.astype(str)
+            )
+        ]
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
@@ -68,25 +58,19 @@ class Category(VisionsBaseType, ProfilingTypeCategories):
         return all(isinstance(v, str) for v in series)
 
 
-def string_is_path(series) -> bool:
-    return all(os.path.isabs(p) for p in series.dropna())
-
-
-def to_path(series: pd.Series) -> pd.Series:
-    return series.apply(pathlib.PurePath)
-
-
-class Path(vis.Path, ProfilingTypeCategories):
+class Path(VisionsBaseType, ProfilingTypeCategories):
     categorical = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         relations = [
-            IdentityRelation(cls, Object),
-            InferenceRelation(
-                cls, Category, relationship=string_is_path, transformer=to_path
-            ),
+            IdentityRelation(cls, Category),
         ]
         return relations
+
+    @nullable_series_contains
+    @classmethod
+    def contains_op(cls, series: pd.Series) -> bool:
+        return all(os.path.isabs(p) for p in series)
 
 
 class File(vis.File, ProfilingTypeCategories):
@@ -95,6 +79,11 @@ class File(vis.File, ProfilingTypeCategories):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, Path)]
 
+    @nullable_series_contains
+    @classmethod
+    def contains_op(cls, series: pd.Series) -> bool:
+        return all(os.path.exists(p) for p in series)
+
 
 class Image(vis.Image, ProfilingTypeCategories):
     categorical = True
@@ -102,17 +91,12 @@ class Image(vis.Image, ProfilingTypeCategories):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, File)]
 
-
-def test_url(series) -> bool:
-    try:
-        url_gen = (urlparse(x) for x in series)
-        return all(x.netloc and x.scheme for x in url_gen)
-    except AttributeError:
-        return False
-
-
-def to_url(series: pd.Series) -> pd.Series:
-    return series.apply(urlparse)
+    @classmethod
+    @nullable_series_contains
+    def contains_op(cls, series: pd.Series) -> bool:
+        return all(
+            imghdr.what(p) for p in series
+        )
 
 
 class URL(VisionsBaseType, ProfilingTypeCategories):
@@ -124,17 +108,19 @@ class URL(VisionsBaseType, ProfilingTypeCategories):
     @classmethod
     @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
-        return all(
-            isinstance(y, ParseResult) and all((y.netloc, y.scheme)) for x in series for y in [urlparse(x)]
-        )
+        try:
+            url_gen = (urlparse(x) for x in series)
+            return all(x.netloc and x.scheme for x in url_gen)
+        except AttributeError:
+            return False
 
 
-def test_string_is_complex(series) -> bool:
-    try:
-        complex_gen = (np.complex(x) for x in series)
-        return any(x.imag != 0 for x in complex_gen)
-    except:
-        return False
+# def is_complex_str(series) -> bool:
+#     try:
+#         complex_gen = (np.complex(x) for x in series)
+#         return any(x.imag != 0 for x in complex_gen)
+#     except:
+#         return False
 
 
 class Complex(vis.Complex, ProfilingTypeCategories):
@@ -143,16 +129,15 @@ class Complex(vis.Complex, ProfilingTypeCategories):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
             IdentityRelation(cls, vis.Generic),
-            InferenceRelation(cls, Category, relationship=test_string_is_complex, transformer=lambda x: x.apply(np.complex)
-        ),
-    ]
+            # InferenceRelation(cls, Category, relationship=is_complex_str, transformer=lambda x: x),
+        ]
 
-def is_date(series):
-    try:
-        _ = pd.to_datetime(series)
-        return True
-    except:
-        return False
+# def is_date(series):
+#     try:
+#         _ = pd.to_datetime(series)
+#         return True
+#     except:
+#         return False
 
 
 class Date(vis.DateTime, ProfilingTypeCategories):
@@ -161,7 +146,7 @@ class Date(vis.DateTime, ProfilingTypeCategories):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
             IdentityRelation(cls, vis.Generic),
-            InferenceRelation(cls, Category, relationship=is_date, transformer=pd.to_datetime,),
+            # InferenceRelation(cls, Category, relationship=is_date, transformer=lambda x: pd.to_datetime(x)),
         ]
 
 
@@ -180,6 +165,7 @@ PP_bool_map = [{'yes': True, 'no': False},
         {'y': True, 'n': False},
         {'true': True, 'false': False},
         {'t': True, 'f': False}]
+
 
 def string_is_bool(series):
     bool_map_keys = [k for d in PP_bool_map for k, v in d.items()]
@@ -200,13 +186,13 @@ class Bool(vis.Boolean, ProfilingTypeCategories):
                 cls,
                 Category,
                 relationship=string_is_bool,
-                transformer=string_to_bool
+                transformer=lambda s: s
             ),
             InferenceRelation(
                 cls,
                 Numeric,
                 relationship=lambda s: s.isin({0, 1, 0.0, 1.0, np.nan, None}).all(),
-                transformer=lambda s: s.astype("Bool"),
+                transformer=lambda s: s,
             ),
         ]
 
@@ -219,17 +205,28 @@ class ProfilingTypeSet(VisionsTypeset):
             Numeric,
             Date,
             Complex,
-            Object,
             Category,
         }
 
         if config["vars"]["path"]["active"].get(bool):
             types.add(Path)
-        if config["vars"]["file"]["active"].get(bool):
-            types.add(File)
-        if config["vars"]["image"]["active"].get(bool):
-            types.add(Image)
+            if config["vars"]["file"]["active"].get(bool):
+                types.add(File)
+                if config["vars"]["image"]["active"].get(bool):
+                    types.add(Image)
+                else:
+                    raise ValueError("Image type only supported when File and Path type are also active")
+            else:
+                raise ValueError("File type only supported when Path type is active")
         if config["vars"]["url"]["active"].get(bool):
             types.add(URL)
 
         super().__init__(types)
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    config.set_arg_group("explorative")
+    ts = ProfilingTypeSet()
+    ts.plot_graph()
+    plt.show()
