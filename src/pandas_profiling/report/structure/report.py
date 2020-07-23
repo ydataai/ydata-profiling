@@ -37,6 +37,7 @@ from pandas_profiling.report.structure.overview import (
     get_dataset_overview,
     get_dataset_reproduction,
     get_dataset_warnings,
+    get_dataset_column_definitions
 )
 from pandas_profiling.report.structure.variables import (
     render_boolean,
@@ -264,7 +265,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
     return titems
 
 
-def get_dataset_items(summary: dict, warnings: list) -> list:
+def get_dataset_items(summary: dict, warnings: list, definition_file: str) -> list:
     """Returns the dataset overview (at the top of the report)
 
     Args:
@@ -281,6 +282,7 @@ def get_dataset_items(summary: dict, warnings: list) -> list:
     items = [
         get_dataset_overview(summary),
         get_dataset_reproduction(summary, metadata),
+        get_dataset_column_definitions(definition_file),
     ]
 
     if warnings:
@@ -289,7 +291,7 @@ def get_dataset_items(summary: dict, warnings: list) -> list:
     return items
 
 
-def get_report_structure(summary: dict) -> Renderable:
+def get_report_structure(summary: dict, definition_file: str) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -307,7 +309,7 @@ def get_report_structure(summary: dict) -> Renderable:
 
         section_items: List[Renderable] = [
             Container(
-                get_dataset_items(summary, warnings),
+                get_dataset_items(summary, warnings, definition_file),
                 sequence_type="tabs",
                 name="Overview",
                 anchor_id="overview",
@@ -365,17 +367,6 @@ def get_report_structure(summary: dict) -> Renderable:
                     sequence_type="list",
                     name="Duplicate rows",
                     anchor_id="duplicate",
-                )
-            )
-
-        definition_items = get_definition_items(summary["definitions"])
-        if len(definition_items) > 0:
-            section_items.append(
-                Container(
-                    items=definition_items,
-                    sequence_type="list",
-                    name="Column definitions",
-                    anchor_id="definition",
                 )
             )
 

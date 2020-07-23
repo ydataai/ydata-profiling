@@ -155,7 +155,7 @@ class ProfileReport(SerializeReport, object):
     @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.df, self._sample, self._definition_file)
+            self._description_set = describe_df(self.title, self.df, self._sample)
         return self._description_set
 
     @property
@@ -174,7 +174,7 @@ class ProfileReport(SerializeReport, object):
     @property
     def report(self):
         if self._report is None:
-            self._report = get_report_structure(self.description_set)
+            self._report = get_report_structure(self.description_set, self._definition_file)
         return self._report
 
     @property

@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 from typing import Optional
 from urllib.parse import quote
 
@@ -136,6 +138,42 @@ def get_dataset_reproduction(summary: dict, metadata: dict):
 
     return Container(
         items, name="Metadata", anchor_id="metadata", sequence_type="grid",
+    )
+
+
+def get_dataset_column_definitions(definition_file):
+
+    """Obtain the column definition of the dataframe.
+
+    Args:
+        definition_file: the column definition file.
+
+    Returns:
+        A DataFrame describing the column definition.
+    """
+
+    definitions = {"No column definitions found": ""}
+
+    if definition_file is not None:
+        if Path(definition_file).exists():
+            if definition_file.endswith('json'):
+                definitions = json.load(open(definition_file, 'r'))
+            else:
+                raise NotImplementedError()
+        else:
+            warnings.warn(f'{definition_file} not found, skip column definition.')
+
+    column_definitions = [Table(
+        [
+            {"name": column, "value": value, "fmt": "fmt"}
+            for column, value in definitions.items()
+        ],
+        name="Column Definitions",
+        anchor_id="column_definition_table",
+    )]
+
+    return Container(
+        column_definitions, name="Columns", anchor_id="column_definitions", sequence_type="grid",
     )
 
 

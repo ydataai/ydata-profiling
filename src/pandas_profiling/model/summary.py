@@ -606,29 +606,6 @@ def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame
     return None
 
 
-def get_definitions(definition_file: str) -> Optional[pd.DataFrame]:
-    """Obtain the column definition of the dataframe.
-
-    Args:
-        definition_file: the column definition file.
-
-    Returns:
-        A DataFrame describing the column definition.
-    """
-
-    if definition_file is not None:
-        if Path(definition_file).exists():
-            if definition_file.endswith('json'):
-                df = pd.read_json(definition_file, orient='index')
-                df.columns = ['Column definitions']
-                return df
-            else:
-                raise NotImplementedError()
-        else:
-            warnings.warn(f'{definition_file} not found, skip column definition.')
-
-    return None
-
 def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
