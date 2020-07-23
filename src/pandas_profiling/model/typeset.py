@@ -67,8 +67,8 @@ class Path(VisionsBaseType, ProfilingTypeCategories):
         ]
         return relations
 
-    @nullable_series_contains
     @classmethod
+    @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
         return all(os.path.isabs(p) for p in series)
 

@@ -5,7 +5,6 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
 

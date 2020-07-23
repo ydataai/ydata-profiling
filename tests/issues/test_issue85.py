@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling import ProfileReport
-from pandas_profiling.model.base import Variable
 
 
 def test_issue85():
@@ -32,5 +31,5 @@ def test_issue85():
     )
     for col, variable_stats in report.get_description()["variables"].items():
         assert (
-            variable_stats["type"] == Variable.TYPE_BOOL
+            variable_stats["type"].__name__ == "Boolean"
         ), "Variable should be boolean"

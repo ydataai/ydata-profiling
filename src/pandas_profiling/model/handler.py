@@ -40,6 +40,7 @@ def default_handler():
         ppt.Image: pps.describe_image_1d,
         ppt.File: pps.describe_file_1d,
         ppt.Complex: pps.describe_complex_1d,
+        ppt.Generic: pps.describe_unsupported,
     }
 
     from pandas_profiling.report.structure.variables import render_boolean, render_real, render_complex, render_date, \
