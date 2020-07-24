@@ -1,8 +1,7 @@
-import json
-from pathlib import Path
 from typing import Optional
 from urllib.parse import quote
 
+from pandas_profiling.config import config
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import Container, Table, Warnings
 
@@ -70,39 +69,50 @@ def get_dataset_overview(summary):
     )
 
 
-def get_dataset_schema(metadata) -> Optional[Table]:
-    if len(metadata) > 0 or any(len(value) > 0 for value in metadata.values()):
-        about_dataset = []
-        for key in ["description", "creator", "author", "url"]:
-            if key in metadata and len(metadata[key]) > 0:
-                about_dataset.append(
-                    {"name": key.capitalize(), "value": metadata[key], "fmt": "fmt"}
-                )
+def get_dataset_schema(metadata) -> Optional[Container]:
+    about_dataset = []
+    for key in ["description", "creator", "author"]:
+        if key in metadata and len(metadata[key]) > 0:
+            about_dataset.append(
+                {"name": key.capitalize(), "value": metadata[key], "fmt": "fmt"}
+            )
 
-        if "copyright_holder" in metadata and len(metadata["copyright_holder"]) > 0:
-            if "copyright_year" not in metadata:
-                about_dataset.append(
-                    {
-                        "name": "Copyright",
-                        "value": f"(c) {metadata['copyright_holder']}",
-                        "fmt": "fmt",
-                    }
-                )
-            else:
-                about_dataset.append(
-                    {
-                        "name": "Copyright",
-                        "value": f"(c) {metadata['copyright_holder']} {metadata['copyright_year']}",
-                        "fmt": "fmt",
-                    }
-                )
+    if "url" in metadata:
+        about_dataset.append(
+            {
+                "name": "URL",
+                "value": f'<a href="{metadata["url"]}">{metadata["url"]}</a>',
+                "fmt": "raw",
+            }
+        )
 
-        if len(about_dataset) > 0:
-            return Table(about_dataset, name="Dataset", anchor_id="metadata_dataset")
-    return None
+    if "copyright_holder" in metadata and len(metadata["copyright_holder"]) > 0:
+        if "copyright_year" not in metadata:
+            about_dataset.append(
+                {
+                    "name": "Copyright",
+                    "value": f"(c) {metadata['copyright_holder']}",
+                    "fmt": "fmt",
+                }
+            )
+        else:
+            about_dataset.append(
+                {
+                    "name": "Copyright",
+                    "value": f"(c) {metadata['copyright_holder']} {metadata['copyright_year']}",
+                    "fmt": "fmt",
+                }
+            )
+
+    return Container(
+        [Table(about_dataset, name="Dataset", anchor_id="metadata_dataset")],
+        name="Dataset",
+        anchor_id="dataset",
+        sequence_type="grid",
+    )
 
 
-def get_dataset_reproduction(summary: dict, metadata: dict):
+def get_dataset_reproduction(summary: dict):
     version = summary["package"]["pandas_profiling_version"]
     config = quote(summary["package"]["pandas_profiling_config"])
     date_start = summary["analysis"]["date_start"]
@@ -126,54 +136,43 @@ def get_dataset_reproduction(summary: dict, metadata: dict):
             },
         ],
         name="Reproduction",
-        anchor_id="metadata_reproduction",
+        anchor_id="overview_reproduction",
     )
-
-    dataset_table = get_dataset_schema(metadata)
-
-    items = []
-    if dataset_table:
-        items.append(dataset_table)
-    items.append(reproduction_table)
 
     return Container(
-        items, name="Metadata", anchor_id="metadata", sequence_type="grid",
+        [reproduction_table],
+        name="Reproduction",
+        anchor_id="reproduction",
+        sequence_type="grid",
     )
 
 
-def get_dataset_column_definitions(definition_file):
-
-    """Obtain the column definition of the dataframe.
+def get_dataset_column_definitions(definitions: dict):
+    """Generate an overview section for the variable description
 
     Args:
-        definition_file: the column definition file.
+        definitions: the variable descriptions.
 
     Returns:
-        A DataFrame describing the column definition.
+        A container object
     """
 
-    definitions = {"No column definitions found": ""}
-
-    if definition_file is not None:
-        if Path(definition_file).exists():
-            if definition_file.endswith('json'):
-                definitions = json.load(open(definition_file, 'r'))
-            else:
-                raise NotImplementedError()
-        else:
-            warnings.warn(f'{definition_file} not found, skip column definition.')
-
-    column_definitions = [Table(
-        [
-            {"name": column, "value": value, "fmt": "fmt"}
-            for column, value in definitions.items()
-        ],
-        name="Column Definitions",
-        anchor_id="column_definition_table",
-    )]
+    variable_descriptions = [
+        Table(
+            [
+                {"name": column, "value": value, "fmt": "fmt"}
+                for column, value in definitions.items()
+            ],
+            name="Variable descriptions",
+            anchor_id="variable_definition_table",
+        )
+    ]
 
     return Container(
-        column_definitions, name="Columns", anchor_id="column_definitions", sequence_type="grid",
+        variable_descriptions,
+        name="Variables",
+        anchor_id="variable_descriptions",
+        sequence_type="grid",
     )
 
 
@@ -186,3 +185,39 @@ def get_dataset_warnings(warnings: list) -> Warnings:
         ]
     )
     return Warnings(warnings=warnings, name=f"Warnings ({count})", anchor_id="warnings")
+
+
+def get_dataset_items(summary: dict, warnings: list) -> list:
+    """Returns the dataset overview (at the top of the report)
+
+    Args:
+        summary: the calculated summary
+        warnings: the warnings
+
+    Returns:
+        A list with components for the dataset overview (overview, reproduction, warnings)
+    """
+
+    items = [get_dataset_overview(summary)]
+
+    metadata = {
+        key: config["dataset"][key].get(str) for key in config["dataset"].keys()
+    }
+
+    if len(metadata) > 0 and any(len(value) > 0 for value in metadata.values()):
+        items.append(get_dataset_schema(metadata))
+
+    column_details = {
+        key: config["variables"]["descriptions"][key].get(str)
+        for key in config["variables"]["descriptions"].keys()
+    }
+
+    if len(column_details) > 0:
+        items.append(get_dataset_column_definitions(column_details))
+
+    if warnings:
+        items.append(get_dataset_warnings(warnings))
+
+    items.append(get_dataset_reproduction(summary))
+
+    return items

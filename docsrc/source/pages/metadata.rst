@@ -44,12 +44,7 @@ In addition to providing dataset details, users often would like to include colu
 
 
 This alternative example demonstrates how you could load the definitions from a json file.
-
-There are three options:
-
-  1. Add the definitions next to the variables
-  2. Add the definitions in Overview
-  3. Add the definition next to the variables and in the Overview.
+By default, the descriptions are presented in the overview tab and next to each variable.
 
 .. code-block:: json
      :caption: dataset_column_definition.json
@@ -68,22 +63,17 @@ There are three options:
 
         definition_file = 'dataset_column_definition.json'
 
-        # Option 1: Add the definitions next to the variables
-
+        # Read the variable descriptions
         with open(definition_file, 'r') as f:
             definitions = json.load(f)
 
+        # By default, the descriptions are presented in the overview tab and next to each variable
         report = df.profile_report(variable=dict(descriptions=definitions))
 
-        # Option 2: Add the definitions in the Overview tab
-
-        report = df.profile_report(definition_file=definition_file)
-
-        # Option 3: Add the definitions next to the variables and in the Overview
-
+        # We can disable showing the descriptions next to each variable
         report = df.profile_report(
-            variable=dict(descriptions=definitions),
-            definition_file=definition_file
+                variable=dict(descriptions=definitions),
+                show_variable_description=False
         )
 
         report.to_file('report.html')

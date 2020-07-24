@@ -33,12 +33,7 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
-from pandas_profiling.report.structure.overview import (
-    get_dataset_overview,
-    get_dataset_reproduction,
-    get_dataset_warnings,
-    get_dataset_column_definitions
-)
+from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.report.structure.variables import (
     render_boolean,
     render_categorical,
@@ -127,12 +122,13 @@ def render_variables_section(dataframe_summary: dict) -> list:
         }
 
         descriptions = config["variables"]["descriptions"].get(dict)
+        show_description = config["show_variable_description"].get(bool)
 
         template_variables = {
             "varname": idx,
             "varid": hash(idx),
             "warnings": warnings,
-            "description": descriptions.get(idx, ""),
+            "description": descriptions.get(idx, "") if show_description else "",
             "warn_fields": warning_fields,
         }
 
@@ -196,9 +192,7 @@ def get_definition_items(definitions: pd.DataFrame):
     items = []
     if definitions is not None and len(definitions) > 0:
         items.append(
-            Duplicate(
-                duplicate=definitions, name="Columns", anchor_id="definitions",
-            )
+            Duplicate(duplicate=definitions, name="Columns", anchor_id="definitions",)
         )
     return items
 
@@ -265,37 +259,10 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
     return titems
 
 
-def get_dataset_items(summary: dict, warnings: list, definition_file: str) -> list:
-    """Returns the dataset overview (at the top of the report)
-
-    Args:
-        summary: the calculated summary
-        warnings: the warnings
-
-    Returns:
-        A list with components for the dataset overview (overview, reproduction, warnings)
-    """
-    metadata = {
-        key: config["dataset"][key].get(str) for key in config["dataset"].keys()
-    }
-
-    items = [
-        get_dataset_overview(summary),
-        get_dataset_reproduction(summary, metadata),
-        get_dataset_column_definitions(definition_file),
-    ]
-
-    if warnings:
-        items.append(get_dataset_warnings(warnings))
-
-    return items
-
-
-def get_report_structure(summary: dict, definition_file: str) -> Renderable:
+def get_report_structure(summary: dict) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
-      sample: A dict containing the samples to print.
       summary: Statistics to use for the overview, variables, correlations and missing values.
 
     Returns:
@@ -309,7 +276,7 @@ def get_report_structure(summary: dict, definition_file: str) -> Renderable:
 
         section_items: List[Renderable] = [
             Container(
-                get_dataset_items(summary, warnings, definition_file),
+                get_dataset_items(summary, warnings),
                 sequence_type="tabs",
                 name="Overview",
                 anchor_id="overview",
