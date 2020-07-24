@@ -43,7 +43,8 @@ In addition to providing dataset details, users often would like to include colu
         profile.to_file("report.html")
 
 
-This alternative example demonstrates how you could load the definitions from a json file:
+This alternative example demonstrates how you could load the definitions from a json file.
+By default, the descriptions are presented in the overview tab and next to each variable.
 
 .. code-block:: json
      :caption: dataset_column_definition.json
@@ -60,9 +61,19 @@ This alternative example demonstrates how you could load the definitions from a 
         import pandas as pd
         import pandas_profiling
 
+        definition_file = 'dataset_column_definition.json'
 
-        with open('dataset_column_definition.json', 'r') as f:
+        # Read the variable descriptions
+        with open(definition_file, 'r') as f:
             definitions = json.load(f)
 
+        # By default, the descriptions are presented in the overview tab and next to each variable
         report = df.profile_report(variable=dict(descriptions=definitions))
+
+        # We can disable showing the descriptions next to each variable
+        report = df.profile_report(
+                variable=dict(descriptions=definitions),
+                show_variable_description=False
+        )
+
         report.to_file('report.html')
