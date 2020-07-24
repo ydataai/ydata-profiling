@@ -22,7 +22,7 @@ from pandas_profiling.visualisation.missing import (
 )
 from pandas_profiling.model.summary_methods import *
 from pandas_profiling.visualisation.plot import scatter_pairwise
-from pandas_profiling.model.typeset import Generic
+
 
 def sort_column_names(dct: Mapping, sort: str):
     sort = sort.lower()

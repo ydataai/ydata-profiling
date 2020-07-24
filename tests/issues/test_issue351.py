@@ -8,5 +8,5 @@ def test_issue351():
 
     profile = ProfileReport(data)
     assert (
-        profile.get_description()["variables"]["0"]["type"].__name__ == "Generic"
+        profile.get_description()["variables"]["0"]["type"].__name__ == "Unsupported"
     )

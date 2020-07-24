@@ -7,7 +7,7 @@ import numpy as np
 
 from pandas_profiling.config import config
 from pandas_profiling.model.correlations import perform_check_correlation
-from pandas_profiling.model.typeset import Generic
+from pandas_profiling.model.typeset import Unsupported
 
 @unique
 class MessageType(Enum):
@@ -133,7 +133,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    if description["type"] == Generic or not description['hashable']:
+    if description["type"] == Unsupported or not description['hashable']:
         messages.append(
             Message(
                 column_name=col,
@@ -154,7 +154,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         )
 
     if (
-        description["type"] == Generic
+        description["type"] == Unsupported
         or (description['hashable'] and description["distinct_count_with_nan"] <= 1)
     ):
         messages.append(

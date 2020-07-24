@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from urllib.parse import ParseResult, urlparse
+from urllib.parse import urlparse
 
 from pandas_profiling.config import config
 from pandas.api import types as pdt
@@ -17,13 +17,14 @@ from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
 from visions.utils.series_utils import nullable_series_contains
 
 
-# TODO: Hack
-Generic = vis.Generic
-
 # attribute mixin
 class ProfilingTypeCategories:
     continuous = False
     categorical = False
+
+
+class Unsupported(vis.Generic, ProfilingTypeCategories):
+    pass
 
 
 class Category(VisionsBaseType, ProfilingTypeCategories):
@@ -36,7 +37,7 @@ class Category(VisionsBaseType, ProfilingTypeCategories):
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
-            IdentityRelation(cls, Generic),
+            IdentityRelation(cls, Unsupported),
             InferenceRelation(
                 cls,
                 Numeric,
@@ -128,7 +129,7 @@ class Complex(vis.Complex, ProfilingTypeCategories):
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
-            IdentityRelation(cls, vis.Generic),
+            IdentityRelation(cls, Unsupported),
             # InferenceRelation(cls, Category, relationship=is_complex_str, transformer=lambda x: x),
         ]
 
@@ -145,7 +146,7 @@ class Date(vis.DateTime, ProfilingTypeCategories):
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
-            IdentityRelation(cls, vis.Generic),
+            IdentityRelation(cls, Unsupported),
             # InferenceRelation(cls, Category, relationship=is_date, transformer=lambda x: pd.to_datetime(x)),
         ]
 
@@ -154,7 +155,7 @@ class Numeric(vis.VisionsBaseType, ProfilingTypeCategories):
     continuous = True
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
-        return [IdentityRelation(cls, vis.Generic)]
+        return [IdentityRelation(cls, Unsupported)]
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
@@ -181,7 +182,7 @@ class Bool(vis.Boolean, ProfilingTypeCategories):
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
-            IdentityRelation(cls, vis.Generic),
+            IdentityRelation(cls, Unsupported),
             InferenceRelation(
                 cls,
                 Category,
@@ -221,7 +222,7 @@ class ProfilingTypeSet(VisionsTypeset):
         if config["vars"]["url"]["active"].get(bool):
             types.add(URL)
 
-        super().__init__(types)
+        super().__init__(types, root_node=Unsupported)
 
 
 if __name__ == "__main__":

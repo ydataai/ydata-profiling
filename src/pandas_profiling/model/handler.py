@@ -40,7 +40,7 @@ def default_handler():
         ppt.Image: pps.describe_image_1d,
         ppt.File: pps.describe_file_1d,
         ppt.Complex: pps.describe_complex_1d,
-        ppt.Generic: pps.describe_unsupported,
+        ppt.Unsupported: pps.describe_unsupported,
     }
 
     from pandas_profiling.report.structure.variables import render_boolean, render_real, render_complex, render_date, \
@@ -57,6 +57,6 @@ def default_handler():
         ppt.Path: render_path,
         ppt.File: render_file,
         ppt.Image: render_image,
-        ppt.Generic: render_generic,
+        ppt.Unsupported: render_generic,
     }
     return ProfilingHandler(typeset, summary_map, render_map, {})
