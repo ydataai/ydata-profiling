@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.model.typeset import ProfilingTypeSet, Object
+from pandas_profiling.model.typeset import ProfilingTypeSet, Category
 
 
 typeset = ProfilingTypeSet()
@@ -207,4 +207,6 @@ def get_var_type(series: pd.Series) -> dict:
 
     series_description = get_counts(series)
     series_description['type'] = typeset.detect_series_type(series)
+    
+    uniqueness_threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
     return series_description

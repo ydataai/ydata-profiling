@@ -5,12 +5,14 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import config
-from pandas_profiling.model.base import Variable
+from pandas_profiling.model.typeset import ProfilingTypeSet, Category, Bool, Numeric, Date
+from pandas_profiling.model.handler import default_handler
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
+handler = default_handler()
 
 testdata = [
     # Unique values
@@ -34,7 +36,7 @@ testdata = [
 def test_describe_unique(data, is_unique, p_unique):
     """Test the unique feature of 1D data"""
 
-    desc_1d = describe_1d(data)
+    desc_1d = describe_1d(data, handler)
     if is_unique is not None:
         assert desc_1d["p_unique"] == p_unique, "Describe 1D p_unique incorrect"
         assert desc_1d["is_unique"] == is_unique, "Describe 1D should return unique"
@@ -183,7 +185,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": "d",
-            "type": Variable.TYPE_CAT,
+            "type": Category,
             "variance": check_is_NaN,
         },
         "x": {
@@ -216,7 +218,7 @@ def expected_results():
             "std": 23.688077169749342,
             "sum": 107.0,
             "top": check_is_NaN,
-            "type": Variable.TYPE_NUM,
+            "type": Numeric,
             "variance": 561.125,
         },
         "y": {
@@ -248,7 +250,7 @@ def expected_results():
             "std": 1086.1335236468506,
             "sum": 3929.3949203464999,
             "top": check_is_NaN,
-            "type": Variable.TYPE_NUM,
+            "type": Numeric,
             "variance": 1179686.0311895239,
         },
         "cat": {
@@ -279,7 +281,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": "c",
-            "type": Variable.TYPE_CAT,
+            "type": Category,
             "variance": check_is_NaN,
         },
         "s1": {
@@ -310,7 +312,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": 1.0,
-            "type": Variable.TYPE_BOOL,
+            "type": Bool,
             "variance": check_is_NaN,
         },
         "s2": {
@@ -341,7 +343,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": "some constant text $ % value {obj} ",
-            "type": Variable.TYPE_CAT,
+            "type": Category,
             "variance": check_is_NaN,
         },
         "somedate": {
@@ -370,7 +372,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": check_is_NaN,
-            "type": Variable.TYPE_DATE,
+            "type": Date,
         },
         "bool_tf": {
             "25%": check_is_NaN,
@@ -399,7 +401,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": True,
-            "type": Variable.TYPE_BOOL,
+            "type": Bool,
             "variance": check_is_NaN,
         },
         "bool_tf_with_nan": {
@@ -429,7 +431,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": False,
-            "type": Variable.TYPE_BOOL,
+            "type": Bool,
             "variance": check_is_NaN,
         },
         "bool_01": {
@@ -459,7 +461,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": 1,
-            "type": Variable.TYPE_BOOL,
+            "type": Bool,
             "variance": check_is_NaN,
         },
         "bool_01_with_nan": {
@@ -487,32 +489,32 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": 0,
-            "type": Variable.TYPE_BOOL,
+            "type": Bool,
             "variance": check_is_NaN,
         },
         "list": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Category,
         },
         "mixed": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Category,
         },
         "dict": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Category,
         },
         "tuple": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Category,
         },
     }
 
@@ -522,7 +524,7 @@ def test_describe_df(describe_data, expected_results):
     describe_data_frame = pd.DataFrame(describe_data)
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
 
-    results = describe("title", describe_data_frame)
+    results = describe("title", handler, describe_data_frame)
 
     assert {
         "analysis",
@@ -572,10 +574,10 @@ def test_describe_df(describe_data, expected_results):
 def test_describe_empty():
     empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
-        describe("", empty_frame)
+        describe("", handler, empty_frame)
 
 
 def test_describe_list():
     with pytest.raises(AttributeError):
         with pytest.warns(UserWarning):
-            describe("", [1, 2, 3])
+            describe("", handler, [1, 2, 3])
