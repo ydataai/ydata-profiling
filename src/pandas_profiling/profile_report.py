@@ -88,7 +88,7 @@ class ProfileReport(SerializeReport, object):
         self._html = None
         self._widgets = None
         self._json = None
-        self.handler = handler if handler is not None else default_handler()
+        self._handler = handler
 
         if df is not None:
             # preprocess df
@@ -150,6 +150,12 @@ class ProfileReport(SerializeReport, object):
             config[list(vars.keys())[0]] = list(vars.values())[0]
         else:
             config.set_kwargs(vars)
+
+    @property
+    def handler(self):
+        if self._handler is None:
+            self._handler = default_handler()
+        return self._handler
 
     @property
     def description_set(self):

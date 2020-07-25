@@ -7,7 +7,6 @@ import pandas as pd
 
 import pandas_profiling
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
 
 
 def test_issue72_higher():
@@ -20,9 +19,9 @@ def test_issue72_higher():
     report = pandas_profiling.ProfileReport(df)
 
     # 3 > 2, so numerical
-    assert report.get_description()["variables"]["A"]["type"] == Variable.TYPE_NUM
+    assert report.get_description()["variables"]["A"]["type"].__name__ == "Numeric"
     # Strings are always categorical
-    assert report.get_description()["variables"]["B"]["type"] == Variable.TYPE_CAT
+    assert report.get_description()["variables"]["B"]["type"].__name__ == "Category"
 
 
 def test_issue72_equal():
@@ -35,9 +34,9 @@ def test_issue72_equal():
     )
 
     # 3 == 3, so numerical
-    assert report.get_description()["variables"]["A"]["type"] == Variable.TYPE_NUM
+    assert report.get_description()["variables"]["A"]["type"].__name__ == "Numeric"
     # Strings are always categorical
-    assert report.get_description()["variables"]["B"]["type"] == Variable.TYPE_CAT
+    assert report.get_description()["variables"]["B"]["type"].__name__ == "Category"
 
 
 def test_issue72_lower():
@@ -48,6 +47,6 @@ def test_issue72_lower():
     report = df.profile_report(correlations={"recoded": {"calculate": False}})
 
     # 3 < 10, so categorical
-    assert report.get_description()["variables"]["A"]["type"] == Variable.TYPE_CAT
+    assert report.get_description()["variables"]["A"]["type"].__name__ == "Category"
     # Strings are always categorical
-    assert report.get_description()["variables"]["B"]["type"] == Variable.TYPE_CAT
+    assert report.get_description()["variables"]["B"]["type"].__name__ == "Category"

@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 
 import pandas_profiling
-from pandas_profiling.model.base import Variable
 
 
 def test_issue437():
@@ -39,6 +38,6 @@ def test_issue437():
 
         description_set = pandas_profiling.ProfileReport(df).description_set
 
-        assert description_set["variables"]["a"]["type"] == Variable.TYPE_NUM
-        assert description_set["variables"]["b"]["type"] == Variable.TYPE_NUM
-        assert description_set["variables"]["c"]["type"] == Variable.TYPE_NUM
+        assert description_set["variables"]["a"]["type"].__name__ == "Numeric"
+        assert description_set["variables"]["b"]["type"].__name__ == "Numeric"
+        assert description_set["variables"]["c"]["type"].__name__ == "Numeric"

@@ -5,8 +5,11 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import config
+<<<<<<< HEAD
 from pandas_profiling.model.typeset import ProfilingTypeSet, Category, Bool, Numeric, Date
 from pandas_profiling.model.handler import default_handler
+=======
+>>>>>>> 2c6b5df5f37940035b9cb22b5338f61e612147a4
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
 

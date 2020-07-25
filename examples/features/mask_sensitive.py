@@ -29,7 +29,7 @@ if __name__ == "__main__":
     )
 
     report = ProfileReport(
-        df.sample(frac=0.25),
+        df.sample(frac=0.25, random_state=12),
         title="Masked data",
         dataset=dict(
             description="This profiling report was generated using a sample of 5% of the original dataset.",

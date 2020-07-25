@@ -47,6 +47,7 @@ profile.set_variable(
 profile.set_variable("plot.scatter_threshold", 25000)
 
 # Enable files and images (off by default, as it uses relatively expensive computations when not interested)
+profile.set_variable("vars.path.active", True)
 profile.set_variable("vars.file.active", True)
 profile.set_variable("vars.image.active", True)
 

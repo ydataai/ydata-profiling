@@ -1,7 +1,6 @@
 """Common parts to all other modules, mainly utility functions."""
 import imghdr
 import os
-from enum import Enum, unique
 from urllib.parse import ParseResult, urlparse
 
 import numpy as np
