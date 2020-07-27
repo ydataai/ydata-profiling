@@ -12,6 +12,7 @@ from pandas_profiling.model.typeset import Category, Numeric, Bool, Date, Unsupp
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
+handler = default_handler()
 
 testdata = [
     # Unique values
@@ -35,7 +36,7 @@ testdata = [
 def test_describe_unique(data, is_unique, p_unique):
     """Test the unique feature of 1D data"""
 
-    desc_1d = describe_1d(data, default_handler())
+    desc_1d = describe_1d(data, handler)
     if is_unique is not None:
         assert desc_1d["p_unique"] == p_unique, "Describe 1D p_unique incorrect"
         assert desc_1d["is_unique"] == is_unique, "Describe 1D should return unique"
@@ -523,7 +524,7 @@ def test_describe_df(describe_data, expected_results):
     describe_data_frame = pd.DataFrame(describe_data)
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
 
-    results = describe("title", default_handler(), describe_data_frame)
+    results = describe("title", handler, describe_data_frame)
 
     assert {
         "analysis",
@@ -573,10 +574,10 @@ def test_describe_df(describe_data, expected_results):
 def test_describe_empty():
     empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
-        describe("", default_handler(), empty_frame)
+        describe("", handler, empty_frame)
 
 
 def test_describe_list():
     with pytest.raises(AttributeError):
         with pytest.warns(UserWarning):
-            describe("", default_handler(), [1, 2, 3])
+            describe("", handler, [1, 2, 3])
