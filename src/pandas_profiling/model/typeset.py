@@ -247,6 +247,7 @@ class ProfilingTypeSet(VisionsTypeset):
     """Base typeset for pandas-profiling"""
     def __init__(self):
         types = {
+            Unsupported,
             Bool,
             Numeric,
             Date,
