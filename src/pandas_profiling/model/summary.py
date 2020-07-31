@@ -160,7 +160,6 @@ def get_table_stats(df: pd.DataFrame, handler: ProfilingHandler, variable_stats:
     )
 
     # Variable type counts
-    table_stats.update({k: 0 for k in handler.typeset.types})
     table_stats.update(
         {
             "types": Counter(variable_stats.loc["type"].values)

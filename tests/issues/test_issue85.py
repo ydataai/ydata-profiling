@@ -30,6 +30,7 @@ def test_issue85():
         samples={"head": 20},
     )
     for col, variable_stats in report.get_description()["variables"].items():
+        print(col)
         assert (
             variable_stats["type"].__name__ == "Bool"
         ), "Variable should be boolean"

@@ -1,3 +1,4 @@
+import copy
 import json
 import warnings
 from pathlib import Path
@@ -353,6 +354,7 @@ class ProfileReport(SerializeReport, object):
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
+            description['table']['types'] = {str(k): v for k, v in description['table']['types'].items()}
             data = json.dumps(description, indent=4, cls=CustomEncoder)
             pbar.update()
         return data

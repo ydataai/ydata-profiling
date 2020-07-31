@@ -112,11 +112,7 @@ def render_variables_section(dataframe_summary: dict, handler: 'ProfilingHandler
         template_variables.update(summary)
 
         # Per type template variables
-        if summary['hashable']:
-            rendering = handler.render(template_variables, summary["type"])
-        else:
-            rendering = render_generic(template_variables)
-        template_variables.update(rendering)
+        template_variables.update(handler.render(template_variables, summary["type"]))
 
         # Ignore these
         if config["reject_variables"].get(bool):
