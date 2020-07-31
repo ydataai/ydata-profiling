@@ -1,5 +1,7 @@
 # Title of the document
 title: "Pandas Profiling Report"
+
+# Metadata
 dataset:
   description: ""
   creator: ""
@@ -8,14 +10,17 @@ dataset:
   copyright_year: ""
   url: ""
 
+variables:
+  descriptions: {}
+
+# Show the description at each variable (in addition to the overview tab)
+show_variable_description: True
+
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 
 # Show the progress bar
 progress_bar: True
-
-variables:
-  descriptions: {}
 
 # Per variable type description settings
 vars:
