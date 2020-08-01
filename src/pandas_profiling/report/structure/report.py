@@ -1,11 +1,12 @@
 """Generate the report."""
 import re
-from typing import List
+from typing import List, Type
 
 import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
+from pandas_profiling.model.handler import ProfilingHandler
 
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import (
@@ -22,18 +23,6 @@ from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import get_dataset_items
-from pandas_profiling.report.structure.variables import (
-    render_boolean,
-    render_categorical,
-    render_complex,
-    render_date,
-    render_generic,
-    render_image,
-    render_path,
-    render_real,
-    render_url,
-)
-from pandas_profiling.report.structure.variables.render_file import render_file
 
 
 def get_missing_items(summary) -> list:
@@ -62,7 +51,7 @@ def get_missing_items(summary) -> list:
     return items
 
 # TODO: split in per variable function
-def render_variables_section(dataframe_summary: dict, handler: 'ProfilingHandler') -> list:
+def render_variables_section(dataframe_summary: dict, handler: ProfilingHandler) -> list:
     """Render the HTML for each of the variables in the DataFrame.
 
     Args:
@@ -71,9 +60,6 @@ def render_variables_section(dataframe_summary: dict, handler: 'ProfilingHandler
     Returns:
         The rendered HTML, where each row represents a variable.
     """
-    # TODO: Temporary hack
-    from pandas_profiling.model.handler import default_handler
-    handler = default_handler()
 
     templs = []
 
@@ -112,7 +98,7 @@ def render_variables_section(dataframe_summary: dict, handler: 'ProfilingHandler
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(handler.render(template_variables, summary["type"]))
+        template_variables.update(handler.render(template_variables, dtype=summary["type"]))
 
         # Ignore these
         if config["reject_variables"].get(bool):
@@ -236,7 +222,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
     return titems
 
 
-def get_report_structure(summary: dict, handler: 'ProfilingHandler') -> Renderable:
+def get_report_structure(summary: dict, handler: ProfilingHandler) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
