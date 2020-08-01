@@ -9,6 +9,7 @@ from pandas_profiling.config import config
 from pandas_profiling.model.correlations import perform_check_correlation
 from pandas_profiling.model.typeset import Unsupported
 
+
 @unique
 class MessageType(Enum):
     """Message Types"""
@@ -133,7 +134,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    if description["type"] == Unsupported or not description['hashable']:
+    if description["type"] == Unsupported or not description["hashable"]:
         messages.append(
             Message(
                 column_name=col,
@@ -153,9 +154,8 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    if (
-        description["type"] == Unsupported
-        or (description['hashable'] and description["distinct_count_with_nan"] <= 1)
+    if description["type"] == Unsupported or (
+        description["hashable"] and description["distinct_count_with_nan"] <= 1
     ):
         messages.append(
             Message(
@@ -176,7 +176,9 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         )
     elif description["type"].categorical:
         # High cardinality
-        if description["n_unique"] > config["vars"]["cat"]["cardinality_threshold"].get(int):
+        if description["n_unique"] > config["vars"]["cat"]["cardinality_threshold"].get(
+            int
+        ):
             messages.append(
                 Message(
                     column_name=col,
@@ -189,10 +191,15 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
             float
         )
-    elif description['type'].continuous:
-        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    elif description["type"].continuous:
+        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
+            float
+        )
 
-        if ("chi_squared" in description and description["chi_squared"][1] > chi_squared_threshold):
+        if (
+            "chi_squared" in description
+            and description["chi_squared"][1] > chi_squared_threshold
+        ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )

@@ -71,7 +71,7 @@ def categorical_matrix(
         for column_name, variable_type in variables.items()
         if variable_type.categorical
         # TODO: solve in type system
-        and config["categorical_maximum_correlation_distinct"].get(int) 
+        and config["categorical_maximum_correlation_distinct"].get(int)
         >= df[column_name].value_counts().shape[0]
         > 1
     }
@@ -213,5 +213,8 @@ def perform_check_correlation(
     cols = correlation_matrix.columns
     bool_index = abs(correlation_matrix.values) >= threshold
     np.fill_diagonal(bool_index, False)
-    return {col: cols[bool_index[i]].values.tolist() for i, col in enumerate(cols) if any(bool_index[i])}
-
+    return {
+        col: cols[bool_index[i]].values.tolist()
+        for i, col in enumerate(cols)
+        if any(bool_index[i])
+    }

@@ -7,6 +7,4 @@ def test_issue351():
     data = pd.DataFrame(["Jan", 1]).set_index(0)
 
     profile = ProfileReport(data)
-    assert (
-        profile.get_description()["variables"]["0"]["type"].__name__ == "Unsupported"
-    )
+    assert profile.get_description()["variables"]["0"]["type"].__name__ == "Unsupported"

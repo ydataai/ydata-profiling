@@ -1,28 +1,23 @@
+from pathlib import Path
+from urllib.parse import urlsplit
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
 from pandas.core.arrays.integer import _IntegerDtype
-from urllib.parse import urlsplit
 from scipy.stats.stats import chisquare
-from visions.application.summaries.series.text_summary import (
-    length_summary,
-    unicode_summary,
-)
-
 from visions.application.summaries.series import (
     file_summary,
     image_summary,
     path_summary,
     url_summary,
 )
-
-from pandas_profiling.model.messages import (
-    check_correlation_messages,
-    check_table_messages,
-    check_variable_messages,
-    warning_type_date,
+from visions.application.summaries.series.text_summary import (
+    length_summary,
+    unicode_summary,
 )
+
 from pandas_profiling.config import config as config
+from pandas_profiling.model.messages import warning_type_date
 
 
 def describe_supported(series: pd.Series, series_description: dict) -> dict:
@@ -57,6 +52,7 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
 
     return stats
 
+
 def describe_unsupported(series: pd.Series, series_description: dict):
     """Describe an unsupported series.
     Args:
@@ -82,6 +78,7 @@ def describe_unsupported(series: pd.Series, series_description: dict):
 
     return results_data
 
+
 def histogram_compute(finite_values, n_unique, name="histogram"):
     stats = {}
     bins = config["plot"]["histogram"]["bins"].get(int)
@@ -93,6 +90,7 @@ def histogram_compute(finite_values, n_unique, name="histogram"):
         stats[name] = np.histogram(finite_values, max_bins)
 
     return stats
+
 
 def numeric_stats_pandas(series: pd.Series):
     return {
@@ -107,6 +105,7 @@ def numeric_stats_pandas(series: pd.Series):
         "skewness": series.skew(),
         "sum": series.sum(),
     }
+
 
 def numeric_stats_numpy(series, series_description):
     present_values = series[~np.isnan(series)]
@@ -123,6 +122,7 @@ def numeric_stats_numpy(series, series_description):
         "sum": np.sum(present_values),
         "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
     }
+
 
 def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a numeric series.
@@ -153,9 +153,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
 
     if isinstance(series.dtype, _IntegerDtype):
         stats = numeric_stats_pandas(series)
-        present_values = series.loc[series.notnull()].astype(
-            str(series.dtype).lower()
-        )
+        present_values = series.loc[series.notnull()].astype(str(series.dtype).lower())
         stats["n_zeros"] = series_description["count"] - np.count_nonzero(
             present_values
         )
@@ -177,9 +175,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         }
     )
 
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-        float
-    )
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
         histogram, _ = np.histogram(finite_values, bins="auto")
         stats["chi_squared"] = chisquare(histogram)
@@ -233,15 +229,14 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
 
     values = series[series.notnull()].values.astype(np.int64) // 10 ** 9
 
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-        float
-    )
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
         histogram, _ = np.histogram(values, bins="auto")
         stats["chi_squared"] = chisquare(histogram)
 
     stats.update(histogram_compute(values, series_description["n_unique"]))
     return stats
+
 
 def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a categorical series.
@@ -261,9 +256,7 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
 
     stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-        float
-    )
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
         stats["chi_squared"] = list(chisquare(value_counts.values))
 
@@ -290,6 +283,7 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
 
     return stats
 
+
 def describe_url_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a url series.
 
@@ -314,6 +308,7 @@ def describe_url_1d(series: pd.Series, series_description: dict) -> dict:
 
     return stats
 
+
 def describe_file_1d(series: pd.Series, series_description: dict) -> dict:
     if "p_series" not in series_description:
         series = series[~series.isnull()].astype(str)
@@ -334,6 +329,7 @@ def describe_file_1d(series: pd.Series, series_description: dict) -> dict:
     )
 
     return stats
+
 
 def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a path series.
@@ -365,6 +361,7 @@ def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
 
     return stats
 
+
 def describe_image_1d(series: pd.Series, series_description: dict):
     if "p_series" not in series_description:
         series = series[~series.isnull()].astype(str)
@@ -380,6 +377,7 @@ def describe_image_1d(series: pd.Series, series_description: dict):
     series_description.update(describe_file_1d(series, series_description))
 
     return stats
+
 
 def describe_boolean_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a boolean series.

@@ -9,8 +9,8 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
-from pandas_profiling.model.handler import default_handler
 from pandas_profiling.model.describe import describe as describe_df
+from pandas_profiling.model.handler import default_handler
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
@@ -161,7 +161,9 @@ class ProfileReport(SerializeReport, object):
     @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.handler, self.df, self._sample)
+            self._description_set = describe_df(
+                self.title, self.handler, self.df, self._sample
+            )
         return self._description_set
 
     @property
@@ -354,7 +356,9 @@ class ProfileReport(SerializeReport, object):
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
-            description['table']['types'] = {str(k): v for k, v in description['table']['types'].items()}
+            description["table"]["types"] = {
+                str(k): v for k, v in description["table"]["types"].items()
+            }
             data = json.dumps(description, indent=4, cls=CustomEncoder)
             pbar.update()
         return data

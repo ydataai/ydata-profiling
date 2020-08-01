@@ -1,20 +1,21 @@
 import imghdr
-from typing import Sequence
 import os
-import numpy as np
-import pandas as pd
-
+from typing import Sequence
 from urllib.parse import urlparse
 
-from pandas_profiling.config import config
-from pandas.api import types as pdt
-
+import numpy as np
+import pandas as pd
 import visions as vis
-
-from visions.typesets.typeset import VisionsTypeset
-from visions.types import VisionsBaseType
+from pandas.api import types as pdt
 from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
-from visions.utils.series_utils import nullable_series_contains, func_nullable_series_contains
+from visions.types import VisionsBaseType
+from visions.typesets.typeset import VisionsTypeset
+from visions.utils.series_utils import (
+    func_nullable_series_contains,
+    nullable_series_contains,
+)
+
+from pandas_profiling.config import config
 
 
 class ProfilingTypeCategories:
@@ -38,6 +39,7 @@ def applied_to_nonnull(fn):
             new_series[notna] = fn(series[notna])
             return new_series
         return fn(series)
+
     return inner
 
 
@@ -46,12 +48,12 @@ def numeric_is_category(series):
     return n_unique <= config["vars"]["num"]["low_categorical_threshold"].get(int)
 
 
-
 class Category(PandasProfilingBaseType):
     """**Category** implementation of :class:`visions.types.VisionsBaseType`.
 
     Examples:
     """
+
     categorical = True
 
     @classmethod
@@ -61,14 +63,17 @@ class Category(PandasProfilingBaseType):
             InferenceRelation(
                 cls,
                 Numeric,
-                relationship=lambda s: s.nunique() < config["vars"]["num"]["low_categorical_threshold"].get(int),
-                transformer=applied_to_nonnull(lambda s: s.astype(str))
-            )
+                relationship=lambda s: s.nunique()
+                < config["vars"]["num"]["low_categorical_threshold"].get(int),
+                transformer=applied_to_nonnull(lambda s: s.astype(str)),
+            ),
         ]
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
-        is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(series) # or pdt.is_string_dtype(series)
+        is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
+            series
+        )  # or pdt.is_string_dtype(series)
         if is_valid_dtype:
             return True
         # elif pdt.is_string_dtype(series):
@@ -83,6 +88,7 @@ class Category(PandasProfilingBaseType):
 
 class Path(PandasProfilingBaseType):
     categorical = True
+
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         relations = [
@@ -98,6 +104,7 @@ class Path(PandasProfilingBaseType):
 
 class File(PandasProfilingBaseType):
     categorical = True
+
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, Path)]
@@ -110,6 +117,7 @@ class File(PandasProfilingBaseType):
 
 class Image(PandasProfilingBaseType):
     categorical = True
+
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, File)]
@@ -117,13 +125,12 @@ class Image(PandasProfilingBaseType):
     @classmethod
     @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
-        return all(
-            imghdr.what(p) for p in series
-        )
+        return all(imghdr.what(p) for p in series)
 
 
 class URL(PandasProfilingBaseType):
     categorical = True
+
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, Category)]
@@ -165,7 +172,9 @@ class Date(PandasProfilingBaseType):
 def string_is_numeric(series):
     try:
         _ = pd.to_numeric(series)
-        if series.nunique() > config["vars"]["num"]["low_categorical_threshold"].get(int):
+        if series.nunique() > config["vars"]["num"]["low_categorical_threshold"].get(
+            int
+        ):
             return False
     except:
         return False
@@ -177,9 +186,10 @@ class Numeric(PandasProfilingBaseType):
 
     @classmethod
     def get_relations(cls) -> Sequence[TypeRelation]:
-        return [IdentityRelation(cls, Unsupported),
-                # InferenceRelation(cls, Category, relationship=string_is_numeric, transformer=pd.to_numeric,)
-                ]
+        return [
+            IdentityRelation(cls, Unsupported),
+            # InferenceRelation(cls, Category, relationship=string_is_numeric, transformer=pd.to_numeric,)
+        ]
 
     @classmethod
     @nullable_series_contains
@@ -203,7 +213,7 @@ class Complex(PandasProfilingBaseType):
         return [
             IdentityRelation(cls, Numeric),
             # InferenceRelation(cls, Category, relationship=string_is_complex, transformer=lambda x: x.apply(np.complex)
-        # ),
+            # ),
         ]
 
     @classmethod
@@ -212,10 +222,16 @@ class Complex(PandasProfilingBaseType):
         return pdt.is_complex_dtype(series)
 
 
-PP_bool_map = {'yes': True, 'no': False,
-               'y': True, 'n': False,
-               'true': True, 'false': False,
-               't': True, 'f': False}
+PP_bool_map = {
+    "yes": True,
+    "no": False,
+    "y": True,
+    "n": False,
+    "true": True,
+    "false": False,
+    "t": True,
+    "f": False,
+}
 
 
 def string_test_maker():
@@ -223,8 +239,11 @@ def string_test_maker():
 
     @func_nullable_series_contains
     def inner(series):
-        return not pdt.is_categorical_dtype(series) and series.str.lower().isin(bool_map_keys).all()
-    
+        return (
+            not pdt.is_categorical_dtype(series)
+            and series.str.lower().isin(bool_map_keys).all()
+        )
+
     return inner
 
 
@@ -251,20 +270,17 @@ class Bool(PandasProfilingBaseType):
         return [
             IdentityRelation(cls, Unsupported),
             InferenceRelation(
-                cls,
-                Category,
-                relationship=string_is_bool,
-                transformer=string_to_bool,
+                cls, Category, relationship=string_is_bool, transformer=string_to_bool,
             ),
             # InferenceRelation(cls,
             #                   vis.Object,
             #                   relationship=lambda s: s.isin({True, False, np.nan, None}).all(),
             #                   transformer=lambda s: s.astype("Bool")),
             InferenceRelation(
-                 cls,
-                 Numeric,
-                 relationship=lambda s: s.isin({0, 1, 0.0, 1.0, np.nan, None}).all(),
-                 transformer=to_bool,
+                cls,
+                Numeric,
+                relationship=lambda s: s.isin({0, 1, 0.0, 1.0, np.nan, None}).all(),
+                transformer=to_bool,
             ),
         ]
 
@@ -273,11 +289,13 @@ class Bool(PandasProfilingBaseType):
     def contains_op(cls, series: pd.Series) -> bool:
         if pdt.is_object_dtype(series):
             return series.isin({True, False}).all()
-        
+
         return pdt.is_bool_dtype(series) and not pdt.is_categorical_dtype(series)
+
 
 class ProfilingTypeSet(VisionsTypeset):
     """Base typeset for pandas-profiling"""
+
     def __init__(self):
         types = {
             Unsupported,
@@ -295,7 +313,9 @@ class ProfilingTypeSet(VisionsTypeset):
                 if config["vars"]["image"]["active"].get(bool):
                     types.add(Image)
                 else:
-                    raise ValueError("Image type only supported when File and Path type are also active")
+                    raise ValueError(
+                        "Image type only supported when File and Path type are also active"
+                    )
             else:
                 raise ValueError("File type only supported when Path type is active")
         if config["vars"]["url"]["active"].get(bool):
@@ -305,7 +325,8 @@ class ProfilingTypeSet(VisionsTypeset):
 
 
 if __name__ == "__main__":
-    import matplotlib.pyplot as plt
+    from matplotlib import pyplot as plt
+
     config.set_arg_group("explorative")
     ts = ProfilingTypeSet()
     ts.plot_graph()

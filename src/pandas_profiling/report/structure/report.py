@@ -7,7 +7,6 @@ from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.handler import ProfilingHandler
-
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import (
     HTML,
@@ -50,8 +49,11 @@ def get_missing_items(summary) -> list:
 
     return items
 
+
 # TODO: split in per variable function
-def render_variables_section(dataframe_summary: dict, handler: ProfilingHandler) -> list:
+def render_variables_section(
+    dataframe_summary: dict, handler: ProfilingHandler
+) -> list:
     """Render the HTML for each of the variables in the DataFrame.
 
     Args:
@@ -98,7 +100,9 @@ def render_variables_section(dataframe_summary: dict, handler: ProfilingHandler)
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(handler.render(template_variables, dtype=summary["type"]))
+        template_variables.update(
+            handler.render(template_variables, dtype=summary["type"])
+        )
 
         # Ignore these
         if config["reject_variables"].get(bool):

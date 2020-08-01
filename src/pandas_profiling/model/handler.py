@@ -1,5 +1,5 @@
-from pandas_profiling.model import typeset as ppt
 from pandas_profiling.model import summary_methods as pps
+from pandas_profiling.model import typeset as ppt
 from pandas_profiling.model.base import get_counts
 
 
@@ -44,17 +44,27 @@ class ProfilingHandler(SummaryHandler, RenderHandler, MessageHandler):
     def get_var_type(self, series):
         # TODO: Refactor into two pieces, summaries and type detection
         series_description = get_counts(series)
-        series_description['type'] = self.typeset.infer_series_type(series)
+        series_description["type"] = self.typeset.infer_series_type(series)
         return series_description
 
 
 # TODO: Counts?
 def default_handler():
-    from pandas_profiling.report.structure.variables import render_boolean, render_real, render_complex, render_date, \
-    render_categorical, render_url, render_path, render_file, render_image, render_generic
+    from pandas_profiling.report.structure.variables import (
+        render_boolean,
+        render_categorical,
+        render_complex,
+        render_date,
+        render_file,
+        render_generic,
+        render_image,
+        render_path,
+        render_real,
+        render_url,
+    )
 
     typeset = ppt.ProfilingTypeSet()
-    
+
     summary_map = {
         ppt.Bool: pps.describe_boolean_1d,
         ppt.Numeric: pps.describe_numeric_1d,
@@ -81,4 +91,6 @@ def default_handler():
         ppt.Unsupported: render_generic,
     }
 
-    return ProfilingHandler(typeset, summary_map=summary_map, render_map=render_map, message_map={})
+    return ProfilingHandler(
+        typeset, summary_map=summary_map, render_map=render_map, message_map={}
+    )

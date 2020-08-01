@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from pandas_profiling.model.handler import default_handler
-from pandas_profiling.model.typeset import Numeric, ProfilingTypeSet, Bool
+from pandas_profiling.model.typeset import Bool, Numeric, ProfilingTypeSet
 
 
 @pytest.fixture()
@@ -20,10 +20,12 @@ def test_bool(handler):
     s = pd.Series([True, True, True, False, False, False], dtype=bool)
     assert s in Bool
     assert s not in Numeric
-    assert handler.get_var_type(s)['type'].__name__ == "Bool"
+    assert handler.get_var_type(s)["type"].__name__ == "Bool"
 
 
-@pytest.mark.parametrize("name,values", [
+@pytest.mark.parametrize(
+    "name,values",
+    [
         ("booleans_type", [False, True, True]),
         ("booleans_type_nan", [False, True, np.nan]),
         ("integers", [1, 0, 0]),
@@ -33,9 +35,10 @@ def test_bool(handler):
         ("str_yes_no_nana", ["Y", "N", np.nan]),
         ("str_true_false", ["True", "False", "False"]),
         ("str_true_false_nan", ["True", "False", np.nan]),
-])
+    ],
+)
 def test_bool_inference(handler, name, values):
-    assert handler.get_var_type(pd.Series(values, name=name))['type'].__name__ == "Bool"
+    assert handler.get_var_type(pd.Series(values, name=name))["type"].__name__ == "Bool"
 
 
 def test_type_inference(get_data_file, handler):
@@ -46,6 +49,6 @@ def test_type_inference(get_data_file, handler):
     df = pd.read_csv(file_name)
 
     typset = ProfilingTypeSet()
-    print(typset.detect_series_type(df['device_isMobile']))
+    print(typset.detect_series_type(df["device_isMobile"]))
 
-    print(handler.get_var_type(df['device_isMobile'])['type'])
+    print(handler.get_var_type(df["device_isMobile"])["type"])

@@ -3,24 +3,17 @@
 import multiprocessing
 import multiprocessing.pool
 import warnings
+from collections import Counter
 from typing import Callable, Mapping, Optional, Tuple
 
-from collections import Counter
-
-import numpy as np
-import pandas as pd
-
 from pandas_profiling.model.handler import ProfilingHandler
-from pandas_profiling.config import config as config
-from pandas_profiling.model import base
-
+from pandas_profiling.model.summary_methods import *
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
     missing_heatmap,
     missing_matrix,
 )
-from pandas_profiling.model.summary_methods import *
 from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
@@ -53,7 +46,7 @@ def describe_1d(series: pd.Series, handler: ProfilingHandler) -> dict:
     # Run type specific analysis
     # TODO: handle "unsupported" cases
     series_description.update(describe_supported(series, series_description))
-    summary = handler.summarize(series, series_description['type'], series_description)
+    summary = handler.summarize(series, series_description["type"], series_description)
     series_description.update(summary)
 
     # light weight of series_description
@@ -117,7 +110,9 @@ def get_series_descriptions(df, handler, pbar):
     return series_description
 
 
-def get_table_stats(df: pd.DataFrame, handler: ProfilingHandler, variable_stats: pd.DataFrame) -> dict:
+def get_table_stats(
+    df: pd.DataFrame, handler: ProfilingHandler, variable_stats: pd.DataFrame
+) -> dict:
     """General statistics for the DataFrame.
 
     Args:
@@ -147,7 +142,9 @@ def get_table_stats(df: pd.DataFrame, handler: ProfilingHandler, variable_stats:
     )
     # TODO: Relies on notion of "supported" vs. "unsupported"
     # duplicated hashes things
-    supported_columns = variable_stats.T[variable_stats.T.hashable == True].index.tolist()
+    supported_columns = variable_stats.T[
+        variable_stats.T.hashable == True
+    ].index.tolist()
     table_stats["n_duplicates"] = (
         sum(df.duplicated(subset=supported_columns))
         if len(supported_columns) > 0
@@ -160,11 +157,7 @@ def get_table_stats(df: pd.DataFrame, handler: ProfilingHandler, variable_stats:
     )
 
     # Variable type counts
-    table_stats.update(
-        {
-            "types": Counter(variable_stats.loc["type"].values)
-        }
-    )
+    table_stats.update({"types": Counter(variable_stats.loc["type"].values)})
 
     return table_stats
 

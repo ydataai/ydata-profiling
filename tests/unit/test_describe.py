@@ -8,7 +8,7 @@ from pandas_profiling import config
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.handler import default_handler
 from pandas_profiling.model.summary import describe_1d
-from pandas_profiling.model.typeset import Category, Numeric, Bool, Date, Unsupported
+from pandas_profiling.model.typeset import Bool, Category, Date, Numeric, Unsupported
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
@@ -492,30 +492,10 @@ def expected_results():
             "type": Bool,
             "variance": check_is_NaN,
         },
-        "list": {
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-            "type": Unsupported,
-        },
-        "mixed": {
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-            "type": Unsupported,
-        },
-        "dict": {
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-            "type": Unsupported,
-        },
-        "tuple": {
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-            "type": Unsupported,
-        },
+        "list": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
+        "mixed": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
+        "dict": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
+        "tuple": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
     }
 
 

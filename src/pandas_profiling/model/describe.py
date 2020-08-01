@@ -8,6 +8,7 @@ from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.handler import ProfilingHandler
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
     get_duplicates,
@@ -17,11 +18,15 @@ from pandas_profiling.model.summary import (
     get_series_descriptions,
     get_table_stats,
 )
-from pandas_profiling.model.handler import ProfilingHandler
 from pandas_profiling.version import __version__
 
 
-def describe(title: str, handler: ProfilingHandler, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
+def describe(
+    title: str,
+    handler: ProfilingHandler,
+    df: pd.DataFrame,
+    sample: Optional[dict] = None,
+) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -65,7 +70,7 @@ def describe(title: str, handler: ProfilingHandler, df: pd.DataFrame, sample: Op
     ) as pbar:
         series_description = get_series_descriptions(df, handler, pbar)
 
-        hashable_series = [k for k, v in series_description.items() if v['hashable']]
+        hashable_series = [k for k, v in series_description.items() if v["hashable"]]
 
         # TODO: Hack
         # from pandas_profiling.model.typeset import Generic
