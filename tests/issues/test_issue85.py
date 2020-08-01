@@ -16,7 +16,7 @@ def test_issue85():
         "integers_nan": [1, 0, np.nan],
         "str_yes_no": ["Y", "N", "Y"],
         "str_yes_no_mixed": ["Y", "n", "y"],
-        "str_yes_no_nana": ["Y", "N", np.nan],
+        "str_yes_no_nan": ["Y", "N", np.nan],
         "str_true_false": ["True", "False", "False"],
         "str_true_false_nan": ["True", "False", np.nan],
     }
@@ -30,7 +30,6 @@ def test_issue85():
         samples={"head": 20},
     )
     for col, variable_stats in report.get_description()["variables"].items():
-        print(col)
         assert (
             variable_stats["type"].__name__ == "Bool"
-        ), "Variable should be boolean"
+        ), f"Variable {col} should be boolean"

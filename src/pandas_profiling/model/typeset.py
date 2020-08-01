@@ -14,7 +14,7 @@ import visions as vis
 from visions.typesets.typeset import VisionsTypeset
 from visions.types import VisionsBaseType
 from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
-from visions.utils.series_utils import nullable_series_contains
+from visions.utils.series_utils import nullable_series_contains, func_nullable_series_contains
 
 
 class ProfilingTypeCategories:
@@ -30,9 +30,21 @@ class Unsupported(vis.Generic, ProfilingTypeCategories):
     pass
 
 
+def applied_to_nonnull(fn):
+    def inner(series):
+        if series.hasnans:
+            new_series = series.copy()
+            notna = series.notna()
+            new_series[notna] = fn(series[notna])
+            return new_series
+        return fn(series)
+    return inner
+
+
 def numeric_is_category(series):
     n_unique = series.nunique()
     return n_unique <= config["vars"]["num"]["low_categorical_threshold"].get(int)
+
 
 
 class Category(PandasProfilingBaseType):
@@ -50,7 +62,7 @@ class Category(PandasProfilingBaseType):
                 cls,
                 Numeric,
                 relationship=lambda s: s.nunique() < config["vars"]["num"]["low_categorical_threshold"].get(int),
-                transformer=lambda s: s.astype(str)
+                transformer=applied_to_nonnull(lambda s: s.astype(str))
             )
         ]
 
@@ -200,19 +212,35 @@ class Complex(PandasProfilingBaseType):
         return pdt.is_complex_dtype(series)
 
 
-PP_bool_map = [{'yes': True, 'no': False},
-        {'y': True, 'n': False},
-        {'true': True, 'false': False},
-        {'t': True, 'f': False}]
+PP_bool_map = {'yes': True, 'no': False,
+               'y': True, 'n': False,
+               'true': True, 'false': False,
+               't': True, 'f': False}
 
 
-def string_is_bool(series):
-    bool_map_keys = [k for d in PP_bool_map for k, v in d.items()]
-    return not pdt.is_categorical_dtype(series) and series[series.notnull()].str.lower().isin(bool_map_keys).all()
+def string_test_maker():
+    bool_map_keys = list(PP_bool_map.keys())
+
+    @func_nullable_series_contains
+    def inner(series):
+        return not pdt.is_categorical_dtype(series) and series.str.lower().isin(bool_map_keys).all()
+    
+    return inner
 
 
+string_is_bool = string_test_maker()
+
+
+@applied_to_nonnull
 def string_to_bool(series):
     return series.str.lower().map(PP_bool_map)
+
+
+def to_bool(series: pd.Series) -> pd.Series:
+    if series.hasnans:
+        return series.astype("Bool")
+    else:
+        return series.astype(bool)
 
 
 class Bool(PandasProfilingBaseType):
@@ -226,25 +254,27 @@ class Bool(PandasProfilingBaseType):
                 cls,
                 Category,
                 relationship=string_is_bool,
-                transformer=lambda s: s,
+                transformer=string_to_bool,
             ),
             # InferenceRelation(cls,
             #                   vis.Object,
             #                   relationship=lambda s: s.isin({True, False, np.nan, None}).all(),
             #                   transformer=lambda s: s.astype("Bool")),
-            # InferenceRelation(
-            #     cls,
-            #     Numeric,
-            #     relationship=lambda s: s.isin({0, 1, 0.0, 1.0, np.nan, None}).all(),
-            #     transformer=lambda s: s,
-            # ),
+            InferenceRelation(
+                 cls,
+                 Numeric,
+                 relationship=lambda s: s.isin({0, 1, 0.0, 1.0, np.nan, None}).all(),
+                 transformer=to_bool,
+            ),
         ]
 
     @classmethod
     @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
+        if pdt.is_object_dtype(series):
+            return series.isin({True, False}).all()
+        
         return pdt.is_bool_dtype(series) and not pdt.is_categorical_dtype(series)
-
 
 class ProfilingTypeSet(VisionsTypeset):
     """Base typeset for pandas-profiling"""
