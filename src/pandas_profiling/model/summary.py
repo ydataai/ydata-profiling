@@ -6,7 +6,13 @@ import warnings
 from collections import Counter
 from typing import Callable, Mapping, Optional, Tuple
 
+from pandas_profiling.config import config as config
 from pandas_profiling.model.handler import ProfilingHandler
+from pandas_profiling.model.messages import (
+    check_correlation_messages,
+    check_table_messages,
+    check_variable_messages,
+)
 from pandas_profiling.model.summary_methods import *
 from pandas_profiling.visualisation.missing import (
     missing_bar,
