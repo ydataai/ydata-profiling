@@ -71,7 +71,7 @@ Find more information here:
 _Contents:_ **[Examples](#examples)** |
 **[Installation](#installation)** | **[Documentation](#documentation)** |
 **[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
-**[Advanced usage](#advanced-usage)** |
+**[Advanced usage](#advanced-usage)** | **[Support](#supporting-open-source)** |
 **[Types](#types)** | **[How to contribute](#contributing)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
 
@@ -237,7 +237,7 @@ profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': 
 profile.to_file("output.html")
 ```
 
-# Supporting open-source
+# Supporting open source
 
 Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible with support of our gracious sponsors.
 
@@ -245,7 +245,7 @@ Maintaining and developing the open-source code for pandas-profiling, with milli
 <tr>
 <td>
 
-<img alt="Lambda Labs" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/lambda-labs.png" width="200" />
+<img alt="Lambda Labs" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/lambda-labs.png" width="500" />
 
 </td>
 <td>
