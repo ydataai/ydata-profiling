@@ -130,7 +130,7 @@ def calculate_correlation(
         try:
             correlation = df.corr(method=correlation_name)
 
-        except (ValueError, AssertionError) as e:
+        except (ValueError, AssertionError, TypeError) as e:
             warn_correlation(correlation_name, e)
     elif correlation_name in ["phi_k"]:
         import phik
