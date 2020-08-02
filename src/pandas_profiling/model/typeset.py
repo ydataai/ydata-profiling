@@ -109,8 +109,8 @@ class File(PandasProfilingBaseType):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [IdentityRelation(cls, Path)]
 
-    @nullable_series_contains
     @classmethod
+    @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
         return all(os.path.exists(p) for p in series)
 
