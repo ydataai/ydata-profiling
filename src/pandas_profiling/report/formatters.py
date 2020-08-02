@@ -191,7 +191,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
             return concatenate(result)
 
 
-def fmt_numeric(value: float, precision=6) -> str:
+def fmt_numeric(value: float, precision=10) -> str:
     """Format any numeric value.
 
     Args:
@@ -202,6 +202,18 @@ def fmt_numeric(value: float, precision=6) -> str:
         The numeric value with the given precision.
     """
     return "{{:.{precision}g}}".format(precision=precision).format(value)
+
+
+def fmt_number(value: int) -> str:
+    """Format any numeric value.
+
+    Args:
+        value: The numeric value to format.
+
+    Returns:
+        The numeric value with the given precision.
+    """
+    return "{:n}".format(value)
 
 
 def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
@@ -245,6 +257,7 @@ def get_fmt_mapping() -> Dict[str, Callable]:
         "fmt_bytesize": fmt_bytesize,
         "fmt_timespan": fmt_timespan,
         "fmt_numeric": fmt_numeric,
+        "fmt_number": fmt_number,
         "fmt_array": fmt_array,
         "fmt": fmt,
         "raw": lambda x: x,
