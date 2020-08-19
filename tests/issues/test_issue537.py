@@ -45,54 +45,65 @@ def mock_multiprocess_1d(args) -> Tuple[str, dict]:
 
 
 def test_multiprocessing_describe1d():
+    """
+    this test serves to get a large dataset, and ensure that even across parallelised describe1d operations,
+    there is no ValueError raised. Previously, series.fillna(np.nan,inplace=True) was used instead of
+    series = series.fillna(np.nan) in model.summmary.describe1d, resulting in a race condition where the underlying
+    df was being mutated by two threads at the same time creating a ValueError. This test checks that this does not
+    occur again by running a parallelised describe1d and testing if a ValueError is raised.
+
+    """
+
     def download_and_process_data():
         response = requests.get("https://ndownloader.figshare.com/files/5976042")
         assert response.status_code == 200
         file = decompress(response.content)
         text = file.decode()
         split_text = [i.split(",") for i in filter(lambda x: x, text.split("\n"))]
-        dt = [('duration', int),
-              ('protocol_type', 'S4'),
-              ('service', 'S11'),
-              ('flag', 'S6'),
-              ('src_bytes', int),
-              ('dst_bytes', int),
-              ('land', int),
-              ('wrong_fragment', int),
-              ('urgent', int),
-              ('hot', int),
-              ('num_failed_logins', int),
-              ('logged_in', int),
-              ('num_compromised', int),
-              ('root_shell', int),
-              ('su_attempted', int),
-              ('num_root', int),
-              ('num_file_creations', int),
-              ('num_shells', int),
-              ('num_access_files', int),
-              ('num_outbound_cmds', int),
-              ('is_host_login', int),
-              ('is_guest_login', int),
-              ('count', int),
-              ('srv_count', int),
-              ('serror_rate', float),
-              ('srv_serror_rate', float),
-              ('rerror_rate', float),
-              ('srv_rerror_rate', float),
-              ('same_srv_rate', float),
-              ('diff_srv_rate', float),
-              ('srv_diff_host_rate', float),
-              ('dst_host_count', int),
-              ('dst_host_srv_count', int),
-              ('dst_host_same_srv_rate', float),
-              ('dst_host_diff_srv_rate', float),
-              ('dst_host_same_src_port_rate', float),
-              ('dst_host_srv_diff_host_rate', float),
-              ('dst_host_serror_rate', float),
-              ('dst_host_srv_serror_rate', float),
-              ('dst_host_rerror_rate', float),
-              ('dst_host_srv_rerror_rate', float),
-              ('labels', 'S16')]
+        dt = [
+            ("duration", int),
+            ("protocol_type", "S4"),
+            ("service", "S11"),
+            ("flag", "S6"),
+            ("src_bytes", int),
+            ("dst_bytes", int),
+            ("land", int),
+            ("wrong_fragment", int),
+            ("urgent", int),
+            ("hot", int),
+            ("num_failed_logins", int),
+            ("logged_in", int),
+            ("num_compromised", int),
+            ("root_shell", int),
+            ("su_attempted", int),
+            ("num_root", int),
+            ("num_file_creations", int),
+            ("num_shells", int),
+            ("num_access_files", int),
+            ("num_outbound_cmds", int),
+            ("is_host_login", int),
+            ("is_guest_login", int),
+            ("count", int),
+            ("srv_count", int),
+            ("serror_rate", float),
+            ("srv_serror_rate", float),
+            ("rerror_rate", float),
+            ("srv_rerror_rate", float),
+            ("same_srv_rate", float),
+            ("diff_srv_rate", float),
+            ("srv_diff_host_rate", float),
+            ("dst_host_count", int),
+            ("dst_host_srv_count", int),
+            ("dst_host_same_srv_rate", float),
+            ("dst_host_diff_srv_rate", float),
+            ("dst_host_same_src_port_rate", float),
+            ("dst_host_srv_diff_host_rate", float),
+            ("dst_host_serror_rate", float),
+            ("dst_host_srv_serror_rate", float),
+            ("dst_host_rerror_rate", float),
+            ("dst_host_srv_rerror_rate", float),
+            ("labels", "S16"),
+        ]
         DT = np.dtype(dt)
         split_text = np.asarray(split_text, dtype=object)
         for j in range(42):
