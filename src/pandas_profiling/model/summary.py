@@ -427,7 +427,7 @@ def describe_1d(series: pd.Series) -> dict:
         return stats
 
     # Make sure pd.NA is not in the series
-    series.fillna(np.nan, inplace=True)
+    series = series.fillna(np.nan)
 
     # Infer variable types
     # TODO: use visions for type inference
