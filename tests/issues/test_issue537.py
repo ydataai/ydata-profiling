@@ -123,5 +123,4 @@ def test_multiprocessing_describe1d():
         df = download_and_process_data()
         run_multiprocess(df)
     except ValueError:
-        print("failing here")
         raise Exception("myFunc() raised ExceptionType unexpectedly!")
