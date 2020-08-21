@@ -26,7 +26,7 @@ def test_dataset_schema():
         if not key.startswith("copyright_") and not key == "url":
             assert f"<th>{key.capitalize()}</th>" in html
     assert "<tr><th>Copyright</th><td>(c) RandoCorp LLC 2020</td></tr>"
-    assert "<tr><th>URL</th><td><a href=\"http://www.dataset-sources.com/data/dataset.dat\">http://www.dataset-sources.com/data/dataset.dat</a></td></tr>"
+    assert '<tr><th>URL</th><td><a href="http://www.dataset-sources.com/data/dataset.dat">http://www.dataset-sources.com/data/dataset.dat</a></td></tr>'
     assert "<p class=h4>Reproduction</p>" in html
 
 

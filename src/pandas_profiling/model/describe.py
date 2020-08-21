@@ -155,9 +155,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         "duration": date_end - date_start,
     }
 
-    output_conf = {
-        'table_form': config["correlations"]['table_form']
-    }
+    output_conf = {"table_form": config["correlations"]["table_form"]}
 
     return {
         # Output configuration dict:
