@@ -140,47 +140,60 @@ def get_correlation_font_size(n_labels) -> Optional[int]:
 
 
 @manage_matplotlib_context()
-def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
+def correlation_matrix(data: pd.DataFrame, vmin: int = -1, table_form: bool = False) -> str:
     """Plot image of a matrix correlation.
 
     Args:
       data: The matrix correlation to plot.
       vmin: Minimum value of value range.
+      table_form: Correlations as table instead of confusion matrix
 
     Returns:
       The resulting correlation matrix encoded as a string.
     """
-    fig_cor, axes_cor = plt.subplots()
-    cmap_name = config["plot"]["correlation"]["cmap"].get(str)
-    cmap_bad = config["plot"]["correlation"]["bad"].get(str)
-
-    cmap = plt.get_cmap(cmap_name)
-    if vmin == 0:
-        cmap = get_cmap_half(cmap)
-    cmap.set_bad(cmap_bad)
-
-    labels = data.columns
-    matrix_image = axes_cor.imshow(
-        data, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
-    )
-    plt.colorbar(matrix_image)
-
-    if data.isnull().values.any():
-        legend_elements = [Patch(facecolor=cmap(np.nan), label="invalid\ncoefficient")]
-
-        plt.legend(
-            handles=legend_elements, loc="upper right", handleheight=2.5,
+    if table_form:
+        from pandas_profiling.report.presentation.flavours.html import (
+            templates,
         )
 
-    axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
-    axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
+        data = data.round(3)
 
-    font_size = get_correlation_font_size(len(labels))
-    axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
-    axes_cor.set_yticklabels(labels, fontsize=font_size)
-    plt.subplots_adjust(bottom=0.2)
+        sample_html = data.to_html(classes="sample table table-striped")
+        return templates.template("sample.html").render(
+            **data, sample_html=sample_html
+        )
+    else:
+        fig_cor, axes_cor = plt.subplots()
+        cmap_name = config["plot"]["correlation"]["cmap"].get(str)
+        cmap_bad = config["plot"]["correlation"]["bad"].get(str)
 
-    return plot_360_n0sc0pe(plt)
+        cmap = plt.get_cmap(cmap_name)
+        if vmin == 0:
+            cmap = get_cmap_half(cmap)
+        cmap.set_bad(cmap_bad)
+
+        labels = data.columns
+        matrix_image = axes_cor.imshow(
+            data, vmin=vmin, vmax=1, interpolation="nearest", cmap=cmap
+        )
+        plt.colorbar(matrix_image)
+
+        if data.isnull().values.any():
+            legend_elements = [Patch(facecolor=cmap(np.nan), label="invalid\ncoefficient")]
+
+            plt.legend(
+                handles=legend_elements, loc="upper right", handleheight=2.5,
+            )
+
+        axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))
+        axes_cor.set_yticks(np.arange(0, data.shape[1], float(data.shape[1]) / len(labels)))
+
+        font_size = get_correlation_font_size(len(labels))
+        axes_cor.set_xticklabels(labels, rotation=90, fontsize=font_size)
+        axes_cor.set_yticklabels(labels, fontsize=font_size)
+        plt.subplots_adjust(bottom=0.2)
+
+        return plot_360_n0sc0pe(plt)
 
 
 @manage_matplotlib_context()

@@ -86,6 +86,7 @@ correlations:
       calculate: False
       warn_high_correlations: False
       threshold: 0.0
+    table_form: False
 
 # Bivariate / Pairwise relations
 interactions:

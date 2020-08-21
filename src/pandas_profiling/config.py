@@ -108,6 +108,7 @@ class Config(object):
             "kendall": {"calculate": False},
             "phi_k": {"calculate": False},
             "cramers": {"calculate": False},
+            "table_form": False
         },
     }
 

@@ -68,7 +68,7 @@ def get_correlation_items(summary) -> Optional[Renderable]:
         vmin, name, description = key_to_data[key]
 
         diagram = Image(
-            plot.correlation_matrix(item, vmin=vmin),
+            plot.correlation_matrix(item, vmin=vmin, table_form=summary['output_conf']['table_form']),
             image_format=image_format,
             alt=name,
             anchor_id=f"{key}_diagram",
