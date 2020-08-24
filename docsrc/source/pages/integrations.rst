@@ -101,11 +101,37 @@ Ensure to install ``pyqt5``. Via pip use the extras ``app``:
 
   pip install pandas-profiling[app]
 
+Streamlit
+~~~~~~~~~
 
-Streamlit / Panel
-~~~~~~~~~~~~~~~~~
+`Streamlit <https://www.streamlit.io>` is an open-source Python library made to build web-apps for machine learning and data science.
 
-For more information of how to use ``pandas-profiling`` with Streamlit or Panel, see the https://github.com/streamlit/streamlit/issues/693 and https://github.com/pandas-profiling/pandas-profiling/issues/491.
+.. image:: ../_static/streamlit-integration.gif
+
+.. code-block:: python
+
+  import pandas as pd
+  import pandas_profiling
+  import streamlit as st
+  from streamlit_pandas_profiling import st_profile_report
+
+  df = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+  pr = df.profile_report()
+
+  st.title("Pandas Profiling in Streamlit")
+  st.write(df)
+  st_profile_report(pr)
+
+You can install this `Pandas Profiling component <https://github.com/Ghasel/streamlit-pandas-profiling>` for Streamlit with pip:
+
+.. code-block:: console
+
+  pip install streamlit-pandas-profiling
+
+Panel
+~~~~~
+
+For more information on how to use ``pandas-profiling`` in Panel, see https://github.com/pandas-profiling/pandas-profiling/issues/491 and the Pandas Profiling example at https://awesome-panel.org.
 
 Cloud Integrations
 ------------------
@@ -133,12 +159,14 @@ Kaggle
 
 Pipeline Integrations
 ---------------------
+
 With Python, command-line and Jupyter interfaces, `pandas-profiling` integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect.
 
 Integration with `Dagster <https://github.com/dagster-io/dagster>`_ or `Prefect <https://github.com/prefecthq/prefect>`_ can be achieved in a similar way as with Airflow.
 
 Airflow
 ~~~~~~~
+
 Integration with Airflow can be easily achieved through the `BashOperator <https://airflow.apache.org/docs/stable/_api/airflow/operators/bash_operator/index.html>`_ or the `PythonOperator <https://airflow.apache.org/docs/stable/_api/airflow/operators/python_operator/index.html#airflow.operators.python_operator.PythonOperator>`_.
 
 .. code-block:: python

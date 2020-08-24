@@ -1,0 +1,16 @@
+{
+    "age": "definition 0",
+    "workclass": "definition 1",
+    "fnlwgt": "definition 2",
+    "education": "definition 3",
+    "education-num": "definition 4",
+    "marital-status": "definition 5",
+    "occupation": "definition 6",
+    "relationship": "definition 7",
+    "race": "definition 8",
+    "sex": "definition 9",
+    "capital-gain": "definition 10",
+    "capital-loss": "definition 11",
+    "hours-per-week": "definition 12",
+    "native-country": "definition 13"
+}
