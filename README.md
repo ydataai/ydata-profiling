@@ -71,7 +71,7 @@ Find more information here:
 _Contents:_ **[Examples](#examples)** |
 **[Installation](#installation)** | **[Documentation](#documentation)** |
 **[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
-**[Advanced usage](#advanced-usage)** |
+**[Advanced usage](#advanced-usage)** | **[Support](#supporting-open-source)** |
 **[Types](#types)** | **[How to contribute](#contributing)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
 
@@ -237,19 +237,36 @@ profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': 
 profile.to_file("output.html")
 ```
 
+# Supporting open source
+
+Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible with support of our gracious sponsors.
+
+<table>
+<tr>
+<td>
+
+<img alt="Lambda Labs" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/lambda-labs.png" width="500" />
+
+</td>
+<td>
+
+[Lambda workstations](https://lambdalabs.com/), servers, laptops, and cloud services power engineers and researchers at Fortune 500 companies and 94% of the top 50 universities. [Lambda Cloud](https://lambdalabs.com/service/gpu-cloud) offers 4 & 8 GPU instances starting at $1.50 / hr. Pre-installed with TensorFlow, PyTorch, Ubuntu, CUDA, and cuDNN.
+
+</td>
+</tr>
+</table>
+
+We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: 
+
+    Martin Sotir, Joseph Yuen, Brian Lee, Stephanie Rivera, nscsekhar, abdulAziz
+
+More info if you would like to appear here: [Github Sponsor page](https://github.com/sponsors/sbrugman)
+
+
 ## Types
 
 Types are a powerful abstraction for effective data analysis, that goes beyond the logical data types (integer, float etc.).
-`pandas-profiling` currently recognizes the following types:
-
-- Boolean
-- Numerical
-- Date
-- Categorical
-- URL
-- Path
-- File
-- Image
+`pandas-profiling` currently recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
 
 We have developed a type system for Python, tailored for data analysis: [visions](https://github.com/dylan-profiler/visions).
 Selecting the right typeset drastically reduces the complexity the code of your analysis.
