@@ -427,7 +427,7 @@ def describe_1d(series: pd.Series) -> dict:
         return stats
 
     # Make sure pd.NA is not in the series
-    series.fillna(np.nan, inplace=True)
+    series = series.fillna(np.nan)
 
     # Infer variable types
     # TODO: use visions for type inference
@@ -679,6 +679,10 @@ def get_scatter_matrix(df, variables):
             targets = continuous_variables
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
+
+        #check if any na still exists, and remove it before computing scatter matrix
+        df = df.dropna(subset=continuous_variables)
+
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
