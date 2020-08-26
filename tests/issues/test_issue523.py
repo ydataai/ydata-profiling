@@ -9,7 +9,7 @@ from pandas_profiling import ProfileReport
 
 
 @pytest.mark.skipif(
-    int(pd.__version__.split(".")[0]) < 1, reason="requires pandas1 or higher"
+    int(pd.__version__.split(".")[0]) < 1, reason="requires pandas 1 or higher"
 )
 def test_issue523():
     # https://github.com/pandas-dev/pandas/issues/33803

@@ -28,12 +28,14 @@ env:
   - TEST=issue PANDAS="<1"
   - TEST=console PANDAS="<1"
   - TEST=examples PANDAS="<1"
-  - TEST=unit PANDAS=">=1"
-  - TEST=issue PANDAS=">=1"
-  - TEST=console PANDAS=">=1"
-  - TEST=examples PANDAS=">=1"
-  - TEST=lint PANDAS=">=1"
-  - TEST=typing PANDAS=">=1"
+  - TEST=unit PANDAS="1.0.5"
+  - TEST=issue PANDAS="1.0.5"
+  - TEST=unit PANDAS=">=1.1"
+  - TEST=issue PANDAS=">=1.1"
+  - TEST=console PANDAS=">=1.1"
+  - TEST=examples PANDAS=">=1.1"
+  - TEST=lint PANDAS=">=1.1"
+  - TEST=typing PANDAS=">=1.1"
 
 before_install:
   - pip install --upgrade pip setuptools wheel
