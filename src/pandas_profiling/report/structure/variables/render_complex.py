@@ -25,8 +25,12 @@ def render_complex(summary):
 
     table1 = Table(
         [
-            {"name": "Distinct count", "value": summary["n_unique"], "fmt": "fmt"},
-            {"name": "Unique (%)", "value": summary["p_unique"], "fmt": "fmt_percent"},
+            {"name": "Distinct", "value": summary["n_distinct"], "fmt": "fmt"},
+            {
+                "name": "Distinct (%)",
+                "value": summary["p_distinct"],
+                "fmt": "fmt_percent",
+            },
             {"name": "Missing", "value": summary["n_missing"], "fmt": "fmt"},
             {
                 "name": "Missing (%)",
