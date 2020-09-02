@@ -75,7 +75,6 @@ def get_counts(series: pd.Series) -> dict:
     value_counts_without_nan = (
         value_counts_with_nan.reset_index().dropna().set_index("index").iloc[:, 0]
     )
-
     distinct_count_with_nan = value_counts_with_nan.count()
     distinct_count_without_nan = value_counts_without_nan.count()
 

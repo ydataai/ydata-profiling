@@ -14,29 +14,30 @@ check_is_NaN = "pandas_profiling.check_is_NaN"
 
 testdata = [
     # Unique values
-    (pd.Series([1, 2]), True, 1),
+    (pd.Series([1, 2]), True, 1, 1),
     # Unique values including nan
-    (pd.Series([np.nan]), None, None),
+    (pd.Series([np.nan]), None, None, None),
     # Unique values all nan
-    (pd.Series([1, 2, np.nan]), True, 1),
+    (pd.Series([1, 2, np.nan]), True, 1, 1),
     # Non unique values
-    (pd.Series([1, 2, 2]), False, 2 / 3),
+    (pd.Series([1, 2, 2]), False, 2 / 3, 1 / 3),
     # Non unique nan
-    (pd.Series([1, np.nan, np.nan]), True, 1),
+    (pd.Series([1, np.nan, np.nan]), True, 1, 1),
     # Non unique values including nan
-    (pd.Series([1, 2, 2, np.nan]), False, 2 / 3),
+    (pd.Series([1, 2, 2, np.nan]), False, 2 / 3, 1 / 3),
     # Non unique values including non unique nan
-    (pd.Series([1, 2, 2, np.nan, np.nan]), False, 2 / 3),
+    (pd.Series([1, 2, 2, np.nan, np.nan]), False, 2 / 3, 1 / 3),
 ]
 
 
-@pytest.mark.parametrize("data,is_unique,p_unique", testdata)
-def test_describe_unique(data, is_unique, p_unique):
+@pytest.mark.parametrize("data,is_unique,p_distinct,p_unique", testdata)
+def test_describe_unique(data, is_unique, p_distinct, p_unique):
     """Test the unique feature of 1D data"""
 
     desc_1d = describe_1d(data)
     if is_unique is not None:
         assert desc_1d["p_unique"] == p_unique, "Describe 1D p_unique incorrect"
+        assert desc_1d["p_distinct"] == p_distinct, "Describe 1D p_distinct incorrect"
         assert desc_1d["is_unique"] == is_unique, "Describe 1D should return unique"
 
 
@@ -163,7 +164,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 8,
+            "n_distinct": 8,
             "freq": 2,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -176,7 +177,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0.0,
-            "p_unique": 0.88888888,
+            "p_distinct": 0.88888888,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -196,7 +197,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": 1.771071190261633,
-            "distinct_count": 6,
+            "n_distinct": 6,
             "freq": check_is_NaN,
             "iqr": 24.5,
             "is_unique": False,
@@ -207,7 +208,7 @@ def expected_results():
             "min": -10.0,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 6 / 8,
+            "p_distinct": 6 / 8,
             "n": 9,
             "n_zeros": 2,
             "p_zeros": 0.2222222222222222,
@@ -229,7 +230,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": 2.2112992878833846,
-            "distinct_count": 8,
+            "n_distinct": 8,
             "freq": check_is_NaN,
             "iqr": 236.66299975000001,
             "is_unique": True,
@@ -240,7 +241,7 @@ def expected_results():
             "min": -3.1415926535000001,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 1,
+            "p_distinct": 1,
             "n_zeros": 0,
             "p_zeros": 0.0,
             "range": 3125.1415926535001,
@@ -259,7 +260,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
-            "distinct_count": 6,
+            "n_distinct": 6,
             "freq": 3,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -272,7 +273,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 6 / 8,
+            "p_distinct": 6 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -290,7 +291,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 1,
+            "n_distinct": 1,
             "freq": 9,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -303,7 +304,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0.0,
-            "p_unique": 0.1111111111111111,
+            "p_distinct": 0.1111111111111111,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -321,7 +322,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 1,
+            "n_distinct": 1,
             "freq": 9,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -334,7 +335,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0.0,
-            "p_unique": 0.1111111111111111,
+            "p_distinct": 0.1111111111111111,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -352,7 +353,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
-            "distinct_count": 5,
+            "n_distinct": 5,
             "freq": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -363,7 +364,7 @@ def expected_results():
             "min": datetime.datetime(1898, 1, 2),
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 5 / 8,
+            "p_distinct": 5 / 8,
             "p_zeros": check_is_NaN,
             "range": datetime.timedelta(45289, hours=13, minutes=57),
             "skewness": check_is_NaN,
@@ -380,7 +381,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 2,
+            "n_distinct": 2,
             "freq": 6,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -392,7 +393,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0,
-            "p_unique": 2 / 9,
+            "p_distinct": 2 / 9,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -410,7 +411,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
-            "distinct_count": 2,
+            "n_distinct": 2,
             "freq": 5,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -422,7 +423,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 2 / 8,
+            "p_distinct": 2 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -440,7 +441,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 2,
+            "n_distinct": 2,
             "freq": 5,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
@@ -452,7 +453,7 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0,
-            "p_unique": 2 / 9,
+            "p_distinct": 2 / 9,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -470,7 +471,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
-            "distinct_count": 2,
+            "n_distinct": 2,
             "freq": 4,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -480,7 +481,7 @@ def expected_results():
             "min": check_is_NaN,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 2 / 8,
+            "p_distinct": 2 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
