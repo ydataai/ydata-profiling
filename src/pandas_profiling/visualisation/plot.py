@@ -1,4 +1,5 @@
 """Plot functions for the profiling report."""
+import copy
 from typing import Optional, Union
 
 import numpy as np
@@ -157,6 +158,7 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
     cmap = plt.get_cmap(cmap_name)
     if vmin == 0:
         cmap = get_cmap_half(cmap)
+    cmap = copy.copy(cmap)
     cmap.set_bad(cmap_bad)
 
     labels = data.columns
