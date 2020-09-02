@@ -680,7 +680,7 @@ def get_scatter_matrix(df, variables):
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
 
-        #check if any na still exists, and remove it before computing scatter matrix
+        # check if any na still exists, and remove it before computing scatter matrix
         df = df.dropna(subset=continuous_variables)
 
         for x in targets:
