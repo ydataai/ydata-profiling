@@ -10,9 +10,20 @@ First, we need to know whether a problem is actually a bug in the code, or that 
 Frequent issues
 ~~~~~~~~~~~~~~~
 
-- This thread discusses `conda installing older versions <https://github.com/conda-forge/pandas-profiling-feedstock/issues/22>`_ of the package.
+Conda install defaults to v1.4.1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- When in a Jupyter environment, you see some text, such as ``IntSlider(value=0)`` or interactive ``(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))``, then the Jupyter Widgets are not activated. The :doc:`installation` page contains instructions on how to resolve this problem.
+Some users experience that ``conda install -c conda-forge pandas-profiling`` defaults to 1.4.1.
+
+More details, `here <https://github.com/conda-forge/pandas-profiling-feedstock/issues/22>`_, `here <https://github.com/pandas-profiling/pandas-profiling/issues/448>`__ and `here <https://github.com/pandas-profiling/pandas-profiling/issues/563>`__.
+
+Jupyter "IntSlider(value=0)"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When in a Jupyter environment, you see some text, such as ``IntSlider(value=0)`` or interactive ``(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))``, then the Jupyter Widgets are not activated. The :doc:`installation` page contains instructions on how to resolve this problem.
+
+
+Help on Stackoverflow
+---------------------
 
 Users with a request for help on how to use `pandas-profiling` should consider asking their question on stackoverflow. There is a specific tag for `pandas-profiling`:
 

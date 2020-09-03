@@ -77,16 +77,19 @@ def describe_1d(series: pd.Series) -> dict:
         count = series.count()
 
         distinct_count = series_description["distinct_count_without_nan"]
+        value_counts = series_description["value_counts_without_nan"]
+        unique_count = value_counts.where(value_counts == 1).count()
 
         stats = {
             "n": length,
             "count": count,
-            "distinct_count": distinct_count,
+            "n_distinct": distinct_count,
+            "p_distinct": distinct_count / count,
             "p_missing": 1 - (count / length),
             "n_missing": length - count,
-            "is_unique": distinct_count == count,
-            "n_unique": distinct_count,
-            "p_unique": distinct_count / count,
+            "is_unique": unique_count == count,
+            "n_unique": unique_count,
+            "p_unique": unique_count / count,
             "memory_size": series.memory_usage(config["memory_deep"].get(bool)),
         }
 
@@ -239,7 +242,7 @@ def describe_1d(series: pd.Series) -> dict:
             stats["monotonic_decrease"] and series.is_unique
         )
 
-        stats.update(histogram_compute(finite_values, series_description["n_unique"]))
+        stats.update(histogram_compute(finite_values, series_description["n_distinct"]))
 
         return stats
 
@@ -269,7 +272,7 @@ def describe_1d(series: pd.Series) -> dict:
             histogram, _ = np.histogram(values, bins="auto")
             stats["chi_squared"] = chisquare(histogram)
 
-        stats.update(histogram_compute(values, series_description["n_unique"]))
+        stats.update(histogram_compute(values, series_description["n_distinct"]))
         return stats
 
     def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict:
@@ -289,6 +292,12 @@ def describe_1d(series: pd.Series) -> dict:
         value_counts = series_description["value_counts_without_nan"]
 
         stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
+
+        stats.update(
+            histogram_compute(
+                value_counts, len(value_counts), name="histogram_frequencies"
+            )
+        )
 
         chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
             float
@@ -427,7 +436,7 @@ def describe_1d(series: pd.Series) -> dict:
         return stats
 
     # Make sure pd.NA is not in the series
-    series.fillna(np.nan, inplace=True)
+    series = series.fillna(np.nan)
 
     # Infer variable types
     # TODO: use visions for type inference
@@ -679,6 +688,10 @@ def get_scatter_matrix(df, variables):
             targets = continuous_variables
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
+
+        # check if any na still exists, and remove it before computing scatter matrix
+        df = df.dropna(subset=continuous_variables)
+
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:

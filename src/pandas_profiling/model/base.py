@@ -6,6 +6,7 @@ from urllib.parse import ParseResult, urlparse
 
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_categorical_dtype
 
 from pandas_profiling.config import config
 
@@ -67,11 +68,13 @@ def get_counts(series: pd.Series) -> dict:
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
     """
+    if is_categorical_dtype(series):
+        series = series.cat.remove_unused_categories()
+
     value_counts_with_nan = series.value_counts(dropna=False)
     value_counts_without_nan = (
         value_counts_with_nan.reset_index().dropna().set_index("index").iloc[:, 0]
     )
-
     distinct_count_with_nan = value_counts_with_nan.count()
     distinct_count_without_nan = value_counts_without_nan.count()
 
