@@ -1,4 +1,4 @@
-pandas\_profiling.report.presentation.core.image
+﻿pandas\_profiling.report.presentation.core.image
 ================================================
 
 .. automodule:: pandas_profiling.report.presentation.core.image

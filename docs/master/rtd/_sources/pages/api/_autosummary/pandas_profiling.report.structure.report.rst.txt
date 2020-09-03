@@ -1,4 +1,4 @@
-pandas\_profiling.report.structure.report
+﻿pandas\_profiling.report.structure.report
 =========================================
 
 .. automodule:: pandas_profiling.report.structure.report
@@ -13,7 +13,7 @@ pandas\_profiling.report.structure.report
 
    .. autosummary::
    
-      get_dataset_items
+      get_definition_items
       get_duplicates_items
       get_missing_items
       get_report_structure

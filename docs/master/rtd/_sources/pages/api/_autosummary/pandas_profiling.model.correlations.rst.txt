@@ -1,4 +1,4 @@
-pandas\_profiling.model.correlations
+﻿pandas\_profiling.model.correlations
 ====================================
 
 .. automodule:: pandas_profiling.model.correlations

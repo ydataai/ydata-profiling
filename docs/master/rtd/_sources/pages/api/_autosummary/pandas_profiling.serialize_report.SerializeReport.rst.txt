@@ -1,4 +1,4 @@
-pandas\_profiling.serialize\_report.SerializeReport
+﻿pandas\_profiling.serialize\_report.SerializeReport
 ===================================================
 
 .. currentmodule:: pandas_profiling.serialize_report

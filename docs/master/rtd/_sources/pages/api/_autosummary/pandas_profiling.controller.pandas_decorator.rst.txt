@@ -1,4 +1,4 @@
-pandas\_profiling.controller.pandas\_decorator
+﻿pandas\_profiling.controller.pandas\_decorator
 ==============================================
 
 .. automodule:: pandas_profiling.controller.pandas_decorator

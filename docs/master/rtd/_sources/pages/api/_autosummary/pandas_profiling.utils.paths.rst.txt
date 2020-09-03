@@ -1,4 +1,4 @@
-pandas\_profiling.utils.paths
+﻿pandas\_profiling.utils.paths
 =============================
 
 .. automodule:: pandas_profiling.utils.paths

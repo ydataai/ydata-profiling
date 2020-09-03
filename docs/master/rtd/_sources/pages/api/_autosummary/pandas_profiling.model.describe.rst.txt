@@ -1,4 +1,4 @@
-pandas\_profiling.model.describe
+﻿pandas\_profiling.model.describe
 ================================
 
 .. automodule:: pandas_profiling.model.describe

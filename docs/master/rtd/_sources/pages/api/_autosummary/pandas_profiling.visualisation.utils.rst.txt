@@ -1,4 +1,4 @@
-pandas\_profiling.visualisation.utils
+﻿pandas\_profiling.visualisation.utils
 =====================================
 
 .. automodule:: pandas_profiling.visualisation.utils

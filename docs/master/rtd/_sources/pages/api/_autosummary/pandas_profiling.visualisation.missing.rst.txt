@@ -1,4 +1,4 @@
-pandas\_profiling.visualisation.missing
+﻿pandas\_profiling.visualisation.missing
 =======================================
 
 .. automodule:: pandas_profiling.visualisation.missing

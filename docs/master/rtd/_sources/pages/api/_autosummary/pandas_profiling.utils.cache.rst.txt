@@ -1,4 +1,4 @@
-pandas\_profiling.utils.cache
+﻿pandas\_profiling.utils.cache
 =============================
 
 .. automodule:: pandas_profiling.utils.cache

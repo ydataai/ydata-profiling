@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Metadata &mdash; pandas-profiling 2.9.0rc1 documentation</title>
+  <title>Metadata &mdash; pandas-profiling 2.9.0 documentation</title>
   
 
   
@@ -94,7 +94,11 @@
 <li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="big_data.html">Big Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Sensitive data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Metadata</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dataset-metadata">Dataset metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#descriptions-per-variable">Descriptions per variable</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
@@ -203,6 +207,8 @@
             
   <div class="section" id="metadata">
 <h1>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="dataset-metadata">
+<h2>Dataset metadata<a class="headerlink" href="#dataset-metadata" title="Permalink to this headline">¶</a></h2>
 <p>When sharing reports with coworkers or publishing online, you might want to include metadata of the dataset, such as author, copyright holder or a description. The supported properties are inspired by <a class="reference external" href="https://schema.org/Dataset">https://schema.org/Dataset</a>. Currently supported are: “description”, “creator”, “author”, “url”, “copyright_year”, “copyright_holder”.</p>
 <p>The following example generates a report with a “description”, “copyright_holder” and “copyright_year”, “creator” and “url”.
 You can find these properties in the “Overview” section under the “About” tab.</p>
@@ -217,6 +223,64 @@ You can find these properties in the “Overview” section under the “About�
 <span class="p">)</span>
 <span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;stata_auto_report.html&quot;</span><span class="p">))</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="descriptions-per-variable">
+<h2>Descriptions per variable<a class="headerlink" href="#descriptions-per-variable" title="Permalink to this headline">¶</a></h2>
+<p>In addition to providing dataset details, users often would like to include column-specific descriptions when sharing reports with team members and stakeholders. This section provides two code examples how to do this in pandas-profiling.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Generate a report with descriptions per variable</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
+        <span class="n">variables</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;descriptions&#39;</span><span class="p">:</span>
+                <span class="p">{</span>
+                      <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;Files in the filesystem&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;datec&#39;</span><span class="p">:</span> <span class="s1">&#39;Creation date&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;datem&#39;</span><span class="p">:</span> <span class="s1">&#39;Modification date&#39;</span><span class="p">,</span>
+                <span class="p">}</span>
+        <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>This alternative example demonstrates how you could load the definitions from a json file.
+By default, the descriptions are presented in the overview tab and next to each variable.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">dataset_column_definition.json</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>   <span class="p">{</span>
+       <span class="nt">&quot;column name 1&quot;</span><span class="p">:</span> <span class="s2">&quot;column 1 definition&quot;</span><span class="p">,</span>
+       <span class="nt">&quot;column name 2&quot;</span><span class="p">:</span> <span class="s2">&quot;column 2 definition&quot;</span>
+   <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Generate a report with descriptions per variable from a definitions file</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pandas_profiling</span>
+
+<span class="n">definition_file</span> <span class="o">=</span> <span class="s1">&#39;dataset_column_definition.json&#39;</span>
+
+<span class="c1"># Read the variable descriptions</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">definition_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">definitions</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># By default, the descriptions are presented in the overview tab and next to each variable</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">descriptions</span><span class="o">=</span><span class="n">definitions</span><span class="p">))</span>
+
+<span class="c1"># We can disable showing the descriptions next to each variable</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
+        <span class="n">variable</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">descriptions</span><span class="o">=</span><span class="n">definitions</span><span class="p">),</span>
+        <span class="n">show_variable_description</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;report.html&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 

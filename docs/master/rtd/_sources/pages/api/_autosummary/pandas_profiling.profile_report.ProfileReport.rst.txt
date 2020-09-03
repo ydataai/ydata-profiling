@@ -1,4 +1,4 @@
-pandas\_profiling.profile\_report.ProfileReport
+﻿pandas\_profiling.profile\_report.ProfileReport
 ===============================================
 
 .. currentmodule:: pandas_profiling.profile_report

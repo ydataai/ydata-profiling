@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Changelog &mdash; pandas-profiling 2.9.0rc1 documentation</title>
+  <title>Changelog &mdash; pandas-profiling 2.9.0 documentation</title>
   
 
   
@@ -97,36 +97,43 @@
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#changelog-v2-9-0rc1">Changelog v2.9.0rc1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changelog-v2-9-0">Changelog v2.9.0</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#features">🎉 Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#bug-fixes">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#internal-improvements">👷‍♂️ Internal Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#documentation">📖 Documentation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#breaking-changes">🚨 Breaking changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies">⬆️ Dependencies</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog-v2-9-0rc1">Changelog v2.9.0rc1</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#internal-improvements">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#breaking-changes">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">⬆️ Dependencies</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-8-0">Changelog v2.8.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id9">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id14">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id16">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id17">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">📖 Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deprecated">⚠️  Deprecated</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id18">🚨 Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id19">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-7-1">Changelog v2.7.1</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id20">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-7-0">Changelog v2.7.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id21">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id26">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id31">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id37">⚠️  Deprecated</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id38">🚨 Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id39">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">⚠️  Deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#prior-to-v2-7-0">Prior to v2.7.0</a></li>
@@ -238,10 +245,43 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="changelog-v2-9-0rc1">
-<h2>Changelog v2.9.0rc1<a class="headerlink" href="#changelog-v2-9-0rc1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="changelog-v2-9-0">
+<h2>Changelog v2.9.0<a class="headerlink" href="#changelog-v2-9-0" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="features">
 <h3>🎉 Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Description per variable now possible (see the metadata page) or the Census example.</p></li>
+</ul>
+</div>
+<div class="section" id="bug-fixes">
+<h3>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed bug for small DataFrames with unused categories.</p></li>
+<li><p>Fixed bug where parallelization would have side effects.</p></li>
+<li><p>Removed warning where colormap was modified in place.</p></li>
+<li><p>Distinguish between unique and distinct correctly.</p></li>
+</ul>
+</div>
+<div class="section" id="documentation">
+<h3>📖 Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Extend documentation for frequent issues.</p></li>
+<li><p>Extended documentation for Streamlit and Panel.</p></li>
+<li><p>Provide visibility to our supporters.</p></li>
+</ul>
+</div>
+<div class="section" id="dependencies">
+<h3>⬆️ Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Pandas 1.1.0 contains bugs that make it incompatible. Please up- or downgrade.</p></li>
+<li><p>Upgraded visions to 0.5.0.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="changelog-v2-9-0rc1">
+<h2>Changelog v2.9.0rc1<a class="headerlink" href="#changelog-v2-9-0rc1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>🎉 Features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Working with sensitive data: Introduced <code class="docutils literal notranslate"><span class="pre">sensitive=True</span></code> option to mask non-aggregated data (such as samples, duplicates, frequency tables for categorical columns) [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/503">#503</a>].</p></li>
 <li><p>The sample section can be parametrized with a custom sample (for instance mock data).</p></li>
@@ -251,8 +291,8 @@
 <li><p>A pie chart can be generated for boolean and (low) categorical columns.</p></li>
 </ul>
 </div>
-<div class="section" id="bug-fixes">
-<h3>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>NaT in date columns were interpreted as a date in 1680 by histograms [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/507">#507</a>].</p></li>
 <li><p>ValueError: (‘widget type not understood’, ‘select’) [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/493">#493</a>].</p></li>
@@ -267,8 +307,8 @@
 <li><p>Matplotlib’s rcParams are now modified through the contextmanager [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/494">#494</a>].</p></li>
 </ul>
 </div>
-<div class="section" id="documentation">
-<h3>📖 Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>📖 Documentation<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Links to Colab and Binder notebooks [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/480">#480</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/497">#497</a>].</p></li>
 <li><p>The documentation for sensitive data, large datasets and metadata have been extended.</p></li>
@@ -281,8 +321,8 @@
 <li><p>Config files <code class="docutils literal notranslate"><span class="pre">config_dark.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">config_united.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">config_explorative.yaml</span></code> have been removed in favour of shorthand for groups of parameters.</p></li>
 </ul>
 </div>
-<div class="section" id="dependencies">
-<h3>⬆️ Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id12">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">isort</span></code> updated to major version 5.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">attrs</span></code> is now required for classes.</p></li>
@@ -291,8 +331,8 @@
 </div>
 <div class="section" id="changelog-v2-8-0">
 <h2>Changelog v2.8.0<a class="headerlink" href="#changelog-v2-8-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id9">
-<h3>🎉 Features<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>🎉 Features<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Expanded the Unicode analysis capabilities: next to the most occurring unicode scripts, categories and blocks, it’s now possible to inspect the most frequent characters for each of them.</p></li>
 <li><p>ProfileReport.set_variable now accepts nested parameters such as <code class="docutils literal notranslate"><span class="pre">report.set_variable(&quot;variables.descriptions&quot;,</span> <span class="pre">{&quot;var1&quot;:</span> <span class="pre">&quot;Identifier&quot;})</span></code>.</p></li>
@@ -306,8 +346,8 @@
 <li><p><strong>Config</strong>: Included a new configuration sample file <code class="docutils literal notranslate"><span class="pre">config_explorative.yml</span></code>, including <code class="docutils literal notranslate"><span class="pre">Text</span></code> (length distribution, unicode information),  <code class="docutils literal notranslate"><span class="pre">File</span></code> (file size, creation time), <code class="docutils literal notranslate"><span class="pre">Image</span></code> (dimensions, exif information).</p></li>
 </ul>
 </div>
-<div class="section" id="id14">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id18">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Resolved color ValueError on Mac (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/464">#464</a>).</p></li>
 <li><p><strong>Style</strong>: too many interactions overflowed tabs. Now they elegantly turn into a select control.</p></li>
@@ -316,16 +356,16 @@
 <li><p>Slimmed down the HTML by removing classes and more effective CSS.</p></li>
 </ul>
 </div>
-<div class="section" id="id16">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id20">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>CI</strong>: Added macOS and Windows to the testing environments (experimental).</p></li>
 <li><p><strong>CI</strong>: Added python3.9-dev to the testing environment (experimental).</p></li>
 <li><p><strong>CI</strong>: Reduced the number of permutations for code formatting and type checking.</p></li>
 </ul>
 </div>
-<div class="section" id="id17">
-<h3>📖 Documentation<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id21">
+<h3>📖 Documentation<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>API documentation is now available.</p></li>
 </ul>
@@ -336,14 +376,14 @@
 <li><p>The <code class="docutils literal notranslate"><span class="pre">bayesian_bins</span></code> parameter will be removed in the next release.</p></li>
 </ul>
 </div>
-<div class="section" id="id18">
-<h3>🚨 Breaking changes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id22">
+<h3>🚨 Breaking changes<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Config</strong>: <code class="docutils literal notranslate"><span class="pre">vars.cat.check_composition</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">vars.cat.unicode</span></code> and <code class="docutils literal notranslate"><span class="pre">vars.cat.length</span></code>.</p></li>
 </ul>
 </div>
-<div class="section" id="id19">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id23">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Update <code class="docutils literal notranslate"><span class="pre">visions</span></code> to <code class="docutils literal notranslate"><span class="pre">0.4.4</span></code> for more informative Unicode summaries.</p></li>
 </ul>
@@ -351,8 +391,8 @@
 </div>
 <div class="section" id="changelog-v2-7-1">
 <h2>Changelog v2.7.1<a class="headerlink" href="#changelog-v2-7-1" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id20">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id24">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Fix version of <code class="docutils literal notranslate"><span class="pre">visions</span></code> due to breaking changes in new summarization functions.</p></li>
 </ul>
@@ -360,8 +400,8 @@
 </div>
 <div class="section" id="changelog-v2-7-0">
 <h2>Changelog v2.7.0<a class="headerlink" href="#changelog-v2-7-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id21">
-<h3>🎉 Features<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id25">
+<h3>🎉 Features<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Reports are built in phases, see issue for details (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/421">#421</a>)</p></li>
 <li><p>The most occurring duplicates rows are included in the report.</p></li>
@@ -373,8 +413,8 @@
 <li><p><strong>CI</strong>: Linting, building the documentation and examples and uploading the package to PyPi have been automated using git flow and Github Actions.</p></li>
 </ul>
 </div>
-<div class="section" id="id26">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id30">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>warnings were not shown in the “warnings” tab, but were at variable level (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/389">#389</a>).</p></li>
 <li><p>The “median absolute deviation” is now reported instead of the “mean absolute deviation” (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/453">#453</a>).</p></li>
@@ -383,8 +423,8 @@
 <li><p>The logic for calculating infinite values is now correct (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/397">#397</a>).</p></li>
 </ul>
 </div>
-<div class="section" id="id31">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id35">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The number of progress bars is reduced. The progress bars are now grouped by build phase (e.g. describing dataset, building report structure, rendering report, exporting to file, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/421">#421</a>).</p></li>
 <li><p>The progress bars provide more information about the current step to the user <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/434">#434</a>).</p></li>
@@ -400,22 +440,22 @@
 <li><p><strong>Cln</strong>: the imports are automatically ordered with <code class="docutils literal notranslate"><span class="pre">isort</span></code>.</p></li>
 </ul>
 </div>
-<div class="section" id="id37">
-<h3>⚠️  Deprecated<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id41">
+<h3>⚠️  Deprecated<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Doc</strong>: the <code class="docutils literal notranslate"><span class="pre">pdoc3</span></code> documentation will be removed in the future.</p></li>
 <li><p><strong>Config</strong>: using the config globally is deprecated. In the future, the configuration will be tied to the ProfileReport.</p></li>
 </ul>
 </div>
-<div class="section" id="id38">
-<h3>🚨 Breaking changes<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id42">
+<h3>🚨 Breaking changes<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Doc</strong>: the example HTML reports were removed from the repository (still available in the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch and documentation).</p></li>
 <li><p>The recoded “correlation” was removed for not being informative enough to justify it’s costs.</p></li>
 </ul>
 </div>
-<div class="section" id="id39">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id43">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Requirements now correctly excludes pandas 1.0.0, 1.0.1 and 1.0.2. Either user pandas &lt;1 or &gt;= 1.0.3.</p></li>
 </ul>

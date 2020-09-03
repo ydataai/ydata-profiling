@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Integrations &mdash; pandas-profiling 2.9.0rc1 documentation</title>
+  <title>Integrations &mdash; pandas-profiling 2.9.0 documentation</title>
   
 
   
@@ -103,7 +103,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#jupyter-lab-notebook">Jupyter Lab/Notebook</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#command-line">Command line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyqt-experimental">PyQt (experimental)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#streamlit-panel">Streamlit / Panel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#streamlit">Streamlit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#panel">Panel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#cloud-integrations">Cloud Integrations</a><ul>
@@ -314,9 +315,31 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 </pre></div>
 </div>
 </div>
-<div class="section" id="streamlit-panel">
-<h3>Streamlit / Panel<a class="headerlink" href="#streamlit-panel" title="Permalink to this headline">¶</a></h3>
-<p>For more information of how to use <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> with Streamlit or Panel, see the <a class="reference external" href="https://github.com/streamlit/streamlit/issues/693">https://github.com/streamlit/streamlit/issues/693</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/491">https://github.com/pandas-profiling/pandas-profiling/issues/491</a>.</p>
+<div class="section" id="streamlit">
+<h3>Streamlit<a class="headerlink" href="#streamlit" title="Permalink to this headline">¶</a></h3>
+<p><cite>Streamlit &lt;https://www.streamlit.io&gt;</cite> is an open-source Python library made to build web-apps for machine learning and data science.</p>
+<img alt="../_images/streamlit-integration.gif" src="../_images/streamlit-integration.gif" />
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pandas_profiling</span>
+<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">from</span> <span class="nn">streamlit_pandas_profiling</span> <span class="kn">import</span> <span class="n">st_profile_report</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv&quot;</span><span class="p">)</span>
+<span class="n">pr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">()</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Pandas Profiling in Streamlit&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">st_profile_report</span><span class="p">(</span><span class="n">pr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can install this <cite>Pandas Profiling component &lt;https://github.com/Ghasel/streamlit-pandas-profiling&gt;</cite> for Streamlit with pip:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install streamlit-pandas-profiling</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="panel">
+<h3>Panel<a class="headerlink" href="#panel" title="Permalink to this headline">¶</a></h3>
+<p>For more information on how to use <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> in Panel, see <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/491">https://github.com/pandas-profiling/pandas-profiling/issues/491</a> and the Pandas Profiling example at <a class="reference external" href="https://awesome-panel.org">https://awesome-panel.org</a>.</p>
 </div>
 </div>
 <div class="section" id="cloud-integrations">
@@ -338,8 +361,8 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 </div>
 <div class="section" id="pipeline-integrations">
 <h2>Pipeline Integrations<a class="headerlink" href="#pipeline-integrations" title="Permalink to this headline">¶</a></h2>
-<p>With the Python, Command-line and Jupyter interfaces, <cite>pandas-profiling</cite> integrates seamlessly with DAG execution tools as Airflow, dagser, Kedro, prefect and any other you can think of.</p>
-<p>Integration with <a class="reference external" href="https://github.com/dagster-io/dagster">dagser</a> or <a class="reference external" href="https://github.com/prefecthq/prefect">prefect</a> can be achieved in a similar way as Airflow.</p>
+<p>With Python, command-line and Jupyter interfaces, <cite>pandas-profiling</cite> integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect.</p>
+<p>Integration with <a class="reference external" href="https://github.com/dagster-io/dagster">Dagster</a> or <a class="reference external" href="https://github.com/prefecthq/prefect">Prefect</a> can be achieved in a similar way as with Airflow.</p>
 <div class="section" id="airflow">
 <h3>Airflow<a class="headerlink" href="#airflow" title="Permalink to this headline">¶</a></h3>
 <p>Integration with Airflow can be easily achieved through the <a class="reference external" href="https://airflow.apache.org/docs/stable/_api/airflow/operators/bash_operator/index.html">BashOperator</a> or the <a class="reference external" href="https://airflow.apache.org/docs/stable/_api/airflow/operators/python_operator/index.html#airflow.operators.python_operator.PythonOperator">PythonOperator</a>.</p>

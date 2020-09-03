@@ -1,4 +1,4 @@
-pandas\_profiling.config.Config
+﻿pandas\_profiling.config.Config
 ===============================
 
 .. currentmodule:: pandas_profiling.config

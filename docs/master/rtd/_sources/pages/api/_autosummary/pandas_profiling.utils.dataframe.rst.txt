@@ -1,4 +1,4 @@
-pandas\_profiling.utils.dataframe
+﻿pandas\_profiling.utils.dataframe
 =================================
 
 .. automodule:: pandas_profiling.utils.dataframe
