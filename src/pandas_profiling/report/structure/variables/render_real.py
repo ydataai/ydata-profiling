@@ -227,7 +227,9 @@ def render_real(summary):
     )
 
     template_variables["bottom"] = Container(
-        [statistics, hist, fq, evs], sequence_type="tabs", anchor_id=f"{varid}bottom",
+        [statistics, hist, fq, evs],
+        sequence_type="tabs",
+        anchor_id=f"{varid}bottom",
     )
 
     return template_variables

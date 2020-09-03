@@ -178,9 +178,9 @@ def describe_1d(series: pd.Series) -> dict:
         """
 
         def mad(arr):
-            """ Median Absolute Deviation: a "Robust" version of standard deviation.
-                Indices variability of the sample.
-                https://en.wikipedia.org/wiki/Median_absolute_deviation
+            """Median Absolute Deviation: a "Robust" version of standard deviation.
+            Indices variability of the sample.
+            https://en.wikipedia.org/wiki/Median_absolute_deviation
             """
             return np.median(np.abs(arr - np.median(arr)))
 
