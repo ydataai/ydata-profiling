@@ -17,11 +17,7 @@ def test_dataset_schema():
     )
 
     # Length left out due to correlation with weight.
-    report = df.profile_report(
-        title="Dataset schema",
-        dataset=metadata,
-        minimal=True,
-    )
+    report = df.profile_report(title="Dataset schema", dataset=metadata, minimal=True,)
 
     html = report.to_html()
 
@@ -40,9 +36,7 @@ def test_dataset_schema_empty():
 
     # Length left out due to correlation with weight.
     report = df.profile_report(
-        title="Dataset schema empty",
-        minimal=True,
-        dataset=None,
+        title="Dataset schema empty", minimal=True, dataset=None,
     )
 
     html = report.to_html()

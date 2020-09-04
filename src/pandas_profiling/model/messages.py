@@ -6,8 +6,8 @@ from typing import List, Union
 import numpy as np
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import perform_check_correlation
+from pandas_profiling.model.typeset import Categorical, DateTime, Numeric, Unsupported
 
 
 @unique
@@ -135,7 +135,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    if description["type"] == Variable.S_TYPE_UNSUPPORTED:
+    if description["type"] == Unsupported:
         messages.append(
             Message(
                 column_name=col,
@@ -144,8 +144,8 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={},
             )
         )
-    elif description["distinct_count_with_nan"] <= 1:
-        description["mode"] = description["value_counts"].iloc[0]
+    elif description["n_distinct"] <= 1:
+        description["mode"] = description["value_counts_without_nan"].iloc[0]
         messages.append(
             Message(
                 column_name=col,
@@ -155,10 +155,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
 
-    if (
-        description["type"] == Variable.S_TYPE_UNSUPPORTED
-        or description["distinct_count_with_nan"] <= 1
-    ):
+    if description["type"] == Unsupported or description["n_distinct"] <= 1:
         messages.append(
             Message(
                 column_name=col,
@@ -167,7 +164,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 fields={},
             )
         )
-    elif description["distinct_count_without_nan"] == description["n"]:
+    elif description["n_distinct"] == description["n"]:
         messages.append(
             Message(
                 column_name=col,
@@ -177,12 +174,12 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
     elif description["type"] in [
-        Variable.TYPE_NUM,
-        Variable.TYPE_CAT,
-        Variable.TYPE_DATE,
+        Numeric,
+        Categorical,
+        DateTime,
     ]:
         # Uniformity
-        if description["type"] == Variable.TYPE_CAT:
+        if description["type"] == Categorical:
             # High cardinality
             if description["n_distinct"] > config["vars"]["cat"][
                 "cardinality_threshold"
@@ -206,14 +203,14 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
 
         if (
             "chi_squared" in description
-            and description["chi_squared"][1] > chi_squared_threshold
+            and description["chi_squared"]["pvalue"] > chi_squared_threshold
         ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})
             )
 
     # Categorical
-    if description["type"] == Variable.TYPE_CAT:
+    if description["type"] == Categorical:
         if "date_warning" in description and description["date_warning"]:
             messages.append(
                 Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
@@ -234,7 +231,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
 
     # Numerical
-    if description["type"] == Variable.TYPE_NUM:
+    if description["type"] == Numeric:
         # Skewness
         if warning_skewness(description["skewness"]):
             messages.append(

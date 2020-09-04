@@ -46,12 +46,17 @@ vars:
         redact: False
     bool:
         n_obs: 3
+    path:
+        active: False
     file:
         active: False
     image:
         active: False
         exif: False
         hash: False
+    url:
+        active: False
+
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: None

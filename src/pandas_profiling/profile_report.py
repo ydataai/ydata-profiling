@@ -10,6 +10,8 @@ from tqdm.auto import tqdm
 from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.model.summarizer import PandasProfilingSummarizer
+from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
@@ -87,6 +89,9 @@ class ProfileReport(SerializeReport, object):
         self._widgets = None
         self._json = None
 
+        self.summarizer = PandasProfilingSummarizer()
+        self.typeset = ProfilingTypeSet()
+
         if df is not None:
             # preprocess df
             self.df = self.preprocess(df)
@@ -151,7 +156,9 @@ class ProfileReport(SerializeReport, object):
     @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.df, self._sample)
+            self._description_set = describe_df(
+                self.title, self.df, self.summarizer, self.typeset, self._sample
+            )
         return self._description_set
 
     @property

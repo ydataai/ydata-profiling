@@ -7,21 +7,23 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
-    get_duplicates,
     get_messages,
     get_missing_diagrams,
     get_scatter_matrix,
     get_series_descriptions,
     get_table_stats,
 )
+from pandas_profiling.model.typeset import Unsupported
 from pandas_profiling.version import __version__
 
 
-def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
+def describe(
+    title: str, df: pd.DataFrame, summarizer, typeset, sample: Optional[dict] = None
+) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -54,33 +56,22 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
 
     correlation_names = [
         correlation_name
-        for correlation_name in [
-            "pearson",
-            "spearman",
-            "kendall",
-            "phi_k",
-            "cramers",
-        ]
+        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers",]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
-    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 8 + len(df.columns) + len(correlation_names)
 
     with tqdm(
         total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
-        series_description = get_series_descriptions(df, pbar)
+        series_description = get_series_descriptions(df, summarizer, typeset, pbar)
 
         pbar.set_postfix_str("Get variable types")
         variables = {
             column: description["type"]
             for column, description in series_description.items()
         }
-        pbar.update()
-
-        # Transform the series_description in a DataFrame
-        pbar.set_postfix_str("Get variable statistics")
-        variable_stats = pd.DataFrame(series_description)
         pbar.update()
 
         # Get correlations
@@ -104,7 +95,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
 
         # Table statistics
         pbar.set_postfix_str("Get table statistics")
-        table_stats = get_table_stats(df, variable_stats)
+        table_stats = get_table_stats(df, series_description)
         pbar.update()
 
         # missing diagrams
@@ -132,7 +123,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         supported_columns = [
             key
             for key, value in series_description.items()
-            if value["type"] != Variable.S_TYPE_UNSUPPORTED
+            if value["type"] != Unsupported
         ]
 
         duplicates = get_duplicates(df, supported_columns)

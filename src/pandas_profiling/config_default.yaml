@@ -52,6 +52,10 @@ vars:
         active: False
         exif: True
         hash: True
+    path:
+        active: False
+    url:
+        active: False
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: None

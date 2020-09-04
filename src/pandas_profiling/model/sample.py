@@ -30,4 +30,6 @@ def get_sample(df: pd.DataFrame) -> list:
     if n_tail > 0:
         samples.append(Sample("tail", df.tail(n=n_tail), "Last rows"))
 
+    # TODO: add random sample
+
     return samples

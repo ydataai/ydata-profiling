@@ -12,7 +12,7 @@ from pandas.core.base import DataError
 from scipy import stats
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
+from pandas_profiling.model.typeset import Categorical
 
 
 def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
@@ -70,7 +70,7 @@ def categorical_matrix(
     categoricals = {
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
-        if variable_type == Variable.TYPE_CAT
+        if variable_type == Categorical
         # TODO: solve in type system
         and config["categorical_maximum_correlation_distinct"].get(int)
         >= df[column_name].nunique()
@@ -212,24 +212,11 @@ def perform_check_correlation(
         The variables that are highly correlated.
     """
 
-    corr = correlation_matrix.copy()
-
-    # TODO: use matrix logic
-    # correlation_tri = correlation.where(np.triu(np.ones(correlation.shape),k=1).astype(np.bool))
-    # drop_cols = [i for i in correlation_tri if any(correlation_tri[i]>threshold)]
-
-    mapping: Dict[str, List[str]] = {}
-    for x, corr_x in corr.iterrows():
-        for y, corr in corr_x.iteritems():
-            if x == y:
-                break
-
-            if corr >= threshold or corr <= -1 * threshold:
-                if x not in mapping:
-                    mapping[x] = []
-                if y not in mapping:
-                    mapping[y] = []
-
-                mapping[x].append(y)
-                mapping[y].append(x)
-    return mapping
+    cols = correlation_matrix.columns
+    bool_index = abs(correlation_matrix.values) >= threshold
+    np.fill_diagonal(bool_index, False)
+    return {
+        col: cols[bool_index[i]].values.tolist()
+        for i, col in enumerate(cols)
+        if any(bool_index[i])
+    }

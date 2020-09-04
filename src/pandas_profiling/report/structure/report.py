@@ -6,20 +6,17 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import (
-    AbsolutePath,
+from pandas_profiling.model.messages import MessageType
+from pandas_profiling.model.typeset import (
+    URL,
     Boolean,
     Categorical,
-    Complex,
-    Count,
-    Date,
-    FilePath,
-    Generic,
-    ImagePath,
-    Real,
-    Url,
+    DateTime,
+    File,
+    Numeric,
+    Path,
+    Unsupported,
 )
-from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -86,16 +83,16 @@ def render_variables_section(dataframe_summary: dict) -> list:
     """
     type_to_func = {
         Boolean: render_boolean,
-        Real: render_real,
-        Count: render_real,
-        Complex: render_complex,
-        Date: render_date,
+        Numeric: render_real,
+        # Count: render_real,
+        # Complex: render_complex,
+        DateTime: render_date,
         Categorical: render_categorical,
-        Url: render_url,
-        AbsolutePath: render_path,
-        FilePath: render_file,
-        ImagePath: render_image,
-        Generic: render_generic,
+        URL: render_url,
+        Path: render_path,
+        File: render_file,
+        Image: render_image,
+        Unsupported: render_generic,
     }
 
     templs = []
@@ -174,9 +171,7 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     if duplicates is not None and len(duplicates) > 0:
         items.append(
             Duplicate(
-                duplicate=duplicates,
-                name="Most frequent",
-                anchor_id="duplicates",
+                duplicate=duplicates, name="Most frequent", anchor_id="duplicates",
             )
         )
     return items
@@ -194,11 +189,7 @@ def get_definition_items(definitions: pd.DataFrame):
     items = []
     if definitions is not None and len(definitions) > 0:
         items.append(
-            Duplicate(
-                duplicate=definitions,
-                name="Columns",
-                anchor_id="definitions",
-            )
+            Duplicate(duplicate=definitions, name="Columns", anchor_id="definitions",)
         )
     return items
 
