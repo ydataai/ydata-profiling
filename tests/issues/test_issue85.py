@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling import ProfileReport
-from pandas_profiling.model.base import Variable
+from pandas_profiling.model.typeset import Boolean
 
 
 def test_issue85():
@@ -17,7 +17,7 @@ def test_issue85():
         "integers_nan": [1, 0, np.nan],
         "str_yes_no": ["Y", "N", "Y"],
         "str_yes_no_mixed": ["Y", "n", "y"],
-        "str_yes_no_nana": ["Y", "N", np.nan],
+        "str_yes_no_nan": ["Y", "N", np.nan],
         "str_true_false": ["True", "False", "False"],
         "str_true_false_nan": ["True", "False", np.nan],
     }
@@ -32,5 +32,5 @@ def test_issue85():
     )
     for col, variable_stats in report.get_description()["variables"].items():
         assert (
-            variable_stats["type"] == Variable.TYPE_BOOL
-        ), "Variable should be boolean"
+            variable_stats["type"] == Boolean
+        ), f"Variable {col} should be boolean"

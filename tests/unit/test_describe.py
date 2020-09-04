@@ -5,9 +5,9 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
+from pandas_profiling.model.typeset import Categorical, Numeric, Boolean, DateTime, Unsupported
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
@@ -184,7 +184,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": "d",
-            "type": Variable.TYPE_CAT,
+            "type": Categorical,
             "variance": check_is_NaN,
         },
         "x": {
@@ -217,7 +217,7 @@ def expected_results():
             "std": 23.688077169749342,
             "sum": 107.0,
             "top": check_is_NaN,
-            "type": Variable.TYPE_NUM,
+            "type": Numeric,
             "variance": 561.125,
         },
         "y": {
@@ -249,7 +249,7 @@ def expected_results():
             "std": 1086.1335236468506,
             "sum": 3929.3949203464999,
             "top": check_is_NaN,
-            "type": Variable.TYPE_NUM,
+            "type": Numeric,
             "variance": 1179686.0311895239,
         },
         "cat": {
@@ -280,7 +280,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": "c",
-            "type": Variable.TYPE_CAT,
+            "type": Categorical,
             "variance": check_is_NaN,
         },
         "s1": {
@@ -311,7 +311,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": 1.0,
-            "type": Variable.TYPE_BOOL,
+            "type": Boolean,
             "variance": check_is_NaN,
         },
         "s2": {
@@ -342,7 +342,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": "some constant text $ % value {obj} ",
-            "type": Variable.TYPE_CAT,
+            "type": Categorical,
             "variance": check_is_NaN,
         },
         "somedate": {
@@ -371,7 +371,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": check_is_NaN,
-            "type": Variable.TYPE_DATE,
+            "type": DateTime,
         },
         "bool_tf": {
             "25%": check_is_NaN,
@@ -400,7 +400,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": True,
-            "type": Variable.TYPE_BOOL,
+            "type": Boolean,
             "variance": check_is_NaN,
         },
         "bool_tf_with_nan": {
@@ -430,7 +430,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": False,
-            "type": Variable.TYPE_BOOL,
+            "type": Boolean,
             "variance": check_is_NaN,
         },
         "bool_01": {
@@ -460,7 +460,7 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": 1,
-            "type": Variable.TYPE_BOOL,
+            "type": Boolean,
             "variance": check_is_NaN,
         },
         "bool_01_with_nan": {
@@ -488,32 +488,32 @@ def expected_results():
             "std": check_is_NaN,
             "sum": check_is_NaN,
             "top": 0,
-            "type": Variable.TYPE_BOOL,
+            "type": Boolean,
             "variance": check_is_NaN,
         },
         "list": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Unsupported,
         },
         "mixed": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Unsupported,
         },
         "dict": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Unsupported,
         },
         "tuple": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
+            "type": Unsupported,
         },
     }
 

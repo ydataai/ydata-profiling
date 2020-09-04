@@ -51,7 +51,7 @@ class Config(object):
                 "url": {"active": True},
                 "path": {"active": True},
                 "file": {"active": True},
-                "image": {"active": True,},
+                "image": {"active": True},
             },
             "n_obs_unique": 10,
             "n_extreme_obs": 10,

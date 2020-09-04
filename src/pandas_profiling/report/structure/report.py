@@ -34,16 +34,14 @@ from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.report.structure.variables import (
     render_boolean,
     render_categorical,
-    render_complex,
     render_date,
     render_generic,
     render_image,
     render_path,
     render_real,
     render_url,
+    render_file,
 )
-from pandas_profiling.report.structure.variables.render_file import render_file
-
 
 def get_missing_items(summary) -> list:
     """Return the missing diagrams
@@ -84,8 +82,6 @@ def render_variables_section(dataframe_summary: dict) -> list:
     type_to_func = {
         Boolean: render_boolean,
         Numeric: render_real,
-        # Count: render_real,
-        # Complex: render_complex,
         DateTime: render_date,
         Categorical: render_categorical,
         URL: render_url,

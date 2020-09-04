@@ -1,9 +1,11 @@
 import numpy as np
 import pandas as pd
 
-from pandas_profiling.model.base import Variable, get_var_type
+from pandas_profiling.model.summarizer import PandasProfilingSummarizer
+from pandas_profiling.model.summary import describe_1d
+from pandas_profiling.model.typeset import Numeric, ProfilingTypeSet
 
 
 def test_numeric_with_inf():
     s = pd.Series([1, 2, 3, 6, np.inf])
-    assert get_var_type(s)["type"] == Variable.TYPE_NUM
+    assert describe_1d(s, summarizer=PandasProfilingSummarizer(), typeset=ProfilingTypeSet())["type"] == Numeric
