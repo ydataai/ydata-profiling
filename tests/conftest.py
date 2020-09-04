@@ -5,6 +5,8 @@ from pathlib import Path
 import pytest
 
 from pandas_profiling import config
+from pandas_profiling.model.summarizer import PandasProfilingSummarizer
+from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.utils.cache import cache_file
 
 
@@ -34,6 +36,16 @@ def test_output_dir(tmpdir_factory):
     test_path = Path(str(tmpdir_factory.mktemp("test")))
     yield test_path
     shutil.rmtree(str(test_path))
+
+
+@pytest.fixture(scope="module")
+def summarizer(typeset):
+    return PandasProfilingSummarizer(typeset)
+
+
+@pytest.fixture(scope="module")
+def typeset():
+    return ProfilingTypeSet()
 
 
 def pytest_runtest_setup(item):

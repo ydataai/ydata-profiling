@@ -347,7 +347,7 @@ def render_categorical(summary):
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts"],
+            freqtable=summary["value_counts_without_nan"],
             n=summary["count"],
             max_number_to_print=n_obs_cat,
         ),
@@ -408,7 +408,10 @@ def render_categorical(summary):
     if max_unique > 0 and summary["n_distinct"] <= max_unique:
         string_items.append(
             Image(
-                pie_plot(summary["value_counts"], legend_kws={"loc": "upper right"}),
+                pie_plot(
+                    summary["value_counts_without_nan"],
+                    legend_kws={"loc": "upper right"},
+                ),
                 image_format=image_format,
                 alt="Pie chart",
                 name="Pie chart",

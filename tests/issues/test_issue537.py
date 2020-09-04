@@ -19,6 +19,7 @@ Replace series.fillna(np.nan, inplace=True) with series = series.fillna(np.nan) 
 """
 
 import multiprocessing
+from functools import partial
 from gzip import decompress
 from typing import Tuple
 
@@ -29,7 +30,7 @@ import requests
 from pandas_profiling.model.summary import describe_1d
 
 
-def mock_multiprocess_1d(args) -> Tuple[str, dict]:
+def mock_multiprocess_1d(args, summarizer, typeset) -> Tuple[str, dict]:
     """Wrapper to process series in parallel.
         copy of multiprocess_1d function in get_series_descriptions, summary.py
 
@@ -41,10 +42,10 @@ def mock_multiprocess_1d(args) -> Tuple[str, dict]:
         A tuple with column and the series description.
     """
     column, series = args
-    return column, describe_1d(series)
+    return column, describe_1d(series, summarizer, typeset)
 
 
-def test_multiprocessing_describe1d():
+def test_multiprocessing_describe1d(summarizer, typeset):
     """
     this test serves to get a large dataset, and ensure that even across parallelised describe1d operations,
     there is no ValueError raised. Previously, series.fillna(np.nan,inplace=True) was used instead of
@@ -114,7 +115,9 @@ def test_multiprocessing_describe1d():
     def run_multiprocess(df):
         pool = multiprocessing.pool.ThreadPool(10)
         args = [(column, series) for column, series in df.iteritems()]
-        results = pool.imap_unordered(mock_multiprocess_1d, args)
+        results = pool.imap_unordered(
+            partial(mock_multiprocess_1d, summarizer=summarizer, typeset=typeset), args
+        )
         pool.close()
         pool.join()
         list(results)

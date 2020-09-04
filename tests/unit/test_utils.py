@@ -16,6 +16,7 @@ def test_read_pandas_parquet():
         "Passed non-file path: dataframe.parquet",
         # fastparquet
         "[Errno 2] No such file or directory: 'dataframe.parquet'",
+        str(FileNotFoundError("dataframe.parquet")),
     ]
 
 

@@ -13,13 +13,13 @@ htmlmin>=0.1.12
 # Missing values
 missingno>=0.4.2
 # Correlations
-phik>=0.9.10
+phik>=0.10.0
 # Text analysis
 tangled-up-in-unicode>=0.0.6
 # Examples
-requests>=2.23.0
+requests>=2.24.0
 # Progress bar
-tqdm>=4.43.0
+tqdm>=4.48.2
 # Jupyter notebook
 ipywidgets>=7.5.1
 seaborn>=0.10.1
