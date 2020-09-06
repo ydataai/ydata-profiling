@@ -145,7 +145,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
             )
         )
     elif description["n_distinct"] <= 1:
-        description["mode"] = description["value_counts_without_nan"].iloc[0]
+        description["mode"] = description["value_counts_without_nan"].index[0]
         messages.append(
             Message(
                 column_name=col,
