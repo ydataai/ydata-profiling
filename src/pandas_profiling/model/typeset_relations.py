@@ -66,12 +66,13 @@ def numeric_is_category(series):
     return n_unique <= threshold
 
 
-def string_is_numeric(series):
+def category_is_numeric(series):
     if pdt.is_bool_dtype(series):
         return False
 
     try:
-        _ = pd.to_numeric(series)
+        _ = series.astype(float)
+        # _ = pd.to_numeric(series)
     except:
         return False
 
@@ -80,3 +81,7 @@ def string_is_numeric(series):
     if n_unique <= threshold:
         return False
     return True
+
+
+def category_to_numeric(series):
+    return pd.to_numeric(series, errors="coerce")

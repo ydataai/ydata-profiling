@@ -215,7 +215,14 @@ contains_map = {
         "str_float_non_leading_zeros",
         "str_int_zeros",
     },
-    Boolean: {"bool_series", "bool_series2", "bool_series3", "nullable_bool_series"},
+    Boolean: {
+        "bool_series",
+        "bool_series2",
+        "bool_series3",
+        "nullable_bool_series",
+        "mixed",
+        "bool_nan_series",
+    },
     DateTime: {
         "timestamp_series",
         "timestamp_aware_series",
@@ -228,6 +235,7 @@ contains_map = {
 if int(pd.__version__[0]) >= 1:
     contains_map[Categorical].add("string_dtype_series")
 
+contains_map[Categorical] = contains_map[Categorical].union(contains_map[Boolean])
 contains_map[Unsupported] = {
     "nan_series",
     "nan_series_2",
@@ -254,8 +262,6 @@ contains_map[Unsupported] = {
     "callable",
     "mixed_integer",
     "mixed_list",
-    "mixed",
-    "bool_nan_series",
     "date",
     "time",
     "empty",
@@ -275,13 +281,14 @@ def test_contains(series, type, member):
         type: the type to test against
         member: the result
     """
+    config["vars"]["num"]["low_categorical_threshold"].set(0)
     result, message = contains(series, type, member)
     assert result, message
 
 
 inference_map = {
     "int_series": Numeric,
-    "categorical_int_series": Categorical,
+    "categorical_int_series": Numeric,
     "int_nan_series": Numeric,
     "Int64_int_series": Numeric,
     "Int64_int_nan_series": Numeric,
@@ -304,7 +311,7 @@ inference_map = {
     "nan_series_2": Unsupported,
     "string_series": Categorical,
     "categorical_string_series": Categorical,
-    "timestamp_string_series": DateTime,
+    "timestamp_string_series": Categorical,
     "string_with_sep_num_nan": Categorical,  # TODO: Introduce thousands separator
     "string_unicode_series": Categorical,
     "string_np_unicode_series": Categorical,
@@ -315,7 +322,7 @@ inference_map = {
     "string_str_nan": Categorical,
     "string_bool_nan": Boolean,
     "int_str_range": Numeric,
-    "string_date": DateTime,
+    "string_date": Categorical,
     "str_url": Categorical,
     "bool_series": Boolean,
     "bool_nan_series": Boolean,
@@ -327,7 +334,7 @@ inference_map = {
     "complex_series_nan_2": Numeric,
     "complex_series_py_nan": Numeric,
     "complex_series_py": Numeric,
-    "categorical_complex_series": Categorical,
+    "categorical_complex_series": Numeric,
     "timestamp_series": DateTime,
     "timestamp_series_nat": DateTime,
     "timestamp_aware_series": DateTime,
@@ -368,7 +375,7 @@ inference_map = {
     "time": Unsupported,
     "categorical_char": Categorical,
     "ordinal": Categorical,
-    "str_complex": Numeric,
+    "str_complex": Categorical,
     "uuid_series": Unsupported,
     "uuid_series_str": Categorical,
     "uuid_series_missing": Unsupported,
@@ -378,7 +385,7 @@ inference_map = {
     "file_mixed_ext": Unsupported,
     "image_png": Unsupported,
     "image_png_missing": Unsupported,
-    "str_int_leading_zeros": Categorical,
+    "str_int_leading_zeros": Numeric,
     "str_float_non_leading_zeros": Numeric,
     "str_int_zeros": Numeric,
     "email_address_str": Categorical,
@@ -403,8 +410,7 @@ def test_inference(series, type, typeset, difference):
 # Conversions in one single step
 convert_map = [
     # Model type, Relation type
-    # (Numeric, Categorical, {"str_complex"}),
-    (Categorical, Numeric, {"int_series"}),
+    (Categorical, Numeric, {"int_series", "mixed"}),
     (
         Numeric,
         Categorical,
@@ -418,12 +424,20 @@ convert_map = [
             "int_str_range",
             "str_float_non_leading_zeros",
             "str_int_zeros",
-            # "string_with_sep_num_nan",
+            "mixed",
         },
     ),
-    (DateTime, Categorical, {"timestamp_string_series", "string_date"}),
-    (Boolean, Categorical, {"string_bool_nan"}),
-    (Boolean, Unsupported, {"bool_nan_series", "mixed"}),
+    (
+        Boolean,
+        Categorical,
+        {
+            "string_bool_nan",
+            "bool_series",
+            "bool_series2",
+            "bool_series3",
+            "nullable_bool_series",
+        },
+    ),
 ]
 
 

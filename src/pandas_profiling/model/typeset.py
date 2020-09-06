@@ -18,9 +18,10 @@ from pandas_profiling.config import config
 #     categorical = False
 from pandas_profiling.model.typeset_relations import (
     applied_to_nonnull,
+    category_is_numeric,
+    category_to_numeric,
     numeric_is_category,
     string_is_bool,
-    string_is_numeric,
     string_to_bool,
 )
 
@@ -41,8 +42,8 @@ class Numeric(PandasProfilingBaseType):
             InferenceRelation(
                 cls,
                 Categorical,
-                relationship=string_is_numeric,
-                transformer=pd.to_numeric,
+                relationship=category_is_numeric,
+                transformer=category_to_numeric,
             ),
         ]
 
@@ -63,6 +64,7 @@ class DateTime(PandasProfilingBaseType):
     def get_relations(cls):
         return [
             IdentityRelation(cls, Unsupported),
+            # InferenceRelation(cls, Categorical, relationship=is_date, transformer=pd.to_datetime,),
         ]
 
     @classmethod
@@ -93,7 +95,7 @@ class Categorical(PandasProfilingBaseType):
             series = series.dropna()
             if series.empty:
                 return False
-        return all(isinstance(v, str) for v in series)
+        return all(isinstance(v, (str, bool)) for v in series)
 
 
 class Boolean(PandasProfilingBaseType):
@@ -107,13 +109,6 @@ class Boolean(PandasProfilingBaseType):
                 relationship=string_is_bool,
                 transformer=string_to_bool,
             ),
-            # InferenceRelation(
-            #     cls,
-            #     Numeric,
-            #     relationship=lambda s: s.nunique()
-            #     < config["vars"]["num"]["low_categorical_threshold"].get(int),
-            #     transformer=applied_to_nonnull(lambda s: s.astype(str)),
-            # ),
         ]
 
     @classmethod
