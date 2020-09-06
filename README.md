@@ -228,7 +228,7 @@ Maintaining and developing the open-source code for pandas-profiling, with milli
 <tr>
 <td>
 
-<img alt="Lambda Labs" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/lambda-labs.png" width="500" />
+<img alt="Lambda Labs" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/lambda-labs.png" width="500" />
 
 </td>
 <td>
