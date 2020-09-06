@@ -141,16 +141,16 @@ def calculate_correlation(
     df: pd.DataFrame, variables: dict, correlation_name: str
 ) -&gt; Union[pd.DataFrame, None]:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
-        (pearson, spearman, kendall, phi_k, cramers).
+    (pearson, spearman, kendall, phi_k, cramers).
 
-        Args:
-            variables: A dict with column names and variable types.
-            df: The DataFrame with variables.
-            correlation_name:
+    Args:
+        variables: A dict with column names and variable types.
+        df: The DataFrame with variables.
+        correlation_name:
 
-        Returns:
-            The correlation matrices for the given correlation measures. Return None if correlation is empty.
-        &#34;&#34;&#34;
+    Returns:
+        The correlation matrices for the given correlation measures. Return None if correlation is empty.
+    &#34;&#34;&#34;
 
     categorical_correlations = {&#34;cramers&#34;: cramers_matrix}
     correlation = None
@@ -295,16 +295,16 @@ def perform_check_correlation(
     df: pd.DataFrame, variables: dict, correlation_name: str
 ) -&gt; Union[pd.DataFrame, None]:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
-        (pearson, spearman, kendall, phi_k, cramers).
+    (pearson, spearman, kendall, phi_k, cramers).
 
-        Args:
-            variables: A dict with column names and variable types.
-            df: The DataFrame with variables.
-            correlation_name:
+    Args:
+        variables: A dict with column names and variable types.
+        df: The DataFrame with variables.
+        correlation_name:
 
-        Returns:
-            The correlation matrices for the given correlation measures. Return None if correlation is empty.
-        &#34;&#34;&#34;
+    Returns:
+        The correlation matrices for the given correlation measures. Return None if correlation is empty.
+    &#34;&#34;&#34;
 
     categorical_correlations = {&#34;cramers&#34;: cramers_matrix}
     correlation = None

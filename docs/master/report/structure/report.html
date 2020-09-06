@@ -203,7 +203,9 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     if duplicates is not None and len(duplicates) &gt; 0:
         items.append(
             Duplicate(
-                duplicate=duplicates, name=&#34;Most frequent&#34;, anchor_id=&#34;duplicates&#34;,
+                duplicate=duplicates,
+                name=&#34;Most frequent&#34;,
+                anchor_id=&#34;duplicates&#34;,
             )
         )
     return items
@@ -221,7 +223,11 @@ def get_definition_items(definitions: pd.DataFrame):
     items = []
     if definitions is not None and len(definitions) &gt; 0:
         items.append(
-            Duplicate(duplicate=definitions, name=&#34;Columns&#34;, anchor_id=&#34;definitions&#34;,)
+            Duplicate(
+                duplicate=definitions,
+                name=&#34;Columns&#34;,
+                anchor_id=&#34;definitions&#34;,
+            )
         )
     return items
 
@@ -411,7 +417,11 @@ def get_report_structure(summary: dict) -&gt; Renderable:
     items = []
     if definitions is not None and len(definitions) &gt; 0:
         items.append(
-            Duplicate(duplicate=definitions, name=&#34;Columns&#34;, anchor_id=&#34;definitions&#34;,)
+            Duplicate(
+                duplicate=definitions,
+                name=&#34;Columns&#34;,
+                anchor_id=&#34;definitions&#34;,
+            )
         )
     return items</code></pre>
 </details>
@@ -445,7 +455,9 @@ def get_report_structure(summary: dict) -&gt; Renderable:
     if duplicates is not None and len(duplicates) &gt; 0:
         items.append(
             Duplicate(
-                duplicate=duplicates, name=&#34;Most frequent&#34;, anchor_id=&#34;duplicates&#34;,
+                duplicate=duplicates,
+                name=&#34;Most frequent&#34;,
+                anchor_id=&#34;duplicates&#34;,
             )
         )
     return items</code></pre>

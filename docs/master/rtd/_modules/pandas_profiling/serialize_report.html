@@ -329,11 +329,11 @@
 
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">ignore_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">       Load ProfileReport from file</span>
+<span class="sd">        Load ProfileReport from file</span>
 
-<span class="sd">       Raises:</span>
-<span class="sd">            ValueError: if the DataFrame or Config do not match with the current ProfileReport</span>
-<span class="sd">       &quot;&quot;&quot;</span>
+<span class="sd">        Raises:</span>
+<span class="sd">             ValueError: if the DataFrame or Config do not match with the current ProfileReport</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">load_file</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
             <span class="n">load_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">load_file</span><span class="p">))</span>
 

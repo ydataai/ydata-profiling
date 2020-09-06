@@ -83,7 +83,13 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 
     correlation_names = [
         correlation_name
-        for correlation_name in [&#34;pearson&#34;, &#34;spearman&#34;, &#34;kendall&#34;, &#34;phi_k&#34;, &#34;cramers&#34;,]
+        for correlation_name in [
+            &#34;pearson&#34;,
+            &#34;spearman&#34;,
+            &#34;kendall&#34;,
+            &#34;phi_k&#34;,
+            &#34;cramers&#34;,
+        ]
         if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
     ]
 
@@ -274,7 +280,13 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 
     correlation_names = [
         correlation_name
-        for correlation_name in [&#34;pearson&#34;, &#34;spearman&#34;, &#34;kendall&#34;, &#34;phi_k&#34;, &#34;cramers&#34;,]
+        for correlation_name in [
+            &#34;pearson&#34;,
+            &#34;spearman&#34;,
+            &#34;kendall&#34;,
+            &#34;phi_k&#34;,
+            &#34;cramers&#34;,
+        ]
         if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
     ]
 

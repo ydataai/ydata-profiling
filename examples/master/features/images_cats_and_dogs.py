@@ -14,7 +14,10 @@ kaggle.api.authenticate()
 # However, popular larger files shouldn't be a problem (LFW, CelebA).
 data_path = get_data_path() / "cat-and-dog"
 kaggle.api.dataset_download_files(
-    "tongpython/cat-and-dog", path=str(data_path), quiet=False, unzip=True,
+    "tongpython/cat-and-dog",
+    path=str(data_path),
+    quiet=False,
+    unzip=True,
 )
 
 # At the first run, we find that the dataset not only contains images, "_DS_Store" and "cat-and-dog.zip" are present too.
