@@ -1,6 +1,7 @@
 from functools import reduce
 from typing import Type
 
+import networkx as nx
 import numpy as np
 import pandas as pd
 from visions import VisionsBaseType
@@ -26,6 +27,7 @@ from pandas_profiling.model.typeset import (
     Image,
     Numeric,
     Path,
+    ProfilingTypeSet,
     Unsupported,
 )
 
@@ -40,8 +42,19 @@ def compose(functions):
 
 
 class BaseSummarizer:
-    def __init__(self, summary_map, *args, **kwargs):
+    def __init__(self, summary_map, typeset, *args, **kwargs):
         self.summary_map = summary_map
+        self.typeset = typeset
+
+        self._complete_summaries()
+
+    def _complete_summaries(self):
+        for from_type, to_type in nx.topological_sort(
+            nx.line_graph(self.typeset.base_graph)
+        ):
+            self.summary_map[to_type] = (
+                self.summary_map[from_type] + self.summary_map[to_type]
+            )
 
     def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -> dict:
         """
@@ -49,7 +62,6 @@ class BaseSummarizer:
         Returns:
             object:
         """
-        # TODO: follow inference path
         summarizer_func = compose(self.summary_map.get(dtype, []))
         _, summary = summarizer_func(series, {"type": dtype})
         return summary
@@ -57,63 +69,36 @@ class BaseSummarizer:
 
 class PandasProfilingSummarizer(BaseSummarizer):
     def __init__(self, *args, **kwargs):
-        compression_map = {
+        summary_map = {
             Unsupported: [describe_counts, describe_unsupported, describe_supported],
             Numeric: [
-                describe_counts,
-                describe_unsupported,
-                describe_supported,
                 describe_numeric_1d,
             ],
             DateTime: [
-                describe_counts,
-                describe_unsupported,
-                describe_supported,
                 describe_date_1d,
             ],
             Categorical: [
-                describe_counts,
-                describe_unsupported,
-                describe_supported,
                 describe_categorical_1d,
             ],
-            Boolean: [describe_counts, describe_unsupported, describe_supported],
+            Boolean: [],
             URL: [
-                describe_counts,
-                describe_unsupported,
-                describe_supported,
-                describe_categorical_1d,
                 describe_url_1d,
             ],
             Path: [
-                describe_counts,
-                describe_unsupported,
-                describe_supported,
-                describe_categorical_1d,
                 describe_path_1d,
             ],
             File: [
-                describe_counts,
-                describe_unsupported,
-                describe_supported,
-                describe_categorical_1d,
-                describe_path_1d,
                 describe_file_1d,
             ],
             Image: [
-                describe_counts,
-                describe_unsupported,
-                describe_supported,
-                describe_categorical_1d,
-                describe_path_1d,
-                describe_file_1d,
                 describe_image_1d,
             ],
             # Count? Float? etc.
             # TimeDelta: [],
-            # Complex: [describe_counts, describe_supported, describe_complex_1d],
+            # Complex: [describe_complex_1d],
         }
-        super().__init__(compression_map, *args, **kwargs)
+        typeset = ProfilingTypeSet()
+        super().__init__(summary_map, typeset, *args, **kwargs)
 
 
 # TODO: move
