@@ -16,14 +16,7 @@ def test_issue_120(get_data_file):
 
     report = ProfileReport(
         df,
-        correlations={
-            "cramers": {"calculate": False},
-            "phi_k": {"calculate": False},
-            "kendall": {"calculate": False},
-            "spearman": {"calculate": False},
-            "pearson": {"calculate": False},
-            "recoded": {"calculate": False},
-        },
+        correlations=None,
         progress_bar=False,
         pool_size=0,
         vars={"cat": {"unicode": True}},

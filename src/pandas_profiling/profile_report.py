@@ -10,7 +10,7 @@ from tqdm.auto import tqdm
 from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
-from pandas_profiling.model.summarizer import PandasProfilingSummarizer
+from pandas_profiling.model.summarizer import PandasProfilingSummarizer, format_summary
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
@@ -329,29 +329,26 @@ class ProfileReport(SerializeReport, object):
         return widgets
 
     def _render_json(self):
-        class CustomEncoder(json.JSONEncoder):
-            def key_to_json(self, data):
-                if data is None or isinstance(data, (bool, int, str)):
-                    return data
-                return str(data)
-
-            def default(self, o):
-                if isinstance(o, pd.Series):
-                    return self.default(o.to_dict())
-
-                if isinstance(o, np.integer):
-                    return o.tolist()
-
-                if isinstance(o, dict):
-                    return {self.key_to_json(key): self.default(o[key]) for key in o}
-
-                return str(o)
+        def encode_it(o):
+            if isinstance(o, dict):
+                return {encode_it(k): encode_it(v) for k, v in o.items()}
+            else:
+                if isinstance(o, (bool, int, float, str)):
+                    return o
+                elif isinstance(o, list):
+                    return [encode_it(v) for v in o]
+                elif isinstance(o, set):
+                    return {encode_it(v) for v in o}
+                else:
+                    return str(o)
 
         description = self.description_set
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
-            data = json.dumps(description, indent=4, cls=CustomEncoder)
+            description = format_summary(description)
+            description = encode_it(description)
+            data = json.dumps(description, indent=4)
             pbar.update()
         return data
 

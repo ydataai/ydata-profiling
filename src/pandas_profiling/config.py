@@ -40,10 +40,20 @@ class Config(object):
             "vars": {"cat": {"redact": True}},
         },
         "dark_mode": {
-            "html": {"style": {"theme": "flatly", "primary_color": "#2c3e50",}}
+            "html": {
+                "style": {
+                    "theme": "flatly",
+                    "primary_color": "#2c3e50",
+                }
+            }
         },
         "orange_mode": {
-            "html": {"style": {"theme": "united", "primary_color": "#d34615",}}
+            "html": {
+                "style": {
+                    "theme": "united",
+                    "primary_color": "#d34615",
+                }
+            }
         },
         "explorative": {
             "vars": {

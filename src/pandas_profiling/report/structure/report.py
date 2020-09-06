@@ -35,13 +35,14 @@ from pandas_profiling.report.structure.variables import (
     render_boolean,
     render_categorical,
     render_date,
+    render_file,
     render_generic,
     render_image,
     render_path,
     render_real,
     render_url,
-    render_file,
 )
+
 
 def get_missing_items(summary) -> list:
     """Return the missing diagrams
@@ -167,7 +168,9 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     if duplicates is not None and len(duplicates) > 0:
         items.append(
             Duplicate(
-                duplicate=duplicates, name="Most frequent", anchor_id="duplicates",
+                duplicate=duplicates,
+                name="Most frequent",
+                anchor_id="duplicates",
             )
         )
     return items
@@ -185,7 +188,11 @@ def get_definition_items(definitions: pd.DataFrame):
     items = []
     if definitions is not None and len(definitions) > 0:
         items.append(
-            Duplicate(duplicate=definitions, name="Columns", anchor_id="definitions",)
+            Duplicate(
+                duplicate=definitions,
+                name="Columns",
+                anchor_id="definitions",
+            )
         )
     return items
 

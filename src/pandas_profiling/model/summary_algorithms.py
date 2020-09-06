@@ -12,9 +12,10 @@ from pandas_profiling.model.summary_helpers import (
     file_summary,
     histogram_compute,
     image_summary,
+    length_summary,
     path_summary,
     unicode_summary,
-    url_summary, length_summary,
+    url_summary,
 )
 
 
@@ -32,12 +33,15 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
 
     # TODO: how bad do we need all of this?
     value_counts_with_nan = series.value_counts(dropna=False)
+    # TODO: keep NaN counts...
     value_counts_without_nan = (
         value_counts_with_nan.reset_index().dropna().set_index("index").iloc[:, 0]
     )
 
     summary.update(
-        {"value_counts_without_nan": value_counts_without_nan,}
+        {
+            "value_counts_without_nan": value_counts_without_nan,
+        }
     )
 
     return series, summary
@@ -62,16 +66,11 @@ def describe_supported(
     unique_count = value_counts.where(value_counts == 1).count()
 
     stats = {
-        # "n": length,
-        # "count": count,
         "n_distinct": distinct_count,
         "p_distinct": distinct_count / count,
-        # "p_missing": 1 - (count / length),
-        # "n_missing": length - count,
         "is_unique": unique_count == count,
         "n_unique": unique_count,
         "p_unique": unique_count / count,
-        # "memory_size": series.memory_usage(config["memory_deep"].get(bool)),
     }
     stats.update(series_description)
 
@@ -97,8 +96,9 @@ def describe_unsupported(series: pd.Series, summary: dict) -> Tuple[pd.Series, d
         {
             "n": length,
             "count": count,
-            "p_missing": 1 - count / length,
+            # TODO: use value count NaN?
             "n_missing": length - count,
+            "p_missing": 1 - count / length,
             "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }
     )
@@ -251,7 +251,7 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     check_length = config["vars"]["cat"]["length"].get(bool)
     check_unicode = config["vars"]["cat"]["unicode"].get(bool)
-    coerce_str_to_date = config["vars"]["cat"]["coerce_str_to_date"].get(bool)
+    # coerce_str_to_date = config["vars"]["cat"]["coerce_str_to_date"].get(bool)
 
     # Make sure we deal with strings (Issue #100)
     series = series[series.notna()].astype(str)
@@ -280,8 +280,8 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
         summary.update(unicode_summary(series))
 
     # TODO: visions!
-    if coerce_str_to_date:
-        summary["date_warning"] = warning_type_date(series)
+    # if coerce_str_to_date:
+    #     summary["date_warning"] = warning_type_date(series)
 
     return series, summary
 

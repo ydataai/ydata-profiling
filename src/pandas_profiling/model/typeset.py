@@ -1,12 +1,14 @@
 import imghdr
 import os
+from urllib.parse import urlparse
 
 import pandas as pd
 import visions
 from pandas.api import types as pdt
 from visions import VisionsBaseType, VisionsTypeset
 from visions.relations import IdentityRelation, InferenceRelation
-from visions.types.url import test_url, to_url
+
+# from visions.types.url import test_url, to_url
 from visions.utils import nullable_series_contains
 
 from pandas_profiling.config import config
@@ -14,6 +16,13 @@ from pandas_profiling.config import config
 # class ProfilingTypeCategories:
 #     continuous = False
 #     categorical = False
+from pandas_profiling.model.typeset_relations import (
+    applied_to_nonnull,
+    numeric_is_category,
+    string_is_bool,
+    string_is_numeric,
+    string_to_bool,
+)
 
 
 class PandasProfilingBaseType(VisionsBaseType):
@@ -29,11 +38,24 @@ class Numeric(PandasProfilingBaseType):
     def get_relations(cls):
         return [
             IdentityRelation(cls, Unsupported),
+            InferenceRelation(
+                cls,
+                Categorical,
+                relationship=string_is_numeric,
+                transformer=pd.to_numeric,
+            ),
         ]
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
-        return not pdt.is_bool_dtype(series) and pdt.is_numeric_dtype(series)
+        dcheck = not pdt.is_bool_dtype(series) and pdt.is_numeric_dtype(series)
+        if not dcheck:
+            return False
+
+        if series.hasnans and series.count() == 0:
+            return False
+
+        return True
 
 
 class DateTime(PandasProfilingBaseType):
@@ -45,7 +67,7 @@ class DateTime(PandasProfilingBaseType):
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
-        return pdt.is_datetime64_dtype(series)
+        return pdt.is_datetime64_any_dtype(series)
 
 
 class Categorical(PandasProfilingBaseType):
@@ -53,18 +75,17 @@ class Categorical(PandasProfilingBaseType):
     def get_relations(cls):
         return [
             IdentityRelation(cls, Unsupported),
-            # InferenceRelation(
-            #     cls,
-            #     Numeric,
-            #     relationship=lambda s: s.nunique()
-            #     < config["vars"]["num"]["low_categorical_threshold"].get(int),
-            #     transformer=applied_to_nonnull(lambda s: s.astype(str)),
-            # ),
+            InferenceRelation(
+                cls,
+                Numeric,
+                relationship=numeric_is_category,
+                transformer=applied_to_nonnull(lambda s: s.astype(str)),
+            ),
         ]
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
-        is_valid_dtype = pdt.is_categorical_dtype(series)
+        is_valid_dtype = pdt.is_categorical_dtype(series) or pdt.is_bool_dtype(series)
         if is_valid_dtype:
             return True
 
@@ -80,6 +101,12 @@ class Boolean(PandasProfilingBaseType):
     def get_relations(cls):
         return [
             IdentityRelation(cls, Categorical),
+            InferenceRelation(
+                cls,
+                Categorical,
+                relationship=string_is_bool,
+                transformer=string_to_bool,
+            ),
             # InferenceRelation(
             #     cls,
             #     Numeric,
@@ -99,42 +126,37 @@ class URL(PandasProfilingBaseType):
     def get_relations(cls):
         relations = [
             IdentityRelation(cls, Categorical),
-            InferenceRelation(
-                cls, Categorical, relationship=test_url, transformer=to_url
-            ),
         ]
         return relations
 
     @classmethod
+    @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
-        return True
+        try:
+            url_gen = (urlparse(x) for x in series)
+            return all(x.netloc and x.scheme for x in url_gen)
+        except AttributeError:
+            return False
 
 
 class Path(PandasProfilingBaseType):
     @classmethod
     def get_relations(cls):
-        relations = [
-            IdentityRelation(cls, Categorical),
-            InferenceRelation(
-                cls, Categorical, relationship=test_url, transformer=to_url
-            ),
-        ]
+        relations = [IdentityRelation(cls, Categorical)]
         return relations
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
-        return all(os.path.isabs(p) for p in series)
+        try:
+            return all(os.path.isabs(p) for p in series)
+        except TypeError:
+            return False
 
 
 class File(PandasProfilingBaseType):
     @classmethod
     def get_relations(cls):
-        relations = [
-            IdentityRelation(cls, Path),
-            InferenceRelation(
-                cls, Categorical, relationship=test_url, transformer=to_url
-            ),
-        ]
+        relations = [IdentityRelation(cls, Path)]
         return relations
 
     @classmethod
@@ -145,12 +167,7 @@ class File(PandasProfilingBaseType):
 class Image(PandasProfilingBaseType):
     @classmethod
     def get_relations(cls):
-        relations = [
-            IdentityRelation(cls, File),
-            InferenceRelation(
-                cls, Categorical, relationship=test_url, transformer=to_url
-            ),
-        ]
+        relations = [IdentityRelation(cls, File)]
         return relations
 
     @classmethod
@@ -161,9 +178,7 @@ class Image(PandasProfilingBaseType):
 class Complex(PandasProfilingBaseType):
     @classmethod
     def get_relations(cls):
-        return [
-            IdentityRelation(cls, Numeric),
-        ]
+        return [IdentityRelation(cls, Numeric)]
 
     @classmethod
     @nullable_series_contains

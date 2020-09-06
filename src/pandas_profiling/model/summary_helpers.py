@@ -10,7 +10,12 @@ from scipy.stats.stats import chisquare
 from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
 from pandas_profiling.config import config
-from pandas_profiling.model.summary_helpers_image import extract_exif, hash_image, is_image_truncated, open_image
+from pandas_profiling.model.summary_helpers_image import (
+    extract_exif,
+    hash_image,
+    is_image_truncated,
+    open_image,
+)
 
 
 def named_aggregate_summary(series: pd.Series, key: str):

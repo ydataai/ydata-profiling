@@ -1,4 +1,4 @@
-black>=19.10b0
+black>=20.8b1
 isort>=5.0.7
 pre-commit
 twine

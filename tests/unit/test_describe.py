@@ -7,7 +7,7 @@ import pytest
 from pandas_profiling import config
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
-from pandas_profiling.model.typeset import Categorical, Numeric, Boolean, DateTime, Unsupported
+from pandas_profiling.model.typeset import DateTime, Numeric
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
@@ -31,10 +31,10 @@ testdata = [
 
 
 @pytest.mark.parametrize("data,is_unique,p_distinct,p_unique", testdata)
-def test_describe_unique(data, is_unique, p_distinct, p_unique):
+def test_describe_unique(data, is_unique, p_distinct, p_unique, summarizer, typeset):
     """Test the unique feature of 1D data"""
 
-    desc_1d = describe_1d(data)
+    desc_1d = describe_1d(data, summarizer, typeset)
     if is_unique is not None:
         assert desc_1d["p_unique"] == p_unique, "Describe 1D p_unique incorrect"
         assert desc_1d["p_distinct"] == p_distinct, "Describe 1D p_distinct incorrect"
@@ -165,7 +165,6 @@ def expected_results():
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 8,
-            "freq": 2,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -183,8 +182,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": "d",
-            "type": Categorical,
             "variance": check_is_NaN,
         },
         "x": {
@@ -198,7 +195,6 @@ def expected_results():
             "p_infinite": 0,
             "cv": 1.771071190261633,
             "n_distinct": 6,
-            "freq": check_is_NaN,
             "iqr": 24.5,
             "is_unique": False,
             "kurtosis": -0.50292858929003803,
@@ -216,8 +212,6 @@ def expected_results():
             "skewness": 1.0851622393567653,
             "std": 23.688077169749342,
             "sum": 107.0,
-            "top": check_is_NaN,
-            "type": Numeric,
             "variance": 561.125,
         },
         "y": {
@@ -231,7 +225,6 @@ def expected_results():
             "p_infinite": 0,
             "cv": 2.2112992878833846,
             "n_distinct": 8,
-            "freq": check_is_NaN,
             "iqr": 236.66299975000001,
             "is_unique": True,
             "kurtosis": 6.974137018717359,
@@ -248,8 +241,6 @@ def expected_results():
             "skewness": 2.6156591135729266,
             "std": 1086.1335236468506,
             "sum": 3929.3949203464999,
-            "top": check_is_NaN,
-            "type": Numeric,
             "variance": 1179686.0311895239,
         },
         "cat": {
@@ -261,7 +252,6 @@ def expected_results():
             "count": 8,
             "cv": check_is_NaN,
             "n_distinct": 6,
-            "freq": 3,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -279,8 +269,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": "c",
-            "type": Categorical,
             "variance": check_is_NaN,
         },
         "s1": {
@@ -292,7 +280,6 @@ def expected_results():
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 1,
-            "freq": 9,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -310,8 +297,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": 1.0,
-            "type": Boolean,
             "variance": check_is_NaN,
         },
         "s2": {
@@ -323,7 +308,6 @@ def expected_results():
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 1,
-            "freq": 9,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -341,8 +325,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": "some constant text $ % value {obj} ",
-            "type": Categorical,
             "variance": check_is_NaN,
         },
         "somedate": {
@@ -354,7 +336,6 @@ def expected_results():
             "count": 8,
             "cv": check_is_NaN,
             "n_distinct": 5,
-            "freq": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
             "kurtosis": check_is_NaN,
@@ -370,8 +351,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": check_is_NaN,
-            "type": DateTime,
         },
         "bool_tf": {
             "25%": check_is_NaN,
@@ -382,7 +361,6 @@ def expected_results():
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 2,
-            "freq": 6,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -399,8 +377,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": True,
-            "type": Boolean,
             "variance": check_is_NaN,
         },
         "bool_tf_with_nan": {
@@ -412,7 +388,6 @@ def expected_results():
             "count": 8,
             "cv": check_is_NaN,
             "n_distinct": 2,
-            "freq": 5,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -429,8 +404,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": False,
-            "type": Boolean,
             "variance": check_is_NaN,
         },
         "bool_01": {
@@ -442,7 +415,6 @@ def expected_results():
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 2,
-            "freq": 5,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -459,8 +431,6 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": 1,
-            "type": Boolean,
             "variance": check_is_NaN,
         },
         "bool_01_with_nan": {
@@ -472,7 +442,6 @@ def expected_results():
             "count": 8,
             "cv": check_is_NaN,
             "n_distinct": 2,
-            "freq": 4,
             "iqr": check_is_NaN,
             "is_unique": False,
             "kurtosis": check_is_NaN,
@@ -487,43 +456,37 @@ def expected_results():
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": 0,
-            "type": Boolean,
             "variance": check_is_NaN,
         },
         "list": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Unsupported,
         },
         "mixed": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Unsupported,
         },
         "dict": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Unsupported,
         },
         "tuple": {
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Unsupported,
         },
     }
 
 
-def test_describe_df(describe_data, expected_results):
+def test_describe_df(describe_data, expected_results, summarizer, typeset):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
     describe_data_frame = pd.DataFrame(describe_data)
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
 
-    results = describe("title", describe_data_frame)
+    results = describe("title", describe_data_frame, summarizer, typeset)
 
     assert {
         "analysis",
@@ -537,10 +500,6 @@ def test_describe_df(describe_data, expected_results):
         "sample",
         "duplicates",
     } == set(results.keys()), "Not in results"
-
-    assert {"BOOL": 5, "CAT": 3, "UNSUPPORTED": 4, "NUM": 2, "DATE": 1} == results[
-        "table"
-    ]["types"], "Variable analysis failed"
 
     # Loop over variables
     for col in describe_data.keys():
@@ -564,19 +523,19 @@ def test_describe_df(describe_data, expected_results):
                     results["variables"][col][k], k, col
                 )
 
-        if results["variables"][col]["type"].value in ["NUM", "DATE"]:
+        if results["variables"][col]["type"] in [Numeric, DateTime]:
             assert (
                 "histogram" in results["variables"][col]
             ), "Histogram missing for column {} ".format(col)
 
 
-def test_describe_empty():
+def test_describe_empty(summarizer, typeset):
     empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
-        describe("", empty_frame)
+        describe("", empty_frame, summarizer, typeset)
 
 
-def test_describe_list():
+def test_describe_list(summarizer, typeset):
     with pytest.raises(AttributeError):
         with pytest.warns(UserWarning):
-            describe("", [1, 2, 3])
+            describe("", [1, 2, 3], summarizer, typeset)

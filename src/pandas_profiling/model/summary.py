@@ -28,7 +28,7 @@ from pandas_profiling.visualisation.missing import (
 from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
-def describe_1d(series: pd.Series, summarizer: Type[BaseSummarizer], typeset) -> dict:
+def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -44,6 +44,7 @@ def describe_1d(series: pd.Series, summarizer: Type[BaseSummarizer], typeset) ->
     # Infer variable types
     # vtype = Unsupported
     vtype = typeset.infer_type(series)
+    series = typeset.cast_to_inferred(series)
 
     return summarizer.summarize(series, dtype=vtype)
 
@@ -158,7 +159,9 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     )
 
     # Variable type counts
-    table_stats.update({"types": Counter([v["type"] for v in variable_stats.values()])})
+    table_stats.update(
+        {"types": dict(Counter([v["type"] for v in variable_stats.values()]))}
+    )
 
     return table_stats
 

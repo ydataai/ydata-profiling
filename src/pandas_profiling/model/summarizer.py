@@ -1,6 +1,7 @@
 from functools import reduce
 from typing import Type
 
+import numpy as np
 import pandas as pd
 from visions import VisionsBaseType
 
@@ -46,7 +47,7 @@ class BaseSummarizer:
         """
 
         Returns:
-            object: 
+            object:
         """
         # TODO: follow inference path
         summarizer_func = compose(self.summary_map.get(dtype, []))
@@ -115,16 +116,22 @@ class PandasProfilingSummarizer(BaseSummarizer):
         super().__init__(compression_map, *args, **kwargs)
 
 
-# Or on summary?
 # TODO: move
 def format_summary(summary):
     def fmt(v):
-        if isinstance(v, pd.Series):
-            return v.to_dict()
-        elif isinstance(v, tuple) and len(v) == 2:
-            return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
+        if isinstance(v, dict):
+            return {k: fmt(va) for k, va in v.items()}
         else:
-            return v
+            if isinstance(v, pd.Series):
+                return fmt(v.to_dict())
+            elif (
+                isinstance(v, tuple)
+                and len(v) == 2
+                and all(isinstance(x, np.ndarray) for x in v)
+            ):
+                return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
+            else:
+                return v
 
     summary = {k: fmt(v) for k, v in summary.items()}
     return summary
