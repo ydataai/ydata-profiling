@@ -1,5 +1,6 @@
 import imghdr
 import os
+import functools
 from typing import Sequence
 from urllib.parse import urlparse
 
@@ -32,6 +33,7 @@ class Unsupported(vis.Generic, ProfilingTypeCategories):
 
 
 def applied_to_nonnull(fn):
+    @functools.wraps(fn)
     def inner(series):
         if series.hasnans:
             new_series = series.copy()
@@ -39,6 +41,17 @@ def applied_to_nonnull(fn):
             new_series[notna] = fn(series[notna])
             return new_series
         return fn(series)
+
+    return inner
+
+
+def try_func(fn):
+    @functools.wraps(fn)
+    def inner(series: pd.Series) -> bool:
+        try:
+            return fn(series)
+        except:
+            return False
 
     return inner
 
@@ -63,8 +76,7 @@ class Category(PandasProfilingBaseType):
             InferenceRelation(
                 cls,
                 Numeric,
-                relationship=lambda s: s.nunique()
-                < config["vars"]["num"]["low_categorical_threshold"].get(int),
+                relationship=numeric_is_category,
                 transformer=applied_to_nonnull(lambda s: s.astype(str)),
             ),
         ]
@@ -231,6 +243,10 @@ PP_bool_map = {
     "false": False,
     "t": True,
     "f": False,
+    "1": True,
+    "0": False,
+    "1.0": True,
+    "0.0": False,
 }
 
 
@@ -239,10 +255,12 @@ def string_test_maker():
 
     @func_nullable_series_contains
     def inner(series):
-        return (
-            not pdt.is_categorical_dtype(series)
-            and series.str.lower().isin(bool_map_keys).all()
-        )
+        if pdt.is_categorical_dtype(series):
+            return False
+        try:
+            return series.str.lower().isin(bool_map_keys).all()
+        except:
+            return False
 
     return inner
 
@@ -272,14 +290,12 @@ class Bool(PandasProfilingBaseType):
             InferenceRelation(
                 cls, Category, relationship=string_is_bool, transformer=string_to_bool,
             ),
-            # InferenceRelation(cls,
-            #                   vis.Object,
-            #                   relationship=lambda s: s.isin({True, False, np.nan, None}).all(),
-            #                   transformer=lambda s: s.astype("Bool")),
             InferenceRelation(
                 cls,
                 Numeric,
-                relationship=lambda s: s.isin({0, 1, 0.0, 1.0, np.nan, None}).all(),
+                relationship=try_func(
+                    lambda s: s.isin({0, 1, 0.0, 1.0, np.nan, None}).all()
+                ),
                 transformer=to_bool,
             ),
         ]
@@ -288,7 +304,10 @@ class Bool(PandasProfilingBaseType):
     @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
         if pdt.is_object_dtype(series):
-            return series.isin({True, False}).all()
+            try:
+                return series.isin({True, False}).all()
+            except:
+                return False
 
         return pdt.is_bool_dtype(series) and not pdt.is_categorical_dtype(series)
 

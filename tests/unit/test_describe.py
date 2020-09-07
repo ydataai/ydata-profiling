@@ -545,7 +545,7 @@ def test_describe_df(describe_data, expected_results):
                     results["variables"][col][k], k, col
                 )
 
-        if results["variables"][col]["type"].value in ["NUM", "DATE"]:
+        if results["variables"][col]["type"] in [Numeric, Date]:
             assert (
                 "histogram" in results["variables"][col]
             ), "Histogram missing for column {} ".format(col)
