@@ -1,21 +1,17 @@
 import imghdr
 import os
+import warnings
 from urllib.parse import urlparse
 
 import pandas as pd
+import numpy as np
 import visions
 from pandas.api import types as pdt
 from visions import VisionsBaseType, VisionsTypeset
 from visions.relations import IdentityRelation, InferenceRelation
-
-# from visions.types.url import test_url, to_url
 from visions.utils import nullable_series_contains
 
 from pandas_profiling.config import config
-
-# class ProfilingTypeCategories:
-#     continuous = False
-#     categorical = False
 from pandas_profiling.model.typeset_relations import (
     applied_to_nonnull,
     category_is_numeric,
@@ -86,6 +82,7 @@ class Categorical(PandasProfilingBaseType):
         ]
 
     @classmethod
+    @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
         is_valid_dtype = pdt.is_categorical_dtype(series) or pdt.is_bool_dtype(series)
         if is_valid_dtype:
@@ -112,7 +109,14 @@ class Boolean(PandasProfilingBaseType):
         ]
 
     @classmethod
+    @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
+        if pdt.is_object_dtype(series):
+            try:
+                return series.isin({True, False, pd.NA, np.nan, None}).all()
+            except:
+                return False
+
         return pdt.is_bool_dtype(series)
 
 
@@ -206,7 +210,9 @@ class ProfilingTypeSet(VisionsTypeset):
         if config["vars"]["url"]["active"].get(bool):
             types.add(URL)
 
-        super().__init__(types)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=UserWarning)
+            super().__init__(types)
 
 
 if __name__ == "__main__":

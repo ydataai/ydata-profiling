@@ -214,14 +214,14 @@ contains_map = {
         "email_address_str",
         "str_float_non_leading_zeros",
         "str_int_zeros",
-        "mixed",
-        "bool_nan_series",
     },
     Boolean: {
         "bool_series",
         "bool_series2",
         "bool_series3",
         "nullable_bool_series",
+        "mixed",
+        "bool_nan_series",
     },
     DateTime: {
         "timestamp_series",
