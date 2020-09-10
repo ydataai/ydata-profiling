@@ -1,10 +1,30 @@
 import functools
+from typing import Union
 
 import pandas as pd
 from pandas.api import types as pdt
 from visions.utils import func_nullable_series_contains
 
 from pandas_profiling.config import config
+
+
+def is_nullable(series) -> bool:
+    return series.count() > 0
+
+
+def na_transform(series) -> pd.Series:
+    if series.hasnans:
+        series = series.dropna()
+    return series
+
+
+def na_check_and_go(series) -> Union[bool, pd.Series]:
+    if series.hasnans:
+        series = series.dropna()
+        if series.empty:
+            return False
+
+    return series
 
 
 def applied_to_nonnull(fn):
@@ -80,18 +100,24 @@ def numeric_is_category(series):
     return 1 <= n_unique <= threshold
 
 
+def to_category(series):
+    return applied_to_nonnull(series.astype(str))
+
+
 def category_is_numeric(series):
-    if pdt.is_bool_dtype(series):
+    if pdt.is_bool_dtype(series) or object_is_bool(series):
         return False
 
     try:
-        r = pd.to_numeric(series, errors='coerce')
+        _ = series.astype(float)
+        r = pd.to_numeric(series, errors="coerce")
         if r.hasnans and r.count() == 0:
             return False
     except:
         return False
 
     n_unique = series.nunique()
+    # state['n_unique'] = n_unique
     threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
     if 1 <= n_unique <= threshold:
         return False
@@ -100,3 +126,23 @@ def category_is_numeric(series):
 
 def category_to_numeric(series):
     return pd.to_numeric(series, errors="coerce")
+
+
+hasnan_bool_name = "boolean" if int(pd.__version__.split(".")[0]) >= 1 else "Bool"
+
+
+def to_bool(series: pd.Series) -> pd.Series:
+    # TODO: get from dict
+    hasnans = True
+    return series.astype(hasnan_bool_name if hasnans else bool)
+
+
+def object_is_bool(series: pd.Series) -> bool:
+    if pdt.is_object_dtype(series):
+        bool_set = {True, False} #, None, np.nan, pd.NA}
+        try:
+            ret = all(item in bool_set for item in series)
+        except:
+            ret = False
+
+        return ret

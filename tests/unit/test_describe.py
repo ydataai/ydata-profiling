@@ -480,10 +480,33 @@ def expected_results():
     }
 
 
-def test_describe_df(describe_data, expected_results, summarizer, typeset):
+@pytest.mark.parametrize(
+    "column",
+    [
+        "id",
+        "x",
+        "y",
+        "cat",
+        "s1",
+        "s2",
+        "somedate",
+        "bool_tf",
+        "bool_tf_with_nan",
+        "bool_01",
+        "bool_01_with_nan",
+        "list",
+        "mixed",
+        "dict",
+        "tuple",
+    ],
+)
+def test_describe_df(column, describe_data, expected_results, summarizer, typeset):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
-    describe_data_frame = pd.DataFrame(describe_data)
-    describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
+    describe_data_frame = pd.DataFrame({column: describe_data[column]})
+    if column == "somedate":
+        describe_data_frame["somedate"] = pd.to_datetime(
+            describe_data_frame["somedate"]
+        )
 
     results = describe("title", describe_data_frame, summarizer, typeset)
 
@@ -501,31 +524,30 @@ def test_describe_df(describe_data, expected_results, summarizer, typeset):
     } == set(results.keys()), "Not in results"
 
     # Loop over variables
-    for col in describe_data.keys():
-        for k, v in expected_results[col].items():
-            if v == check_is_NaN:
-                assert (
-                    k not in results["variables"][col]
-                ) == True, "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-            elif isinstance(v, float):
-                assert (
-                    pytest.approx(v) == results["variables"][col][k]
-                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-            else:
-                assert (
-                    v == results["variables"][col][k]
-                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-
-        if results["variables"][col]["type"] in [Numeric, DateTime]:
+    for k, v in expected_results[column].items():
+        if v == check_is_NaN:
             assert (
-                "histogram" in results["variables"][col]
-            ), "Histogram missing for column {} ".format(col)
+                k not in results["variables"][column]
+            ) == True, "Value `{}` for key `{}` in columnumn `{}` is not NaN".format(
+                results["variables"][column][k], k, column
+            )
+        elif isinstance(v, float):
+            assert (
+                pytest.approx(v) == results["variables"][column][k]
+            ), "Value `{}` for key `{}` in columnumn `{}` is not NaN".format(
+                results["variables"][column][k], k, column
+            )
+        else:
+            assert (
+                v == results["variables"][column][k]
+            ), "Value `{}` for key `{}` in columnumn `{}` is not NaN".format(
+                results["variables"][column][k], k, column
+            )
+
+    if results["variables"][column]["type"] in [Numeric, DateTime]:
+        assert (
+            "histogram" in results["variables"][column]
+        ), f"Histogram missing for column {column}"
 
 
 def test_describe_empty(summarizer, typeset):
