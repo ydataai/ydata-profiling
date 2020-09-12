@@ -576,7 +576,7 @@ def get_table_stats(df: ppdf.GenericDataFrame, variable_stats: pd.DataFrame) -> 
     table_stats.update(
         {
             "types": dict(
-                variable_stats.loc["types"].apply(lambda x: x.value).value_counts()
+                variable_stats.loc["type"].apply(lambda x: x.value).value_counts()
             )
         }
     )

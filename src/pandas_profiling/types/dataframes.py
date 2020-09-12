@@ -38,13 +38,19 @@ class GenericDataFrame(object):
     def __len__(self):
         raise NotImplemented("Implementation not found")
 
-    def __getitem__(self):
+    def __getitem__(self,key):
         raise NotImplemented("Implementation not found")
 
     def corr(self, method):
         raise NotImplemented("Implementation not found")
 
     def get_internal_df(self):
+        raise NotImplemented("Implementation not found")
+
+    def head(self,n):
+        raise NotImplemented("Implementation not found")
+
+    def tail(self,n):
         raise NotImplemented("Implementation not found")
 
 
@@ -85,8 +91,8 @@ class PandasDataFrame(GenericDataFrame):
     def is_empty(self):
         return self.df.empty
 
-    def get_duplicates(self, subset, keep="First"):
-        return self.df.duplicates(subset=subset, keep=keep)
+    def get_duplicates(self, subset, keep="first"):
+        return self.df.duplicated(subset=subset, keep=keep)
 
     def dropna(self,subset):
         return self.df.dropna(subset=subset)
@@ -100,8 +106,8 @@ class PandasDataFrame(GenericDataFrame):
     def get_memory_usage(self, config):
         return self.df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
 
-    def __getitem__(self):
-        return self.df.__getitem__
+    def __getitem__(self,key):
+        return self.df[key]
 
     def corr(self, method):
         return self.df.corr(method=method)
@@ -114,6 +120,13 @@ class PandasDataFrame(GenericDataFrame):
 
         """
         return self.df
+
+    def head(self,n):
+        return self.df.head(n=n)
+
+    def tail(self,n):
+        return self.df.tail(n=n)
+
 
 
 class SparkDataFrame(GenericDataFrame):

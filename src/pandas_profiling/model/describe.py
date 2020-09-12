@@ -59,7 +59,7 @@ def describe(title: str, df: ppdf.GenericDataFrame, sample: Optional[dict] = Non
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
-    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 9 + len(df.get_columns()) + len(correlation_names)
 
     with tqdm(
         total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
