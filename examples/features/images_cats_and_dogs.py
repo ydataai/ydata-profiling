@@ -14,7 +14,10 @@ kaggle.api.authenticate()
 # However, popular larger files shouldn't be a problem (LFW, CelebA).
 data_path = get_data_path() / "cat-and-dog"
 kaggle.api.dataset_download_files(
-    "tongpython/cat-and-dog", path=str(data_path), quiet=False, unzip=True,
+    "tongpython/cat-and-dog",
+    path=str(data_path),
+    quiet=False,
+    unzip=True,
 )
 
 # At the first run, we find that the dataset not only contains images, "_DS_Store" and "cat-and-dog.zip" are present too.
@@ -47,6 +50,7 @@ profile.set_variable(
 profile.set_variable("plot.scatter_threshold", 25000)
 
 # Enable files and images (off by default, as it uses relatively expensive computations when not interested)
+profile.set_variable("vars.path.active", True)
 profile.set_variable("vars.file.active", True)
 profile.set_variable("vars.image.active", True)
 

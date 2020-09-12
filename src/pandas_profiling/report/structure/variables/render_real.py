@@ -32,16 +32,16 @@ def render_real(summary):
     table1 = Table(
         [
             {
-                "name": "Distinct count",
-                "value": summary["n_unique"],
+                "name": "Distinct",
+                "value": summary["n_distinct"],
                 "fmt": "fmt",
-                "alert": "n_unique" in summary["warn_fields"],
+                "alert": "n_distinct" in summary["warn_fields"],
             },
             {
-                "name": "Unique (%)",
-                "value": summary["p_unique"],
+                "name": "Distinct (%)",
+                "value": summary["p_distinct"],
                 "fmt": "fmt_percent",
-                "alert": "p_unique" in summary["warn_fields"],
+                "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
@@ -227,7 +227,9 @@ def render_real(summary):
     )
 
     template_variables["bottom"] = Container(
-        [statistics, hist, fq, evs], sequence_type="tabs", anchor_id=f"{varid}bottom",
+        [statistics, hist, fq, evs],
+        sequence_type="tabs",
+        anchor_id=f"{varid}bottom",
     )
 
     return template_variables

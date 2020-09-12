@@ -10,7 +10,6 @@ from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 def render_date(summary):
     varid = summary["varid"]
-    # TODO: render common?
     template_variables = {}
 
     image_format = config["plot"]["image_format"].get(str)
@@ -27,14 +26,14 @@ def render_date(summary):
     table1 = Table(
         [
             {
-                "name": "Distinct count",
-                "value": summary["n_unique"],
+                "name": "Distinct",
+                "value": summary["n_distinct"],
                 "fmt": "fmt",
                 "alert": False,
             },
             {
-                "name": "Unique (%)",
-                "value": summary["p_unique"],
+                "name": "Distinct (%)",
+                "value": summary["p_distinct"],
                 "fmt": "fmt_percent",
                 "alert": False,
             },

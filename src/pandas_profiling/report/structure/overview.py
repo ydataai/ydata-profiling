@@ -12,17 +12,17 @@ def get_dataset_overview(summary):
             {
                 "name": "Number of variables",
                 "value": summary["table"]["n_var"],
-                "fmt": "fmt_numeric",
+                "fmt": "fmt_number",
             },
             {
                 "name": "Number of observations",
                 "value": summary["table"]["n"],
-                "fmt": "fmt_numeric",
+                "fmt": "fmt_number",
             },
             {
                 "name": "Missing cells",
                 "value": summary["table"]["n_cells_missing"],
-                "fmt": "fmt_numeric",
+                "fmt": "fmt_number",
             },
             {
                 "name": "Missing cells (%)",
@@ -32,7 +32,7 @@ def get_dataset_overview(summary):
             {
                 "name": "Duplicate rows",
                 "value": summary["table"]["n_duplicates"],
-                "fmt": "fmt_numeric",
+                "fmt": "fmt_number",
             },
             {
                 "name": "Duplicate rows (%)",

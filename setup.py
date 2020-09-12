@@ -11,7 +11,7 @@ with (source_root / "README.md").open(encoding="utf-8") as f:
 with (source_root / "requirements.txt").open(encoding="utf8") as f:
     requirements = f.readlines()
 
-version = "2.9.0rc1"
+version = "2.9.0"
 
 with (source_root / "src" / "pandas_profiling" / "version.py").open(
     "w", encoding="utf-8"
@@ -39,6 +39,9 @@ setup(
     extras_require={
         "notebook": ["jupyter-client>=6.0.0", "jupyter-core>=4.6.3"],
         "app": ["pyqt5>=5.14.1"],
+    },
+    package_data={
+        "pandas_profiling": ["py.typed"],
     },
     include_package_data=True,
     classifiers=[

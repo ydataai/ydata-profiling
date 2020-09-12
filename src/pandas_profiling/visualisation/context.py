@@ -12,8 +12,7 @@ from pandas.plotting import (
 
 @contextlib.contextmanager
 def manage_matplotlib_context():
-    """Return a context manager for temporarily changing matplotlib unit registries and rcParams.
-    """
+    """Return a context manager for temporarily changing matplotlib unit registries and rcParams."""
     originalRcParams = matplotlib.rcParams.copy()
 
     ## Credits for this style go to the ggplot and seaborn packages.

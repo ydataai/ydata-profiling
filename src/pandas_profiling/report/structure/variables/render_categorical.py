@@ -1,4 +1,5 @@
 from pandas_profiling.config import config
+from pandas_profiling.report.formatters import help
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
@@ -10,6 +11,44 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
 from pandas_profiling.visualisation.plot import histogram, pie_plot
+
+
+def render_categorical_frequency(summary, varid, image_format):
+    frequency_table = Table(
+        [
+            {
+                "name": "Unique",
+                "value": f"{summary['n_unique']} {help('The number of unique values (all values that occur exactly once in the dataset).')}",
+                "fmt": "raw",
+                "alert": "n_unique" in summary["warn_fields"],
+            },
+            {
+                "name": "Unique (%)",
+                "value": summary["p_unique"],
+                "fmt": "fmt_percent",
+                "alert": "p_unique" in summary["warn_fields"],
+            },
+        ],
+        name="Unique",
+        anchor_id=f"{varid}uniquenessstats",
+    )
+
+    frequencies = Image(
+        histogram(*summary["histogram_frequencies"]),
+        image_format=image_format,
+        alt="frequencies histogram",
+        name="Frequencies histogram",
+        caption="Frequencies of value counts",
+        anchor_id=f"{varid}frequencies",
+    )
+
+    frequency_tab = Container(
+        [frequencies, frequency_table],
+        anchor_id=f"{varid}tbl",
+        name="Overview",
+        sequence_type="grid",
+    )
+    return frequency_tab
 
 
 def render_categorical_length(summary, varid, image_format):
@@ -47,8 +86,9 @@ def render_categorical_length(summary, varid, image_format):
     length = Image(
         histogram(*summary["histogram_length"]),
         image_format=image_format,
-        alt="Scatter",
+        alt="length histogram",
         name="Length",
+        caption="Histogram of lengths of the category",
         anchor_id=f"{varid}length",
     )
 
@@ -157,21 +197,21 @@ def render_categorical_unicode(summary, varid, redact):
                             "alert": False,
                         },
                         {
-                            "name": 'Unique unicode categories (<a target="_blank" href="https://en.wikipedia.org/wiki/Unicode_character_property#General_Category">?</a>)',
-                            "value": summary["n_category"],
-                            "fmt": "fmt_numeric",
+                            "name": "Unique unicode categories",
+                            "value": f"{summary['n_category']} {help(title='Unicode categories (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_character_property#General_Category')}",
+                            "fmt": "raw",
                             "alert": False,
                         },
                         {
-                            "name": 'Unique unicode scripts (<a target="_blank" href="https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode">?</a>)',
-                            "value": summary["n_scripts"],
-                            "fmt": "fmt_numeric",
+                            "name": "Unique unicode scripts",
+                            "value": f"{summary['n_scripts']} {help(title='Unicode scripts (click for more information)', url='https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode')}",
+                            "fmt": "raw",
                             "alert": False,
                         },
                         {
-                            "name": 'Unique unicode blocks (<a target="_blank" href="https://en.wikipedia.org/wiki/Unicode_block">?</a>)',
-                            "value": summary["n_block_alias"],
-                            "fmt": "fmt_numeric",
+                            "name": "Unique unicode blocks",
+                            "value": f"{summary['n_block_alias']} {help(title='Unicode blocks (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_block')}",
+                            "fmt": "raw",
                             "alert": False,
                         },
                     ],
@@ -221,7 +261,10 @@ def render_categorical_unicode(summary, varid, redact):
     ]
 
     return Container(
-        citems, name="Unicode", sequence_type="tabs", anchor_id=f"{varid}unicode",
+        citems,
+        name="Unicode",
+        sequence_type="tabs",
+        anchor_id=f"{varid}unicode",
     )
 
 
@@ -245,16 +288,16 @@ def render_categorical(summary):
     table = Table(
         [
             {
-                "name": "Distinct count",
-                "value": summary["n_unique"],
+                "name": "Distinct",
+                "value": summary["n_distinct"],
                 "fmt": "fmt",
-                "alert": "n_unique" in summary["warn_fields"],
+                "alert": "n_distinct" in summary["warn_fields"],
             },
             {
-                "name": "Unique (%)",
-                "value": summary["p_unique"],
+                "name": "Distinct (%)",
+                "value": summary["p_distinct"],
                 "fmt": "fmt_percent",
-                "alert": "p_unique" in summary["warn_fields"],
+                "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
@@ -279,7 +322,7 @@ def render_categorical(summary):
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts"],
+            freqtable=summary["value_counts_without_nan"],
             n=summary["count"],
             max_number_to_print=n_obs_cat,
         ),
@@ -288,27 +331,40 @@ def render_categorical(summary):
 
     template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
 
-    # Bottom
-    items = [
+    citems = [
         FrequencyTable(
             template_variables["freq_table_rows"],
             name="Common Values",
             anchor_id=f"{varid}common_values",
             redact=redact,
-        )
+        ),
+        render_categorical_frequency(summary, varid, image_format),
     ]
 
     max_unique = config["plot"]["pie"]["max_unique"].get(int)
-    if max_unique > 0 and summary["n_unique"] <= max_unique:
-        items.append(
+    if max_unique > 0 and summary["n_distinct"] <= max_unique:
+        citems.append(
             Image(
-                pie_plot(summary["value_counts"], legend_kws={"loc": "upper right"}),
+                pie_plot(
+                    summary["value_counts_without_nan"],
+                    legend_kws={"loc": "upper right"},
+                ),
                 image_format=image_format,
                 alt="Chart",
                 name="Chart",
                 anchor_id=f"{varid}pie_chart",
             )
         )
+
+    # Bottom
+    items = [
+        Container(
+            citems,
+            name="Frequencies",
+            anchor_id=f"{varid}frequencies",
+            sequence_type="tabs",
+        ),
+    ]
 
     check_length = config["vars"]["cat"]["length"].get(bool)
     if check_length:

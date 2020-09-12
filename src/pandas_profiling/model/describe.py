@@ -3,25 +3,33 @@ import warnings
 from datetime import datetime
 from typing import Optional
 
-import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.dataframe_wrappers import (
+    UNWRAPPED_DATAFRAME_WARNING,
+    GenericDataFrame,
+    SparkDataFrame,
+)
+from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
-    get_duplicates,
     get_messages,
     get_missing_diagrams,
     get_scatter_matrix,
     get_series_descriptions,
     get_table_stats,
 )
+from pandas_profiling.model.typeset import Numeric, SparkNumeric, Unsupported
+from pandas_profiling.utils.common import test_for_pyspark_pyarrow_incompatibility
+from pandas_profiling.utils.dataframe import get_appropriate_wrapper
 from pandas_profiling.version import __version__
 
 
-def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
+def describe(
+    title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None
+) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -42,11 +50,18 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    if not isinstance(df, pd.DataFrame):
-        warnings.warn("df is not of type pandas.DataFrame")
+    # check for unwrapped dataframes and warn
+    if not isinstance(df, GenericDataFrame):
+        warnings.warn(UNWRAPPED_DATAFRAME_WARNING)
+        df_wrapper = get_appropriate_wrapper(df)
+        df = df_wrapper.preprocess(df)
+        df = df_wrapper(df)
 
     if df.empty:
         raise ValueError("df can not be empty")
+
+    if isinstance(df, SparkDataFrame):
+        test_for_pyspark_pyarrow_incompatibility()
 
     disable_progress_bar = not config["progress_bar"].get(bool)
 
@@ -54,27 +69,38 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
 
     correlation_names = [
         correlation_name
-        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers",]
+        for correlation_name in [
+            "pearson",
+            "spearman",
+            "kendall",
+            "phi_k",
+            "cramers",
+        ]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
-    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 8 + len(df.columns) + len(correlation_names)
 
     with tqdm(
         total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
-        series_description = get_series_descriptions(df, pbar)
-
+        series_description = get_series_descriptions(df, summarizer, typeset, pbar)
         pbar.set_postfix_str("Get variable types")
         variables = {
             column: description["type"]
             for column, description in series_description.items()
         }
-        pbar.update()
 
-        # Transform the series_description in a DataFrame
-        pbar.set_postfix_str("Get variable statistics")
-        variable_stats = pd.DataFrame(series_description)
+        supported_columns = [
+            column
+            for column, type_name in variables.items()
+            if type_name != Unsupported
+        ]
+        interval_columns = [
+            column
+            for column, type_name in variables.items()
+            if type_name == Numeric or type_name == SparkNumeric
+        ]
         pbar.update()
 
         # Get correlations
@@ -82,7 +108,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         for correlation_name in correlation_names:
             pbar.set_postfix_str(f"Calculate {correlation_name} correlation")
             correlations[correlation_name] = calculate_correlation(
-                df, variables, correlation_name
+                df, correlation_name, series_description
             )
             pbar.update()
 
@@ -93,12 +119,12 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
 
         # Scatter matrix
         pbar.set_postfix_str("Get scatter matrix")
-        scatter_matrix = get_scatter_matrix(df, variables)
+        scatter_matrix = get_scatter_matrix(df, interval_columns)
         pbar.update()
 
         # Table statistics
         pbar.set_postfix_str("Get table statistics")
-        table_stats = get_table_stats(df, variable_stats)
+        table_stats = get_table_stats(df, series_description)
         pbar.update()
 
         # missing diagrams
@@ -123,12 +149,6 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
 
         # Duplicates
         pbar.set_postfix_str("Locating duplicates")
-        supported_columns = [
-            key
-            for key, value in series_description.items()
-            if value["type"] != Variable.S_TYPE_UNSUPPORTED
-        ]
-
         duplicates = get_duplicates(df, supported_columns)
         pbar.update()
 

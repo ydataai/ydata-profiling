@@ -88,28 +88,28 @@ def render_url(summary):
     table = Table(
         [
             {
-                "name": "Distinct count",
-                "value": summary["n_unique"],
+                "name": "Distinct",
+                "value": summary["n_distinct"],
                 "fmt": "fmt",
-                "alert": False,
+                "alert": "n_distinct" in summary["warn_fields"],
             },
             {
-                "name": "Unique (%)",
-                "value": summary["p_unique"],
+                "name": "Distinct (%)",
+                "value": summary["p_distinct"],
                 "fmt": "fmt_percent",
-                "alert": False,
+                "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
                 "value": summary["n_missing"],
                 "fmt": "fmt",
-                "alert": False,
+                "alert": "n_missing" in summary["warn_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": summary["p_missing"],
                 "fmt": "fmt_percent",
-                "alert": False,
+                "alert": "p_missing" in summary["warn_fields"],
             },
             {
                 "name": "Memory size",
@@ -122,7 +122,7 @@ def render_url(summary):
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts"],
+            freqtable=summary["value_counts_without_nan"],
             n=summary["n"],
             max_number_to_print=n_obs_cat,
         ),

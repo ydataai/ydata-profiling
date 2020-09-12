@@ -1,11 +1,21 @@
 pytest
 coverage<5
 codecov
-pytest-mypy
+pytest-mypy>=0.7.0
+
+# this is because mypy had an issue where singledispatch _ usage resulted in errors
+# https://github.com/python/mypy/issues/4117
+mypy>=0.761
+
 pytest-cov
+pytest-black
 nbval
 fastparquet>=0.3.3
 flake8
-check-manifest>=0.41
+check-manifest>=0.42
 twine>=3.1.1
 kaggle
+
+# spark dependency
+pytest-spark>=0.6.0
+pyarrow>=0.8.0

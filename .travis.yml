@@ -8,15 +8,19 @@ cache:
 
 jobs:
   include:
-  - os: linux
-    name: "Python 3.9-dev on Linux"
-    python: 3.9-dev
-    env: TEST=examples PANDAS=">=1"
-    before_install:
-    - sudo apt-get -y install libopenblas-dev
+    - os: linux
+      name: "Python 3.9-dev on Linux"
+      python: 3.9-dev
+      env: TEST=examples PANDAS=">=1"
+      before_install:
+        - sudo apt-get -y install libopenblas-dev
 
   allow_failures:
-  - name: "Python 3.9-dev on Linux"
+    - name: "Python 3.9-dev on Linux"
+    - env: TEST=spark PANDAS=">=1.1" SPARK_VERSION=2.4.7 HADOOP_VERSION=2.7
+      python: 3.8
+    - env: TEST=spark PANDAS=">=1.1" SPARK_VERSION=2.3.0 HADOOP_VERSION=2.7
+      python: 3.8
 
 python:
   - 3.6
@@ -24,22 +28,31 @@ python:
   - 3.8
 
 env:
-  - TEST=unit PANDAS="<1"
-  - TEST=issue PANDAS="<1"
-  - TEST=console PANDAS="<1"
-  - TEST=examples PANDAS="<1"
-  - TEST=unit PANDAS=">=1"
-  - TEST=issue PANDAS=">=1"
-  - TEST=console PANDAS=">=1"
-  - TEST=examples PANDAS=">=1"
-  - TEST=lint PANDAS=">=1"
-  - TEST=typing PANDAS=">=1"
+  global:
+    - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+  jobs:
+    - TEST=unit PANDAS="<1"
+    - TEST=issue PANDAS="<1"
+    - TEST=console PANDAS="<1"
+    - TEST=examples PANDAS="<1"
+    - TEST=unit PANDAS="==1.0.5"
+    - TEST=issue PANDAS="==1.0.5"
+    - TEST=unit PANDAS=">=1.1"
+    - TEST=issue PANDAS=">=1.1"
+    - TEST=console PANDAS=">=1.1"
+    - TEST=examples PANDAS=">=1.1"
+    - TEST=lint PANDAS=">=1.1"
+    - TEST=typing PANDAS=">=1.1"
+    - TEST=spark PANDAS=">=1.1" SPARK_VERSION=2.3.0 HADOOP_VERSION=2.7
+    - TEST=spark PANDAS=">=1.1" SPARK_VERSION=2.4.7 HADOOP_VERSION=2.7
+    - TEST=spark PANDAS=">=1.1" SPARK_VERSION=3.0.1 HADOOP_VERSION=2.7
 
 before_install:
   - pip install --upgrade pip setuptools wheel
   - pip install -r requirements.txt
   - pip install -r requirements-test.txt
   - pip install "pandas$PANDAS"
+  - sudo apt-get -y install curl
 
 install:
   - check-manifest
@@ -50,7 +63,7 @@ install:
 script:
   - >
     if [ $TEST == 'unit' ];
-    then pytest --cov=. tests/unit/;
+    then pytest -m "not sparktest" --cov=. tests/unit/;
     fi
   - >
     if [ $TEST == 'issue' ];
@@ -71,7 +84,13 @@ script:
   - >
     if [ $TEST == 'lint' ];
     then python -m black --check --diff --quiet .;
+    isort --check-only --profile black .;
     flake8 . --select=E9,F63,F7,F82 --show-source --statistics;
+    fi
+  - >
+    if [ $TEST == 'spark' ];
+    then SPARK_VERSION=${SPARK_VERSION} HADOOP_VERSION=${HADOOP_VERSION} make install-spark-ci;
+    JAVA_HOME=${JAVA_HOME} SPARK_HOME=${TRAVIS_BUILD_DIR}/spark/ make test-spark;
     fi
 
 after_success:

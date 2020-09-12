@@ -1,10 +1,10 @@
 joblib
 scipy>=1.4.1
-pandas>=0.25.3,!=1.0.1,!=1.0.0,!=1.0.2
+pandas>=0.25.3,!=1.0.1,!=1.0.0,!=1.0.2,!=1.1.0
 matplotlib>=3.2.0
 confuse>=1.0.0
 jinja2>=2.11.1
-visions[type_image_path]==0.4.4
+visions[type_image_path]==0.5.0
 numpy>=1.16.0
 attrs>=19.3.0
 # Could be optional
@@ -13,13 +13,15 @@ htmlmin>=0.1.12
 # Missing values
 missingno>=0.4.2
 # Correlations
-phik>=0.9.10
+phik>=0.10.0
 # Text analysis
 tangled-up-in-unicode>=0.0.6
 # Examples
-requests>=2.23.0
+requests>=2.24.0
 # Progress bar
-tqdm>=4.43.0
+tqdm>=4.48.2
 # Jupyter notebook
 ipywidgets>=7.5.1
 seaborn>=0.10.1
+# Single dispatch lib
+singledispatchmethod>=1.0.0

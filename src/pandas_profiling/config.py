@@ -40,16 +40,28 @@ class Config(object):
             "vars": {"cat": {"redact": True}},
         },
         "dark_mode": {
-            "html": {"style": {"theme": "flatly", "primary_color": "#2c3e50",}}
+            "html": {
+                "style": {
+                    "theme": "flatly",
+                    "primary_color": "#2c3e50",
+                }
+            }
         },
         "orange_mode": {
-            "html": {"style": {"theme": "united", "primary_color": "#d34615",}}
+            "html": {
+                "style": {
+                    "theme": "united",
+                    "primary_color": "#d34615",
+                }
+            }
         },
         "explorative": {
             "vars": {
                 "cat": {"unicode": True},
+                "url": {"active": True},
+                "path": {"active": True},
                 "file": {"active": True},
-                "image": {"active": True,},
+                "image": {"active": True},
             },
             "n_obs_unique": 10,
             "n_extreme_obs": 10,
@@ -93,7 +105,7 @@ class Config(object):
             copyright_year="",
             url="",
         ),
-        "samples": {"head": 0, "tail": 0},
+        "samples": {"head": 0, "tail": 0, "random": 0},
         "duplicates": {"head": 0},
         "interactions": {"targets": [], "continuous": False},
         "missing_diagrams": {

@@ -52,6 +52,10 @@ vars:
         active: False
         exif: True
         hash: True
+    path:
+        active: False
+    url:
+        active: False
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: None
@@ -81,11 +85,7 @@ correlations:
       calculate: True
       warn_high_correlations: True
       threshold: 0.9
-    # Deprecated: do not use
-    recoded:
-      calculate: False
-      warn_high_correlations: False
-      threshold: 0.0
+
 
 # Bivariate / Pairwise relations
 interactions:
@@ -142,6 +142,7 @@ duplicates:
 samples:
     head: 10
     tail: 10
+    random: 0
 
 # Configuration related to the rejection of variables
 reject_variables: True

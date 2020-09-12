@@ -129,11 +129,11 @@ class SerializeReport(object):
 
     def load(self, load_file: Union[Path, str], ignore_config: bool = False):
         """
-       Load ProfileReport from file
+        Load ProfileReport from file
 
-       Raises:
-            ValueError: if the DataFrame or Config do not match with the current ProfileReport
-       """
+        Raises:
+             ValueError: if the DataFrame or Config do not match with the current ProfileReport
+        """
         if not isinstance(load_file, Path):
             load_file = Path(str(load_file))
 

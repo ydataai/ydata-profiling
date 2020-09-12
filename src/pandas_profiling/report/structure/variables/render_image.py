@@ -177,7 +177,10 @@ def render_image(summary):
     image_items.append(image_shape)
 
     image_tab = Container(
-        image_items, name="Image", sequence_type="tabs", anchor_id=f"{varid}image",
+        image_items,
+        name="Image",
+        sequence_type="tabs",
+        anchor_id=f"{varid}image",
     )
 
     template_variables["bottom"].content["items"].append(image_tab)

@@ -12,10 +12,13 @@ docs:
 	cd docsrc/ && make github
 
 test:
-	pytest --black tests/unit/
-	pytest --black tests/issues/
-	pytest --nbval tests/notebooks/
+	pytest -m "not sparktest" --black tests/unit/
+	pytest -m "not sparktest" --black tests/issues/
+	pytest -m "not sparktest" --nbval tests/notebooks/
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
+
+test-spark:
+	pytest -m sparktest --black tests/unit/
 
 examples:
 	find ./examples -maxdepth 2 -type f -name "*.py" -execdir python {} \;
@@ -29,6 +32,12 @@ pypi_package:
 
 install:
 	pip install -e .[notebook,app]
+
+install-spark-ci:
+	sudo apt-get -y install openjdk-8-jdk
+	curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+	--output ${TRAVIS_BUILD_DIR}/spark.tgz
+	tar -xvzf ${TRAVIS_BUILD_DIR}/spark.tgz && mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark
 
 lint:
 	isort --profile black .

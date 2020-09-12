@@ -32,16 +32,16 @@ def render_boolean(summary):
     table = Table(
         [
             {
-                "name": "Distinct count",
-                "value": summary["n_unique"],
+                "name": "Distinct",
+                "value": summary["n_distinct"],
                 "fmt": "fmt",
-                "alert": "n_unique" in summary["warn_fields"],
+                "alert": "n_distinct" in summary["warn_fields"],
             },
             {
-                "name": "Unique (%)",
-                "value": summary["p_unique"],
+                "name": "Distinct (%)",
+                "value": summary["p_distinct"],
                 "fmt": "fmt_percent",
-                "alert": "p_unique" in summary["warn_fields"],
+                "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
@@ -66,7 +66,7 @@ def render_boolean(summary):
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts"],
+            freqtable=summary["value_counts_without_nan"],
             n=summary["n"],
             max_number_to_print=n_obs_bool,
         ),
@@ -88,7 +88,10 @@ def render_boolean(summary):
     if max_unique > 0:
         items.append(
             Image(
-                pie_plot(summary["value_counts"], legend_kws={"loc": "upper right"}),
+                pie_plot(
+                    summary["value_counts_without_nan"],
+                    legend_kws={"loc": "upper right"},
+                ),
                 image_format=image_format,
                 alt="Chart",
                 name="Chart",

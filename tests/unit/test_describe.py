@@ -5,38 +5,44 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import config
-from pandas_profiling.model.base import Variable
+from pandas_profiling.model.dataframe_wrappers import (
+    UNWRAPPED_DATAFRAME_WARNING,
+    PandasDataFrame,
+    SparkDataFrame,
+)
 from pandas_profiling.model.describe import describe
+from pandas_profiling.model.series_wrappers import PandasSeries
 from pandas_profiling.model.summary import describe_1d
+from pandas_profiling.model.typeset import DateTime, Numeric, SparkNumeric
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-
-testdata = [
+pandas_testdata = [
     # Unique values
-    (pd.Series([1, 2]), True, 1),
+    (PandasSeries(pd.Series([1, 2])), True, 1, 1),
     # Unique values including nan
-    (pd.Series([np.nan]), None, None),
+    (PandasSeries(pd.Series([np.nan])), None, None, None),
     # Unique values all nan
-    (pd.Series([1, 2, np.nan]), True, 1),
+    (PandasSeries(pd.Series([1, 2, np.nan])), True, 1, 1),
     # Non unique values
-    (pd.Series([1, 2, 2]), False, 2 / 3),
+    (PandasSeries(pd.Series([1, 2, 2])), False, 2 / 3, 1 / 3),
     # Non unique nan
-    (pd.Series([1, np.nan, np.nan]), True, 1),
+    (PandasSeries(pd.Series([1, np.nan, np.nan])), True, 1, 1),
     # Non unique values including nan
-    (pd.Series([1, 2, 2, np.nan]), False, 2 / 3),
+    (PandasSeries(pd.Series([1, 2, 2, np.nan])), False, 2 / 3, 1 / 3),
     # Non unique values including non unique nan
-    (pd.Series([1, 2, 2, np.nan, np.nan]), False, 2 / 3),
+    (PandasSeries(pd.Series([1, 2, 2, np.nan, np.nan])), False, 2 / 3, 1 / 3),
 ]
 
 
-@pytest.mark.parametrize("data,is_unique,p_unique", testdata)
-def test_describe_unique(data, is_unique, p_unique):
+@pytest.mark.parametrize("data,is_unique,p_distinct,p_unique", pandas_testdata)
+def test_describe_unique(data, is_unique, p_distinct, p_unique, summarizer, typeset):
     """Test the unique feature of 1D data"""
 
-    desc_1d = describe_1d(data)
+    desc_1d = describe_1d(data, summarizer, typeset)
     if is_unique is not None:
         assert desc_1d["p_unique"] == p_unique, "Describe 1D p_unique incorrect"
+        assert desc_1d["p_distinct"] == p_distinct, "Describe 1D p_distinct incorrect"
         assert desc_1d["is_unique"] == is_unique, "Describe 1D should return unique"
 
 
@@ -79,7 +85,7 @@ def describe_data():
         "cat": [
             "a",
             "long text value",
-            u"Élysée",
+            "Élysée",
             "",
             None,
             "some <b> B.s </div> </div> HTML stuff",
@@ -88,7 +94,7 @@ def describe_data():
             "c",
         ],
         "s1": np.ones(9),
-        "s2": [u"some constant text $ % value {obj} " for _ in range(1, 10)],
+        "s2": ["some constant text $ % value {obj} " for _ in range(1, 10)],
         "somedate": [
             datetime.date(2011, 7, 4),
             datetime.datetime(2022, 1, 1, 13, 57),
@@ -163,8 +169,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 8,
-            "freq": 2,
+            "n_distinct": 8,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -176,14 +181,12 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0.0,
-            "p_unique": 0.88888888,
+            "p_distinct": 0.88888888,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": "d",
-            "type": Variable.TYPE_CAT,
             "variance": check_is_NaN,
         },
         "x": {
@@ -196,8 +199,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": 1.771071190261633,
-            "distinct_count": 6,
-            "freq": check_is_NaN,
+            "n_distinct": 6,
             "iqr": 24.5,
             "is_unique": False,
             "kurtosis": -0.50292858929003803,
@@ -207,7 +209,7 @@ def expected_results():
             "min": -10.0,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 6 / 8,
+            "p_distinct": 6 / 8,
             "n": 9,
             "n_zeros": 2,
             "p_zeros": 0.2222222222222222,
@@ -215,8 +217,6 @@ def expected_results():
             "skewness": 1.0851622393567653,
             "std": 23.688077169749342,
             "sum": 107.0,
-            "top": check_is_NaN,
-            "type": Variable.TYPE_NUM,
             "variance": 561.125,
         },
         "y": {
@@ -229,8 +229,7 @@ def expected_results():
             "n_infinite": 0,
             "p_infinite": 0,
             "cv": 2.2112992878833846,
-            "distinct_count": 8,
-            "freq": check_is_NaN,
+            "n_distinct": 8,
             "iqr": 236.66299975000001,
             "is_unique": True,
             "kurtosis": 6.974137018717359,
@@ -240,15 +239,13 @@ def expected_results():
             "min": -3.1415926535000001,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 1,
+            "p_distinct": 1,
             "n_zeros": 0,
             "p_zeros": 0.0,
             "range": 3125.1415926535001,
             "skewness": 2.6156591135729266,
             "std": 1086.1335236468506,
             "sum": 3929.3949203464999,
-            "top": check_is_NaN,
-            "type": Variable.TYPE_NUM,
             "variance": 1179686.0311895239,
         },
         "cat": {
@@ -259,8 +256,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
-            "distinct_count": 6,
-            "freq": 3,
+            "n_distinct": 6,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -272,46 +268,43 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 6 / 8,
+            "p_distinct": 6 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": "c",
-            "type": Variable.TYPE_CAT,
             "variance": check_is_NaN,
         },
         "s1": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "25%": 1.0,
+            "5%": 1.0,
+            "50%": 1.0,
+            "75%": 1.0,
+            "95%": 1.0,
             "count": 9,
-            "cv": check_is_NaN,
-            "distinct_count": 1,
-            "freq": 9,
-            "histogram": check_is_NaN,
-            "iqr": check_is_NaN,
+            "cv": 0,
+            "iqr": 0,
             "is_unique": False,
-            "kurtosis": check_is_NaN,
-            "mad": check_is_NaN,
-            "max": check_is_NaN,
-            "mean": check_is_NaN,
-            "min": check_is_NaN,
-            "mini_histogram": check_is_NaN,
+            "kurtosis": 0,
+            "mad": 0.0,
+            "max": 1.0,
+            "mean": 1.0,
+            "min": 1.0,
             "n_missing": 0,
             "p_missing": 0.0,
-            "p_unique": 0.1111111111111111,
-            "p_zeros": check_is_NaN,
-            "range": check_is_NaN,
-            "skewness": check_is_NaN,
-            "std": check_is_NaN,
-            "sum": check_is_NaN,
-            "top": 1.0,
-            "type": Variable.TYPE_BOOL,
-            "variance": check_is_NaN,
+            "n_infinite": 0,
+            "n_distinct": 1,
+            "p_distinct": 0.1111111111111111,
+            "p_zeros": 0,
+            "range": 0,
+            "skewness": 0,
+            "std": 0,
+            "sum": 9,
+            "variance": 0.0,
+            "mode": 1.0,
+            "monotonic_increase": True,
+            "monotonic_increase_strict": False,
         },
         "s2": {
             "25%": check_is_NaN,
@@ -321,8 +314,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 1,
-            "freq": 9,
+            "n_distinct": 1,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -334,14 +326,12 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0.0,
-            "p_unique": 0.1111111111111111,
+            "p_distinct": 0.1111111111111111,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": "some constant text $ % value {obj} ",
-            "type": Variable.TYPE_CAT,
             "variance": check_is_NaN,
         },
         "somedate": {
@@ -352,8 +342,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
-            "distinct_count": 5,
-            "freq": check_is_NaN,
+            "n_distinct": 5,
             "iqr": check_is_NaN,
             "is_unique": False,
             "kurtosis": check_is_NaN,
@@ -363,14 +352,12 @@ def expected_results():
             "min": datetime.datetime(1898, 1, 2),
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 5 / 8,
+            "p_distinct": 5 / 8,
             "p_zeros": check_is_NaN,
             "range": datetime.timedelta(45289, hours=13, minutes=57),
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": check_is_NaN,
-            "type": Variable.TYPE_DATE,
         },
         "bool_tf": {
             "25%": check_is_NaN,
@@ -380,8 +367,7 @@ def expected_results():
             "95%": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
-            "distinct_count": 2,
-            "freq": 6,
+            "n_distinct": 2,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -392,14 +378,12 @@ def expected_results():
             "mini_histogram": check_is_NaN,
             "n_missing": 0,
             "p_missing": 0,
-            "p_unique": 2 / 9,
+            "p_distinct": 2 / 9,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": True,
-            "type": Variable.TYPE_BOOL,
             "variance": check_is_NaN,
         },
         "bool_tf_with_nan": {
@@ -408,10 +392,13 @@ def expected_results():
             "50%": check_is_NaN,
             "75%": check_is_NaN,
             "95%": check_is_NaN,
+            "n": 9,
             "count": 8,
             "cv": check_is_NaN,
-            "distinct_count": 2,
-            "freq": 5,
+            "n_distinct": 2,
+            "p_distinct": 2 / 8,
+            "n_missing": 1,
+            "p_missing": 1 / 9,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -420,109 +407,168 @@ def expected_results():
             "max": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "n_missing": 1,
-            "p_missing": 0.11111111111111116,
-            "p_unique": 2 / 8,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
-            "top": False,
-            "type": Variable.TYPE_BOOL,
             "variance": check_is_NaN,
         },
         "bool_01": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "5%": 0,
+            "25%": 0,
+            "50%": 1.0,
+            "75%": 1,
+            "95%": 1,
+            "n": 9,
             "count": 9,
-            "cv": check_is_NaN,
-            "distinct_count": 2,
-            "freq": 5,
-            "histogram": check_is_NaN,
-            "iqr": check_is_NaN,
+            "cv": 0.9486832980505138,
+            "n_distinct": 2,
+            "iqr": 1.0,
             "is_unique": False,
-            "kurtosis": check_is_NaN,
-            "mad": check_is_NaN,
-            "max": check_is_NaN,
-            "min": check_is_NaN,
-            "mini_histogram": check_is_NaN,
+            "mad": 0,
+            "max": 1,
+            "min": 0,
             "n_missing": 0,
             "p_missing": 0,
-            "p_unique": 2 / 9,
-            "p_zeros": check_is_NaN,
-            "range": check_is_NaN,
-            "skewness": check_is_NaN,
-            "std": check_is_NaN,
-            "sum": check_is_NaN,
-            "top": 1,
-            "type": Variable.TYPE_BOOL,
-            "variance": check_is_NaN,
+            "p_distinct": 2 / 9,
+            "p_zeros": 4 / 9,
+            "sum": 5,
         },
         "bool_01_with_nan": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "5%": 0,
+            "25%": 0,
+            "50%": 0.5,
+            "75%": 1,
+            "95%": 1,
+            "n": 9,
             "count": 8,
-            "cv": check_is_NaN,
-            "distinct_count": 2,
-            "freq": 4,
-            "iqr": check_is_NaN,
+            "cv": 1.0690449676496976,
+            "n_distinct": 2,
+            "iqr": 1.0,
             "is_unique": False,
-            "kurtosis": check_is_NaN,
-            "mad": check_is_NaN,
-            "max": check_is_NaN,
-            "min": check_is_NaN,
+            "kurtosis": -2.8000000000000003,
+            "mad": 0.5,
+            "max": 1,
+            "min": 0,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
-            "p_unique": 2 / 8,
-            "p_zeros": check_is_NaN,
-            "range": check_is_NaN,
-            "skewness": check_is_NaN,
-            "std": check_is_NaN,
-            "sum": check_is_NaN,
-            "top": 0,
-            "type": Variable.TYPE_BOOL,
-            "variance": check_is_NaN,
+            "p_distinct": 2 / 8,
+            "n_zeros": 4,
+            "p_zeros": 4 / 9,
+            "range": 1.0,
+            "skewness": 0.0,
+            "std": 0.5345224838248488,
+            "sum": 4.0,
+            "variance": 0.2857142857142857,
         },
         "list": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
         },
         "mixed": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
         },
         "dict": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
         },
         "tuple": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
-            "type": Variable.S_TYPE_UNSUPPORTED,
         },
     }
 
 
-def test_describe_df(describe_data, expected_results):
-    config["vars"]["num"]["low_categorical_threshold"].set(0)
-    describe_data_frame = pd.DataFrame(describe_data)
-    describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
+@pytest.fixture
+def expected_spark_results(expected_results):
+    """
+    This overrides the expected results for describe when using a spark backend, primarily because spark's
+    quantile functions do not interpolate unlike pandas' quantile functions. Thus the quantile functions
+    and all the other functions that depend on quantile based stuff have different results, spark
+    returns an exact result from the given list of variables when given a quantile, while pandas
+    by default does linear interpolation
+    """
+    expected_results["x"]["25%"] = -3.0
+    expected_results["x"]["5%"] = -10.0
+    expected_results["x"]["50%"] = 0.0
+    expected_results["x"]["75%"] = 15.0
+    expected_results["x"]["cv"] = 1.771071190261633
+    expected_results["x"]["iqr"] = 18.0
+    expected_results["x"]["kurtosis"] = -0.9061564710904944
+    expected_results["x"]["mad"] = 5.0
+    expected_results["x"]["skewness"] = 0.8700654233008703
 
-    results = describe("title", describe_data_frame)
+    expected_results["y"]["25%"] = 1e-06
+    expected_results["y"]["5%"] = -3.1415926535
+    expected_results["y"]["50%"] = 15.9
+    expected_results["y"]["75%"] = 111.0
+    expected_results["y"]["95%"] = 3122.0
+    expected_results["y"]["iqr"] = 110.999999
+    expected_results["y"]["kurtosis"] = 2.6543509612939804
+    expected_results["y"]["mad"] = 15.9
+    expected_results["y"]["skewness"] = 2.097192909339154
+
+    expected_results["bool_01_with_nan"]["50%"] = 0.0
+    expected_results["bool_01_with_nan"]["kurtosis"] = -2.0
+    expected_results["bool_01_with_nan"]["mad"] = 0.0
+    expected_results["bool_01_with_nan"]["skewness"] = 2.7755575615628914e-17
+
+    expected_results["s1"]["kurtosis"] = np.nan
+    expected_results["s1"]["skewness"] = np.nan
+    expected_results["s1"]["monotonic_increase"] = False
+
+    expected_results["bool_tf_with_nan"]["count"] = 9
+    expected_results["bool_tf_with_nan"]["p_distinct"] = 0.2222222222222222
+    expected_results["bool_tf_with_nan"]["n_missing"] = 0
+    expected_results["bool_tf_with_nan"]["p_missing"] = 0.0
+
+    # date indexing is different due to lack of a native date function in spark
+    del expected_results["somedate"]["max"]
+    del expected_results["somedate"]["min"]
+    del expected_results["somedate"]["range"]
+
+    return expected_results
+
+
+@pytest.mark.parametrize(
+    "column",
+    [
+        "id",
+        "x",
+        "y",
+        "cat",
+        "s1",
+        "s2",
+        "somedate",
+        "bool_tf",
+        "bool_tf_with_nan",
+        "bool_01",
+        "bool_01_with_nan",
+        "list",
+        "mixed",
+        "dict",
+        "tuple",
+    ],
+)
+def test_describe_df(column, describe_data, expected_results, summarizer, typeset):
+    config["vars"]["num"]["low_categorical_threshold"].set(0)
+    describe_data_frame = PandasDataFrame(pd.DataFrame({column: describe_data[column]}))
+    if column == "somedate":
+        describe_data_frame.get_pandas_df()["somedate"] = pd.to_datetime(
+            describe_data_frame.get_pandas_df()["somedate"]
+        )
+
+    results = describe("title", describe_data_frame, summarizer, typeset)
 
     assert {
         "analysis",
@@ -537,45 +583,113 @@ def test_describe_df(describe_data, expected_results):
         "duplicates",
     } == set(results.keys()), "Not in results"
 
-    assert {"BOOL": 5, "CAT": 3, "UNSUPPORTED": 4, "NUM": 2, "DATE": 1} == results[
-        "table"
-    ]["types"], "Variable analysis failed"
-
     # Loop over variables
-    for col in describe_data.keys():
-        for k, v in expected_results[col].items():
-            if v == check_is_NaN:
-                assert (
-                    k not in results["variables"][col]
-                ) == True, "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-            elif isinstance(v, float):
-                assert (
-                    pytest.approx(v) == results["variables"][col][k]
-                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
-            else:
-                assert (
-                    v == results["variables"][col][k]
-                ), "Value `{}` for key `{}` in column `{}` is not NaN".format(
-                    results["variables"][col][k], k, col
-                )
+    for k, v in expected_results[column].items():
+        if v == check_is_NaN:
+            test_condition = k not in results["variables"][column]
+        elif isinstance(v, float):
+            test_condition = (
+                pytest.approx(v, nan_ok=True) == results["variables"][column][k]
+            )
+        else:
+            test_condition = v == results["variables"][column][k]
 
-        if results["variables"][col]["type"].value in ["NUM", "DATE"]:
-            assert (
-                "histogram" in results["variables"][col]
-            ), "Histogram missing for column {} ".format(col)
+        assert (
+            test_condition
+        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+
+    if results["variables"][column]["type"] in [Numeric, DateTime]:
+        assert (
+            "histogram" in results["variables"][column]
+        ), f"Histogram missing for column {column}"
 
 
-def test_describe_empty():
+@pytest.mark.sparktest
+@pytest.mark.parametrize(
+    "column",
+    [
+        "id",
+        "x",
+        "y",
+        "cat",
+        "s1",
+        "s2",
+        "somedate",
+        "bool_tf",
+        "bool_tf_with_nan",
+        "bool_01",
+        "bool_01_with_nan",
+        "list",
+        "mixed",
+        "dict",
+        "tuple",
+    ],
+)
+def test_describe_spark_df(
+    column,
+    describe_data,
+    expected_spark_results,
+    summarizer,
+    typeset,
+    spark_session,
+    spark_context,
+):
+    config["vars"]["num"]["low_categorical_threshold"].set(0)
+
+    spark = spark_session
+
+    if column == "mixed":
+        describe_data[column] = [str(i) for i in describe_data[column]]
+    if column == "bool_tf_with_nan":
+        describe_data[column] = [True if i else False for i in describe_data[column]]
+    sdf = spark.createDataFrame(pd.DataFrame({column: describe_data[column]}))
+
+    describe_data_frame = SparkDataFrame(sdf)
+
+    results = describe("title", describe_data_frame, summarizer, typeset)
+
+    assert {
+        "analysis",
+        "table",
+        "variables",
+        "scatter",
+        "correlations",
+        "missing",
+        "messages",
+        "package",
+        "sample",
+        "duplicates",
+    } == set(results.keys()), "Not in results"
+    for key, value in results["variables"][column].items():
+        print(key, value)
+    # Loop over variables
+    for k, v in expected_spark_results[column].items():
+        if v == check_is_NaN:
+            test_condition = k not in results["variables"][column]
+        elif isinstance(v, float):
+            test_condition = (
+                pytest.approx(v, nan_ok=True) == results["variables"][column][k]
+            )
+        else:
+            test_condition = v == results["variables"][column][k]
+
+        assert (
+            test_condition
+        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+
+    if results["variables"][column]["type"] in [SparkNumeric]:
+        assert (
+            "histogram" in results["variables"][column]
+        ), f"Histogram missing for column {column}"
+
+
+def test_describe_empty(summarizer, typeset):
     empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
-        describe("", empty_frame)
+        with pytest.warns(UserWarning, match=UNWRAPPED_DATAFRAME_WARNING):
+            describe("", empty_frame, summarizer, typeset)
 
 
-def test_describe_list():
-    with pytest.raises(AttributeError):
-        with pytest.warns(UserWarning):
-            describe("", [1, 2, 3])
+def test_describe_list(summarizer, typeset):
+    with pytest.raises(NotImplementedError):
+        describe("", [1, 2, 3], summarizer, typeset)
