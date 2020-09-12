@@ -185,7 +185,8 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 column_name=col,
                 message_type=MessageType.HIGH_CARDINALITY,
                 values=description,
-                fields={"n_unique"}, )
+                fields={"n_unique"},
+            )
             messages.append(message)
 
     elif description["type"].continuous:

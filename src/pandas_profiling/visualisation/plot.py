@@ -171,9 +171,7 @@ def correlation_matrix(data: pd.DataFrame, vmin: int = -1) -> str:
         legend_elements = [Patch(facecolor=cmap(np.nan), label="invalid\ncoefficient")]
 
         plt.legend(
-            handles=legend_elements,
-            loc="upper right",
-            handleheight=2.5,
+            handles=legend_elements, loc="upper right", handleheight=2.5,
         )
 
     axes_cor.set_xticks(np.arange(0, data.shape[0], float(data.shape[0]) / len(labels)))

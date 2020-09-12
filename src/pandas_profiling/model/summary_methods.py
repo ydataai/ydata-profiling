@@ -44,19 +44,20 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
 
     distinct_count = series_description.get("distinct_count_without_nan", None)
     if distinct_count is not None:
-        stats.update({
-            "n_distinct": distinct_count,
-            "p_distinct": distinct_count / count,
-        })
+        stats.update(
+            {"n_distinct": distinct_count, "p_distinct": distinct_count / count,}
+        )
 
     value_counts = series_description.get("value_counts_without_nan", None)
     if value_counts is not None:
         unique_count = value_counts.where(value_counts == 1).count()
-        stats.update({
-            "is_unique": unique_count == count,
-            "n_unique": unique_count,
-            "p_unique": unique_count / count,
-        })
+        stats.update(
+            {
+                "is_unique": unique_count == count,
+                "n_unique": unique_count,
+                "p_unique": unique_count / count,
+            }
+        )
 
     return stats
 
@@ -263,14 +264,10 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
     stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
     stats.update(
-        histogram_compute(
-            value_counts, len(value_counts), name="histogram_frequencies"
-        )
+        histogram_compute(value_counts, len(value_counts), name="histogram_frequencies")
     )
 
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-        float
-    )
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     if chi_squared_threshold > 0.0:
         stats["chi_squared"] = list(chisquare(value_counts.values))
 

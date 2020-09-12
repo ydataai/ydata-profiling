@@ -49,6 +49,6 @@ def test_type_inference(get_data_file, handler):
     df = pd.read_csv(file_name)
 
     typset = ProfilingTypeSet()
-    print(typset.detect_series_type(df["device_isMobile"]))
+    print(typset.detect_type(df["device_isMobile"]))
 
     print(handler.get_var_type(df["device_isMobile"])["type"])

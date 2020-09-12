@@ -59,13 +59,7 @@ def describe(
 
     correlation_names = [
         correlation_name
-        for correlation_name in [
-            "pearson",
-            "spearman",
-            "kendall",
-            "phi_k",
-            "cramers",
-        ]
+        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers",]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 

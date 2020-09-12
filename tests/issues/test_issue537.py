@@ -27,6 +27,7 @@ import pandas as pd
 import requests
 
 from pandas_profiling.model.summary import describe_1d
+from pandas_profiling.model.handler import default_handler
 
 
 def mock_multiprocess_1d(args) -> Tuple[str, dict]:
@@ -40,8 +41,8 @@ def mock_multiprocess_1d(args) -> Tuple[str, dict]:
     Returns:
         A tuple with column and the series description.
     """
-    column, series = args
-    return column, describe_1d(series)
+    column, series, handler = args
+    return column, describe_1d(series, handler)
 
 
 def test_multiprocessing_describe1d():
@@ -112,15 +113,13 @@ def test_multiprocessing_describe1d():
         return df
 
     def run_multiprocess(df):
+        handler = default_handler()
         pool = multiprocessing.pool.ThreadPool(10)
-        args = [(column, series) for column, series in df.iteritems()]
+        args = [(column, series, handler) for column, series in df.iteritems()]
         results = pool.imap_unordered(mock_multiprocess_1d, args)
         pool.close()
         pool.join()
         list(results)
 
-    try:
-        df = download_and_process_data()
-        run_multiprocess(df)
-    except ValueError:
-        raise Exception("myFunc() raised ValueError unexpectedly!")
+    df = download_and_process_data()
+    run_multiprocess(df)

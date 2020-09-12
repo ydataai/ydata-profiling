@@ -198,7 +198,12 @@ class Numeric(PandasProfilingBaseType):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
             IdentityRelation(cls, Unsupported),
-            InferenceRelation(cls, Category, relationship=category_is_numeric, transformer=pd.to_numeric,)
+            InferenceRelation(
+                cls,
+                Category,
+                relationship=category_is_numeric,
+                transformer=pd.to_numeric,
+            ),
         ]
 
     @classmethod
