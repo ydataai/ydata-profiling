@@ -48,11 +48,9 @@ def describe_1d(series: pd.Series, handler: ProfilingHandler) -> dict:
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
 
-    series_description = handler.get_var_type(series)
+    series_description = dict()
+    series_description["type"] = handler.typeset.infer_type(series)
 
-    # Run type specific analysis
-    # TODO: handle "unsupported" cases
-    series_description.update(describe_supported(series, series_description))
     summary = handler.summarize(series, series_description["type"], series_description)
     series_description.update(summary)
 

@@ -114,7 +114,10 @@ def render_path(summary):
     ]
 
     path_tab = Container(
-        path_items, name="Path", sequence_type="tabs", anchor_id=f"{varid}path",
+        path_items,
+        name="Path",
+        sequence_type="tabs",
+        anchor_id=f"{varid}path",
     )
 
     template_variables["bottom"].content["items"].append(path_tab)

@@ -291,7 +291,10 @@ class Bool(PandasProfilingBaseType):
         return [
             IdentityRelation(cls, Unsupported),
             InferenceRelation(
-                cls, Category, relationship=string_is_bool, transformer=string_to_bool,
+                cls,
+                Category,
+                relationship=string_is_bool,
+                transformer=string_to_bool,
             ),
             InferenceRelation(
                 cls,

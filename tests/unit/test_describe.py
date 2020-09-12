@@ -493,10 +493,30 @@ def expected_results():
             "type": Bool,
             "variance": check_is_NaN,
         },
-        "list": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
-        "mixed": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
-        "dict": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
-        "tuple": {"count": 9, "n_missing": 0, "p_missing": 0, "type": Unsupported,},
+        "list": {
+            "count": 9,
+            "n_missing": 0,
+            "p_missing": 0,
+            "type": Unsupported,
+        },
+        "mixed": {
+            "count": 9,
+            "n_missing": 0,
+            "p_missing": 0,
+            "type": Unsupported,
+        },
+        "dict": {
+            "count": 9,
+            "n_missing": 0,
+            "p_missing": 0,
+            "type": Unsupported,
+        },
+        "tuple": {
+            "count": 9,
+            "n_missing": 0,
+            "p_missing": 0,
+            "type": Unsupported,
+        },
     }
 
 

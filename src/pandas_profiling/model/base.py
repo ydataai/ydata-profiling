@@ -16,6 +16,11 @@ def get_counts(series: pd.Series) -> dict:
     if is_categorical_dtype(series):
         series = series.cat.remove_unused_categories()
 
+    series_summary = {}
+    try:
+        series_summary["value_counts_with_nan"] = series.value_counts(dropna=False)
+    except:
+        series_summary["value_counts_with_nan"] = series.apply(str)
     series_summary = {
         "hashable": True,
         "value_counts_with_nan": series.value_counts(dropna=False),

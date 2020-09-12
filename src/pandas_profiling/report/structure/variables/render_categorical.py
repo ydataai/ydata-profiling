@@ -261,7 +261,10 @@ def render_categorical_unicode(summary, varid, redact):
     ]
 
     return Container(
-        citems, name="Unicode", sequence_type="tabs", anchor_id=f"{varid}unicode",
+        citems,
+        name="Unicode",
+        sequence_type="tabs",
+        anchor_id=f"{varid}unicode",
     )
 
 

@@ -1,5 +1,7 @@
 from pathlib import Path
 from urllib.parse import urlsplit
+from typing import Callable
+import functools
 
 import numpy as np
 import pandas as pd
@@ -18,74 +20,79 @@ from visions.application.summaries.series.text_summary import (
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model.messages import warning_type_date
+from pandas.api.types import is_categorical_dtype
 
 
-def describe_supported(series: pd.Series, series_description: dict) -> dict:
-    """Describe a supported series.
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    """
-
-    # number of observations in the Series
+def describe_generic(series: pd.Series, stats: dict) -> dict:
     length = len(series)
-
-    # number of non-NaN observations in the Series
     count = series.count()
-    stats = {
+    series_description = {
         "n": length,
         "count": count,
         "p_missing": 1 - (count / length),
         "n_missing": length - count,
         "memory_size": series.memory_usage(config["memory_deep"].get(bool)),
     }
+    stats.update(series_description)
+    return stats
 
-    distinct_count = series_description.get("distinct_count_without_nan", None)
-    if distinct_count is not None:
-        stats.update(
-            {"n_distinct": distinct_count, "p_distinct": distinct_count / count,}
-        )
 
-    value_counts = series_description.get("value_counts_without_nan", None)
-    if value_counts is not None:
-        unique_count = value_counts.where(value_counts == 1).count()
-        stats.update(
-            {
-                "is_unique": unique_count == count,
-                "n_unique": unique_count,
-                "p_unique": unique_count / count,
-            }
-        )
+def describe_supported(series: pd.Series, stats: dict) -> dict:
+    if is_categorical_dtype(series):
+        series = series.cat.remove_unused_categories()
+
+    stats["value_counts_with_nan"] = series.value_counts(dropna=False)
+    stats["value_counts_without_nan"] = (
+        stats["value_counts_with_nan"]
+        .reset_index()
+        .dropna()
+        .set_index("index")
+        .iloc[:, 0]
+    )
+
+    stats["distinct_count_with_nan"] = stats["value_counts_with_nan"].count()
+    stats["distinct_count_without_nan"] = stats["value_counts_without_nan"].count()
+
+    # TODO: No need for duplication here, refactor
+    stats["value_counts"] = stats["value_counts_without_nan"]
+    stats["hashable"] = True
+    # try:
+    #    set(series_summary["value_counts_with_nan"].index)
+    # except:
+    #    series_summary["hashable"] = False
+
+    distinct_count = stats.get("distinct_count_without_nan")
+    stats.update(
+        {
+            "n_distinct": distinct_count,
+            "p_distinct": distinct_count / stats["count"],
+        }
+    )
+
+    value_counts = stats.get("value_counts_without_nan")
+    unique_count = value_counts.where(value_counts == 1).count()
+    stats.update(
+        {
+            "is_unique": unique_count == stats["count"],
+            "n_unique": unique_count,
+            "p_unique": unique_count / stats["count"],
+        }
+    )
 
     return stats
 
 
-def describe_unsupported(series: pd.Series, series_description: dict):
-    """Describe an unsupported series.
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    """
+def wrap_description(fn: Callable):
+    @functools.wraps(fn)
+    def inner(fn2: Callable):
+        @functools.wraps(fn2)
+        def inner2(series: pd.Series, series_description: dict = {}):
+            series_description = fn(series, series_description)
+            return fn2(series, series_description)
 
-    # number of observations in the Series
-    length = len(series)
+        return inner2
 
-    # number of non-NaN observations in the Series
-    count = series.count()
-
-    results_data = {
-        "n": length,
-        "count": count,
-        "p_missing": 1 - count / length,
-        "n_missing": length - count,
-        "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
-    }
-
-    return results_data
+    return inner
 
 
 def histogram_compute(finite_values, n_unique, name="histogram"):
@@ -133,7 +140,19 @@ def numeric_stats_numpy(series, series_description):
     }
 
 
-def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
+@wrap_description(describe_generic)
+def describe_unsupported(series: pd.Series, series_description: dict):
+    """Describe an unsupported series.
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+    Returns:
+        A dict containing calculated series description values.
+    """
+    return {"hashable": False}
+
+
+def numeric_description(series: pd.Series, series_description: dict) -> dict:
     """Describe a numeric series.
     Args:
         series: The Series to describe.
@@ -150,9 +169,9 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     """
 
     def mad(arr):
-        """ Median Absolute Deviation: a "Robust" version of standard deviation.
-            Indices variability of the sample.
-            https://en.wikipedia.org/wiki/Median_absolute_deviation
+        """Median Absolute Deviation: a "Robust" version of standard deviation.
+        Indices variability of the sample.
+        https://en.wikipedia.org/wiki/Median_absolute_deviation
         """
         return np.median(np.abs(arr - np.median(arr)))
 
@@ -215,10 +234,20 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
     return stats
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
+def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
+    return numeric_description(series, series_description)
+
+
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_complex_1d(series: pd.Series, series_description: dict) -> dict:
-    return describe_numeric_1d(series, series_description)
+    return numeric_description(series, series_description)
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a date series.
 
@@ -247,6 +276,8 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
     return stats
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a categorical series.
     Args:
@@ -295,6 +326,8 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
     return stats
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_url_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a url series.
 
@@ -320,6 +353,8 @@ def describe_url_1d(series: pd.Series, series_description: dict) -> dict:
     return stats
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_file_1d(series: pd.Series, series_description: dict) -> dict:
     if "p_series" not in series_description:
         series = series[~series.isnull()].astype(str)
@@ -342,6 +377,8 @@ def describe_file_1d(series: pd.Series, series_description: dict) -> dict:
     return stats
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a path series.
 
@@ -373,6 +410,8 @@ def describe_path_1d(series: pd.Series, series_description: dict) -> dict:
     return stats
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_image_1d(series: pd.Series, series_description: dict):
     if "p_series" not in series_description:
         series = series[~series.isnull()].astype(str)
@@ -390,6 +429,8 @@ def describe_image_1d(series: pd.Series, series_description: dict):
     return stats
 
 
+@wrap_description(describe_generic)
+@wrap_description(describe_supported)
 def describe_boolean_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a boolean series.
 
