@@ -34,21 +34,29 @@ def describe_supported(series: pd.Series, series_description: dict) -> dict:
 
     # number of non-NaN observations in the Series
     count = series.count()
-    try:
-        distinct_count = series_description["distinct_count_without_nan"]
-    except:
-        print(series.name, series_description)
     stats = {
         "n": length,
         "count": count,
-        "distinct_count": distinct_count,
         "p_missing": 1 - (count / length),
         "n_missing": length - count,
-        "is_unique": distinct_count == count,
-        "n_unique": distinct_count,
-        "p_unique": distinct_count / count,
         "memory_size": series.memory_usage(config["memory_deep"].get(bool)),
     }
+
+    distinct_count = series_description.get("distinct_count_without_nan", None)
+    if distinct_count is not None:
+        stats.update({
+            "n_distinct": distinct_count,
+            "p_distinct": distinct_count / count,
+        })
+
+    value_counts = series_description.get("value_counts_without_nan", None)
+    if value_counts is not None:
+        unique_count = value_counts.where(value_counts == 1).count()
+        stats.update({
+            "is_unique": unique_count == count,
+            "n_unique": unique_count,
+            "p_unique": unique_count / count,
+        })
 
     return stats
 
@@ -201,7 +209,7 @@ def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
         stats["monotonic_decrease"] and series.is_unique
     )
 
-    stats.update(histogram_compute(finite_values, series_description["n_unique"]))
+    stats.update(histogram_compute(finite_values, series_description["n_distinct"]))
 
     return stats
 
@@ -240,11 +248,9 @@ def describe_date_1d(series: pd.Series, series_description: dict) -> dict:
 
 def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict:
     """Describe a categorical series.
-
     Args:
         series: The Series to describe.
         series_description: The dict containing the series description so far.
-
     Returns:
         A dict containing calculated series description values.
     """
@@ -256,7 +262,15 @@ def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict
 
     stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    stats.update(
+        histogram_compute(
+            value_counts, len(value_counts), name="histogram_frequencies"
+        )
+    )
+
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
+        float
+    )
     if chi_squared_threshold > 0.0:
         stats["chi_squared"] = list(chisquare(value_counts.values))
 

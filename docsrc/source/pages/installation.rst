@@ -57,7 +57,7 @@ This creates a new conda environment containing the module.
 
 .. hint::
 
-        Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the main channel.
+        Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the main channel. See `frequent issues <Support.rst#frequent-issues>`_
 
 Jupyter notebook/lab
 --------------------

@@ -1,5 +1,6 @@
 """Common parts to all other modules, mainly utility functions."""
 import pandas as pd
+from pandas.api.types import is_categorical_dtype
 
 
 def get_counts(series: pd.Series) -> dict:
@@ -11,6 +12,10 @@ def get_counts(series: pd.Series) -> dict:
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
     """
+
+    if is_categorical_dtype(series):
+        series = series.cat.remove_unused_categories()
+
     series_summary = {
         "hashable": True,
         "value_counts_with_nan": series.value_counts(dropna=False),

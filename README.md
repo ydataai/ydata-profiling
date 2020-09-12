@@ -27,32 +27,16 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-### Version v2.8.0 released
+### Version v2.9.0 released
 
-News for users working with image datasets: ``pandas-profiling`` now has build-in supports for Files and Images.
-Moreover, the text analysis features have also been reworked, providing more informative statistics.
+The release candidate for v2.9.0 was already out for a while, now v2.9.0 is finally released. See the changelog below to know what has changed.
 
-For a better feel, have a look at the [examples](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/examples.html#showcasing-specific-features) section in the docs or read the changelog for a complete view of the changes.
+### Spark backend in progress
 
-### Version v2.7.0 released
+We can happily announce that we're working on a Spark backend for generating profile reports.
+Stay tuned.
 
-#### Performance
-
-There were several performance regressions pointed out to me recently when comparing 1.4.1 to 2.6.0.
-To that end, we benchmarked the code and found several minor features introducing disproportionate computational complexity.
-Version 2.7.0 optimizes these, giving significant performance improvements!
-Moreover, the default configuration is tweaked for towards the needs of the average user.
-
-#### Phased builds and lazy loading
-
-A report is built in phases, which allows for new exciting features such as caching, only re-rendering partial reports and lazily computing the report.
-Moreover, the progress bar provides more information on the building phase and step.
-
-#### Documentation
-
-This version introduces [more elaborate documentation](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/index.html) powered by Sphinx. The previously used pdoc3 has been adequate initially, however misses functionality and extensibility. Several recurring topics are now documented, for instance the configuration parameters are documented and there are pages on big datasets, sensitive data, integrations and resources.
-
-#### Support `pandas-profiling`
+### Support `pandas-profiling`
 
 The development of ``pandas-profiling`` relies completely on contributions.
 If you find value in the package, we welcome you to support the project through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
@@ -60,18 +44,17 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 
 Find more information here:
 
- - [Changelog v2.7.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-7-0)
- - [Changelog v2.8.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-8-0)
+ - [Changelog v2.9.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-9-0)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
- *May 7, 2020 💘*
+ *September 2, 2020 💘*
 
 ---
 
 _Contents:_ **[Examples](#examples)** |
 **[Installation](#installation)** | **[Documentation](#documentation)** |
 **[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
-**[Advanced usage](#advanced-usage)** |
+**[Advanced usage](#advanced-usage)** | **[Support](#supporting-open-source)** |
 **[Types](#types)** | **[How to contribute](#contributing)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
 
@@ -237,19 +220,36 @@ profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': 
 profile.to_file("output.html")
 ```
 
+# Supporting open source
+
+Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible with support of our gracious sponsors.
+
+<table>
+<tr>
+<td>
+
+<img alt="Lambda Labs" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/lambda-labs.png" width="500" />
+
+</td>
+<td>
+
+[Lambda workstations](https://lambdalabs.com/), servers, laptops, and cloud services power engineers and researchers at Fortune 500 companies and 94% of the top 50 universities. [Lambda Cloud](https://lambdalabs.com/service/gpu-cloud) offers 4 & 8 GPU instances starting at $1.50 / hr. Pre-installed with TensorFlow, PyTorch, Ubuntu, CUDA, and cuDNN.
+
+</td>
+</tr>
+</table>
+
+We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: 
+
+    Martin Sotir, Joseph Yuen, Brian Lee, Stephanie Rivera, nscsekhar, abdulAziz
+
+More info if you would like to appear here: [Github Sponsor page](https://github.com/sponsors/sbrugman)
+
+
 ## Types
 
 Types are a powerful abstraction for effective data analysis, that goes beyond the logical data types (integer, float etc.).
-`pandas-profiling` currently recognizes the following types:
-
-- Boolean
-- Numerical
-- Date
-- Categorical
-- URL
-- Path
-- File
-- Image
+`pandas-profiling` currently recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
 
 We have developed a type system for Python, tailored for data analysis: [visions](https://github.com/dylan-profiler/visions).
 Selecting the right typeset drastically reduces the complexity the code of your analysis.

@@ -39,13 +39,14 @@ def describe_1d(series: pd.Series, handler: ProfilingHandler) -> dict:
 
     Args:
         series: The Series to describe.
+        handler: The profile handler.
 
     Returns:
         A Series containing calculated series description values.
     """
 
     # Make sure pd.NA is not in the series
-    series.fillna(np.nan, inplace=True)
+    series = series.fillna(np.nan)
 
     series_description = handler.get_var_type(series)
 
@@ -264,6 +265,10 @@ def get_scatter_matrix(df, variables):
             targets = continuous_variables
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
+
+        # check if any na still exists, and remove it before computing scatter matrix
+        df = df.dropna(subset=continuous_variables)
+
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:

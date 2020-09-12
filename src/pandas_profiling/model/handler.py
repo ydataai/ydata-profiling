@@ -16,7 +16,7 @@ class SummaryHandler(HandlerMixin):
 
     def summarize(self, series, dtype=None, series_description={}):
         if dtype is None:
-            dtype = self.typeset.infer_series_type(series)
+            dtype = self.typeset.infer_type(series)
 
         return self.summary_map[dtype](series, series_description)
 
@@ -44,7 +44,7 @@ class ProfilingHandler(SummaryHandler, RenderHandler, MessageHandler):
     def get_var_type(self, series):
         # TODO: Refactor into two pieces, summaries and type detection
         series_description = get_counts(series)
-        series_description["type"] = self.typeset.infer_series_type(series)
+        series_description["type"] = self.typeset.infer_type(series)
         return series_description
 
 

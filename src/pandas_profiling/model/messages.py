@@ -123,6 +123,8 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
+    chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(float)
+    cardinality_threshold = config["vars"]["cat"]["cardinality_threshold"].get(int)
     # Missing
     if warning_value(description["p_missing"]):
         messages.append(
@@ -150,7 +152,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 column_name=col,
                 message_type=MessageType.CONSTANT,
                 values=description,
-                fields={"n_unique"},
+                fields={"n_distinct"},
             )
         )
 
@@ -171,31 +173,22 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 column_name=col,
                 message_type=MessageType.UNIQUE,
                 values=description,
-                fields={"n_unique", "p_unique"},
+                fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
             )
         )
+
     elif description["type"].categorical:
         # High cardinality
-        if description["n_unique"] > config["vars"]["cat"]["cardinality_threshold"].get(
-            int
-        ):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.HIGH_CARDINALITY,
-                    values=description,
-                    fields={"n_unique"},
-                )
-            )
 
-        chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
-            float
-        )
+        if description["n_unique"] > cardinality_threshold:
+            message = Message(
+                column_name=col,
+                message_type=MessageType.HIGH_CARDINALITY,
+                values=description,
+                fields={"n_unique"}, )
+            messages.append(message)
+
     elif description["type"].continuous:
-        chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-            float
-        )
-
         if (
             "chi_squared" in description
             and description["chi_squared"][1] > chi_squared_threshold
