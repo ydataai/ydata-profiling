@@ -6,6 +6,7 @@ from typing import Optional
 import pandas as pd
 from tqdm.auto import tqdm
 
+import pandas_profiling.types.dataframes as ppdf
 from pandas_profiling.config import config as config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
@@ -21,7 +22,7 @@ from pandas_profiling.model.summary import (
 from pandas_profiling.version import __version__
 
 
-def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dict:
+def describe(title: str, df: ppdf.GenericDataFrame, sample: Optional[dict] = None) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -42,10 +43,10 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    if not isinstance(df, pd.DataFrame):
-        warnings.warn("df is not of type pandas.DataFrame")
-
-    if df.empty:
+    #if not isinstance(df, pd.DataFrame):
+    #    warnings.warn("df is not of types pandas.DataFrame")
+    print(type(df))
+    if df.is_empty():
         raise ValueError("df can not be empty")
 
     disable_progress_bar = not config["progress_bar"].get(bool)
@@ -75,8 +76,10 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -> dic
         # Transform the series_description in a DataFrame
         pbar.set_postfix_str("Get variable statistics")
         variable_stats = pd.DataFrame(series_description)
+        print(variable_stats)
         pbar.update()
 
+        """"""
         # Get correlations
         correlations = {}
         for correlation_name in correlation_names:

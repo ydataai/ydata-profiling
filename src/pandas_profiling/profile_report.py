@@ -5,6 +5,7 @@ from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
+from singledispatchmethod import singledispatchmethod
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
@@ -15,7 +16,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
-from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
+from pandas_profiling.utils.dataframe import hash_dataframe, rename_index, wrap_data_as_ppdf
 from pandas_profiling.utils.paths import get_config
 
 
@@ -26,17 +27,17 @@ class ProfileReport(SerializeReport, object):
     """
 
     def __init__(
-        self,
-        df=None,
-        minimal=False,
-        explorative=False,
-        sensitive=False,
-        dark_mode=False,
-        orange_mode=False,
-        sample=None,
-        config_file: Union[Path, str] = None,
-        lazy: bool = True,
-        **kwargs,
+            self,
+            df=None,
+            minimal=False,
+            explorative=False,
+            sensitive=False,
+            dark_mode=False,
+            orange_mode=False,
+            sample=None,
+            config_file: Union[Path, str] = None,
+            lazy: bool = True,
+            **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
 
@@ -78,6 +79,7 @@ class ProfileReport(SerializeReport, object):
         config.set_kwargs(kwargs)
 
         self.df = None
+        self.ppdf = None
         self._df_hash = -1
         self._description_set = None
         self._sample = sample
@@ -89,7 +91,7 @@ class ProfileReport(SerializeReport, object):
 
         if df is not None:
             # preprocess df
-            self.df = self.preprocess(df)
+            self.df = wrap_data_as_ppdf(self.preprocess(df))
 
         if not lazy:
             # Trigger building the report structure
@@ -265,7 +267,7 @@ class ProfileReport(SerializeReport, object):
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
-            total=1, desc="Export report to file", disable=disable_progress_bar
+                total=1, desc="Export report to file", disable=disable_progress_bar
         ) as pbar:
             output_file.write_text(data, encoding="utf-8")
             pbar.update()
@@ -315,7 +317,7 @@ class ProfileReport(SerializeReport, object):
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
-            total=1, desc="Render widgets", disable=disable_progress_bar, leave=False
+                total=1, desc="Render widgets", disable=disable_progress_bar, leave=False
         ) as pbar:
             widgets = WidgetReport(report).render()
             pbar.update()
@@ -432,8 +434,13 @@ class ProfileReport(SerializeReport, object):
         app_widgets = QtReport(self.report).render()
         app = get_app(app, self.title, app_widgets)
 
-    @staticmethod
-    def preprocess(df):
+
+    @singledispatchmethod
+    def preprocess(self, df):
+        raise NotImplementedError("")
+
+    @preprocess.register
+    def preprocess(self, df: pd.DataFrame):
         """Preprocess the dataframe
 
         - Appends the index to the dataframe when it contains information
@@ -448,8 +455,8 @@ class ProfileReport(SerializeReport, object):
         """
         # Treat index as any other column
         if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
+                not pd.Index(np.arange(0, len(df))).equals(df.index)
+                or df.index.dtype != np.int64
         ):
             df = df.reset_index()
 

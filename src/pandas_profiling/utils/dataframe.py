@@ -134,3 +134,22 @@ def hash_dataframe(df):
         The DataFrame's hash
     """
     return joblib.hash(df)
+
+
+def wrap_data_as_ppdf(df):
+    """
+    Wrap data type
+    Args:
+        df:
+
+    Returns:
+
+    """
+    from pandas_profiling.types.dataframes import get_implemented_datatypes
+    implemented_backends = get_implemented_datatypes()
+    for backend in implemented_backends:
+        print("backend check type",backend.is_same_type(df))
+        if backend.is_same_type(df):
+            return backend(df)
+    raise NotImplementedError(
+        """Datatype is currently not supported. Support datatypes are {}""".format(implemented_backends))

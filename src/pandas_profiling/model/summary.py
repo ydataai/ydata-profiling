@@ -22,6 +22,7 @@ from visions.application.summaries.series.text_summary import (
     unicode_summary,
 )
 
+import pandas_profiling.types.dataframes as ppdf
 from pandas_profiling.config import config as config
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
@@ -233,10 +234,10 @@ def describe_1d(series: pd.Series) -> dict:
         stats["monotonic_decrease"] = series.is_monotonic_decreasing
 
         stats["monotonic_increase_strict"] = (
-            stats["monotonic_increase"] and series.is_unique
+                stats["monotonic_increase"] and series.is_unique
         )
         stats["monotonic_decrease_strict"] = (
-            stats["monotonic_decrease"] and series.is_unique
+                stats["monotonic_decrease"] and series.is_unique
         )
 
         stats.update(histogram_compute(finite_values, series_description["n_unique"]))
@@ -472,7 +473,7 @@ def get_series_description(series):
     return describe_1d(series)
 
 
-def get_series_descriptions(df, pbar):
+def get_series_descriptions(df: ppdf.GenericDataFrame, pbar):
     def multiprocess_1d(args) -> Tuple[str, dict]:
         """Wrapper to process series in parallel.
 
@@ -491,7 +492,7 @@ def get_series_descriptions(df, pbar):
     if pool_size <= 0:
         pool_size = multiprocessing.cpu_count()
 
-    args = [(column, series) for column, series in df.iteritems()]
+    args = [(column, series) for column, series in df.get_internal_df().iteritems()]
     series_description = {}
 
     if pool_size == 1:
@@ -507,7 +508,7 @@ def get_series_descriptions(df, pbar):
         # TODO: use `Pool` for Linux-based systems
         with multiprocessing.pool.ThreadPool(pool_size) as executor:
             for i, (column, description) in enumerate(
-                executor.imap_unordered(multiprocess_1d, args)
+                    executor.imap_unordered(multiprocess_1d, args)
             ):
                 pbar.set_postfix_str(f"Describe variable:{column}")
                 series_description[column] = description
@@ -521,13 +522,13 @@ def get_series_descriptions(df, pbar):
             )
         )
 
-    # Mapping from column name to variable type
+    # Mapping from column name to variable types
     sort = config["sort"].get(str)
     series_description = sort_column_names(series_description, sort)
     return series_description
 
 
-def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
+def get_table_stats(df: ppdf.GenericDataFrame, variable_stats: pd.DataFrame) -> dict:
     """General statistics for the DataFrame.
 
     Args:
@@ -539,12 +540,12 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     """
     n = len(df)
 
-    memory_size = df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
+    memory_size = df.get_memory_usage(config)
     record_size = float(memory_size) / n
 
     table_stats = {
         "n": n,
-        "n_var": len(df.columns),
+        "n_var": len(df.get_columns()),
         "memory_size": memory_size,
         "record_size": record_size,
         "n_cells_missing": variable_stats.loc["n_missing"].sum(),
@@ -553,14 +554,14 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     }
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-        table_stats["n"] * table_stats["n_var"]
+            table_stats["n"] * table_stats["n_var"]
     )
 
     supported_columns = variable_stats.transpose()[
         variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-    ].index.tolist()
+        ].index.tolist()
     table_stats["n_duplicates"] = (
-        sum(df.duplicated(subset=supported_columns))
+        sum(df.get_duplicates(subset=supported_columns))
         if len(supported_columns) > 0
         else 0
     )
@@ -570,12 +571,12 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
         else 0
     )
 
-    # Variable type counts
+    # Variable types counts
     table_stats.update({k.value: 0 for k in Variable})
     table_stats.update(
         {
             "types": dict(
-                variable_stats.loc["type"].apply(lambda x: x.value).value_counts()
+                variable_stats.loc["types"].apply(lambda x: x.value).value_counts()
             )
         }
     )
@@ -583,7 +584,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -> dict:
     return table_stats
 
 
-def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame]:
+def get_duplicates(df: ppdf.GenericDataFrame, supported_columns) -> Optional[pd.DataFrame]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -597,16 +598,16 @@ def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame
 
     if n_head > 0 and supported_columns:
         return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name="count")
-            .nlargest(n_head, "count")
+            df[df.get_duplicates(subset=supported_columns, keep=False)]
+                .groupby(supported_columns)
+                .size()
+                .reset_index(name="count")
+                .nlargest(n_head, "count")
         )
     return None
 
 
-def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
+def get_missing_diagrams(df: ppdf.GenericDataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
     Args:
@@ -646,7 +647,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         name: settings
         for name, settings in missing_map.items()
         if config["missing_diagrams"][name].get(bool)
-        and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+           and table_stats["n_vars_with_missing"] >= settings["min_missing"]
     }
     missing = {}
 
@@ -654,13 +655,13 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         for name, settings in missing_map.items():
             try:
                 if name != "heatmap" or (
-                    table_stats["n_vars_with_missing"]
-                    - table_stats["n_vars_all_missing"]
-                    >= settings["min_missing"]
+                        table_stats["n_vars_with_missing"]
+                        - table_stats["n_vars_all_missing"]
+                        >= settings["min_missing"]
                 ):
                     missing[name] = {
                         "name": settings["name"],
-                        "matrix": missing_diagram(name)(df),
+                        "matrix": missing_diagram(name)(df.get_internal_df()),
                     }
             except ValueError as e:
                 warn_missing(name, e)
@@ -668,7 +669,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     return missing
 
 
-def get_scatter_matrix(df, variables):
+def get_scatter_matrix(df: ppdf.GenericDataFrame, variables):
     if config["interactions"]["continuous"].get(bool):
         continuous_variables = [
             column for column, type in variables.items() if type == Variable.TYPE_NUM
@@ -680,7 +681,7 @@ def get_scatter_matrix(df, variables):
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
 
-        #check if any na still exists, and remove it before computing scatter matrix
+        # check if any na still exists, and remove it before computing scatter matrix
         df = df.dropna(subset=continuous_variables)
 
         for x in targets:

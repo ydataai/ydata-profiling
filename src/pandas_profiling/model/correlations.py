@@ -13,7 +13,7 @@ from scipy import stats
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
-
+import pandas_profiling.types.dataframes as ppdf
 
 def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     """Calculate the Cramer's V corrected stat for two variables.
@@ -39,18 +39,18 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     return corr
 
 
-def cramers_matrix(df: pd.DataFrame, variables: dict):
+def cramers_matrix(df: ppdf.GenericDataFrame, variables: dict):
     """Calculate the Cramer's V correlation matrix.
 
     Args:
         df: The pandas DataFrame.
-        variables: A dict with column names mapped to variable type.
+        variables: A dict with column names mapped to variable types.
 
     Returns:
         A Cramer's V matrix for categorical variables.
     """
     return categorical_matrix(
-        df, variables, partial(cramers_corrected_stat, correction=True)
+        df.get_internal_df(), variables, partial(cramers_corrected_stat, correction=True)
     )
 
 
@@ -109,7 +109,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 
 
 def calculate_correlation(
-    df: pd.DataFrame, variables: dict, correlation_name: str
+    df: ppdf.GenericDataFrame, variables: dict, correlation_name: str
 ) -> Union[pd.DataFrame, None]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
         (pearson, spearman, kendall, phi_k, cramers).
@@ -140,7 +140,7 @@ def calculate_correlation(
             # Phi_k does not filter non-numerical with high cardinality
             selcols = []
             intcols = []
-            for col in df.columns.tolist():
+            for col in df.get_columns().tolist():
                 try:
                     tmp = (
                         df[col]
