@@ -224,6 +224,18 @@ def fmt_number(value: int) -> str:
     return f"{value:n}"
 
 
+def fmt_number(value: int) -> str:
+    """Format any numeric value.
+
+    Args:
+        value: The numeric value to format.
+
+    Returns:
+        The numeric value with the given precision.
+    """
+    return "{:n}".format(value)
+
+
 def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
     """Format numpy arrays.
 

@@ -23,7 +23,7 @@ from pandas_profiling.visualisation.missing import (
     missing_heatmap,
     missing_matrix,
 )
-from pandas_profiling.visualisation.plot import scatter_pairwise
+from pandas_profiling.visualisation.plot import scatter_pairwise, spark_scatter_pairwise
 
 
 def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
@@ -35,6 +35,7 @@ def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     Returns:
         A Series containing calculated series description values.
     """
+    raise NotImplementedError("Method is not implemented for dtype")
 
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
@@ -76,7 +77,9 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
 
     # Multiprocessing of Describe 1D for each column
     if pool_size <= 0:
-        pool_size = multiprocessing.cpu_count()
+        pool_size = 1
+
+    args = [(name, series) for name, series in df.iteritems()]
 
     args = [(name, series) for name, series in df.iteritems()]
     series_description = {}
@@ -102,6 +105,7 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
 
     # Mapping from column name to variable type
     series_description = sort_column_names(series_description, sort)
+
     return series_description
 
 
@@ -115,9 +119,17 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     Returns:
         A dictionary that contains the table statistics.
     """
+    data_type = type(df)
+    raise NotImplementedError(
+        f"get_table_stats is not implemented for datatype {data_type}"
+    )
+
+
+@get_table_stats.register(PandasDataFrame)
+def _get_table_stats_pandas(df: PandasDataFrame, variable_stats: dict) -> dict:
     n = len(df)
 
-    memory_size = df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
+    memory_size = df.get_memory_usage(deep=config["memory_deep"].get(bool))
     record_size = float(memory_size) / n
 
     table_stats = {
@@ -145,7 +157,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
         k for k, v in variable_stats.items() if v["type"] != Unsupported
     ]
     table_stats["n_duplicates"] = (
-        sum(df.duplicated(subset=supported_columns))
+        df.get_duplicate_rows_count(subset=supported_columns)
         if len(supported_columns) > 0
         else 0
     )
@@ -163,30 +175,58 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     return table_stats
 
 
-def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame]:
-    """Obtain the most occurring duplicate rows in the DataFrame.
+@get_table_stats.register(SparkDataFrame)
+def _get_table_stats_spark(df: SparkDataFrame, variable_stats: dict) -> dict:
+    n = len(df)
 
-    Args:
-        df: the Pandas DataFrame.
-        supported_columns: the columns to consider
+    memory_size = df.get_memory_usage(deep=config["memory_deep"].get(bool))
+    record_size = float(memory_size) / n
 
-    Returns:
-        A subset of the DataFrame, ordered by occurrence.
-    """
-    n_head = config["duplicates"]["head"].get(int)
+    table_stats = {
+        "n": n,
+        "n_var": len(df.columns),
+        "memory_size": memory_size,
+        "record_size": record_size,
+        "n_cells_missing": 0,
+        "n_vars_with_missing": 0,
+        "n_vars_all_missing": 0,
+    }
 
-    if n_head > 0 and supported_columns:
-        return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name="count")
-            .nlargest(n_head, "count")
-        )
-    return None
+    for series_summary in variable_stats.values():
+        if "n_missing" in series_summary and series_summary["n_missing"] > 0:
+            table_stats["n_vars_with_missing"] += 1
+            table_stats["n_cells_missing"] += series_summary["n_missing"]
+            if series_summary["n_missing"] == n:
+                table_stats["n_vars_all_missing"] += 1
+
+    table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
+        table_stats["n"] * table_stats["n_var"]
+    )
+
+    supported_columns = [
+        k for k, v in variable_stats.items() if v["type"] != SparkUnsupported
+    ]
+    table_stats["n_duplicates"] = (
+        df.get_duplicate_rows_count(subset=supported_columns)
+        if len(supported_columns) > 0
+        else 0
+    )
+    table_stats["p_duplicates"] = (
+        (table_stats["n_duplicates"] / len(df))
+        if (len(supported_columns) > 0 and len(df) > 0)
+        else 0
+    )
+
+    # Variable type counts
+    table_stats.update(
+        {"types": dict(Counter([v["type"] for v in variable_stats.values()]))}
+    )
+
+    return table_stats
 
 
-def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
+@singledispatch
+def get_missing_diagrams(df: GenericDataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
     Args:
@@ -196,7 +236,14 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
+    data_type = type(df)
+    raise NotImplementedError(
+        f"get_missing_diagrams is not implemented for datatype {data_type}"
+    )
 
+
+@get_missing_diagrams.register(PandasDataFrame)
+def _get_missing_diagrams_pandas(df: PandasDataFrame, table_stats: dict) -> dict:
     def warn_missing(missing_name, error):
         warnings.warn(
             f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.

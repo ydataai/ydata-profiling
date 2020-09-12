@@ -27,7 +27,14 @@ def mad(arr):
     return np.median(np.abs(arr - np.median(arr)))
 
 
-def named_aggregate_summary(series: pd.Series, key: str):
+@singledispatch
+def named_aggregate_summary(series, key: str):
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+@named_aggregate_summary.register(pd.Series)
+def _named_aggregate_summary_pandas(series: pd.Series, key: str):
     summary = {
         f"max_{key}": np.max(series),
         f"mean_{key}": np.mean(series),
@@ -346,6 +353,24 @@ def histogram_compute(finite_values, n_unique, name="histogram", weights=None):
     if bins == "auto" and len(stats[name][1]) > max_bins:
         stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
 
+    return stats
+
+
+def histogram_compute_spark(sparkseries, bins, n_unique, name="histogram"):
+    stats = {}
+    config_bins = config["spark"]["histogram_bins"].get(int)
+    bins = bins if config_bins == 0 else min(bins, n_unique)
+
+    spark_histogram = (
+        sparkseries.dropna.select(sparkseries.name)
+        .rdd.flatMap(lambda x: x)
+        .histogram(bins)
+    )
+
+    # Loading the Computed Histogram into a Pandas Dataframe for plotting
+    computed_bins = [i[0] for i in spark_histogram]
+    weights = [i[1] for i in spark_histogram]
+    stats[name] = np.histogram(computed_bins, bins=bins, weights=weights)
     return stats
 
 

@@ -3,7 +3,6 @@ import warnings
 from datetime import datetime
 from typing import Optional
 
-import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
@@ -44,15 +43,38 @@ def describe(
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    if not isinstance(df, pd.DataFrame):
-        warnings.warn("df is not of type pandas.DataFrame")
+    # check for unwrapped dataframes and warn
+    if not isinstance(df, GenericDataFrame):
+        warnings.warn(UNWRAPPED_DATAFRAME_WARNING)
+        df_wrapper = get_appropriate_wrapper(df)
+        df = df_wrapper.preprocess(df)
+        df = df_wrapper(df)
 
     if df.empty:
         raise ValueError("df can not be empty")
 
+    if isinstance(df, SparkDataFrame):
+        # test if the version pyspark and pyarrow versions are compatible
+        test_for_pyspark_pyarrow_incompatibility()
+
+        # save the dataframe to speed up compute time
+
+        if config["spark"]["persist"]:
+            df.persist_bool = config["spark"]["persist"]
+            df.persist()
+        else:
+            df.persist_bool = False
+
     disable_progress_bar = not config["progress_bar"].get(bool)
 
     date_start = datetime.utcnow()
+
+    # if there are specific config for each correlation, then use those
+
+    if isinstance(df, SparkDataFrame):
+        correlation_key = "spark_calculate"
+    else:
+        correlation_key = "calculate"
 
     correlation_names = [
         correlation_name
@@ -63,7 +85,7 @@ def describe(
             "phi_k",
             "cramers",
         ]
-        if config["correlations"][correlation_name]["calculate"].get(bool)
+        if config["correlations"][correlation_name][correlation_key].get(bool)
     ]
 
     number_of_tasks = 8 + len(df.columns) + len(correlation_names)
@@ -102,10 +124,17 @@ def describe(
             key: value for key, value in correlations.items() if value is not None
         }
 
-        # Scatter matrix
-        pbar.set_postfix_str("Get scatter matrix")
-        scatter_matrix = get_scatter_matrix(df, interval_columns)
-        pbar.update()
+        # Scatter matrix -> if is spark and config["spark"]["scatter"] is False, don't scatter matrix
+        if not (
+            isinstance(df, SparkDataFrame) and not config["spark"]["scatter"].get(bool)
+        ):
+            pbar.set_postfix_str("Get scatter matrix")
+            scatter_matrix = get_scatter_matrix(df, interval_columns)
+            pbar.update()
+        else:
+            pbar.set_postfix_str("Get scatter matrix")
+            scatter_matrix = {}
+            pbar.update()
 
         # Table statistics
         pbar.set_postfix_str("Get table statistics")

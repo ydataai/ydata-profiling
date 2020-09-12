@@ -42,6 +42,9 @@ setup(
     package_data={
         "pandas_profiling": ["py.typed"],
     },
+    package_data={
+        "pandas_profiling": ["py.typed"],
+    },
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

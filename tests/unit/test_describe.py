@@ -6,13 +6,13 @@ import pytest
 
 from pandas_profiling import config
 from pandas_profiling.model.describe import describe
+from pandas_profiling.model.series_wrappers import PandasSeries
 from pandas_profiling.model.summary import describe_1d
 from pandas_profiling.model.typeset import DateTime, Numeric
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-
-testdata = [
+pandas_testdata = [
     # Unique values
     (pd.Series([1, 2]), {"is_unique": True, "p_distinct": 1, "p_unique": 1}),
     # Unique values including nan
@@ -116,7 +116,7 @@ def describe_data():
             np.nan,
             datetime.datetime(1990, 12, 9),
             datetime.datetime(1950, 12, 9),
-            datetime.datetime(1898, 1, 2),
+            datetime.datetime(1902, 1, 2),
             datetime.datetime(1950, 12, 9),
             datetime.datetime(1950, 12, 9),
         ],
@@ -363,12 +363,12 @@ def expected_results():
             "mad": check_is_NaN,
             "max": datetime.datetime(2022, 1, 1, 13, 57),
             "mean": check_is_NaN,
-            "min": datetime.datetime(1898, 1, 2),
+            "min": datetime.datetime(1902, 1, 2),
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_distinct": 5 / 8,
             "p_zeros": check_is_NaN,
-            "range": datetime.timedelta(45289, hours=13, minutes=57),
+            "range": datetime.timedelta(43829, hours=13, minutes=57),
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,

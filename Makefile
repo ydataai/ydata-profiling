@@ -18,11 +18,14 @@ test:
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 	
 test_cov:
-	pytest --cov=. tests/unit/
-	pytest --cov=. --cov-append tests/issues/
-	pytest --cov=. --cov-append --nbval tests/notebooks/
+	pytest -m "not sparktest" --cov=. tests/unit/
+	pytest -m "not sparktest" --cov=. --cov-append tests/issues/
+	pytest -m "not sparktest" --cov=. --cov-append --nbval tests/notebooks/
 	pandas_profiling -h
 	make typing
+
+test-spark:
+	pytest -m sparktest tests/unit/
 
 examples:
 	find ./examples -maxdepth 2 -type f -name "*.py" -execdir python {} \;
@@ -36,6 +39,12 @@ pypi_package:
 
 install:
 	pip install -e .[notebook]
+
+install-spark-ci:
+	sudo apt-get -y install openjdk-8-jdk
+	curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+	--output ${TRAVIS_BUILD_DIR}/spark.tgz
+	tar -xvzf ${TRAVIS_BUILD_DIR}/spark.tgz && mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark
 
 lint:
 	pre-commit run --all-files

@@ -21,6 +21,7 @@ def test_config_shorthands():
     assert config["samples"]["head"].get(int) == 0
     assert config["samples"]["tail"].get(int) == 0
     assert config["duplicates"]["head"].get(int) == 0
+    assert config["correlations"]["pearson"]["spark_calculate"].get(bool)
     assert not config["correlations"]["spearman"]["calculate"].get(bool)
     assert not config["missing_diagrams"]["bar"].get(bool)
 
@@ -33,5 +34,6 @@ def test_config_shorthands():
     assert config["samples"]["head"].get(int) == 0
     assert config["samples"]["tail"].get(int) == 0
     assert config["duplicates"]["head"].get(int) == 0
+    assert config["correlations"]["pearson"]["spark_calculate"].get(bool)
     assert not config["correlations"]["spearman"]["calculate"].get(bool)
     assert not config["missing_diagrams"]["bar"].get(bool)

@@ -23,3 +23,5 @@ tqdm>=4.48.2
 # Jupyter notebook
 ipywidgets>=7.5.1
 seaborn>=0.10.1
+# Single dispatch lib
+singledispatchmethod>=1.0.0

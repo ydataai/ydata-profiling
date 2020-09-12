@@ -7,10 +7,14 @@ import numpy as np
 import pandas as pd
 from pandas.core.base import DataError
 from scipy import stats
+from singledispatchmethod import singledispatchmethod
 
 from pandas_profiling.config import config
 from pandas_profiling.model.typeset import Boolean, Categorical, Numeric, Unsupported
 
+        Args:
+            df:
+            summary:
 
 class Correlation:
     @staticmethod
@@ -35,6 +39,7 @@ class Kendall(Correlation):
     def compute(df, summary) -> Optional[pd.DataFrame]:
         return df.corr(method="kendall")
 
+        """
 
 class Cramers(Correlation):
     @staticmethod
@@ -128,6 +133,11 @@ class PhiK(Correlation):
 
         return correlation
 
+    @compute.register(SparkDataFrame)
+    @staticmethod
+    def _compute_spark(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
+        """
+        Use pandasUDF to compute this first, but probably can be optimised further
 
 def warn_correlation(correlation_name: str, error):
     warnings.warn(

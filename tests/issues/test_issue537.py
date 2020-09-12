@@ -27,6 +27,7 @@ import numpy as np
 import pandas as pd
 import requests
 
+from pandas_profiling.model.dataframe_wrappers import PandasDataFrame
 from pandas_profiling.model.summary import describe_1d
 
 
@@ -109,7 +110,7 @@ def test_multiprocessing_describe1d(summarizer, typeset):
         split_text = np.asarray(split_text, dtype=object)
         for j in range(42):
             split_text[:, j] = split_text[:, j].astype(DT[j])
-        df = pd.DataFrame(split_text)
+        df = PandasDataFrame(pd.DataFrame(split_text))
         return df
 
     def run_multiprocess(df):
