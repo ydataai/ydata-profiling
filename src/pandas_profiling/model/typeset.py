@@ -58,7 +58,7 @@ def try_func(fn):
 
 def numeric_is_category(series):
     n_unique = series.nunique()
-    return n_unique <= config["vars"]["num"]["low_categorical_threshold"].get(int)
+    return n_unique < config["vars"]["num"]["low_categorical_threshold"].get(int)
 
 
 class Category(PandasProfilingBaseType):
@@ -181,16 +181,14 @@ class Date(PandasProfilingBaseType):
         return pd.api.types.is_datetime64_dtype(series)
 
 
-def string_is_numeric(series):
+def category_is_numeric(series):
+    category_threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
     try:
-        _ = pd.to_numeric(series)
-        if series.nunique() > config["vars"]["num"]["low_categorical_threshold"].get(
-            int
-        ):
-            return False
+        numeric_is_category = numeric_is_category(pd.to_numeric(series))
     except:
         return False
-    return True
+
+    return not numeric_is_category
 
 
 class Numeric(PandasProfilingBaseType):
@@ -200,7 +198,7 @@ class Numeric(PandasProfilingBaseType):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
             IdentityRelation(cls, Unsupported),
-            # InferenceRelation(cls, Category, relationship=string_is_numeric, transformer=pd.to_numeric,)
+            InferenceRelation(cls, Category, relationship=category_is_numeric, transformer=pd.to_numeric,)
         ]
 
     @classmethod
