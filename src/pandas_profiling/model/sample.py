@@ -1,3 +1,5 @@
+from functools import singledispatch
+
 import attr
 import pandas as pd
 
@@ -12,6 +14,12 @@ class Sample(object):
     caption = attr.ib(default=None)
 
 
+@singledispatch
+def get_sample(df):
+    raise NotImplementedError("Method not implemented for data type")
+
+
+@get_sample.register
 def get_sample(df: pd.DataFrame) -> list:
     """Obtains a sample from head and tail of the DataFrame
 

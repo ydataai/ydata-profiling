@@ -606,13 +606,8 @@ def get_duplicates(df: ppdf.GenericDataFrame, supported_columns) -> Optional[pd.
     n_head = config["duplicates"]["head"].get(int)
 
     if n_head > 0 and supported_columns:
-        return (
-            df[df.get_duplicates(subset=supported_columns, keep=False)]
-                .groupby(supported_columns)
-                .size()
-                .reset_index(name="count")
-                .nlargest(n_head, "count")
-        )
+        return df.groupby_get_n_largest(columns=supported_columns, n=n_head)
+
     return None
 
 

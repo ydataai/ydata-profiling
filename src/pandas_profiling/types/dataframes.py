@@ -23,14 +23,17 @@ class GenericDataFrame(object):
     def is_empty(self):
         raise NotImplemented("Implementation not found")
 
-    def get_duplicates(self, subset, keep):
+    def get_duplicates(self, subset, keep=None):
         raise NotImplemented("Implementation not found")
 
-    def dropna(self,subset):
+    def dropna(self, subset):
         raise NotImplemented("Implementation not found")
 
     def groupby(self, columns):
         raise NotImplemented("Implementation not found")
+
+    def groupby_get_n_largest(self, columns, n, remove_duplicates=True):
+        return NotImplemented("Implementation not found")
 
     def get_memory_usage(self, config):
         raise NotImplemented("Implementation not found")
@@ -38,7 +41,7 @@ class GenericDataFrame(object):
     def __len__(self):
         raise NotImplemented("Implementation not found")
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         raise NotImplemented("Implementation not found")
 
     def corr(self, method):
@@ -47,10 +50,10 @@ class GenericDataFrame(object):
     def get_internal_df(self):
         raise NotImplemented("Implementation not found")
 
-    def head(self,n):
+    def head(self, n):
         raise NotImplemented("Implementation not found")
 
-    def tail(self,n):
+    def tail(self, n):
         raise NotImplemented("Implementation not found")
 
 
@@ -93,11 +96,24 @@ class PandasDataFrame(GenericDataFrame):
     def get_duplicates(self, subset, keep="first"):
         return self.df.duplicated(subset=subset, keep=keep)
 
-    def dropna(self,subset):
+    def dropna(self, subset):
         return self.df.dropna(subset=subset)
 
     def groupby(self, columns):
         return self.df.groupby(columns)
+
+    def groupby_get_n_largest(self, columns, n, remove_duplicates=True):
+        if remove_duplicates:
+            return (self.df[self.get_duplicates(subset=columns, keep=False)]
+                    .groupby(columns)
+                    .size()
+                    .reset_index(name="count")
+                    .nlargest(n, "count"))
+        else:
+            return (self.df.groupby(columns)
+                    .size()
+                    .reset_index(name="count")
+                    .nlargest(n, "count"))
 
     def __len__(self):
         return self.get_count()
@@ -105,11 +121,12 @@ class PandasDataFrame(GenericDataFrame):
     def get_memory_usage(self, config):
         return self.df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         return self.df[key]
 
     def corr(self, method):
         return self.df.corr(method=method)
+
 
     def get_internal_df(self):
         """
@@ -120,12 +137,13 @@ class PandasDataFrame(GenericDataFrame):
         """
         return self.df
 
-    def head(self,n):
+
+    def head(self, n):
         return self.df.head(n=n)
 
-    def tail(self,n):
-        return self.df.tail(n=n)
 
+    def tail(self, n):
+        return self.df.tail(n=n)
 
 
 class SparkDataFrame(GenericDataFrame):
