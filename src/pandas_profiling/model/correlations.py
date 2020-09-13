@@ -107,7 +107,10 @@ class PhiK(Correlation):
         intcols = {
             key
             for key, value in summary.items()
-            if value["type"] in [Numeric, DateTime] and 1 < value["n_distinct"]
+            # DateTime currently excluded
+            # In some use cases, it makes sense to convert it to interval
+            # See https://github.com/KaveIO/PhiK/issues/7
+            if value["type"] in [Numeric] and 1 < value["n_distinct"]
         }
 
         selcols = {
