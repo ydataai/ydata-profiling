@@ -7,7 +7,7 @@ import numpy as np
 
 from pandas_profiling.config import config
 from pandas_profiling.model.correlations import perform_check_correlation
-from pandas_profiling.model.typeset import Categorical, DateTime, Numeric, Unsupported
+from pandas_profiling.model.typeset import Categorical, Numeric, Unsupported
 
 
 @unique
@@ -63,10 +63,12 @@ class Message(object):
     def __init__(
         self,
         message_type: MessageType,
-        values: dict,
+        values=None,
         column_name: Union[str, None] = None,
         fields=None,
     ):
+        if values is None:
+            values = {}
         if fields is None:
             fields = set()
 
@@ -74,7 +76,13 @@ class Message(object):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self.anchor_id = hash(column_name)
+        self._anchor_id = None
+
+    @property
+    def anchor_id(self):
+        if self._anchor_id is None:
+            self._anchor_id = hash(self.column_name)
+        return self._anchor_id
 
     def fmt(self):
         # TODO: render in template
@@ -112,6 +120,143 @@ def check_table_messages(table: dict) -> List[Message]:
     return messages
 
 
+def numeric_warnings(summary: dict) -> List[Message]:
+    messages = []
+
+    chi_squared_threshold_num = config["vars"]["num"]["chi_squared_threshold"].get(
+        float
+    )
+
+    # Skewness
+    if warning_skewness(summary["skewness"]):
+        messages.append(
+            Message(
+                message_type=MessageType.SKEWED,
+                fields={"skewness"},
+            )
+        )
+
+    # Infinite values
+    if warning_value(summary["p_infinite"]):
+        messages.append(
+            Message(
+                message_type=MessageType.INFINITE,
+                fields={"p_infinite", "n_infinite"},
+            )
+        )
+
+    # Zeros
+    if warning_value(summary["p_zeros"]):
+        messages.append(
+            Message(
+                message_type=MessageType.ZEROS,
+                fields={"n_zeros", "p_zeros"},
+            )
+        )
+
+    if (
+        "chi_squared" in summary
+        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_num
+    ):
+        messages.append(Message(message_type=MessageType.UNIFORM))
+
+    return messages
+
+
+def categorical_warnings(summary: dict) -> List[Message]:
+    messages = []
+
+    cardinality_threshold_cat = config["vars"]["cat"]["cardinality_threshold"].get(int)
+    chi_squared_threshold_cat = config["vars"]["cat"]["chi_squared_threshold"].get(
+        float
+    )
+
+    # High cardinality
+    if summary["n_distinct"] > cardinality_threshold_cat:
+        messages.append(
+            Message(
+                message_type=MessageType.HIGH_CARDINALITY,
+                fields={"n_distinct"},
+            )
+        )
+
+    if (
+        "chi_squared" in summary
+        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_cat
+    ):
+        messages.append(Message(message_type=MessageType.UNIFORM))
+
+    if "date_warning" in summary and summary["date_warning"]:
+        messages.append(Message(message_type=MessageType.TYPE_DATE))
+
+    # Constant length
+    if "composition" in summary and summary["min_length"] == summary["max_length"]:
+        messages.append(
+            Message(
+                message_type=MessageType.CONSTANT_LENGTH,
+                fields={"composition_min_length", "composition_max_length"},
+            )
+        )
+
+    return messages
+
+
+def generic_warnings(summary: dict) -> List[Message]:
+    messages = []
+
+    # Missing
+    if warning_value(summary["p_missing"]):
+        messages.append(
+            Message(
+                message_type=MessageType.MISSING,
+                fields={"p_missing", "n_missing"},
+            )
+        )
+
+    return messages
+
+
+def supported_warnings(summary: dict) -> List[Message]:
+    messages = []
+
+    if summary["n_distinct"] == summary["n"]:
+        messages.append(
+            Message(
+                message_type=MessageType.UNIQUE,
+                fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
+            )
+        )
+    if summary["n_distinct"] == 1:
+        summary["mode"] = summary["value_counts_without_nan"].index[0]
+        messages.append(
+            Message(
+                message_type=MessageType.CONSTANT,
+                fields={"n_distinct"},
+            )
+        )
+        messages.append(
+            Message(
+                message_type=MessageType.REJECTED,
+                fields={},
+            )
+        )
+    return messages
+
+
+def unsupported_warnings(summary):
+    messages = [
+        Message(
+            message_type=MessageType.UNSUPPORTED,
+            fields={},
+        ),
+        Message(
+            message_type=MessageType.REJECTED,
+            fields={},
+        ),
+    ]
+    return messages
+
+
 def check_variable_messages(col: str, description: dict) -> List[Message]:
     """Checks individual variables for warnings.
 
@@ -124,154 +269,20 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     """
     messages = []
 
-    cardinality_threshold_cat = config["vars"]["cat"]["cardinality_threshold"].get(int)
-    chi_squared_threshold_cat = config["vars"]["cat"]["chi_squared_threshold"].get(
-        float
-    )
-    chi_squared_threshold_num = config["vars"]["num"]["chi_squared_threshold"].get(
-        float
-    )
-
-    # Missing
-    if warning_value(description["p_missing"]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.MISSING,
-                values=description,
-                fields={"p_missing", "n_missing"},
-            )
-        )
+    messages += generic_warnings(description)
 
     if description["type"] == Unsupported:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.UNSUPPORTED,
-                values=description,
-                fields={},
-            )
-        )
-    elif description["n_distinct"] <= 1:
-        description["mode"] = description["value_counts_without_nan"].index[0]
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.CONSTANT,
-                values=description,
-                fields={"n_distinct"},
-            )
-        )
-
-    if description["type"] == Unsupported or description["n_distinct"] <= 1:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.REJECTED,
-                values=description,
-                fields={},
-            )
-        )
-    elif description["n_distinct"] == description["n"]:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.UNIQUE,
-                values=description,
-                fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
-            )
-        )
-    elif description["type"] in [
-        Numeric,
-        Categorical,
-        DateTime,
-    ]:
-        # Uniformity
-        if description["type"] == Categorical:
-            # High cardinality
-            if description["n_distinct"] > cardinality_threshold_cat:
-                messages.append(
-                    Message(
-                        column_name=col,
-                        message_type=MessageType.HIGH_CARDINALITY,
-                        values=description,
-                        fields={"n_distinct"},
-                    )
-                )
-
-        if (
-            description["type"] == Categorical
-            and "chi_squared" in description
-            and description["chi_squared"]["pvalue"] > chi_squared_threshold_cat
-        ):
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
-            )
-        if (
-            description["type"] == Numeric
-            and "chi_squared" in description
-            and description["chi_squared"]["pvalue"] > chi_squared_threshold_num
-        ):
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
-            )
-
-    # Categorical
+        messages += unsupported_warnings(description)
+    if description["type"] != Unsupported:
+        messages += supported_warnings(description)
     if description["type"] == Categorical:
-        if "date_warning" in description and description["date_warning"]:
-            messages.append(
-                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
-            )
-
-        # Constant length
-        if (
-            "composition" in description
-            and description["min_length"] == description["max_length"]
-        ):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.CONSTANT_LENGTH,
-                    values=description,
-                    fields={"composition_min_length", "composition_max_length"},
-                )
-            )
-
-    # Numerical
+        messages += categorical_warnings(description)
     if description["type"] == Numeric:
-        # Skewness
-        if warning_skewness(description["skewness"]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.SKEWED,
-                    values=description,
-                    fields={"skewness"},
-                )
-            )
+        messages += numeric_warnings(description)
 
-        # Infinite values
-        if warning_value(description["p_infinite"]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.INFINITE,
-                    values=description,
-                    fields={"p_infinite", "n_infinite"},
-                )
-            )
-
-        # Zeros
-        if warning_value(description["p_zeros"]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.ZEROS,
-                    values=description,
-                    fields={"n_zeros", "p_zeros"},
-                )
-            )
-
+    for idx in range(len(messages)):
+        messages[idx].column_name = col
+        messages[idx].values = description
     return messages
 
 

@@ -105,7 +105,7 @@ class Config(object):
             copyright_year="",
             url="",
         ),
-        "samples": {"head": 0, "tail": 0},
+        "samples": {"head": 0, "tail": 0, "random": 0},
         "duplicates": {"head": 0},
         "interactions": {"targets": [], "continuous": False},
         "missing_diagrams": {

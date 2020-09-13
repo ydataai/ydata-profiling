@@ -6,42 +6,20 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
+from pandas_profiling.model.handler import get_render_map
 from pandas_profiling.model.messages import MessageType
-from pandas_profiling.model.typeset import (
-    URL,
-    Boolean,
-    Categorical,
-    DateTime,
-    File,
-    Numeric,
-    Path,
-    Unsupported,
-)
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
     Container,
     Duplicate,
-    Image,
-    Sample,
-    ToggleButton,
-    Variable,
 )
+from pandas_profiling.report.presentation.core import Image as ImageWidget
+from pandas_profiling.report.presentation.core import Sample, ToggleButton, Variable
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import get_dataset_items
-from pandas_profiling.report.structure.variables import (
-    render_boolean,
-    render_categorical,
-    render_date,
-    render_file,
-    render_generic,
-    render_image,
-    render_path,
-    render_real,
-    render_url,
-)
 
 
 def get_missing_items(summary) -> list:
@@ -58,7 +36,7 @@ def get_missing_items(summary) -> list:
     for key, item in summary["missing"].items():
         items.append(
             # TODO: Add informative caption
-            Image(
+            ImageWidget(
                 item["matrix"],
                 image_format=image_format,
                 alt=item["name"],
@@ -80,19 +58,14 @@ def render_variables_section(dataframe_summary: dict) -> list:
     Returns:
         The rendered HTML, where each row represents a variable.
     """
-    type_to_func = {
-        Boolean: render_boolean,
-        Numeric: render_real,
-        DateTime: render_date,
-        Categorical: render_categorical,
-        URL: render_url,
-        Path: render_path,
-        File: render_file,
-        Image: render_image,
-        Unsupported: render_generic,
-    }
 
     templs = []
+
+    descriptions = config["variables"]["descriptions"].get(dict)
+    show_description = config["show_variable_description"].get(bool)
+    reject_variables = config["reject_variables"].get(bool)
+
+    render_map = get_render_map()
 
     for idx, summary in dataframe_summary["variables"].items():
         # Common template variables
@@ -115,9 +88,6 @@ def render_variables_section(dataframe_summary: dict) -> list:
             if warning.column_name == idx
         }
 
-        descriptions = config["variables"]["descriptions"].get(dict)
-        show_description = config["show_variable_description"].get(bool)
-
         template_variables = {
             "varname": idx,
             "varid": hash(idx),
@@ -129,10 +99,10 @@ def render_variables_section(dataframe_summary: dict) -> list:
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(type_to_func[summary["type"]](template_variables))
+        template_variables.update(render_map[summary["type"]](template_variables))
 
         # Ignore these
-        if config["reject_variables"].get(bool):
+        if reject_variables:
             ignore = MessageType.REJECTED in warning_types
         else:
             ignore = False
@@ -206,13 +176,10 @@ def get_sample_items(sample: dict):
     Returns:
         List of sample items to show in the interface.
     """
-    items = []
-    for obj in sample:
-        items.append(
-            Sample(
-                sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption
-            )
-        )
+    items = [
+        Sample(sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption)
+        for obj in sample
+    ]
     return items
 
 
@@ -238,7 +205,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
         items = []
         for y_col, splot in y_cols.items():
             items.append(
-                Image(
+                ImageWidget(
                     splot,
                     image_format=image_format,
                     alt=f"{x_col} x {y_col}",

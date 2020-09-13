@@ -93,9 +93,6 @@ class PandasProfilingSummarizer(BaseSummarizer):
             Image: [
                 describe_image_1d,
             ],
-            # Count? Float? etc.
-            # TimeDelta: [],
-            # Complex: [describe_complex_1d],
         }
         typeset = ProfilingTypeSet()
         super().__init__(summary_map, typeset, *args, **kwargs)

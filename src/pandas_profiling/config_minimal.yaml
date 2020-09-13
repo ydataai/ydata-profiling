@@ -143,6 +143,7 @@ duplicates:
 samples:
     head: 0
     tail: 0
+    random: 0
 
 # Configuration related to the rejection of variables
 reject_variables: True
