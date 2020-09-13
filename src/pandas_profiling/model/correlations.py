@@ -163,7 +163,7 @@ def calculate_correlation(
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
         warn_correlation(correlation_name, e)
 
-    if len(correlation) <= 0:
+    if correlation is not None and len(correlation) <= 0:
         correlation = None
 
     return correlation
