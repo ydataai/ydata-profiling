@@ -1,7 +1,7 @@
 """Correlations between variables."""
 import itertools
 import warnings
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -19,7 +19,9 @@ from pandas_profiling.model.typeset import (
 
 
 class Correlation:
-    pass
+    @staticmethod
+    def compute(df, summary) -> Optional[pd.DataFrame]:
+        return NotImplemented
 
 
 class Spearman(Correlation):

@@ -113,11 +113,11 @@ class ProfileReport(SerializeReport, object):
             >>> ProfileReport(df).set_variables("html.minify_html", False)
 
         """
-        key = key.split(".")
-        for e in reversed(key[1:]):
+        keys = key.split(".")
+        for e in reversed(keys[1:]):
             value = {e: value}
 
-        self.set_variables(**{key[0]: value})
+        self.set_variables(**{keys[0]: value})
 
     def set_variables(self, **vars):
         """Change configuration variables (invalidates caches where necessary)
