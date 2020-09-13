@@ -17,7 +17,7 @@ from pandas_profiling.model.summary import (
     get_series_descriptions,
     get_table_stats,
 )
-from pandas_profiling.model.typeset import Unsupported
+from pandas_profiling.model.typeset import Numeric, Unsupported
 from pandas_profiling.version import __version__
 
 
@@ -79,7 +79,12 @@ def describe(
             for column, description in series_description.items()
         }
         supported_columns = [
-            key for key, value in variables.items() if value != Unsupported
+            column
+            for column, type_name in variables.items()
+            if type_name != Unsupported
+        ]
+        interval_columns = [
+            column for column, type_name in variables.items() if type_name == Numeric
         ]
         pbar.update()
 
@@ -88,7 +93,7 @@ def describe(
         for correlation_name in correlation_names:
             pbar.set_postfix_str(f"Calculate {correlation_name} correlation")
             correlations[correlation_name] = calculate_correlation(
-                df, variables, correlation_name
+                df, correlation_name, series_description
             )
             pbar.update()
 
@@ -99,7 +104,7 @@ def describe(
 
         # Scatter matrix
         pbar.set_postfix_str("Get scatter matrix")
-        scatter_matrix = get_scatter_matrix(df, variables)
+        scatter_matrix = get_scatter_matrix(df, interval_columns)
         pbar.update()
 
         # Table statistics

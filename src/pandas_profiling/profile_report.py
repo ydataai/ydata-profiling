@@ -1,7 +1,7 @@
 import json
 import warnings
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -29,13 +29,13 @@ class ProfileReport(SerializeReport, object):
 
     def __init__(
         self,
-        df=None,
-        minimal=False,
-        explorative=False,
-        sensitive=False,
-        dark_mode=False,
-        orange_mode=False,
-        sample=None,
+        df: Optional[pd.DataFrame] = None,
+        minimal: bool = False,
+        explorative: bool = False,
+        sensitive: bool = False,
+        dark_mode: bool = False,
+        orange_mode: bool = False,
+        sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
         **kwargs,
@@ -47,6 +47,7 @@ class ProfileReport(SerializeReport, object):
             minimal: minimal mode is a default configuration with minimal computation
             config_file: a config file (.yml), mutually exclusive with `minimal`
             lazy: compute when needed
+            sample: optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
         if config_file is not None and minimal:
@@ -63,7 +64,6 @@ class ProfileReport(SerializeReport, object):
             config.set_file(get_config("config_minimal.yaml"))
         elif not config.is_default:
             pass
-            # TODO: logging instead of warning
             # warnings.warn(
             #     "Currently configuration is not the default, if you want to restore "
             #     "default configuration, please run 'pandas_profiling.clear_config()'"
@@ -100,7 +100,7 @@ class ProfileReport(SerializeReport, object):
             # Trigger building the report structure
             _ = self.report
 
-    def set_variable(self, key, value):
+    def set_variable(self, key: str, value: Any):
         """Change a single configuration variable
 
         Args:

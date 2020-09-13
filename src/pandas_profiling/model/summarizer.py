@@ -11,11 +11,11 @@ from pandas_profiling.model.summary_algorithms import (
     describe_counts,
     describe_date_1d,
     describe_file_1d,
+    describe_generic,
     describe_image_1d,
     describe_numeric_1d,
     describe_path_1d,
     describe_supported,
-    describe_unsupported,
     describe_url_1d,
 )
 from pandas_profiling.model.typeset import (
@@ -70,7 +70,7 @@ class BaseSummarizer:
 class PandasProfilingSummarizer(BaseSummarizer):
     def __init__(self, *args, **kwargs):
         summary_map = {
-            Unsupported: [describe_counts, describe_unsupported, describe_supported],
+            Unsupported: [describe_counts, describe_generic, describe_supported],
             Numeric: [
                 describe_numeric_1d,
             ],

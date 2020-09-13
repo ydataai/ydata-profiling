@@ -36,7 +36,6 @@ class Numeric(PandasProfilingBaseType):
     def get_relations(cls):
         return [
             IdentityRelation(cls, Unsupported),
-            # TODO: parametrize
             InferenceRelation(
                 cls,
                 Categorical,

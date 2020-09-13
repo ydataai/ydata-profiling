@@ -13,6 +13,7 @@ from pandas_profiling.model.summary_helpers import (
     histogram_compute,
     image_summary,
     length_summary,
+    mad,
     path_summary,
     unicode_summary,
     url_summary,
@@ -79,8 +80,8 @@ def describe_supported(
     return series, stats
 
 
-def describe_unsupported(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
-    """Describe an unsupported series.
+def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+    """Describe generic series.
     Args:
         series: The Series to describe.
         summary: The dict containing the series description so far.
@@ -94,8 +95,8 @@ def describe_unsupported(series: pd.Series, summary: dict) -> Tuple[pd.Series, d
     summary.update(
         {
             "n": length,
-            "count": length - summary["n_missing"],
             "p_missing": summary["n_missing"] / length,
+            "count": length - summary["n_missing"],
             "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }
     )
@@ -148,13 +149,6 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     Returns:
         A dict containing calculated series description values.
     """
-
-    def mad(arr):
-        """Median Absolute Deviation: a "Robust" version of standard deviation.
-        Indices variability of the sample.
-        https://en.wikipedia.org/wiki/Median_absolute_deviation
-        """
-        return np.median(np.abs(arr - np.median(arr)))
 
     # Config
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)

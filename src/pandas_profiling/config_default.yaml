@@ -85,11 +85,7 @@ correlations:
       calculate: True
       warn_high_correlations: True
       threshold: 0.9
-    # Deprecated: do not use
-    recoded:
-      calculate: False
-      warn_high_correlations: False
-      threshold: 0.0
+
 
 # Bivariate / Pairwise relations
 interactions:

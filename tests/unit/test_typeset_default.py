@@ -276,7 +276,7 @@ def test_inference(series, type, typeset, difference):
 # Conversions in one single step
 convert_map = [
     # Model type, Relation type
-    (Categorical, Numeric, {"int_series", "mixed"}),
+    (Categorical, Numeric, {"mixed"}),
     (
         Numeric,
         Categorical,
@@ -290,7 +290,12 @@ convert_map = [
             "int_str_range",
             "str_float_non_leading_zeros",
             "str_int_zeros",
+            "str_int_leading_zeros",
             "mixed",
+            "categorical_complex_series",
+            "int_series",
+            "categorical_int_series",
+            "categorical_float_series",
         },
     ),
     (
@@ -312,6 +317,6 @@ def test_conversion(source_type, relation_type, series, member):
         series: the series to test
         type: the type to test against
     """
-    config["vars"]["num"]["low_categorical_threshold"].set(5)
+    config["vars"]["num"]["low_categorical_threshold"].set(0)
     result, message = convert(source_type, relation_type, series, member)
     assert result, message
