@@ -1,6 +1,6 @@
 from pathlib import Path
 from urllib.parse import urlsplit
-from typing import Callable
+from typing import Callable, Union
 import functools
 
 import numpy as np
@@ -56,10 +56,6 @@ def describe_supported(series: pd.Series, stats: dict) -> dict:
     # TODO: No need for duplication here, refactor
     stats["value_counts"] = stats["value_counts_without_nan"]
     stats["hashable"] = True
-    # try:
-    #    set(series_summary["value_counts_with_nan"].index)
-    # except:
-    #    series_summary["hashable"] = False
 
     distinct_count = stats.get("distinct_count_without_nan")
     stats.update(
@@ -69,7 +65,7 @@ def describe_supported(series: pd.Series, stats: dict) -> dict:
         }
     )
 
-    value_counts = stats.get("value_counts_without_nan")
+    value_counts = stats["value_counts_without_nan"]
     unique_count = value_counts.where(value_counts == 1).count()
     stats.update(
         {
@@ -82,11 +78,11 @@ def describe_supported(series: pd.Series, stats: dict) -> dict:
     return stats
 
 
-def wrap_description(fn: Callable):
+def wrap_description(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def inner(fn2: Callable):
+    def inner(fn2: Callable) -> Callable:
         @functools.wraps(fn2)
-        def inner2(series: pd.Series, series_description: dict = {}):
+        def inner2(series: pd.Series, series_description: dict = {}) -> dict:
             series_description = fn(series, series_description)
             return fn2(series, series_description)
 
@@ -95,7 +91,9 @@ def wrap_description(fn: Callable):
     return inner
 
 
-def histogram_compute(finite_values, n_unique, name="histogram"):
+def histogram_compute(
+    finite_values: pd.Series, n_unique: int, name: str = "histogram"
+) -> dict:
     stats = {}
     bins = config["plot"]["histogram"]["bins"].get(int)
     bins = "auto" if bins == 0 else min(bins, n_unique)
@@ -108,7 +106,7 @@ def histogram_compute(finite_values, n_unique, name="histogram"):
     return stats
 
 
-def numeric_stats_pandas(series: pd.Series):
+def numeric_stats_pandas(series: pd.Series) -> dict:
     return {
         "mean": series.mean(),
         "std": series.std(),
@@ -123,7 +121,7 @@ def numeric_stats_pandas(series: pd.Series):
     }
 
 
-def numeric_stats_numpy(series, series_description):
+def numeric_stats_numpy(series: pd.Series, series_description: dict) -> dict:
     present_values = series[~np.isnan(series)]
     return {
         "mean": np.mean(present_values),
@@ -141,7 +139,7 @@ def numeric_stats_numpy(series, series_description):
 
 
 @wrap_description(describe_generic)
-def describe_unsupported(series: pd.Series, series_description: dict):
+def describe_unsupported(series: pd.Series, series_description: dict) -> dict:
     """Describe an unsupported series.
     Args:
         series: The Series to describe.
@@ -168,7 +166,7 @@ def numeric_description(series: pd.Series, series_description: dict) -> dict:
         https://github.com/astropy/astropy/issues/4927
     """
 
-    def mad(arr):
+    def mad(arr: pd.Series) -> Union[int, float]:
         """Median Absolute Deviation: a "Robust" version of standard deviation.
         Indices variability of the sample.
         https://en.wikipedia.org/wiki/Median_absolute_deviation

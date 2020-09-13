@@ -2,7 +2,7 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Union, Any
 
 import numpy as np
 import pandas as pd
@@ -10,7 +10,7 @@ from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.model.handler import default_handler
+from pandas_profiling.model.handler import default_handler, ProfilingHandler
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
@@ -29,14 +29,14 @@ class ProfileReport(SerializeReport, object):
 
     def __init__(
         self,
-        df=None,
-        handler=None,
-        minimal=False,
-        explorative=False,
-        sensitive=False,
-        dark_mode=False,
-        orange_mode=False,
-        sample=None,
+        df: Optional[pd.DataFrame] = None,
+        handler: Optional[ProfilingHandler] = None,
+        minimal: bool = False,
+        explorative: bool = False,
+        sensitive: bool = False,
+        dark_mode: bool = False,
+        orange_mode: bool = False,
+        sample: Optional[int] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
         **kwargs,
@@ -99,7 +99,7 @@ class ProfileReport(SerializeReport, object):
             # Trigger building the report structure
             _ = self.report
 
-    def set_variable(self, key, value):
+    def set_variable(self, key, value: Any):
         """Change a single configuration variable
 
         Args:
@@ -214,7 +214,7 @@ class ProfileReport(SerializeReport, object):
         """
         return self.description_set["duplicates"]
 
-    def get_sample(self, df=None) -> dict:
+    def get_sample(self, df: pd.DataFrame = None) -> dict:
         """Get head/tail samples based on the configuration
 
         Args:
@@ -448,7 +448,7 @@ class ProfileReport(SerializeReport, object):
         app = get_app(app, self.title, app_widgets)
 
     @staticmethod
-    def preprocess(df):
+    def preprocess(df: pd.DataFrame):
         """Preprocess the dataframe
 
         - Appends the index to the dataframe when it contains information

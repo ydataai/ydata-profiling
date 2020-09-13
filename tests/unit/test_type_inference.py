@@ -13,14 +13,14 @@ def handler():
 
 def test_numeric_with_inf(handler):
     s = pd.Series([1, 2, 3, 6, np.inf])
-    assert handler.get_var_type(s)["type"] == Numeric
+    assert handler.typeset.infer_type(s) == Numeric
 
 
 def test_bool(handler):
     s = pd.Series([True, True, True, False, False, False], dtype=bool)
     assert s in Bool
     assert s not in Numeric
-    assert handler.get_var_type(s)["type"].__name__ == "Bool"
+    assert handler.typeset.infer_type(s).__name__ == "Bool"
 
 
 @pytest.mark.parametrize(
@@ -38,7 +38,7 @@ def test_bool(handler):
     ],
 )
 def test_bool_inference(handler, name, values):
-    assert handler.get_var_type(pd.Series(values, name=name))["type"].__name__ == "Bool"
+    assert handler.typeset.infer_type(pd.Series(values, name=name)).__name__ == "Bool"
 
 
 def test_type_inference(get_data_file, handler):
@@ -51,4 +51,4 @@ def test_type_inference(get_data_file, handler):
     typset = ProfilingTypeSet()
     print(typset.detect_type(df["device_isMobile"]))
 
-    print(handler.get_var_type(df["device_isMobile"])["type"])
+    print(handler.typeset.infer_type(df["device_isMobile"]))

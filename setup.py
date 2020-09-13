@@ -40,6 +40,9 @@ setup(
         "notebook": ["jupyter-client>=6.0.0", "jupyter-core>=4.6.3"],
         "app": ["pyqt5>=5.14.1"],
     },
+    package_data={
+        "pandas_profiling": ["py.typed"],
+    },
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

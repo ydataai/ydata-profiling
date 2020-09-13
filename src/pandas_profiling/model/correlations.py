@@ -38,7 +38,7 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     return corr
 
 
-def cramers_matrix(df: pd.DataFrame, variables: dict):
+def cramers_matrix(df: pd.DataFrame, variables: dict) -> Optional[pd.DataFrame]:
     """Calculate the Cramer's V correlation matrix.
 
     Args:
@@ -96,7 +96,7 @@ def categorical_matrix(
     return correlation_matrix
 
 
-def warn_correlation(correlation_name, error):
+def warn_correlation(correlation_name: str, error):
     warnings.warn(
         f"""There was an attempt to calculate the {correlation_name} correlation, but this failed.
 To hide this warning, disable the calculation

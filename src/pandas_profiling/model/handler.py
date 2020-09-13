@@ -1,6 +1,5 @@
 from pandas_profiling.model import summary_methods as pps
 from pandas_profiling.model import typeset as ppt
-from pandas_profiling.model.base import get_counts
 
 
 class HandlerMixin:
@@ -40,12 +39,6 @@ class ProfilingHandler(SummaryHandler, RenderHandler, MessageHandler):
     def __init__(self, typeset, **kwargs):
         super().__init__(**kwargs)
         self.typeset = typeset
-
-    def get_var_type(self, series):
-        # TODO: Refactor into two pieces, summaries and type detection
-        series_description = get_counts(series)
-        series_description["type"] = self.typeset.infer_type(series)
-        return series_description
 
 
 # TODO: Counts?

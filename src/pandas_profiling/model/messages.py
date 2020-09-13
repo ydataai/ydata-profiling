@@ -4,6 +4,7 @@ from enum import Enum, auto, unique
 from typing import List, Union
 
 import numpy as np
+import pandas as pd
 
 from pandas_profiling.config import config
 from pandas_profiling.model.correlations import perform_check_correlation
@@ -76,7 +77,7 @@ class Message(object):
         self.column_name = column_name
         self.anchor_id = hash(column_name)
 
-    def fmt(self):
+    def fmt(self) -> str:
         # TODO: render in template
         name = self.message_type.name.replace("_", " ")
         if name == "HIGH CORRELATION":
@@ -85,7 +86,7 @@ class Message(object):
             name = f'<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
         return name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         message_type = self.message_type.name
         column = self.column_name
         return f"[{message_type}] warning on column {column}"
@@ -257,7 +258,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     return messages
 
 
-def check_correlation_messages(correlations):
+def check_correlation_messages(correlations: dict) -> list:
     messages = []
 
     for corr, matrix in correlations.items():
@@ -287,8 +288,8 @@ def warning_skewness(v: float) -> bool:
     )
 
 
-def warning_type_date(series):
-    from dateutil.parser import ParserError, parse
+def warning_type_date(series: pd.Series) -> bool:
+    from dateutil.parser import ParserError, parse  # type: ignore
 
     try:
         series.apply(parse)

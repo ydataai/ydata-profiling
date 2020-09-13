@@ -1,7 +1,7 @@
 import imghdr
 import os
 import functools
-from typing import Sequence
+from typing import Sequence, Callable
 from urllib.parse import urlparse
 
 import numpy as np
@@ -32,9 +32,9 @@ class Unsupported(vis.Generic, ProfilingTypeCategories):
     pass
 
 
-def applied_to_nonnull(fn):
+def applied_to_nonnull(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def inner(series):
+    def inner(series: pd.Series) -> pd.Series:
         if series.hasnans:
             new_series = series.copy()
             notna = series.notna()
@@ -45,7 +45,7 @@ def applied_to_nonnull(fn):
     return inner
 
 
-def try_func(fn):
+def try_func(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def inner(series: pd.Series) -> bool:
         try:
@@ -56,9 +56,14 @@ def try_func(fn):
     return inner
 
 
-def numeric_is_category(series):
+def numeric_is_category(series: pd.Series) -> bool:
     n_unique = series.nunique()
     return n_unique < config["vars"]["num"]["low_categorical_threshold"].get(int)
+
+
+@func_nullable_series_contains
+def series_is_string(series: pd.Series) -> bool:
+    return all(isinstance(v, str) for v in series)
 
 
 class Category(PandasProfilingBaseType):
@@ -83,19 +88,9 @@ class Category(PandasProfilingBaseType):
 
     @classmethod
     def contains_op(cls, series: pd.Series) -> bool:
-        is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
-            series
-        )  # or pdt.is_string_dtype(series)
-        if is_valid_dtype:
+        if pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(series):
             return True
-        # elif pdt.is_string_dtype(series):
-        #     return False if any(v in {True, False} for v in series) else True
-
-        if series.hasnans:
-            series = series.dropna()
-            if series.empty:
-                return False
-        return all(isinstance(v, str) for v in series)
+        return series_is_string(series)
 
 
 class Path(PandasProfilingBaseType):
@@ -157,12 +152,10 @@ class URL(PandasProfilingBaseType):
             return False
 
 
-def is_date(series):
-    try:
-        _ = pd.to_datetime(series)
-        return True
-    except:
-        return False
+@try_func
+def is_date(series: pd.Series) -> bool:
+    _ = pd.to_datetime(series)
+    return True
 
 
 class Date(PandasProfilingBaseType):
@@ -181,14 +174,11 @@ class Date(PandasProfilingBaseType):
         return pd.api.types.is_datetime64_dtype(series)
 
 
+@try_func
 def category_is_numeric(series):
-    category_threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
-    try:
-        numeric_is_category = numeric_is_category(pd.to_numeric(series))
-    except:
+    if pdt.is_categorical_dtype(series):
         return False
-
-    return not numeric_is_category
+    return not numeric_is_category(pd.to_numeric(series))
 
 
 class Numeric(PandasProfilingBaseType):
@@ -198,12 +188,12 @@ class Numeric(PandasProfilingBaseType):
     def get_relations(cls) -> Sequence[TypeRelation]:
         return [
             IdentityRelation(cls, Unsupported),
-            InferenceRelation(
-                cls,
-                Category,
-                relationship=category_is_numeric,
-                transformer=pd.to_numeric,
-            ),
+            # InferenceRelation(
+            #    cls,
+            #    Category,
+            #    relationship=category_is_numeric,
+            #    transformer=pd.to_numeric,
+            # ),
         ]
 
     @classmethod
@@ -212,12 +202,10 @@ class Numeric(PandasProfilingBaseType):
         return not pdt.is_bool_dtype(series) and pdt.is_numeric_dtype(series)
 
 
+@try_func
 def string_is_complex(series) -> bool:
-    try:
-        complex_gen = (np.complex(x) for x in series)
-        return any(x.imag != 0 for x in complex_gen)
-    except:
-        return False
+    complex_gen = (np.complex(x) for x in series)
+    return any(x.imag != 0 for x in complex_gen)
 
 
 class Complex(PandasProfilingBaseType):
@@ -253,26 +241,20 @@ PP_bool_map = {
 }
 
 
-def string_test_maker():
-    bool_map_keys = list(PP_bool_map.keys())
-
+def string_is_bool(series) -> bool:
+    @try_func
     @func_nullable_series_contains
-    def inner(series):
-        if pdt.is_categorical_dtype(series):
-            return False
-        try:
-            return series.str.lower().isin(bool_map_keys).all()
-        except:
-            return False
+    def tester(s: pd.Series) -> bool:
+        return s.str.lower().isin(PP_bool_map.keys()).all()
 
-    return inner
+    if pdt.is_categorical_dtype(series):
+        return False
 
-
-string_is_bool = string_test_maker()
+    return tester(series)
 
 
 @applied_to_nonnull
-def string_to_bool(series):
+def string_to_bool(series: pd.Series) -> pd.Series:
     return series.str.lower().map(PP_bool_map)
 
 
@@ -310,10 +292,7 @@ class Bool(PandasProfilingBaseType):
     @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
         if pdt.is_object_dtype(series):
-            try:
-                return series.isin({True, False}).all()
-            except:
-                return False
+            return try_func(lambda s: s.isin({True, False}).all())(series)
 
         return pdt.is_bool_dtype(series) and not pdt.is_categorical_dtype(series)
 
