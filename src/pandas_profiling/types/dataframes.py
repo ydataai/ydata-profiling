@@ -127,20 +127,17 @@ class PandasDataFrame(GenericDataFrame):
     def corr(self, method):
         return self.df.corr(method=method)
 
-
     def get_internal_df(self):
         """
-        This function be deprecated once all functionalities are properly wrapped!!
+        This function should be deprecated once all functionalities are properly wrapped!!
 
         Returns:
 
         """
         return self.df
 
-
     def head(self, n):
         return self.df.head(n=n)
-
 
     def tail(self, n):
         return self.df.tail(n=n)

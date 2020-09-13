@@ -52,7 +52,7 @@ class ProfileReport(SerializeReport, object):
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
             )
-
+        print("USING LOCAL")
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 

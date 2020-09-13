@@ -8,9 +8,9 @@ from pandas_profiling import config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
+from pandas_profiling.types.dataframes import PandasDataFrame
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
-
 
 testdata = [
     # Unique values
@@ -518,12 +518,13 @@ def expected_results():
     }
 
 
-def test_describe_df(describe_data, expected_results):
+def test_describe_pandas_df(describe_data, expected_results):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
     describe_data_frame = pd.DataFrame(describe_data)
     describe_data_frame["somedate"] = pd.to_datetime(describe_data_frame["somedate"])
+    describe_data_frame_wrapped = PandasDataFrame(describe_data_frame)
 
-    results = describe("title", describe_data_frame)
+    results = describe("title", describe_data_frame_wrapped)
 
     assert {
         "analysis",
@@ -570,10 +571,17 @@ def test_describe_df(describe_data, expected_results):
             ), "Histogram missing for column {} ".format(col)
 
 
-def test_describe_empty():
+def test_describe_empty_wrapped_pandas():
     empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
-        describe("", empty_frame)
+        describe("", PandasDataFrame(empty_frame))
+
+
+def test_describe_unwrapped_pandas():
+    empty_frame = pd.DataFrame()
+    with pytest.raises(AttributeError):
+        with pytest.warns(UserWarning):
+            describe("", empty_frame)
 
 
 def test_describe_list():
