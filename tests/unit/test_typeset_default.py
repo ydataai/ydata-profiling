@@ -51,8 +51,8 @@ contains_map = {
         "complex_series_float",
     },
     Categorical: {
-        "categorical_int_series",
         "categorical_float_series",
+        "categorical_int_series",
         "categorical_string_series",
         "categorical_complex_series",
         "categorical_char",
@@ -104,7 +104,6 @@ contains_map = {
 if int(pd.__version__[0]) >= 1:
     contains_map[Categorical].add("string_dtype_series")
 
-contains_map[Categorical] = contains_map[Categorical].union(contains_map[Boolean])
 contains_map[Unsupported] = {
     "nan_series",
     "nan_series_2",
@@ -137,7 +136,6 @@ contains_map[Unsupported] = {
     "empty_bool",
     "empty_float",
     "empty_int64",
-    "empty_object",
 }
 
 
@@ -173,7 +171,7 @@ inference_map = {
     "float_series5": Numeric,
     "float_series6": Numeric,
     "complex_series_float": Numeric,
-    "categorical_float_series": Categorical,
+    "categorical_float_series": Numeric,
     "float_with_inf": Numeric,
     "inf_series": Numeric,
     "nan_series": Unsupported,
@@ -232,7 +230,6 @@ inference_map = {
     "textual_float": Numeric,
     "textual_float_nan": Numeric,
     "empty": Unsupported,
-    "empty_object": Unsupported,
     "empty_float": Unsupported,
     "empty_bool": Unsupported,
     "empty_int64": Unsupported,
@@ -279,7 +276,6 @@ def test_inference(series, type, typeset, difference):
 # Conversions in one single step
 convert_map = [
     # Model type, Relation type
-    (DateTime, Categorical, {"string_date"}),
     (Categorical, Numeric, {"int_series", "mixed"}),
     (
         Numeric,
@@ -302,9 +298,6 @@ convert_map = [
         Categorical,
         {
             "string_bool_nan",
-            "bool_series",
-            "bool_series2",
-            "bool_series3",
             "nullable_bool_series",
         },
     ),
@@ -319,5 +312,6 @@ def test_conversion(source_type, relation_type, series, member):
         series: the series to test
         type: the type to test against
     """
+    config["vars"]["num"]["low_categorical_threshold"].set(5)
     result, message = convert(source_type, relation_type, series, member)
     assert result, message

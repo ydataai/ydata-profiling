@@ -19,7 +19,7 @@ def test_decorator(get_data_file):
 
 
 def test_empty_decorator():
-    df = pd.DataFrame().profile_report()
+    df = pd.DataFrame().profile_report(progress_bar=False)
     with pytest.raises(ValueError) as e:
         df.get_description()
 

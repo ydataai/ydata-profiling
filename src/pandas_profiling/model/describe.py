@@ -78,6 +78,9 @@ def describe(
             column: description["type"]
             for column, description in series_description.items()
         }
+        supported_columns = [
+            key for key, value in variables.items() if value != Unsupported
+        ]
         pbar.update()
 
         # Get correlations
@@ -126,12 +129,6 @@ def describe(
 
         # Duplicates
         pbar.set_postfix_str("Locating duplicates")
-        supported_columns = [
-            key
-            for key, value in series_description.items()
-            if value["type"] != Unsupported
-        ]
-
         duplicates = get_duplicates(df, supported_columns)
         pbar.update()
 

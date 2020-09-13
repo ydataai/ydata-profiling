@@ -1,5 +1,4 @@
 import functools
-from typing import Union
 
 import pandas as pd
 from pandas.api import types as pdt
@@ -10,21 +9,6 @@ from pandas_profiling.config import config
 
 def is_nullable(series) -> bool:
     return series.count() > 0
-
-
-def na_transform(series) -> pd.Series:
-    if series.hasnans:
-        series = series.dropna()
-    return series
-
-
-def na_check_and_go(series) -> Union[bool, pd.Series]:
-    if series.hasnans:
-        series = series.dropna()
-        if series.empty:
-            return False
-
-    return series
 
 
 def applied_to_nonnull(fn):
@@ -51,22 +35,7 @@ def try_func(fn):
     return inner
 
 
-def string_test_maker():
-    bool_map_keys = list(PP_bool_map.keys())
-
-    @func_nullable_series_contains
-    def inner(series):
-        if pdt.is_categorical_dtype(series):
-            return False
-
-        try:
-            return series.str.lower().isin(bool_map_keys).all()
-        except:
-            return False
-
-    return inner
-
-
+# TODO: config!
 PP_bool_map = {
     "yes": True,
     "no": False,
@@ -79,7 +48,16 @@ PP_bool_map = {
 }
 
 
-string_is_bool = string_test_maker()
+def string_is_bool(series) -> bool:
+    @try_func
+    @func_nullable_series_contains
+    def tester(s: pd.Series) -> bool:
+        return s.str.lower().isin(PP_bool_map.keys()).all()
+
+    if pdt.is_categorical_dtype(series):
+        return False
+
+    return tester(series)
 
 
 @applied_to_nonnull
@@ -87,21 +65,21 @@ def string_to_bool(series):
     return series.str.lower().map(PP_bool_map)
 
 
-def to_bool(series: pd.Series) -> pd.Series:
-    if series.hasnans:
-        return series.astype("Bool")
-    else:
-        return series.astype(bool)
-
-
 def numeric_is_category(series):
     n_unique = series.nunique()
     threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
+    # TODO <= threshold OR < threshold?
     return 1 <= n_unique <= threshold
 
 
+@applied_to_nonnull
 def to_category(series):
-    return applied_to_nonnull(series.astype(str))
+    return series.astype(str)
+
+
+@func_nullable_series_contains
+def series_is_string(series: pd.Series) -> bool:
+    return all(isinstance(v, str) for v in series)
 
 
 def category_is_numeric(series):
@@ -116,12 +94,7 @@ def category_is_numeric(series):
     except:
         return False
 
-    n_unique = series.nunique()
-    # state['n_unique'] = n_unique
-    threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
-    if 1 <= n_unique <= threshold:
-        return False
-    return True
+    return not numeric_is_category(series)
 
 
 def category_to_numeric(series):
@@ -132,17 +105,19 @@ hasnan_bool_name = "boolean" if int(pd.__version__.split(".")[0]) >= 1 else "Boo
 
 
 def to_bool(series: pd.Series) -> pd.Series:
-    # TODO: get from dict
-    hasnans = True
-    return series.astype(hasnan_bool_name if hasnans else bool)
+    dtype = hasnan_bool_name if series.hasnans else bool
+    return series.astype(dtype)
 
 
+@func_nullable_series_contains
 def object_is_bool(series: pd.Series) -> bool:
     if pdt.is_object_dtype(series):
-        bool_set = {True, False} #, None, np.nan, pd.NA}
+        bool_set = {True, False}
+        # TODO: try func? is in?
         try:
             ret = all(item in bool_set for item in series)
         except:
             ret = False
 
         return ret
+    return False

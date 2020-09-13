@@ -15,7 +15,7 @@ from pandas_profiling.model.typeset_relations import (
     category_is_numeric,
     category_to_numeric,
     numeric_is_category,
-    object_is_bool,
+    series_is_string,
     string_is_bool,
     string_to_bool,
     to_bool,
@@ -27,7 +27,7 @@ class PandasProfilingBaseType(VisionsBaseType):
     pass
 
 
-class Unsupported(visions.Generic):
+class Unsupported(PandasProfilingBaseType, visions.Generic):
     pass
 
 
@@ -46,15 +46,9 @@ class Numeric(PandasProfilingBaseType):
         ]
 
     @classmethod
+    @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
-        dcheck = not pdt.is_bool_dtype(series) and pdt.is_numeric_dtype(series)
-        if not dcheck:
-            return False
-
-        if series.hasnans and series.count() == 0:
-            return False
-
-        return True
+        return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
 
 
 def is_date(series):
@@ -67,13 +61,6 @@ def is_date(series):
 
 def to_date(series):
     return pd.to_datetime(series)
-
-
-def one_go_date(series):
-    try:
-        return pd.to_datetime(series)
-    except:
-        return False
 
 
 class DateTime(PandasProfilingBaseType):
@@ -107,27 +94,28 @@ class Categorical(PandasProfilingBaseType):
     @classmethod
     @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
-        is_valid_dtype = pdt.is_categorical_dtype(series) or pdt.is_bool_dtype(series)
+        is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
+            series
+        )
         if is_valid_dtype:
             return True
 
-        return all(isinstance(v, (str, bool)) for v in series)
+        return series_is_string(series)
 
 
 class Boolean(PandasProfilingBaseType):
     @classmethod
     def get_relations(cls):
         return [
-            IdentityRelation(cls, Categorical),
-            # TODO: optional
-            # TODO: helper type to not have two relations
+            IdentityRelation(cls, Unsupported),
+            # TODO: optional + values
             InferenceRelation(
-                cls, Categorical, relationship=object_is_bool, transformer=to_bool
+                cls,
+                Categorical,
+                relationship=string_is_bool,
+                transformer=lambda s: to_bool(string_to_bool(s)),
             ),
-            InferenceRelation(
-                cls, Categorical, relationship=string_is_bool, transformer=string_to_bool
-            ),
-
+            # TODO: optional numeric
         ]
 
     @classmethod
@@ -189,12 +177,12 @@ class File(PandasProfilingBaseType):
 
 class Image(PandasProfilingBaseType):
     @classmethod
-    @nullable_series_contains
     def get_relations(cls):
         relations = [IdentityRelation(cls, File)]
         return relations
 
     @classmethod
+    @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
         return all(imghdr.what(p) for p in series)
 

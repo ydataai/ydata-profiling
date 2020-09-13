@@ -25,7 +25,7 @@ from tests.unit.utils import (
 
 def get_profiling_series():
     data = {
-        "empty": [],
+        "empty": pd.Series([], dtype=object),
         # Boolean
         "booleans_type": [False, True, True],
         "booleans_type_nan": [False, True, np.nan],
@@ -131,10 +131,6 @@ def get_profiling_series():
     return [pd.Series(values, name=key) for key, values in data.items()]
 
 
-# return {
-#     "date_str": Categorical                   DateTime
-# }
-
 series = get_profiling_series()
 
 typeset = ProfilingTypeSet()
@@ -155,12 +151,6 @@ contains_map = {
         "cat",
         "s2",
         "date_str",
-    },
-    Boolean: {
-        "bool_tf",
-        "bool_tf_with_nan",
-        "booleans_type",
-        "booleans_type_nan",
         "str_yes_no",
         "str_yes_no_mixed",
         "str_yes_no_nan",
@@ -168,21 +158,16 @@ contains_map = {
         "str_true_false_none",
         "str_true_false_nan",
     },
+    Boolean: {
+        "bool_tf",
+        "bool_tf_with_nan",
+        "booleans_type",
+        "booleans_type_nan",
+    },
     DateTime: {
         "somedate",
     },
-}
-
-# if int(pd.__version__[0]) >= 1:
-#     contains_map[Categorical].add("string_dtype_series")
-
-# contains_map[Categorical] = contains_map[Categorical].union(contains_map[Boolean])
-contains_map[Unsupported] = {
-    "empty",
-    "list",
-    "mixed",
-    "dict",
-    "tuple"
+    Unsupported: {"empty", "list", "mixed", "dict", "tuple"},
 }
 
 
@@ -201,7 +186,34 @@ def test_contains(series, type, member):
 
 
 inference_map = {
-    # "int_series": Numeric,
+    "x": Numeric,
+    "y": Numeric,
+    "s1": Numeric,
+    "num_with_inf": Numeric,
+    "integers": Numeric,
+    "integers_nan": Numeric,
+    "bool_01": Numeric,
+    "bool_01_with_nan": Numeric,
+    "id": Categorical,
+    "cat": Categorical,
+    "s2": Categorical,
+    "date_str": Categorical,
+    "bool_tf": Boolean,
+    "bool_tf_with_nan": Boolean,
+    "booleans_type": Boolean,
+    "booleans_type_nan": Boolean,
+    "str_yes_no": Boolean,
+    "str_yes_no_mixed": Boolean,
+    "str_yes_no_nan": Boolean,
+    "str_true_false": Boolean,
+    "str_true_false_none": Boolean,
+    "str_true_false_nan": Boolean,
+    "somedate": DateTime,
+    "empty": Unsupported,
+    "list": Unsupported,
+    "mixed": Unsupported,
+    "dict": Unsupported,
+    "tuple": Unsupported,
 }
 
 
@@ -219,31 +231,34 @@ def test_inference(series, type, typeset, difference):
 
 
 # Conversions in one single step
-convert_map = [
-    # Model type, Relation type
-    (Categorical, Numeric, {}),
-    (
-        Numeric,
-        Categorical,
-        {
-        },
-    ),
-    (
-        Boolean,
-        Categorical,
-        {
-        },
-    ),
-]
-
-
-@pytest.mark.parametrize(**get_convert_cases(series, convert_map, typeset))
-def test_conversion(source_type, relation_type, series, member):
-    """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type"
-
-    Args:
-        series: the series to test
-        type: the type to test against
-    """
-    result, message = convert(source_type, relation_type, series, member)
-    assert result, message
+# convert_map = [
+#     # Model type, Relation type
+#     (Categorical, Numeric, {}),
+#     (
+#         Numeric,
+#         Categorical,
+#         {
+#         },
+#     ),
+#     (
+#         Boolean,
+#         Categorical,
+#         {
+#         },
+#     ),
+# #return {
+# #    "date_str": Categorical                   DateTime
+# # }
+# ]
+#
+#
+# @pytest.mark.parametrize(**get_convert_cases(series, convert_map, typeset))
+# def test_conversion(source_type, relation_type, series, member):
+#     """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type"
+#
+#     Args:
+#         series: the series to test
+#         source_type: the type to test against
+#     """
+#     result, message = convert(source_type, relation_type, series, member)
+#     assert result, message

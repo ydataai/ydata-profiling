@@ -4,6 +4,8 @@ include requirements*.txt
 # Include license, Readme, etc.
 include LICENSE
 include *.md
+include mypy.ini
+include src/pandas_profiling/py.typed
 
 # Styles
 include src/pandas_profiling/visualisation/*.mplstyle

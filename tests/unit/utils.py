@@ -1,4 +1,4 @@
-# Temporarily until visions 0.5.1 is released
+# Temporarily until visions' tests are released
 import datetime
 import os
 import pathlib
@@ -8,6 +8,8 @@ from urllib.parse import urlparse
 
 import numpy as np
 import pandas as pd
+
+from pandas_profiling.model.typeset import PandasProfilingBaseType
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -22,7 +24,7 @@ def get_series():
         pd.Series([1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0], name="int_series_boolean"),
         # Count
         pd.Series(np.array([1, 2, 3, 4], dtype=np.uint32), name="np_uint32"),
-        pd.Series(np.array([1, 2, 3, 4], dtype="UInt32"), name="pd_uint32"),
+        pd.Series(np.array([1, 2, 3, 4]), dtype="UInt32", name="pd_uint32"),
         # Categorical
         pd.Series([1, 2, 3], name="categorical_int_series", dtype="category"),
         pd.Series(
@@ -334,10 +336,9 @@ def get_series():
         # IP
         pd.Series(["127.0.0.1", "127.0.0.1"], name="ip_str"),
         # Empty
-        pd.Series([], name="empty"),
+        pd.Series([], name="empty", dtype="object"),
         pd.Series([], name="empty_float", dtype=float),
         pd.Series([], name="empty_int64", dtype="Int64"),
-        pd.Series([], name="empty_object", dtype="object"),
         pd.Series([], name="empty_bool", dtype=bool),
         # IP
         pd.Series(["127.0.0.1", "127.0.0.1"], name="ip_str"),
@@ -449,7 +450,7 @@ def all_series_included(series_list, series_map):
 
 
 def get_contains_cases(
-    _test_suite, _series_map: Dict[Type[VisionsBaseType], Set[str]], typeset
+    _test_suite, _series_map: Dict[Type[PandasProfilingBaseType], Set[str]], typeset
 ):
     """Parametrize contains tests
 

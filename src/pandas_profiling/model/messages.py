@@ -124,6 +124,14 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
     """
     messages = []
 
+    cardinality_threshold_cat = config["vars"]["cat"]["cardinality_threshold"].get(int)
+    chi_squared_threshold_cat = config["vars"]["cat"]["chi_squared_threshold"].get(
+        float
+    )
+    chi_squared_threshold_num = config["vars"]["num"]["chi_squared_threshold"].get(
+        float
+    )
+
     # Missing
     if warning_value(description["p_missing"]):
         messages.append(
@@ -181,9 +189,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         # Uniformity
         if description["type"] == Categorical:
             # High cardinality
-            if description["n_distinct"] > config["vars"]["cat"][
-                "cardinality_threshold"
-            ].get(int):
+            if description["n_distinct"] > cardinality_threshold_cat:
                 messages.append(
                     Message(
                         column_name=col,
@@ -193,17 +199,18 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                     )
                 )
 
-            chi_squared_threshold = config["vars"]["cat"]["chi_squared_threshold"].get(
-                float
-            )
-        else:
-            chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
-                float
-            )
-
         if (
-            "chi_squared" in description
-            and description["chi_squared"]["pvalue"] > chi_squared_threshold
+            description["type"] == Categorical
+            and "chi_squared" in description
+            and description["chi_squared"]["pvalue"] > chi_squared_threshold_cat
+        ):
+            messages.append(
+                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
+            )
+        if (
+            description["type"] == Numeric
+            and "chi_squared" in description
+            and description["chi_squared"]["pvalue"] > chi_squared_threshold_num
         ):
             messages.append(
                 Message(column_name=col, message_type=MessageType.UNIFORM, values={})

@@ -3,8 +3,8 @@ from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
-from pandas.api.types import is_categorical_dtype
 from pandas.core.arrays.integer import _IntegerDtype
+from visions.utils import func_nullable_series_contains
 
 from pandas_profiling.config import config
 from pandas_profiling.model.summary_helpers import (
@@ -28,18 +28,20 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
     """
-    if is_categorical_dtype(series):
-        series = series.cat.remove_unused_categories()
-
-    # TODO: how bad do we need all of this?
     value_counts_with_nan = series.value_counts(dropna=False)
-    # TODO: keep NaN counts...
-    value_counts_without_nan = (
-        value_counts_with_nan.reset_index().dropna().set_index("index").iloc[:, 0]
-    )
+    value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
+
+    null_index = value_counts_with_nan.index.isnull()
+    if null_index.any():
+        n_missing = value_counts_with_nan[null_index].sum()
+        value_counts_without_nan = value_counts_with_nan[~null_index]
+    else:
+        n_missing = 0
+        value_counts_without_nan = value_counts_with_nan
 
     summary.update(
         {
+            "n_missing": n_missing,
             "value_counts_without_nan": value_counts_without_nan,
         }
     )
@@ -62,7 +64,7 @@ def describe_supported(
     count = series_description["count"]
 
     value_counts = series_description["value_counts_without_nan"]
-    distinct_count = value_counts.count()
+    distinct_count = len(value_counts)
     unique_count = value_counts.where(value_counts == 1).count()
 
     stats = {
@@ -89,16 +91,11 @@ def describe_unsupported(series: pd.Series, summary: dict) -> Tuple[pd.Series, d
     # number of observations in the Series
     length = len(series)
 
-    # number of non-NaN observations in the Series
-    count = series.count()
-
     summary.update(
         {
             "n": length,
-            "count": count,
-            # TODO: use value count NaN?
-            "n_missing": length - count,
-            "p_missing": 1 - count / length,
+            "count": length - summary["n_missing"],
+            "p_missing": summary["n_missing"] / length,
             "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }
     )
@@ -107,6 +104,9 @@ def describe_unsupported(series: pd.Series, summary: dict) -> Tuple[pd.Series, d
 
 
 def numeric_stats_pandas(series: pd.Series):
+    # TODO: calculate from histogram (i.e. value_counts)
+    #     summary["min"] = summary["value_counts_without_nan"].index.min()
+    # vc.index.min()
     return {
         "mean": series.mean(),
         "std": series.std(),
@@ -122,26 +122,29 @@ def numeric_stats_pandas(series: pd.Series):
 
 
 def numeric_stats_numpy(present_values, series, series_description):
+    # TODO: calculate more from histogram (i.e. value_counts)
+    vc = series_description["value_counts_without_nan"]
+    index_values = vc.index.values
     return {
         "mean": np.mean(present_values),
         "std": np.std(present_values, ddof=1),
         "variance": np.var(present_values, ddof=1),
-        "min": np.min(present_values),
-        "max": np.max(present_values),
+        "min": np.min(index_values),
+        "max": np.max(index_values),
         # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
         "kurtosis": series.kurt(),
         # Unbiased skew normalized by N-1
         "skewness": series.skew(),
         "sum": np.sum(present_values),
-        "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
     }
 
 
+@func_nullable_series_contains
 def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a numeric series.
     Args:
         series: The Series to describe.
-        series_description: The dict containing the series description so far.
+        summary: The dict containing the series description so far.
     Returns:
         A dict containing calculated series description values.
     """
@@ -157,26 +160,29 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
-    n_infinite = ((series == np.inf) | (series == -np.inf)).sum()
+    summary["n_infinite"] = 0
+    summary["n_zeros"] = 0
+    for value in [np.inf, -np.inf]:
+        if value in summary["value_counts_without_nan"].index:
+            summary["n_infinite"] += summary["value_counts_without_nan"].loc[value]
+
+    if 0 in summary["value_counts_without_nan"].index:
+        summary["n_zeros"] = summary["value_counts_without_nan"].loc[0]
 
     stats = summary
 
     if isinstance(series.dtype, _IntegerDtype):
         stats.update(numeric_stats_pandas(series))
-        present_values = series.loc[series.notnull()].astype(str(series.dtype).lower())
-        stats["n_zeros"] = summary["count"] - np.count_nonzero(present_values)
+        present_values = series.astype(str(series.dtype).lower())
         finite_values = present_values
     else:
-        values = series.values
-        present_values = values[~np.isnan(values)]
-        finite_values = values[np.isfinite(values)]
+        present_values = series.values
+        finite_values = present_values[np.isfinite(present_values)]
         stats.update(numeric_stats_numpy(present_values, series, summary))
 
     stats.update(
         {
             "mad": mad(present_values),
-            "p_infinite": n_infinite / summary["n"],
-            "n_infinite": n_infinite,
         }
     )
 
@@ -193,6 +199,7 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     stats["iqr"] = stats["75%"] - stats["25%"]
     stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
     stats["p_zeros"] = stats["n_zeros"] / summary["n"]
+    stats["p_infinite"] = summary["n_infinite"] / summary["n"]
 
     stats["monotonic_increase"] = series.is_monotonic_increasing
     stats["monotonic_decrease"] = series.is_monotonic_decreasing
@@ -208,6 +215,7 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     return series, stats
 
 
+@func_nullable_series_contains
 def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a date series.
 
@@ -229,7 +237,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
 
     summary["range"] = summary["max"] - summary["min"]
 
-    values = series[series.notnull()].values.astype(np.int64) // 10 ** 9
+    values = series.values.astype(np.int64) // 10 ** 9
 
     if chi_squared_threshold > 0.0:
         summary["chi_squared"] = chi_square(values)
@@ -238,6 +246,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
     return values, summary
 
 
+@func_nullable_series_contains
 def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a categorical series.
 
@@ -254,7 +263,7 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
     # coerce_str_to_date = config["vars"]["cat"]["coerce_str_to_date"].get(bool)
 
     # Make sure we deal with strings (Issue #100)
-    series = series[series.notna()].astype(str)
+    series = series.astype(str)
 
     # Only run if at least 1 non-missing value
     value_counts = summary["value_counts_without_nan"]

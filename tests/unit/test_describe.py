@@ -80,7 +80,7 @@ def describe_data():
         "cat": [
             "a",
             "long text value",
-            u"Élysée",
+            "Élysée",
             "",
             None,
             "some <b> B.s </div> </div> HTML stuff",
@@ -89,7 +89,7 @@ def describe_data():
             "c",
         ],
         "s1": np.ones(9),
-        "s2": [u"some constant text $ % value {obj} " for _ in range(1, 10)],
+        "s2": ["some constant text $ % value {obj} " for _ in range(1, 10)],
         "somedate": [
             datetime.date(2011, 7, 4),
             datetime.datetime(2022, 1, 1, 13, 57),
@@ -391,6 +391,9 @@ def expected_results():
             "count": 8,
             "cv": check_is_NaN,
             "n_distinct": 2,
+            "p_distinct": 2 / 8,
+            "n_missing": 1,
+            "p_missing": 1 / 9,
             "histogram": check_is_NaN,
             "iqr": check_is_NaN,
             "is_unique": False,
@@ -399,9 +402,6 @@ def expected_results():
             "max": check_is_NaN,
             "min": check_is_NaN,
             "mini_histogram": check_is_NaN,
-            "n_missing": 1,
-            "p_missing": 1 / 9,
-            "p_distinct": 2 / 9,
             "p_zeros": check_is_NaN,
             "range": check_is_NaN,
             "skewness": check_is_NaN,
@@ -433,29 +433,29 @@ def expected_results():
         "bool_01_with_nan": {
             "5%": 0,
             "25%": 0,
-            "50%": 0,
+            "50%": 0.5,
             "75%": 1,
             "95%": 1,
             "n": 9,
             "count": 8,
-            "cv": 1.3801311186847085,
+            "cv": 1.0690449676496976,
             "n_distinct": 2,
             "iqr": 1.0,
             "is_unique": False,
-            "kurtosis": -2.24,
-            "mad": 0.0,
+            "kurtosis": -2.8000000000000003,
+            "mad": 0.5,
             "max": 1,
             "min": 0,
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_distinct": 2 / 8,
-            "n_zeros": 5,
-            "p_zeros": 5 / 9,
+            "n_zeros": 4,
+            "p_zeros": 4 / 9,
             "range": 1.0,
-            "skewness": 0.6440611887195306,
-            "std": 0.5175491695067657,
-            "sum": 3.0,
-            "variance": 0.26785714285714285,
+            "skewness": 0.0,
+            "std": 0.5345224838248488,
+            "sum": 4.0,
+            "variance": 0.2857142857142857,
         },
         "list": {
             "count": 9,
@@ -526,23 +526,15 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
     # Loop over variables
     for k, v in expected_results[column].items():
         if v == check_is_NaN:
-            assert (
-                k not in results["variables"][column]
-            ) == True, "Value `{}` for key `{}` in columnumn `{}` is not NaN".format(
-                results["variables"][column][k], k, column
-            )
+            test_condition = k not in results["variables"][column]
         elif isinstance(v, float):
-            assert (
-                pytest.approx(v) == results["variables"][column][k]
-            ), "Value `{}` for key `{}` in columnumn `{}` is not NaN".format(
-                results["variables"][column][k], k, column
-            )
+            test_condition = pytest.approx(v) == results["variables"][column][k]
         else:
-            assert (
-                v == results["variables"][column][k]
-            ), "Value `{}` for key `{}` in columnumn `{}` is not NaN".format(
-                results["variables"][column][k], k, column
-            )
+            test_condition = v == results["variables"][column][k]
+
+        assert (
+            test_condition
+        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
 
     if results["variables"][column]["type"] in [Numeric, DateTime]:
         assert (

@@ -39,7 +39,7 @@ def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     return corr
 
 
-def cramers_matrix(df: pd.DataFrame, variables: dict):
+def cramers_matrix(df: pd.DataFrame, variables: dict) -> Optional[pd.DataFrame]:
     """Calculate the Cramer's V correlation matrix.
 
     Args:
@@ -71,7 +71,8 @@ def categorical_matrix(
         column_name: df[column_name]
         for column_name, variable_type in variables.items()
         if variable_type == Categorical
-        # TODO: solve in type system
+        # TODO: use n_distinct
+        # TODO: precompute?
         and config["categorical_maximum_correlation_distinct"].get(int)
         >= df[column_name].nunique()
         > 1
@@ -97,7 +98,7 @@ def categorical_matrix(
     return correlation_matrix
 
 
-def warn_correlation(correlation_name, error):
+def warn_correlation(correlation_name: str, error):
     warnings.warn(
         f"""There was an attempt to calculate the {correlation_name} correlation, but this failed.
 To hide this warning, disable the calculation
@@ -140,6 +141,7 @@ def calculate_correlation(
             # Phi_k does not filter non-numerical with high cardinality
             selcols = []
             intcols = []
+            # TODO: replace with typeset logic
             for col in df.columns.tolist():
                 try:
                     tmp = (
