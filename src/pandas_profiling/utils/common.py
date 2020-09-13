@@ -10,7 +10,7 @@ from typing import Mapping
 
 
 def update(d: dict, u: Mapping) -> dict:
-    """ Recursively update a dict.
+    """Recursively update a dict.
 
     Args:
         d: Dictionary to update.

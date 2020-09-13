@@ -84,7 +84,7 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
 
 
 def main(args=None) -> None:
-    """ Run the `pandas_profiling` package.
+    """Run the `pandas_profiling` package.
 
     Args:
       args: Arguments for the programme (Default value=None).

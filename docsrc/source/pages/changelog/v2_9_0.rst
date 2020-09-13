@@ -1,0 +1,24 @@
+Changelog v2.9.0
+----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Description per variable now possible (see the metadata page) or the Census example.
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+- Fixed bug for small DataFrames with unused categories.
+- Fixed bug where parallelization would have side effects.
+- Removed warning where colormap was modified in place.
+- Distinguish between unique and distinct correctly.
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+- Extend documentation for frequent issues.
+- Extended documentation for Streamlit and Panel.
+- Provide visibility to our supporters.
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+- Pandas 1.1.0 contains bugs that make it incompatible. Please up- or downgrade.
+- Upgraded visions to 0.5.0.

@@ -17,7 +17,11 @@ def test_dataset_schema():
     )
 
     # Length left out due to correlation with weight.
-    report = df.profile_report(title="Dataset schema", dataset=metadata, minimal=True,)
+    report = df.profile_report(
+        title="Dataset schema",
+        dataset=metadata,
+        minimal=True,
+    )
 
     html = report.to_html()
 
@@ -26,7 +30,7 @@ def test_dataset_schema():
         if not key.startswith("copyright_") and not key == "url":
             assert f"<th>{key.capitalize()}</th>" in html
     assert "<tr><th>Copyright</th><td>(c) RandoCorp LLC 2020</td></tr>"
-    assert "<tr><th>URL</th><td><a href=\"http://www.dataset-sources.com/data/dataset.dat\">http://www.dataset-sources.com/data/dataset.dat</a></td></tr>"
+    assert '<tr><th>URL</th><td><a href="http://www.dataset-sources.com/data/dataset.dat">http://www.dataset-sources.com/data/dataset.dat</a></td></tr>'
     assert "<p class=h4>Reproduction</p>" in html
 
 
@@ -36,7 +40,9 @@ def test_dataset_schema_empty():
 
     # Length left out due to correlation with weight.
     report = df.profile_report(
-        title="Dataset schema empty", minimal=True, dataset=None,
+        title="Dataset schema empty",
+        minimal=True,
+        dataset=None,
     )
 
     html = report.to_html()

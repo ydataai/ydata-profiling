@@ -151,7 +151,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 column_name=col,
                 message_type=MessageType.CONSTANT,
                 values=description,
-                fields={"n_unique"},
+                fields={"n_distinct"},
             )
         )
 
@@ -173,7 +173,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                 column_name=col,
                 message_type=MessageType.UNIQUE,
                 values=description,
-                fields={"n_unique", "p_unique"},
+                fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
             )
         )
     elif description["type"] in [
@@ -184,7 +184,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
         # Uniformity
         if description["type"] == Variable.TYPE_CAT:
             # High cardinality
-            if description["n_unique"] > config["vars"]["cat"][
+            if description["n_distinct"] > config["vars"]["cat"][
                 "cardinality_threshold"
             ].get(int):
                 messages.append(
@@ -192,7 +192,7 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
                         column_name=col,
                         message_type=MessageType.HIGH_CARDINALITY,
                         values=description,
-                        fields={"n_unique"},
+                        fields={"n_distinct"},
                     )
                 )
 

@@ -112,16 +112,16 @@ def calculate_correlation(
     df: ppdf.GenericDataFrame, variables: dict, correlation_name: str
 ) -> Union[pd.DataFrame, None]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-        (pearson, spearman, kendall, phi_k, cramers).
+    (pearson, spearman, kendall, phi_k, cramers).
 
-        Args:
-            variables: A dict with column names and variable types.
-            df: The DataFrame with variables.
-            correlation_name:
+    Args:
+        variables: A dict with column names and variable types.
+        df: The DataFrame with variables.
+        correlation_name:
 
-        Returns:
-            The correlation matrices for the given correlation measures. Return None if correlation is empty.
-        """
+    Returns:
+        The correlation matrices for the given correlation measures. Return None if correlation is empty.
+    """
 
     categorical_correlations = {"cramers": cramers_matrix}
     correlation = None
@@ -130,7 +130,7 @@ def calculate_correlation(
         try:
             correlation = df.corr(method=correlation_name)
 
-        except (ValueError, AssertionError) as e:
+        except (ValueError, AssertionError, TypeError) as e:
             warn_correlation(correlation_name, e)
     elif correlation_name in ["phi_k"]:
         import phik
