@@ -45,7 +45,7 @@ def describe(title: str, df: ppdf.GenericDataFrame, sample: Optional[dict] = Non
 
     #if not isinstance(df, pd.DataFrame):
     #    warnings.warn("df is not of types pandas.DataFrame")
-    print(type(df))
+
     if df.is_empty():
         raise ValueError("df can not be empty")
 
@@ -82,7 +82,6 @@ def describe(title: str, df: ppdf.GenericDataFrame, sample: Optional[dict] = Non
         # Transform the series_description in a DataFrame
         pbar.set_postfix_str("Get variable statistics")
         variable_stats = pd.DataFrame(series_description)
-        print(variable_stats)
         pbar.update()
 
         """"""

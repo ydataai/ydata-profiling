@@ -105,8 +105,8 @@ def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
         # All
         non_nested_enumeration = (
             df[column_name]
-            .dropna()
-            .map(lambda x: type(x) in types and not any(type(y) in types for y in x))
+                .dropna()
+                .map(lambda x: type(x) in types and not any(type(y) in types for y in x))
         )
 
         if non_nested_enumeration.all():
@@ -138,7 +138,10 @@ def hash_dataframe(df):
 
 def wrap_data_as_ppdf(df):
     """
-    Wrap data type
+    Wrap data type with proper backend from implemented_backend
+
+    Raises NotImplementedError if no valid backend found
+
     Args:
         df:
 
@@ -148,8 +151,8 @@ def wrap_data_as_ppdf(df):
     from pandas_profiling.types.dataframes import get_implemented_datatypes
     implemented_backends = get_implemented_datatypes()
     for backend in implemented_backends:
-        print("backend check type",backend.is_same_type(df))
         if backend.is_same_type(df):
             return backend(df)
+
     raise NotImplementedError(
         """Datatype is currently not supported. Support datatypes are {}""".format(implemented_backends))

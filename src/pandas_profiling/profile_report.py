@@ -90,7 +90,7 @@ class ProfileReport(SerializeReport, object):
         self._json = None
 
         if df is not None:
-            # preprocess df
+            # preprocess df and wrap as a ppdf
             self.df = wrap_data_as_ppdf(self.preprocess(df))
 
         if not lazy:

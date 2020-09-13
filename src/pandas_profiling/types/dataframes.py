@@ -79,7 +79,6 @@ class PandasDataFrame(GenericDataFrame):
         Returns: True if the __module__ and __name__ of object matches spark dataframe, else false
 
         """
-        print("checking isinstance",isinstance(obj, pd.DataFrame))
         return isinstance(obj, pd.DataFrame)
 
     def get_columns(self):
