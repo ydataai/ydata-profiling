@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import List
 
 
 class GenericDataFrame(object):
@@ -9,27 +10,50 @@ class GenericDataFrame(object):
     """
 
     def __init__(self):
+        # self.df holds the underlying data object
         self.df = None
-        self.type = None
-        self.table_stats = None
-        self.variable_stats = None
 
-    def get_columns(self):
+    def get_columns(self) -> List[str]:
+        """
+        method to get all the columns in dataframe as a list
+
+        Returns: a list of column names
+
+        """
         raise NotImplemented("Implementation not found")
 
-    def get_count(self):
+    def get_count(self) -> int:
+        """
+        method to get the number of rows in a dataframe as an int
+
+        Returns: number of rows in column
+
+        """
         raise NotImplemented("Implementation not found")
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
+        """
+        return True if dataframe is empty, else return false. A dataframe of NaN should not
+        evaluate to empty
+
+        Returns: True if dataframe is empty else false
+
+        """
         raise NotImplemented("Implementation not found")
 
-    def get_duplicates(self, subset, keep=None):
+    def get_duplicates(self, subset):
+        """
+        returns only the duplicated rows in the dataframe. Used for the get_duplicates method
+
+        Args:
+            subset: subset of rows to consider
+
+        Returns:
+
+        """
         raise NotImplemented("Implementation not found")
 
     def dropna(self, subset):
-        raise NotImplemented("Implementation not found")
-
-    def groupby(self, columns):
         raise NotImplemented("Implementation not found")
 
     def groupby_get_n_largest(self, columns, n, remove_duplicates=True):
@@ -66,12 +90,9 @@ class PandasDataFrame(GenericDataFrame):
     def __init__(self, df):
         super().__init__()
         self.df = df
-        self.type = "pandas"
-        self.table_stats = None
-        self.variable_stats = None
 
     @staticmethod
-    def is_same_type(obj):
+    def validate_same_type(obj):
         """
         Check if pandas dataframe using isinstance. More pythonic way of checking as opposed to spark type check.
         Possible because its cheap to import pandas dataframe type.
@@ -98,9 +119,6 @@ class PandasDataFrame(GenericDataFrame):
 
     def dropna(self, subset):
         return self.df.dropna(subset=subset)
-
-    def groupby(self, columns):
-        return self.df.groupby(columns)
 
     def groupby_get_n_largest(self, columns, n, remove_duplicates=True):
         if remove_duplicates:
@@ -152,9 +170,6 @@ class SparkDataFrame(GenericDataFrame):
     def __init__(self, df):
         super().__init__()
         self.df = df
-        self.type = "spark"
-        self.table_stats = None
-        self.variable_stats = None
 
     @staticmethod
     def is_same_type(obj):

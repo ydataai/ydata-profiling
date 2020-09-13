@@ -151,7 +151,7 @@ def wrap_data_as_ppdf(df):
     from pandas_profiling.types.dataframes import get_implemented_datatypes
     implemented_backends = get_implemented_datatypes()
     for backend in implemented_backends:
-        if backend.is_same_type(df):
+        if backend.validate_same_type(df):
             return backend(df)
 
     raise NotImplementedError(
