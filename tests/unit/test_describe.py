@@ -458,21 +458,25 @@ def expected_results():
             "variance": 0.2857142857142857,
         },
         "list": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
         },
         "mixed": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
         },
         "dict": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,
         },
         "tuple": {
+            "n": 9,
             "count": 9,
             "n_missing": 0,
             "p_missing": 0,

@@ -70,7 +70,11 @@ class BaseSummarizer:
 class PandasProfilingSummarizer(BaseSummarizer):
     def __init__(self, typeset, *args, **kwargs):
         summary_map = {
-            Unsupported: [describe_counts, describe_generic, describe_supported],
+            Unsupported: [
+                describe_counts,
+                describe_generic,
+                describe_supported,
+            ],
             Numeric: [
                 describe_numeric_1d,
             ],

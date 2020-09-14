@@ -1,3 +1,4 @@
+import functools
 from typing import Tuple
 from urllib.parse import urlsplit
 
@@ -29,27 +30,50 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
     """
-    value_counts_with_nan = series.value_counts(dropna=False)
-    value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
+    try:
+        value_counts_with_nan = series.value_counts(dropna=False)
+        _ = set(value_counts_with_nan.index)
+        hashable = True
+    except:
+        hashable = False
 
-    null_index = value_counts_with_nan.index.isnull()
-    if null_index.any():
-        n_missing = value_counts_with_nan[null_index].sum()
-        value_counts_without_nan = value_counts_with_nan[~null_index]
+    summary["hashable"] = hashable
+
+    if hashable:
+        value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
+
+        null_index = value_counts_with_nan.index.isnull()
+        if null_index.any():
+            n_missing = value_counts_with_nan[null_index].sum()
+            value_counts_without_nan = value_counts_with_nan[~null_index]
+        else:
+            n_missing = 0
+            value_counts_without_nan = value_counts_with_nan
+
+        summary.update(
+            {
+                "value_counts_without_nan": value_counts_without_nan,
+            }
+        )
     else:
-        n_missing = 0
-        value_counts_without_nan = value_counts_with_nan
+        n_missing = series.isna().sum()
 
-    summary.update(
-        {
-            "n_missing": n_missing,
-            "value_counts_without_nan": value_counts_without_nan,
-        }
-    )
+    summary["n_missing"] = n_missing
 
     return series, summary
 
 
+def series_hashable(fn):
+    @functools.wraps(fn)
+    def inner(series, summary):
+        if not summary["hashable"]:
+            return series, summary
+        return fn(series, summary)
+
+    return inner
+
+
+@series_hashable
 def describe_supported(
     series: pd.Series, series_description: dict
 ) -> Tuple[pd.Series, dict]:
@@ -138,6 +162,7 @@ def numeric_stats_numpy(present_values, series, series_description):
     }
 
 
+@series_hashable
 @func_nullable_series_contains
 def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a numeric series.
@@ -216,6 +241,7 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     return series, stats
 
 
+@series_hashable
 @func_nullable_series_contains
 def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a date series.
@@ -247,6 +273,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
     return values, summary
 
 
+@series_hashable
 @func_nullable_series_contains
 def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a categorical series.
@@ -366,6 +393,7 @@ def describe_image_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict
     return series, summary
 
 
+@series_hashable
 def describe_boolean_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a boolean series.
 
