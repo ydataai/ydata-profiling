@@ -324,9 +324,10 @@ def unicode_summary(series: pd.Series) -> dict:
     summary["n_category"] = len(summary["category_alias_counts"])
     summary["n_scripts"] = len(summary["script_counts"])
     summary["n_block_alias"] = len(summary["block_alias_counts"])
-    summary["category_alias_counts"].index = summary[
-        "category_alias_counts"
-    ].index.str.replace("_", " ")
+    if len(summary["category_alias_counts"]) > 0:
+        summary["category_alias_counts"].index = summary[
+            "category_alias_counts"
+        ].index.str.replace("_", " ")
 
     return summary
 

@@ -16,7 +16,9 @@ def test_issue51(get_data_file):
 
     df = pd.read_pickle(str(file_name))
 
-    report = df.profile_report(title="Pandas Profiling Report", progress_bar=False)
+    report = df.profile_report(
+        title="Pandas Profiling Report", progress_bar=False, explorative=True
+    )
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
     ), "Profile report should be generated."
@@ -31,7 +33,9 @@ def test_issue51_similar():
         }
     )
 
-    report = df.profile_report(title="Pandas Profiling Report", progress_bar=False)
+    report = df.profile_report(
+        title="Pandas Profiling Report", progress_bar=False, explorative=True
+    )
 
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
@@ -43,7 +47,9 @@ def test_issue51_empty():
         {"test": ["", "", ""], "blest": ["", "", ""], "bert": ["", "", ""]}
     )
 
-    report = df.profile_report(title="Pandas Profiling Report", progress_bar=False)
+    report = df.profile_report(
+        title="Pandas Profiling Report", progress_bar=False, explorative=True
+    )
 
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
