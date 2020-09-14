@@ -12,6 +12,7 @@ from pandas_profiling.model.typeset import (
     Image,
     Numeric,
     Path,
+    ProfilingTypeSet,
     Unsupported,
 )
 
@@ -19,7 +20,7 @@ base_path = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_summarizer():
-    pps = PandasProfilingSummarizer()
+    pps = PandasProfilingSummarizer(typeset=ProfilingTypeSet())
 
     _ = format_summary(pps.summarize(pd.Series([1, 2, 3, 4, 5]), Unsupported))
     _ = format_summary(pps.summarize(pd.Series([1, 2, 3, 4, 5]), Numeric))

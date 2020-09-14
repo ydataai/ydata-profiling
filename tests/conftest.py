@@ -38,8 +38,8 @@ def test_output_dir(tmpdir_factory):
 
 
 @pytest.fixture(scope="module")
-def summarizer():
-    return PandasProfilingSummarizer()
+def summarizer(typeset):
+    return PandasProfilingSummarizer(typeset)
 
 
 @pytest.fixture(scope="module")
