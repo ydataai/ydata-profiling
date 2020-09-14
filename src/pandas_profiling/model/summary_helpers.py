@@ -37,7 +37,6 @@ def named_aggregate_summary(series: pd.Series, key: str):
     return summary
 
 
-# TODO: string_length_summary
 def length_summary(series: pd.Series, summary: dict = {}) -> dict:
     length = series.str.len()
 
@@ -82,23 +81,23 @@ def path_summary(series: pd.Series) -> dict:
     Returns:
 
     """
-    # TODO: to os.path
-    # https://docs.python.org/3/library/pathlib.html#correspondence-to-tools-in-the-os-module
+
+    # TODO: optimize using value counts
     summary = {
         "common_prefix": os.path.commonprefix(series.values.tolist())
         or "No common prefix",
-        # "stem_counts": series.map(lambda x: x.stem).value_counts(),
-        # "suffix_counts": series.map(lambda x: x.suffix).value_counts(),
-        # "name_counts": series.map(lambda x: x.name).value_counts(),
-        # "parent_counts": series.map(lambda x: x.parent).value_counts(),
-        # "anchor_counts": series.map(lambda x: x.anchor).value_counts(),
+        "stem_counts": series.map(lambda x: os.path.splitext(x)[0]).value_counts(),
+        "suffix_counts": series.map(lambda x: os.path.splitext(x)[1]).value_counts(),
+        "name_counts": series.map(lambda x: os.path.basename(x)).value_counts(),
+        "parent_counts": series.map(lambda x: os.path.dirname(x)).value_counts(),
+        "anchor_counts": series.map(lambda x: os.path.splitdrive(x)[0]).value_counts(),
     }
 
-    # summary["n_stem_unique"] = len(summary["stem_counts"])
-    # summary["n_suffix_unique"] = len(summary["suffix_counts"])
-    # summary["n_name_unique"] = len(summary["name_counts"])
-    # summary["n_parent_unique"] = len(summary["parent_counts"])
-    # summary["n_anchor_unique"] = len(summary["anchor_counts"])
+    summary["n_stem_unique"] = len(summary["stem_counts"])
+    summary["n_suffix_unique"] = len(summary["suffix_counts"])
+    summary["n_name_unique"] = len(summary["name_counts"])
+    summary["n_parent_unique"] = len(summary["parent_counts"])
+    summary["n_anchor_unique"] = len(summary["anchor_counts"])
 
     return summary
 
@@ -332,21 +331,19 @@ def unicode_summary(series: pd.Series) -> dict:
     return summary
 
 
-# TODO: move
-def histogram_compute(finite_values, n_unique, name="histogram"):
+def histogram_compute(finite_values, n_unique, name="histogram", weights=None):
     stats = {}
     bins = config["plot"]["histogram"]["bins"].get(int)
     bins = "auto" if bins == 0 else min(bins, n_unique)
-    stats[name] = np.histogram(finite_values, bins)
+    stats[name] = np.histogram(finite_values, bins=bins, weights=weights)
 
     max_bins = config["plot"]["histogram"]["max_bins"].get(int)
     if bins == "auto" and len(stats[name][1]) > max_bins:
-        stats[name] = np.histogram(finite_values, max_bins)
+        stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
 
     return stats
 
 
-# TODO move
 def chi_square(values=None, histogram=None):
     if histogram is None:
         histogram, _ = np.histogram(values, bins="auto")

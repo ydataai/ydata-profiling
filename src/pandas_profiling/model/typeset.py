@@ -213,12 +213,7 @@ class ProfilingTypeSet(VisionsTypeset):
                 types.add(File)
                 if config["vars"]["image"]["active"].get(bool):
                     types.add(Image)
-                else:
-                    raise ValueError(
-                        "Image type only supported when File and Path type are also active"
-                    )
-            else:
-                raise ValueError("File type only supported when Path type is active")
+
         if config["vars"]["url"]["active"].get(bool):
             types.add(URL)
 

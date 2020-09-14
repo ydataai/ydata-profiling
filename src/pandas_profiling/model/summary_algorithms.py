@@ -105,7 +105,6 @@ def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
 
 
 def numeric_stats_pandas(series: pd.Series):
-    # TODO: calculate from histogram (i.e. value_counts)
     #     summary["min"] = summary["value_counts_without_nan"].index.min()
     # vc.index.min()
     return {
@@ -123,7 +122,6 @@ def numeric_stats_pandas(series: pd.Series):
 
 
 def numeric_stats_numpy(present_values, series, series_description):
-    # TODO: calculate more from histogram (i.e. value_counts)
     vc = series_description["value_counts_without_nan"]
     index_values = vc.index.values
     return {
@@ -154,14 +152,16 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
-    summary["n_infinite"] = 0
-    summary["n_zeros"] = 0
-    for value in [np.inf, -np.inf]:
-        if value in summary["value_counts_without_nan"].index:
-            summary["n_infinite"] += summary["value_counts_without_nan"].loc[value]
+    value_counts = summary["value_counts_without_nan"]
 
-    if 0 in summary["value_counts_without_nan"].index:
-        summary["n_zeros"] = summary["value_counts_without_nan"].loc[0]
+    summary["n_zeros"] = 0
+
+    infinity_values = [np.inf, -np.inf]
+    infinity_index = value_counts.index.isin(infinity_values)
+    summary["n_infinite"] = value_counts.loc[infinity_index].sum()
+
+    if 0 in value_counts.index:
+        summary["n_zeros"] = value_counts.loc[0]
 
     stats = summary
 
@@ -205,7 +205,14 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
         stats["monotonic_decrease"] and series.is_unique
     )
 
-    stats.update(histogram_compute(finite_values, summary["n_distinct"]))
+    stats.update(
+        histogram_compute(
+            value_counts[~infinity_index].index.values,
+            summary["n_distinct"],
+            weights=value_counts[~infinity_index].values,
+        )
+    )
+
     return series, stats
 
 
@@ -334,7 +341,7 @@ def describe_path_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
 
     Args:
         series: The Series to describe.
-        series_description: The dict containing the series description so far.
+        summary: The dict containing the series description so far.
 
     Returns:
         A dict containing calculated series description values.

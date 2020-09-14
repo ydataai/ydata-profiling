@@ -68,7 +68,7 @@ class BaseSummarizer:
 
 
 class PandasProfilingSummarizer(BaseSummarizer):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, typeset, *args, **kwargs):
         summary_map = {
             Unsupported: [describe_counts, describe_generic, describe_supported],
             Numeric: [
@@ -94,7 +94,6 @@ class PandasProfilingSummarizer(BaseSummarizer):
                 describe_image_1d,
             ],
         }
-        typeset = ProfilingTypeSet()
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
@@ -120,7 +119,7 @@ def format_summary(summary):
 
 
 if __name__ == "__main__":
-    pps = PandasProfilingSummarizer()
+    pps = PandasProfilingSummarizer(ProfilingTypeSet())
 
     print(format_summary(pps.summarize(pd.Series([1, 2, 3, 4, 5]), Unsupported)))
     print(format_summary(pps.summarize(pd.Series([1, 2, 3, 4, 5]), Numeric)))

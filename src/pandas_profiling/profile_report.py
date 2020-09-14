@@ -88,9 +88,8 @@ class ProfileReport(SerializeReport, object):
         self._html = None
         self._widgets = None
         self._json = None
-
-        self.summarizer = PandasProfilingSummarizer()
-        self.typeset = ProfilingTypeSet()
+        self._typeset = None
+        self._summarizer = None
 
         if df is not None:
             # preprocess df
@@ -152,6 +151,18 @@ class ProfileReport(SerializeReport, object):
             config[list(vars.keys())[0]] = list(vars.values())[0]
         else:
             config.set_kwargs(vars)
+
+    @property
+    def typeset(self):
+        if self._typeset is None:
+            self._typeset = ProfilingTypeSet()
+        return self._typeset
+
+    @property
+    def summarizer(self):
+        if self._summarizer is None:
+            self._summarizer = PandasProfilingSummarizer(self.typeset)
+        return self._summarizer
 
     @property
     def description_set(self):
