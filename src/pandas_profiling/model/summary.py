@@ -22,7 +22,7 @@ from visions.application.summaries.series.text_summary import (
     unicode_summary,
 )
 
-import pandas_profiling.types.dataframes as ppdf
+import pandas_profiling.model.types as ppdf
 from pandas_profiling.config import config as config
 from pandas_profiling.model import base
 from pandas_profiling.model.base import Variable
@@ -549,7 +549,7 @@ def get_table_stats(df: ppdf.GenericDataFrame, variable_stats: pd.DataFrame) -> 
     """
     n = len(df)
 
-    memory_size = df.get_memory_usage(config)
+    memory_size = df.get_memory_usage(deep=config["memory_deep"].get(bool))
     record_size = float(memory_size) / n
 
     table_stats = {

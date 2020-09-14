@@ -13,7 +13,7 @@ from scipy import stats
 
 from pandas_profiling.config import config
 from pandas_profiling.model.base import Variable
-import pandas_profiling.types.dataframes as ppdf
+import pandas_profiling.model.types as ppdf
 
 def cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
     """Calculate the Cramer's V corrected stat for two variables.
@@ -133,14 +133,13 @@ def calculate_correlation(
         except (ValueError, AssertionError, TypeError) as e:
             warn_correlation(correlation_name, e)
     elif correlation_name in ["phi_k"]:
-        import phik
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             # Phi_k does not filter non-numerical with high cardinality
             selcols = []
             intcols = []
-            for col in df.get_columns().tolist():
+            for col in df.get_columns():
                 try:
                     tmp = (
                         df[col]

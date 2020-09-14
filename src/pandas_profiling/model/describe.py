@@ -1,16 +1,15 @@
 """Organize the calculation of statistics for each series in this DataFrame."""
-import warnings
 from datetime import datetime
 from typing import Optional
 
 import pandas as pd
 from tqdm.auto import tqdm
 
-import pandas_profiling.types.dataframes as ppdf
+import pandas_profiling.model.types as ppdf
 from pandas_profiling.config import config as config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
-from pandas_profiling.model.sample import Sample, get_sample
+from pandas_profiling.model.types import Sample
 from pandas_profiling.model.summary import (
     get_duplicates,
     get_messages,
@@ -117,7 +116,7 @@ def describe(title: str, df: ppdf.GenericDataFrame, sample: Optional[dict] = Non
         # Sample
         pbar.set_postfix_str("Take sample")
         if sample is None:
-            samples = get_sample(df)
+            samples = df.get_sample()
         else:
             if "name" not in sample:
                 sample["name"] = None
