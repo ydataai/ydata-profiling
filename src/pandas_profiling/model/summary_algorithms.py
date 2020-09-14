@@ -289,7 +289,6 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
     if check_unicode:
         summary.update(unicode_summary(series))
 
-    # TODO: visions!
     # if coerce_str_to_date:
     #     summary["date_warning"] = warning_type_date(series)
 

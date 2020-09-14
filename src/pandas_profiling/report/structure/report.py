@@ -35,13 +35,13 @@ def get_missing_items(summary) -> list:
     items = []
     for key, item in summary["missing"].items():
         items.append(
-            # TODO: Add informative caption
             ImageWidget(
                 item["matrix"],
                 image_format=image_format,
                 alt=item["name"],
                 name=item["name"],
                 anchor_id=key,
+                caption=item["caption"],
             )
         )
 

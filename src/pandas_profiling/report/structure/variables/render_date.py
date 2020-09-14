@@ -10,7 +10,6 @@ from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 def render_date(summary):
     varid = summary["varid"]
-    # TODO: render common?
     template_variables = {}
 
     image_format = config["plot"]["image_format"].get(str)

@@ -97,7 +97,6 @@ class PandasProfilingSummarizer(BaseSummarizer):
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
-# TODO: move
 def format_summary(summary):
     def fmt(v):
         if isinstance(v, dict):

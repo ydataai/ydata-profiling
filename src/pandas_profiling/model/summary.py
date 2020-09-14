@@ -196,10 +196,26 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         }[name]
 
     missing_map = {
-        "bar": {"min_missing": 0, "name": "Count"},
-        "matrix": {"min_missing": 0, "name": "Matrix"},
-        "heatmap": {"min_missing": 2, "name": "Heatmap"},
-        "dendrogram": {"min_missing": 1, "name": "Dendrogram"},
+        "bar": {
+            "min_missing": 0,
+            "name": "Count",
+            "caption": "A simple visualization of nullity by column.",
+        },
+        "matrix": {
+            "min_missing": 0,
+            "name": "Matrix",
+            "caption": "Nullity matrix is a data-dense display which lets you quickly visually pick out patterns in data completion.",
+        },
+        "heatmap": {
+            "min_missing": 2,
+            "name": "Heatmap",
+            "caption": "The correlation heatmap measures nullity correlation: how strongly the presence or absence of one variable affects the presence of another.",
+        },
+        "dendrogram": {
+            "min_missing": 1,
+            "name": "Dendrogram",
+            "caption": "The dendrogram allows you to more fully correlate variable completion, revealing trends deeper than the pairwise ones visible in the correlation heatmap.",
+        },
     }
 
     missing_map = {
@@ -220,6 +236,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
                 ):
                     missing[name] = {
                         "name": settings["name"],
+                        "caption": settings["caption"],
                         "matrix": missing_diagram(name)(df),
                     }
             except ValueError as e:
