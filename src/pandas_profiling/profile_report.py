@@ -1,7 +1,7 @@
 import json
 import warnings
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -11,6 +11,8 @@ from tqdm.auto import tqdm
 from pandas_profiling.config import config
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.model.summarizer import PandasProfilingSummarizer, format_summary
+from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
@@ -27,17 +29,17 @@ class ProfileReport(SerializeReport, object):
     """
 
     def __init__(
-            self,
-            df=None,
-            minimal=False,
-            explorative=False,
-            sensitive=False,
-            dark_mode=False,
-            orange_mode=False,
-            sample=None,
-            config_file: Union[Path, str] = None,
-            lazy: bool = True,
-            **kwargs,
+        self,
+        df: Optional[pd.DataFrame] = None,
+        minimal: bool = False,
+        explorative: bool = False,
+        sensitive: bool = False,
+        dark_mode: bool = False,
+        orange_mode: bool = False,
+        sample: Optional[dict] = None,
+        config_file: Union[Path, str] = None,
+        lazy: bool = True,
+        **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
 
@@ -46,6 +48,7 @@ class ProfileReport(SerializeReport, object):
             minimal: minimal mode is a default configuration with minimal computation
             config_file: a config file (.yml), mutually exclusive with `minimal`
             lazy: compute when needed
+            sample: optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
         if config_file is not None and minimal:
@@ -62,7 +65,6 @@ class ProfileReport(SerializeReport, object):
             config.set_file(get_config("config_minimal.yaml"))
         elif not config.is_default:
             pass
-            # TODO: logging instead of warning
             # warnings.warn(
             #     "Currently configuration is not the default, if you want to restore "
             #     "default configuration, please run 'pandas_profiling.clear_config()'"
@@ -88,6 +90,8 @@ class ProfileReport(SerializeReport, object):
         self._html = None
         self._widgets = None
         self._json = None
+        self._typeset = None
+        self._summarizer = None
 
         if df is not None:
             # preprocess df and wrap as a ppdf
@@ -97,7 +101,7 @@ class ProfileReport(SerializeReport, object):
             # Trigger building the report structure
             _ = self.report
 
-    def set_variable(self, key, value):
+    def set_variable(self, key: str, value: Any):
         """Change a single configuration variable
 
         Args:
@@ -110,11 +114,11 @@ class ProfileReport(SerializeReport, object):
             >>> ProfileReport(df).set_variables("html.minify_html", False)
 
         """
-        key = key.split(".")
-        for e in reversed(key[1:]):
+        keys = key.split(".")
+        for e in reversed(keys[1:]):
             value = {e: value}
 
-        self.set_variables(**{key[0]: value})
+        self.set_variables(**{keys[0]: value})
 
     def set_variables(self, **vars):
         """Change configuration variables (invalidates caches where necessary)
@@ -151,9 +155,23 @@ class ProfileReport(SerializeReport, object):
             config.set_kwargs(vars)
 
     @property
+    def typeset(self):
+        if self._typeset is None:
+            self._typeset = ProfilingTypeSet()
+        return self._typeset
+
+    @property
+    def summarizer(self):
+        if self._summarizer is None:
+            self._summarizer = PandasProfilingSummarizer(self.typeset)
+        return self._summarizer
+
+    @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.df, self._sample)
+            self._description_set = describe_df(
+                self.title, self.df, self.summarizer, self.typeset, self._sample
+            )
         return self._description_set
 
     @property
@@ -324,29 +342,26 @@ class ProfileReport(SerializeReport, object):
         return widgets
 
     def _render_json(self):
-        class CustomEncoder(json.JSONEncoder):
-            def key_to_json(self, data):
-                if data is None or isinstance(data, (bool, int, str)):
-                    return data
-                return str(data)
-
-            def default(self, o):
-                if isinstance(o, pd.Series):
-                    return self.default(o.to_dict())
-
-                if isinstance(o, np.integer):
-                    return o.tolist()
-
-                if isinstance(o, dict):
-                    return {self.key_to_json(key): self.default(o[key]) for key in o}
-
-                return str(o)
+        def encode_it(o):
+            if isinstance(o, dict):
+                return {encode_it(k): encode_it(v) for k, v in o.items()}
+            else:
+                if isinstance(o, (bool, int, float, str)):
+                    return o
+                elif isinstance(o, list):
+                    return [encode_it(v) for v in o]
+                elif isinstance(o, set):
+                    return {encode_it(v) for v in o}
+                else:
+                    return str(o)
 
         description = self.description_set
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
-            data = json.dumps(description, indent=4, cls=CustomEncoder)
+            description = format_summary(description)
+            description = encode_it(description)
+            data = json.dumps(description, indent=4)
             pbar.update()
         return data
 
