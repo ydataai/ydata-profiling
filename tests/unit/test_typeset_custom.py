@@ -158,15 +158,8 @@ contains_map = {
         "str_true_false_none",
         "str_true_false_nan",
     },
-    Boolean: {
-        "bool_tf",
-        "bool_tf_with_nan",
-        "booleans_type",
-        "booleans_type_nan",
-    },
-    DateTime: {
-        "somedate",
-    },
+    Boolean: {"bool_tf", "bool_tf_with_nan", "booleans_type", "booleans_type_nan",},
+    DateTime: {"somedate",},
     Unsupported: {"empty", "list", "mixed", "dict", "tuple"},
 }
 

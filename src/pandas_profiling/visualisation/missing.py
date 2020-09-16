@@ -54,7 +54,7 @@ def missing_matrix(data: PandasDataFrame) -> str:
     """
     labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.matrix(
-        data.get_internal_df(),
+        data.get_pandas_df(),
         figsize=(10, 4),
         color=hex_to_rgb(config["html"]["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data) / 20 * 16,
@@ -84,7 +84,7 @@ def missing_bar(data: PandasDataFrame) -> str:
     """
     labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.bar(
-        data.get_internal_df(),
+        data.get_pandas_df(),
         figsize=(10, 5),
         color=hex_to_rgb(config["html"]["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data),
@@ -126,7 +126,7 @@ def missing_heatmap(data: PandasDataFrame) -> str:
 
     labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.heatmap(
-        data.get_internal_df(),
+        data.get_pandas_df(),
         figsize=(10, height),
         fontsize=font_size,
         cmap=config["plot"]["missing"]["cmap"].get(str),
@@ -159,6 +159,6 @@ def missing_dendrogram(data: PandasDataFrame) -> str:
       The resulting missing values dendrogram plot encoded as a string.
 
     """
-    missingno.dendrogram(data.get_internal_df(), fontsize=get_font_size(data) * 2.0)
+    missingno.dendrogram(data.get_pandas_df(), fontsize=get_font_size(data) * 2.0)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(plt)

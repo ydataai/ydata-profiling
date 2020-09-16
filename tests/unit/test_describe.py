@@ -8,28 +8,29 @@ from pandas_profiling import config
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
 from pandas_profiling.model.typeset import DateTime, Numeric
+from pandas_profiling.model.types import PandasSeries, GenericDataFrame, PandasDataFrame
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-testdata = [
+pandas_testdata = [
     # Unique values
-    (pd.Series([1, 2]), True, 1, 1),
+    (PandasSeries(pd.Series([1, 2])), True, 1, 1),
     # Unique values including nan
-    (pd.Series([np.nan]), None, None, None),
+    (PandasSeries(pd.Series([np.nan])), None, None, None),
     # Unique values all nan
-    (pd.Series([1, 2, np.nan]), True, 1, 1),
+    (PandasSeries(pd.Series([1, 2, np.nan])), True, 1, 1),
     # Non unique values
-    (pd.Series([1, 2, 2]), False, 2 / 3, 1 / 3),
+    (PandasSeries(pd.Series([1, 2, 2])), False, 2 / 3, 1 / 3),
     # Non unique nan
-    (pd.Series([1, np.nan, np.nan]), True, 1, 1),
+    (PandasSeries(pd.Series([1, np.nan, np.nan])), True, 1, 1),
     # Non unique values including nan
-    (pd.Series([1, 2, 2, np.nan]), False, 2 / 3, 1 / 3),
+    (PandasSeries(pd.Series([1, 2, 2, np.nan])), False, 2 / 3, 1 / 3),
     # Non unique values including non unique nan
-    (pd.Series([1, 2, 2, np.nan, np.nan]), False, 2 / 3, 1 / 3),
+    (PandasSeries(pd.Series([1, 2, 2, np.nan, np.nan])), False, 2 / 3, 1 / 3),
 ]
 
 
-@pytest.mark.parametrize("data,is_unique,p_distinct,p_unique", testdata)
+@pytest.mark.parametrize("data,is_unique,p_distinct,p_unique", pandas_testdata)
 def test_describe_unique(data, is_unique, p_distinct, p_unique, summarizer, typeset):
     """Test the unique feature of 1D data"""
 
@@ -456,30 +457,10 @@ def expected_results():
             "sum": 4.0,
             "variance": 0.2857142857142857,
         },
-        "list": {
-            "n": 9,
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-        },
-        "mixed": {
-            "n": 9,
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-        },
-        "dict": {
-            "n": 9,
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-        },
-        "tuple": {
-            "n": 9,
-            "count": 9,
-            "n_missing": 0,
-            "p_missing": 0,
-        },
+        "list": {"n": 9, "count": 9, "n_missing": 0, "p_missing": 0,},
+        "mixed": {"n": 9, "count": 9, "n_missing": 0, "p_missing": 0,},
+        "dict": {"n": 9, "count": 9, "n_missing": 0, "p_missing": 0,},
+        "tuple": {"n": 9, "count": 9, "n_missing": 0, "p_missing": 0,},
     }
 
 
@@ -505,10 +486,10 @@ def expected_results():
 )
 def test_describe_df(column, describe_data, expected_results, summarizer, typeset):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
-    describe_data_frame = pd.DataFrame({column: describe_data[column]})
+    describe_data_frame = PandasDataFrame(pd.DataFrame({column: describe_data[column]}))
     if column == "somedate":
-        describe_data_frame["somedate"] = pd.to_datetime(
-            describe_data_frame["somedate"]
+        describe_data_frame.get_pandas_df()["somedate"] = pd.to_datetime(
+            describe_data_frame.get_pandas_df()["somedate"]
         )
 
     results = describe("title", describe_data_frame, summarizer, typeset)
@@ -546,7 +527,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
 
 
 def test_describe_empty(summarizer, typeset):
-    empty_frame = pd.DataFrame()
+    empty_frame = PandasDataFrame(pd.DataFrame())
     with pytest.raises(ValueError):
         describe("", empty_frame, summarizer, typeset)
 

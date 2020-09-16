@@ -157,15 +157,6 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def get_internal_df(self):
-        """
-        This function should be deprecated once all functionalities are properly wrapped!!
-
-        Returns:
-
-        """
-        raise NotImplemented("Implementation not found")
-
     def head(self, n: int) -> GenericDataFrame:
         """
         Get top n rows of dataframe
@@ -293,7 +284,7 @@ class PandasDataFrame(GenericDataFrame):
         warnings.warn("Correlation should be deprecated")
         return self.df.corr(method=method)
 
-    def get_internal_df(self):
+    def get_pandas_df(self):
         warnings.warn("Using get_internal_df function which breaks abstraction!!!")
         return self.df
 

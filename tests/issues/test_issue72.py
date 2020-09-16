@@ -28,9 +28,7 @@ def test_issue72_equal():
     df = pd.DataFrame({"A": [1, 2, 3, 3]})
     df["B"] = df["A"].apply(str)
     report = pandas_profiling.ProfileReport(
-        df,
-        vars={"num": {"low_categorical_threshold": 3}},
-        correlations=None,
+        df, vars={"num": {"low_categorical_threshold": 3}}, correlations=None,
     )
 
     # 3 == 3, so categorical

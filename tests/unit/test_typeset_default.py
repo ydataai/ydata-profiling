@@ -298,14 +298,7 @@ convert_map = [
             "categorical_float_series",
         },
     ),
-    (
-        Boolean,
-        Categorical,
-        {
-            "string_bool_nan",
-            "nullable_bool_series",
-        },
-    ),
+    (Boolean, Categorical, {"string_bool_nan", "nullable_bool_series",},),
 ]
 
 
