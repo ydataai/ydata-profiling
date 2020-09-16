@@ -7,38 +7,67 @@ import numpy as np
 import pandas as pd
 from pandas.core.base import DataError
 from scipy import stats
+from singledispatchmethod import singledispatchmethod
 
 from pandas_profiling.config import config
+from pandas_profiling.model.types import GenericDataFrame, PandasDataFrame
 from pandas_profiling.model.typeset import (
     Boolean,
     Categorical,
-    DateTime,
     Numeric,
     Unsupported,
 )
-
+import phik
 
 class Correlation:
+    @singledispatchmethod
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(df, summary):
+        df_type = type(df)
+        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
+
+    @compute.register(PandasDataFrame)
+    @staticmethod
+    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         return NotImplemented
 
 
 class Spearman(Correlation):
+    @singledispatchmethod
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(df, summary):
+        df_type = type(df)
+        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
+
+    @compute.register(PandasDataFrame)
+    @staticmethod
+    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         return df.corr(method="spearman")
 
 
 class Pearson(Correlation):
+    @singledispatchmethod
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(df, summary):
+        df_type = type(df)
+        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
+
+    @compute.register(PandasDataFrame)
+    @staticmethod
+    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         return df.corr(method="pearson")
 
 
 class Kendall(Correlation):
+    @singledispatchmethod
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(df, summary):
+        df_type = type(df)
+        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
+
+    @compute.register(PandasDataFrame)
+    @staticmethod
+    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         return df.corr(method="kendall")
 
 
@@ -67,15 +96,22 @@ class Cramers(Correlation):
             corr = np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
         return corr
 
+    @singledispatchmethod
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(df, summary):
+        df_type = type(df)
+        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
+
+    @compute.register(PandasDataFrame)
+    @staticmethod
+    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         threshold = config["categorical_maximum_correlation_distinct"].get(int)
 
         categoricals = {
             key
             for key, value in summary.items()
             if value["type"] in {Categorical, Boolean}
-            and value["n_distinct"] <= threshold
+               and value["n_distinct"] <= threshold
         }
 
         if len(categoricals) <= 1:
@@ -99,10 +135,15 @@ class Cramers(Correlation):
 
 
 class PhiK(Correlation):
+    @singledispatchmethod
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
-        import phik
+    def compute(df, summary):
+        df_type = type(df)
+        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
 
+    @compute.register(PandasDataFrame)
+    @staticmethod
+    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         threshold = config["categorical_maximum_correlation_distinct"].get(int)
         intcols = {
             key
@@ -140,7 +181,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 
 
 def calculate_correlation(
-    df: pd.DataFrame, correlation_name: str, summary
+        df: GenericDataFrame, correlation_name: str, summary
 ) -> Optional[pd.DataFrame]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, phi_k, cramers).
@@ -175,7 +216,7 @@ def calculate_correlation(
 
 
 def perform_check_correlation(
-    correlation_matrix: pd.DataFrame, threshold: float
+        correlation_matrix: pd.DataFrame, threshold: float
 ) -> Dict[str, List[str]]:
     """Check whether selected variables are highly correlated values in the correlation matrix.
 

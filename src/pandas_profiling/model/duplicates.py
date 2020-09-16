@@ -3,9 +3,10 @@ from typing import Optional
 import pandas as pd
 
 from pandas_profiling.config import config
+from pandas_profiling.model.types import GenericDataFrame
 
 
-def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame]:
+def get_duplicates(df: GenericDataFrame, supported_columns) -> Optional[pd.DataFrame]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -18,11 +19,6 @@ def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame
     n_head = config["duplicates"]["head"].get(int)
 
     if n_head > 0 and supported_columns:
-        return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name="count")
-            .nlargest(n_head, "count")
-        )
+        return df.groupby_get_n_largest(supported_columns, n_head)
+
     return None

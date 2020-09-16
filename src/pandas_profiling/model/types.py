@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from functools import lru_cache
-from typing import List
+from typing import List, Tuple
 
 import attr
 import pandas as pd
@@ -23,8 +22,11 @@ class Sample(object):
 
 class GenericDataFrame(object):
     """
-    This class is the abstract layer over the backend data types, and describes the functions and attributes
-    that need to be implemented to be a valid backend
+    This class is the abstract layer over the backend data types.
+    This enables functions to be called on a dataframe regardless of whether the backend
+    is a pandas, spark or (in the future) koalas dataframe
+    This class also nicely describes the functions and attributes
+    that need to be implemented to support a new backend
 
     """
 
@@ -96,7 +98,16 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def groupby_get_n_largest(self, columns: List[str], n: int, for_duplicates=True) -> GenericDataFrame:
+    def iteritems(self) -> List[Tuple[str, GenericSeries]]:
+        """
+        returns name and generic series type
+
+        Returns:
+
+        """
+        raise NotImplemented("Implementation not found")
+
+    def groupby_get_n_largest(self, columns: List[str], n: int, for_duplicates=True) -> pd.DataFrame:
         """
         get top n value counts of groupby count function
 
@@ -315,6 +326,15 @@ class PandasDataFrame(GenericDataFrame):
     def value_counts(self, column):
         return self.df[column].value_counts()
 
+    def iteritems(self) -> List[Tuple[str, GenericSeries]]:
+        """
+        returns name and generic series type
+
+        Returns:
+
+        """
+        return [(i[0], PandasSeries(i[1])) for i in self.df.iteritems()]
+
 
 class SparkDataFrame(GenericDataFrame):
     """
@@ -362,3 +382,39 @@ class SparkDataFrame(GenericDataFrame):
 
 def get_implemented_datatypes():
     return (PandasDataFrame, SparkDataFrame)
+
+
+class GenericSeries(object):
+    def __init__(self, series):
+        self.series = series
+
+    def fillna(self, fill=None) -> GenericSeries:
+        raise NotImplementedError("Method not implemented for data type")
+
+
+class PandasSeries(GenericSeries):
+    """
+    This class is the abstract layer over
+
+    """
+
+    def __init__(self, series):
+        super().__init__(series)
+        self.series = series
+
+    def fillna(self, fill=None) -> GenericSeries:
+        if fill is not None:
+            return self.series.fillna(fill)
+        else:
+            return self.series.fillna()
+
+
+class SparkSeries(GenericSeries):
+    """
+    A lot of optimisations left to do (persisting, caching etc), but when functionality completed
+
+    """
+
+    def __init__(self, series):
+        super().__init__(series)
+        self.series = series

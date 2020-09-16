@@ -19,10 +19,10 @@ from pandas_profiling.model.summary import (
 )
 from pandas_profiling.model.typeset import Numeric, Unsupported
 from pandas_profiling.version import __version__
-
+from pandas_profiling.model.types import GenericDataFrame
 
 def describe(
-    title: str, df: pd.DataFrame, summarizer, typeset, sample: Optional[dict] = None
+    title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None
 ) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
@@ -66,7 +66,7 @@ def describe(
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
-    number_of_tasks = 8 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 8 + len(df.get_columns()) + len(correlation_names)
 
     with tqdm(
         total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar

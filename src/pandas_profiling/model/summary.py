@@ -27,9 +27,9 @@ from pandas_profiling.visualisation.missing import (
     missing_matrix,
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
+from pandas_profiling.model.types import GenericDataFrame,GenericSeries
 
-
-def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
+def describe_1d(series: GenericSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -102,14 +102,14 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
                 pbar.update()
 
         # Restore the original order
-        series_description = {k: series_description[k] for k in df.columns}
+        series_description = {k: series_description[k] for k in df.get_columns()}
 
     # Mapping from column name to variable type
     series_description = sort_column_names(series_description, sort)
     return series_description
 
 
-def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
+def get_table_stats(df: GenericDataFrame, variable_stats: dict) -> dict:
     """General statistics for the DataFrame.
 
     Args:
@@ -167,7 +167,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     return table_stats
 
 
-def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
+def get_missing_diagrams(df: GenericDataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
     Args:

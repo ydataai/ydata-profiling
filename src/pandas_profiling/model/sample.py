@@ -2,7 +2,7 @@ import attr
 import pandas as pd
 
 from pandas_profiling.config import config
-
+from pandas_profiling.model.types import GenericDataFrame
 
 @attr.s
 class Sample(object):
@@ -12,7 +12,7 @@ class Sample(object):
     caption = attr.ib(default=None)
 
 
-def get_sample(df: pd.DataFrame) -> list:
+def get_sample(df: GenericDataFrame) -> list:
     """Obtains a sample from head and tail of the DataFrame
 
     Args:

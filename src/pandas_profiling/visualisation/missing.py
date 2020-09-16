@@ -1,15 +1,18 @@
 """Plotting functions for the missing values diagrams"""
+from functools import singledispatch
+
 import pandas as pd
 from matplotlib import pyplot as plt
 from missingno import missingno
 
 from pandas_profiling.config import config
+from pandas_profiling.model.types import GenericDataFrame,PandasDataFrame
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
-def get_font_size(data):
-    """Calculate font size based on number of columns
+def get_font_size(data:GenericDataFrame):
+    """Calculate font size based on number of get_columns()
 
     Args:
         data: DataFrame
@@ -17,13 +20,13 @@ def get_font_size(data):
     Returns:
         Font size for missing values plots.
     """
-    max_label_length = max([len(label) for label in data.columns])
+    max_label_length = max([len(label) for label in data.get_columns()])
 
-    if len(data.columns) < 20:
+    if len(data.get_columns()) < 20:
         font_size = 13
-    elif 20 <= len(data.columns) < 40:
+    elif 20 <= len(data.get_columns()) < 40:
         font_size = 12
-    elif 40 <= len(data.columns) < 60:
+    elif 40 <= len(data.get_columns()) < 60:
         font_size = 10
     else:
         font_size = 8
@@ -32,8 +35,15 @@ def get_font_size(data):
     return font_size
 
 
+@singledispatch
 @manage_matplotlib_context()
-def missing_matrix(data: pd.DataFrame) -> str:
+def missing_matrix(data) -> str:
+    raise NotImplementedError("method is not implemented for datatype")
+
+
+@missing_matrix.register(PandasDataFrame)
+@manage_matplotlib_context()
+def missing_matrix(data: PandasDataFrame) -> str:
     """Generate missing values matrix plot
 
     Args:
@@ -44,7 +54,7 @@ def missing_matrix(data: pd.DataFrame) -> str:
     """
     labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.matrix(
-        data,
+        data.get_internal_df(),
         figsize=(10, 4),
         color=hex_to_rgb(config["html"]["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data) / 20 * 16,
@@ -55,8 +65,15 @@ def missing_matrix(data: pd.DataFrame) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@singledispatch
 @manage_matplotlib_context()
-def missing_bar(data: pd.DataFrame) -> str:
+def missing_bar(data) -> str:
+    raise NotImplementedError("method is not implemented for datatype")
+
+
+@missing_bar.register(PandasDataFrame)
+@manage_matplotlib_context()
+def missing_bar(data: PandasDataFrame) -> str:
     """Generate missing values bar plot.
 
     Args:
@@ -67,7 +84,7 @@ def missing_bar(data: pd.DataFrame) -> str:
     """
     labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.bar(
-        data,
+        data.get_internal_df(),
         figsize=(10, 5),
         color=hex_to_rgb(config["html"]["style"]["primary_color"].get(str)),
         fontsize=get_font_size(data),
@@ -80,8 +97,15 @@ def missing_bar(data: pd.DataFrame) -> str:
     return plot_360_n0sc0pe(plt)
 
 
+@singledispatch
 @manage_matplotlib_context()
-def missing_heatmap(data: pd.DataFrame) -> str:
+def missing_heatmap(data) -> str:
+    raise NotImplementedError("method is not implemented for datatype")
+
+
+@missing_heatmap.register(PandasDataFrame)
+@manage_matplotlib_context()
+def missing_heatmap(data: PandasDataFrame) -> str:
     """Generate missing values heatmap plot.
 
     Args:
@@ -92,24 +116,24 @@ def missing_heatmap(data: pd.DataFrame) -> str:
     """
 
     height = 4
-    if len(data.columns) > 10:
-        height += int((len(data.columns) - 10) / 5)
+    if len(data.get_columns()) > 10:
+        height += int((len(data.get_columns()) - 10) / 5)
     height = min(height, 10)
 
     font_size = get_font_size(data)
-    if len(data.columns) > 40:
+    if len(data.get_columns()) > 40:
         font_size /= 1.4
 
     labels = config["plot"]["missing"]["force_labels"].get(bool)
     missingno.heatmap(
-        data,
+        data.get_internal_df(),
         figsize=(10, height),
         fontsize=font_size,
         cmap=config["plot"]["missing"]["cmap"].get(str),
         labels=labels,
     )
 
-    if len(data.columns) > 40:
+    if len(data.get_columns()) > 40:
         plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
     else:
         plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
@@ -118,7 +142,14 @@ def missing_heatmap(data: pd.DataFrame) -> str:
 
 
 @manage_matplotlib_context()
-def missing_dendrogram(data: pd.DataFrame) -> str:
+@singledispatch
+def missing_dendrogram(data) -> str:
+    raise NotImplementedError("method is not implemented for datatype")
+
+
+@manage_matplotlib_context()
+@missing_dendrogram.register(PandasDataFrame)
+def missing_dendrogram(data: PandasDataFrame) -> str:
     """Generate a dendrogram plot for missing values.
 
     Args:
@@ -128,6 +159,6 @@ def missing_dendrogram(data: pd.DataFrame) -> str:
       The resulting missing values dendrogram plot encoded as a string.
 
     """
-    missingno.dendrogram(data, fontsize=get_font_size(data) * 2.0)
+    missingno.dendrogram(data.get_internal_df(), fontsize=get_font_size(data) * 2.0)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(plt)
