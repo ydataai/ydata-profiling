@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from missingno import missingno
 
 from pandas_profiling.config import config
-from pandas_profiling.model.types import GenericDataFrame,PandasDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame,PandasDataFrame
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 

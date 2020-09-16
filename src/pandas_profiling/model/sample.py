@@ -2,7 +2,7 @@ import attr
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.model.types import GenericDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
 
 @attr.s
 class Sample(object):

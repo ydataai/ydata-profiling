@@ -8,7 +8,8 @@ from pandas_profiling import config
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
 from pandas_profiling.model.typeset import DateTime, Numeric
-from pandas_profiling.model.types import PandasSeries, GenericDataFrame, PandasDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame
+from pandas_profiling.model.series_wrappers import PandasSeries
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 

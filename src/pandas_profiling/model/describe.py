@@ -5,7 +5,7 @@ from typing import Optional
 import pandas as pd
 from tqdm.auto import tqdm
 
-import pandas_profiling.model.types as ppdf
+import pandas_profiling.model.dataframe_wrappers as ppdf
 from pandas_profiling.config import config as config
 from pandas_profiling.model.correlations import calculate_correlation
 from pandas_profiling.model.duplicates import get_duplicates
@@ -19,7 +19,7 @@ from pandas_profiling.model.summary import (
 )
 from pandas_profiling.model.typeset import Numeric, Unsupported
 from pandas_profiling.version import __version__
-from pandas_profiling.model.types import GenericDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
 
 def describe(
     title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None

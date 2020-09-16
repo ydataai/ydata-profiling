@@ -1,23 +1,12 @@
 from __future__ import annotations
 
-import warnings
 from typing import List, Tuple
 
-import attr
 import pandas as pd
 
 from pandas_profiling.config import config
-
-
 # annotations allow class methods to return the same class in python < 3.10
-
-
-@attr.s
-class Sample(object):
-    id = attr.ib()
-    data = attr.ib()
-    name = attr.ib()
-    caption = attr.ib(default=None)
+from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, Sample
 
 
 class GenericDataFrame(object):
@@ -28,6 +17,10 @@ class GenericDataFrame(object):
     This class also nicely describes the functions and attributes
     that need to be implemented to support a new backend
 
+    This class should also implement a get_<DATATYPE>_df method (get_pandas_df), which allows you to get the internal
+    representation of the data within a singledispatch framework so that you can perform ops specific
+    to that datatype within the method
+
     """
 
     def __init__(self):
@@ -35,7 +28,7 @@ class GenericDataFrame(object):
         self.df = None
 
     @staticmethod
-    def validate_same_type(obj):
+    def validate_same_type(obj) -> bool:
         """
         Check if dataframe provided fits backend
 
@@ -74,7 +67,7 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def get_duplicates(self, subset: List[str]):
+    def get_duplicates(self, subset: List[str]) -> GenericDataFrame:
         """
         returns only the duplicated rows in the dataframe. Used for the get_duplicates method
 
@@ -114,8 +107,7 @@ class GenericDataFrame(object):
         Args:
             columns: columns to groupby on
             n: top n value counts to return
-            remove_duplicates: remove duplicate rows
-
+            for_duplicates: whether to only keep duplicate rows
         Returns:
 
         """
@@ -126,34 +118,11 @@ class GenericDataFrame(object):
         Get memory usage of dataframe
 
         Args:
-            Deep: * For Pandas - interrogating object dtypes for system-level memory consumption
+            deep: * For Pandas - interrogating object dtypes for system-level memory consumption
 
-        Returns: A Pandas Series whose index is the original column names and whose values is the memory usage of each column in bytes.
+        Returns: A Pandas Series whose index is the original column names and whose values is the
+         memory usage of each column in bytes.
 
-        """
-        raise NotImplemented("Implementation not found")
-
-    def __len__(self) -> int:
-        """
-        Get the number of rows in a dataframe as an int
-
-        Returns: number of rows in column
-
-        """
-        raise NotImplemented("Implementation not found")
-
-    def __getitem__(self, key):
-        raise NotImplemented("Implementation not found")
-
-    def phik_matrix(self, interval_cols):
-        """
-        [DEPRECATED] To Deprecate during merge, convenience to test functionality
-        """
-        raise NotImplemented("Implementation not found")
-
-    def corr(self, method: str):
-        """
-        [DEPRECATED] To Deprecate during merge, convenience to test functionality
         """
         raise NotImplemented("Implementation not found")
 
@@ -215,10 +184,27 @@ class GenericDataFrame(object):
         """
         raise NotImplementedError("Method not implemented for data type")
 
+    def __len__(self) -> int:
+        """
+        Get the number of rows in a dataframe as an int
+
+        Returns: number of rows in column
+
+        """
+        raise NotImplemented("Implementation not found")
+
+    def __getitem__(self, key):
+        raise NotImplemented("Implementation not found")
+
 
 class PandasDataFrame(GenericDataFrame):
     """
-    This class is the abstract layer over
+    This class is the abstract layer for the pandas dataframe.
+
+    It implements the validate_same_type function to check if an obj is a pandas dataframe and can be wrapped.
+
+    It implements the get_pandas_df method to enable singledispatch wrapped functions to
+    operate on the internal pandas dataframe without breaking abstraction
 
     """
 
@@ -268,9 +254,6 @@ class PandasDataFrame(GenericDataFrame):
                     .reset_index(name="count")
                     .nlargest(n, "count"))
 
-    def phik_matrix(self, interval_cols):
-        return self.df.phik_matrix(interval_cols=interval_cols)
-
     def __len__(self):
         return self.get_count()
 
@@ -280,12 +263,7 @@ class PandasDataFrame(GenericDataFrame):
     def __getitem__(self, key):
         return self.df[key]
 
-    def corr(self, method):
-        warnings.warn("Correlation should be deprecated")
-        return self.df.corr(method=method)
-
     def get_pandas_df(self):
-        warnings.warn("Using get_internal_df function which breaks abstraction!!!")
         return self.df
 
     def head(self, n):
@@ -370,42 +348,7 @@ class SparkDataFrame(GenericDataFrame):
         df = self.df.groupBy(column).count().orderBy("count", ascending=False).toPandas()
         return pd.Series(df["count"].values, index=df["RAD"].values)
 
-
+    def __len__(self):
+        return self.get_count()
 def get_implemented_datatypes():
     return (PandasDataFrame, SparkDataFrame)
-
-
-class GenericSeries(object):
-    def __init__(self, series):
-        self.series = series
-
-    def fillna(self, fill=None) -> GenericSeries:
-        raise NotImplementedError("Method not implemented for data type")
-
-
-class PandasSeries(GenericSeries):
-    """
-    This class is the abstract layer over
-
-    """
-
-    def __init__(self, series):
-        super().__init__(series)
-        self.series = series
-
-    def fillna(self, fill=None) -> GenericSeries:
-        if fill is not None:
-            return self.series.fillna(fill)
-        else:
-            return self.series.fillna()
-
-
-class SparkSeries(GenericSeries):
-    """
-    A lot of optimisations left to do (persisting, caching etc), but when functionality completed
-
-    """
-
-    def __init__(self, series):
-        super().__init__(series)
-        self.series = series

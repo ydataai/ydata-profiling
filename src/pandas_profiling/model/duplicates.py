@@ -3,7 +3,7 @@ from typing import Optional
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.model.types import GenericDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
 
 
 def get_duplicates(df: GenericDataFrame, supported_columns) -> Optional[pd.DataFrame]:

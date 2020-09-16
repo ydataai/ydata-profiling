@@ -10,7 +10,7 @@ from scipy import stats
 from singledispatchmethod import singledispatchmethod
 
 from pandas_profiling.config import config
-from pandas_profiling.model.types import GenericDataFrame, PandasDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame
 from pandas_profiling.model.typeset import (
     Boolean,
     Categorical,

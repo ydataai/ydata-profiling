@@ -9,7 +9,7 @@ from typing import Callable, Mapping, Tuple, Type
 import numpy as np
 import pandas as pd
 
-import pandas_profiling.model.types as ppdf
+import pandas_profiling.model.dataframe_wrappers as ppdf
 from pandas_profiling.config import config as config
 from pandas_profiling.model.messages import (  # warning_type_date,
     check_correlation_messages,
@@ -27,7 +27,9 @@ from pandas_profiling.visualisation.missing import (
     missing_matrix,
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
-from pandas_profiling.model.types import GenericDataFrame,GenericSeries
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
+from pandas_profiling.model.series_wrappers import GenericSeries
+
 
 def describe_1d(series: GenericSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
