@@ -252,14 +252,16 @@ class PandasDataFrame(GenericDataFrame):
 
     def groupby_get_n_largest(self, columns, n, for_duplicates=True) -> pd.DataFrame:
         if for_duplicates:
-            self.df = (self.df[self.get_duplicates(subset=columns, keep=False)]
+            self.df = (self.get_duplicates(subset=columns, keep=False)
+                       .get_pandas_df()
                        .groupby(columns)
                        .size()
                        .reset_index(name="count")
                        .nlargest(n, "count"))
             return self
         else:
-            self.df = (self.df[self.get_duplicates(subset=columns, keep=False)]
+            self.df = (self.get_duplicates(subset=columns, keep=False)
+                       .get_pandas_df()
                        .groupby(columns)
                        .size()
                        .reset_index(name="count")
