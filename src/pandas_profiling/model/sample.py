@@ -1,8 +1,10 @@
+from functools import singledispatch
+
 import attr
-import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame
+
 
 @attr.s
 class Sample(object):
@@ -12,7 +14,13 @@ class Sample(object):
     caption = attr.ib(default=None)
 
 
+@singledispatch
 def get_sample(df: GenericDataFrame) -> list:
+    raise NotImplementedError("This method is not implemented ")
+
+
+@get_sample.register(PandasDataFrame)
+def get_sample(df: PandasDataFrame) -> list:
     """Obtains a sample from head and tail of the DataFrame
 
     Args:

@@ -42,7 +42,7 @@ class Spearman(Correlation):
     @compute.register(PandasDataFrame)
     @staticmethod
     def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
-        return df.corr(method="spearman")
+        return df.get_pandas_df().corr(method="spearman")
 
 
 class Pearson(Correlation):
@@ -55,7 +55,7 @@ class Pearson(Correlation):
     @compute.register(PandasDataFrame)
     @staticmethod
     def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
-        return df.corr(method="pearson")
+        return df.get_pandas_df().corr(method="pearson")
 
 
 class Kendall(Correlation):
@@ -68,7 +68,7 @@ class Kendall(Correlation):
     @compute.register(PandasDataFrame)
     @staticmethod
     def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
-        return df.corr(method="kendall")
+        return df.get_pandas_df().corr(method="kendall")
 
 
 class Cramers(Correlation):
@@ -126,7 +126,7 @@ class Cramers(Correlation):
         )
 
         for name1, name2 in itertools.combinations(categoricals, 2):
-            confusion_matrix = pd.crosstab(df[name1], df[name2])
+            confusion_matrix = pd.crosstab(df.get_pandas_df()[name1], df.get_pandas_df()[name2])
             correlation_matrix.loc[name2, name1] = Cramers._cramers_corrected_stat(
                 confusion_matrix, correction=True
             )

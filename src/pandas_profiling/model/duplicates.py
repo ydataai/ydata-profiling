@@ -3,10 +3,17 @@ from typing import Optional
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame
+
+from functools import singledispatch
+
+@singledispatch
+def get_duplicates(df: GenericDataFrame, supported_columns) -> Optional[GenericDataFrame]:
+    raise NotImplementedError("This method is not implemented ")
 
 
-def get_duplicates(df: GenericDataFrame, supported_columns) -> Optional[pd.DataFrame]:
+@get_duplicates.register(PandasDataFrame)
+def get_duplicates(df: PandasDataFrame, supported_columns) -> Optional[PandasDataFrame]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
