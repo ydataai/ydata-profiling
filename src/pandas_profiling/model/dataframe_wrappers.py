@@ -1,10 +1,11 @@
 from typing import List, Tuple
 
+import numpy as np
 import pandas as pd
 
-from pandas_profiling.config import config
 # annotations allow class methods to return the same class in python < 3.10
-from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, Sample
+from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, Sample, SparkSeries
+from pandas_profiling.utils.dataframe import rename_index
 
 
 class GenericDataFrame(object):
@@ -45,7 +46,27 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def get_columns(self) -> List[str]:
+    @staticmethod
+    def preprocess(df):
+        """
+        This method allows you to modify the dataframe before it is wrapped with a pandas-profiling
+        dataframe_wrapper
+
+        Default - do nothing
+        For pandas - process the index column properly, because it contains a lot of information
+        For spark - spark doesn't really have the idea of an index (maybe partitions comes close?)
+        so don't do anything
+
+        Args:
+            df: actual dataframe structure
+
+        Returns: preprocess df with some logic before wrapping or do nothing
+
+        """
+        raise NotImplementedError("Method not implemented for data type")
+
+    @property
+    def columns(self) -> List[str]:
         """
         method to get all the columns in dataframe as a list
 
@@ -54,16 +75,8 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def get_count(self) -> int:
-        """
-        method to get the number of rows in a dataframe as an int
-
-        Returns: number of rows in column
-
-        """
-        raise NotImplemented("Implementation not found")
-
-    def is_empty(self) -> bool:
+    @property
+    def empty(self) -> bool:
         """
         return True if dataframe is empty, else return false. A dataframe of NaN should not
         evaluate to empty
@@ -73,9 +86,19 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def get_duplicates(self, subset: List[str]) -> "GenericDataFrame":
+    @property
+    def n_rows(self) -> int:
         """
-        returns only the duplicated rows in the dataframe. Used for the get_duplicates method
+        Get the number of rows in a dataframe as an int
+
+        Returns: number of rows in column
+
+        """
+        raise NotImplemented("Implementation not found")
+
+    def get_duplicate_rows_count(self, subset: List[str]) -> int:
+        """
+        returns the counts of exactly duplicate rows for the subset of columns
 
         Args:
             subset: subset of rows to consider
@@ -217,6 +240,7 @@ class PandasDataFrame(GenericDataFrame):
 
     def __init__(self, df):
         super().__init__()
+        # self.df holds the underlying data object
         self.df = df
 
     @staticmethod
@@ -233,18 +257,57 @@ class PandasDataFrame(GenericDataFrame):
         """
         return isinstance(obj, pd.DataFrame)
 
-    def get_columns(self) -> List[str]:
+    @staticmethod
+    def preprocess(df: pd.DataFrame) -> pd.DataFrame:
+        """Preprocess the dataframe
+
+                - Appends the index to the dataframe when it contains information
+                - Rename the "index" column to "df_index", if exists
+                - Convert the DataFrame's columns to str
+
+                Args:
+                    df: the pandas DataFrame
+
+                Returns:
+                    The preprocessed DataFrame
+                """
+        # Treat index as any other column
+        if (
+                not pd.Index(np.arange(0, len(df))).equals(df.index)
+                or df.index.dtype != np.int64
+        ):
+            df = df.reset_index()
+
+        # Rename reserved column names
+        df = rename_index(df)
+
+        # Ensure that columns are strings
+        df.columns = df.columns.astype("str")
+        return df
+
+    @property
+    def columns(self) -> List[str]:
         return self.df.columns
 
-    def get_count(self) -> int:
-        return len(self.df)
-
-    def is_empty(self) -> bool:
+    @property
+    def empty(self) -> bool:
         return self.df.empty
 
-    def get_duplicates(self, subset, keep="first") -> "PandasDataFrame":
-        self.df = self.df.duplicated(subset=subset, keep=keep)
-        return self
+    @property
+    def n_rows(self) -> int:
+        return len(self.df)
+
+    def get_duplicate_rows_count(self, subset) -> int:
+        """
+
+        Args:
+            subset:
+            keep:
+
+        Returns:
+
+        """
+        return len(self.df[self.df.duplicated(subset=subset, keep="first")])
 
     def dropna(self, subset) -> "PandasDataFrame":
         self.df = self.df.dropna(subset=subset)
@@ -252,24 +315,20 @@ class PandasDataFrame(GenericDataFrame):
 
     def groupby_get_n_largest(self, columns, n, for_duplicates=True) -> pd.DataFrame:
         if for_duplicates:
-            self.df = (self.get_duplicates(subset=columns, keep=False)
-                       .get_pandas_df()
-                       .groupby(columns)
-                       .size()
-                       .reset_index(name="count")
-                       .nlargest(n, "count"))
-            return self
+            return (self.df[self.df.duplicated(subset=columns, keep=False)]
+                    .groupby(columns)
+                    .size()
+                    .reset_index(name="count")
+                    .nlargest(n, "count"))
         else:
-            self.df = (self.get_duplicates(subset=columns, keep=False)
-                       .get_pandas_df()
-                       .groupby(columns)
-                       .size()
-                       .reset_index(name="count")
-                       .nlargest(n, "count"))
-            return self
+            return (self.df[self.df.duplicated(subset=columns, keep=False)]
+                    .groupby(columns)
+                    .size()
+                    .reset_index(name="count")
+                    .nlargest(n, "count"))
 
     def __len__(self) -> int:
-        return self.get_count()
+        return self.n_rows
 
     def get_memory_usage(self, deep=False) -> pd.Series:
         return self.df.memory_usage(deep=deep).sum()
@@ -297,22 +356,20 @@ class PandasDataFrame(GenericDataFrame):
     def sample(self, n, with_replacement=True) -> pd.DataFrame:
         return self.df.sample(n, with_replacement=with_replacement)
 
-    def get_sample(self) -> list:
-        """Obtains a sample from head and tail of the DataFrame
+    def sample(self, n, with_replacement=True) -> pd.DataFrame:
+        return self.df.sample(n, with_replacement=with_replacement)
+
+    def value_counts(self, column):
+        return self.df[column].value_counts()
+
+    def iteritems(self) -> List[Tuple[str, GenericSeries]]:
+        """
+        returns name and generic series type
 
         Returns:
-            a list of Sample objects
+
         """
-        samples = []
-        n_head = config["samples"]["head"].get(int)
-        if n_head > 0:
-            samples.append(Sample("head", self.head(n=n_head), "First rows"))
-
-        n_tail = config["samples"]["tail"].get(int)
-        if n_tail > 0:
-            samples.append(Sample("tail", self.tail(n=n_tail), "Last rows"))
-
-        return samples
+        return [(i[0], PandasSeries(i[1])) for i in self.df.iteritems()]
 
     def value_counts(self, column):
         return self.df[column].value_counts()
@@ -338,7 +395,7 @@ class SparkDataFrame(GenericDataFrame):
         self.df = df
 
     @staticmethod
-    def is_same_type(obj):
+    def validate_same_type(obj) -> bool:
         """
         Check if spark dataframe without importing actual spark dataframe class and doing isinstance (too expensive
         to import pyspark class - create more library dependencies for pp)
@@ -351,17 +408,30 @@ class SparkDataFrame(GenericDataFrame):
         """
         return type(obj).__module__ == "pyspark.sql.dataframe" and type(obj).__name__ == "DataFrame"
 
-    def get_count(self):
+    @staticmethod
+    def preprocess(df):
+        return df
+
+    @property
+    def columns(self) -> List[str]:
+        return self.df.columns
+
+    @property
+    def empty(self) -> bool:
+        return self.n_rows == 0
+
+    @property
+    def n_rows(self) -> int:
         return self.df.count()
 
     def get_columns(self) -> List[str]:
         return self.df.columns
 
     def head(self, n):
-        return pd.DataFrame(self.df.head(10), columns=self.get_columns())
+        return pd.DataFrame(self.df.head(10), columns=self.columns)
 
     def sample(self, n, with_replacement=True):
-        return self.df.sample(withReplacement=with_replacement, frac=n / self.get_count())
+        return self.df.sample(withReplacement=with_replacement, frac=n / self.n_rows)
 
     def value_counts(self, column):
         # We can use toPandas here because the output should be somewhat smaller and its
@@ -370,8 +440,18 @@ class SparkDataFrame(GenericDataFrame):
         df = self.df.groupBy(column).count().orderBy("count", ascending=False).toPandas()
         return pd.Series(df["count"].values, index=df["RAD"].values)
 
-    def __len__(self):
-        return self.get_count()
+    def __len__(self) -> int:
+        return self.n_rows
+
+    def iteritems(self) -> List[Tuple[str, GenericSeries]]:
+        """
+        returns name and generic series type
+
+        Returns:
+
+        """
+        column_list = self.columns
+        return [(column, SparkSeries(self.df.select(column))) for column in column_list]
 
 
 def get_implemented_datatypes():

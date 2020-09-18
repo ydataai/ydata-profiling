@@ -2,12 +2,11 @@
 from datetime import datetime
 from typing import Optional
 
-import pandas as pd
 from tqdm.auto import tqdm
 
-import pandas_profiling.model.dataframe_wrappers as ppdf
 from pandas_profiling.config import config as config
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
@@ -19,10 +18,10 @@ from pandas_profiling.model.summary import (
 )
 from pandas_profiling.model.typeset import Numeric, Unsupported
 from pandas_profiling.version import __version__
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
+
 
 def describe(
-    title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None
+        title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None
 ) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
@@ -44,10 +43,7 @@ def describe(
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    #if not isinstance(df, pd.DataFrame):
-    #    warnings.warn("df is not of types pandas.DataFrame")
-
-    if df.is_empty():
+    if df.empty:
         raise ValueError("df can not be empty")
 
     disable_progress_bar = not config["progress_bar"].get(bool)
@@ -66,13 +62,15 @@ def describe(
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
-    number_of_tasks = 8 + len(df.get_columns()) + len(correlation_names)
+    number_of_tasks = 8 + len(df.columns) + len(correlation_names)
+
+    print("trying to get series descriptions")
 
     with tqdm(
-        total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
+            total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, summarizer, typeset, pbar)
-
+        print("SERIES DESCRIPTION", series_description)
         pbar.set_postfix_str("Get variable types")
         variables = {
             column: description["type"]
@@ -121,7 +119,7 @@ def describe(
         # Sample
         pbar.set_postfix_str("Take sample")
         if sample is None:
-            samples = df.get_sample()
+            samples = get_sample(df)
         else:
             if "name" not in sample:
                 sample["name"] = None

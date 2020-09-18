@@ -8,6 +8,7 @@ from pandas.core.arrays.integer import _IntegerDtype
 from visions.utils import func_nullable_series_contains
 
 from pandas_profiling.config import config
+from pandas_profiling.model.series_wrappers import SparkSeries
 from pandas_profiling.model.summary_helpers import (
     chi_square,
     file_summary,
@@ -75,7 +76,7 @@ def series_hashable(fn):
 
 @series_hashable
 def describe_supported(
-    series: pd.Series, series_description: dict
+        series: pd.Series, series_description: dict
 ) -> Tuple[pd.Series, dict]:
     """Describe a supported series.
     Args:
@@ -224,10 +225,10 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     stats["monotonic_decrease"] = series.is_monotonic_decreasing
 
     stats["monotonic_increase_strict"] = (
-        stats["monotonic_increase"] and series.is_unique
+            stats["monotonic_increase"] and series.is_unique
     )
     stats["monotonic_decrease_strict"] = (
-        stats["monotonic_decrease"] and series.is_unique
+            stats["monotonic_decrease"] and series.is_unique
     )
 
     stats.update(
@@ -408,4 +409,117 @@ def describe_boolean_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     value_counts = summary["value_counts_without_nan"]
     summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
 
+    return series, summary
+
+
+def describe_counts_spark(series: SparkSeries, summary: dict) -> Tuple[SparkSeries, dict]:
+    """Counts the values in a series (with and without NaN, distinct).
+
+    Args:
+        series: Series for which we want to calculate the values.
+
+    Returns:
+        A dictionary with the count values (with and without NaN, distinct).
+    """
+    return series, summary
+
+    try:
+        value_counts_with_nan = series.value_counts(dropna=False)
+        _ = set(value_counts_with_nan.index)
+        hashable = True
+    except:
+        hashable = False
+
+    summary["hashable"] = hashable
+
+    if hashable:
+        value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
+
+        null_index = value_counts_with_nan.index.isnull()
+        if null_index.any():
+            n_missing = value_counts_with_nan[null_index].sum()
+            value_counts_without_nan = value_counts_with_nan[~null_index]
+        else:
+            n_missing = 0
+            value_counts_without_nan = value_counts_with_nan
+
+        summary.update(
+            {
+                "value_counts_without_nan": value_counts_without_nan,
+            }
+        )
+    else:
+        n_missing = series.isna().sum()
+
+    summary["n_missing"] = n_missing
+
+    return series, summary
+
+
+def describe_supported_spark(
+        series: SparkSeries, series_description: dict
+) -> Tuple[SparkSeries, dict]:
+    """Describe a supported series.
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+    Returns:
+        A dict containing calculated series description values.
+    """
+    return series, series_description
+
+    # number of non-NaN observations in the Series
+    count = series_description["count"]
+
+    value_counts = series_description["value_counts_without_nan"]
+    distinct_count = len(value_counts)
+    unique_count = value_counts.where(value_counts == 1).count()
+
+    stats = {
+        "n_distinct": distinct_count,
+        "p_distinct": distinct_count / count,
+        "is_unique": unique_count == count,
+        "n_unique": unique_count,
+        "p_unique": unique_count / count,
+    }
+    stats.update(series_description)
+
+    return series, stats
+
+
+def describe_generic_spark(series: SparkSeries, summary: dict) -> Tuple[SparkSeries, dict]:
+    """Describe generic series.
+    Args:
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+    Returns:
+        A dict containing calculated series description values.
+    """
+    return series, summary
+
+    # number of observations in the Series
+    length = len(series)
+
+    summary.update(
+        {
+            "n": length,
+            "p_missing": summary["n_missing"] / length,
+            "count": length - summary["n_missing"],
+            "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
+        }
+    )
+
+    return series, summary
+
+
+def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries, dict]:
+    """Describe a boolean series.
+
+    Args:
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    """
     return series, summary

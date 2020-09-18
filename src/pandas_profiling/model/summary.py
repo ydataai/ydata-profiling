@@ -4,22 +4,20 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, Mapping, Tuple, Type
+from functools import singledispatch
+from typing import Callable, Mapping, Tuple
 
 import numpy as np
-import pandas as pd
 
-import pandas_profiling.model.dataframe_wrappers as ppdf
 from pandas_profiling.config import config as config
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, SparkDataFrame
 from pandas_profiling.model.messages import (  # warning_type_date,
     check_correlation_messages,
     check_table_messages,
     check_variable_messages,
 )
+from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, SparkSeries
 from pandas_profiling.model.summarizer import BaseSummarizer
-
-# from pandas_profiling.model.typeset import Unsupported
-from pandas_profiling.model.typeset import Numeric, Unsupported
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
@@ -27,11 +25,23 @@ from pandas_profiling.visualisation.missing import (
     missing_matrix,
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
-from pandas_profiling.model.series_wrappers import GenericSeries
 
 
-def describe_1d(series: GenericSeries, summarizer: BaseSummarizer, typeset) -> dict:
+@singledispatch
+def describe_1d(wrapped_series: GenericSeries, summarizer: BaseSummarizer, typeset) -> dict:
+    """Describe a series (infer the variable type, then calculate type-specific values).
+
+    Args:
+        series: The Series to describe.
+
+    Returns:
+        A Series containing calculated series description values.
+    """
+    raise NotImplementedError("Method is not implemented for dtype")
+
+
+@describe_1d.register
+def _(wrapped_series: PandasSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -41,15 +51,41 @@ def describe_1d(series: GenericSeries, summarizer: BaseSummarizer, typeset) -> d
         A Series containing calculated series description values.
     """
 
-    # Make sure pd.NA is not in the series
-    series = series.fillna(np.nan)
-
+    # Make sure pd.NA is not in the series, final .series call is to unwrap the series to get back our pd.Series
+    series = wrapped_series.fillna(np.nan).series
     # Infer variable types
     # vtype = Unsupported
+
     vtype = typeset.infer_type(series)
     series = typeset.cast_to_inferred(series)
 
     return summarizer.summarize(series, dtype=vtype)
+
+
+@describe_1d.register
+def _(wrapped_series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
+    """Describe a series (infer the variable type, then calculate type-specific values).
+
+    Args:
+        series: The Series to describe.
+
+    Returns:
+        A Series containing calculated series description values.
+    """
+    from pandas_profiling.model.typeset import SparkNumeric, SparkUnsupported
+
+    print(str(wrapped_series.type))
+    if wrapped_series in SparkNumeric:
+        vtype = SparkNumeric
+    else:
+        vtype = SparkUnsupported
+
+    # Infer variable types
+    # vtype = Unsupported
+    # vtype = typeset.infer_type(series)
+    # series = typeset.cast_to_inferred(series)
+
+    return summarizer.summarize(wrapped_series, dtype=vtype)
 
 
 def sort_column_names(dct: Mapping, sort: str):
@@ -63,7 +99,7 @@ def sort_column_names(dct: Mapping, sort: str):
     return dct
 
 
-def get_series_descriptions(df, summarizer, typeset, pbar):
+def get_series_descriptions(df: GenericDataFrame, summarizer, typeset, pbar):
     def multiprocess_1d(args) -> Tuple[str, dict]:
         """Wrapper to process series in parallel.
 
@@ -85,9 +121,12 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
         pool_size = multiprocessing.cpu_count()
 
     args = [(name, series) for name, series in df.iteritems()]
+
+    print(args)
     series_description = {}
 
-    if pool_size == 1:
+    # if we're using spark as base compute, no need to multiprocess
+    if pool_size == 1 or isinstance(df, SparkDataFrame):
         for arg in args:
             pbar.set_postfix_str(f"Describe variable:{arg[0]}")
             column, description = multiprocess_1d(arg)
@@ -104,7 +143,7 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
                 pbar.update()
 
         # Restore the original order
-        series_description = {k: series_description[k] for k in df.get_columns()}
+        series_description = {k: series_description[k] for k in df.columns}
 
     # Mapping from column name to variable type
     series_description = sort_column_names(series_description, sort)
@@ -128,7 +167,7 @@ def get_table_stats(df: GenericDataFrame, variable_stats: dict) -> dict:
 
     table_stats = {
         "n": n,
-        "n_var": len(df.get_columns()),
+        "n_var": len(df.columns),
         "memory_size": memory_size,
         "record_size": record_size,
         "n_cells_missing": 0,
@@ -151,7 +190,7 @@ def get_table_stats(df: GenericDataFrame, variable_stats: dict) -> dict:
         k for k, v in variable_stats.items() if v["type"] != Unsupported
     ]
     table_stats["n_duplicates"] = (
-        sum(df.get_duplicates(subset=supported_columns))
+        df.get_duplicate_rows_count(subset=supported_columns)
         if len(supported_columns) > 0
         else 0
     )

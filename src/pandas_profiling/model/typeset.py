@@ -11,6 +11,7 @@ from visions.relations import IdentityRelation, InferenceRelation
 from visions.utils import nullable_series_contains
 
 from pandas_profiling.config import config
+from pandas_profiling.model.series_wrappers import SparkSeries
 from pandas_profiling.model.typeset_relations import (
     category_is_numeric,
     category_to_numeric,
@@ -195,6 +196,19 @@ class Complex(PandasProfilingBaseType):
     @nullable_series_contains
     def contains_op(cls, series: pd.Series) -> bool:
         return pdt.is_complex_dtype(series)
+
+
+class SparkUnsupported(PandasProfilingBaseType):
+    pass
+
+class SparkNumeric(PandasProfilingBaseType):
+    @classmethod
+    def get_relations(cls):
+        return [IdentityRelation(cls, SparkUnsupported)]
+
+    @classmethod
+    def contains_op(cls, series: SparkSeries) -> bool:
+        return str(series.type) == "DoubleType"
 
 
 class ProfilingTypeSet(VisionsTypeset):

@@ -17,6 +17,10 @@ from pandas_profiling.model.summary_algorithms import (
     describe_path_1d,
     describe_supported,
     describe_url_1d,
+    describe_counts_spark,
+    describe_generic_spark,
+    describe_supported_spark,
+    describe_numeric_spark_1d
 )
 from pandas_profiling.model.typeset import (
     URL,
@@ -29,6 +33,8 @@ from pandas_profiling.model.typeset import (
     Path,
     ProfilingTypeSet,
     Unsupported,
+    SparkUnsupported,
+    SparkNumeric
 )
 
 
@@ -50,13 +56,13 @@ class BaseSummarizer:
 
     def _complete_summaries(self):
         for from_type, to_type in nx.topological_sort(
-            nx.line_graph(self.typeset.base_graph)
+                nx.line_graph(self.typeset.base_graph)
         ):
             self.summary_map[to_type] = (
-                self.summary_map[from_type] + self.summary_map[to_type]
+                    self.summary_map[from_type] + self.summary_map[to_type]
             )
 
-    def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -> dict:
+    def summarize(self, series, dtype: Type[VisionsBaseType]) -> dict:
         """
 
         Returns:
@@ -97,6 +103,14 @@ class PandasProfilingSummarizer(BaseSummarizer):
             Image: [
                 describe_image_1d,
             ],
+            SparkUnsupported: [
+                describe_counts_spark,
+                describe_generic_spark,
+                describe_supported_spark
+            ],
+            SparkNumeric: [
+                describe_numeric_spark_1d
+            ]
         }
         super().__init__(summary_map, typeset, *args, **kwargs)
 
@@ -109,9 +123,9 @@ def format_summary(summary):
             if isinstance(v, pd.Series):
                 return fmt(v.to_dict())
             elif (
-                isinstance(v, tuple)
-                and len(v) == 2
-                and all(isinstance(x, np.ndarray) for x in v)
+                    isinstance(v, tuple)
+                    and len(v) == 2
+                    and all(isinstance(x, np.ndarray) for x in v)
             ):
                 return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
             else:
