@@ -356,9 +356,6 @@ class PandasDataFrame(GenericDataFrame):
     def sample(self, n, with_replacement=True) -> pd.DataFrame:
         return self.df.sample(n, with_replacement=with_replacement)
 
-    def sample(self, n, with_replacement=True) -> pd.DataFrame:
-        return self.df.sample(n, with_replacement=with_replacement)
-
     def value_counts(self, column):
         return self.df[column].value_counts()
 
@@ -452,6 +449,9 @@ class SparkDataFrame(GenericDataFrame):
         """
         column_list = self.columns
         return [(column, SparkSeries(self.df.select(column))) for column in column_list]
+
+    def get_spark_df(self):
+        return self.df
 
 
 def get_implemented_datatypes():

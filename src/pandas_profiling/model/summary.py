@@ -145,6 +145,7 @@ def get_series_descriptions(df: GenericDataFrame, summarizer, typeset, pbar):
 
     # Mapping from column name to variable type
     series_description = sort_column_names(series_description, sort)
+
     return series_description
 
 

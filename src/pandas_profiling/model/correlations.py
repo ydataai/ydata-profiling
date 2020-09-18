@@ -3,6 +3,7 @@ import itertools
 import warnings
 from typing import Dict, List, Optional
 
+import phik
 import numpy as np
 import pandas as pd
 from pandas.core.base import DataError
@@ -10,14 +11,14 @@ from scipy import stats
 from singledispatchmethod import singledispatchmethod
 
 from pandas_profiling.config import config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame, SparkDataFrame
 from pandas_profiling.model.typeset import (
     Boolean,
     Categorical,
     Numeric,
     Unsupported,
 )
-import phik
+
 
 class Correlation:
     @singledispatchmethod
@@ -28,7 +29,7 @@ class Correlation:
 
     @compute.register(PandasDataFrame)
     @staticmethod
-    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
+    def _(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         return NotImplemented
 
 
@@ -41,8 +42,23 @@ class Spearman(Correlation):
 
     @compute.register(PandasDataFrame)
     @staticmethod
-    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
-        return df.get_pandas_df().corr(method="spearman")
+    def _(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
+        return df.get_pandas_df().toPandas().corr(method="spearman")
+
+    @compute.register(SparkDataFrame)
+    @staticmethod
+    def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
+        """
+        TODO - Optimise this in Spark, cheating for now
+
+        Args:
+            df:
+            summary:
+
+        Returns:
+
+        """
+        return df.get_spark_df().toPandas().corr(method="spearman")
 
 
 class Pearson(Correlation):
@@ -50,12 +66,27 @@ class Pearson(Correlation):
     @staticmethod
     def compute(df, summary):
         df_type = type(df)
-        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
+        raise NotImplementedError(f"Not Implemented for dataframe_type {df_type}")
 
     @compute.register(PandasDataFrame)
     @staticmethod
-    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
+    def _(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         return df.get_pandas_df().corr(method="pearson")
+
+    @compute.register(SparkDataFrame)
+    @staticmethod
+    def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
+        """
+        TODO - Optimise this in Spark, cheating for now
+
+        Args:
+            df:
+            summary:
+
+        Returns:
+
+        """
+        return df.get_spark_df().toPandas().corr(method="pearson")
 
 
 class Kendall(Correlation):
@@ -63,12 +94,27 @@ class Kendall(Correlation):
     @staticmethod
     def compute(df, summary):
         df_type = type(df)
-        raise NotImplementedError(f"Not Implementated for dataframe_type {df_type}")
+        raise NotImplementedError(f"Not Implemented for dataframe_type {df_type}")
 
     @compute.register(PandasDataFrame)
     @staticmethod
-    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
+    def _(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         return df.get_pandas_df().corr(method="kendall")
+
+    @compute.register(SparkDataFrame)
+    @staticmethod
+    def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
+        """
+        TODO - Optimise this in Spark, cheating for now
+
+        Args:
+            df:
+            summary:
+
+        Returns:
+
+        """
+        return df.get_spark_df().toPandas().corr(method="kendall ")
 
 
 class Cramers(Correlation):
@@ -104,7 +150,7 @@ class Cramers(Correlation):
 
     @compute.register(PandasDataFrame)
     @staticmethod
-    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
+    def _(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         threshold = config["categorical_maximum_correlation_distinct"].get(int)
 
         categoricals = {
@@ -133,6 +179,21 @@ class Cramers(Correlation):
             correlation_matrix.loc[name1, name2] = correlation_matrix.loc[name2, name1]
         return correlation_matrix
 
+    @compute.register(SparkDataFrame)
+    @staticmethod
+    def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
+        """
+        TODO - Optimise this in Spark, cheating for now
+
+        Args:
+            df:
+            summary:
+
+        Returns:
+
+        """
+        return Cramers.compute(PandasDataFrame(df.get_spark_df().toPandas()), summary)
+
 
 class PhiK(Correlation):
     @singledispatchmethod
@@ -143,7 +204,7 @@ class PhiK(Correlation):
 
     @compute.register(PandasDataFrame)
     @staticmethod
-    def compute(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
+    def _(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
         threshold = config["categorical_maximum_correlation_distinct"].get(int)
         intcols = {
             key
@@ -164,9 +225,24 @@ class PhiK(Correlation):
         if len(selcols) <= 1:
             return None
 
-        correlation = df[selcols].phik_matrix(interval_cols=intcols)
+        pandas_df = df.get_pandas_df()
+        correlation = pandas_df[selcols].phik_matrix(interval_cols=intcols)
 
         return correlation
+
+    @compute.register(SparkDataFrame)
+    @staticmethod
+    def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
+        """
+        TODO - Optimise this in Spark, cheating for now
+        Args:
+            df:
+            summary:
+
+        Returns:
+
+        """
+        return PhiK.compute(PandasDataFrame(df.get_spark_df().toPandas()), summary)
 
 
 def warn_correlation(correlation_name: str, error):

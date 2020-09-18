@@ -421,37 +421,10 @@ def describe_counts_spark(series: SparkSeries, summary: dict) -> Tuple[SparkSeri
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
     """
-    return series, summary
+    value_counts = series.value_counts()
 
-    try:
-        value_counts_with_nan = series.value_counts(dropna=False)
-        _ = set(value_counts_with_nan.index)
-        hashable = True
-    except:
-        hashable = False
-
-    summary["hashable"] = hashable
-
-    if hashable:
-        value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
-
-        null_index = value_counts_with_nan.index.isnull()
-        if null_index.any():
-            n_missing = value_counts_with_nan[null_index].sum()
-            value_counts_without_nan = value_counts_with_nan[~null_index]
-        else:
-            n_missing = 0
-            value_counts_without_nan = value_counts_with_nan
-
-        summary.update(
-            {
-                "value_counts_without_nan": value_counts_without_nan,
-            }
-        )
-    else:
-        n_missing = series.isna().sum()
-
-    summary["n_missing"] = n_missing
+    summary["value_counts_without_nan"] = series.value_counts()
+    summary["n_missing"] = series.count_na()
 
     return series, summary
 
@@ -466,7 +439,6 @@ def describe_supported_spark(
     Returns:
         A dict containing calculated series description values.
     """
-    return series, series_description
 
     # number of non-NaN observations in the Series
     count = series_description["count"]
@@ -495,7 +467,6 @@ def describe_generic_spark(series: SparkSeries, summary: dict) -> Tuple[SparkSer
     Returns:
         A dict containing calculated series description values.
     """
-    return series, summary
 
     # number of observations in the Series
     length = len(series)
