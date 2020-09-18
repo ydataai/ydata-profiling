@@ -74,7 +74,6 @@ def _(wrapped_series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """
     from pandas_profiling.model.typeset import SparkNumeric, SparkUnsupported
 
-    print(str(wrapped_series.type))
     if wrapped_series in SparkNumeric:
         vtype = SparkNumeric
     else:
@@ -122,7 +121,6 @@ def get_series_descriptions(df: GenericDataFrame, summarizer, typeset, pbar):
 
     args = [(name, series) for name, series in df.iteritems()]
 
-    print(args)
     series_description = {}
 
     # if we're using spark as base compute, no need to multiprocess

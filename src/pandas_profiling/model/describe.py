@@ -64,13 +64,10 @@ def describe(
 
     number_of_tasks = 8 + len(df.columns) + len(correlation_names)
 
-    print("trying to get series descriptions")
-
     with tqdm(
             total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, summarizer, typeset, pbar)
-        print("SERIES DESCRIPTION", series_description)
         pbar.set_postfix_str("Get variable types")
         variables = {
             column: description["type"]

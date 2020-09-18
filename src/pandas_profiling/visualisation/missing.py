@@ -1,18 +1,17 @@
 """Plotting functions for the missing values diagrams"""
 from functools import singledispatch
 
-import pandas as pd
 from matplotlib import pyplot as plt
 from missingno import missingno
 
 from pandas_profiling.config import config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame,PandasDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
-def get_font_size(data:GenericDataFrame):
-    """Calculate font size based on number of get_columns()
+def get_font_size(data: GenericDataFrame):
+    """Calculate font size based on number of columns
 
     Args:
         data: DataFrame
@@ -20,13 +19,13 @@ def get_font_size(data:GenericDataFrame):
     Returns:
         Font size for missing values plots.
     """
-    max_label_length = max([len(label) for label in data.get_columns()])
+    max_label_length = max([len(label) for label in data.columns])
 
-    if len(data.get_columns()) < 20:
+    if len(data.columns) < 20:
         font_size = 13
-    elif 20 <= len(data.get_columns()) < 40:
+    elif 20 <= len(data.columns) < 40:
         font_size = 12
-    elif 40 <= len(data.get_columns()) < 60:
+    elif 40 <= len(data.columns) < 60:
         font_size = 10
     else:
         font_size = 8
@@ -116,12 +115,12 @@ def missing_heatmap(data: PandasDataFrame) -> str:
     """
 
     height = 4
-    if len(data.get_columns()) > 10:
-        height += int((len(data.get_columns()) - 10) / 5)
+    if len(data.columns) > 10:
+        height += int((len(data.columns) - 10) / 5)
     height = min(height, 10)
 
     font_size = get_font_size(data)
-    if len(data.get_columns()) > 40:
+    if len(data.columns) > 40:
         font_size /= 1.4
 
     labels = config["plot"]["missing"]["force_labels"].get(bool)
@@ -133,7 +132,7 @@ def missing_heatmap(data: PandasDataFrame) -> str:
         labels=labels,
     )
 
-    if len(data.get_columns()) > 40:
+    if len(data.columns) > 40:
         plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
     else:
         plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)

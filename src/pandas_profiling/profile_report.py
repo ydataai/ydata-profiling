@@ -3,9 +3,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Optional, Union
 
-import numpy as np
 import pandas as pd
-from singledispatchmethod import singledispatchmethod
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
@@ -18,7 +16,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
-from pandas_profiling.utils.dataframe import hash_dataframe, rename_index, wrap_data_as_ppdf
+from pandas_profiling.utils.dataframe import hash_dataframe, get_appropriate_backend
 from pandas_profiling.utils.paths import get_config
 
 
@@ -29,17 +27,17 @@ class ProfileReport(SerializeReport, object):
     """
 
     def __init__(
-        self,
-        df: Optional[pd.DataFrame] = None,
-        minimal: bool = False,
-        explorative: bool = False,
-        sensitive: bool = False,
-        dark_mode: bool = False,
-        orange_mode: bool = False,
-        sample: Optional[dict] = None,
-        config_file: Union[Path, str] = None,
-        lazy: bool = True,
-        **kwargs,
+            self,
+            df: Optional[pd.DataFrame] = None,
+            minimal: bool = False,
+            explorative: bool = False,
+            sensitive: bool = False,
+            dark_mode: bool = False,
+            orange_mode: bool = False,
+            sample: Optional[dict] = None,
+            config_file: Union[Path, str] = None,
+            lazy: bool = True,
+            **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
 
@@ -81,7 +79,6 @@ class ProfileReport(SerializeReport, object):
         config.set_kwargs(kwargs)
 
         self.df = None
-        self.ppdf = None
         self._df_hash = -1
         self._description_set = None
         self._sample = sample
@@ -94,8 +91,12 @@ class ProfileReport(SerializeReport, object):
         self._summarizer = None
 
         if df is not None:
-            # preprocess df and wrap as a ppdf
-            self.df = wrap_data_as_ppdf(self.preprocess(df))
+            # get appropriate backend
+            df_wrapper = get_appropriate_backend(df)
+            # preprocess df (if required)
+            processed_df = df_wrapper.preprocess(df)
+            # wrap and store df
+            self.df = df_wrapper(processed_df)
 
         if not lazy:
             # Trigger building the report structure
@@ -448,39 +449,6 @@ class ProfileReport(SerializeReport, object):
 
         app_widgets = QtReport(self.report).render()
         app = get_app(app, self.title, app_widgets)
-
-
-    @singledispatchmethod
-    def preprocess(self, df):
-        raise NotImplementedError("")
-
-    @preprocess.register
-    def preprocess(self, df: pd.DataFrame):
-        """Preprocess the dataframe
-
-        - Appends the index to the dataframe when it contains information
-        - Rename the "index" column to "df_index", if exists
-        - Convert the DataFrame's columns to str
-
-        Args:
-            df: the pandas DataFrame
-
-        Returns:
-            The preprocessed DataFrame
-        """
-        # Treat index as any other column
-        if (
-                not pd.Index(np.arange(0, len(df))).equals(df.index)
-                or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
-
-        # Rename reserved column names
-        df = rename_index(df)
-
-        # Ensure that columns are strings
-        df.columns = df.columns.astype("str")
-        return df
 
     @staticmethod
     def clear_config():

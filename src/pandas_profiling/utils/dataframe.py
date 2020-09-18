@@ -136,7 +136,7 @@ def hash_dataframe(df):
     return joblib.hash(df)
 
 
-def wrap_data_as_ppdf(df):
+def get_appropriate_backend(df):
     """
     Wrap data type with proper backend from implemented_backend
 
@@ -152,7 +152,7 @@ def wrap_data_as_ppdf(df):
     implemented_backends = get_implemented_datatypes()
     for backend in implemented_backends:
         if backend.validate_same_type(df):
-            return backend(df)
+            return backend
 
     raise NotImplementedError(
         f"""Datatype is currently not supported. Support datatypes are {implemented_backends}""")
