@@ -350,5 +350,6 @@ class SparkDataFrame(GenericDataFrame):
 
     def __len__(self):
         return self.get_count()
+
 def get_implemented_datatypes():
     return (PandasDataFrame, SparkDataFrame)
