@@ -110,7 +110,7 @@ class PhiK(Correlation):
             # DateTime currently excluded
             # In some use cases, it makes sense to convert it to interval
             # See https://github.com/KaveIO/PhiK/issues/7
-            if value["type"] in [Numeric] and 1 < value["n_distinct"]
+            if value["type"] == Numeric and 1 < value["n_distinct"]
         }
 
         selcols = {

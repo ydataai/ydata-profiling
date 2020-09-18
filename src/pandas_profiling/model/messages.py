@@ -1,7 +1,7 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
 from enum import Enum, auto, unique
-from typing import List, Union
+from typing import Dict, List, Optional, Set, Union
 
 import numpy as np
 
@@ -63,9 +63,9 @@ class Message(object):
     def __init__(
         self,
         message_type: MessageType,
-        values=None,
+        values: Optional[Dict] = None,
         column_name: Union[str, None] = None,
-        fields=None,
+        fields: Optional[Set] = None,
     ):
         if values is None:
             values = {}
@@ -273,12 +273,13 @@ def check_variable_messages(col: str, description: dict) -> List[Message]:
 
     if description["type"] == Unsupported:
         messages += unsupported_warnings(description)
-    if description["type"] != Unsupported:
+    else:
         messages += supported_warnings(description)
-    if description["type"] == Categorical:
-        messages += categorical_warnings(description)
-    if description["type"] == Numeric:
-        messages += numeric_warnings(description)
+
+        if description["type"] == Categorical:
+            messages += categorical_warnings(description)
+        if description["type"] == Numeric:
+            messages += numeric_warnings(description)
 
     for idx in range(len(messages)):
         messages[idx].column_name = col
