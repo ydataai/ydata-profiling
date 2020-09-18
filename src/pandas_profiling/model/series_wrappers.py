@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import attr
 
 
@@ -15,7 +13,7 @@ class GenericSeries(object):
     def __init__(self, series):
         self.series = series
 
-    def fillna(self, fill=None) -> GenericSeries:
+    def fillna(self, fill=None) -> "GenericSeries":
         raise NotImplementedError("Method not implemented for data type")
 
 
@@ -29,7 +27,7 @@ class PandasSeries(GenericSeries):
         super().__init__(series)
         self.series = series
 
-    def fillna(self, fill=None) -> GenericSeries:
+    def fillna(self, fill=None) -> "PandasSeries":
         if fill is not None:
             return self.series.fillna(fill)
         else:

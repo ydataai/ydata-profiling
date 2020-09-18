@@ -3,9 +3,11 @@ coverage<5
 codecov
 pytest-mypy>=0.7.0
 pytest-cov
+pytest-black
 nbval
 fastparquet>=0.3.3
 flake8
 check-manifest>=0.42
 twine>=3.1.1
 kaggle
+
