@@ -520,6 +520,7 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
         A dict containing calculated series description values.
     """
     # Config
+
     import pyspark.sql.functions as F
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     quantiles = config["vars"]["num"]["quantiles"].get(list)
@@ -539,6 +540,8 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
 
     stats.update(numeric_stats_spark(series))
 
+
+    # manual MAD computation, refactor possible
     median = series.get_spark_series().stat.approxQuantile(series.name, [0.5], 0.01)[0]
 
     mad = series.get_spark_series().select(
@@ -568,6 +571,8 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     stats["p_zeros"] = stats["n_zeros"] / summary["n"]
     stats["p_infinite"] = summary["n_infinite"] / summary["n"]
 
+    # because spark doesn't have an indexing system, there isn't really the idea of monotonic increase/decrease
+    # [feature enhancement] we could implement this if the user provides an ordinal column to use for ordering
     stats["monotonic_increase"] = False
     stats["monotonic_decrease"] = False
 

@@ -460,17 +460,14 @@ class SparkDataFrame(GenericDataFrame):
 
     def groupby_get_n_largest(self, columns, n=None, for_duplicates=True) -> pd.DataFrame:
         import pyspark.sql.functions as F
-        from pyspark.sql.functions import col
         return (self.df.groupBy(self.df.columns).agg(F.count("*")).select(
-            col("count(1)").alias("count").cast("int")).filter(col("count") > 1).orderBy('count', ascending=False)
+            F.col("count(1)").alias("count").cast("int")).filter(F.col("count") > 1).orderBy('count', ascending=False)
                 .limit(n).toPandas())
 
     def get_duplicate_rows_count(self, subset: List[str]) -> int:
         import pyspark.sql.functions as F
-        from pyspark.sql.functions import col
-        import numpy as np
         temp_df = (self.df.groupBy(self.df.columns).agg(F.count("*")).select(
-            col("count(1)").alias("count").cast("int")).filter(col("count") > 1).toPandas())
+            F.col("count(1)").alias("count").cast("int")).filter(F.col("count") > 1).toPandas())
 
         return np.sum(temp_df["count"].values)
 

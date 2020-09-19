@@ -38,6 +38,7 @@ class SparkSeries(GenericSeries):
     """
     A lot of optimisations left to do (persisting, caching etc), but when functionality completed
 
+    Also SparkSeries does a lot more than PandasSeries now, likely abstraction issue
     """
 
     def __init__(self, series):
