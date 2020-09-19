@@ -237,7 +237,7 @@ def supported_warnings(summary: dict) -> List[Message]:
         messages.append(
             Message(
                 message_type=MessageType.REJECTED,
-                fields={},
+                fields=set(),
             )
         )
     return messages
@@ -247,11 +247,11 @@ def unsupported_warnings(summary):
     messages = [
         Message(
             message_type=MessageType.UNSUPPORTED,
-            fields={},
+            fields=set(),
         ),
         Message(
             message_type=MessageType.REJECTED,
-            fields={},
+            fields=set(),
         ),
     ]
     return messages
