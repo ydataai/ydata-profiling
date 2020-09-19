@@ -310,8 +310,7 @@ class PandasDataFrame(GenericDataFrame):
         return len(self.df[self.df.duplicated(subset=subset, keep="first")])
 
     def dropna(self, subset) -> "PandasDataFrame":
-        self.df = self.df.dropna(subset=subset)
-        return self
+        return PandasDataFrame(self.df.dropna(subset=subset))
 
     def groupby_get_n_largest(self, columns, n, for_duplicates=True) -> pd.DataFrame:
         if for_duplicates:
@@ -425,10 +424,10 @@ class SparkDataFrame(GenericDataFrame):
         return self.df.columns
 
     def head(self, n):
-        return pd.DataFrame(self.df.head(10), columns=self.columns)
+        return pd.DataFrame(self.df.head(n), columns=self.columns)
 
     def sample(self, n, with_replacement=True):
-        return self.df.sample(withReplacement=with_replacement, frac=n / self.n_rows)
+        return self.df.sample(withReplacement=with_replacement, frac=n / self.n_rows).toPandas()
 
     def value_counts(self, column):
         # We can use toPandas here because the output should be somewhat smaller and its
@@ -452,6 +451,31 @@ class SparkDataFrame(GenericDataFrame):
 
     def get_spark_df(self):
         return self.df
+
+    def dropna(self, subset) -> "SparkDataFrame":
+        return SparkDataFrame(self.df.na.drop(subset=subset))
+
+    def get_memory_usage(self, deep):
+        return self.df.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
+
+    def groupby_get_n_largest(self, columns, n=None, for_duplicates=True) -> pd.DataFrame:
+        import pyspark.sql.functions as F
+        from pyspark.sql.functions import col
+        return (self.df.groupBy(self.df.columns).agg(F.count("*")).select(
+            col("count(1)").alias("count").cast("int")).filter(col("count") > 1).orderBy('count', ascending=False)
+                .limit(n).toPandas())
+
+    def get_duplicate_rows_count(self, subset: List[str]) -> int:
+        import pyspark.sql.functions as F
+        from pyspark.sql.functions import col
+        import numpy as np
+        temp_df = (self.df.groupBy(self.df.columns).agg(F.count("*")).select(
+            col("count(1)").alias("count").cast("int")).filter(col("count") > 1).toPandas())
+
+        return np.sum(temp_df["count"].values)
+
+    def __getitem__(self, key):
+        return self.df.select(key)
 
 
 def get_implemented_datatypes():

@@ -68,7 +68,7 @@ class SparkSeries(GenericSeries):
 
     def value_counts(self):
         value_counts = self.series.na.drop().groupBy(self.name).count().toPandas()
-        value_counts = value_counts.set_index(self.name, drop=True)
+        value_counts = value_counts.sort_values("count",ascending=False).set_index(self.name, drop=True).squeeze()
         return value_counts
 
     def count_na(self):
@@ -79,3 +79,12 @@ class SparkSeries(GenericSeries):
 
     def memory_usage(self, deep):
         return self.series.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
+
+    def get_spark_series(self):
+        return self.series
+
+    def persist(self):
+        return self.series.persist()
+
+    def unpersist(self):
+        return self.series.unpersist()

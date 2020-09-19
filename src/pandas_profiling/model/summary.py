@@ -10,7 +10,7 @@ from typing import Callable, Mapping, Tuple
 import numpy as np
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, SparkDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, SparkDataFrame, PandasDataFrame
 from pandas_profiling.model.messages import (  # warning_type_date,
     check_correlation_messages,
     check_table_messages,
@@ -18,6 +18,7 @@ from pandas_profiling.model.messages import (  # warning_type_date,
 )
 from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, SparkSeries
 from pandas_profiling.model.summarizer import BaseSummarizer
+from pandas_profiling.model.typeset import Unsupported, SparkUnsupported
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
@@ -149,6 +150,7 @@ def get_series_descriptions(df: GenericDataFrame, summarizer, typeset, pbar):
     return series_description
 
 
+@singledispatch
 def get_table_stats(df: GenericDataFrame, variable_stats: dict) -> dict:
     """General statistics for the DataFrame.
 
@@ -159,6 +161,12 @@ def get_table_stats(df: GenericDataFrame, variable_stats: dict) -> dict:
     Returns:
         A dictionary that contains the table statistics.
     """
+    data_type = type(df)
+    raise NotImplementedError(f"get_table_stats is not implemented for datatype {data_type}")
+
+
+@get_table_stats.register(PandasDataFrame)
+def _(df: PandasDataFrame, variable_stats: dict) -> dict:
     n = len(df)
 
     memory_size = df.get_memory_usage(deep=config["memory_deep"].get(bool))
@@ -204,9 +212,61 @@ def get_table_stats(df: GenericDataFrame, variable_stats: dict) -> dict:
         {"types": dict(Counter([v["type"] for v in variable_stats.values()]))}
     )
 
+    print("table stats are", table_stats)
     return table_stats
 
 
+@get_table_stats.register(SparkDataFrame)
+def _(df: SparkDataFrame, variable_stats: dict) -> dict:
+    n = len(df)
+
+    memory_size = df.get_memory_usage(deep=config["memory_deep"].get(bool))
+    record_size = float(memory_size) / n
+
+    table_stats = {
+        "n": n,
+        "n_var": len(df.columns),
+        "memory_size": memory_size,
+        "record_size": record_size,
+        "n_cells_missing": 0,
+        "n_vars_with_missing": 0,
+        "n_vars_all_missing": 0,
+    }
+
+    for series_summary in variable_stats.values():
+        if "n_missing" in series_summary and series_summary["n_missing"] > 0:
+            table_stats["n_vars_with_missing"] += 1
+            table_stats["n_cells_missing"] += series_summary["n_missing"]
+            if series_summary["n_missing"] == n:
+                table_stats["n_vars_all_missing"] += 1
+
+    table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
+            table_stats["n"] * table_stats["n_var"]
+    )
+
+    supported_columns = [
+        k for k, v in variable_stats.items() if v["type"] != SparkUnsupported
+    ]
+    table_stats["n_duplicates"] = (
+        df.get_duplicate_rows_count(subset=supported_columns)
+        if len(supported_columns) > 0
+        else 0
+    )
+    table_stats["p_duplicates"] = (
+        (table_stats["n_duplicates"] / len(df))
+        if (len(supported_columns) > 0 and len(df) > 0)
+        else 0
+    )
+
+    # Variable type counts
+    table_stats.update(
+        {"types": dict(Counter([v["type"] for v in variable_stats.values()]))}
+    )
+
+    return table_stats
+
+
+@singledispatch
 def get_missing_diagrams(df: GenericDataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
@@ -217,7 +277,12 @@ def get_missing_diagrams(df: GenericDataFrame, table_stats: dict) -> dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
+    data_type = type(df)
+    raise NotImplementedError(f"get_missing_diagrams is not implemented for datatype {data_type}")
 
+
+@get_missing_diagrams.register(PandasDataFrame)
+def _(df: PandasDataFrame, table_stats: dict) -> dict:
     def warn_missing(missing_name, error):
         warnings.warn(
             f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
@@ -286,7 +351,29 @@ def get_missing_diagrams(df: GenericDataFrame, table_stats: dict) -> dict:
     return missing
 
 
+@get_missing_diagrams.register(SparkDataFrame)
+def _(df: SparkDataFrame, table_stats: dict) -> dict:
+    """
+    awaiting missingno submission
+
+    Args:
+        df:
+        table_stats:
+
+    Returns:
+
+    """
+    return {}
+
+
+@singledispatch
 def get_scatter_matrix(df, continuous_variables):
+    data_type = type(df)
+    raise NotImplementedError(f"get_table_stats is not implemented for datatype {data_type}")
+
+
+@get_scatter_matrix.register(PandasDataFrame)
+def _(df, continuous_variables):
     scatter_matrix = {}
     if config["interactions"]["continuous"].get(bool):
         targets = config["interactions"]["targets"].get(list)
@@ -302,6 +389,29 @@ def get_scatter_matrix(df, continuous_variables):
             for y in continuous_variables:
                 if x in continuous_variables:
                     scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+
+    return scatter_matrix
+
+
+@get_scatter_matrix.register(SparkDataFrame)
+def _(df, continuous_variables):
+    scatter_matrix = {}
+    if config["interactions"]["continuous"].get(bool):
+        targets = config["interactions"]["targets"].get(list)
+        if len(targets) == 0:
+            targets = continuous_variables
+
+        scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
+
+        # check if any na still exists, and remove it before computing scatter matrix
+        df = df.dropna(subset=continuous_variables)
+
+        for x in targets:
+            for y in continuous_variables:
+                if x in continuous_variables:
+                    pd_series_x = SparkSeries(df[x]).get_spark_series().toPandas().squeeze()
+                    pd_series_y = SparkSeries(df[y]).get_spark_series().toPandas().squeeze()
+                    scatter_matrix[x][y] = scatter_pairwise(pd_series_x, pd_series_y, x, y)
 
     return scatter_matrix
 

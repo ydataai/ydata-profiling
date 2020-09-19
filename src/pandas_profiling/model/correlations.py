@@ -43,7 +43,7 @@ class Spearman(Correlation):
     @compute.register(PandasDataFrame)
     @staticmethod
     def _(df: PandasDataFrame, summary) -> Optional[pd.DataFrame]:
-        return df.get_pandas_df().toPandas().corr(method="spearman")
+        return df.get_pandas_df().corr(method="spearman")
 
     @compute.register(SparkDataFrame)
     @staticmethod

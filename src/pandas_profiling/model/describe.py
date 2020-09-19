@@ -16,7 +16,7 @@ from pandas_profiling.model.summary import (
     get_series_descriptions,
     get_table_stats,
 )
-from pandas_profiling.model.typeset import Numeric, Unsupported
+from pandas_profiling.model.typeset import Numeric, SparkNumeric, Unsupported
 from pandas_profiling.version import __version__
 
 
@@ -73,17 +73,18 @@ def describe(
             column: description["type"]
             for column, description in series_description.items()
         }
+
+
         supported_columns = [
             column
             for column, type_name in variables.items()
             if type_name != Unsupported
         ]
         interval_columns = [
-            column for column, type_name in variables.items() if type_name == Numeric
+            column for column, type_name in variables.items() if type_name == Numeric or type_name == SparkNumeric
         ]
         pbar.update()
 
-        """"""
         # Get correlations
         correlations = {}
         for correlation_name in correlation_names:

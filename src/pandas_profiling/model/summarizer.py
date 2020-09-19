@@ -109,6 +109,10 @@ class PandasProfilingSummarizer(BaseSummarizer):
                 describe_supported_spark
             ],
             SparkNumeric: [
+                # need to include everything here, because we don't
+                describe_counts_spark,
+                describe_generic_spark,
+                describe_supported_spark,
                 describe_numeric_spark_1d
             ]
         }

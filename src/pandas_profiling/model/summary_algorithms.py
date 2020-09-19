@@ -163,6 +163,32 @@ def numeric_stats_numpy(present_values, series, series_description):
     }
 
 
+def numeric_stats_spark(series: SparkSeries):
+    #     summary["min"] = summary["value_counts_without_nan"].index.min()
+    # vc.index.min()
+
+    import pyspark.sql.functions as F
+
+    series.persist()
+
+    results = {
+        "mean": series.get_spark_series().select(F.mean(series.name)).toPandas().values[0][0],
+        "std": series.get_spark_series().select(F.stddev(series.name)).toPandas().values[0][0],
+        "variance": series.get_spark_series().select(F.variance(series.name)).toPandas().values[0][0],
+        "min": series.get_spark_series().select(F.min(series.name)).toPandas().values[0][0],
+        "max": series.get_spark_series().select(F.max(series.name)).toPandas().values[0][0],
+        # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+        "kurtosis": series.get_spark_series().select(F.kurtosis(series.name)).toPandas().values[0][0],
+        # Unbiased skew normalized by N-1
+        "skewness": series.get_spark_series().select(F.skewness(series.name)).toPandas().values[0][0],
+        "sum": series.get_spark_series().select(F.sum(series.name)).toPandas().values[0][0],
+    }
+
+    series.unpersist()
+
+    return results
+
+
 @series_hashable
 @func_nullable_series_contains
 def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
@@ -493,4 +519,67 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     Returns:
         A dict containing calculated series description values.
     """
-    return series, summary
+    # Config
+    import pyspark.sql.functions as F
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    quantiles = config["vars"]["num"]["quantiles"].get(list)
+
+    value_counts = summary["value_counts_without_nan"]
+
+    summary["n_zeros"] = 0
+
+    infinity_values = [np.inf, -np.inf]
+    infinity_index = value_counts.index.isin(infinity_values)
+    summary["n_infinite"] = value_counts.loc[infinity_index].sum()
+
+    if 0 in value_counts.index:
+        summary["n_zeros"] = value_counts.loc[0]
+
+    stats = summary
+
+    stats.update(numeric_stats_spark(series))
+
+    median = series.get_spark_series().stat.approxQuantile(series.name, [0.5], 0.01)[0]
+
+    mad = series.get_spark_series().select(
+        (F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev")).stat.approxQuantile("abs_dev",
+                                                                                             [0.5], 0.01)[0]
+    stats.update(
+        {
+            "mad": mad,
+        }
+    )
+    """
+    if chi_squared_threshold > 0.0:
+        stats["chi_squared"] = chi_square(finite_values)
+    """
+    stats["range"] = stats["max"] - stats["min"]
+
+    stats.update(
+        {
+            f"{percentile:.0%}": value
+            for percentile, value in
+            zip(quantiles, series.get_spark_series().stat.approxQuantile(series.name, quantiles, 0.25))
+        }
+    )
+
+    stats["iqr"] = stats["75%"] - stats["25%"]
+    stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
+    stats["p_zeros"] = stats["n_zeros"] / summary["n"]
+    stats["p_infinite"] = summary["n_infinite"] / summary["n"]
+
+    stats["monotonic_increase"] = False
+    stats["monotonic_decrease"] = False
+
+    stats["monotonic_increase_strict"] = False
+    stats["monotonic_decrease_strict"] = False
+
+    stats.update(
+        histogram_compute(
+            value_counts[~infinity_index].index.values,
+            summary["n_distinct"],
+            weights=value_counts[~infinity_index].values,
+        )
+    )
+
+    return series, stats

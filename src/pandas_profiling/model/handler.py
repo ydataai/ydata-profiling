@@ -26,6 +26,9 @@ def get_render_map():
         ppt.File: render_file,
         ppt.Image: render_image,
         ppt.Unsupported: render_generic,
+        ppt.SparkNumeric: render_real,
+        ppt.SparkUnsupported: render_generic,
+
     }
 
     return render_map

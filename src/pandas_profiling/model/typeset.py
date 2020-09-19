@@ -208,7 +208,7 @@ class SparkNumeric(PandasProfilingBaseType):
 
     @classmethod
     def contains_op(cls, series: SparkSeries) -> bool:
-        return str(series.type) == "DoubleType"
+        return str(series.type) == "DoubleType" or str(series.type) == "LongType"
 
 
 class ProfilingTypeSet(VisionsTypeset):
