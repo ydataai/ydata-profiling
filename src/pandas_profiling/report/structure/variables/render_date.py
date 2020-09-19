@@ -1,19 +1,11 @@
 from pandas_profiling.config import config
-from pandas_profiling.report.presentation.core import (
-    Container,
-    Image,
-    Table,
-    VariableInfo,
-)
-from pandas_profiling.visualisation.plot import histogram, mini_histogram
+from pandas_profiling.report.presentation.core import Container, Table, VariableInfo
+from pandas_profiling.visualisation.plot import histogram, render_plot
 
 
 def render_date(summary):
     varid = summary["varid"]
-    # TODO: render common?
     template_variables = {}
-
-    image_format = config["plot"]["image_format"].get(str)
 
     # Top
     info = VariableInfo(
@@ -66,28 +58,21 @@ def render_date(summary):
         ]
     )
 
-    mini_histo = Image(
-        mini_histogram(*summary["histogram"], date=True),
-        image_format=image_format,
-        alt="Mini histogram",
+    histo = render_plot(
+        histogram(summary["value_counts_without_nan"], date=True),
+        alt="Histogram",
+        caption=f"<strong>Histogram with fixed size bins</strong>",
+        name="Histogram",
+        anchor_id=f"{varid}histogram",
     )
 
     template_variables["top"] = Container(
-        [info, table1, table2, mini_histo], sequence_type="grid"
+        [info, table1, table2, histo], sequence_type="top"
     )
 
     # Bottom
     bottom = Container(
-        [
-            Image(
-                histogram(*summary["histogram"], date=True),
-                image_format=image_format,
-                alt="Histogram",
-                caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
-                name="Histogram",
-                anchor_id=f"{varid}histogram",
-            )
-        ],
+        [histo],
         sequence_type="tabs",
         anchor_id=summary["varid"],
     )

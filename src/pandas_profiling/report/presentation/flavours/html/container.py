@@ -34,5 +34,9 @@ class HTMLContainer(Container):
             return templates.template("sequence/grid.html").render(
                 items=self.content["items"]
             )
+        elif self.sequence_type == "top":
+            return templates.template("sequence/top.html").render(
+                items=self.content["items"]
+            )
 
         raise ValueError("Template not understood", self.sequence_type)

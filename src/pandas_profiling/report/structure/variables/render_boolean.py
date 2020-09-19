@@ -3,19 +3,17 @@ from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
     FrequencyTableSmall,
-    Image,
     Table,
     VariableInfo,
 )
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import pie_plot
+from pandas_profiling.visualisation.plot import pie_chart, render_plot
 
 
 def render_boolean(summary):
     varid = summary["varid"]
     n_obs_bool = config["vars"]["bool"]["n_obs"].get(int)
-    image_format = config["plot"]["image_format"].get(str)
 
     # Prepare variables
     template_variables = render_common(summary)
@@ -73,7 +71,7 @@ def render_boolean(summary):
         redact=False,
     )
 
-    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
+    template_variables["top"] = Container([info, table, fqm], sequence_type="top")
 
     items = [
         FrequencyTable(
@@ -87,9 +85,8 @@ def render_boolean(summary):
     max_unique = config["plot"]["pie"]["max_unique"].get(int)
     if max_unique > 0:
         items.append(
-            Image(
-                pie_plot(summary["value_counts"], legend_kws={"loc": "upper right"}),
-                image_format=image_format,
+            render_plot(
+                pie_chart(summary["value_counts"]),
                 alt="Chart",
                 name="Chart",
                 anchor_id=f"{varid}pie_chart",

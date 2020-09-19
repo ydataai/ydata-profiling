@@ -33,6 +33,7 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
+from pandas_profiling.report.structure.missing import get_missing_items
 from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.report.structure.variables import (
     render_boolean,
@@ -46,32 +47,11 @@ from pandas_profiling.report.structure.variables import (
     render_url,
 )
 from pandas_profiling.report.structure.variables.render_file import render_file
-
-
-def get_missing_items(summary) -> list:
-    """Return the missing diagrams
-
-    Args:
-        summary: the dataframe summary
-
-    Returns:
-        A list with the missing diagrams
-    """
-    image_format = config["plot"]["image_format"].get(str)
-    items = []
-    for key, item in summary["missing"].items():
-        items.append(
-            # TODO: Add informative caption
-            Image(
-                item["matrix"],
-                image_format=image_format,
-                alt=item["name"],
-                name=item["name"],
-                anchor_id=key,
-            )
-        )
-
-    return items
+from pandas_profiling.visualisation.plot import (  # , plot_heatmap, plot_stacked_bar
+    heatmap,
+    render_plot,
+    scatter,
+)
 
 
 # TODO: split in per variable function
@@ -231,7 +211,6 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
     Returns:
         A list of components for the interaction section of the report
     """
-    image_format = config["plot"]["image_format"].get(str)
 
     titems = []
 
@@ -242,16 +221,42 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
 
     for x_col, y_cols in scatter_matrix.items():
         items = []
-        for y_col, splot in y_cols.items():
-            items.append(
-                Image(
-                    splot,
-                    image_format=image_format,
-                    alt=f"{x_col} x {y_col}",
-                    anchor_id=f"interactions_{clean_name(x_col)}_{clean_name(y_col)}",
-                    name=y_col,
+        for y_col, v in y_cols.items():
+            if not v:
+                continue
+
+            t, plotdata = v
+            name = f"interactions_{clean_name(x_col)}_{clean_name(y_col)}"
+
+            if t == "nn":
+                #     # TODO: binned box
+                #     # TODO: hex
+                items.append(
+                    render_plot(
+                        scatter(plotdata, x_col, y_col),
+                        anchor_id=name,
+                        name=y_col,
+                        alt=y_col,
+                    )
                 )
-            )
+            elif t == "cc" or t in ["cn", "nc"]:
+                #     # TODO: nested bar chart
+                #     # TODO: stacked bar chart
+                bins = 15
+                if t == "nc":
+                    plotdata[x_col] = pd.cut(plotdata[x_col], bins=bins)
+                elif t == "cn":
+                    plotdata[y_col] = pd.cut(plotdata[y_col], bins=bins)
+
+                if x_col != y_col:
+                    items.append(
+                        render_plot(
+                            heatmap(plotdata, x_col, y_col),
+                            anchor_id=name,
+                            name=y_col,
+                            alt=y_col,
+                        )
+                    )
 
         titems.append(
             Container(

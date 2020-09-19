@@ -13,7 +13,6 @@ from pandas_profiling.report.structure.variables import render_common
 def render_url(summary):
     varid = summary["varid"]
     n_freq_table_max = config["n_freq_table_max"].get(int)
-
     n_obs_cat = config["vars"]["cat"]["n_obs"].get(int)
     redact = config["vars"]["cat"]["redact"].get(bool)
 
@@ -129,6 +128,6 @@ def render_url(summary):
         redact=redact,
     )
 
-    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
+    template_variables["top"] = Container([info, table, fqm], sequence_type="top")
 
     return template_variables

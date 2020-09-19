@@ -5,7 +5,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues/587
 import pandas as pd
 import pytest
 
-from pandas_profiling.model.base import is_numeric, get_counts
+from pandas_profiling.model.base import get_counts, is_numeric
 
 
 @pytest.mark.skipif(

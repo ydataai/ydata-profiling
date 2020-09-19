@@ -4,16 +4,15 @@ from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
     FrequencyTableSmall,
-    Image,
     Table,
     VariableInfo,
 )
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import histogram, pie_plot
+from pandas_profiling.visualisation.plot import bar, histogram, pie_chart, render_plot
 
 
-def render_categorical_frequency(summary, varid, image_format):
+def render_categorical_frequency(summary, varid):
     frequency_table = Table(
         [
             {
@@ -33,9 +32,8 @@ def render_categorical_frequency(summary, varid, image_format):
         anchor_id=f"{varid}uniquenessstats",
     )
 
-    frequencies = Image(
-        histogram(*summary["histogram_frequencies"]),
-        image_format=image_format,
+    frequencies = render_plot(
+        bar(summary["value_counts"].head(25)),
         alt="frequencies histogram",
         name="Frequencies histogram",
         caption="Frequencies of value counts",
@@ -46,12 +44,12 @@ def render_categorical_frequency(summary, varid, image_format):
         [frequencies, frequency_table],
         anchor_id=f"{varid}tbl",
         name="Overview",
-        sequence_type="grid",
+        sequence_type="top",
     )
     return frequency_tab
 
 
-def render_categorical_length(summary, varid, image_format):
+def render_categorical_length(summary, varid):
     length_table = Table(
         [
             {
@@ -83,9 +81,8 @@ def render_categorical_length(summary, varid, image_format):
         anchor_id=f"{varid}lengthstats",
     )
 
-    length = Image(
-        histogram(*summary["histogram_length"]),
-        image_format=image_format,
+    length = render_plot(
+        histogram(summary["length_value_counts"]),
         alt="length histogram",
         name="Length",
         caption="Histogram of lengths of the category",
@@ -96,7 +93,7 @@ def render_categorical_length(summary, varid, image_format):
         [length, length_table],
         anchor_id=f"{varid}tbl",
         name="Length",
-        sequence_type="grid",
+        sequence_type="top",
     )
     return length_tab
 
@@ -272,7 +269,6 @@ def render_categorical_unicode(summary, varid, redact):
 def render_categorical(summary):
     varid = summary["varid"]
     n_obs_cat = config["vars"]["cat"]["n_obs"].get(int)
-    image_format = config["plot"]["image_format"].get(str)
     redact = config["vars"]["cat"]["redact"].get(bool)
 
     template_variables = render_common(summary)
@@ -329,7 +325,7 @@ def render_categorical(summary):
         redact=redact,
     )
 
-    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
+    template_variables["top"] = Container([info, table, fqm], sequence_type="top")
 
     citems = [
         FrequencyTable(
@@ -338,15 +334,14 @@ def render_categorical(summary):
             anchor_id=f"{varid}common_values",
             redact=redact,
         ),
-        render_categorical_frequency(summary, varid, image_format),
+        render_categorical_frequency(summary, varid),
     ]
 
     max_unique = config["plot"]["pie"]["max_unique"].get(int)
     if max_unique > 0 and summary["n_distinct"] <= max_unique:
         citems.append(
-            Image(
-                pie_plot(summary["value_counts"], legend_kws={"loc": "upper right"}),
-                image_format=image_format,
+            render_plot(
+                pie_chart(summary["value_counts"]),
                 alt="Chart",
                 name="Chart",
                 anchor_id=f"{varid}pie_chart",
@@ -365,7 +360,7 @@ def render_categorical(summary):
 
     check_length = config["vars"]["cat"]["length"].get(bool)
     if check_length:
-        items.append(render_categorical_length(summary, varid, image_format))
+        items.append(render_categorical_length(summary, varid))
 
     check_unicode = config["vars"]["cat"]["unicode"].get(bool)
     if check_unicode:

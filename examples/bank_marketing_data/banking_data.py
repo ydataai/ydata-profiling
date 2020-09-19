@@ -17,6 +17,9 @@ if __name__ == "__main__":
     df = pd.read_csv(file_name, sep=";")
 
     profile = ProfileReport(
-        df, title="Profile Report of the UCI Bank Marketing Dataset", explorative=True
+        df,
+        title="Profile Report of the UCI Bank Marketing Dataset",
+        explorative=True,
+        # html=dict(inline=False),
     )
     profile.to_file(Path("uci_bank_marketing_report.html"))

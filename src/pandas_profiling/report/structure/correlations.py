@@ -1,15 +1,13 @@
 from typing import List, Optional
 
-from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
     Container,
-    Image,
     ToggleButton,
 )
 from pandas_profiling.report.presentation.core.renderable import Renderable
-from pandas_profiling.visualisation import plot
+from pandas_profiling.visualisation.plot import correlation_matrix, render_plot
 
 
 def get_correlation_items(summary) -> Optional[Renderable]:
@@ -62,18 +60,14 @@ def get_correlation_items(summary) -> Optional[Renderable]:
         "cramers": (0, "Cramér's V (φc)", cramers_description),
     }
 
-    image_format = config["plot"]["image_format"].get(str)
-
     for key, item in summary["correlations"].items():
         vmin, name, description = key_to_data[key]
 
-        diagram = Image(
-            plot.correlation_matrix(item, vmin=vmin),
-            image_format=image_format,
+        diagram = render_plot(
+            correlation_matrix(item, vmin=vmin),
             alt=name,
             anchor_id=f"{key}_diagram",
             name=name,
-            classes="correlation-diagram",
         )
 
         if len(description) > 0:
@@ -108,5 +102,3 @@ def get_correlation_items(summary) -> Optional[Renderable]:
         return Collapse(
             name="Correlations", anchor_id="correlations", button=btn, item=corr
         )
-    else:
-        return None

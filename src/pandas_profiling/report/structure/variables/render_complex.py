@@ -1,18 +1,15 @@
-from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
     HTML,
     Container,
-    Image,
     Table,
     VariableInfo,
 )
-from pandas_profiling.visualisation.plot import scatter_complex
+from pandas_profiling.visualisation.plot import render_plot  # , scatter_complex
 
 
 def render_complex(summary):
     varid = summary["varid"]
     template_variables = {}
-    image_format = config["plot"]["image_format"].get(str)
 
     # Top
     info = VariableInfo(
@@ -58,14 +55,13 @@ def render_complex(summary):
     placeholder = HTML("")
 
     template_variables["top"] = Container(
-        [info, table1, table2, placeholder], sequence_type="grid"
+        [info, table1, table2, placeholder], sequence_type="top"
     )
 
     # Bottom
     items = [
-        Image(
+        render_plot(
             scatter_complex(summary["scatter_data"]),
-            image_format=image_format,
             alt="Scatterplot",
             caption="Scatterplot in the complex plane",
             name="Scatter",

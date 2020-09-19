@@ -11,5 +11,10 @@ if __name__ == "__main__":
 
     df = pd.read_csv(file_name)
 
-    profile = ProfileReport(df, title="Titanic Dataset", explorative=True)
+    profile = ProfileReport(
+        df,
+        title="Titanic Dataset",
+        explorative=True,
+    )
+
     profile.to_file("titanic_report.html")

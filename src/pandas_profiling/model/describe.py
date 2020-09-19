@@ -9,11 +9,11 @@ from tqdm.auto import tqdm
 from pandas_profiling.config import config as config
 from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.missing import get_missing_diagrams
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
     get_duplicates,
     get_messages,
-    get_missing_diagrams,
     get_scatter_matrix,
     get_series_descriptions,
     get_table_stats,

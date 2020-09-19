@@ -31,13 +31,6 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
     warning_type_date,
 )
-from pandas_profiling.visualisation.missing import (
-    missing_bar,
-    missing_dendrogram,
-    missing_heatmap,
-    missing_matrix,
-)
-from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def sort_column_names(dct: Mapping, sort: str):
@@ -120,19 +113,7 @@ def describe_1d(series: pd.Series) -> dict:
 
         return results_data
 
-    def histogram_compute(finite_values, n_unique, name="histogram"):
-        stats = {}
-        bins = config["plot"]["histogram"]["bins"].get(int)
-        bins = "auto" if bins == 0 else min(bins, n_unique)
-        stats[name] = np.histogram(finite_values, bins)
-
-        max_bins = config["plot"]["histogram"]["max_bins"].get(int)
-        if bins == "auto" and len(stats[name][1]) > max_bins:
-            stats[name] = np.histogram(finite_values, max_bins)
-
-        return stats
-
-    def numeric_stats_pandas(series: pd.Series):
+    def numeric_stats_pandas(series: pd.Series, quantiles):
         return {
             "mean": series.mean(),
             "std": series.std(),
@@ -144,9 +125,10 @@ def describe_1d(series: pd.Series) -> dict:
             # Unbiased skew normalized by N-1
             "skewness": series.skew(),
             "sum": series.sum(),
+            "quantiles": series.quantile(quantiles).to_dict(),
         }
 
-    def numeric_stats_numpy(present_values):
+    def numeric_stats_numpy(present_values, quantiles):
         return {
             "mean": np.mean(present_values),
             "std": np.std(present_values, ddof=1),
@@ -159,6 +141,9 @@ def describe_1d(series: pd.Series) -> dict:
             "skewness": series.skew(),
             "sum": np.sum(present_values),
             "n_zeros": (series_description["count"] - np.count_nonzero(present_values)),
+            "quantiles": {
+                value: np.quantile(present_values, value) for value in quantiles
+            },
         }
 
     def describe_numeric_1d(series: pd.Series, series_description: dict) -> dict:
@@ -184,26 +169,33 @@ def describe_1d(series: pd.Series) -> dict:
             """
             return np.median(np.abs(arr - np.median(arr)))
 
-        quantiles = config["vars"]["num"]["quantiles"].get(list)
+        # TODO: config
+        # quantiles = config["vars"]["num"]["quantiles"].get(list)
+        n = 1
+
+        assert int(100 / n) == 100 / n
+        percentiles = np.linspace(5, 95, int(90 / n) + 1)
+        quantiles = set((percentiles / 100).tolist())
+        assert all(
+            v in quantiles for v in {0.05, 0.25, 0.5, 0.75, 0.95}
+        ), "Quantiles missing..."
 
         n_infinite = ((series == np.inf) | (series == -np.inf)).sum()
 
         if isinstance(series.dtype, _IntegerDtype):
-            stats = numeric_stats_pandas(series)
+            stats = numeric_stats_pandas(series, quantiles)
             present_values = series.loc[series.notnull()].astype(
                 str(series.dtype).lower()
             )
             stats["n_zeros"] = series_description["count"] - np.count_nonzero(
                 present_values
             )
-            stats["histogram_data"] = present_values
             finite_values = present_values
         else:
             values = series.values
             present_values = values[~np.isnan(values)]
             finite_values = values[np.isfinite(values)]
-            stats = numeric_stats_numpy(present_values)
-            stats["histogram_data"] = finite_values
+            stats = numeric_stats_numpy(present_values, quantiles)
 
         stats.update(
             {
@@ -211,6 +203,7 @@ def describe_1d(series: pd.Series) -> dict:
                 "scatter_data": series,  # For complex
                 "p_infinite": n_infinite / series_description["n"],
                 "n_infinite": n_infinite,
+                "data": series,
             }
         )
 
@@ -222,13 +215,7 @@ def describe_1d(series: pd.Series) -> dict:
             stats["chi_squared"] = chisquare(histogram)
 
         stats["range"] = stats["max"] - stats["min"]
-        stats.update(
-            {
-                f"{percentile:.0%}": value
-                for percentile, value in series.quantile(quantiles).to_dict().items()
-            }
-        )
-        stats["iqr"] = stats["75%"] - stats["25%"]
+        stats["iqr"] = stats["quantiles"][0.75] - stats["quantiles"][0.25]
         stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
         stats["p_zeros"] = stats["n_zeros"] / series_description["n"]
 
@@ -242,7 +229,12 @@ def describe_1d(series: pd.Series) -> dict:
             stats["monotonic_decrease"] and series.is_unique
         )
 
-        stats.update(histogram_compute(finite_values, series_description["n_distinct"]))
+        value_counts = series_description["value_counts_without_nan"]
+
+        stats["n_negative"] = value_counts[value_counts.index < 0].sum()
+        stats["p_negative"] = stats["n_negative"] / series_description["n"]
+
+        stats.update({"value_counts": value_counts})
 
         return stats
 
@@ -272,7 +264,7 @@ def describe_1d(series: pd.Series) -> dict:
             histogram, _ = np.histogram(values, bins="auto")
             stats["chi_squared"] = chisquare(histogram)
 
-        stats.update(histogram_compute(values, series_description["n_distinct"]))
+        stats.update({"value_counts": series_description["value_counts_without_nan"]})
         return stats
 
     def describe_categorical_1d(series: pd.Series, series_description: dict) -> dict:
@@ -293,11 +285,7 @@ def describe_1d(series: pd.Series) -> dict:
 
         stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
-        stats.update(
-            histogram_compute(
-                value_counts, len(value_counts), name="histogram_frequencies"
-            )
-        )
+        stats.update({"value_counts": value_counts})
 
         chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(
             float
@@ -308,11 +296,7 @@ def describe_1d(series: pd.Series) -> dict:
         check_length = config["vars"]["cat"]["length"].get(bool)
         if check_length:
             stats.update(length_summary(series))
-            stats.update(
-                histogram_compute(
-                    stats["length"], stats["length"].nunique(), name="histogram_length"
-                )
-            )
+            stats["length_value_counts"] = stats["length"].value_counts()
 
         check_unicode = config["vars"]["cat"]["unicode"].get(bool)
         if check_unicode:
@@ -363,13 +347,7 @@ def describe_1d(series: pd.Series) -> dict:
         stats = file_summary(series)
 
         series_description.update(describe_path_1d(series, series_description))
-        stats.update(
-            histogram_compute(
-                stats["file_size"],
-                stats["file_size"].nunique(),
-                name="histogram_file_size",
-            )
-        )
+        stats["file_size_value_counts"] = stats["file_size"].value_counts()
 
         return stats
 
@@ -682,19 +660,43 @@ def get_scatter_matrix(df, variables):
         continuous_variables = [
             column for column, type in variables.items() if type == Variable.TYPE_NUM
         ]
+        categorical_variables = [
+            column for column, type in variables.items() if type == Variable.TYPE_CAT
+        ]
 
         targets = config["interactions"]["targets"].get(list)
         if len(targets) == 0:
-            targets = continuous_variables
+            targets = variables.keys()
 
-        scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
+        scatter_matrix = {x: {y: "" for y in variables.keys()} for x in targets}
 
-        for x in targets:
-            for y in continuous_variables:
-                if x in continuous_variables:
-                    # check if any na still exists, and remove it before computing scatter matrix
-                    df_temp = df[[x,y]].dropna()
-                    scatter_matrix[x][y] = scatter_pairwise(df_temp[x], df_temp[y], x, y)
+        # check if any na still exists, and remove it before computing scatter matrix
+        for x in variables.keys():
+            for y in variables.keys():
+                if x in targets:
+                    data = df[[x, y]].dropna()
+
+                    if x in continuous_variables and y in continuous_variables:
+                        scatter_matrix[x][y] = (
+                            "nn",
+                            data,
+                        )
+                    elif x in categorical_variables and y in categorical_variables:
+                        scatter_matrix[x][y] = (
+                            "cc",
+                            data,
+                        )
+                    elif x in categorical_variables and y in continuous_variables:
+                        scatter_matrix[x][y] = (
+                            "cn",
+                            data,
+                        )
+                    elif x in continuous_variables and y in categorical_variables:
+                        scatter_matrix[x][y] = (
+                            "nc",
+                            data,
+                        )
+
     else:
         scatter_matrix = {}
 

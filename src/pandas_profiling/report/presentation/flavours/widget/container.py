@@ -40,7 +40,22 @@ def get_named_list(items):
     )
 
 
-def get_row(items):
+def get_grid(items):
+    if len(items) == 1:
+        layout = widgets.Layout(width="100%", grid_template_columns="100%")
+    elif len(items) == 2:
+        layout = widgets.Layout(width="100%", grid_template_columns="50% 50%")
+    elif len(items) == 3:
+        layout = widgets.Layout(width="100%", grid_template_columns="33.3% 33.3% 33.3%")
+    elif len(items) == 4:
+        layout = widgets.Layout(width="100%", grid_template_columns="25% 25% 25% 25%")
+    else:
+        raise ValueError("Layout undefined for this number of columns")
+
+    return widgets.GridBox([item.render() for item in items], layout=layout)
+
+
+def get_top(items):
     if len(items) == 1:
         layout = widgets.Layout(width="100%", grid_template_columns="100%")
     elif len(items) == 2:
@@ -79,8 +94,10 @@ class WidgetContainer(Container):
             widget = get_tabs(self.content["items"])
         elif self.sequence_type == "accordion":
             widget = get_accordion(self.content["items"])
-        elif self.sequence_type == "grid":
-            widget = get_row(self.content["items"])
+        elif self.sequence_type == "top":
+            widget = get_top(self.content["items"])
+        elif self.sequence_type == "top":
+            widget = get_grid(self.content["items"])
         else:
             raise ValueError("widget type not understood", self.sequence_type)
 

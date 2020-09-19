@@ -1,19 +1,22 @@
-from pandas_profiling.config import config
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
-    Image,
     Table,
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import histogram, mini_histogram
+from pandas_profiling.visualisation.plot import (
+    boxplot,
+    histogram,
+    kde,
+    qq_plot,
+    render_plot,
+)
 
 
 def render_real(summary):
     varid = summary["varid"]
     template_variables = render_common(summary)
-    image_format = config["plot"]["image_format"].get(str)
 
     if summary["min"] >= 0:
         name = "Real number (&Ropf;<sub>&ge;0</sub>)"
@@ -111,24 +114,39 @@ def render_real(summary):
         ]
     )
 
-    mini_histo = Image(
-        mini_histogram(*summary["histogram"]),
-        image_format=image_format,
-        alt="Mini histogram",
+    plot_obj = histogram(summary["value_counts"])
+
+    mini_histo = render_plot(
+        plot_obj,
+        name="mini histogram",
+        alt="Histogram",
+        anchor_id=f"{varid}mini_histo",
     )
 
     template_variables["top"] = Container(
-        [info, table1, table2, mini_histo], sequence_type="grid"
+        [info, table1, table2, mini_histo], sequence_type="top"
     )
 
     quantile_statistics = Table(
         [
             {"name": "Minimum", "value": summary["min"], "fmt": "fmt_numeric"},
-            {"name": "5-th percentile", "value": summary["5%"], "fmt": "fmt_numeric"},
-            {"name": "Q1", "value": summary["25%"], "fmt": "fmt_numeric"},
-            {"name": "median", "value": summary["50%"], "fmt": "fmt_numeric"},
-            {"name": "Q3", "value": summary["75%"], "fmt": "fmt_numeric"},
-            {"name": "95-th percentile", "value": summary["95%"], "fmt": "fmt_numeric"},
+            {
+                "name": "5-th percentile",
+                "value": summary["quantiles"][0.05],
+                "fmt": "fmt_numeric",
+            },
+            {"name": "Q1", "value": summary["quantiles"][0.25], "fmt": "fmt_numeric"},
+            {
+                "name": "median",
+                "value": summary["quantiles"][0.50],
+                "fmt": "fmt_numeric",
+            },
+            {"name": "Q3", "value": summary["quantiles"][0.75], "fmt": "fmt_numeric"},
+            {
+                "name": "95-th percentile",
+                "value": summary["quantiles"][0.95],
+                "fmt": "fmt_numeric",
+            },
             {"name": "Maximum", "value": summary["max"], "fmt": "fmt_numeric"},
             {"name": "Range", "value": summary["range"], "fmt": "fmt_numeric"},
             {
@@ -190,13 +208,58 @@ def render_real(summary):
         sequence_type="grid",
     )
 
-    hist = Image(
-        histogram(*summary["histogram"]),
-        image_format=image_format,
-        alt="Histogram",
-        caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
-        name="Histogram",
-        anchor_id=f"{varid}histogram",
+    plts = Container(
+        [
+            render_plot(
+                plot_obj,
+                alt="Histogram",
+                caption=f"<strong>Histogram with fixed size bins</strong>",
+                name="Histogram",
+                anchor_id=f"{varid}histogram",
+            ),
+            render_plot(
+                boxplot(
+                    summary["varname"],
+                    summary["min"],
+                    summary["quantiles"][0.25],
+                    summary["quantiles"][0.50],
+                    summary["quantiles"][0.75],
+                    summary["max"],
+                ),
+                alt="Boxplot",
+                anchor_id=f"{varid}boxplot",
+                name="Boxplot",
+            ),
+            render_plot(
+                kde(summary["data"]),
+                alt="Kernel Density Estimation",
+                anchor_id=f"{varid}kde",
+                name="Kernel Density Estimation",
+            ),
+        ],
+        sequence_type="grid",
+        name="Plots",
+        anchor_id=f"{varid}plots",
+    )
+
+    qqs = Container(
+        [
+            render_plot(
+                qq_plot(summary["quantiles"], "normal"),
+                alt="Q-Q Normal",
+                anchor_id=f"{varid}qqn",
+                name="Q-Q Normal Distribution",
+            ),
+            render_plot(
+                qq_plot(summary["quantiles"], "uniform"),
+                alt="Q-Q Uniform",
+                anchor_id=f"{varid}qqu",
+                name="Q-Q Uniform Distribution",
+            ),
+        ],
+        sequence_type="grid",
+        name="Q-Q Plots",
+        anchor_id=f"{varid}qqs",
     )
 
     fq = FrequencyTable(
@@ -205,6 +268,7 @@ def render_real(summary):
         anchor_id=f"{varid}common_values",
         redact=False,
     )
+    items = [statistics, plts, qqs]
 
     evs = Container(
         [
@@ -226,8 +290,10 @@ def render_real(summary):
         anchor_id=f"{varid}extreme_values",
     )
 
+    items += [fq, evs]
+
     template_variables["bottom"] = Container(
-        [statistics, hist, fq, evs],
+        items,
         sequence_type="tabs",
         anchor_id=f"{varid}bottom",
     )

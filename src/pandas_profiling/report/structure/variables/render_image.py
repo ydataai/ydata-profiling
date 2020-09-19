@@ -1,15 +1,10 @@
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.report.presentation.core import (
-    Container,
-    FrequencyTable,
-    Image,
-    Table,
-)
+from pandas_profiling.report.presentation.core import Container, FrequencyTable, Table
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_file import render_file
-from pandas_profiling.visualisation.plot import scatter_series
+from pandas_profiling.visualisation.plot import render_plot, scatter_series
 
 
 def render_image(summary):
@@ -106,11 +101,10 @@ def render_image(summary):
             ],
             anchor_id=f"{varid}tbl",
             name="Overview",
-            sequence_type="grid",
+            sequence_type="top",
         ),
-        Image(
+        render_plot(
             scatter_series(summary["image_dimensions"]),
-            image_format=config["plot"]["image_format"].get(str),
             alt="Scatter plot of image sizes",
             caption="Scatter plot of image sizes",
             name="Scatter plot",

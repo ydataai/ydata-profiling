@@ -7,8 +7,6 @@ from pandas_profiling.report.presentation.core import (
 
 
 def render_generic(summary):
-    template_variables = {}  # render_common(summary)
-
     info = VariableInfo(
         anchor_id=summary["varid"],
         warnings=summary["warnings"],
@@ -41,6 +39,6 @@ def render_generic(summary):
     )
 
     return {
-        "top": Container([info, table, HTML("")], sequence_type="grid"),
+        "top": Container([info, table, HTML("")], sequence_type="top"),
         "bottom": None,
     }
