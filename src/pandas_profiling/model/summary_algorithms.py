@@ -171,20 +171,29 @@ def numeric_stats_spark(series: SparkSeries):
 
     series.persist()
 
-    results = {
-        "mean": series.get_spark_series().select(F.mean(series.name)).toPandas().values[0][0],
-        "std": series.get_spark_series().select(F.stddev(series.name)).toPandas().values[0][0],
-        "variance": series.get_spark_series().select(F.variance(series.name)).toPandas().values[0][0],
-        "min": series.get_spark_series().select(F.min(series.name)).toPandas().values[0][0],
-        "max": series.get_spark_series().select(F.max(series.name)).toPandas().values[0][0],
-        # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
-        "kurtosis": series.get_spark_series().select(F.kurtosis(series.name)).toPandas().values[0][0],
-        # Unbiased skew normalized by N-1
-        "skewness": series.get_spark_series().select(F.skewness(series.name)).toPandas().values[0][0],
-        "sum": series.get_spark_series().select(F.sum(series.name)).toPandas().values[0][0],
-    }
+    numeric_results_df = series.get_spark_series().select(F.mean(series.name).alias("mean"),
+                                                          F.stddev(series.name).alias("std"),
+                                                          F.variance(series.name).alias("variance"),
+                                                          F.min(series.name).alias("min"),
+                                                          F.max(series.name).alias("max"),
+                                                          F.kurtosis(series.name).alias("kurtosis"),
+                                                          F.skewness(series.name).alias("skewness"),
+                                                          F.sum(series.name).alias("sum")).toPandas().T
 
     series.unpersist()
+
+    results = {
+        "mean": numeric_results_df.loc["mean"][0],
+        "std": numeric_results_df.loc["std"][0],
+        "variance": numeric_results_df.loc["variance"][0],
+        "min": numeric_results_df.loc["min"][0],
+        "max": numeric_results_df.loc["max"][0],
+        # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+        "kurtosis": numeric_results_df.loc["kurtosis"][0],
+        # Unbiased skew normalized by N-1
+        "skewness": numeric_results_df.loc["skewness"][0],
+        "sum": numeric_results_df.loc["sum"][0]
+    }
 
     return results
 
@@ -540,13 +549,12 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
 
     stats.update(numeric_stats_spark(series))
 
-
     # manual MAD computation, refactor possible
     median = series.get_spark_series().stat.approxQuantile(series.name, [0.5], 0.01)[0]
 
     mad = series.get_spark_series().select(
         (F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev")).stat.approxQuantile("abs_dev",
-                                                                                             [0.5], 0.01)[0]
+                                                                                               [0.5], 0.01)[0]
     stats.update(
         {
             "mad": mad,
@@ -590,6 +598,7 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     )
 
     return series, stats
+
 
 def describe_categorical_spark_1d(series: SparkSeries, summary: dict) -> Tuple[SparkSeries, dict]:
     """Describe a categorical series.
