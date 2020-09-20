@@ -208,6 +208,16 @@ class SparkNumeric(VisionsBaseType):
         return str(series.type) == "DoubleType" or str(series.type) == "LongType"
 
 
+class SparkCategorical(VisionsBaseType):
+    @classmethod
+    def get_relations(cls):
+        return [IdentityRelation(cls, SparkUnsupported)]
+
+    @classmethod
+    def contains_op(cls, series: SparkSeries) -> bool:
+        return str(series.type) == "StringType"
+
+
 class ProfilingTypeSet(VisionsTypeset):
     def __init__(self):
         types = {

@@ -1,7 +1,7 @@
 import os
 from collections import Counter
 from datetime import datetime
-from functools import partial
+from functools import partial, singledispatch
 from pathlib import Path
 
 import numpy as np
@@ -10,6 +10,7 @@ from scipy.stats.stats import chisquare
 from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
 from pandas_profiling.config import config
+from pandas_profiling.model.series_wrappers import SparkSeries
 from pandas_profiling.model.summary_helpers_image import (
     extract_exif,
     hash_image,
@@ -37,8 +38,26 @@ def named_aggregate_summary(series: pd.Series, key: str):
     return summary
 
 
-def length_summary(series: pd.Series, summary: dict = {}) -> dict:
+@singledispatch
+def length_summary(series, summary) -> dict:
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+@length_summary.register(pd.Series)
+def _(series: pd.Series, summary: dict = {}) -> dict:
     length = series.str.len()
+
+    summary.update({"length": length})
+    summary.update(named_aggregate_summary(length, "length"))
+
+    return summary
+
+
+@length_summary.register(SparkSeries)
+def _(series: SparkSeries, summary: dict = {}) -> dict:
+    import pyspark.sql.functions as F
+    length = series.get_spark_series().select(F.length(series.name)).toPandas().squeeze()
 
     summary.update({"length": length})
     summary.update(named_aggregate_summary(length, "length"))
@@ -85,7 +104,7 @@ def path_summary(series: pd.Series) -> dict:
     # TODO: optimize using value counts
     summary = {
         "common_prefix": os.path.commonprefix(series.values.tolist())
-        or "No common prefix",
+                         or "No common prefix",
         "stem_counts": series.map(lambda x: os.path.splitext(x)[0]).value_counts(),
         "suffix_counts": series.map(lambda x: os.path.splitext(x)[1]).value_counts(),
         "name_counts": series.map(lambda x: os.path.basename(x)).value_counts(),
@@ -169,7 +188,7 @@ def extract_exif_series(image_exifs: list) -> dict:
 
 
 def extract_image_information(
-    path: Path, exif: bool = False, hash: bool = False
+        path: Path, exif: bool = False, hash: bool = False
 ) -> dict:
     """Extracts all image information per file, as opening files is slow
 
@@ -241,7 +260,14 @@ def image_summary(series: pd.Series, exif: bool = False, hash: bool = False) -> 
     return summary
 
 
+@singledispatch
 def get_character_counts(series: pd.Series) -> Counter:
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+@get_character_counts.register(pd.Series)
+def _(series: pd.Series) -> Counter:
     """Function to return the character counts
 
     Args:
@@ -253,6 +279,19 @@ def get_character_counts(series: pd.Series) -> Counter:
     return Counter(series.str.cat())
 
 
+@get_character_counts.register(SparkSeries)
+def _(series: pd.Series) -> Counter:
+    """Function to return the character counts
+
+    Args:
+        series: the Series to processimport pyspark.sql.functions as Fimport pyspark.sql.functions as F
+
+    Returns:
+        A dict with character counts
+    """
+    return Counter(series.get_spark_series().toPandas().squeeze().str.cat())
+
+
 def counter_to_series(counter: Counter) -> pd.Series:
     if not counter:
         return pd.Series([], dtype=object)
@@ -262,7 +301,7 @@ def counter_to_series(counter: Counter) -> pd.Series:
     return pd.Series(counts, index=items)
 
 
-def unicode_summary(series: pd.Series) -> dict:
+def unicode_summary(series) -> dict:
     # Unicode Character Summaries (category and script name)
     character_counts = get_character_counts(series)
 

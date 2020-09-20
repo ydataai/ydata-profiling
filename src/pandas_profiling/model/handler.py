@@ -28,6 +28,7 @@ def get_render_map():
         ppt.Unsupported: render_generic,
         ppt.SparkNumeric: render_real,
         ppt.SparkUnsupported: render_generic,
+        ppt.SparkCategorical: render_categorical,
 
     }
 

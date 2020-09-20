@@ -20,7 +20,8 @@ from pandas_profiling.model.summary_algorithms import (
     describe_counts_spark,
     describe_generic_spark,
     describe_supported_spark,
-    describe_numeric_spark_1d
+    describe_numeric_spark_1d,
+    describe_categorical_spark_1d
 )
 from pandas_profiling.model.typeset import (
     URL,
@@ -34,7 +35,8 @@ from pandas_profiling.model.typeset import (
     ProfilingTypeSet,
     Unsupported,
     SparkUnsupported,
-    SparkNumeric
+    SparkNumeric,
+    SparkCategorical
 )
 
 
@@ -114,6 +116,13 @@ class PandasProfilingSummarizer(BaseSummarizer):
                 describe_generic_spark,
                 describe_supported_spark,
                 describe_numeric_spark_1d
+            ],
+            SparkCategorical: [
+                # need to include everything here, because we don't
+                describe_counts_spark,
+                describe_generic_spark,
+                describe_supported_spark,
+                describe_categorical_spark_1d
             ]
         }
         super().__init__(summary_map, typeset, *args, **kwargs)

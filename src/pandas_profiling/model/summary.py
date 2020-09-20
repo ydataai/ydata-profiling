@@ -20,7 +20,7 @@ from pandas_profiling.model.messages import (  # warning_type_date,
 )
 from pandas_profiling.model.series_wrappers import PandasSeries, SparkSeries, UNWRAPPED_SERIES_WARNING
 from pandas_profiling.model.summarizer import BaseSummarizer
-from pandas_profiling.model.typeset import Unsupported, SparkUnsupported
+from pandas_profiling.model.typeset import Unsupported, SparkUnsupported, SparkCategorical, SparkNumeric
 from pandas_profiling.utils.dataframe import get_appropriate_wrapper
 from pandas_profiling.visualisation.missing import (
     missing_bar,
@@ -86,10 +86,11 @@ def _(series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
     Returns:
         A Series containing calculated series description values.
     """
-    from pandas_profiling.model.typeset import SparkNumeric, SparkUnsupported
 
     if series in SparkNumeric:
         vtype = SparkNumeric
+    elif series in SparkCategorical:
+        vtype = SparkCategorical
     else:
         vtype = SparkUnsupported
 

@@ -553,6 +553,8 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
         }
     )
     """
+    #TO-DO fix chi-squared
+
     if chi_squared_threshold > 0.0:
         stats["chi_squared"] = chi_square(finite_values)
     """
@@ -588,3 +590,48 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     )
 
     return series, stats
+
+def describe_categorical_spark_1d(series: SparkSeries, summary: dict) -> Tuple[SparkSeries, dict]:
+    """Describe a categorical series.
+
+    Args:
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    """
+    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    check_length = config["vars"]["cat"]["length"].get(bool)
+    check_unicode = config["vars"]["cat"]["unicode"].get(bool)
+
+    # Only run if at least 1 non-missing value
+    value_counts = summary["value_counts_without_nan"]
+
+    summary.update(
+        histogram_compute(
+            value_counts, summary["n_distinct"], name="histogram_frequencies"
+        )
+    )
+
+    """
+    #TO-DO fix chi-squared
+    
+    if chi_squared_threshold > 0.0:
+        summary["chi_squared"] = chi_square(histogram=value_counts.values)
+    """
+    if check_length:
+        summary.update(length_summary(series))
+        summary.update(
+            histogram_compute(
+                summary["length"], summary["length"].nunique(), name="histogram_length"
+            )
+        )
+
+    if check_unicode:
+        summary.update(unicode_summary(series))
+
+    # if coerce_str_to_date:
+    #     summary["date_warning"] = warning_type_date(series)
+
+    return series, summary
