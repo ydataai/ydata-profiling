@@ -194,10 +194,11 @@ class Complex(VisionsBaseType):
         return pdt.is_complex_dtype(series)
 
 
-class SparkUnsupported(PandasProfilingBaseType):
+class SparkUnsupported(VisionsBaseType):
     pass
 
-class SparkNumeric(PandasProfilingBaseType):
+
+class SparkNumeric(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [IdentityRelation(cls, SparkUnsupported)]
