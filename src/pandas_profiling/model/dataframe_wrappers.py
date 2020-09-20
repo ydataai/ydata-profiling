@@ -4,7 +4,12 @@ import numpy as np
 import pandas as pd
 
 # annotations allow class methods to return the same class in python < 3.10
-from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, Sample, SparkSeries
+from pandas_profiling.model.series_wrappers import (
+    GenericSeries,
+    PandasSeries,
+    Sample,
+    SparkSeries,
+)
 from pandas_profiling.utils.dataframe import rename_index
 
 UNWRAPPED_DATAFRAME_WARNING = """Attempting to pass a pandas dataframe directly into a function that takes a wrapped dataframe, 
@@ -139,7 +144,9 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def groupby_get_n_largest(self, columns: List[str], n: int, for_duplicates=True) -> pd.DataFrame:
+    def groupby_get_n_largest(
+        self, columns: List[str], n: int, for_duplicates=True
+    ) -> pd.DataFrame:
         """
         get top n value counts of groupby count function
 
@@ -284,8 +291,8 @@ class PandasDataFrame(GenericDataFrame):
 
         # Treat index as any other column
         if (
-                not pd.Index(np.arange(0, len(df))).equals(df.index)
-                or df.index.dtype != np.int64
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
         ):
             df = df.reset_index()
 
@@ -325,17 +332,21 @@ class PandasDataFrame(GenericDataFrame):
 
     def groupby_get_n_largest(self, columns, n, for_duplicates=True) -> pd.DataFrame:
         if for_duplicates:
-            return (self.df[self.df.duplicated(subset=columns, keep=False)]
-                    .groupby(columns)
-                    .size()
-                    .reset_index(name="count")
-                    .nlargest(n, "count"))
+            return (
+                self.df[self.df.duplicated(subset=columns, keep=False)]
+                .groupby(columns)
+                .size()
+                .reset_index(name="count")
+                .nlargest(n, "count")
+            )
         else:
-            return (self.df[self.df.duplicated(subset=columns, keep=False)]
-                    .groupby(columns)
-                    .size()
-                    .reset_index(name="count")
-                    .nlargest(n, "count"))
+            return (
+                self.df[self.df.duplicated(subset=columns, keep=False)]
+                .groupby(columns)
+                .size()
+                .reset_index(name="count")
+                .nlargest(n, "count")
+            )
 
     def __len__(self) -> int:
         return self.n_rows
@@ -413,7 +424,10 @@ class SparkDataFrame(GenericDataFrame):
         Returns: True if the __module__ and __name__ of object matches spark dataframe, else false
 
         """
-        return type(obj).__module__ == "pyspark.sql.dataframe" and type(obj).__name__ == "DataFrame"
+        return (
+            type(obj).__module__ == "pyspark.sql.dataframe"
+            and type(obj).__name__ == "DataFrame"
+        )
 
     @staticmethod
     def preprocess(df):
@@ -438,13 +452,17 @@ class SparkDataFrame(GenericDataFrame):
         return pd.DataFrame(self.df.head(n), columns=self.columns)
 
     def sample(self, n, with_replacement=True):
-        return self.df.sample(withReplacement=with_replacement, frac=n / self.n_rows).toPandas()
+        return self.df.sample(
+            withReplacement=with_replacement, frac=n / self.n_rows
+        ).toPandas()
 
     def value_counts(self, column):
         # We can use toPandas here because the output should be somewhat smaller and its
         # only a single row
         # possible optimisation to just use pure spark objects
-        df = self.df.groupBy(column).count().orderBy("count", ascending=False).toPandas()
+        df = (
+            self.df.groupBy(column).count().orderBy("count", ascending=False).toPandas()
+        )
         return pd.Series(df["count"].values, index=df["RAD"].values)
 
     def __len__(self) -> int:
@@ -469,16 +487,31 @@ class SparkDataFrame(GenericDataFrame):
     def get_memory_usage(self, deep):
         return self.df.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
 
-    def groupby_get_n_largest(self, columns, n=None, for_duplicates=True) -> pd.DataFrame:
+    def groupby_get_n_largest(
+        self, columns, n=None, for_duplicates=True
+    ) -> pd.DataFrame:
         import pyspark.sql.functions as F
-        return (self.df.groupBy(self.df.columns).agg(F.count("*")).select(
-            F.col("count(1)").alias("count").cast("int")).filter(F.col("count") > 1).orderBy('count', ascending=False)
-                .limit(n).toPandas())
+
+        return (
+            self.df.groupBy(self.df.columns)
+            .agg(F.count("*"))
+            .select(F.col("count(1)").alias("count").cast("int"))
+            .filter(F.col("count") > 1)
+            .orderBy("count", ascending=False)
+            .limit(n)
+            .toPandas()
+        )
 
     def get_duplicate_rows_count(self, subset: List[str]) -> int:
         import pyspark.sql.functions as F
-        temp_df = (self.df.groupBy(self.df.columns).agg(F.count("*")).select(
-            F.col("count(1)").alias("count").cast("int")).filter(F.col("count") > 1).toPandas())
+
+        temp_df = (
+            self.df.groupBy(self.df.columns)
+            .agg(F.count("*"))
+            .select(F.col("count(1)").alias("count").cast("int"))
+            .filter(F.col("count") > 1)
+            .toPandas()
+        )
 
         return np.sum(temp_df["count"].values)
 

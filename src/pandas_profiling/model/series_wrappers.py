@@ -48,7 +48,8 @@ class SparkSeries(GenericSeries):
     """
     A lot of optimisations left to do (persisting, caching etc), but when functionality completed
 
-    Also SparkSeries does a lot more than PandasSeries now, likely abstraction issue
+    TO-DO Also SparkSeries does a lot more than PandasSeries now, likely abstraction issue
+    TO-DO .na.drop() is called multiple times, can we optimise this?
     """
 
     def __init__(self, series):
@@ -89,6 +90,10 @@ class SparkSeries(GenericSeries):
         return self.n_rows
 
     def memory_usage(self, deep):
+        """
+        Warning! this memory usage is only a sample
+        TO-DO can we make this faster or not use a sample?
+        """
         return self.series.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
 
     def get_spark_series(self):
