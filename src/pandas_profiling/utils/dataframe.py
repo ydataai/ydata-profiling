@@ -136,7 +136,7 @@ def hash_dataframe(df):
     return joblib.hash(df)
 
 
-def get_appropriate_backend(df):
+def get_appropriate_wrapper(df):
     """
     Wrap data type with proper backend from implemented_backend
 
