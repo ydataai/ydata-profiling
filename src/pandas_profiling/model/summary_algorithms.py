@@ -461,8 +461,6 @@ def describe_counts_spark(
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
     """
-    value_counts = series.value_counts()
-
     summary["value_counts_without_nan"] = series.value_counts()
     summary["n_missing"] = series.count_na()
 

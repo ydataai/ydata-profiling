@@ -205,7 +205,10 @@ class SparkNumeric(VisionsBaseType):
 
     @classmethod
     def contains_op(cls, series: SparkSeries) -> bool:
-        return str(series.type) == "DoubleType" or str(series.type) == "LongType"
+        return (str(series.type) == "DoubleType" or
+                str(series.type) == "LongType" or
+                str(series.type) == "IntegerType" or
+                str(series.type) == "ShortType")
 
 
 class SparkCategorical(VisionsBaseType):

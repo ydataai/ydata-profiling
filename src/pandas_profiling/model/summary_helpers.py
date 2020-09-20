@@ -39,7 +39,7 @@ def named_aggregate_summary(series: pd.Series, key: str):
 
 
 @singledispatch
-def length_summary(series, summary) -> dict:
+def length_summary(series, summary: dict = {}) -> dict:
     series_type = type(series)
     raise NotImplementedError(f"Function not implemented for series type {series_type}")
 
@@ -282,7 +282,8 @@ def _(series: pd.Series) -> Counter:
 @get_character_counts.register(SparkSeries)
 def _(series: pd.Series) -> Counter:
     """Function to return the character counts
-
+    TO-DO - this is bad, we should try to do the counts as a character dictionary before returning it to pandas,
+    or better still do all the character counting in spark
     Args:
         series: the Series to processimport pyspark.sql.functions as Fimport pyspark.sql.functions as F
 
