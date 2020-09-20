@@ -1,4 +1,5 @@
 """Organize the calculation of statistics for each series in this DataFrame."""
+import warnings
 from datetime import datetime
 from typing import Optional
 
@@ -6,7 +7,7 @@ from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model.correlations import calculate_correlation
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, UNWRAPPED_DATAFRAME_WARNING
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
@@ -17,6 +18,7 @@ from pandas_profiling.model.summary import (
     get_table_stats,
 )
 from pandas_profiling.model.typeset import Numeric, SparkNumeric, Unsupported
+from pandas_profiling.utils.dataframe import get_appropriate_wrapper
 from pandas_profiling.version import __version__
 
 
@@ -42,6 +44,13 @@ def describe(
 
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
+
+    # check for unwrapped dataframes and warn
+    if not isinstance(df, GenericDataFrame):
+        warnings.warn(UNWRAPPED_DATAFRAME_WARNING)
+        df_wrapper = get_appropriate_wrapper(df)
+        df = df_wrapper.preprocess(df)
+        df = df_wrapper(df)
 
     if df.empty:
         raise ValueError("df can not be empty")
@@ -73,7 +82,6 @@ def describe(
             column: description["type"]
             for column, description in series_description.items()
         }
-
 
         supported_columns = [
             column

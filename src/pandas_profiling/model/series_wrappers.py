@@ -1,5 +1,15 @@
 import attr
 
+UNWRAPPED_SERIES_WARNING = """Attempting to pass a pandas series directly into a function that takes a wrapped series, 
+                     this function will attempt to automatically wrap this in a pandas_profiling series wrapper,
+                     but it is better practice to explicitly wrap it with a backend if calling the
+                     function directly : ie. 
+                     
+                     from pandas_profiling.model.series_wrapper import SparkSeries, PandasSeries
+                     wrapped_df = SparkSeries(spark_df)
+                     
+                     and pass that into the function directly """
+
 
 @attr.s
 class Sample(object):
@@ -69,7 +79,7 @@ class SparkSeries(GenericSeries):
 
     def value_counts(self):
         value_counts = self.series.na.drop().groupBy(self.name).count().toPandas()
-        value_counts = value_counts.sort_values("count",ascending=False).set_index(self.name, drop=True).squeeze()
+        value_counts = value_counts.sort_values("count", ascending=False).set_index(self.name, drop=True).squeeze()
         return value_counts
 
     def count_na(self):

@@ -5,11 +5,14 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import config
+from pandas_profiling.model.dataframe_wrappers import (
+    PandasDataFrame,
+    UNWRAPPED_DATAFRAME_WARNING,
+)
 from pandas_profiling.model.describe import describe
+from pandas_profiling.model.series_wrappers import PandasSeries
 from pandas_profiling.model.summary import describe_1d
 from pandas_profiling.model.typeset import DateTime, Numeric
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame
-from pandas_profiling.model.series_wrappers import PandasSeries
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
@@ -528,12 +531,12 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
 
 
 def test_describe_empty(summarizer, typeset):
-    empty_frame = PandasDataFrame(pd.DataFrame())
+    empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
-        describe("", empty_frame, summarizer, typeset)
+        with pytest.warns(UserWarning, match=UNWRAPPED_DATAFRAME_WARNING):
+            describe("", empty_frame, summarizer, typeset)
 
 
 def test_describe_list(summarizer, typeset):
-    with pytest.raises(AttributeError):
-        with pytest.warns(UserWarning):
-            describe("", [1, 2, 3], summarizer, typeset)
+    with pytest.raises(NotImplementedError):
+        describe("", [1, 2, 3], summarizer, typeset)

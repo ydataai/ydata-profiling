@@ -8,17 +8,20 @@ from functools import singledispatch
 from typing import Callable, Mapping, Tuple
 
 import numpy as np
+import pandas as pd
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, SparkDataFrame, PandasDataFrame
+from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, SparkDataFrame, PandasDataFrame, \
+    UNWRAPPED_DATAFRAME_WARNING
 from pandas_profiling.model.messages import (  # warning_type_date,
     check_correlation_messages,
     check_table_messages,
     check_variable_messages,
 )
-from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, SparkSeries
+from pandas_profiling.model.series_wrappers import PandasSeries, SparkSeries, UNWRAPPED_SERIES_WARNING
 from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.model.typeset import Unsupported, SparkUnsupported
+from pandas_profiling.utils.dataframe import get_appropriate_wrapper
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
@@ -29,7 +32,7 @@ from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 @singledispatch
-def describe_1d(wrapped_series: GenericSeries, summarizer: BaseSummarizer, typeset) -> dict:
+def describe_1d(series, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -42,7 +45,17 @@ def describe_1d(wrapped_series: GenericSeries, summarizer: BaseSummarizer, types
 
 
 @describe_1d.register
-def _(wrapped_series: PandasSeries, summarizer: BaseSummarizer, typeset) -> dict:
+def _(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
+    """
+    if a pd.Series is provided, we should wrap it in the pandas series wrapper.
+    """
+    # check for unwrapped series and warn
+    warnings.warn(UNWRAPPED_SERIES_WARNING)
+    return describe_1d(PandasSeries(series), summarizer, typeset)
+
+
+@describe_1d.register
+def _(series: PandasSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -53,7 +66,7 @@ def _(wrapped_series: PandasSeries, summarizer: BaseSummarizer, typeset) -> dict
     """
 
     # Make sure pd.NA is not in the series, final .series call is to unwrap the series to get back our pd.Series
-    series = wrapped_series.fillna(np.nan).series
+    series = series.fillna(np.nan).series
     # Infer variable types
     # vtype = Unsupported
 
@@ -64,7 +77,7 @@ def _(wrapped_series: PandasSeries, summarizer: BaseSummarizer, typeset) -> dict
 
 
 @describe_1d.register
-def _(wrapped_series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
+def _(series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -75,7 +88,7 @@ def _(wrapped_series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """
     from pandas_profiling.model.typeset import SparkNumeric, SparkUnsupported
 
-    if wrapped_series in SparkNumeric:
+    if series in SparkNumeric:
         vtype = SparkNumeric
     else:
         vtype = SparkUnsupported
@@ -85,7 +98,7 @@ def _(wrapped_series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
     # vtype = typeset.infer_type(series)
     # series = typeset.cast_to_inferred(series)
 
-    return summarizer.summarize(wrapped_series, dtype=vtype)
+    return summarizer.summarize(series, dtype=vtype)
 
 
 def sort_column_names(dct: Mapping, sort: str):
@@ -112,6 +125,12 @@ def get_series_descriptions(df: GenericDataFrame, summarizer, typeset, pbar):
         """
         column, series = args
         return column, describe_1d(series, summarizer, typeset)
+
+    # check for unwrapped dataframes and warn
+    if not isinstance(df, GenericDataFrame):
+        warnings.warn(UNWRAPPED_DATAFRAME_WARNING)
+        df_wrapper = get_appropriate_wrapper(df)
+        df = df_wrapper(df)
 
     pool_size = config["pool_size"].get(int)
     sort = config["sort"].get(str)
@@ -212,7 +231,6 @@ def _(df: PandasDataFrame, variable_stats: dict) -> dict:
         {"types": dict(Counter([v["type"] for v in variable_stats.values()]))}
     )
 
-    print("table stats are", table_stats)
     return table_stats
 
 

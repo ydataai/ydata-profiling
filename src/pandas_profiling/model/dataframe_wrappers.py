@@ -7,6 +7,16 @@ import pandas as pd
 from pandas_profiling.model.series_wrappers import GenericSeries, PandasSeries, Sample, SparkSeries
 from pandas_profiling.utils.dataframe import rename_index
 
+UNWRAPPED_DATAFRAME_WARNING = """Attempting to pass a pandas dataframe directly into a function that takes a wrapped dataframe, 
+                     this function will attempt to automatically wrap this in a pandas_profiling dataframe wrapper,
+                     but it is better practice to explicitly wrap it with a backend if calling the
+                     function directly : ie. 
+
+                     from pandas_profiling.model.series_wrapper import SparkDataFrame, PandasDataFrame
+                     wrapped_df = SparkDataFrame(spark_df)
+
+                     and pass that into the function directly """
+
 
 class GenericDataFrame(object):
     """
@@ -271,6 +281,7 @@ class PandasDataFrame(GenericDataFrame):
                 Returns:
                     The preprocessed DataFrame
                 """
+
         # Treat index as any other column
         if (
                 not pd.Index(np.arange(0, len(df))).equals(df.index)

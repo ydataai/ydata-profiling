@@ -16,7 +16,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
-from pandas_profiling.utils.dataframe import hash_dataframe, get_appropriate_backend
+from pandas_profiling.utils.dataframe import hash_dataframe, get_appropriate_wrapper
 from pandas_profiling.utils.paths import get_config
 
 
@@ -32,8 +32,8 @@ class ProfileReport(SerializeReport, object):
             minimal: bool = False,
             explorative: bool = False,
             sensitive: bool = False,
-            dark_mode: bool = False,
             orange_mode: bool = False,
+            dark_mode: bool = False,
             sample: Optional[dict] = None,
             config_file: Union[Path, str] = None,
             lazy: bool = True,
@@ -92,7 +92,7 @@ class ProfileReport(SerializeReport, object):
 
         if df is not None:
             # get appropriate backend
-            df_wrapper = get_appropriate_backend(df)
+            df_wrapper = get_appropriate_wrapper(df)
             # preprocess df (if required)
             processed_df = df_wrapper.preprocess(df)
             # wrap and store df
