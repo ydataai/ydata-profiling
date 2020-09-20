@@ -52,9 +52,7 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
             value_counts_without_nan = value_counts_with_nan
 
         summary.update(
-            {
-                "value_counts_without_nan": value_counts_without_nan,
-            }
+            {"value_counts_without_nan": value_counts_without_nan,}
         )
     else:
         n_missing = series.isna().sum()
@@ -76,7 +74,7 @@ def series_hashable(fn):
 
 @series_hashable
 def describe_supported(
-        series: pd.Series, series_description: dict
+    series: pd.Series, series_description: dict
 ) -> Tuple[pd.Series, dict]:
     """Describe a supported series.
     Args:
@@ -171,14 +169,21 @@ def numeric_stats_spark(series: SparkSeries):
 
     series.persist()
 
-    numeric_results_df = series.get_spark_series().select(F.mean(series.name).alias("mean"),
-                                                          F.stddev(series.name).alias("std"),
-                                                          F.variance(series.name).alias("variance"),
-                                                          F.min(series.name).alias("min"),
-                                                          F.max(series.name).alias("max"),
-                                                          F.kurtosis(series.name).alias("kurtosis"),
-                                                          F.skewness(series.name).alias("skewness"),
-                                                          F.sum(series.name).alias("sum")).toPandas().T
+    numeric_results_df = (
+        series.get_spark_series()
+        .select(
+            F.mean(series.name).alias("mean"),
+            F.stddev(series.name).alias("std"),
+            F.variance(series.name).alias("variance"),
+            F.min(series.name).alias("min"),
+            F.max(series.name).alias("max"),
+            F.kurtosis(series.name).alias("kurtosis"),
+            F.skewness(series.name).alias("skewness"),
+            F.sum(series.name).alias("sum"),
+        )
+        .toPandas()
+        .T
+    )
 
     series.unpersist()
 
@@ -192,7 +197,7 @@ def numeric_stats_spark(series: SparkSeries):
         "kurtosis": numeric_results_df.loc["kurtosis"][0],
         # Unbiased skew normalized by N-1
         "skewness": numeric_results_df.loc["skewness"][0],
-        "sum": numeric_results_df.loc["sum"][0]
+        "sum": numeric_results_df.loc["sum"][0],
     }
 
     return results
@@ -236,9 +241,7 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
         stats.update(numeric_stats_numpy(present_values, series, summary))
 
     stats.update(
-        {
-            "mad": mad(present_values),
-        }
+        {"mad": mad(present_values),}
     )
 
     if chi_squared_threshold > 0.0:
@@ -260,10 +263,10 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     stats["monotonic_decrease"] = series.is_monotonic_decreasing
 
     stats["monotonic_increase_strict"] = (
-            stats["monotonic_increase"] and series.is_unique
+        stats["monotonic_increase"] and series.is_unique
     )
     stats["monotonic_decrease_strict"] = (
-            stats["monotonic_decrease"] and series.is_unique
+        stats["monotonic_decrease"] and series.is_unique
     )
 
     stats.update(
@@ -447,7 +450,9 @@ def describe_boolean_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     return series, summary
 
 
-def describe_counts_spark(series: SparkSeries, summary: dict) -> Tuple[SparkSeries, dict]:
+def describe_counts_spark(
+    series: SparkSeries, summary: dict
+) -> Tuple[SparkSeries, dict]:
     """Counts the values in a series (with and without NaN, distinct).
 
     Args:
@@ -465,7 +470,7 @@ def describe_counts_spark(series: SparkSeries, summary: dict) -> Tuple[SparkSeri
 
 
 def describe_supported_spark(
-        series: SparkSeries, series_description: dict
+    series: SparkSeries, series_description: dict
 ) -> Tuple[SparkSeries, dict]:
     """Describe a supported series.
     Args:
@@ -494,7 +499,9 @@ def describe_supported_spark(
     return series, stats
 
 
-def describe_generic_spark(series: SparkSeries, summary: dict) -> Tuple[SparkSeries, dict]:
+def describe_generic_spark(
+    series: SparkSeries, summary: dict
+) -> Tuple[SparkSeries, dict]:
     """Describe generic series.
     Args:
         series: The Series to describe.
@@ -531,6 +538,7 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     # Config
 
     import pyspark.sql.functions as F
+
     chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
     quantiles = config["vars"]["num"]["quantiles"].get(list)
 
@@ -552,13 +560,13 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     # manual MAD computation, refactor possible
     median = series.get_spark_series().stat.approxQuantile(series.name, [0.5], 0.01)[0]
 
-    mad = series.get_spark_series().select(
-        (F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev")).stat.approxQuantile("abs_dev",
-                                                                                               [0.5], 0.01)[0]
+    mad = (
+        series.get_spark_series()
+        .select((F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev"))
+        .stat.approxQuantile("abs_dev", [0.5], 0.01)[0]
+    )
     stats.update(
-        {
-            "mad": mad,
-        }
+        {"mad": mad,}
     )
     """
     #TO-DO fix chi-squared
@@ -571,8 +579,12 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     stats.update(
         {
             f"{percentile:.0%}": value
-            for percentile, value in
-            zip(quantiles, series.get_spark_series().stat.approxQuantile(series.name, quantiles, 0.25))
+            for percentile, value in zip(
+                quantiles,
+                series.get_spark_series().stat.approxQuantile(
+                    series.name, quantiles, 0.25
+                ),
+            )
         }
     )
 
@@ -600,7 +612,9 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     return series, stats
 
 
-def describe_categorical_spark_1d(series: SparkSeries, summary: dict) -> Tuple[SparkSeries, dict]:
+def describe_categorical_spark_1d(
+    series: SparkSeries, summary: dict
+) -> Tuple[SparkSeries, dict]:
     """Describe a categorical series.
 
     Args:
