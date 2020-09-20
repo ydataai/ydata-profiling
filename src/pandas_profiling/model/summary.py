@@ -44,7 +44,7 @@ def describe_1d(series, summarizer: BaseSummarizer, typeset) -> dict:
     raise NotImplementedError("Method is not implemented for dtype")
 
 
-@describe_1d.register
+@describe_1d.register(pd.Series)
 def _(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     """
     if a pd.Series is provided, we should wrap it in the pandas series wrapper.
@@ -54,7 +54,7 @@ def _(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     return describe_1d(PandasSeries(series), summarizer, typeset)
 
 
-@describe_1d.register
+@describe_1d.register(PandasSeries)
 def _(series: PandasSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
@@ -76,7 +76,7 @@ def _(series: PandasSeries, summarizer: BaseSummarizer, typeset) -> dict:
     return summarizer.summarize(series, dtype=vtype)
 
 
-@describe_1d.register
+@describe_1d.register(SparkSeries)
 def _(series: SparkSeries, summarizer: BaseSummarizer, typeset) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 

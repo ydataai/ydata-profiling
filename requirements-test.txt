@@ -2,6 +2,8 @@ pytest
 coverage<5
 codecov
 pytest-mypy>=0.7.0
+# this is because mypy had an issue where singledispatch _ usage resulted in errors (https://github.com/python/mypy/issues/2904)
+mypy>=0.761
 pytest-cov
 pytest-black
 nbval
