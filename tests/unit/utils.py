@@ -9,8 +9,6 @@ from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
 
-from pandas_profiling.model.typeset import PandasProfilingBaseType
-
 base_path = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -450,7 +448,7 @@ def all_series_included(series_list, series_map):
 
 
 def get_contains_cases(
-    _test_suite, _series_map: Dict[Type[PandasProfilingBaseType], Set[str]], typeset
+    _test_suite, _series_map: Dict[Type[VisionsBaseType], Set[str]], typeset
 ):
     """Parametrize contains tests
 

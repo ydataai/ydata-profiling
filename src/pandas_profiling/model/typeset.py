@@ -24,15 +24,11 @@ from pandas_profiling.model.typeset_relations import (
 )
 
 
-class PandasProfilingBaseType(VisionsBaseType):
+class Unsupported(visions.Generic):
     pass
 
 
-class Unsupported(PandasProfilingBaseType, visions.Generic):
-    pass
-
-
-class Numeric(PandasProfilingBaseType):
+class Numeric(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -63,7 +59,7 @@ def to_date(series):
     return pd.to_datetime(series)
 
 
-class DateTime(PandasProfilingBaseType):
+class DateTime(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -78,7 +74,7 @@ class DateTime(PandasProfilingBaseType):
         return pdt.is_datetime64_any_dtype(series)
 
 
-class Categorical(PandasProfilingBaseType):
+class Categorical(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -103,7 +99,7 @@ class Categorical(PandasProfilingBaseType):
         return series_is_string(series)
 
 
-class Boolean(PandasProfilingBaseType):
+class Boolean(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -130,7 +126,7 @@ class Boolean(PandasProfilingBaseType):
         return pdt.is_bool_dtype(series)
 
 
-class URL(PandasProfilingBaseType):
+class URL(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, Categorical)]
@@ -147,7 +143,7 @@ class URL(PandasProfilingBaseType):
             return False
 
 
-class Path(PandasProfilingBaseType):
+class Path(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, Categorical)]
@@ -163,7 +159,7 @@ class Path(PandasProfilingBaseType):
             return False
 
 
-class File(PandasProfilingBaseType):
+class File(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, Path)]
@@ -175,7 +171,7 @@ class File(PandasProfilingBaseType):
         return all(os.path.exists(p) for p in series)
 
 
-class Image(PandasProfilingBaseType):
+class Image(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, File)]
@@ -187,7 +183,7 @@ class Image(PandasProfilingBaseType):
         return all(imghdr.what(p) for p in series)
 
 
-class Complex(PandasProfilingBaseType):
+class Complex(VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [IdentityRelation(cls, Numeric)]
