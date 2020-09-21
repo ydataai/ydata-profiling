@@ -495,9 +495,8 @@ class SparkDataFrame(GenericDataFrame):
         return (
             self.df.groupBy(self.df.columns)
             .agg(F.count("*"))
-            .select(F.col("count(1)").alias("count").cast("int"))
-            .filter(F.col("count") > 1)
-            .orderBy("count", ascending=False)
+            .filter(F.col("count(1)").cast("int") > 1)
+            .orderBy("count(1)", ascending=False)
             .limit(n)
             .toPandas()
         )
