@@ -689,13 +689,12 @@ def get_scatter_matrix(df, variables):
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
 
-        # check if any na still exists, and remove it before computing scatter matrix
-        df = df.dropna(subset=continuous_variables)
-
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
-                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                    # check if any na still exists, and remove it before computing scatter matrix
+                    df_temp = df[[x,y]].dropna()
+                    scatter_matrix[x][y] = scatter_pairwise(df_temp[x], df_temp[y], x, y)
     else:
         scatter_matrix = {}
 
