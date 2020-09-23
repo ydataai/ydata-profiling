@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 import attr
 
 UNWRAPPED_SERIES_WARNING = """Attempting to pass a pandas series directly into a function that takes a wrapped series, 
@@ -78,11 +80,13 @@ class SparkSeries(GenericSeries):
     def n_rows(self) -> int:
         return self.series.count()
 
+    @lru_cache(maxsize=1)
     def value_counts(self):
         value_counts = self.series.na.drop().groupBy(self.name).count().toPandas()
         value_counts = value_counts.sort_values("count", ascending=False).set_index(self.name, drop=True).squeeze()
         return value_counts
 
+    @lru_cache(maxsize=1)
     def count_na(self):
         return self.series.count() - self.series.na.drop().count()
 
@@ -94,7 +98,7 @@ class SparkSeries(GenericSeries):
         Warning! this memory usage is only a sample
         TO-DO can we make this faster or not use a sample?
         """
-        return self.series.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
+        return 100 * self.series.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
 
     def get_spark_series(self):
         return self.series

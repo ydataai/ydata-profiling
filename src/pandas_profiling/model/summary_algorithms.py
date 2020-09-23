@@ -52,7 +52,7 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
             value_counts_without_nan = value_counts_with_nan
 
         summary.update(
-            {"value_counts_without_nan": value_counts_without_nan,}
+            {"value_counts_without_nan": value_counts_without_nan, }
         )
     else:
         n_missing = series.isna().sum()
@@ -74,7 +74,7 @@ def series_hashable(fn):
 
 @series_hashable
 def describe_supported(
-    series: pd.Series, series_description: dict
+        series: pd.Series, series_description: dict
 ) -> Tuple[pd.Series, dict]:
     """Describe a supported series.
     Args:
@@ -171,7 +171,7 @@ def numeric_stats_spark(series: SparkSeries):
 
     numeric_results_df = (
         series.get_spark_series()
-        .select(
+            .select(
             F.mean(series.name).alias("mean"),
             F.stddev(series.name).alias("std"),
             F.variance(series.name).alias("variance"),
@@ -181,8 +181,8 @@ def numeric_stats_spark(series: SparkSeries):
             F.skewness(series.name).alias("skewness"),
             F.sum(series.name).alias("sum"),
         )
-        .toPandas()
-        .T
+            .toPandas()
+            .T
     )
 
     series.unpersist()
@@ -241,7 +241,7 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
         stats.update(numeric_stats_numpy(present_values, series, summary))
 
     stats.update(
-        {"mad": mad(present_values),}
+        {"mad": mad(present_values), }
     )
 
     if chi_squared_threshold > 0.0:
@@ -263,10 +263,10 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     stats["monotonic_decrease"] = series.is_monotonic_decreasing
 
     stats["monotonic_increase_strict"] = (
-        stats["monotonic_increase"] and series.is_unique
+            stats["monotonic_increase"] and series.is_unique
     )
     stats["monotonic_decrease_strict"] = (
-        stats["monotonic_decrease"] and series.is_unique
+            stats["monotonic_decrease"] and series.is_unique
     )
 
     stats.update(
@@ -451,7 +451,7 @@ def describe_boolean_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
 
 
 def describe_counts_spark(
-    series: SparkSeries, summary: dict
+        series: SparkSeries, summary: dict
 ) -> Tuple[SparkSeries, dict]:
     """Counts the values in a series (with and without NaN, distinct).
 
@@ -468,7 +468,7 @@ def describe_counts_spark(
 
 
 def describe_supported_spark(
-    series: SparkSeries, series_description: dict
+        series: SparkSeries, series_description: dict
 ) -> Tuple[SparkSeries, dict]:
     """Describe a supported series.
     Args:
@@ -498,7 +498,7 @@ def describe_supported_spark(
 
 
 def describe_generic_spark(
-    series: SparkSeries, summary: dict
+        series: SparkSeries, summary: dict
 ) -> Tuple[SparkSeries, dict]:
     """Describe generic series.
     Args:
@@ -560,29 +560,27 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
 
     mad = (
         series.get_spark_series()
-        .select((F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev"))
-        .stat.approxQuantile("abs_dev", [0.5], 0.01)[0]
+            .select((F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev"))
+            .stat.approxQuantile("abs_dev", [0.5], 0.01)[0]
     )
     stats.update(
-        {"mad": mad,}
+        {"mad": mad, }
     )
-    """
-    #TO-DO fix chi-squared
 
     if chi_squared_threshold > 0.0:
-        stats["chi_squared"] = chi_square(finite_values)
-    """
+        stats["chi_squared"] = chi_square(histogram=value_counts.values)
+
     stats["range"] = stats["max"] - stats["min"]
 
     stats.update(
         {
             f"{percentile:.0%}": value
             for percentile, value in zip(
-                quantiles,
-                series.get_spark_series().stat.approxQuantile(
-                    series.name, quantiles, 0.25
-                ),
-            )
+            quantiles,
+            series.get_spark_series().stat.approxQuantile(
+                series.name, quantiles, 0.25
+            ),
+        )
         }
     )
 
@@ -611,7 +609,7 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
 
 
 def describe_categorical_spark_1d(
-    series: SparkSeries, summary: dict
+        series: SparkSeries, summary: dict
 ) -> Tuple[SparkSeries, dict]:
     """Describe a categorical series.
 
@@ -635,12 +633,9 @@ def describe_categorical_spark_1d(
         )
     )
 
-    """
-    #TO-DO fix chi-squared
-    
     if chi_squared_threshold > 0.0:
         summary["chi_squared"] = chi_square(histogram=value_counts.values)
-    """
+
     if check_length:
         summary.update(length_summary(series))
         summary.update(

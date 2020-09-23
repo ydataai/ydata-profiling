@@ -280,17 +280,20 @@ def _(series: pd.Series) -> Counter:
 
 
 @get_character_counts.register(SparkSeries)
-def _(series: pd.Series) -> Counter:
+def _(series: SparkSeries) -> Counter:
     """Function to return the character counts
-    TO-DO - this is bad, we should try to do the counts as a character dictionary before returning it to pandas,
-    or better still do all the character counting in spark
+
     Args:
-        series: the Series to processimport pyspark.sql.functions as Fimport pyspark.sql.functions as F
+        series: the Series to process
 
     Returns:
         A dict with character counts
     """
-    return Counter(series.get_spark_series().toPandas().squeeze().str.cat())
+    import pyspark.sql.functions as F
+    # this function is optimised to split all characters and explode the characters and then groupby the characters
+    df = series.get_spark_series().select(F.explode(F.split(F.col(series.name), ""))).groupby("col").count().toPandas()
+    my_dict = {x[0]: x[1] for x in zip(df["col"].values, df["count"].values)}
+    return my_dict
 
 
 def counter_to_series(counter: Counter) -> pd.Series:
@@ -304,6 +307,8 @@ def counter_to_series(counter: Counter) -> pd.Series:
 
 def unicode_summary(series) -> dict:
     # Unicode Character Summaries (category and script name)
+
+    # this is the function that properly computes the character counts based on type
     character_counts = get_character_counts(series)
 
     character_counts_series = counter_to_series(character_counts)
@@ -389,3 +394,10 @@ def chi_square(values=None, histogram=None):
     if histogram is None:
         histogram, _ = np.histogram(values, bins="auto")
     return dict(chisquare(histogram)._asdict())
+
+
+def spark_chi_square(series: SparkSeries):
+    series.value_counts()
+    value_counts = series.get_spark_series().na.drop().groupBy(series.name).count().toPandas()
+    value_counts = value_counts.sort_values("count", ascending=False).set_index(series.name, drop=True)
+    return dict(chisquare(value_counts)._asdict())
