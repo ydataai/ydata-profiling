@@ -7,7 +7,10 @@ from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model.correlations import calculate_correlation
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, UNWRAPPED_DATAFRAME_WARNING
+from pandas_profiling.model.dataframe_wrappers import (
+    UNWRAPPED_DATAFRAME_WARNING,
+    GenericDataFrame,
+)
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
@@ -23,7 +26,7 @@ from pandas_profiling.version import __version__
 
 
 def describe(
-        title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None
+    title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None
 ) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
@@ -61,20 +64,14 @@ def describe(
 
     correlation_names = [
         correlation_name
-        for correlation_name in [
-            "pearson",
-            "spearman",
-            "kendall",
-            "phi_k",
-            "cramers",
-        ]
+        for correlation_name in ["pearson", "spearman", "kendall", "phi_k", "cramers",]
         if config["correlations"][correlation_name]["calculate"].get(bool)
     ]
 
     number_of_tasks = 8 + len(df.columns) + len(correlation_names)
 
     with tqdm(
-            total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
+        total=number_of_tasks, desc="Summarize dataset", disable=disable_progress_bar
     ) as pbar:
         series_description = get_series_descriptions(df, summarizer, typeset, pbar)
         pbar.set_postfix_str("Get variable types")
@@ -89,7 +86,9 @@ def describe(
             if type_name != Unsupported
         ]
         interval_columns = [
-            column for column, type_name in variables.items() if type_name == Numeric or type_name == SparkNumeric
+            column
+            for column, type_name in variables.items()
+            if type_name == Numeric or type_name == SparkNumeric
         ]
         pbar.update()
 

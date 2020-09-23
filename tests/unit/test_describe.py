@@ -6,8 +6,8 @@ import pytest
 
 from pandas_profiling import config
 from pandas_profiling.model.dataframe_wrappers import (
-    PandasDataFrame,
     UNWRAPPED_DATAFRAME_WARNING,
+    PandasDataFrame,
 )
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.series_wrappers import PandasSeries

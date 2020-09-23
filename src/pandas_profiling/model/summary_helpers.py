@@ -57,7 +57,10 @@ def _(series: pd.Series, summary: dict = {}) -> dict:
 @length_summary.register(SparkSeries)
 def _(series: SparkSeries, summary: dict = {}) -> dict:
     import pyspark.sql.functions as F
-    length = series.get_spark_series().select(F.length(series.name)).toPandas().squeeze()
+
+    length = (
+        series.get_spark_series().select(F.length(series.name)).toPandas().squeeze()
+    )
 
     summary.update({"length": length})
     summary.update(named_aggregate_summary(length, "length"))
@@ -104,7 +107,7 @@ def path_summary(series: pd.Series) -> dict:
     # TODO: optimize using value counts
     summary = {
         "common_prefix": os.path.commonprefix(series.values.tolist())
-                         or "No common prefix",
+        or "No common prefix",
         "stem_counts": series.map(lambda x: os.path.splitext(x)[0]).value_counts(),
         "suffix_counts": series.map(lambda x: os.path.splitext(x)[1]).value_counts(),
         "name_counts": series.map(lambda x: os.path.basename(x)).value_counts(),
@@ -188,7 +191,7 @@ def extract_exif_series(image_exifs: list) -> dict:
 
 
 def extract_image_information(
-        path: Path, exif: bool = False, hash: bool = False
+    path: Path, exif: bool = False, hash: bool = False
 ) -> dict:
     """Extracts all image information per file, as opening files is slow
 
@@ -290,8 +293,15 @@ def _(series: SparkSeries) -> Counter:
         A dict with character counts
     """
     import pyspark.sql.functions as F
+
     # this function is optimised to split all characters and explode the characters and then groupby the characters
-    df = series.get_spark_series().select(F.explode(F.split(F.col(series.name), ""))).groupby("col").count().toPandas()
+    df = (
+        series.get_spark_series()
+        .select(F.explode(F.split(F.col(series.name), "")))
+        .groupby("col")
+        .count()
+        .toPandas()
+    )
     my_dict = {x[0]: x[1] for x in zip(df["col"].values, df["count"].values)}
     return my_dict
 
@@ -398,6 +408,10 @@ def chi_square(values=None, histogram=None):
 
 def spark_chi_square(series: SparkSeries):
     series.value_counts()
-    value_counts = series.get_spark_series().na.drop().groupBy(series.name).count().toPandas()
-    value_counts = value_counts.sort_values("count", ascending=False).set_index(series.name, drop=True)
+    value_counts = (
+        series.get_spark_series().na.drop().groupBy(series.name).count().toPandas()
+    )
+    value_counts = value_counts.sort_values("count", ascending=False).set_index(
+        series.name, drop=True
+    )
     return dict(chisquare(value_counts)._asdict())

@@ -76,17 +76,28 @@ class SparkSeries(GenericSeries):
         else:
             return SparkSeries(self.series.na.fillna())
 
+    @lru_cache(
+        maxsize=1
+    )  # this method should only be called once then the same result should be returned
     @property
     def n_rows(self) -> int:
         return self.series.count()
 
-    @lru_cache(maxsize=1)
+    @lru_cache(
+        maxsize=1
+    )  # this method should only be called once then the same result should be returned
     def value_counts(self):
         value_counts = self.series.na.drop().groupBy(self.name).count().toPandas()
-        value_counts = value_counts.sort_values("count", ascending=False).set_index(self.name, drop=True).squeeze()
+        value_counts = (
+            value_counts.sort_values("count", ascending=False)
+            .set_index(self.name, drop=True)
+            .squeeze()
+        )
         return value_counts
 
-    @lru_cache(maxsize=1)
+    @lru_cache(
+        maxsize=1
+    )  # this method should only be called once then the same result should be returned
     def count_na(self):
         return self.series.count() - self.series.na.drop().count()
 
@@ -98,7 +109,10 @@ class SparkSeries(GenericSeries):
         Warning! this memory usage is only a sample
         TO-DO can we make this faster or not use a sample?
         """
-        return 100 * self.series.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
+        return (
+            100
+            * self.series.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
+        )
 
     def get_spark_series(self):
         return self.series

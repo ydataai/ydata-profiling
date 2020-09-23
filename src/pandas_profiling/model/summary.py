@@ -11,16 +11,29 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, SparkDataFrame, PandasDataFrame, \
-    UNWRAPPED_DATAFRAME_WARNING
+from pandas_profiling.model.dataframe_wrappers import (
+    UNWRAPPED_DATAFRAME_WARNING,
+    GenericDataFrame,
+    PandasDataFrame,
+    SparkDataFrame,
+)
 from pandas_profiling.model.messages import (  # warning_type_date,
     check_correlation_messages,
     check_table_messages,
     check_variable_messages,
 )
-from pandas_profiling.model.series_wrappers import PandasSeries, SparkSeries, UNWRAPPED_SERIES_WARNING
+from pandas_profiling.model.series_wrappers import (
+    UNWRAPPED_SERIES_WARNING,
+    PandasSeries,
+    SparkSeries,
+)
 from pandas_profiling.model.summarizer import BaseSummarizer
-from pandas_profiling.model.typeset import Unsupported, SparkUnsupported, SparkCategorical, SparkNumeric
+from pandas_profiling.model.typeset import (
+    SparkCategorical,
+    SparkNumeric,
+    SparkUnsupported,
+    Unsupported,
+)
 from pandas_profiling.utils.dataframe import get_appropriate_wrapper
 from pandas_profiling.visualisation.missing import (
     missing_bar,
@@ -155,7 +168,7 @@ def get_series_descriptions(df: GenericDataFrame, summarizer, typeset, pbar):
         # TODO: use `Pool` for Linux-based systems
         with multiprocessing.pool.ThreadPool(pool_size) as executor:
             for i, (column, description) in enumerate(
-                    executor.imap_unordered(multiprocess_1d, args)
+                executor.imap_unordered(multiprocess_1d, args)
             ):
                 pbar.set_postfix_str(f"Describe variable:{column}")
                 series_description[column] = description
@@ -182,7 +195,9 @@ def get_table_stats(df: GenericDataFrame, variable_stats: dict) -> dict:
         A dictionary that contains the table statistics.
     """
     data_type = type(df)
-    raise NotImplementedError(f"get_table_stats is not implemented for datatype {data_type}")
+    raise NotImplementedError(
+        f"get_table_stats is not implemented for datatype {data_type}"
+    )
 
 
 @get_table_stats.register(PandasDataFrame)
@@ -210,7 +225,7 @@ def _(df: PandasDataFrame, variable_stats: dict) -> dict:
                 table_stats["n_vars_all_missing"] += 1
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-            table_stats["n"] * table_stats["n_var"]
+        table_stats["n"] * table_stats["n_var"]
     )
 
     supported_columns = [
@@ -260,7 +275,7 @@ def _(df: SparkDataFrame, variable_stats: dict) -> dict:
                 table_stats["n_vars_all_missing"] += 1
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-            table_stats["n"] * table_stats["n_var"]
+        table_stats["n"] * table_stats["n_var"]
     )
 
     supported_columns = [
@@ -297,7 +312,9 @@ def get_missing_diagrams(df: GenericDataFrame, table_stats: dict) -> dict:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
     data_type = type(df)
-    raise NotImplementedError(f"get_missing_diagrams is not implemented for datatype {data_type}")
+    raise NotImplementedError(
+        f"get_missing_diagrams is not implemented for datatype {data_type}"
+    )
 
 
 @get_missing_diagrams.register(PandasDataFrame)
@@ -347,7 +364,7 @@ def _(df: PandasDataFrame, table_stats: dict) -> dict:
         name: settings
         for name, settings in missing_map.items()
         if config["missing_diagrams"][name].get(bool)
-           and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+        and table_stats["n_vars_with_missing"] >= settings["min_missing"]
     }
     missing = {}
 
@@ -355,9 +372,9 @@ def _(df: PandasDataFrame, table_stats: dict) -> dict:
         for name, settings in missing_map.items():
             try:
                 if name != "heatmap" or (
-                        table_stats["n_vars_with_missing"]
-                        - table_stats["n_vars_all_missing"]
-                        >= settings["min_missing"]
+                    table_stats["n_vars_with_missing"]
+                    - table_stats["n_vars_all_missing"]
+                    >= settings["min_missing"]
                 ):
                     missing[name] = {
                         "name": settings["name"],
@@ -388,7 +405,9 @@ def _(df: SparkDataFrame, table_stats: dict) -> dict:
 @singledispatch
 def get_scatter_matrix(df, continuous_variables):
     data_type = type(df)
-    raise NotImplementedError(f"get_table_stats is not implemented for datatype {data_type}")
+    raise NotImplementedError(
+        f"get_table_stats is not implemented for datatype {data_type}"
+    )
 
 
 @get_scatter_matrix.register(PandasDataFrame)
@@ -428,9 +447,15 @@ def _(df, continuous_variables):
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
-                    pd_series_x = SparkSeries(df[x]).get_spark_series().toPandas().squeeze()
-                    pd_series_y = SparkSeries(df[y]).get_spark_series().toPandas().squeeze()
-                    scatter_matrix[x][y] = scatter_pairwise(pd_series_x, pd_series_y, x, y)
+                    pd_series_x = (
+                        SparkSeries(df[x]).get_spark_series().toPandas().squeeze()
+                    )
+                    pd_series_y = (
+                        SparkSeries(df[y]).get_spark_series().toPandas().squeeze()
+                    )
+                    scatter_matrix[x][y] = scatter_pairwise(
+                        pd_series_x, pd_series_y, x, y
+                    )
 
     return scatter_matrix
 

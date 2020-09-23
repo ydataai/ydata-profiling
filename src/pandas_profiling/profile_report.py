@@ -16,7 +16,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
-from pandas_profiling.utils.dataframe import hash_dataframe, get_appropriate_wrapper
+from pandas_profiling.utils.dataframe import get_appropriate_wrapper, hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
 
@@ -27,17 +27,17 @@ class ProfileReport(SerializeReport, object):
     """
 
     def __init__(
-            self,
-            df: Optional[pd.DataFrame] = None,
-            minimal: bool = False,
-            explorative: bool = False,
-            sensitive: bool = False,
-            orange_mode: bool = False,
-            dark_mode: bool = False,
-            sample: Optional[dict] = None,
-            config_file: Union[Path, str] = None,
-            lazy: bool = True,
-            **kwargs,
+        self,
+        df: Optional[pd.DataFrame] = None,
+        minimal: bool = False,
+        explorative: bool = False,
+        sensitive: bool = False,
+        orange_mode: bool = False,
+        dark_mode: bool = False,
+        sample: Optional[dict] = None,
+        config_file: Union[Path, str] = None,
+        lazy: bool = True,
+        **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
 
@@ -286,7 +286,7 @@ class ProfileReport(SerializeReport, object):
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
-                total=1, desc="Export report to file", disable=disable_progress_bar
+            total=1, desc="Export report to file", disable=disable_progress_bar
         ) as pbar:
             output_file.write_text(data, encoding="utf-8")
             pbar.update()
@@ -336,7 +336,7 @@ class ProfileReport(SerializeReport, object):
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
-                total=1, desc="Render widgets", disable=disable_progress_bar, leave=False
+            total=1, desc="Render widgets", disable=disable_progress_bar, leave=False
         ) as pbar:
             widgets = WidgetReport(report).render()
             pbar.update()

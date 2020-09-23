@@ -3,7 +3,11 @@ from functools import singledispatch
 import attr
 
 from pandas_profiling.config import config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame, SparkDataFrame
+from pandas_profiling.model.dataframe_wrappers import (
+    GenericDataFrame,
+    PandasDataFrame,
+    SparkDataFrame,
+)
 
 
 @attr.s
@@ -43,6 +47,7 @@ def _(df: PandasDataFrame) -> list:
         samples.append(Sample("random", df.sample(n=n_random), "Random sample"))
 
     return samples
+
 
 @get_sample.register(SparkDataFrame)
 def _(df: SparkDataFrame) -> list:

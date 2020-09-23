@@ -3,21 +3,20 @@ import itertools
 import warnings
 from typing import Dict, List, Optional
 
-import phik
 import numpy as np
 import pandas as pd
+import phik
 from pandas.core.base import DataError
 from scipy import stats
 from singledispatchmethod import singledispatchmethod
 
 from pandas_profiling.config import config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame, SparkDataFrame
-from pandas_profiling.model.typeset import (
-    Boolean,
-    Categorical,
-    Numeric,
-    Unsupported,
+from pandas_profiling.model.dataframe_wrappers import (
+    GenericDataFrame,
+    PandasDataFrame,
+    SparkDataFrame,
 )
+from pandas_profiling.model.typeset import Boolean, Categorical, Numeric, Unsupported
 
 
 class Correlation:
@@ -157,7 +156,7 @@ class Cramers(Correlation):
             key
             for key, value in summary.items()
             if value["type"] in {Categorical, Boolean}
-               and value["n_distinct"] <= threshold
+            and value["n_distinct"] <= threshold
         }
 
         if len(categoricals) <= 1:
@@ -166,13 +165,13 @@ class Cramers(Correlation):
         matrix = np.zeros((len(categoricals), len(categoricals)))
         np.fill_diagonal(matrix, 1.0)
         correlation_matrix = pd.DataFrame(
-            matrix,
-            index=categoricals,
-            columns=categoricals,
+            matrix, index=categoricals, columns=categoricals,
         )
 
         for name1, name2 in itertools.combinations(categoricals, 2):
-            confusion_matrix = pd.crosstab(df.get_pandas_df()[name1], df.get_pandas_df()[name2])
+            confusion_matrix = pd.crosstab(
+                df.get_pandas_df()[name1], df.get_pandas_df()[name2]
+            )
             correlation_matrix.loc[name2, name1] = Cramers._cramers_corrected_stat(
                 confusion_matrix, correction=True
             )
@@ -257,7 +256,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 
 
 def calculate_correlation(
-        df: GenericDataFrame, correlation_name: str, summary
+    df: GenericDataFrame, correlation_name: str, summary
 ) -> Optional[pd.DataFrame]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, phi_k, cramers).
@@ -292,7 +291,7 @@ def calculate_correlation(
 
 
 def perform_check_correlation(
-        correlation_matrix: pd.DataFrame, threshold: float
+    correlation_matrix: pd.DataFrame, threshold: float
 ) -> Dict[str, List[str]]:
     """Check whether selected variables are highly correlated values in the correlation matrix.
 

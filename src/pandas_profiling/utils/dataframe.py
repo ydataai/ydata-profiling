@@ -105,8 +105,8 @@ def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
         # All
         non_nested_enumeration = (
             df[column_name]
-                .dropna()
-                .map(lambda x: type(x) in types and not any(type(y) in types for y in x))
+            .dropna()
+            .map(lambda x: type(x) in types and not any(type(y) in types for y in x))
         )
 
         if non_nested_enumeration.all():
@@ -149,10 +149,12 @@ def get_appropriate_wrapper(df):
 
     """
     from pandas_profiling.model.dataframe_wrappers import get_implemented_datatypes
+
     implemented_backends = get_implemented_datatypes()
     for backend in implemented_backends:
         if backend.validate_same_type(df):
             return backend
 
     raise NotImplementedError(
-        f"""Datatype is currently not supported. Support datatypes are {implemented_backends}""")
+        f"""Datatype is currently not supported. Support datatypes are {implemented_backends}"""
+    )

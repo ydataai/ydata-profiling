@@ -1,11 +1,15 @@
+from functools import singledispatch
 from typing import Optional
 
 import pandas as pd
 
 from pandas_profiling.config import config
-from pandas_profiling.model.dataframe_wrappers import GenericDataFrame, PandasDataFrame, SparkDataFrame
+from pandas_profiling.model.dataframe_wrappers import (
+    GenericDataFrame,
+    PandasDataFrame,
+    SparkDataFrame,
+)
 
-from functools import singledispatch
 
 @singledispatch
 def get_duplicates(df: GenericDataFrame, supported_columns) -> Optional[pd.DataFrame]:
@@ -29,6 +33,7 @@ def _(df: PandasDataFrame, supported_columns) -> Optional[pd.DataFrame]:
         return df.groupby_get_n_largest(supported_columns, n_head)
 
     return None
+
 
 @get_duplicates.register(SparkDataFrame)
 def _(df: SparkDataFrame, supported_columns) -> Optional[pd.DataFrame]:
