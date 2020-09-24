@@ -78,15 +78,33 @@ class BaseSummarizer:
 class PandasProfilingSummarizer(BaseSummarizer):
     def __init__(self, typeset, *args, **kwargs):
         summary_map = {
-            Unsupported: [describe_counts, describe_generic, describe_supported,],
-            Numeric: [describe_numeric_1d,],
-            DateTime: [describe_date_1d,],
-            Categorical: [describe_categorical_1d,],
+            Unsupported: [
+                describe_counts,
+                describe_generic,
+                describe_supported,
+            ],
+            Numeric: [
+                describe_numeric_1d,
+            ],
+            DateTime: [
+                describe_date_1d,
+            ],
+            Categorical: [
+                describe_categorical_1d,
+            ],
             Boolean: [],
-            URL: [describe_url_1d,],
-            Path: [describe_path_1d,],
-            File: [describe_file_1d,],
-            Image: [describe_image_1d,],
+            URL: [
+                describe_url_1d,
+            ],
+            Path: [
+                describe_path_1d,
+            ],
+            File: [
+                describe_file_1d,
+            ],
+            Image: [
+                describe_image_1d,
+            ],
             SparkUnsupported: [
                 describe_counts_spark,
                 describe_generic_spark,

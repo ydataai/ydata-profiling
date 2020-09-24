@@ -278,16 +278,16 @@ class PandasDataFrame(GenericDataFrame):
     def preprocess(df: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the dataframe
 
-                - Appends the index to the dataframe when it contains information
-                - Rename the "index" column to "df_index", if exists
-                - Convert the DataFrame's columns to str
+        - Appends the index to the dataframe when it contains information
+        - Rename the "index" column to "df_index", if exists
+        - Convert the DataFrame's columns to str
 
-                Args:
-                    df: the pandas DataFrame
+        Args:
+            df: the pandas DataFrame
 
-                Returns:
-                    The preprocessed DataFrame
-                """
+        Returns:
+            The preprocessed DataFrame
+        """
 
         # Treat index as any other column
         if (

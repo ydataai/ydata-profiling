@@ -74,7 +74,8 @@ def test_html_export_cdn(test_output_dir):
     )
 
     profile = df.profile_report(
-        minimal=True, html={"inline": False, "use_local_assets": False},
+        minimal=True,
+        html={"inline": False, "use_local_assets": False},
     )
 
     report = test_output_dir / "cdn.html"
@@ -94,7 +95,8 @@ def test_html_export_theme(test_output_dir):
     )
 
     profile = df.profile_report(
-        minimal=True, html={"inline": False, "style": {"theme": "united"}},
+        minimal=True,
+        html={"inline": False, "style": {"theme": "united"}},
     )
 
     report = test_output_dir / "united.html"

@@ -165,7 +165,9 @@ class Cramers(Correlation):
         matrix = np.zeros((len(categoricals), len(categoricals)))
         np.fill_diagonal(matrix, 1.0)
         correlation_matrix = pd.DataFrame(
-            matrix, index=categoricals, columns=categoricals,
+            matrix,
+            index=categoricals,
+            columns=categoricals,
         )
 
         for name1, name2 in itertools.combinations(categoricals, 2):

@@ -80,7 +80,10 @@ class Categorical(VisionsBaseType):
         return [
             IdentityRelation(cls, Unsupported),
             InferenceRelation(
-                cls, Numeric, relationship=numeric_is_category, transformer=to_category,
+                cls,
+                Numeric,
+                relationship=numeric_is_category,
+                transformer=to_category,
             ),
         ]
 

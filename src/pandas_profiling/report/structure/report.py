@@ -138,7 +138,9 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     if duplicates is not None and len(duplicates) > 0:
         items.append(
             Duplicate(
-                duplicate=duplicates, name="Most frequent", anchor_id="duplicates",
+                duplicate=duplicates,
+                name="Most frequent",
+                anchor_id="duplicates",
             )
         )
     return items
@@ -156,7 +158,11 @@ def get_definition_items(definitions: pd.DataFrame):
     items = []
     if definitions is not None and len(definitions) > 0:
         items.append(
-            Duplicate(duplicate=definitions, name="Columns", anchor_id="definitions",)
+            Duplicate(
+                duplicate=definitions,
+                name="Columns",
+                anchor_id="definitions",
+            )
         )
     return items
 

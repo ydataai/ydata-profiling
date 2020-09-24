@@ -52,7 +52,9 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
             value_counts_without_nan = value_counts_with_nan
 
         summary.update(
-            {"value_counts_without_nan": value_counts_without_nan,}
+            {
+                "value_counts_without_nan": value_counts_without_nan,
+            }
         )
     else:
         n_missing = series.isna().sum()
@@ -241,7 +243,9 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
         stats.update(numeric_stats_numpy(present_values, series, summary))
 
     stats.update(
-        {"mad": mad(present_values),}
+        {
+            "mad": mad(present_values),
+        }
     )
 
     if chi_squared_threshold > 0.0:
@@ -564,7 +568,9 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
         .stat.approxQuantile("abs_dev", [0.5], 0.01)[0]
     )
     stats.update(
-        {"mad": mad,}
+        {
+            "mad": mad,
+        }
     )
 
     if chi_squared_threshold > 0.0:

@@ -51,7 +51,10 @@ def render_file(summary):
             )
 
     file_tab = Container(
-        file_tabs, name="File", sequence_type="tabs", anchor_id=f"{varid}file",
+        file_tabs,
+        name="File",
+        sequence_type="tabs",
+        anchor_id=f"{varid}file",
     )
 
     template_variables["bottom"].content["items"].append(file_tab)

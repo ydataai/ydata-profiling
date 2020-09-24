@@ -129,20 +129,29 @@ def numeric_warnings(summary: dict) -> List[Message]:
 
     # Skewness
     if warning_skewness(summary["skewness"]):
-        messages.append(Message(message_type=MessageType.SKEWED, fields={"skewness"},))
+        messages.append(
+            Message(
+                message_type=MessageType.SKEWED,
+                fields={"skewness"},
+            )
+        )
 
     # Infinite values
     if warning_value(summary["p_infinite"]):
         messages.append(
             Message(
-                message_type=MessageType.INFINITE, fields={"p_infinite", "n_infinite"},
+                message_type=MessageType.INFINITE,
+                fields={"p_infinite", "n_infinite"},
             )
         )
 
     # Zeros
     if warning_value(summary["p_zeros"]):
         messages.append(
-            Message(message_type=MessageType.ZEROS, fields={"n_zeros", "p_zeros"},)
+            Message(
+                message_type=MessageType.ZEROS,
+                fields={"n_zeros", "p_zeros"},
+            )
         )
 
     if (
@@ -165,7 +174,10 @@ def categorical_warnings(summary: dict) -> List[Message]:
     # High cardinality
     if summary["n_distinct"] > cardinality_threshold_cat:
         messages.append(
-            Message(message_type=MessageType.HIGH_CARDINALITY, fields={"n_distinct"},)
+            Message(
+                message_type=MessageType.HIGH_CARDINALITY,
+                fields={"n_distinct"},
+            )
         )
 
     if (
@@ -196,7 +208,8 @@ def generic_warnings(summary: dict) -> List[Message]:
     if warning_value(summary["p_missing"]):
         messages.append(
             Message(
-                message_type=MessageType.MISSING, fields={"p_missing", "n_missing"},
+                message_type=MessageType.MISSING,
+                fields={"p_missing", "n_missing"},
             )
         )
 
@@ -216,16 +229,30 @@ def supported_warnings(summary: dict) -> List[Message]:
     if summary["n_distinct"] == 1:
         summary["mode"] = summary["value_counts_without_nan"].index[0]
         messages.append(
-            Message(message_type=MessageType.CONSTANT, fields={"n_distinct"},)
+            Message(
+                message_type=MessageType.CONSTANT,
+                fields={"n_distinct"},
+            )
         )
-        messages.append(Message(message_type=MessageType.REJECTED, fields=set(),))
+        messages.append(
+            Message(
+                message_type=MessageType.REJECTED,
+                fields=set(),
+            )
+        )
     return messages
 
 
 def unsupported_warnings(summary):
     messages = [
-        Message(message_type=MessageType.UNSUPPORTED, fields=set(),),
-        Message(message_type=MessageType.REJECTED, fields=set(),),
+        Message(
+            message_type=MessageType.UNSUPPORTED,
+            fields=set(),
+        ),
+        Message(
+            message_type=MessageType.REJECTED,
+            fields=set(),
+        ),
     ]
     return messages
 
