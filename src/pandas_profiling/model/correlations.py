@@ -57,7 +57,28 @@ class Spearman(Correlation):
         Returns:
 
         """
-        return df.get_spark_df().toPandas().corr(method="spearman")
+        numeric_type_list = df.get_numeric_types()
+
+        import numpy as np
+        numeric_columns = []
+        for field in df.schema:
+            if np.any(list(isinstance(field.dataType, d_type) for d_type in numeric_type_list)):
+                numeric_columns.append(field.name)
+
+        from pyspark.mllib.linalg import Vectors
+        from pyspark.ml.feature import VectorAssembler
+        from pyspark.ml.stat import Correlation
+
+        assembler = VectorAssembler(
+            inputCols=numeric_columns,
+            outputCol="features")
+        output_df = assembler.transform(df.get_spark_df())
+
+        df = pd.DataFrame(Correlation.corr(output_df, "features", "spearman").head()[0].toArray(),
+                          columns=numeric_columns,
+                          index=numeric_columns)
+
+        return df
 
 
 class Pearson(Correlation):
@@ -85,7 +106,27 @@ class Pearson(Correlation):
         Returns:
 
         """
-        return df.get_spark_df().toPandas().corr(method="pearson")
+        numeric_type_list = df.get_numeric_types()
+
+        import numpy as np
+        numeric_columns = []
+        for field in df.schema:
+            if np.any(list(isinstance(field.dataType, d_type) for d_type in numeric_type_list)):
+                numeric_columns.append(field.name)
+
+        from pyspark.mllib.linalg import Vectors
+        from pyspark.ml.feature import VectorAssembler
+        from pyspark.ml.stat import Correlation
+
+        assembler = VectorAssembler(
+            inputCols=numeric_columns,
+            outputCol="features")
+        output_df = assembler.transform(df.get_spark_df())
+
+        df = pd.DataFrame(Correlation.corr(output_df, "features", "pearson").head()[0].toArray(),
+                          columns=numeric_columns,
+                          index=numeric_columns)
+        return df
 
 
 class Kendall(Correlation):
@@ -113,7 +154,7 @@ class Kendall(Correlation):
         Returns:
 
         """
-        return df.get_spark_df().toPandas().corr(method="kendall ")
+        return df.get_spark_df().toPandas().corr(method="kendall")
 
 
 class Cramers(Correlation):

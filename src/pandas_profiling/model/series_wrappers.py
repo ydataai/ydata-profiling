@@ -76,16 +76,12 @@ class SparkSeries(GenericSeries):
         else:
             return SparkSeries(self.series.na.fillna())
 
-    @lru_cache(
-        maxsize=1
-    )  # this method should only be called once then the same result should be returned
     @property
+    @lru_cache(maxsize=1)
     def n_rows(self) -> int:
         return self.series.count()
 
-    @lru_cache(
-        maxsize=1
-    )  # this method should only be called once then the same result should be returned
+    @lru_cache(maxsize=1)
     def value_counts(self):
         value_counts = self.series.na.drop().groupBy(self.name).count().toPandas()
         value_counts = (
@@ -95,9 +91,7 @@ class SparkSeries(GenericSeries):
         )
         return value_counts
 
-    @lru_cache(
-        maxsize=1
-    )  # this method should only be called once then the same result should be returned
+    @lru_cache(maxsize=1)
     def count_na(self):
         return self.series.count() - self.series.na.drop().count()
 

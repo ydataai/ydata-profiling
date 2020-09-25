@@ -430,12 +430,25 @@ class SparkDataFrame(GenericDataFrame):
         )
 
     @staticmethod
+    def get_numeric_types():
+        import pyspark.sql.types as T
+
+        # get spark numeric types
+        numeric_type_list = [T.ByteType, T.ShortType, T.IntegerType, T.LongType, T.FloatType, T.DoubleType,
+                             T.DecimalType]
+        return numeric_type_list
+
+    @staticmethod
     def preprocess(df):
         return df
 
     @property
     def columns(self) -> List[str]:
         return self.df.columns
+
+    @property
+    def schema(self) -> "pyspark.sql.types.StructType":
+        return self.df.schema
 
     @property
     def empty(self) -> bool:
