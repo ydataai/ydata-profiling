@@ -5,7 +5,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues/587
 import pandas as pd
 
 import pandas_profiling
-from pandas_profiling.model.base import is_numeric
+from pandas_profiling.model.base import is_numeric, get_counts
 
 
 def test_issue587():
