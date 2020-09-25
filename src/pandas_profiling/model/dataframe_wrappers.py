@@ -434,8 +434,15 @@ class SparkDataFrame(GenericDataFrame):
         import pyspark.sql.types as T
 
         # get spark numeric types
-        numeric_type_list = [T.ByteType, T.ShortType, T.IntegerType, T.LongType, T.FloatType, T.DoubleType,
-                             T.DecimalType]
+        numeric_type_list = [
+            T.ByteType,
+            T.ShortType,
+            T.IntegerType,
+            T.LongType,
+            T.FloatType,
+            T.DoubleType,
+            T.DecimalType,
+        ]
         return numeric_type_list
 
     @staticmethod
@@ -460,6 +467,20 @@ class SparkDataFrame(GenericDataFrame):
 
     def get_columns(self) -> List[str]:
         return self.df.columns
+
+    def get_numeric_columns(self) -> List[str]:
+        # get columns of df that are numeric as a list
+        numeric_columns = []
+        for field in self.schema:
+            if np.any(
+                list(
+                    isinstance(field.dataType, d_type)
+                    for d_type in self.get_numeric_types()
+                )
+            ):
+                numeric_columns.append(field.name)
+
+        return numeric_columns
 
     def head(self, n):
         return pd.DataFrame(self.df.head(n), columns=self.columns)

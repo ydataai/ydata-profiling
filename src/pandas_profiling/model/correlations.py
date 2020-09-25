@@ -57,26 +57,22 @@ class Spearman(Correlation):
         Returns:
 
         """
-        numeric_type_list = df.get_numeric_types()
-
-        import numpy as np
-        numeric_columns = []
-        for field in df.schema:
-            if np.any(list(isinstance(field.dataType, d_type) for d_type in numeric_type_list)):
-                numeric_columns.append(field.name)
-
-        from pyspark.mllib.linalg import Vectors
         from pyspark.ml.feature import VectorAssembler
         from pyspark.ml.stat import Correlation
 
-        assembler = VectorAssembler(
-            inputCols=numeric_columns,
-            outputCol="features")
+        # get all columns in df that are numeric as spearman works only on numeric columns
+        numeric_columns = df.get_numeric_columns()
+
+        # assemble all numeric columns into a vector
+        assembler = VectorAssembler(inputCols=numeric_columns, outputCol="features")
         output_df = assembler.transform(df.get_spark_df())
 
-        df = pd.DataFrame(Correlation.corr(output_df, "features", "spearman").head()[0].toArray(),
-                          columns=numeric_columns,
-                          index=numeric_columns)
+        # perform correlation in spark, and get the results back in pandas
+        df = pd.DataFrame(
+            Correlation.corr(output_df, "features", "spearman").head()[0].toArray(),
+            columns=numeric_columns,
+            index=numeric_columns,
+        )
 
         return df
 
@@ -106,26 +102,22 @@ class Pearson(Correlation):
         Returns:
 
         """
-        numeric_type_list = df.get_numeric_types()
-
-        import numpy as np
-        numeric_columns = []
-        for field in df.schema:
-            if np.any(list(isinstance(field.dataType, d_type) for d_type in numeric_type_list)):
-                numeric_columns.append(field.name)
-
-        from pyspark.mllib.linalg import Vectors
         from pyspark.ml.feature import VectorAssembler
         from pyspark.ml.stat import Correlation
 
-        assembler = VectorAssembler(
-            inputCols=numeric_columns,
-            outputCol="features")
+        # get all columns in df that are numeric as pearson works only on numeric columns
+        numeric_columns = df.get_numeric_columns()
+
+        # assemble all numeric columns into a vector
+        assembler = VectorAssembler(inputCols=numeric_columns, outputCol="features")
         output_df = assembler.transform(df.get_spark_df())
 
-        df = pd.DataFrame(Correlation.corr(output_df, "features", "pearson").head()[0].toArray(),
-                          columns=numeric_columns,
-                          index=numeric_columns)
+        # perform correlation in spark, and get the results back in pandas
+        df = pd.DataFrame(
+            Correlation.corr(output_df, "features", "pearson").head()[0].toArray(),
+            columns=numeric_columns,
+            index=numeric_columns,
+        )
         return df
 
 
@@ -145,7 +137,11 @@ class Kendall(Correlation):
     @staticmethod
     def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
         """
-        TODO - Optimise this in Spark, cheating for now
+        this can probably be improved more, primarily because we need to shuffle all numeric columns to
+        a single node now. We need an algorithm to do distributed kendalls at each node (some form of vectorized sort
+        bin function, and then aggregate the results afterwards? It looks like some algos are out there,
+        but stretch goal for now I suppose.
+        See https://arxiv.org/abs/1704.03767
 
         Args:
             df:
@@ -154,7 +150,52 @@ class Kendall(Correlation):
         Returns:
 
         """
-        return df.get_spark_df().toPandas().corr(method="kendall")
+
+        from pyspark.sql.functions import PandasUDFType, col, lit, pandas_udf
+        from pyspark.sql.types import (
+            DoubleType,
+            FloatType,
+            IntegerType,
+            LongType,
+            StringType,
+            StructField,
+            StructType,
+        )
+
+        # get all columns in df that are numeric as kendall works only on numeric columns
+        numeric_columns = df.get_numeric_columns()
+
+        # generate output schema for pandas_udf
+        output_schema_components = []
+        for column in numeric_columns:
+            output_schema_components.append(StructField(column, DoubleType(), True))
+        output_schema = StructType(output_schema_components)
+
+        # pandas mapped udf works only with a groupby, we force the groupby to operate on all columns at once
+        # by giving one value to all columns
+        groupby_df = (
+            df.get_spark_df().select(numeric_columns).withColumn("groupby", lit(1))
+        )
+
+        # create the pandas grouped map function to do vectorized kendall within spark itself
+        @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
+        def spark_kendall(pdf):
+            # groupby enters the UDF, so we need to drop it then do the correlation
+            results_df = (
+                pdf.drop(columns=["groupby"])
+                .corr(method="kendall", min_periods=1)
+                .reset_index(drop=True)
+            )
+            return results_df
+
+        # return the appropriate dataframe (similar to pandas_df.corr results)
+        df = pd.DataFrame(
+            groupby_df.groupby("groupby").apply(spark_kendall).toPandas().values,
+            columns=numeric_columns,
+            index=numeric_columns,
+        )
+
+        return df
 
 
 class Cramers(Correlation):
