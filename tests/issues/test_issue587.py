@@ -10,6 +10,6 @@ from pandas_profiling.model.base import is_numeric
 
 def test_issue587():
     # Minimal reproducible code
-    series = pandas.Series([1, None], dtype="Int64")
+    series = pd.Series([1, None], dtype="Int64")
     series_description = get_counts(series)
     assert is_numeric(series, series_description) == True
