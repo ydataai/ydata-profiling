@@ -1,6 +1,3 @@
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega@5"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega-lite@4.8.1"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega-embed@6"></script>
 {% if offline %}
     {%- if inline -%}
         <style>
@@ -28,6 +25,11 @@
         {% endif %}
     {% endif %}
 {% else %}
+    {% if backend == "altair" %}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega@5"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega-lite@4.8.1"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm//vega-embed@6"></script>
+    {% endif %}
     {% if theme != 'None' %}
         {% if theme == 'flatly' %}
             <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-+ENW/yibaokMnme+vBLnHMphUYxHs34h9lpdbSLuAwGkOKFRl4C34WkjazBtb7eT" crossorigin="anonymous" />

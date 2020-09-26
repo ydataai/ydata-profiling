@@ -290,6 +290,7 @@ class ProfileReport(SerializeReport, object):
             html = HTMLReport(report).render(
                 nav=config["html"]["navbar_show"].get(bool),
                 offline=config["html"]["use_local_assets"].get(bool),
+                backend=config["plot"]["backend"].get(str),
                 inline=config["html"]["inline"].get(bool),
                 file_name=Path(config["html"]["file_name"].get(str)).stem,
                 primary_color=config["html"]["style"]["primary_color"].get(str),
