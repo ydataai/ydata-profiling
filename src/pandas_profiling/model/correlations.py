@@ -485,7 +485,6 @@ class PhiK(Correlation):
             import phik
 
             correlation = phik.phik_matrix(df=pdf, interval_cols=list(intcols))
-            print(correlation)
             return correlation
 
         # return the appropriate dataframe (similar to pandas_df.corr results)
