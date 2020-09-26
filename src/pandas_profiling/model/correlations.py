@@ -200,20 +200,40 @@ class Kendall(Correlation):
 
 class Cramers(Correlation):
     @staticmethod
-    def _cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
+    def _cramers_corrected_stat(
+        confusion_matrix=None, correction: bool = True, precomputed={}
+    ) -> float:
         """Calculate the Cramer's V corrected stat for two variables.
 
         Args:
             confusion_matrix: Crosstab between two variables.
             correction: Should the correction be applied?
+            precomputed: if chi2, n, r and k have been precomputed, just use those values
 
         Returns:
             The Cramer's V corrected stat for the two variables.
         """
-        chi2 = stats.chi2_contingency(confusion_matrix, correction=correction)[0]
-        n = confusion_matrix.sum().sum()
-        phi2 = chi2 / n
-        r, k = confusion_matrix.shape
+        if precomputed:
+            try:
+                chi2 = precomputed["chi2"]
+                n = precomputed["n"]
+                phi2 = chi2 / n
+                r, k = precomputed["r"], precomputed["k"]
+            except KeyError as e:
+                raise KeyError(
+                    f""" attempted to provide precomputed chi2, n, r and k values,
+                                to _cramers_corrected_stat, but at least one value
+                                was not provided. Original Error : {e}"""
+                )
+        else:
+            if not confusion_matrix:
+                raise ValueError(
+                    "confusion matrix must be specificed if precomputed matrix not provided"
+                )
+            chi2 = stats.chi2_contingency(confusion_matrix, correction=correction)[0]
+            n = confusion_matrix.sum().sum()
+            phi2 = chi2 / n
+            r, k = confusion_matrix.shape
 
         # Deal with NaNs later on
         with np.errstate(divide="ignore", invalid="ignore"):
@@ -275,7 +295,52 @@ class Cramers(Correlation):
         Returns:
 
         """
-        return Cramers.compute(PandasDataFrame(df.get_spark_df().toPandas()), summary)
+        from pyspark.ml.feature import StringIndexer, VectorAssembler
+
+        threshold = config["categorical_maximum_correlation_distinct"].get(int)
+
+        categorical_cols = df.get_categorical_columns()
+
+        if len(categorical_cols) <= 1:
+            return None
+
+        matrix = np.zeros((len(categorical_cols), len(categorical_cols)))
+        np.fill_diagonal(matrix, 1.0)
+        correlation_matrix = pd.DataFrame(
+            matrix,
+            index=categorical_cols,
+            columns=categorical_cols,
+        )
+
+        categorical_df = df.get_spark_df().select(categorical_cols)
+
+        # convert all categorical columns to string indexes for faster computation
+        indexed_col = []
+        for categorical_col in categorical_cols:
+            index_col = categorical_col + "_cat"
+            indexed_col.append(index_col)
+            assembler = StringIndexer(inputCol=categorical_col, outputCol=index_col)
+            categorical_df = assembler.fit(categorical_df).transform(categorical_df)
+
+        for name1, name2 in itertools.combinations(indexed_col, 2):
+            assembler = VectorAssembler(inputCols=[name1], outputCol="features")
+
+            categorical_df = assembler.transform(categorical_df)
+
+            from pyspark.ml.stat import ChiSquareTest
+
+            chiSqResult = ChiSquareTest.test(categorical_df, "features", name2)
+            precomputed = {}
+            precomputed["chisq"] = chiSqResult.collect()[0]["statistics"][0]
+            precomputed["n"] = df.get_spark_df().count()
+            precomputed["r"] = df.get_spark_df().select("job").distinct().count()
+            precomputed["k"] = df.get_spark_df().select("marital").distinct().count()
+
+            correlation_matrix.loc[name2, name1] = Cramers._cramers_corrected_stat(
+                confusion_matrix=None, correction=True, precomputed=precomputed
+            )
+            correlation_matrix.loc[name1, name2] = correlation_matrix.loc[name2, name1]
+        return correlation_matrix
 
 
 class PhiK(Correlation):
