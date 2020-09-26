@@ -15,7 +15,14 @@ from pandas_profiling.model.dataframe_wrappers import (
     PandasDataFrame,
     SparkDataFrame,
 )
-from pandas_profiling.model.typeset import Boolean, Categorical, Numeric, Unsupported
+from pandas_profiling.model.typeset import (
+    Boolean,
+    Categorical,
+    Numeric,
+    SparkCategorical,
+    SparkNumeric,
+    Unsupported,
+)
 
 
 class Correlation:
@@ -136,6 +143,8 @@ class Kendall(Correlation):
     @staticmethod
     def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
         """
+        Use pandasUDF to compute this first, but probably can be optimised further
+
         this can probably be improved more, primarily because we need to shuffle all numeric columns to
         a single node now. We need an algorithm to do distributed kendalls at each node (some form of vectorized sort
         bin function, and then aggregate the results afterwards? It looks like some algos are out there,
@@ -290,27 +299,32 @@ class Cramers(Correlation):
         from pyspark.ml.feature import StringIndexer, VectorAssembler
         from pyspark.ml.stat import ChiSquareTest
 
-        # get spark categorical columns
-        categorical_cols = df.get_categorical_columns()
+        threshold = config["categorical_maximum_correlation_distinct"].get(int)
 
-        if len(categorical_cols) <= 1:
+        categoricals = [
+            key
+            for key, value in summary.items()
+            if value["type"] == SparkCategorical and value["n_distinct"] <= threshold
+        ]
+
+        if len(categoricals) <= 1:
             return None
 
         # prepare output matrix (same as in pandas)
-        matrix = np.zeros((len(categorical_cols), len(categorical_cols)))
+        matrix = np.zeros((len(categoricals), len(categoricals)))
         np.fill_diagonal(matrix, 1.0)
         correlation_matrix = pd.DataFrame(
             matrix,
-            index=categorical_cols,
-            columns=categorical_cols,
+            index=categoricals,
+            columns=categoricals,
         )
 
         # get categorical dataframe from spark
-        categorical_df = df.get_spark_df().select(categorical_cols)
+        categorical_df = df.get_spark_df().select(categoricals)
 
         # convert all categorical columns to string indexes, overriding categorical_df
         index_store = []
-        for categorical_col in categorical_cols:
+        for categorical_col in categoricals:
             # generate dictionary of index names
             index_col = categorical_col + "_cat"
             index_store.append({"original": categorical_col, "indexed": index_col})
@@ -423,7 +437,8 @@ class PhiK(Correlation):
     @staticmethod
     def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
         """
-        TODO - Optimise this in Spark, cheating for now
+        Use pandasUDF to compute this first, but probably can be optimised further
+
         Args:
             df:
             summary:
@@ -431,7 +446,56 @@ class PhiK(Correlation):
         Returns:
 
         """
-        return PhiK.compute(PandasDataFrame(df.get_spark_df().toPandas()), summary)
+        from pyspark.sql.functions import PandasUDFType, lit, pandas_udf
+        from pyspark.sql.types import DoubleType, StructField, StructType
+
+        threshold = config["categorical_maximum_correlation_distinct"].get(int)
+        intcols = {
+            key
+            for key, value in summary.items()
+            # DateTime currently excluded
+            # In some use cases, it makes sense to convert it to interval
+            # See https://github.com/KaveIO/PhiK/issues/7
+            if value["type"] == SparkNumeric and 1 < value["n_distinct"]
+        }
+
+        selcols = {
+            key
+            for key, value in summary.items()
+            if value["type"] != Unsupported and 1 < value["n_distinct"] <= threshold
+        }
+        selcols = list(selcols.union(intcols))
+
+        if len(selcols) <= 1:
+            return None
+
+        # pandas mapped udf works only with a groupby, we force the groupby to operate on all columns at once
+        # by giving one value to all columns
+        groupby_df = df.get_spark_df().select(selcols).withColumn("groupby", lit(1))
+
+        # generate output schema for pandas_udf
+        output_schema_components = []
+        for column in selcols:
+            output_schema_components.append(StructField(column, DoubleType(), True))
+        output_schema = StructType(output_schema_components)
+
+        # create the pandas grouped map function to do vectorized kendall within spark itself
+        @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
+        def spark_phik(pdf):
+            import phik
+
+            correlation = phik.phik_matrix(df=pdf, interval_cols=list(intcols))
+            print(correlation)
+            return correlation
+
+        # return the appropriate dataframe (similar to pandas_df.corr results)
+        df = pd.DataFrame(
+            groupby_df.groupby("groupby").apply(spark_phik).toPandas().values,
+            columns=selcols,
+            index=selcols,
+        )
+
+        return df
 
 
 def warn_correlation(correlation_name: str, error):
