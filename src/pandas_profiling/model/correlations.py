@@ -5,7 +5,6 @@ from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
-import phik
 from pandas.core.base import DataError
 from scipy import stats
 from singledispatchmethod import singledispatchmethod
@@ -151,16 +150,8 @@ class Kendall(Correlation):
 
         """
 
-        from pyspark.sql.functions import PandasUDFType, col, lit, pandas_udf
-        from pyspark.sql.types import (
-            DoubleType,
-            FloatType,
-            IntegerType,
-            LongType,
-            StringType,
-            StructField,
-            StructType,
-        )
+        from pyspark.sql.functions import PandasUDFType, lit, pandas_udf
+        from pyspark.sql.types import DoubleType, StructField, StructType
 
         # get all columns in df that are numeric as kendall works only on numeric columns
         numeric_columns = df.get_numeric_columns()
@@ -208,7 +199,8 @@ class Cramers(Correlation):
         Args:
             confusion_matrix: Crosstab between two variables.
             correction: Should the correction be applied?
-            precomputed: if chi2, n, r and k have been precomputed, just use those values
+            precomputed: if chi2, n, r and k have been precomputed, just use those values, if not compute using
+                        confusion matrix
 
         Returns:
             The Cramer's V corrected stat for the two variables.
@@ -235,6 +227,7 @@ class Cramers(Correlation):
             phi2 = chi2 / n
             r, k = confusion_matrix.shape
 
+        # compute correlation statistic
         # Deal with NaNs later on
         with np.errstate(divide="ignore", invalid="ignore"):
             phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
@@ -286,7 +279,6 @@ class Cramers(Correlation):
     @staticmethod
     def _(df: SparkDataFrame, summary) -> Optional[pd.DataFrame]:
         """
-        TODO - Optimise this in Spark, cheating for now
 
         Args:
             df:
@@ -296,14 +288,15 @@ class Cramers(Correlation):
 
         """
         from pyspark.ml.feature import StringIndexer, VectorAssembler
+        from pyspark.ml.stat import ChiSquareTest
 
-        threshold = config["categorical_maximum_correlation_distinct"].get(int)
-
+        # get spark categorical columns
         categorical_cols = df.get_categorical_columns()
 
         if len(categorical_cols) <= 1:
             return None
 
+        # prepare output matrix (same as in pandas)
         matrix = np.zeros((len(categorical_cols), len(categorical_cols)))
         np.fill_diagonal(matrix, 1.0)
         correlation_matrix = pd.DataFrame(
@@ -312,34 +305,77 @@ class Cramers(Correlation):
             columns=categorical_cols,
         )
 
+        # get categorical dataframe from spark
         categorical_df = df.get_spark_df().select(categorical_cols)
 
-        # convert all categorical columns to string indexes for faster computation
-        indexed_col = []
+        # convert all categorical columns to string indexes, overriding categorical_df
+        index_store = []
         for categorical_col in categorical_cols:
+            # generate dictionary of index names
             index_col = categorical_col + "_cat"
-            indexed_col.append(index_col)
+            index_store.append({"original": categorical_col, "indexed": index_col})
+
+            # create column of encoded strings for categorical column
             assembler = StringIndexer(inputCol=categorical_col, outputCol=index_col)
             categorical_df = assembler.fit(categorical_df).transform(categorical_df)
 
-        for name1, name2 in itertools.combinations(indexed_col, 2):
-            assembler = VectorAssembler(inputCols=[name1], outputCol="features")
+        # using persist on transformed columns of categorical_df here because we call on it multiple times below
+        # persisting only the numerical columns saves us a lot of memory
+        categorical_df = categorical_df.select([i["indexed"] for i in index_store])
+        categorical_df.persist()
 
-            categorical_df = assembler.transform(categorical_df)
+        # compute n for cramers once
+        n_rows = categorical_df.count()
 
-            from pyspark.ml.stat import ChiSquareTest
-
-            chiSqResult = ChiSquareTest.test(categorical_df, "features", name2)
-            precomputed = {}
-            precomputed["chisq"] = chiSqResult.collect()[0]["statistics"][0]
-            precomputed["n"] = df.get_spark_df().count()
-            precomputed["r"] = df.get_spark_df().select("job").distinct().count()
-            precomputed["k"] = df.get_spark_df().select("marital").distinct().count()
-
-            correlation_matrix.loc[name2, name1] = Cramers._cramers_corrected_stat(
-                confusion_matrix=None, correction=True, precomputed=precomputed
+        # compute distinct counts once and reuse results later
+        distinct_counts = {}
+        for col in index_store:
+            distinct_counts[col["indexed"]] = (
+                categorical_df.select(col["indexed"]).distinct().count()
             )
-            correlation_matrix.loc[name1, name2] = correlation_matrix.loc[name2, name1]
+
+        # for each categorical column
+        for col in index_store:
+            # get the other categorical columns to compare with
+            input_cols = [i for i in index_store]
+            input_cols.remove(col)
+            index_input_cols_with_col_removed = [i["indexed"] for i in input_cols]
+
+            # assemble all other vectors at once to do comparison
+            assembler = VectorAssembler(
+                inputCols=index_input_cols_with_col_removed, outputCol="feature"
+            )
+            temp_df = assembler.transform(categorical_df)
+
+            # compute chisquare for between original categorical and all other columns
+            chi_sq_result = ChiSquareTest.test(temp_df, "feature", col["indexed"])
+
+            # zip results with relevant columns
+            chi_squares = zip(
+                input_cols, [i for i in chi_sq_result.collect()[0]["statistics"]]
+            )
+
+            # use computed chi_square values to compute cramers statistic
+            for other_col, chisq in chi_squares:
+                precomputed = {}
+                precomputed["chi2"] = chisq
+                precomputed["n"] = n_rows
+                precomputed["r"] = distinct_counts[col["indexed"]]
+                precomputed["k"] = distinct_counts[other_col["indexed"]]
+
+                # when saving results, use back original col names
+                correlation_matrix.loc[
+                    other_col["original"], col["original"]
+                ] = Cramers._cramers_corrected_stat(
+                    confusion_matrix=None, correction=True, precomputed=precomputed
+                )
+                correlation_matrix.loc[
+                    col["original"], other_col["original"]
+                ] = correlation_matrix.loc[other_col["original"], col["original"]]
+
+        # unpersisting to free memory
+        categorical_df.unpersist()
+
         return correlation_matrix
 
 
@@ -374,7 +410,12 @@ class PhiK(Correlation):
             return None
 
         pandas_df = df.get_pandas_df()
-        correlation = pandas_df[selcols].phik_matrix(interval_cols=intcols)
+
+        import phik
+
+        correlation = phik.phik_matrix(
+            df=pandas_df[selcols], interval_cols=list(intcols)
+        )
 
         return correlation
 
