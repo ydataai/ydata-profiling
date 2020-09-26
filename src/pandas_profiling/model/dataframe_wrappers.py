@@ -446,6 +446,14 @@ class SparkDataFrame(GenericDataFrame):
         return numeric_type_list
 
     @staticmethod
+    def get_categorical_types():
+        import pyspark.sql.types as T
+
+        # get spark numeric types
+        numeric_type_list = [T.StringType]
+        return numeric_type_list
+
+    @staticmethod
     def preprocess(df):
         return df
 
@@ -481,6 +489,20 @@ class SparkDataFrame(GenericDataFrame):
                 numeric_columns.append(field.name)
 
         return numeric_columns
+
+    def get_categorical_columns(self) -> List[str]:
+        # get columns of df that are numeric as a list
+        categorical_columns = []
+        for field in self.schema:
+            if np.any(
+                list(
+                    isinstance(field.dataType, d_type)
+                    for d_type in self.get_categorical_types()
+                )
+            ):
+                categorical_columns.append(field.name)
+
+        return categorical_columns
 
     def head(self, n):
         return pd.DataFrame(self.df.head(n), columns=self.columns)
