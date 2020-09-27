@@ -4,7 +4,6 @@
             <td>Value</td>
             <td>Count</td>
             <td>Frequency (%)</td>
-            <td>&nbsp;</td>
         </tr>
     </thead>
     <tbody>
@@ -17,13 +16,23 @@
                     <td title="{{ row['label'] | fmt }}">{{ row['label'] | fmt }}</td>
                 {% endif %}
                 <td>{{ row['count'] }}</td>
-                <td>{{ row['percentage'] | fmt_percent }}</td>
-                <td><div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">&nbsp;</div></td>
+                <td>
+                    <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">
+                        {% if row['width'] > 0.40 %}
+                            {{ row['percentage'] | fmt_percent }}
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </div>
+                    {% if row['width'] <= 0.40 %}
+                        {{ row['percentage'] | fmt_percent }}
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     {% else %}
         <tr>
-            <td colspan="4">No values found.</td>
+            <td colspan="3">No values found.</td>
         </tr>
     {% endif %}
     </tbody>
