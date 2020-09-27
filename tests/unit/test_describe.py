@@ -8,6 +8,7 @@ from pandas_profiling import config
 from pandas_profiling.model.dataframe_wrappers import (
     UNWRAPPED_DATAFRAME_WARNING,
     PandasDataFrame,
+    SparkDataFrame,
 )
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.series_wrappers import PandasSeries
@@ -515,6 +516,70 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
         describe_data_frame.get_pandas_df()["somedate"] = pd.to_datetime(
             describe_data_frame.get_pandas_df()["somedate"]
         )
+
+    results = describe("title", describe_data_frame, summarizer, typeset)
+
+    assert {
+        "analysis",
+        "table",
+        "variables",
+        "scatter",
+        "correlations",
+        "missing",
+        "messages",
+        "package",
+        "sample",
+        "duplicates",
+    } == set(results.keys()), "Not in results"
+
+    # Loop over variables
+    for k, v in expected_results[column].items():
+        if v == check_is_NaN:
+            test_condition = k not in results["variables"][column]
+        elif isinstance(v, float):
+            test_condition = pytest.approx(v) == results["variables"][column][k]
+        else:
+            test_condition = v == results["variables"][column][k]
+
+        assert (
+            test_condition
+        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+
+    if results["variables"][column]["type"] in [Numeric, DateTime]:
+        assert (
+            "histogram" in results["variables"][column]
+        ), f"Histogram missing for column {column}"
+
+
+@pytest.mark.parametrize(
+    "column",
+    [
+        "id",
+        "x",
+        "y",
+        "cat",
+        "s1",
+        "s2",
+        "somedate",
+        "bool_tf",
+        "bool_tf_with_nan",
+        "bool_01",
+        "bool_01_with_nan",
+        "list",
+        "mixed",
+        "dict",
+        "tuple",
+    ],
+)
+def test_describe_spark_df(
+    column, describe_data, expected_results, summarizer, typeset, spark_session
+):
+    config["vars"]["num"]["low_categorical_threshold"].set(0)
+    import tempfile
+
+    f = tempfile.TemporaryFile()
+    pd.DataFrame({column: describe_data[column]}).to_parquet(f)
+    describe_data_frame = SparkDataFrame(spark_session.read.parquet(f))
 
     results = describe("title", describe_data_frame, summarizer, typeset)
 
