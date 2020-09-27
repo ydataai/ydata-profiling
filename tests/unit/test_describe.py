@@ -577,9 +577,9 @@ def test_describe_spark_df(
     config["vars"]["num"]["low_categorical_threshold"].set(0)
     import tempfile
 
-    f = tempfile.TemporaryFile()
-    pd.DataFrame({column: describe_data[column]}).to_parquet(f)
-    describe_data_frame = SparkDataFrame(spark_session.read.parquet(f))
+    sdf = spark_session.createDataFrame(pd.DataFrame({column: describe_data[column]}))
+
+    describe_data_frame = SparkDataFrame(sdf)
 
     results = describe("title", describe_data_frame, summarizer, typeset)
 
