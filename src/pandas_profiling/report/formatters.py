@@ -201,7 +201,13 @@ def fmt_numeric(value: float, precision=10) -> str:
     Returns:
         The numeric value with the given precision.
     """
-    return "{{:.{precision}g}}".format(precision=precision).format(value)
+    fmtted = "{{:.{precision}g}}".format(precision=precision).format(value)
+    for v in ["e+", "e-"]:
+        if v in fmtted:
+            fmtted = fmtted.replace(v, " × 10<sup>") + "</sup>"
+            fmtted = fmtted.replace("<sup>0", "<sup>")
+
+    return fmtted
 
 
 def fmt_number(value: int) -> str:
