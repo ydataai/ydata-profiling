@@ -83,7 +83,8 @@ class SparkSeries(GenericSeries):
 
     @lru_cache(maxsize=1)
     def value_counts(self):
-        value_counts = self.series.na.drop().groupBy(self.name).count().toPandas()
+        # do not drop NA here
+        value_counts = self.series.groupBy(self.name).count().toPandas()
         value_counts = (
             value_counts.sort_values("count", ascending=False)
             .set_index(self.name, drop=True)

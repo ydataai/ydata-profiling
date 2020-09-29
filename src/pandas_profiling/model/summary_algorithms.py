@@ -552,7 +552,9 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     infinity_index = value_counts.index.isin(infinity_values)
     summary["n_infinite"] = value_counts.loc[infinity_index].sum()
 
-    if 0 in value_counts.index:
+    if 0 in value_counts.index:    infinity_values = [np.inf, -np.inf]
+    infinity_index = value_counts.index.isin(infinity_values)
+    summary["n_infinite"] = value_counts.loc[infinity_index].sum()
         summary["n_zeros"] = value_counts.loc[0]
 
     stats = summary
@@ -584,7 +586,7 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
             for percentile, value in zip(
                 quantiles,
                 series.get_spark_series().stat.approxQuantile(
-                    series.name, quantiles, 0.25
+                    series.name, quantiles, 0.01
                 ),
             )
         }
