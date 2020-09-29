@@ -69,18 +69,23 @@ class Spearman(Correlation):
         # get all columns in df that are numeric as spearman works only on numeric columns
         numeric_columns = df.get_numeric_columns()
 
+        if len(numeric_columns) <= 1:
+            # Can't compute correlations with 1 or less columns
+            return None
+
         # assemble all numeric columns into a vector
         assembler = VectorAssembler(inputCols=numeric_columns, outputCol="features")
-        output_df = assembler.transform(df.get_spark_df())
+        output_df = assembler.transform(df.get_spark_df().na.drop())
 
-        # perform correlation in spark, and get the results back in pandas
-        df = pd.DataFrame(
-            Correlation.corr(output_df, "features", "spearman").head()[0].toArray(),
-            columns=numeric_columns,
-            index=numeric_columns,
-        )
-
-        return df
+        if len(output_df.head(1)) > 0:
+            # perform correlation in spark, and get the results back in pandas
+            return pd.DataFrame(
+                Correlation.corr(output_df, "features", "spearman").head()[0].toArray(),
+                columns=numeric_columns,
+                index=numeric_columns,
+            )
+        else:
+            return None
 
 
 class Pearson(Correlation):
@@ -114,17 +119,24 @@ class Pearson(Correlation):
         # get all columns in df that are numeric as pearson works only on numeric columns
         numeric_columns = df.get_numeric_columns()
 
+        if len(numeric_columns) <= 1:
+            # Can't compute correlations with 1 or less columns
+            return None
+
         # assemble all numeric columns into a vector
         assembler = VectorAssembler(inputCols=numeric_columns, outputCol="features")
-        output_df = assembler.transform(df.get_spark_df())
+        output_df = assembler.transform(df.get_spark_df().na.drop())
 
         # perform correlation in spark, and get the results back in pandas
-        df = pd.DataFrame(
-            Correlation.corr(output_df, "features", "pearson").head()[0].toArray(),
-            columns=numeric_columns,
-            index=numeric_columns,
-        )
-        return df
+        if len(output_df.head(1)) > 0:
+            # perform correlation in spark, and get the results back in pandas
+            return pd.DataFrame(
+                Correlation.corr(output_df, "features", "pearson").head()[0].toArray(),
+                columns=numeric_columns,
+                index=numeric_columns,
+            )
+        else:
+            return None
 
 
 class Kendall(Correlation):
@@ -165,6 +177,10 @@ class Kendall(Correlation):
         # get all columns in df that are numeric as kendall works only on numeric columns
         numeric_columns = df.get_numeric_columns()
 
+        if len(numeric_columns) <= 1:
+            # Can't compute correlations with 1 or less columns
+            return pd.DataFrame()
+
         # generate output schema for pandas_udf
         output_schema_components = []
         for column in numeric_columns:
@@ -189,11 +205,15 @@ class Kendall(Correlation):
             return results_df
 
         # return the appropriate dataframe (similar to pandas_df.corr results)
-        df = pd.DataFrame(
-            groupby_df.groupby("groupby").apply(spark_kendall).toPandas().values,
-            columns=numeric_columns,
-            index=numeric_columns,
-        )
+        if len(groupby_df.head(1)) > 0:
+            # perform correlation in spark, and get the results back in pandas
+            df = pd.DataFrame(
+                groupby_df.groupby("groupby").apply(spark_kendall).toPandas().values,
+                columns=numeric_columns,
+                index=numeric_columns,
+            )
+        else:
+            df = pd.DataFrame()
 
         return df
 
@@ -488,11 +508,15 @@ class PhiK(Correlation):
             return correlation
 
         # return the appropriate dataframe (similar to pandas_df.corr results)
-        df = pd.DataFrame(
-            groupby_df.groupby("groupby").apply(spark_phik).toPandas().values,
-            columns=selcols,
-            index=selcols,
-        )
+        if len(groupby_df.head(1)) > 0:
+            # perform correlation in spark, and get the results back in pandas
+            df = pd.DataFrame(
+                groupby_df.groupby("groupby").apply(spark_phik).toPandas().values,
+                columns=selcols,
+                index=selcols,
+            )
+        else:
+            df = pd.DataFrame()
 
         return df
 

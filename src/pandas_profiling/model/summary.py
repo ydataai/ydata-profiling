@@ -151,7 +151,7 @@ def get_series_descriptions(df: GenericDataFrame, summarizer, typeset, pbar):
 
     # Multiprocessing of Describe 1D for each column
     if pool_size <= 0:
-        pool_size = multiprocessing.cpu_count()
+        pool_size = 1
 
     args = [(name, series) for name, series in df.iteritems()]
 

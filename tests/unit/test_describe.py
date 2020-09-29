@@ -489,6 +489,16 @@ def expected_results():
     }
 
 
+@pytest.fixture
+def expected_spark_results(expected_results):
+    expected_results["x"]["25%"] = -3.0
+    expected_results["x"]["5%"] = -10.0
+    expected_results["x"]["50%"] = 0.0
+    expected_results["y"]["25%"] = 1e-06
+
+    return expected_results
+
+
 @pytest.mark.parametrize(
     "column",
     [
@@ -532,6 +542,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
         "duplicates",
     } == set(results.keys()), "Not in results"
 
+    print(results["variables"])
     # Loop over variables
     for k, v in expected_results[column].items():
         if v == check_is_NaN:
@@ -572,12 +583,20 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
     ],
 )
 def test_describe_spark_df(
-    column, describe_data, expected_results, summarizer, typeset, spark_session
+    column,
+    describe_data,
+    expected_spark_results,
+    summarizer,
+    typeset,
+    spark_session,
+    spark_context,
 ):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
     import tempfile
 
-    sdf = spark_session.createDataFrame(pd.DataFrame({column: describe_data[column]}))
+    spark = spark_session
+    sc = spark_context
+    sdf = spark.createDataFrame(pd.DataFrame({column: describe_data[column]}))
 
     describe_data_frame = SparkDataFrame(sdf)
 
@@ -597,7 +616,7 @@ def test_describe_spark_df(
     } == set(results.keys()), "Not in results"
 
     # Loop over variables
-    for k, v in expected_results[column].items():
+    for k, v in expected_spark_results[column].items():
         if v == check_is_NaN:
             test_condition = k not in results["variables"][column]
         elif isinstance(v, float):
