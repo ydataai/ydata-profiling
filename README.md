@@ -8,15 +8,6 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
-
-<p align="center">
-  <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
-  |
-  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-hfy3iwp2-qEJSItye5QBZf8YGFMaMnQ">Slack</a>
-  | 
-  <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
-</p>
-
 Generates profile reports from a pandas `DataFrame`. 
 The pandas `df.describe()` function is great but a little basic for serious exploratory data analysis. 
 `pandas_profiling` extends the pandas DataFrame with `df.profile_report()` for quick data analysis.
@@ -269,7 +260,6 @@ Future versions of `pandas-profiling` will have extended type support through `v
 ## Contributing
 
 Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html).
-A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-hfy3iwp2-qEJSItye5QBZf8YGFMaMnQ).
 
 ## Editor integration
 ### PyCharm integration 

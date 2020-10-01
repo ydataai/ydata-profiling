@@ -269,11 +269,13 @@ def scatter_pairwise(series1, series2, x_label, y_label) -> str:
     color = config["html"]["style"]["primary_color"].get(str)
     scatter_threshold = config["plot"]["scatter_threshold"].get(int)
 
+    indices = (series1.notna()) & (series2.notna())
+
     if len(series1) > scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
-        plt.hexbin(series1, series2, gridsize=15, cmap=cmap)
+        plt.hexbin(series1[indices], series2[indices], gridsize=15, cmap=cmap)
     else:
-        plt.scatter(series1, series2, color=color)
+        plt.scatter(series1[indices], series2[indices], color=color)
     return plot_360_n0sc0pe(plt)
 
 

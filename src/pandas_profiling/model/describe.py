@@ -85,8 +85,7 @@ def describe(
             column: description["type"]
             for column, description in series_description.items()
         }
-        print(list(series_description.items()))
-        print(variables)
+
         supported_columns = [
             column
             for column, type_name in variables.items()

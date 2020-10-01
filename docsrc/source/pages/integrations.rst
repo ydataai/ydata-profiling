@@ -79,6 +79,28 @@ for information about options and arguments.
 .. image:: ../_static/cli.png
   :width: 80%
 
+PyQt (experimental)
+~~~~~~~~~~~~~~~~~~~
+
+There is some initial work on a PyQt interface, however it should be noted that much more work is needed. Contributions are very much welcome.
+
+.. image:: ../_static/qt.png
+
+.. code-block:: python
+
+  import pandas as pd
+  import pandas_profiling
+
+  df = pd.DataFrame([[1,2],[3,4],[5,6],[7,8]], columns=['x1', 'x2'])
+  report = df.profile_report()
+  report.to_app()
+
+Ensure to install ``pyqt5``. Via pip use the extras ``app``:
+
+.. code-block:: console
+
+  pip install pandas-profiling[app]
+
 Streamlit
 ~~~~~~~~~
 

@@ -430,6 +430,26 @@ class ProfileReport(SerializeReport, object):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
 
+    def to_app(self):
+        """
+        (Experimental) PyQt5 user interface, not ready to be used.
+        You are welcome to contribute a pull request if you like this feature.
+        """
+        # TODO: _render_app
+        # TODO: make functional
+        from PyQt5 import QtCore
+        from PyQt5.QtWidgets import QApplication
+
+        from pandas_profiling.report.presentation.flavours import QtReport
+        from pandas_profiling.report.presentation.flavours.qt.app import get_app
+
+        app = QtCore.QCoreApplication.instance()
+        if app is None:
+            app = QApplication([])
+
+        app_widgets = QtReport(self.report).render()
+        app = get_app(app, self.title, app_widgets)
+
     @staticmethod
     def clear_config():
         """
