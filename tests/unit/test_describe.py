@@ -494,8 +494,15 @@ def expected_spark_results(expected_results):
     expected_results["x"]["25%"] = -3.0
     expected_results["x"]["5%"] = -10.0
     expected_results["x"]["50%"] = 0.0
+    expected_results["x"]["75%"] = 15.0
+    expected_results["x"]["cv"] = check_is_NaN
     expected_results["y"]["25%"] = 1e-06
-
+    expected_results["y"]["5%"] = -3.1415926535
+    expected_results["y"]["50%"] = 15.9
+    expected_results["y"]["75%"] = 111.0
+    expected_results["y"]["95%"] = 3122.0
+    expected_results["bool_01_with_nan"]["50%"] = 0.0
+    expected_results["bool_01_with_nan"]["cv"] = check_is_NaN
     return expected_results
 
 
@@ -530,17 +537,17 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
     results = describe("title", describe_data_frame, summarizer, typeset)
 
     assert {
-        "analysis",
-        "table",
-        "variables",
-        "scatter",
-        "correlations",
-        "missing",
-        "messages",
-        "package",
-        "sample",
-        "duplicates",
-    } == set(results.keys()), "Not in results"
+               "analysis",
+               "table",
+               "variables",
+               "scatter",
+               "correlations",
+               "missing",
+               "messages",
+               "package",
+               "sample",
+               "duplicates",
+           } == set(results.keys()), "Not in results"
 
     print(results["variables"])
     # Loop over variables
@@ -558,7 +565,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
 
     if results["variables"][column]["type"] in [Numeric, DateTime]:
         assert (
-            "histogram" in results["variables"][column]
+                "histogram" in results["variables"][column]
         ), f"Histogram missing for column {column}"
 
 
@@ -583,16 +590,15 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
     ],
 )
 def test_describe_spark_df(
-    column,
-    describe_data,
-    expected_spark_results,
-    summarizer,
-    typeset,
-    spark_session,
-    spark_context,
+        column,
+        describe_data,
+        expected_spark_results,
+        summarizer,
+        typeset,
+        spark_session,
+        spark_context,
 ):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
-    import tempfile
 
     spark = spark_session
     sc = spark_context
@@ -630,7 +636,7 @@ def test_describe_spark_df(
 
     if results["variables"][column]["type"] in [Numeric, DateTime]:
         assert (
-            "histogram" in results["variables"][column]
+                "histogram" in results["variables"][column]
         ), f"Histogram missing for column {column}"
 
 

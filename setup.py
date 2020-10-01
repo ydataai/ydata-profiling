@@ -38,7 +38,6 @@ setup(
     install_requires=requirements,
     extras_require={
         "notebook": ["jupyter-client>=6.0.0", "jupyter-core>=4.6.3"],
-        "app": ["pyqt5>=5.14.1"],
     },
     package_data={
         "pandas_profiling": ["py.typed"],
