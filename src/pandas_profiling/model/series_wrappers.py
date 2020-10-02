@@ -70,7 +70,16 @@ class SparkSeries(GenericSeries):
     def empty(self) -> bool:
         return self.n_rows == 0
 
-    def fillna(self, fill=None) -> "GenericSeries":
+    @property
+    def series_without_na(self):
+        """
+        Useful wrapper for getting the internal data series but with NAs dropped
+        Returns: internal spark series without nans
+
+        """
+        return self.series.na.drop()
+
+    def fillna(self, fill=None) -> "SparkSeries":
         if fill is not None:
             return SparkSeries(self.series.na.fill(fill))
         else:

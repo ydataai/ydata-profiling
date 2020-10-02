@@ -172,8 +172,7 @@ def numeric_stats_spark(series: SparkSeries):
     series.persist()
 
     numeric_results_df = (
-        series.get_spark_series()
-        .select(
+        series.series_without_na.select(
             F.mean(series.name).alias("mean"),
             F.stddev(series.name).alias("std"),
             F.variance(series.name).alias("variance"),
@@ -565,13 +564,11 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
     stats.update(numeric_stats_spark(series))
 
     # manual MAD computation, refactor possible
-    median = series.get_spark_series().stat.approxQuantile(series.name, [0.5], 0)[0]
+    median = series.series_without_na.stat.approxQuantile(series.name, [0.5], 0)[0]
 
-    mad = (
-        series.get_spark_series()
-        .select((F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev"))
-        .stat.approxQuantile("abs_dev", [0.5], 0)[0]
-    )
+    mad = series.series_without_na.select(
+        (F.abs(F.col(series.name).cast("int") - median)).alias("abs_dev")
+    ).stat.approxQuantile("abs_dev", [0.5], 0)[0]
     stats.update(
         {
             "mad": mad,
@@ -588,9 +585,7 @@ def describe_numeric_spark_1d(series: SparkSeries, summary) -> Tuple[SparkSeries
             f"{percentile:.0%}": value
             for percentile, value in zip(
                 quantiles,
-                series.get_spark_series().stat.approxQuantile(
-                    series.name, quantiles, 0
-                ),
+                series.series_without_na.stat.approxQuantile(series.name, quantiles, 0),
             )
         }
     )

@@ -491,49 +491,56 @@ def expected_results():
 
 @pytest.fixture
 def expected_spark_results(expected_results):
+    """
+    This override the expected results for spark compute, primarily because spark's quantile functions
+    do not interpolate, unlike pandas' quantile functions. Also, pandas-profiling default behaviour
+    is that once a column has a nan, it becomes categorical, while spark takes nan columns as still numerical types
+    if the rest of the values are numerical like. Thus, x y
+
+    """
     expected_results["x"]["25%"] = -3.0
     expected_results["x"]["5%"] = -10.0
     expected_results["x"]["50%"] = 0.0
     expected_results["x"]["75%"] = 15.0
-    expected_results["x"]["cv"] = np.nan
+    expected_results["x"]["cv"] = 1.771071190261633
     expected_results["x"]["iqr"] = 18.0
-    expected_results["x"]["kurtosis"] = np.nan
+    expected_results["x"]["kurtosis"] = -0.9061564710904944
     expected_results["x"]["mad"] = 5.0
-    expected_results["x"]["max"] = np.nan
-    expected_results["x"]["mean"] = np.nan
-    expected_results["x"]["range"] = np.nan
-    expected_results["x"]["skewness"] = np.nan
-    expected_results["x"]["std"] = np.nan
-    expected_results["x"]["sum"] = np.nan
-    expected_results["x"]["variance"] = np.nan
+    expected_results["x"]["max"] = 50.0
+    expected_results["x"]["mean"] = 13.375
+    expected_results["x"]["range"] = 60.0
+    expected_results["x"]["skewness"] = 0.8700654233008703
+    expected_results["x"]["std"] = 23.68807716974934
+    expected_results["x"]["sum"] = 107.0
+    expected_results["x"]["variance"] = 561.125
 
     expected_results["y"]["25%"] = 1e-06
     expected_results["y"]["5%"] = -3.1415926535
     expected_results["y"]["50%"] = 15.9
     expected_results["y"]["75%"] = 111.0
     expected_results["y"]["95%"] = 3122.0
-    expected_results["y"]["cv"] = np.nan
+    expected_results["y"]["cv"] = 2.211299287883385
     expected_results["y"]["iqr"] = 110.999999
-    expected_results["y"]["kurtosis"] = np.nan
+    expected_results["y"]["kurtosis"] = 2.6543509612939804
     expected_results["y"]["mad"] = 15.9
-    expected_results["y"]["max"] = np.nan
-    expected_results["y"]["mean"] = np.nan
-    expected_results["y"]["range"] = np.nan
-    expected_results["y"]["skewness"] = np.nan
-    expected_results["y"]["std"] = np.nan
-    expected_results["y"]["sum"] = np.nan
-    expected_results["y"]["variance"] = np.nan
+    expected_results["y"]["max"] = 3122.0
+    expected_results["y"]["mean"] = 491.1743650433125
+    expected_results["y"]["range"] = 3125.1415926535
+    expected_results["y"]["skewness"] = 2.097192909339154
+    expected_results["y"]["std"] = 1086.1335236468508
+    expected_results["y"]["sum"] = 3929.3949203465
+    expected_results["y"]["variance"] = 1179686.0311895243
 
     expected_results["bool_01_with_nan"]["50%"] = 0.0
-    expected_results["bool_01_with_nan"]["cv"] = np.nan
-    expected_results["bool_01_with_nan"]["kurtosis"] = np.nan
+    expected_results["bool_01_with_nan"]["cv"] = 1.0690449676496976
+    expected_results["bool_01_with_nan"]["kurtosis"] = -2.0
     expected_results["bool_01_with_nan"]["mad"] = 0.0
-    expected_results["bool_01_with_nan"]["max"] = np.nan
-    expected_results["bool_01_with_nan"]["range"] = np.nan
-    expected_results["bool_01_with_nan"]["skewness"] = np.nan
-    expected_results["bool_01_with_nan"]["std"] = np.nan
-    expected_results["bool_01_with_nan"]["sum"] = np.nan
-    expected_results["bool_01_with_nan"]["variance"] = np.nan
+    expected_results["bool_01_with_nan"]["max"] = 1.0
+    expected_results["bool_01_with_nan"]["range"] = 1.0
+    expected_results["bool_01_with_nan"]["skewness"] = 2.7755575615628914e-17
+    expected_results["bool_01_with_nan"]["std"] = 0.5345224838248488
+    expected_results["bool_01_with_nan"]["sum"] = 4.0
+    expected_results["bool_01_with_nan"]["variance"] = 0.2857142857142857
 
     expected_results["s1"]["kurtosis"] = np.nan
     expected_results["s1"]["skewness"] = np.nan
@@ -672,7 +679,8 @@ def test_describe_spark_df(
         "sample",
         "duplicates",
     } == set(results.keys()), "Not in results"
-
+    for key, value in results["variables"][column].items():
+        print(key, value)
     # Loop over variables
     for k, v in expected_spark_results[column].items():
         if v == check_is_NaN:
