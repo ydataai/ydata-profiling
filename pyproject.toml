@@ -1,6 +1,3 @@
-[tool.pytest.ini_options]
-spark_home = "/home/edwin/spark/spark-2.4.7-bin-hadoop2.7"
-java_home = "/usr/lib/jvm/java-8-openjdk-amd64"
 [tool.pytest.ini_options.spark_options]
 "spark.executor.id" = "driver"
 "spark.app.name" = "PySparkShell"

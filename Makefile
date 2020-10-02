@@ -12,9 +12,15 @@ docs:
 	cd docsrc/ && make github
 
 test:
-	pytest --black tests/unit/
-	pytest --black tests/issues/
-	pytest --nbval tests/notebooks/
+	pytest -m "not sparktest" --black tests/unit/
+	pytest -m "not sparktest" --black tests/issues/
+	pytest -m "not sparktest" --nbval tests/notebooks/
+	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
+
+test-spark:
+	pytest -m sparktest --black tests/unit/
+	pytest -m sparktest --black tests/issues/
+	pytest -m sparktest --nbval tests/notebooks/
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 
 examples:

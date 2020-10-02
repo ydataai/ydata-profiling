@@ -494,7 +494,60 @@ def expected_spark_results(expected_results):
     expected_results["x"]["25%"] = -3.0
     expected_results["x"]["5%"] = -10.0
     expected_results["x"]["50%"] = 0.0
+    expected_results["x"]["75%"] = 15.0
+    expected_results["x"]["cv"] = np.nan
+    expected_results["x"]["iqr"] = 18.0
+    expected_results["x"]["kurtosis"] = np.nan
+    expected_results["x"]["mad"] = 5.0
+    expected_results["x"]["max"] = np.nan
+    expected_results["x"]["mean"] = np.nan
+    expected_results["x"]["range"] = np.nan
+    expected_results["x"]["skewness"] = np.nan
+    expected_results["x"]["std"] = np.nan
+    expected_results["x"]["sum"] = np.nan
+    expected_results["x"]["variance"] = np.nan
+
     expected_results["y"]["25%"] = 1e-06
+    expected_results["y"]["5%"] = -3.1415926535
+    expected_results["y"]["50%"] = 15.9
+    expected_results["y"]["75%"] = 111.0
+    expected_results["y"]["95%"] = 3122.0
+    expected_results["y"]["cv"] = np.nan
+    expected_results["y"]["iqr"] = 110.999999
+    expected_results["y"]["kurtosis"] = np.nan
+    expected_results["y"]["mad"] = 15.9
+    expected_results["y"]["max"] = np.nan
+    expected_results["y"]["mean"] = np.nan
+    expected_results["y"]["range"] = np.nan
+    expected_results["y"]["skewness"] = np.nan
+    expected_results["y"]["std"] = np.nan
+    expected_results["y"]["sum"] = np.nan
+    expected_results["y"]["variance"] = np.nan
+
+    expected_results["bool_01_with_nan"]["50%"] = 0.0
+    expected_results["bool_01_with_nan"]["cv"] = np.nan
+    expected_results["bool_01_with_nan"]["kurtosis"] = np.nan
+    expected_results["bool_01_with_nan"]["mad"] = 0.0
+    expected_results["bool_01_with_nan"]["max"] = np.nan
+    expected_results["bool_01_with_nan"]["range"] = np.nan
+    expected_results["bool_01_with_nan"]["skewness"] = np.nan
+    expected_results["bool_01_with_nan"]["std"] = np.nan
+    expected_results["bool_01_with_nan"]["sum"] = np.nan
+    expected_results["bool_01_with_nan"]["variance"] = np.nan
+
+    expected_results["s1"]["kurtosis"] = np.nan
+    expected_results["s1"]["skewness"] = np.nan
+    expected_results["s1"]["monotonic_increase"] = False
+
+    # date indexing
+    del expected_results["somedate"]["max"]
+    del expected_results["somedate"]["min"]
+    del expected_results["somedate"]["range"]
+
+    expected_results["bool_tf_with_nan"]["count"] = 9
+    expected_results["bool_tf_with_nan"]["p_distinct"] = 0.2222222222222222
+    expected_results["bool_tf_with_nan"]["n_missing"] = 0
+    expected_results["bool_tf_with_nan"]["p_missing"] = 0.0
 
     return expected_results
 
@@ -542,13 +595,14 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
         "duplicates",
     } == set(results.keys()), "Not in results"
 
-    print(results["variables"])
     # Loop over variables
     for k, v in expected_results[column].items():
         if v == check_is_NaN:
             test_condition = k not in results["variables"][column]
         elif isinstance(v, float):
-            test_condition = pytest.approx(v) == results["variables"][column][k]
+            test_condition = (
+                pytest.approx(v, nan_ok=True) == results["variables"][column][k]
+            )
         else:
             test_condition = v == results["variables"][column][k]
 
@@ -562,6 +616,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
         ), f"Histogram missing for column {column}"
 
 
+@pytest.mark.sparktest
 @pytest.mark.parametrize(
     "column",
     [
@@ -592,10 +647,13 @@ def test_describe_spark_df(
     spark_context,
 ):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
-    import tempfile
 
     spark = spark_session
     sc = spark_context
+    if column == "mixed":
+        describe_data[column] = [str(i) for i in describe_data[column]]
+    if column == "bool_tf_with_nan":
+        describe_data[column] = [True if i else False for i in describe_data[column]]
     sdf = spark.createDataFrame(pd.DataFrame({column: describe_data[column]}))
 
     describe_data_frame = SparkDataFrame(sdf)
@@ -620,7 +678,9 @@ def test_describe_spark_df(
         if v == check_is_NaN:
             test_condition = k not in results["variables"][column]
         elif isinstance(v, float):
-            test_condition = pytest.approx(v) == results["variables"][column][k]
+            test_condition = (
+                pytest.approx(v, nan_ok=True) == results["variables"][column][k]
+            )
         else:
             test_condition = v == results["variables"][column][k]
 
