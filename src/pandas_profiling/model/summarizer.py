@@ -7,6 +7,7 @@ import pandas as pd
 from visions import VisionsBaseType
 
 from pandas_profiling.model.summary_algorithms import (
+    describe_boolean_spark_1d,
     describe_categorical_1d,
     describe_categorical_spark_1d,
     describe_counts,
@@ -33,6 +34,7 @@ from pandas_profiling.model.typeset import (
     Numeric,
     Path,
     ProfilingTypeSet,
+    SparkBoolean,
     SparkCategorical,
     SparkNumeric,
     SparkUnsupported,
@@ -123,6 +125,13 @@ class PandasProfilingSummarizer(BaseSummarizer):
                 describe_generic_spark,
                 describe_supported_spark,
                 describe_categorical_spark_1d,
+            ],
+            SparkBoolean: [
+                # need to include everything here, because we don't
+                describe_counts_spark,
+                describe_generic_spark,
+                describe_supported_spark,
+                describe_boolean_spark_1d,
             ],
         }
         super().__init__(summary_map, typeset, *args, **kwargs)

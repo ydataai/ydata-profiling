@@ -144,9 +144,7 @@ class GenericDataFrame(object):
         """
         raise NotImplemented("Implementation not found")
 
-    def groupby_get_n_largest(
-        self, columns: List[str], n: int, for_duplicates=True
-    ) -> pd.DataFrame:
+    def groupby_get_n_largest_dups(self, columns: List[str], n: int) -> pd.DataFrame:
         """
         get top n value counts of groupby count function
 
@@ -330,23 +328,14 @@ class PandasDataFrame(GenericDataFrame):
     def dropna(self, subset) -> "PandasDataFrame":
         return PandasDataFrame(self.df.dropna(subset=subset))
 
-    def groupby_get_n_largest(self, columns, n, for_duplicates=True) -> pd.DataFrame:
-        if for_duplicates:
-            return (
-                self.df[self.df.duplicated(subset=columns, keep=False)]
-                .groupby(columns)
-                .size()
-                .reset_index(name="count")
-                .nlargest(n, "count")
-            )
-        else:
-            return (
-                self.df[self.df.duplicated(subset=columns, keep=False)]
-                .groupby(columns)
-                .size()
-                .reset_index(name="count")
-                .nlargest(n, "count")
-            )
+    def groupby_get_n_largest_dups(self, columns, n) -> pd.DataFrame:
+        return (
+            self.df[self.df.duplicated(subset=columns, keep=False)]
+            .groupby(columns)
+            .size()
+            .reset_index(name="count")
+            .nlargest(n, "count")
+        )
 
     def __len__(self) -> int:
         return self.n_rows
@@ -543,13 +532,25 @@ class SparkDataFrame(GenericDataFrame):
     def get_memory_usage(self, deep):
         return self.df.sample(fraction=0.01).toPandas().memory_usage(deep=deep).sum()
 
-    def groupby_get_n_largest(
-        self, columns, n=None, for_duplicates=True
-    ) -> pd.DataFrame:
+    def groupby_get_n_largest_dups(self, columns, n=None) -> pd.DataFrame:
         import pyspark.sql.functions as F
+        from pyspark.sql.functions import array, map_keys, map_values
+        from pyspark.sql.types import MapType
 
+        # this is important because dict functions cannot be groupby
+        column_type_tuple = list(zip(self.columns, [i.dataType for i in self.schema]))
+        converted_dataframe = self.get_spark_df()
+        for column, col_type in column_type_tuple:
+            if isinstance(col_type, MapType):
+                converted_dataframe = converted_dataframe.withColumn(
+                    column,
+                    array(
+                        map_keys(converted_dataframe[column]),
+                        map_values(converted_dataframe[column]),
+                    ),
+                )
         return (
-            self.df.groupBy(self.df.columns)
+            converted_dataframe.groupBy(self.df.columns)
             .agg(F.count("*"))
             .filter(F.col("count(1)").cast("int") > 1)
             .orderBy("count(1)", ascending=False)

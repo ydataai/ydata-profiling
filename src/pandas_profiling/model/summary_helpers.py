@@ -58,8 +58,13 @@ def _(series: pd.Series, summary: dict = {}) -> dict:
 def _(series: SparkSeries, summary: dict = {}) -> dict:
     import pyspark.sql.functions as F
 
+    # do not count length of nans
     length = (
-        series.get_spark_series().select(F.length(series.name)).toPandas().squeeze()
+        series.get_spark_series()
+        .na.drop()
+        .select(F.length(series.name))
+        .toPandas()
+        .squeeze()
     )
 
     summary.update({"length": length})
@@ -391,6 +396,7 @@ def histogram_compute(finite_values, n_unique, name="histogram", weights=None):
     stats = {}
     bins = config["plot"]["histogram"]["bins"].get(int)
     bins = "auto" if bins == 0 else min(bins, n_unique)
+
     stats[name] = np.histogram(finite_values, bins=bins, weights=weights)
 
     max_bins = config["plot"]["histogram"]["max_bins"].get(int)

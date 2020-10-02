@@ -30,7 +30,7 @@ def _(df: PandasDataFrame, supported_columns) -> Optional[pd.DataFrame]:
     n_head = config["duplicates"]["head"].get(int)
 
     if n_head > 0 and supported_columns:
-        return df.groupby_get_n_largest(supported_columns, n_head)
+        return df.groupby_get_n_largest_dups(supported_columns, n_head)
 
     return None
 
@@ -49,6 +49,6 @@ def _(df: SparkDataFrame, supported_columns) -> Optional[pd.DataFrame]:
     n_head = config["duplicates"]["head"].get(int)
 
     if n_head > 0 and supported_columns:
-        return df.groupby_get_n_largest(supported_columns, n_head)
+        return df.groupby_get_n_largest_dups(supported_columns, n_head)
 
     return None

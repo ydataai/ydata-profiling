@@ -638,9 +638,11 @@ def describe_categorical_spark_1d(
     # Only run if at least 1 non-missing value
     value_counts = summary["value_counts_without_nan"]
 
+    finite_values_counts = value_counts[np.isfinite(value_counts)]
+
     summary.update(
         histogram_compute(
-            value_counts, summary["n_distinct"], name="histogram_frequencies"
+            finite_values_counts, summary["n_distinct"], name="histogram_frequencies"
         )
     )
 
@@ -660,5 +662,25 @@ def describe_categorical_spark_1d(
 
     # if coerce_str_to_date:
     #     summary["date_warning"] = warning_type_date(series)
+
+    return series, summary
+
+
+@series_hashable
+def describe_boolean_spark_1d(
+    series: SparkSeries, summary: dict
+) -> Tuple[SparkSeries, dict]:
+    """Describe a boolean series.
+
+    Args:
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    """
+
+    value_counts = summary["value_counts_without_nan"]
+    summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
 
     return series, summary
