@@ -492,9 +492,11 @@ def expected_results():
 @pytest.fixture
 def expected_spark_results(expected_results):
     """
-    This override the expected results for spark compute, primarily because spark's quantile functions
-    do not interpolate, unlike pandas' quantile functions. Thus the quantile functions
-    and all the other functions that depend on quantile based stuff have different results
+    This overrides the expected results for describe when using a spark backend, primarily because spark's
+    quantile functions do not interpolate unlike pandas' quantile functions. Thus the quantile functions
+    and all the other functions that depend on quantile based stuff have different results, spark
+    returns an exact result from the given list of variables when given a quantile, while pandas
+    by default does linear interpolation
     """
     expected_results["x"]["25%"] = -3.0
     expected_results["x"]["5%"] = -10.0
