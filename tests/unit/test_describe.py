@@ -13,7 +13,7 @@ from pandas_profiling.model.dataframe_wrappers import (
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.series_wrappers import PandasSeries
 from pandas_profiling.model.summary import describe_1d
-from pandas_profiling.model.typeset import DateTime, Numeric
+from pandas_profiling.model.typeset import DateTime, Numeric, SparkNumeric
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
@@ -675,7 +675,7 @@ def test_describe_spark_df(
             test_condition
         ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
 
-    if results["variables"][column]["type"] in [Numeric, DateTime]:
+    if results["variables"][column]["type"] in [SparkNumeric]:
         assert (
             "histogram" in results["variables"][column]
         ), f"Histogram missing for column {column}"
