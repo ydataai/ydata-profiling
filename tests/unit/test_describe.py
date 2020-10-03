@@ -493,10 +493,8 @@ def expected_results():
 def expected_spark_results(expected_results):
     """
     This override the expected results for spark compute, primarily because spark's quantile functions
-    do not interpolate, unlike pandas' quantile functions. Also, pandas-profiling default behaviour
-    is that once a column has a nan, it becomes categorical, while spark takes nan columns as still numerical types
-    if the rest of the values are numerical like. Thus, x y
-
+    do not interpolate, unlike pandas' quantile functions. Thus the quantile functions
+    and all the other functions that depend on quantile based stuff have different results
     """
     expected_results["x"]["25%"] = -3.0
     expected_results["x"]["5%"] = -10.0
@@ -506,55 +504,36 @@ def expected_spark_results(expected_results):
     expected_results["x"]["iqr"] = 18.0
     expected_results["x"]["kurtosis"] = -0.9061564710904944
     expected_results["x"]["mad"] = 5.0
-    expected_results["x"]["max"] = 50.0
-    expected_results["x"]["mean"] = 13.375
-    expected_results["x"]["range"] = 60.0
     expected_results["x"]["skewness"] = 0.8700654233008703
-    expected_results["x"]["std"] = 23.68807716974934
-    expected_results["x"]["sum"] = 107.0
-    expected_results["x"]["variance"] = 561.125
 
     expected_results["y"]["25%"] = 1e-06
     expected_results["y"]["5%"] = -3.1415926535
     expected_results["y"]["50%"] = 15.9
     expected_results["y"]["75%"] = 111.0
     expected_results["y"]["95%"] = 3122.0
-    expected_results["y"]["cv"] = 2.211299287883385
     expected_results["y"]["iqr"] = 110.999999
     expected_results["y"]["kurtosis"] = 2.6543509612939804
     expected_results["y"]["mad"] = 15.9
-    expected_results["y"]["max"] = 3122.0
-    expected_results["y"]["mean"] = 491.1743650433125
-    expected_results["y"]["range"] = 3125.1415926535
     expected_results["y"]["skewness"] = 2.097192909339154
-    expected_results["y"]["std"] = 1086.1335236468508
-    expected_results["y"]["sum"] = 3929.3949203465
-    expected_results["y"]["variance"] = 1179686.0311895243
 
     expected_results["bool_01_with_nan"]["50%"] = 0.0
-    expected_results["bool_01_with_nan"]["cv"] = 1.0690449676496976
     expected_results["bool_01_with_nan"]["kurtosis"] = -2.0
     expected_results["bool_01_with_nan"]["mad"] = 0.0
-    expected_results["bool_01_with_nan"]["max"] = 1.0
-    expected_results["bool_01_with_nan"]["range"] = 1.0
     expected_results["bool_01_with_nan"]["skewness"] = 2.7755575615628914e-17
-    expected_results["bool_01_with_nan"]["std"] = 0.5345224838248488
-    expected_results["bool_01_with_nan"]["sum"] = 4.0
-    expected_results["bool_01_with_nan"]["variance"] = 0.2857142857142857
 
     expected_results["s1"]["kurtosis"] = np.nan
     expected_results["s1"]["skewness"] = np.nan
     expected_results["s1"]["monotonic_increase"] = False
 
-    # date indexing
-    del expected_results["somedate"]["max"]
-    del expected_results["somedate"]["min"]
-    del expected_results["somedate"]["range"]
-
     expected_results["bool_tf_with_nan"]["count"] = 9
     expected_results["bool_tf_with_nan"]["p_distinct"] = 0.2222222222222222
     expected_results["bool_tf_with_nan"]["n_missing"] = 0
     expected_results["bool_tf_with_nan"]["p_missing"] = 0.0
+
+    # date indexing is different due to lack of a native date function in spark
+    del expected_results["somedate"]["max"]
+    del expected_results["somedate"]["min"]
+    del expected_results["somedate"]["range"]
 
     return expected_results
 
