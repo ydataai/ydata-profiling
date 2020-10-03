@@ -36,6 +36,7 @@ env:
   - TEST=examples PANDAS=">=1.1"
   - TEST=lint PANDAS=">=1.1"
   - TEST=typing PANDAS=">=1.1"
+  - TEST=spark PANDAS=">=1.1"
 
 before_install:
   - pip install --upgrade pip setuptools wheel
@@ -75,6 +76,11 @@ script:
     then python -m black --check --diff --quiet .;
     isort --check-only --profile black .;
     flake8 . --select=E9,F63,F7,F82 --show-source --statistics;
+    fi
+  - >
+    if [ $TEST == 'spark' ];
+    then SPARK_VERSION=2.4.7 HADOOP_VERSION=2.7 SPARK_HOME=/tmp/spark-2.4.7-bin-hadoop2.7 ./install-spark.sh;
+    make test-spark;
     fi
 
 after_success:
