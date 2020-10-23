@@ -17,3 +17,4 @@ jobs:
         stale-pr-message: 'Stale pull request'
         stale-issue-label: 'no-issue-activity'
         stale-pr-label: 'no-pr-activity'
+        only-labels: 'needs more information ❔'
