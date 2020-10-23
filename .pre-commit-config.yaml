@@ -4,3 +4,8 @@ repos:
     hooks:
     - id: black
       language_version: python3.7
+-   repo: https://github.com/nbQA-dev/nbQA
+    rev: 0.3.3
+    hooks:
+    - id: nbqa-black
+      args: [--nbqa-mutate]
