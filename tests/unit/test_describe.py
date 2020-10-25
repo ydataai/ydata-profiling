@@ -354,7 +354,7 @@ def expected_results():
             "p_missing": 0.11111111111111116,
             "p_distinct": 5 / 8,
             "p_zeros": check_is_NaN,
-            "range": datetime.timedelta(45289, hours=13, minutes=57),
+            "range": datetime.timedelta(43829, hours=13, minutes=57),
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,

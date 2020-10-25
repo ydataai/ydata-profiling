@@ -356,7 +356,8 @@ class Cramers(Correlation):
         # using persist on transformed columns of categorical_df here because we call on it multiple times below
         # persisting only the numerical columns saves us a lot of memory
         categorical_df = categorical_df.select([i["indexed"] for i in index_store])
-        categorical_df.persist()
+        if df.persist_bool:
+            categorical_df.persist()
 
         # compute n for cramers once
         n_rows = categorical_df.count()
@@ -408,7 +409,8 @@ class Cramers(Correlation):
                 ] = correlation_matrix.loc[other_col["original"], col["original"]]
 
         # unpersisting to free memory
-        categorical_df.unpersist()
+        if df.persist_bool:
+            categorical_df.unpersist()
 
         return correlation_matrix
 

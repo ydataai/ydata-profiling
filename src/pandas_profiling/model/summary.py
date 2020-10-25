@@ -495,11 +495,14 @@ def _get_scatter_matrix_spark(df, continuous_variables):
 
         # check if any na still exists, and remove it before computing scatter matrix
         df = df.dropna(subset=continuous_variables)
+        df.persist()
 
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
                     scatter_matrix[x][y] = spark_scatter_pairwise(df, x, y)
+
+        df.unpersist()
 
     return scatter_matrix
 
