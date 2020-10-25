@@ -581,7 +581,7 @@ def pie_plot(data, legend_kws=None):
 <dd>
 <div class="desc"><p>Scatter plot (or hexbin plot) from a series of complex values</p>
 <h2 id="examples">Examples</h2>
-<pre><code class="python-repl">&gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
+<pre><code class="language-python-repl">&gt;&gt;&gt; complex_series = pd.Series([complex(1, 3), complex(3, 1)])
 &gt;&gt;&gt; scatter_complex(complex_series)
 </code></pre>
 <h2 id="args">Args</h2>
@@ -630,7 +630,7 @@ def scatter_complex(series: pd.Series) -&gt; str:
 <dd>
 <div class="desc"><p>Scatter plot (or hexbin plot) from two series</p>
 <h2 id="examples">Examples</h2>
-<pre><code class="python-repl">&gt;&gt;&gt; widths = pd.Series([800, 1024])
+<pre><code class="language-python-repl">&gt;&gt;&gt; widths = pd.Series([800, 1024])
 &gt;&gt;&gt; heights = pd.Series([600, 768])
 &gt;&gt;&gt; scatter_series(widths, heights, &quot;Width&quot;, &quot;Height&quot;)
 </code></pre>
@@ -691,7 +691,7 @@ def scatter_pairwise(series1, series2, x_label, y_label) -&gt; str:
 <dd>
 <div class="desc"><p>Scatter plot (or hexbin plot) from one series of sequences with length 2</p>
 <h2 id="examples">Examples</h2>
-<pre><code class="python-repl">&gt;&gt;&gt; scatter_series(file_sizes, &quot;Width&quot;, &quot;Height&quot;)
+<pre><code class="language-python-repl">&gt;&gt;&gt; scatter_series(file_sizes, &quot;Width&quot;, &quot;Height&quot;)
 </code></pre>
 <h2 id="args">Args</h2>
 <dl>

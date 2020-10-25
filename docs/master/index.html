@@ -115,7 +115,7 @@ Install by navigating to the proper directory and running</p>
 <p>The documentation for <code><a title="pandas_profiling" href="#pandas_profiling">pandas_profiling</a></code> can be found <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">here</a>. Previous documentation is still available <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/">here</a>.</p>
 <h3 id="getting-started">Getting started</h3>
 <p>Start by loading in your pandas DataFrame, e.g. by using</p>
-<pre><code class="python">import numpy as np
+<pre><code class="language-python">import numpy as np
 import pandas as pd
 from pandas_profiling import ProfileReport
 
@@ -125,11 +125,11 @@ df = pd.DataFrame(
 )
 </code></pre>
 <p>To generate the report, run:</p>
-<pre><code class="python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;)
+<pre><code class="language-python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;)
 </code></pre>
 <h3 id="explore-deeper">Explore deeper</h3>
 <p>You can configure the profile report in any way you like. The example code below loads the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml">explorative configuration file</a>, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
-<pre><code class="python">profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
+<pre><code class="language-python">profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
 </code></pre>
 <p>Learn more about configuring <code>pandas-profiling</code> on the <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html">Advanced usage</a> page.</p>
 <h4 id="jupyter-notebook">Jupyter Notebook</h4>
@@ -137,19 +137,19 @@ df = pd.DataFrame(
 There are two interfaces (see animations below): through widgets and through a HTML report.</p>
 <p><img alt="Notebook Widgets" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/widgets.gif" width="800" /></p>
 <p>This is achieved by simply displaying the report. In the Jupyter Notebook, run:</p>
-<pre><code class="python">profile.to_widgets()
+<pre><code class="language-python">profile.to_widgets()
 </code></pre>
 <p>The HTML report can be included in a Jupyter notebook:</p>
 <p><img alt="HTML" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/iframe.gif" width="800" /></p>
 <p>Run the following code:</p>
-<pre><code class="python">profile.to_notebook_iframe()
+<pre><code class="language-python">profile.to_notebook_iframe()
 </code></pre>
 <h4 id="saving-the-report">Saving the report</h4>
 <p>If you want to generate a HTML report file, save the <code>ProfileReport</code> to an object and use the <code>to_file()</code> function:</p>
-<pre><code class="python">profile.to_file(&quot;your_report.html&quot;)
+<pre><code class="language-python">profile.to_file(&quot;your_report.html&quot;)
 </code></pre>
 <p>Alternatively, you can obtain the data as json:</p>
-<pre><code class="python"># As a string
+<pre><code class="language-python"># As a string
 json_data = profile.to_json()
 
 # As a file
@@ -159,7 +159,7 @@ profile.to_file(&quot;your_report.json&quot;)
 <p>Version 2.4 introduces minimal mode.
 This is a default configuration that disables expensive computations (such as correlations and dynamic binning).
 Use the following syntax:</p>
-<pre><code class="python">profile = ProfileReport(large_dataset, minimal=True)
+<pre><code class="language-python">profile = ProfileReport(large_dataset, minimal=True)
 profile.to_file(&quot;output.html&quot;)
 </code></pre>
 <h3 id="command-line-usage">Command line usage</h3>
@@ -176,7 +176,7 @@ profile.to_file(&quot;output.html&quot;)
 </ul>
 <p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>, <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml">dark themed configuration file</a>.</p>
 <p><strong>Example</strong></p>
-<pre><code class="python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
+<pre><code class="language-python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file(&quot;output.html&quot;)
 </code></pre>
 <h1 id="supporting-open-source">Supporting open source</h1>
