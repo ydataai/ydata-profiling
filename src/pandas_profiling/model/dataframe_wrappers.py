@@ -565,9 +565,36 @@ class SparkDataFrame(GenericDataFrame):
 
         return np.sum(temp_df["count"].values)
 
+    def nan_counts(self):
+        """
+        Only in spark implementation, because pandas already has isnull().sum()
+        we use .squeeze(axis="index") to ensure that it doesn't become a scalar
+
+        Use this function to get a count of all the nan values.
+        Used in pandas_profiling.visualisation.missing function
+
+        Returns: Pandas Series of NaN counts in each column
+
+        """
+        import pyspark.sql.functions as F
+
+        return (
+            self.df.agg(
+                *[F.count(F.when(F.isnull(c), c)).alias(c) for c in self.df.columns]
+            )
+            .toPandas()
+            .squeeze(axis="index")
+        )
+
     def __getitem__(self, key):
         return self.df.select(key)
 
 
 def get_implemented_datatypes():
-    return (PandasDataFrame, SparkDataFrame)
+    """
+    This is a helper function to enumerate all the implemented backends
+
+    Returns: list of class objects of implemented compute backends
+
+    """
+    return [PandasDataFrame, SparkDataFrame]

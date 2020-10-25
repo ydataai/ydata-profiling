@@ -7,6 +7,7 @@ import pytest
 
 from pandas_profiling.model.base import get_counts, is_numeric
 
+
 @pytest.mark.skip(reason="skipping test because base.py was refactored out")
 @pytest.mark.skipif(
     int(pd.__version__.split(".")[0]) < 1, reason="requires pandas 1 or higher"

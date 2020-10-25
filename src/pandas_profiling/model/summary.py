@@ -403,7 +403,55 @@ def _get_missing_diagrams_spark(df: SparkDataFrame, table_stats: dict) -> dict:
     Returns:
 
     """
-    return {}
+
+    def warn_missing(missing_name, error):
+        warnings.warn(
+            f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
+    To hide this warning, disable the calculation
+    (using `df.profile_report(missing_diagrams={{"{missing_name}": False}}`)
+    If this is problematic for your use case, please report this as an issue:
+    https://github.com/pandas-profiling/pandas-profiling/issues
+    (include the error message: '{error}')"""
+        )
+
+    def missing_diagram(name) -> Callable:
+        return {
+            "bar": missing_bar,
+        }[name]
+
+    missing_map = {
+        "bar": {
+            "min_missing": 0,
+            "name": "Count",
+            "caption": "A simple visualization of nullity by column.",
+        },
+    }
+
+    missing_map = {
+        name: settings
+        for name, settings in missing_map.items()
+        if config["missing_diagrams"][name].get(bool)
+        and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+    }
+    missing = {}
+
+    if len(missing_map) > 0:
+        for name, settings in missing_map.items():
+            try:
+                if name != "heatmap" or (
+                    table_stats["n_vars_with_missing"]
+                    - table_stats["n_vars_all_missing"]
+                    >= settings["min_missing"]
+                ):
+                    missing[name] = {
+                        "name": settings["name"],
+                        "caption": settings["caption"],
+                        "matrix": missing_diagram(name)(df),
+                    }
+            except ValueError as e:
+                warn_missing(name, e)
+
+    return missing
 
 
 @singledispatch
