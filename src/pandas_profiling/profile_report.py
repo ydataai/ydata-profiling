@@ -332,6 +332,9 @@ class ProfileReport(SerializeReport, object):
                 if isinstance(o, pd.Series):
                     return self.default(o.to_dict())
 
+                if isinstance(o, pd.DataFrame):
+                    return o.to_json()
+
                 if isinstance(o, np.integer):
                     return o.tolist()
 
