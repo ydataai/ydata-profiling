@@ -61,11 +61,27 @@ def describe(
         raise ValueError("df can not be empty")
 
     if isinstance(df, SparkDataFrame):
+        # test if the version pyspark and pyarrow versions are compatible
         test_for_pyspark_pyarrow_incompatibility()
+
+        # save the dataframe to speed up compute time
+
+        if config["spark"]["persist"]:
+            df.persist_bool = config["spark"]["persist"]
+            df.persist()
+        else:
+            df.persist_bool = False
 
     disable_progress_bar = not config["progress_bar"].get(bool)
 
     date_start = datetime.utcnow()
+
+    # if there are specific config for each correlation, then use those
+
+    if isinstance(df, SparkDataFrame):
+        correlation_key = "spark_calculate"
+    else:
+        correlation_key = "calculate"
 
     correlation_names = [
         correlation_name
@@ -76,7 +92,7 @@ def describe(
             "phi_k",
             "cramers",
         ]
-        if config["correlations"][correlation_name]["calculate"].get(bool)
+        if config["correlations"][correlation_name][correlation_key].get(bool)
     ]
 
     number_of_tasks = 8 + len(df.columns) + len(correlation_names)

@@ -6,7 +6,6 @@ import pandas as pd
 import pytest
 
 
-
 @pytest.mark.skip(reason="skipping test because base.py was refactored out")
 @pytest.mark.skipif(
     int(pd.__version__.split(".")[0]) < 1, reason="requires pandas 1 or higher"

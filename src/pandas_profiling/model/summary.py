@@ -472,13 +472,13 @@ def _get_scatter_matrix_pandas(df, continuous_variables):
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
 
-        # check if any na still exists, and remove it before computing scatter matrix
-        df = df.dropna(subset=continuous_variables)
-
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
-                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                    subset_df = df.dropna(subset=[x, y])
+                    scatter_matrix[x][y] = scatter_pairwise(
+                        subset_df[x], subset_df[y], x, y
+                    )
 
     return scatter_matrix
 
@@ -493,16 +493,12 @@ def _get_scatter_matrix_spark(df, continuous_variables):
 
         scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
 
-        # check if any na still exists, and remove it before computing scatter matrix
-        df = df.dropna(subset=continuous_variables)
         df.persist()
 
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
                     scatter_matrix[x][y] = spark_scatter_pairwise(df, x, y)
-
-        df.unpersist()
 
     return scatter_matrix
 

@@ -391,12 +391,10 @@ class SparkDataFrame(GenericDataFrame):
 
     """
 
-    def __init__(self, df):
+    def __init__(self, df, persist=True):
         super().__init__()
         self.df = df
-
-        # TO-DO - change profile_report to take persist_bool as a variable for spark-dataframes
-        self.persist_bool = True
+        self.persist_bool = persist
 
     @staticmethod
     def validate_same_type(obj) -> bool:
@@ -518,13 +516,16 @@ class SparkDataFrame(GenericDataFrame):
 
         """
         column_list = self.columns
-        return [(column, SparkSeries(self.df.select(column))) for column in column_list]
+        return [
+            (column, SparkSeries(self.df.select(column), persist=self.persist_bool))
+            for column in column_list
+        ]
 
     def get_spark_df(self):
         return self.df
 
     def dropna(self, subset):
-        return SparkDataFrame(self.df.na.drop(subset=subset))
+        return SparkDataFrame(self.df.na.drop(subset=subset), persist=self.persist_bool)
 
     def get_memory_usage(self, deep):
         return (

@@ -70,22 +70,30 @@ missing_diagrams:
 correlations:
     pearson:
       calculate: True
+      spark_calculate: True
       warn_high_correlations: True
       threshold: 0.9
     spearman:
       calculate: True
+      spark_calculate: True
       warn_high_correlations: False
     kendall:
       calculate: True
+      spark_calculate: False
       warn_high_correlations: False
     phi_k:
       calculate: True
+      spark_calculate: False
       warn_high_correlations: False
     cramers:
       calculate: True
+      spark_calculate: True
       warn_high_correlations: True
       threshold: 0.9
 
+# Spark specific correlations
+spark:
+    persist: True
 
 # Bivariate / Pairwise relations
 interactions:

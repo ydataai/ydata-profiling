@@ -56,11 +56,10 @@ class SparkSeries(GenericSeries):
     TO-DO .na.drop() is called multiple times, can we optimise this?
     """
 
-    def __init__(self, series):
+    def __init__(self, series, persist=True):
         super().__init__(series)
         self.series = series
-        # TO-DO - change profile_report to take persist_bool as a variable for spark-series
-        self.persist_bool = True
+        self.persist_bool = persist
 
     @property
     def type(self):
@@ -85,9 +84,9 @@ class SparkSeries(GenericSeries):
 
     def fillna(self, fill=None) -> "SparkSeries":
         if fill is not None:
-            return SparkSeries(self.series.na.fill(fill))
+            return SparkSeries(self.series.na.fill(fill), persist=self.persist_bool)
         else:
-            return SparkSeries(self.series.na.fillna())
+            return SparkSeries(self.series.na.fillna(), persist=self.persist_bool)
 
     @property
     def n_rows(self) -> int:
