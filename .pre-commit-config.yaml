@@ -1,11 +1,12 @@
 repos:
 -   repo: https://github.com/python/black
-    rev: stable
+    rev: 20.8b1
     hooks:
     - id: black
       language_version: python3.7
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 0.3.3
+    rev: 0.4.0
     hooks:
     - id: nbqa-black
+      additional_dependencies: [black==20.8b1]
       args: [--nbqa-mutate]
