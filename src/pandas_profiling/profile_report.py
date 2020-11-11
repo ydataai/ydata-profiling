@@ -2,6 +2,7 @@ import json
 import warnings
 from pathlib import Path
 from typing import Optional, Union
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
@@ -17,6 +18,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
 from pandas_profiling.utils.paths import get_config
+
 
 
 class ProfileReport(SerializeReport, object):
@@ -151,6 +153,12 @@ class ProfileReport(SerializeReport, object):
             config.set_kwargs(vars)
 
 
+    def select_sections(self, sections: list = ["overview","variables","interactions","correlations","missing","sample","duplicate"]):
+        sections_content_items = [i for i in self.report.content["body"].content["items"] if i.name.lower() in sections]
+        clone=deepcopy(self)
+        clone.report.content["body"].content["items"] = sections_content_items
+        return clone
+
     @property
     def description_set(self):
         if self._description_set is None:
@@ -175,6 +183,7 @@ class ProfileReport(SerializeReport, object):
         if self._report is None:
             self._report = get_report_structure(self.description_set, self.sections_list)
         return self._report
+
 
     @property
     def html(self):
