@@ -59,6 +59,7 @@ sort: None
 # which diagrams to show
 missing_diagrams:
     bar: True
+    bar2: True
     matrix: True
     heatmap: True
     dendrogram: True
@@ -111,6 +112,12 @@ plot:
         bad: '#000000'
 
     missing:
+        cmap: 'RdBu'
+# Force labels when there are > 50 variables
+# https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+        force_labels: True
+    
+    missing2:
         cmap: 'RdBu'
 # Force labels when there are > 50 variables
 # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
