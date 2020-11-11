@@ -36,6 +36,7 @@ class ProfileReport(SerializeReport, object):
         sample=None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
+        sections: list = ["overview","variables","interactions","correlations","missing","sample","duplicate"],
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -86,6 +87,7 @@ class ProfileReport(SerializeReport, object):
         self._html = None
         self._widgets = None
         self._json = None
+        self.sections_list = sections
 
         if df is not None:
             # preprocess df
@@ -148,6 +150,7 @@ class ProfileReport(SerializeReport, object):
         else:
             config.set_kwargs(vars)
 
+
     @property
     def description_set(self):
         if self._description_set is None:
@@ -170,7 +173,7 @@ class ProfileReport(SerializeReport, object):
     @property
     def report(self):
         if self._report is None:
-            self._report = get_report_structure(self.description_set)
+            self._report = get_report_structure(self.description_set, self.sections_list)
         return self._report
 
     @property

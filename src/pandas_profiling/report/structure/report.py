@@ -265,7 +265,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
     return titems
 
 
-def get_report_structure(summary: dict) -> Renderable:
+def get_report_structure(summary: dict, sections: list = ["overview","variables","interactions","correlations","missing","sample","duplicate"]) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -280,68 +280,80 @@ def get_report_structure(summary: dict) -> Renderable:
     ) as pbar:
         warnings = summary["messages"]
 
-        section_items: List[Renderable] = [
-            Container(
-                get_dataset_items(summary, warnings),
-                sequence_type="tabs",
-                name="Overview",
-                anchor_id="overview",
-            ),
-            Container(
-                render_variables_section(summary),
-                sequence_type="accordion",
-                name="Variables",
-                anchor_id="variables",
-            ),
-        ]
+        section_items: List[Renderable] = []
 
-        scatter_items = get_scatter_matrix(summary["scatter"])
-        if len(scatter_items) > 0:
+        if "overview" in sections:
             section_items.append(
                 Container(
-                    scatter_items,
-                    sequence_type="tabs" if len(scatter_items) <= 10 else "select",
-                    name="Interactions",
-                    anchor_id="interactions",
-                ),
-            )
-
-        corr = get_correlation_items(summary)
-        if corr is not None:
-            section_items.append(corr)
-
-        missing_items = get_missing_items(summary)
-        if len(missing_items) > 0:
-            section_items.append(
-                Container(
-                    missing_items,
+                    get_dataset_items(summary, warnings),
                     sequence_type="tabs",
-                    name="Missing values",
-                    anchor_id="missing",
+                    name="Overview",
+                    anchor_id="overview",
                 )
             )
 
-        sample_items = get_sample_items(summary["sample"])
-        if len(sample_items) > 0:
+        if "variables" in sections:
             section_items.append(
                 Container(
-                    items=sample_items,
-                    sequence_type="list",
-                    name="Sample",
-                    anchor_id="sample",
+                    render_variables_section(summary),
+                    sequence_type="accordion",
+                    name="Variables",
+                    anchor_id="variables",
                 )
             )
 
-        duplicate_items = get_duplicates_items(summary["duplicates"])
-        if len(duplicate_items) > 0:
-            section_items.append(
-                Container(
-                    items=duplicate_items,
-                    sequence_type="list",
-                    name="Duplicate rows",
-                    anchor_id="duplicate",
+        if "interactions" in sections:
+            scatter_items = get_scatter_matrix(summary["scatter"])
+            if len(scatter_items) > 0:
+                section_items.append(
+                    Container(
+                        scatter_items,
+                        sequence_type="tabs" if len(scatter_items) <= 10 else "select",
+                        name="Interactions",
+                        anchor_id="interactions",
+                    ),
                 )
-            )
+
+        if "correlations" in sections:
+            corr = get_correlation_items(summary)
+            if corr is not None:
+                section_items.append(corr)
+
+        if "missing" in sections:
+            missing_items = get_missing_items(summary)
+            if len(missing_items) > 0:
+                section_items.append(
+                    Container(
+                        missing_items,
+                        sequence_type="tabs",
+                        name="Missing values",
+                        anchor_id="missing",
+                    )
+                )
+
+        if "sample" in sections:
+            sample_items = get_sample_items(summary["sample"])
+            if len(sample_items) > 0:
+                section_items.append(
+                    Container(
+                        items=sample_items,
+                        sequence_type="list",
+                        name="Sample",
+                        anchor_id="sample",
+                    )
+                )
+
+        if "duplicate" in sections:
+            duplicate_items = get_duplicates_items(summary["duplicates"])
+            if len(duplicate_items) > 0:
+                section_items.append(
+                    Container(
+                        items=duplicate_items,
+                        sequence_type="list",
+                        name="Duplicate rows",
+                        anchor_id="duplicate",
+                    )
+                )
 
         sections = Container(section_items, name="Root", sequence_type="sections")
         pbar.update()
