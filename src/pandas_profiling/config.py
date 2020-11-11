@@ -110,6 +110,7 @@ class Config(object):
         "interactions": {"targets": [], "continuous": False},
         "missing_diagrams": {
             "bar": False,
+            "bar2": False,
             "matrix": False,
             "heatmap": False,
             "dendrogram": False,

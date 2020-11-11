@@ -33,6 +33,7 @@ from pandas_profiling.model.messages import (
 )
 from pandas_profiling.visualisation.missing import (
     missing_bar,
+    missing_bar2,
     missing_dendrogram,
     missing_heatmap,
     missing_matrix,
@@ -639,6 +640,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     def missing_diagram(name) -> Callable:
         return {
             "bar": missing_bar,
+            "bar2": missing_bar2,
             "matrix": missing_matrix,
             "heatmap": missing_heatmap,
             "dendrogram": missing_dendrogram,
@@ -646,6 +648,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
 
     missing_map = {
         "bar": {"min_missing": 0, "name": "Count"},
+        "bar2": {"min_missing": 0, "name": "Missing"},
         "matrix": {"min_missing": 0, "name": "Matrix"},
         "heatmap": {"min_missing": 2, "name": "Heatmap"},
         "dendrogram": {"min_missing": 1, "name": "Dendrogram"},
