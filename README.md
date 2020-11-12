@@ -47,7 +47,7 @@ Stay tuned.
 
 ### Support `pandas-profiling`
 
-The development of ``pandas-profiling`` relies completely on contributions.
+The development of `pandas-profiling` relies completely on contributions.
 If you find value in the package, we welcome you to support the project through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
 It's extra exciting that GitHub **matches your contribution** for the first year.
 
