@@ -56,7 +56,7 @@ Find more information here:
  - [Changelog v2.9.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-9-0)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
- *September 2, 2020 💘*
+_September 2, 2020 💘_
 
 ---
 
@@ -223,7 +223,8 @@ A set of options is available in order to adapt the report generated.
 
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 
-__Example__
+**Example**
+
 ```python
 profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file("output.html")
@@ -292,7 +293,7 @@ A low threshold place to ask questions or start contributing is by reaching out 
 3. Click the _+_ icon to add a new external tool
 4. Insert the following values
 	- Name: Pandas Profiling
-    - Program: *__The location obtained in step 2__*
+    - Program: _**The location obtained in step 2**_
     - Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"
     - Working Directory: $ProjectFileDir$
   
