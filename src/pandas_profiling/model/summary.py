@@ -286,7 +286,8 @@ def describe_1d(series: pd.Series) -> dict:
             A dict containing calculated series description values.
         """
         # Make sure we deal with strings (Issue #100)
-        series = series.astype(str)
+        # Make sure nans are converted to empty strings (Issue #613)
+        series = series.fillna('').astype('str')
 
         # Only run if at least 1 non-missing value
         value_counts = series_description["value_counts_without_nan"]
