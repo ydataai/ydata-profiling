@@ -28,7 +28,7 @@ pypi_package:
 	twine upload --skip-existing dist/*
 
 install:
-	pip install -e .[notebook,app]
+	pip install -e .[notebook]
 
 lint:
 	isort --profile black .
