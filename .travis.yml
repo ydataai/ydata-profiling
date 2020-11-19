@@ -47,7 +47,7 @@ install:
   - check-manifest
   - python setup.py sdist bdist_wheel
   - twine check dist/*
-  - pip install -e .[notebook,app]
+  - pip install -e .[notebook]
 
 script:
   - >
