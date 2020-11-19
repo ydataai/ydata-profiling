@@ -57,7 +57,7 @@ class Config(object):
         },
         "explorative": {
             "vars": {
-                "cat": {"unicode": True},
+                "cat": {"characters": True, "words": True},
                 "file": {"active": True},
                 "image": {
                     "active": True,

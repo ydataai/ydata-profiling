@@ -324,7 +324,7 @@ def describe_1d(series: pd.Series) -> dict:
                 )
             )
 
-        check_unicode = config["vars"]["cat"]["unicode"].get(bool)
+        check_unicode = config["vars"]["cat"]["characters"].get(bool)
         if check_unicode:
             stats.update(unicode_summary(series))
             stats["n_characters_distinct"] = stats["n_characters"]
@@ -334,7 +334,7 @@ def describe_1d(series: pd.Series) -> dict:
                 "category_alias_counts"
             ].index.str.replace("_", " ")
 
-        words = config["vars"]["cat"]["word"]
+        words = config["vars"]["cat"]["words"]
         if words:
             stats.update(word_summary(series))
 

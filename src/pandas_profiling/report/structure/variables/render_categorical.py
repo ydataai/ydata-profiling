@@ -419,7 +419,7 @@ def render_categorical(summary):
         ),
         Container(
             string_items,
-            name="String",
+            name="Categories",
             anchor_id=f"{varid}string",
             sequence_type="grid",
         ),
@@ -431,8 +431,8 @@ def render_categorical(summary):
         ),
         Container(
             character_items,
-            name="Character",
-            anchor_id=f"{varid}character",
+            name="Characters",
+            anchor_id=f"{varid}characters",
             sequence_type="grid",
         ),
     ]
@@ -444,19 +444,9 @@ def render_categorical(summary):
         # String < Length, Unique >
     ]
 
-    string = [
-        # bar of top-n
-        # pie of top-n if < 10
-        # length
-    ]
-
     word = [
         # frequencies (top n)
         # length
-    ]
-
-    characters = [
-        # categories
     ]
 
     # Bottom
