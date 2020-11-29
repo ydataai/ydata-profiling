@@ -37,7 +37,8 @@ vars:
         chi_squared_threshold: 0.0
     cat:
         length: False
-        unicode: False
+        characters: False
+        words: False
         cardinality_threshold: 50
         n_obs: 5
 # Set to zero to disable

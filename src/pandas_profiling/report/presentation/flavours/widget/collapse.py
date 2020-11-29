@@ -1,4 +1,4 @@
-from ipywidgets import HTML, Box, widgets
+from ipywidgets import Box, widgets
 
 from pandas_profiling.report.presentation.core import Collapse
 

@@ -5,9 +5,18 @@ from pandas_profiling.report.presentation.core.renderable import Renderable
 
 class Container(Renderable):
     def __init__(
-        self, items: Sequence[Renderable], sequence_type: str, nested=False, **kwargs
+        self,
+        items: Sequence[Renderable],
+        sequence_type: str,
+        nested=False,
+        name=None,
+        anchor_id=None,
+        classes=None,
+        **kwargs,
     ):
-        super().__init__({"items": items, "nested": nested}, **kwargs)
+        args = {"items": items, "nested": nested}
+        args.update(**kwargs)
+        super().__init__(args, name, anchor_id, classes)
         self.sequence_type = sequence_type
 
     def __str__(self) -> str:

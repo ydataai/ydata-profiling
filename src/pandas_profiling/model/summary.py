@@ -2,6 +2,7 @@
 
 import multiprocessing
 import multiprocessing.pool
+import string
 import warnings
 from pathlib import Path
 from typing import Callable, Mapping, Optional, Tuple
@@ -38,6 +39,15 @@ from pandas_profiling.visualisation.missing import (
     missing_matrix,
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
+
+
+def word_summary(series: pd.Series) -> dict:
+    # TODO: preprocess (stopwords)
+    # TODO: configurable lowercase/punctuation etc.
+    word_lists = series.str.lower().str.split()
+    words = word_lists.explode()
+    words = words.str.strip(string.punctuation)
+    return {"word_counts": words.value_counts()}
 
 
 def sort_column_names(dct: Mapping, sort: str):
@@ -293,6 +303,10 @@ def describe_1d(series: pd.Series) -> dict:
 
         stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
+        redact = config["vars"]["cat"]["redact"].get(float)
+        if not redact:
+            stats.update({"first_rows": series.head(5)})
+
         stats.update(
             histogram_compute(
                 value_counts, len(value_counts), name="histogram_frequencies"
@@ -314,13 +328,19 @@ def describe_1d(series: pd.Series) -> dict:
                 )
             )
 
-        check_unicode = config["vars"]["cat"]["unicode"].get(bool)
+        check_unicode = config["vars"]["cat"]["characters"].get(bool)
         if check_unicode:
             stats.update(unicode_summary(series))
+            stats["n_characters_distinct"] = stats["n_characters"]
+            stats["n_characters"] = stats["character_counts"].values.sum()
 
             stats["category_alias_counts"].index = stats[
                 "category_alias_counts"
             ].index.str.replace("_", " ")
+
+        words = config["vars"]["cat"]["words"]
+        if words:
+            stats.update(word_summary(series))
 
         coerce_str_to_date = config["vars"]["cat"]["coerce_str_to_date"].get(bool)
         if coerce_str_to_date:
@@ -693,8 +713,10 @@ def get_scatter_matrix(df, variables):
             for y in continuous_variables:
                 if x in continuous_variables:
                     # check if any na still exists, and remove it before computing scatter matrix
-                    df_temp = df[[x,y]].dropna()
-                    scatter_matrix[x][y] = scatter_pairwise(df_temp[x], df_temp[y], x, y)
+                    df_temp = df[[x, y]].dropna()
+                    scatter_matrix[x][y] = scatter_pairwise(
+                        df_temp[x], df_temp[y], x, y
+                    )
     else:
         scatter_matrix = {}
 

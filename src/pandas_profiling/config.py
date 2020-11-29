@@ -57,7 +57,7 @@ class Config(object):
         },
         "explorative": {
             "vars": {
-                "cat": {"unicode": True},
+                "cat": {"characters": True, "words": True},
                 "file": {"active": True},
                 "image": {
                     "active": True,
@@ -65,7 +65,7 @@ class Config(object):
             },
             "n_obs_unique": 10,
             "n_extreme_obs": 10,
-            "n_freq_table_max": 25,
+            "n_freq_table_max": 10,
             "memory_deep": True,
         },
     }
