@@ -9,3 +9,18 @@ repos:
     hooks:
     - id: nbqa-black
       args: [--nbqa-mutate]
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.7.2
+    hooks:
+    -   id: pyupgrade
+        args: ['--py36-plus','--exit-zero-even-if-changed']
+-   repo: https://github.com/pycqa/isort
+    rev: 5.5.2
+    hooks:
+      - id: isort
+        files: '.*'
+        args: ['--profile=black']
+-   repo: https://github.com/mgedmin/check-manifest
+    rev: "0.39"
+    hooks:
+    -   id: check-manifest

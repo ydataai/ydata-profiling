@@ -31,8 +31,7 @@ install:
 	pip install -e .[notebook]
 
 lint:
-	isort --profile black .
-	black .
+	pre-commit run --all-files
 
 typing:
 	pytest --mypy -m mypy .

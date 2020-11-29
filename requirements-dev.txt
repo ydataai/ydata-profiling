@@ -1,6 +1,6 @@
 black>=19.10b0
 isort>=5.0.7
-pre-commit
+pre-commit>=2.8.2
 twine
 pdoc3
 wheel
