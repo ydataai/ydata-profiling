@@ -154,7 +154,9 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     def pluralize(count, singular, plural=None):
         if not plural:
             plural = singular + "s"
-        return "%s %s" % (count, singular if math.floor(float(count)) == 1 else plural)
+        return "{} {}".format(
+            count, singular if math.floor(float(count)) == 1 else plural
+        )
 
     num_seconds = coerce_seconds(num_seconds)
     if num_seconds < 60 and not detailed:
@@ -201,7 +203,7 @@ def fmt_numeric(value: float, precision=10) -> str:
     Returns:
         The numeric value with the given precision.
     """
-    fmtted = "{{:.{precision}g}}".format(precision=precision).format(value)
+    fmtted = f"{{:.{precision}g}}".format(value)
     for v in ["e+", "e-"]:
         if v in fmtted:
             fmtted = fmtted.replace(v, " × 10<sup>") + "</sup>"
@@ -219,7 +221,7 @@ def fmt_number(value: int) -> str:
     Returns:
         The numeric value with the given precision.
     """
-    return "{:n}".format(value)
+    return f"{value:n}"
 
 
 def fmt_array(value: np.ndarray, threshold=np.nan) -> str:

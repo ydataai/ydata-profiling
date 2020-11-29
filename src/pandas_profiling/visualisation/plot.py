@@ -284,7 +284,7 @@ def pie_plot(data, legend_kws=None):
 
     def func(pct, allvals):
         absolute = int(pct / 100.0 * np.sum(allvals))
-        return "{:.1f}%\n({:d})".format(pct, absolute)
+        return f"{pct:.1f}%\n({absolute:d})"
 
     wedges, _, _ = plt.pie(
         data, autopct=lambda pct: func(pct, data), textprops=dict(color="w")

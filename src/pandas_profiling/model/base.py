@@ -107,7 +107,7 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
     ):
         return True
     elif 1 <= series_description["distinct_count_without_nan"] <= 4:
-        unique_values = set([str(value).lower() for value in keys.values])
+        unique_values = {str(value).lower() for value in keys.values}
         accepted_combinations = [
             ["y", "n"],
             ["yes", "no"],

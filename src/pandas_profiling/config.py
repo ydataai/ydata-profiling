@@ -8,7 +8,7 @@ import confuse
 from pandas_profiling.utils.paths import get_config_default
 
 
-class Config(object):
+class Config:
     """This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
     various ways (notably via argparse and kwargs).
     """
