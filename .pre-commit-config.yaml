@@ -3,7 +3,7 @@ repos:
     rev: 20.8b1
     hooks:
     - id: black
-      language_version: python3.7
+      language_version: python3.8
 -   repo: https://github.com/nbQA-dev/nbQA
     rev: 0.4.0
     hooks:
