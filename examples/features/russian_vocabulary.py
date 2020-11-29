@@ -14,4 +14,4 @@ if __name__ == "__main__":
         title="Russian 1000 most occurring words | Profile Report",
         vars={"cat": {"words": True, "characters": True}},
     )
-    profile.to_file("russian_vocabulary.html")
+    profile.to_file(Path("russian_vocabulary.html"))

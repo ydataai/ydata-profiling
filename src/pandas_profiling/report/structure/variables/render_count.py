@@ -1,5 +1,4 @@
 from pandas_profiling.config import config
-from pandas_profiling.report.formatters import fmt_array
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
@@ -12,7 +11,6 @@ from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
 def render_count(summary):
-    varid = summary["varid"]
     template_variables = render_common(summary)
     image_format = config["plot"]["image_format"].get(str)
 
@@ -105,99 +103,6 @@ def render_count(summary):
         [info, table1, table2, mini_histo], sequence_type="grid"
     )
 
-    quantile_statistics = {
-        "name": "Quantile statistics",
-        "items": [
-            {
-                "name": "Minimum",
-                "value": summary["min"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "5-th percentile",
-                "value": summary["quantile_5"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "Q1",
-                "value": summary["quantile_25"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "median",
-                "value": summary["quantile_50"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "Q3",
-                "value": summary["quantile_75"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "95-th percentile",
-                "value": summary["quantile_95"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "Maximum",
-                "value": summary["max"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "Range",
-                "value": summary["range"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-            {
-                "name": "Interquartile range",
-                "value": summary["iqr"],
-                "fmt": "fmt_numeric",
-                "alert": False,
-            },
-        ],
-    }
-
-    descriptive_statistics = {
-        "name": "Descriptive statistics",
-        "items": [
-            {
-                "name": "Standard deviation",
-                "value": summary["std"],
-                "fmt": "fmt_numeric",
-            },
-            {
-                "name": "Coefficient of variation",
-                "value": summary["cv"],
-                "fmt": "fmt_numeric",
-            },
-            {"name": "Kurtosis", "value": summary["kurt"], "fmt": "fmt_numeric"},
-            {"name": "Mean", "value": summary["mean"], "fmt": "fmt_numeric"},
-            {"name": "MAD", "value": summary["mad"], "fmt": "fmt_numeric"},
-            {"name": "Skewness", "value": summary["skew"], "fmt": "fmt_numeric"},
-            {"name": "Sum", "value": summary["sum"], "fmt": "fmt_numeric"},
-            {"name": "Variance", "value": summary["var"], "fmt": "fmt_numeric"},
-        ],
-    }
-
-    # TODO: Make sections data structure
-    # statistics = ItemRenderer(
-    #     'statistics',
-    #     'Statistics',
-    #     'table',
-    #     [
-    #         quantile_statistics,
-    #         descriptive_statistics
-    #     ]
-    # )
-
     seqs = [
         Image(
             histogram(*summary["histogram"]),
@@ -238,7 +143,6 @@ def render_count(summary):
 
     template_variables["bottom"] = Container(
         [
-            # statistics,
             Container(
                 seqs, sequence_type="tabs", name="Histogram(s)", anchor_id="histograms"
             ),

@@ -4,18 +4,19 @@ import shutil
 from pathlib import Path
 
 import jinja2
-from jinja2 import Environment, PackageLoader
 
 from pandas_profiling.config import config
 from pandas_profiling.report.formatters import get_fmt_mapping
 
 # Initializing Jinja
-from pandas_profiling.utils.paths import get_html_template_path
+# from pandas_profiling.utils.paths import get_html_template_path
 
-package_loader = PackageLoader(
+package_loader = jinja2.PackageLoader(
     "pandas_profiling", "report/presentation/flavours/html/templates"
 )
-jinja2_env = Environment(lstrip_blocks=True, trim_blocks=True, loader=package_loader)
+jinja2_env = jinja2.Environment(
+    lstrip_blocks=True, trim_blocks=True, loader=package_loader
+)
 fmt_mapping = get_fmt_mapping()
 for key, value in fmt_mapping.items():
     jinja2_env.filters[key] = value

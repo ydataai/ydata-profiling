@@ -7,8 +7,6 @@ from pandas_profiling.report.presentation.core import (
 
 
 def render_generic(summary):
-    template_variables = {}  # render_common(summary)
-
     info = VariableInfo(
         anchor_id=summary["varid"],
         warnings=summary["warnings"],
