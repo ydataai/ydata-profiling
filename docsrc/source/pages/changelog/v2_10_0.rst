@@ -1,4 +1,4 @@
-Changelog vx.y.z
+Changelog v2.10.0
 ----------------
 
 🎉 Features
