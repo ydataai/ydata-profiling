@@ -5,7 +5,7 @@ from pandas_profiling.config import config
 
 
 @attr.s
-class Sample(object):
+class Sample:
     id = attr.ib()
     data = attr.ib()
     name = attr.ib()

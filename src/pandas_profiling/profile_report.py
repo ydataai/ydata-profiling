@@ -19,7 +19,7 @@ from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
 from pandas_profiling.utils.paths import get_config
 
 
-class ProfileReport(SerializeReport, object):
+class ProfileReport(SerializeReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.

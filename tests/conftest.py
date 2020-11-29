@@ -43,7 +43,7 @@ def pytest_runtest_setup(item):
     )
     plat = sys.platform
     if supported_platforms and plat not in supported_platforms:
-        pytest.skip("cannot run on platform {}".format(plat))
+        pytest.skip(f"cannot run on platform {plat}")
 
 
 def pytest_runtest_teardown():

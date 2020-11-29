@@ -35,9 +35,9 @@ class WidgetWarnings(Warnings):
 
             items.append(
                 HTML(
-                    templates.template(
-                        "warnings/warning_{}.html".format(type_name)
-                    ).render(message=message)
+                    templates.template(f"warnings/warning_{type_name}.html").render(
+                        message=message
+                    )
                 )
             )
             items.append(

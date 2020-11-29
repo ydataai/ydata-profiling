@@ -235,7 +235,7 @@ def get_scatter_matrix(scatter_matrix: dict) -> list:
 
     titems = []
 
-    alphanum = re.compile("[^a-zA-Z\s]")
+    alphanum = re.compile(r"[^a-zA-Z\s]")
 
     def clean_name(name):
         return alphanum.sub("", name).replace(" ", "_")
