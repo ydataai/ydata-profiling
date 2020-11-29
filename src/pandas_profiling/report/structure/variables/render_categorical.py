@@ -30,7 +30,7 @@ def render_categorical_frequency(summary, varid, image_format):
             },
         ],
         name="Unique",
-        anchor_id=f"{varid}uniquenessstats",
+        anchor_id=f"{varid}_unique_stats",
     )
 
     frequencies = Image(
@@ -241,7 +241,7 @@ def render_categorical_unicode(summary, varid, redact):
                 "alert": False,
             },
         ],
-        name="Characters and Unicode properties",
+        name="Characters and Unicode",
         caption="The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. ",
     )
 
@@ -296,6 +296,9 @@ def render_categorical(summary):
     n_obs_cat = config["vars"]["cat"]["n_obs"].get(int)
     image_format = config["plot"]["image_format"].get(str)
     redact = config["vars"]["cat"]["redact"].get(bool)
+    words = config["vars"]["cat"]["words"].get(bool)
+    characters = config["vars"]["cat"]["characters"].get(bool)
+    length = config["vars"]["cat"]["length"].get(bool)
 
     template_variables = render_common(summary)
 
@@ -365,17 +368,41 @@ def render_categorical(summary):
     unique_stats, value_counts = render_categorical_frequency(
         summary, varid, image_format
     )
-    # check_length = config["vars"]["cat"]["length"].get(bool)
-    # if check_length:
-    length_table, length_histo = render_categorical_length(summary, varid, image_format)
-    overview_table_char, unitab = render_categorical_unicode(summary, varid, redact)
 
-    overview_items = [unique_stats, length_table, overview_table_char]
-    string_items = [
-        frequency_table,
-        # value_counts,
-        length_histo,
-    ]
+    overview_items = []
+
+    if length:
+        length_table, length_histo = render_categorical_length(
+            summary, varid, image_format
+        )
+        overview_items.append(length_table)
+
+    if characters:
+        overview_table_char, unitab = render_categorical_unicode(summary, varid, redact)
+        overview_items.append(overview_table_char)
+
+    overview_items.append(unique_stats)
+
+    if not redact:
+        rows = ("1st row", "2nd row", "3rd row", "4th row", "5th row")
+
+        sample = Table(
+            [
+                {
+                    "name": name,
+                    "value": value,
+                    "fmt": "fmt",
+                    "alert": False,
+                }
+                for name, value in zip(rows, summary["first_rows"])
+            ],
+            name="Sample",
+        )
+        overview_items.append(sample)
+
+    string_items = [frequency_table]
+    if length:
+        string_items.append(length_histo)
 
     max_unique = config["plot"]["pie"]["max_unique"].get(int)
     if max_unique > 0 and summary["n_distinct"] <= max_unique:
@@ -389,65 +416,56 @@ def render_categorical(summary):
             )
         )
 
-    woc = freq_table(
-        freqtable=summary["word_counts"],
-        n=summary["word_counts"].sum(),
-        max_number_to_print=10,
-    )
-
-    fqwo = FrequencyTable(
-        woc,
-        name="Common words",
-        anchor_id=f"{varid}cwo",
-        redact=redact,
-    )
-
-    word_items = [fqwo]
-
-    character_items = []
-
-    # check_unicode = config["vars"]["cat"]["unicode"].get(bool)
-    # if check_unicode:
-    character_items.append(unitab)
-
     bottom_items = [
         Container(
             overview_items,
             name="Overview",
             anchor_id=f"{varid}overview",
-            sequence_type="grid",
+            sequence_type="batch_grid",
+            batch_size=len(overview_items),
+            titles=False,
         ),
         Container(
             string_items,
             name="Categories",
             anchor_id=f"{varid}string",
-            sequence_type="grid",
-        ),
-        Container(
-            word_items,
-            name="Words",
-            anchor_id=f"{varid}word",
-            sequence_type="grid",
-        ),
-        Container(
-            character_items,
-            name="Characters",
-            anchor_id=f"{varid}characters",
-            sequence_type="grid",
+            sequence_type="batch_grid",
+            batch_size=len(string_items),
         ),
     ]
 
-    overview = [
-        # Sample (0, 25,50,75,100)
-        # Character < Count / category >
-        # Word < Length >
-        # String < Length, Unique >
-    ]
+    if words:
+        woc = freq_table(
+            freqtable=summary["word_counts"],
+            n=summary["word_counts"].sum(),
+            max_number_to_print=10,
+        )
 
-    word = [
-        # frequencies (top n)
-        # length
-    ]
+        fqwo = FrequencyTable(
+            woc,
+            name="Common words",
+            anchor_id=f"{varid}cwo",
+            redact=redact,
+        )
+
+        bottom_items.append(
+            Container(
+                [fqwo],
+                name="Words",
+                anchor_id=f"{varid}word",
+                sequence_type="grid",
+            )
+        )
+
+    if characters:
+        bottom_items.append(
+            Container(
+                [unitab],
+                name="Characters",
+                anchor_id=f"{varid}characters",
+                sequence_type="grid",
+            )
+        )
 
     # Bottom
     template_variables["bottom"] = Container(

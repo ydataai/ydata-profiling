@@ -16,3 +16,4 @@ def test_issue353():
     profile = ProfileReport(
         df, title="Pandas Profiling Report", html={"style": {"full_width": True}}
     )
+    profile.get_description()

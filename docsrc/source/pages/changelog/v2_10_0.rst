@@ -1,0 +1,10 @@
+Changelog vx.y.z
+----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Restructured the overview for categorical variables.
+
+🚨 Breaking changes
+^^^^^^^^^^^^^^^^^^^
+- The configuration parameter `vars.cat.unicode` is replaced by `vars.cat.characters`.

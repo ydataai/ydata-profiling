@@ -303,6 +303,10 @@ def describe_1d(series: pd.Series) -> dict:
 
         stats = {"top": value_counts.index[0], "freq": value_counts.iloc[0]}
 
+        redact = config["vars"]["cat"]["redact"].get(float)
+        if not redact:
+            stats.update({"first_rows": series.head(5)})
+
         stats.update(
             histogram_compute(
                 value_counts, len(value_counts), name="histogram_frequencies"

@@ -36,7 +36,9 @@ class HTMLContainer(Container):
             )
         elif self.sequence_type == "batch_grid":
             return templates.template("sequence/batch_grid.html").render(
-                items=self.content["items"], batch_size=self.content["batch_size"]
+                items=self.content["items"],
+                batch_size=self.content["batch_size"],
+                titles=self.content.get("titles", True),
             )
 
         raise ValueError("Template not understood", self.sequence_type)
