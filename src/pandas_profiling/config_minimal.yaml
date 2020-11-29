@@ -37,7 +37,8 @@ vars:
         chi_squared_threshold: 0.0
     cat:
         length: False
-        unicode: False
+        characters: False
+        words: False
         cardinality_threshold: 50
         n_obs: 5
 # Set to zero to disable
@@ -71,12 +72,15 @@ correlations:
     spearman:
       calculate: False
       warn_high_correlations: False
+      threshold: 0.9
     kendall:
       calculate: False
       warn_high_correlations: False
+      threshold: 0.9
     phi_k:
       calculate: False
       warn_high_correlations: False
+      threshold: 0.9
     cramers:
       calculate: False
       warn_high_correlations: True

@@ -37,7 +37,8 @@ def test_issue437():
             }
         )
 
-        description_set = pandas_profiling.ProfileReport(df).description_set
+        report = pandas_profiling.ProfileReport(df)
+        description_set = report.description_set
 
         assert description_set["variables"]["a"]["type"] == Variable.TYPE_NUM
         assert description_set["variables"]["b"]["type"] == Variable.TYPE_NUM

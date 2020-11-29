@@ -36,8 +36,8 @@ def test_html_image():
     assert all(
         x in html
         for x in [
-            'src="{image_str}"'.format(image_str=image_str),
-            'alt="{alt_str}"'.format(alt_str=alt_str),
+            f'src="{image_str}"',
+            f'alt="{alt_str}"',
         ]
     )
 
@@ -50,8 +50,8 @@ def test_html_image():
     assert all(
         x in html_caption
         for x in [
-            'src="{image_str}"'.format(image_str=image_str),
-            'alt="{alt_str}"'.format(alt_str=alt_str),
+            f'src="{image_str}"',
+            f'alt="{alt_str}"',
             caption_str,
         ]
     )

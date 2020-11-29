@@ -107,7 +107,7 @@ def is_boolean(series: pd.Series, series_description: dict) -> bool:
     ):
         return True
     elif 1 <= series_description["distinct_count_without_nan"] <= 4:
-        unique_values = set([str(value).lower() for value in keys.values])
+        unique_values = {str(value).lower() for value in keys.values}
         accepted_combinations = [
             ["y", "n"],
             ["yes", "no"],
@@ -136,7 +136,7 @@ def is_numeric(series: pd.Series, series_description: dict) -> bool:
     return pd.api.types.is_numeric_dtype(series) and (
         series_description["distinct_count_without_nan"]
         >= config["vars"]["num"]["low_categorical_threshold"].get(int)
-        or any(np.inf == s or -np.inf == s for s in series)
+        or series.isin({np.inf, -np.inf}).any()
     )
 
 

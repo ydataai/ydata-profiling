@@ -43,7 +43,8 @@ Variable summary settings
 	    'num':{'low_categorical_threshold': 0},
 	    'cat':{
 	      'length':True,
-	      'unicode':False,
+	      'characters':False,
+	      'words':False,
 	      'n_obs': 5,
 	    }
   	}

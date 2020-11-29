@@ -14,8 +14,8 @@ IF "%1%" == "docs" (
 )
 
 IF "%1" == "test" (
-    pytest --black tests/unit/
-    pytest --black tests/issues/
+    pytest tests/unit/
+    pytest tests/issues/
     pytest --nbval tests/notebooks/
     flake8 . --select=E9,F63,F7,F82 --show-source --statistics
     ECHO "Tests completed!"
@@ -48,13 +48,12 @@ IF "%1" == "pypi_package" (
 )
 
 IF "%1" == "lint" (
-    isort --profile black .
-    black .
+    pre-commit run --all-files
     GOTO end
 )
 
 IF "%1" == "install" (
-	pip install -e .[notebook,app]
+	pip install -e .[notebook]
 	GOTO end
 )
 

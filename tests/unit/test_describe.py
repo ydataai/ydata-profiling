@@ -80,7 +80,7 @@ def describe_data():
         "cat": [
             "a",
             "long text value",
-            u"Élysée",
+            "Élysée",
             "",
             None,
             "some <b> B.s </div> </div> HTML stuff",
@@ -89,7 +89,7 @@ def describe_data():
             "c",
         ],
         "s1": np.ones(9),
-        "s2": [u"some constant text $ % value {obj} " for _ in range(1, 10)],
+        "s2": ["some constant text $ % value {obj} " for _ in range(1, 10)],
         "somedate": [
             datetime.date(2011, 7, 4),
             datetime.datetime(2022, 1, 1, 13, 57),
@@ -567,7 +567,7 @@ def test_describe_df(describe_data, expected_results):
         if results["variables"][col]["type"].value in ["NUM", "DATE"]:
             assert (
                 "histogram" in results["variables"][col]
-            ), "Histogram missing for column {} ".format(col)
+            ), f"Histogram missing for column {col} "
 
 
 def test_describe_empty():

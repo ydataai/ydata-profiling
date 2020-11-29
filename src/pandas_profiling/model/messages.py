@@ -57,7 +57,7 @@ class MessageType(Enum):
     """The variable is uniformly distributed"""
 
 
-class Message(object):
+class Message:
     """A message object (type, values, column)."""
 
     def __init__(

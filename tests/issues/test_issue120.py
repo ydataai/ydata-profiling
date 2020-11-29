@@ -26,7 +26,7 @@ def test_issue_120(get_data_file):
         },
         progress_bar=False,
         pool_size=0,
-        vars={"cat": {"unicode": True}},
+        vars={"cat": {"words": True, "characters": True}},
     )
     _ = report.report
     assert report.description_set is not None

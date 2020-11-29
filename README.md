@@ -8,7 +8,17 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
+
+<p align="center">
+  <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
+  |
+  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-j619lvar-dgU_GA3zlhB1vNqJvbg8yg">Slack</a>
+  | 
+  <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
+</p>
+
 Generates profile reports from a pandas `DataFrame`. 
+
 The pandas `df.describe()` function is great but a little basic for serious exploratory data analysis. 
 `pandas_profiling` extends the pandas DataFrame with `df.profile_report()` for quick data analysis.
 
@@ -38,7 +48,7 @@ Stay tuned.
 
 ### Support `pandas-profiling`
 
-The development of ``pandas-profiling`` relies completely on contributions.
+The development of `pandas-profiling` relies completely on contributions.
 If you find value in the package, we welcome you to support the project through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
 It's extra exciting that GitHub **matches your contribution** for the first year.
 
@@ -47,7 +57,7 @@ Find more information here:
  - [Changelog v2.9.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-9-0)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
- *September 2, 2020 💘*
+_September 2, 2020 💘_
 
 ---
 
@@ -73,6 +83,7 @@ The following examples can give you an impression of what the package can do:
 * [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html) (a simple colors dataset)
 
 Specific features:
+
 * [Russian Vocabulary](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/russian_vocabulary.html) (demonstrates text analysis)
 * [Cats and Dogs](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/cats-and-dogs.html) (demonstrates image analysis from the file system)
 * [Celebrity Faces](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/celebrity-faces.html) (demonstrates image analysis with EXIF information)
@@ -80,6 +91,7 @@ Specific features:
 * [Orange prices](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/united_report.html) and [Coal prices](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/flatly_report.html) (showcases report themes)
 
 Tutorials:
+
 * [Tutorial: report structure using Kaggle data (advanced)](https://pandas-profiling.github.io/pandas-profiling/examples/master/tutorials/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/tutorials/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftutorials%2Fmodify_report_structure.ipynb)
 
 
@@ -93,12 +105,15 @@ Tutorials:
 
 You can install using the pip package manager by running
 
-    pip install pandas-profiling[notebook]
-    
+```sh
+pip install pandas-profiling[notebook]
+```
+
 Alternatively, you could install the latest version directly from Github:
 
-    pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
-    
+```sh
+pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
+```    
     
 ### Using conda
 
@@ -107,22 +122,28 @@ Alternatively, you could install the latest version directly from Github:
  
 You can install using the conda package manager by running
 
-    conda install -c conda-forge pandas-profiling
+```sh
+conda install -c conda-forge pandas-profiling
+```
 
 ### From source
 
 Download the source code by cloning the repository or by pressing ['Download ZIP'](https://github.com/pandas-profiling/pandas-profiling/archive/master.zip) on this page. 
-Install by navigating to the proper directory and running
 
-    python setup.py install
-    
+Install by navigating to the proper directory and running:
+
+```sh
+python setup.py install
+```
+
 ## Documentation
 
 The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/). Previous documentation is still available [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/).
 
 ### Getting started
 
-Start by loading in your pandas DataFrame, e.g. by using
+Start by loading in your pandas DataFrame, e.g. by using:
+
 ```python
 import numpy as np
 import pandas as pd
@@ -156,6 +177,7 @@ There are two interfaces (see animations below): through widgets and through a H
 <img alt="Notebook Widgets" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/widgets.gif" width="800" />
 
 This is achieved by simply displaying the report. In the Jupyter Notebook, run:
+
 ```python
 profile.to_widgets()
 ```
@@ -176,7 +198,8 @@ If you want to generate a HTML report file, save the `ProfileReport` to an objec
 ```python
 profile.to_file("your_report.html")
 ```
-Alternatively, you can obtain the data as json:
+
+Alternatively, you can obtain the data as JSON:
 ```python
 # As a string
 json_data = profile.to_json()
@@ -188,7 +211,9 @@ profile.to_file("your_report.json")
 ### Large datasets
 
 Version 2.4 introduces minimal mode. 
+
 This is a default configuration that disables expensive computations (such as correlations and dynamic binning).
+
 Use the following syntax:
 
 ```python
@@ -198,11 +223,13 @@ profile.to_file("output.html")
 
 ### Command line usage
 
-For standard formatted CSV files that can be read immediately by pandas, you can use the `pandas_profiling` executable. Run
+For standard formatted CSV files that can be read immediately by pandas, you can use the `pandas_profiling` executable. 
 
-	pandas_profiling -h
+Run the following for information about options and arguments.
 
-for information about options and arguments.
+```sh
+pandas_profiling -h
+```
 
 ### Advanced usage
 
@@ -214,13 +241,14 @@ A set of options is available in order to adapt the report generated.
 
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 
-__Example__
+**Example**
+
 ```python
 profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file("output.html")
 ```
 
-# Supporting open source
+## Supporting open source
 
 Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible with support of our gracious sponsors.
 
@@ -259,36 +287,36 @@ Future versions of `pandas-profiling` will have extended type support through `v
 
 Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html).
 
+A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-hfy3iwp2-qEJSItye5QBZf8YGFMaMnQ).
+
 ## Editor integration
+
 ### PyCharm integration 
+
 1. Install `pandas-profiling` via the instructions above
 2. Locate your `pandas-profiling` executable.
-
-	  On macOS / Linux / BSD:
-	
-	```console
-	$ which pandas_profiling
-	(example) /usr/local/bin/pandas_profiling
-	```
-	
-	  On Windows:
-	
-	```console
-	$ where pandas_profiling
-	(example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe
-	```
-
-2. In Pycharm, go to _Settings_ (or _Preferences_ on macOS) > _Tools_ > _External tools_
-3. Click the _+_ icon to add a new external tool
-4. Insert the following values
+    - On macOS / Linux / BSD:
+        ```sh
+        $ which pandas_profiling
+        (example) /usr/local/bin/pandas_profiling
+        ```
+    - On Windows:
+        ```console
+        $ where pandas_profiling
+        (example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe
+        ```
+3. In PyCharm, go to _Settings_ (or _Preferences_ on macOS) > _Tools_ > _External tools_
+4. Click the _+_ icon to add a new external tool
+5. Insert the following values
 	- Name: Pandas Profiling
-    - Program: *__The location obtained in step 2__*
-    - Arguments: "$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"
-    - Working Directory: $ProjectFileDir$
+    - Program: _**The location obtained in step 2**_
+    - Arguments: `"$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"`
+    - Working Directory: `$ProjectFileDir$`
   
 <img alt="PyCharm Integration" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" />
   
 To use the PyCharm Integration, right click on any dataset file:
+
 _External Tools_ > _Pandas Profiling_.
 
 ### Other integrations
@@ -297,7 +325,7 @@ Other editor integrations may be contributed via pull requests.
 
 ## Dependencies
 
-The profile report is written in HTML and CSS, which means pandas-profiling requires a modern browser. 
+The profile report is written in HTML and CSS, which means `pandas-profiling` requires a modern browser. 
 
 You need [Python 3](https://python3statement.org/) to run this package. Other dependencies can be found in the requirements files:
 

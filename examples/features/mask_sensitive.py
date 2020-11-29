@@ -43,7 +43,7 @@ if __name__ == "__main__":
             data=mock_data,
             caption="Disclaimer: this is synthetic data generated based on the format of the data in this table.",
         ),
-        vars=dict(cat=dict(unicode=True)),
+        vars=dict(cat=dict(words=True, characters=True)),
         interactions=None,
     )
     report.to_file(Path("masked_report.html"))

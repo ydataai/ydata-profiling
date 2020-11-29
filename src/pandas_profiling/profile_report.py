@@ -19,7 +19,7 @@ from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
 from pandas_profiling.utils.paths import get_config
 
 
-class ProfileReport(SerializeReport, object):
+class ProfileReport(SerializeReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used has is it will output its content as an HTML report in a Jupyter notebook.
@@ -332,6 +332,9 @@ class ProfileReport(SerializeReport, object):
                 if isinstance(o, pd.Series):
                     return self.default(o.to_dict())
 
+                if isinstance(o, pd.DataFrame):
+                    return o.to_json()
+
                 if isinstance(o, np.integer):
                     return o.tolist()
 
@@ -411,26 +414,6 @@ class ProfileReport(SerializeReport, object):
     def __repr__(self):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
-
-    def to_app(self):
-        """
-        (Experimental) PyQt5 user interface, not ready to be used.
-        You are welcome to contribute a pull request if you like this feature.
-        """
-        # TODO: _render_app
-        # TODO: make functional
-        from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication
-
-        from pandas_profiling.report.presentation.flavours import QtReport
-        from pandas_profiling.report.presentation.flavours.qt.app import get_app
-
-        app = QtCore.QCoreApplication.instance()
-        if app is None:
-            app = QApplication([])
-
-        app_widgets = QtReport(self.report).render()
-        app = get_app(app, self.title, app_widgets)
 
     @staticmethod
     def preprocess(df):
