@@ -32,12 +32,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - run: make install
-      - run: |
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-          pip install "pandas${{ matrix.pandas }}"
       - uses: actions/cache@v2
         if: startsWith(runner.os, 'Linux')
         with:
@@ -61,6 +55,11 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
-
+      - run: |
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+          pip install "pandas${{ matrix.pandas }}"
+      - run: make install
       - run: make test_cov
       - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
