@@ -7,19 +7,23 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ 3.6, 3.7, 3.8 ]
+        os: [ ubuntu-latest ]
+        python-version: [ 3.8 ]
         pandas: ["<1", "==1.0.5", ">1.1"]
-        exclude:
+        include:
           - os: macos-latest
             python-version: 3.6
-          - os: macos-latest
-            python-version: 3.7
+            pandas: ">1.1"
           - os: windows-latest
             python-version: 3.6
-          - os: windows-latest
+            pandas: ">1.1"
+          - os: ubuntu-latest
+            python-version: 3.6
+            pandas: ">1.1"
+          - os: ubuntu-latest
             python-version: 3.7
-          
+            pandas: ">1.1"
+
     name: Python ${{ matrix.python-version }} sample
     steps:
       - uses: actions/checkout@v2
