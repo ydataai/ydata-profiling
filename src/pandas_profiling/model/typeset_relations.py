@@ -11,17 +11,17 @@ def is_nullable(series, state) -> bool:
     return series.count() > 0
 
 
-def applied_to_nonnull(fn):
-    @functools.wraps(fn)
-    def inner(series, *args, **kwargs):
-        if series.hasnans:
-            new_series = series.copy()
-            notna = series.notna()
-            new_series[notna] = fn(series[notna], *args, **kwargs)
-            return new_series
-        return fn(series, *args, **kwargs)
-
-    return inner
+# def applied_to_nonnull(fn):
+#     @functools.wraps(fn)
+#     def inner(series, *args, **kwargs):
+#         if series.hasnans:
+#             new_series = series.copy()
+#             notna = series.notna()
+#             new_series[notna] = fn(series[notna], *args, **kwargs)
+#             return new_series
+#         return fn(series, *args, **kwargs)
+#
+#     return inner
 
 
 def try_func(fn):
@@ -60,7 +60,7 @@ def string_is_bool(series, state) -> bool:
     return tester(series, state)
 
 
-@applied_to_nonnull
+# @applied_to_nonnull
 def string_to_bool(series, state):
     return series.str.lower().map(PP_bool_map)
 
@@ -72,8 +72,9 @@ def numeric_is_category(series, state):
     return 1 <= n_unique <= threshold
 
 
-@applied_to_nonnull
+# @applied_to_nonnull
 def to_category(series, state):
+    # TODO: deal with nans
     return series.astype(str)
 
 

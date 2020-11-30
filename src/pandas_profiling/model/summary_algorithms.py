@@ -322,9 +322,12 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
         summary["n_characters_distinct"] = summary["n_characters"]
         summary["n_characters"] = summary["character_counts"].values.sum()
 
-        summary["category_alias_counts"].index = summary[
-            "category_alias_counts"
-        ].index.str.replace("_", " ")
+        try:
+            summary["category_alias_counts"].index = summary[
+                "category_alias_counts"
+            ].index.str.replace("_", " ")
+        except AttributeError:
+            pass
 
     words = config["vars"]["cat"]["words"]
     if words:

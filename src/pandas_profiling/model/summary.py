@@ -277,6 +277,9 @@ def get_scatter_matrix(df, continuous_variables):
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
+                    if y == x:
+                        continue
+
                     # check if any na still exists, and remove it before computing scatter matrix
                     df_temp = df[[x, y]].dropna()
                     scatter_matrix[x][y] = scatter_pairwise(
