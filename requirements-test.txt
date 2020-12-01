@@ -3,7 +3,7 @@ coverage<5
 codecov
 pytest-mypy>=0.7.0
 pytest-cov
-nbval
+nbval>=0.9.6
 ipykernel>=5.3.4
 fastparquet>=0.3.3
 flake8
