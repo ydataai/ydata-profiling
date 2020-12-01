@@ -14,9 +14,9 @@ jobs:
           - os: macos-latest
             python-version: 3.6
             pandas: ">1.1"
-          - os: windows-2016
-            python-version: 3.6
-            pandas: ">1.1"
+#          - os: windows-2016
+#            python-version: 3.6
+#            pandas: ">1.1"
           - os: ubuntu-latest
             python-version: 3.6
             pandas: ">1.1"
