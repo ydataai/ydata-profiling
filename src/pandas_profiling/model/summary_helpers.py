@@ -38,7 +38,10 @@ def named_aggregate_summary(series: pd.Series, key: str):
     return summary
 
 
-def length_summary(series: pd.Series, summary: dict = {}) -> dict:
+def length_summary(series: pd.Series, summary=None) -> dict:
+    if summary is None:
+        summary = {}
+
     length = series.str.len()
 
     summary.update({"length": length})

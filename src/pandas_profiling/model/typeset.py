@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 import pandas as pd
 import visions
 from pandas.api import types as pdt
-from visions import VisionsBaseType, VisionsTypeset
 from visions.relations import IdentityRelation, InferenceRelation
 from visions.utils import nullable_series_contains
 from visions.utils.series_utils import series_not_empty
@@ -28,7 +27,7 @@ class Unsupported(visions.Generic):
     pass
 
 
-class Numeric(VisionsBaseType):
+class Numeric(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -60,7 +59,7 @@ def to_date(series):
     return pd.to_datetime(series)
 
 
-class DateTime(VisionsBaseType):
+class DateTime(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -75,7 +74,7 @@ class DateTime(VisionsBaseType):
         return pdt.is_datetime64_any_dtype(series)
 
 
-class Categorical(VisionsBaseType):
+class Categorical(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -101,7 +100,7 @@ class Categorical(VisionsBaseType):
         return series_is_string(series)
 
 
-class Boolean(VisionsBaseType):
+class Boolean(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [
@@ -129,7 +128,7 @@ class Boolean(VisionsBaseType):
         return pdt.is_bool_dtype(series)
 
 
-class URL(VisionsBaseType):
+class URL(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, Categorical)]
@@ -146,7 +145,7 @@ class URL(VisionsBaseType):
             return False
 
 
-class Path(VisionsBaseType):
+class Path(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, Categorical)]
@@ -162,7 +161,7 @@ class Path(VisionsBaseType):
             return False
 
 
-class File(VisionsBaseType):
+class File(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, Path)]
@@ -174,7 +173,7 @@ class File(VisionsBaseType):
         return all(os.path.exists(p) for p in series)
 
 
-class Image(VisionsBaseType):
+class Image(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         relations = [IdentityRelation(cls, File)]
@@ -186,7 +185,7 @@ class Image(VisionsBaseType):
         return all(imghdr.what(p) for p in series)
 
 
-class Complex(VisionsBaseType):
+class Complex(visions.VisionsBaseType):
     @classmethod
     def get_relations(cls):
         return [IdentityRelation(cls, Numeric)]
@@ -197,7 +196,7 @@ class Complex(VisionsBaseType):
         return pdt.is_complex_dtype(series)
 
 
-class ProfilingTypeSet(VisionsTypeset):
+class ProfilingTypeSet(visions.VisionsTypeset):
     def __init__(self):
         types = {
             Unsupported,

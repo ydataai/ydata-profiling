@@ -9,13 +9,7 @@ from pandas.core.base import DataError
 from scipy import stats
 
 from pandas_profiling.config import config
-from pandas_profiling.model.typeset import (
-    Boolean,
-    Categorical,
-    DateTime,
-    Numeric,
-    Unsupported,
-)
+from pandas_profiling.model.typeset import Boolean, Categorical, Numeric, Unsupported
 
 
 class Correlation:
