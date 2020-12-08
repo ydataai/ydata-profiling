@@ -31,4 +31,4 @@ def test_issue523():
     df = pd.DataFrame({"col": data}, dtype=pd.Int64Dtype())
 
     profile_report = ProfileReport(df, title="Test Report")
-    assert len(profile_report.to_html()) > 0
+    assert len(profile_report.get_description()) > 0

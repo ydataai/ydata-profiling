@@ -9,7 +9,7 @@ import pandas_profiling
 from pandas_profiling.utils.cache import cache_file
 
 
-# @pytest.mark.linux
+@pytest.mark.linux
 def test_issue416():
     file_name = cache_file(
         "products.tsv",
@@ -25,5 +25,5 @@ def test_issue416():
     data = profile.to_json()
     print(data)
     # FIXME
-    # assert '"Path": 1' in data
-    # assert '"common_prefix": "/",' in data
+    assert '"Path": 1' in data
+    assert '"common_prefix": "/",' in data
