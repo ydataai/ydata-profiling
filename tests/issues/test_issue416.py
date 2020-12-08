@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 import pandas_profiling
+from pandas_profiling.model.typeset import Categorical, Path
 from pandas_profiling.utils.cache import cache_file
 
 
@@ -22,8 +23,8 @@ def test_issue416():
     profile = pandas_profiling.ProfileReport(
         df, title="Pandas Profiling Report", html={"style": {"full_width": True}}
     )
-    data = profile.to_json()
-    print(data)
-    # FIXME
-    assert '"Path": 1' in data
-    assert '"common_prefix": "/",' in data
+    data = profile.get_description()
+
+    assert data["table"]["types"][Categorical] == 2
+    assert data["table"]["types"][Path] == 1
+    assert data["variables"]["path"]["common_prefix"] == "/"
