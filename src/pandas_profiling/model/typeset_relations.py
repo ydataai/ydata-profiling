@@ -91,7 +91,6 @@ def category_is_numeric(series, state):
     try:
         _ = series.astype(float)
         r = pd.to_numeric(series, errors="coerce")
-        print(r)
         if r.hasnans and r.count() == 0:
             return False
     except:

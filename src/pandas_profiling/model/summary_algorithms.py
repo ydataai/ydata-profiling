@@ -95,10 +95,10 @@ def describe_supported(
 
     stats = {
         "n_distinct": distinct_count,
-        "p_distinct": distinct_count / count,
+        "p_distinct": distinct_count / count if count > 0 else 0,
         "is_unique": unique_count == count,
         "n_unique": unique_count,
-        "p_unique": unique_count / count,
+        "p_unique": unique_count / count if count > 0 else 0,
     }
     stats.update(series_description)
 
