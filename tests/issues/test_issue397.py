@@ -10,6 +10,7 @@ from pandas_profiling.model.typeset import Categorical, Numeric
 
 
 def test_issue397():
+    # Note: warnings are expected with np.inf values
     df = pd.DataFrame.from_dict(
         {
             "float-inf": pd.Series([np.inf, 3.0, 4.0, np.NINF], dtype="float"),

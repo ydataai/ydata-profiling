@@ -51,14 +51,19 @@ class Cramers(Correlation):
         chi2 = stats.chi2_contingency(confusion_matrix, correction=correction)[0]
         n = confusion_matrix.sum().sum()
         phi2 = chi2 / n
-        r, k = confusion_matrix.shape
+        r = confusion_matrix.shape[0]
+        k = confusion_matrix.shape[1] if len(confusion_matrix.shape) > 1 else 1
 
         # Deal with NaNs later on
         with np.errstate(divide="ignore", invalid="ignore"):
             phi2corr = max(0.0, phi2 - ((k - 1.0) * (r - 1.0)) / (n - 1.0))
             rcorr = r - ((r - 1.0) ** 2.0) / (n - 1.0)
             kcorr = k - ((k - 1.0) ** 2.0) / (n - 1.0)
-            corr = np.sqrt(phi2corr / min((kcorr - 1.0), (rcorr - 1.0)))
+            rkcorr = min((kcorr - 1.0), (rcorr - 1.0))
+            if rkcorr == 0.0:
+                corr = 1.0
+            else:
+                corr = np.sqrt(phi2corr / rkcorr)
         return corr
 
     @staticmethod
@@ -134,15 +139,15 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 
 
 def calculate_correlation(
-    df: pd.DataFrame, correlation_name: str, summary
+    df: pd.DataFrame, correlation_name: str, summary: dict
 ) -> Optional[pd.DataFrame]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, phi_k, cramers).
 
     Args:
-        variables: A dict with column names and variable types.
         df: The DataFrame with variables.
         correlation_name:
+        summary: summary dictionary
 
     Returns:
         The correlation matrices for the given correlation measures. Return None if correlation is empty.

@@ -2,9 +2,12 @@
 Test for issue 51:
 https://github.com/pandas-profiling/pandas-profiling/issues/51
 """
+import numpy as np
 import pandas as pd
 
 import pandas_profiling
+
+# FIXME: correlations can be computed stand alone to speed up tests
 
 
 def test_issue51(get_data_file):
@@ -36,6 +39,8 @@ def test_issue51_similar():
     report = df.profile_report(
         title="Pandas Profiling Report", progress_bar=False, explorative=True
     )
+    # FIXME: assert correlation values
+    # print(report.get_description()["correlations"])
 
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
@@ -44,13 +49,29 @@ def test_issue51_similar():
 
 def test_issue51_empty():
     df = pd.DataFrame(
-        {"test": ["", "", ""], "blest": ["", "", ""], "bert": ["", "", ""]}
+        {"test": ["", "", "", ""], "blest": ["", "", "", ""], "bert": ["", "", "", ""]}
     )
 
     report = df.profile_report(
         title="Pandas Profiling Report", progress_bar=False, explorative=True
     )
-
     assert (
-        "<title>Pandas Profiling Report</title>" in report.to_html()
-    ), "Profile report should be generated."
+        report.get_description()["correlations"]["cramers"].values == np.ones((3, 3))
+    ).all()
+
+
+def test_issue51_identical():
+    df = pd.DataFrame(
+        {
+            "test": ["v1", "v1", "v1"],
+            "blest": ["v1", "v1", "v1"],
+            "bert": ["v1", "v1", "v1"],
+        }
+    )
+
+    report = df.profile_report(
+        title="Pandas Profiling Report", progress_bar=False, explorative=True
+    )
+    assert (
+        report.get_description()["correlations"]["cramers"].values == np.ones((3, 3))
+    ).all()
