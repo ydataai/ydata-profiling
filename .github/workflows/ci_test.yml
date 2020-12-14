@@ -55,7 +55,6 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
-
       - run: |
           pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
@@ -64,4 +63,3 @@ jobs:
       - run: make install
       - run: make test_cov
       - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
-
