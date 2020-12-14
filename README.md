@@ -250,7 +250,7 @@ profile.to_file("output.html")
 
 ## Supporting open source
 
-Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible with support of our gracious sponsors.
+Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible without support of our gracious sponsors.
 
 <table>
 <tr>
