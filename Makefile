@@ -17,6 +17,13 @@ test:
 	pytest -m "not sparktest" --nbval tests/notebooks/
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 
+test_cov:
+	pytest -m "not sparktest" --cov=. tests/unit/
+	pytest -m "not sparktest" --cov=. --cov-append tests/issues/
+	pytest -m "not sparktest" --cov=. --cov-append --nbval tests/notebooks/
+	pandas_profiling -h
+	make typing
+
 test-spark:
 	pytest -m sparktest --black tests/unit/
 

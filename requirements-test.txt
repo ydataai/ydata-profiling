@@ -16,6 +16,3 @@ check-manifest>=0.42
 twine>=3.1.1
 kaggle
 
-# spark dependency
-pytest-spark>=0.6.0
-pyarrow>=0.8.0

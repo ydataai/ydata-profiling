@@ -1,0 +1,134 @@
+name: CI Tests
+
+on: push
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ 3.8 ]
+        pandas: ["==0.25.3", "==1.0.5", ">1.1"]
+        include:
+          - os: macos-latest
+            python-version: 3.6
+            pandas: ">1.1"
+#          - os: windows-2016
+#            python-version: 3.6
+#            pandas: ">1.1"
+          - os: ubuntu-latest
+            python-version: 3.6
+            pandas: ">1.1"
+          - os: ubuntu-latest
+            python-version: 3.7
+            pandas: ">1.1"
+
+    name: CI Tests (py${{ matrix.python-version }}, ${{ matrix.os }}, pandas${{ matrix.pandas }})
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Linux')
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'macOS')
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Windows')
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - run: |
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+          pip install "pandas${{ matrix.pandas }}"
+      - run: make install
+      - run: make test_cov
+      - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
+
+  build_spark:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ 3.6, 3.7, 3.8]
+        pandas: ["==0.25.3", "==1.0.5", ">1.1"]
+        spark: ["2.3.0", "2.4.7", "3.0.1"]
+        hadoop: [ 2.7 ]
+        java_home: [ /usr/lib/jvm/java-8-openjdk-amd64 ]
+        exclude:
+           - python-version: 3.8
+             spark: "2.3.0"
+           - python-version: 3.8
+             spark: "2.4.7"
+#          - os: macos-latest
+#            python-version: 3.6
+#            pandas: ">1.1"
+#          - os: windows-2016
+#            python-version: 3.6
+#            pandas: ">1.1"
+
+
+
+    name: CI Tests Spark (py${{ matrix.python-version }}, ${{ matrix.os }}, pandas${{ matrix.pandas }}, spark${{ matrix.spark }})
+    env:
+      TRAVIS_BUILD_DIR: ${{ github.workspace }}
+      JAVA_HOME: ${{ matrix.java_home }}
+      SPARK_VERSION: ${{ matrix.spark }}
+      HADOOP_VERSION: ${{ matrix.hadoop }}
+      SPARK_HOME: ${{ github.workspace }}/spark/
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Linux')
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-\
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'macOS')
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Windows')
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - run: |
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+          pip install "pandas${{ matrix.pandas }}"
+          pip install pytest-spark>=0.6.0
+          pip install pyarrow>=0.8.0
+      - run: make install
+      - run: make install-spark-ci
+      - run: make test-spark
+      - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
