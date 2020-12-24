@@ -50,7 +50,7 @@ def remove_suffix(text: str, suffix: str) -> str:
     Notes:
         In python 3.9+, there is a built-in string method called removesuffix() that can serve this purpose.
     """
-    return text[:-len(suffix)] if suffix and text.endswith(suffix) else text
+    return text[: -len(suffix)] if suffix and text.endswith(suffix) else text
 
 
 def uncompressed_extension(file_name: Path) -> str:
