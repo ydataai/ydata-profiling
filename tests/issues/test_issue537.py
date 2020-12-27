@@ -48,7 +48,7 @@ def test_multiprocessing_describe1d():
     """
     this test serves to get a large dataset, and ensure that even across parallelised describe1d operations,
     there is no ValueError raised. Previously, series.fillna(np.nan,inplace=True) was used instead of
-    series = series.fillna(np.nan) in model.summmary.describe1d, resulting in a race condition where the underlying
+    series = series.fillna(np.nan) in model.summary.describe1d, resulting in a race condition where the underlying
     df was being mutated by two threads at the same time creating a ValueError. This test checks that this does not
     occur again by running a parallelised describe1d and testing if a ValueError is raised.
 
