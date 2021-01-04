@@ -122,6 +122,9 @@ class PhiK(Correlation):
         if len(selcols) <= 1:
             return None
 
+        # Fix issue with NAType
+        df[selcols].fillna(np.nan, inplace=True)
+
         correlation = df[selcols].phik_matrix(interval_cols=intcols)
 
         return correlation
