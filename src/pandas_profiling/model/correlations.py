@@ -100,8 +100,6 @@ class Cramers(Correlation):
 class PhiK(Correlation):
     @staticmethod
     def compute(df, summary) -> Optional[pd.DataFrame]:
-        import phik
-
         threshold = config["categorical_maximum_correlation_distinct"].get(int)
         intcols = {
             key
@@ -122,10 +120,11 @@ class PhiK(Correlation):
         if len(selcols) <= 1:
             return None
 
-        # Fix issue with NAType
-        df[selcols].fillna(np.nan, inplace=True)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            import phik
 
-        correlation = df[selcols].phik_matrix(interval_cols=intcols)
+            correlation = df[selcols].phik_matrix(interval_cols=intcols)
 
         return correlation
 
