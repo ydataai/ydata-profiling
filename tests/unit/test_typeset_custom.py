@@ -42,6 +42,7 @@ def get_profiling_series():
         "integers_nan": [1, 0, 1, 0, np.nan],
         # test Describe
         "id": [chr(97 + c) for c in range(1, 9)] + ["d"],
+        "catnum": [str(c) for c in range(1, 100)],
         "x": [50, 50, -10, 0, 0, 5, 15, -3, np.nan],
         "y": [
             0.000001,
@@ -174,6 +175,7 @@ contains_map = {
         "str_true_false",
         "str_true_false_none",
         "str_true_false_nan",
+        "catnum",
     },
     Boolean: {
         "bool_tf",
@@ -233,6 +235,7 @@ inference_map = {
     "tuple": Unsupported,
     "inf_only": Numeric,
     "nullable_int": Numeric,
+    "catnum": Numeric,
 }
 
 
@@ -250,34 +253,49 @@ def test_inference(series, type, typeset, difference):
 
 
 # Conversions in one single step
-# convert_map = [
-#     # Model type, Relation type
-#     (Categorical, Numeric, {}),
-#     (
-#         Numeric,
-#         Categorical,
-#         {
-#         },
-#     ),
-#     (
-#         Boolean,
-#         Categorical,
-#         {
-#         },
-#     ),
-# #return {
-# #    "date_str": Categorical                   DateTime
-# # }
-# ]
-#
-#
-# @pytest.mark.parametrize(**get_convert_cases(series, convert_map, typeset))
-# def test_conversion(source_type, relation_type, series, member):
-#     """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type"
-#
-#     Args:
-#         series: the series to test
-#         source_type: the type to test against
-#     """
-#     result, message = convert(source_type, relation_type, series, member)
-#     assert result, message
+convert_map = [
+    # Model type, Relation type
+    (
+        Categorical,
+        Numeric,
+        {
+            "integers",
+            "inf_only",
+            "integers_nan",
+            "s1",
+            "bool_01",
+            "bool_01_with_nan",
+            "nullable_int",
+        },
+    ),
+    (
+        Numeric,
+        Categorical,
+        {"catnum"},
+    ),
+    (
+        Boolean,
+        Categorical,
+        {
+            "str_true_false",
+            "str_yes_no",
+            "str_yes_no_mixed",
+            "str_yes_no_nan",
+            "str_true_false_nan",
+            "str_true_false_none",
+        },
+    ),
+]
+
+
+@pytest.mark.parametrize(**get_convert_cases(series, convert_map, typeset))
+def test_conversion(source_type, relation_type, series, member):
+    """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type"
+
+    Args:
+        series: the series to test
+        source_type: the type to test against
+    """
+    config["vars"]["num"]["low_categorical_threshold"].set(2)
+    result, message = convert(source_type, relation_type, series, member)
+    assert result, message
