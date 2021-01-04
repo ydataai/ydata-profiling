@@ -47,6 +47,12 @@ vars:
         redact: False
     bool:
         n_obs: 3
+# string to boolean mappings pairs (true, false)
+        mappings:
+          - ["t", "f"]
+          - ["yes", "no"]
+          - ["y", "n"]
+          - ["true", "false"]
     file:
         active: False
     image:

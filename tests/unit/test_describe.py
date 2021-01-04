@@ -14,32 +14,50 @@ check_is_NaN = "pandas_profiling.check_is_NaN"
 
 testdata = [
     # Unique values
-    (pd.Series([1, 2]), True, 1, 1),
+    (pd.Series([1, 2]), {"is_unique": True, "p_distinct": 1, "p_unique": 1}),
     # Unique values including nan
-    (pd.Series([np.nan]), None, None, None),
+    (pd.Series([np.nan]), {"is_unique": None, "p_distinct": None, "p_unique": None}),
     # Unique values all nan
-    (pd.Series([1, 2, np.nan]), True, 1, 1),
+    (pd.Series([1, 2, np.nan]), {"is_unique": True, "p_distinct": 1, "p_unique": 1}),
     # Non unique values
-    (pd.Series([1, 2, 2]), False, 2 / 3, 1 / 3),
+    (
+        pd.Series([1, 2, 2]),
+        {"is_unique": False, "p_distinct": 2 / 3, "p_unique": 1 / 3},
+    ),
     # Non unique nan
-    (pd.Series([1, np.nan, np.nan]), True, 1, 1),
+    (
+        pd.Series([1, np.nan, np.nan]),
+        {"is_unique": True, "p_distinct": 1, "p_unique": 1},
+    ),
     # Non unique values including nan
-    (pd.Series([1, 2, 2, np.nan]), False, 2 / 3, 1 / 3),
+    (
+        pd.Series([1, 2, 2, np.nan]),
+        {"is_unique": False, "p_distinct": 2 / 3, "p_unique": 1 / 3},
+    ),
     # Non unique values including non unique nan
-    (pd.Series([1, 2, 2, np.nan, np.nan]), False, 2 / 3, 1 / 3),
+    (
+        pd.Series([1, 2, 2, np.nan, np.nan]),
+        {"is_unique": False, "p_distinct": 2 / 3, "p_unique": 1 / 3},
+    ),
 ]
 
 
-# FIXME
-# @pytest.mark.parametrize("data,is_unique,p_distinct,p_unique", testdata)
-# def test_describe_unique(data, is_unique, p_distinct, p_unique, summarizer, typeset):
-#     """Test the unique feature of 1D data"""
-#
-#     desc_1d = describe_1d(data, summarizer, typeset)
-#     if is_unique is not None:
-#         assert desc_1d["p_unique"] == p_unique, "Describe 1D p_unique incorrect"
-#         assert desc_1d["p_distinct"] == p_distinct, "Describe 1D p_distinct incorrect"
-#         assert desc_1d["is_unique"] == is_unique, "Describe 1D should return unique"
+@pytest.mark.parametrize("data,expected", testdata)
+def test_describe_unique(data, expected, summarizer, typeset):
+    """Test the unique feature of 1D data"""
+    config["vars"]["num"]["low_categorical_threshold"] = 0
+
+    desc_1d = describe_1d(data, summarizer, typeset)
+    if expected["is_unique"] is not None:
+        assert (
+            desc_1d["p_unique"] == expected["p_unique"]
+        ), "Describe 1D p_unique incorrect"
+        assert (
+            desc_1d["p_distinct"] == expected["p_distinct"]
+        ), "Describe 1D p_distinct incorrect"
+        assert (
+            desc_1d["is_unique"] == expected["is_unique"]
+        ), "Describe 1D should return unique"
 
 
 @pytest.fixture

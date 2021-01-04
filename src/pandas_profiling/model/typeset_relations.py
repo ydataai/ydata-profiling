@@ -35,17 +35,15 @@ def try_func(fn):
     return inner
 
 
-# TODO: config!
-PP_bool_map = {
-    "yes": True,
-    "no": False,
-    "y": True,
-    "n": False,
-    "true": True,
-    "false": False,
-    "t": True,
-    "f": False,
-}
+def get_boolean_map():
+    bool_map = {}
+    for true_value, false_value in config["vars"]["bool"]["mappings"].get(list):
+        bool_map[true_value] = True
+        bool_map[false_value] = False
+    return bool_map
+
+
+PP_bool_map = get_boolean_map()
 
 
 def string_is_bool(series, state) -> bool:
