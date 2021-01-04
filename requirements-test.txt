@@ -5,7 +5,7 @@ pytest-mypy>=0.7.0
 pytest-cov
 nbval>=0.9.6
 ipykernel>=5.3.4
-fastparquet>=0.3.3
+fastparquet==0.4.1
 flake8
 check-manifest>=0.45
 twine>=3.1.1
