@@ -288,7 +288,7 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
     """
 
     # Make sure we deal with strings (Issue #100)
-    series = series.fillna('').astype(str)
+    series = series.fillna("").astype(str)
 
     # Only run if at least 1 non-missing value
     value_counts = summary["value_counts_without_nan"]
