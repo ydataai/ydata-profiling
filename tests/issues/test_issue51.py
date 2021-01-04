@@ -8,6 +8,7 @@ import pandas as pd
 import pandas_profiling
 
 # FIXME: correlations can be computed stand alone to speed up tests
+from pandas_profiling.config import config
 
 
 def test_issue51(get_data_file):
@@ -28,6 +29,7 @@ def test_issue51(get_data_file):
 
 
 def test_issue51_similar():
+    config["vars"]["num"]["low_categorical_threshold"] = 0
     df = pd.DataFrame(
         {
             "test": ["", "hoi", None],
@@ -48,12 +50,16 @@ def test_issue51_similar():
 
 
 def test_issue51_empty():
+    config["vars"]["num"]["low_categorical_threshold"] = 0
     df = pd.DataFrame(
         {"test": ["", "", "", ""], "blest": ["", "", "", ""], "bert": ["", "", "", ""]}
     )
 
     report = df.profile_report(
-        title="Pandas Profiling Report", progress_bar=False, explorative=True
+        title="Pandas Profiling Report",
+        progress_bar=False,
+        explorative=True,
+        vars={"num": {"low_categorical_threshold": 0}},
     )
     assert (
         report.get_description()["correlations"]["cramers"].values == np.ones((3, 3))
@@ -61,6 +67,7 @@ def test_issue51_empty():
 
 
 def test_issue51_identical():
+    config["vars"]["num"]["low_categorical_threshold"] = 0
     df = pd.DataFrame(
         {
             "test": ["v1", "v1", "v1"],
