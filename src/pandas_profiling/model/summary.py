@@ -16,7 +16,7 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
 )
 from pandas_profiling.model.summarizer import BaseSummarizer
-from pandas_profiling.model.typeset import Numeric, Unsupported
+from pandas_profiling.model.typeset import Unsupported
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
@@ -40,7 +40,6 @@ def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     series = series.fillna(np.nan)
 
     # Infer variable types
-    # vtype = Unsupported
     vtype = typeset.infer_type(series)
     series = typeset.cast_to_inferred(series)
 
