@@ -27,7 +27,6 @@ from pandas_profiling.model.typeset import (
     Image,
     Numeric,
     Path,
-    ProfilingTypeSet,
     Unsupported,
 )
 

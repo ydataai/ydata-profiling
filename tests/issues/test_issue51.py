@@ -61,6 +61,11 @@ def test_issue51_empty():
         explorative=True,
         vars={"num": {"low_categorical_threshold": 0}},
     )
+
+    d = report.get_description()
+    print(d["variables"]["test"]["type"])
+    print(d["variables"]["blest"]["type"])
+    print(d["variables"]["bert"]["type"])
     assert (
         report.get_description()["correlations"]["cramers"].values == np.ones((3, 3))
     ).all()
