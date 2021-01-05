@@ -19,8 +19,8 @@ test:
 	
 test_cov:
 	pytest --cov=. tests/unit/
-	pytest --cov=. tests/issues/
-	pytest --cov=. --nbval tests/notebooks/
+	pytest --cov=. --cov-append tests/issues/
+	pytest --cov=. --cov-append --nbval tests/notebooks/
 	pandas_profiling -h
 	make typing
 

@@ -9,14 +9,14 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ 3.8 ]
-        pandas: ["<1", "==1.0.5", ">1.1"]
+        pandas: ["==0.25.3", "==1.0.5", ">1.1"]
         include:
           - os: macos-latest
             python-version: 3.6
             pandas: ">1.1"
-          - os: windows-latest
-            python-version: 3.6
-            pandas: ">1.1"
+#          - os: windows-2016
+#            python-version: 3.6
+#            pandas: ">1.1"
           - os: ubuntu-latest
             python-version: 3.6
             pandas: ">1.1"

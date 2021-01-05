@@ -47,12 +47,23 @@ vars:
         redact: False
     bool:
         n_obs: 3
+# string to boolean mappings pairs (true, false)
+        mappings:
+          - ["t", "f"]
+          - ["yes", "no"]
+          - ["y", "n"]
+          - ["true", "false"]
+    path:
+        active: False
     file:
         active: False
     image:
         active: False
         exif: False
         hash: False
+    url:
+        active: False
+
 
 # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
 sort: None
@@ -85,11 +96,7 @@ correlations:
       calculate: False
       warn_high_correlations: True
       threshold: 0.9
-    # Deprecated: do not use
-    recoded:
-      calculate: False
-      warn_high_correlations: False
-      threshold: 0.0
+
 
 # Bivariate / Pairwise relations
 interactions:
@@ -146,6 +153,7 @@ duplicates:
 samples:
     head: 0
     tail: 0
+    random: 0
 
 # Configuration related to the rejection of variables
 reject_variables: True

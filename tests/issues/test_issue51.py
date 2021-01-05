@@ -2,13 +2,13 @@
 Test for issue 51:
 https://github.com/pandas-profiling/pandas-profiling/issues/51
 """
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
-import requests
 
 import pandas_profiling
+
+# FIXME: correlations can be computed stand alone to speed up tests
+from pandas_profiling.config import config
 
 
 def test_issue51(get_data_file):
@@ -20,13 +20,16 @@ def test_issue51(get_data_file):
 
     df = pd.read_pickle(str(file_name))
 
-    report = df.profile_report(title="Pandas Profiling Report")
+    report = df.profile_report(
+        title="Pandas Profiling Report", progress_bar=False, explorative=True
+    )
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
     ), "Profile report should be generated."
 
 
 def test_issue51_similar():
+    config["vars"]["num"]["low_categorical_threshold"] = 0
     df = pd.DataFrame(
         {
             "test": ["", "hoi", None],
@@ -35,35 +38,55 @@ def test_issue51_similar():
         }
     )
 
-    report = df.profile_report(title="Pandas Profiling Report")
+    report = df.profile_report(
+        title="Pandas Profiling Report", progress_bar=False, explorative=True
+    )
+    # FIXME: assert correlation values
+    # print(report.get_description()["correlations"])
 
     assert (
         "<title>Pandas Profiling Report</title>" in report.to_html()
     ), "Profile report should be generated."
-
-
-# def test_issue51_mixed():
-#     df = pd.DataFrame(
-#         {
-#             "test": ["", "hoi", None, "friet"],
-#             "blest": [None, "", "geert", "pizza"],
-#             "bert": ["snor", "", np.nan, ""],
-#             "fruit": ["", "ok", np.nan, ""],
-#         }
-#     )
-#     report = df.profile_report(title="Pandas Profiling Report")
-#     assert (
-#         "data-toggle=tab>Recoded</a>" in report.to_html()
-#     ), "Recoded should be present"
 
 
 def test_issue51_empty():
+    config["vars"]["num"]["low_categorical_threshold"] = 0
     df = pd.DataFrame(
-        {"test": ["", "", ""], "blest": ["", "", ""], "bert": ["", "", ""]}
+        {
+            "test": ["", "", "", "", ""],
+            "blest": ["", "", "", "", ""],
+            "bert": ["", "", "", "", ""],
+        }
     )
 
-    report = df.profile_report(title="Pandas Profiling Report")
+    report = df.profile_report(
+        title="Pandas Profiling Report",
+        progress_bar=False,
+        explorative=True,
+    )
 
     assert (
-        "<title>Pandas Profiling Report</title>" in report.to_html()
-    ), "Profile report should be generated."
+        "cramers" not in report.get_description()["correlations"]
+        or (
+            report.get_description()["correlations"]["cramers"].values
+            == np.ones((3, 3))
+        ).all()
+    )
+
+
+def test_issue51_identical():
+    config["vars"]["num"]["low_categorical_threshold"] = 0
+    df = pd.DataFrame(
+        {
+            "test": ["v1", "v1", "v1"],
+            "blest": ["v1", "v1", "v1"],
+            "bert": ["v1", "v1", "v1"],
+        }
+    )
+
+    report = df.profile_report(
+        title="Pandas Profiling Report", progress_bar=False, explorative=True
+    )
+    assert (
+        report.get_description()["correlations"]["cramers"].values == np.ones((3, 3))
+    ).all()

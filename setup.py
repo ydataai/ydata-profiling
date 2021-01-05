@@ -39,6 +39,9 @@ setup(
     extras_require={
         "notebook": ["jupyter-client>=6.0.0", "jupyter-core>=4.6.3"],
     },
+    package_data={
+        "pandas_profiling": ["py.typed"],
+    },
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

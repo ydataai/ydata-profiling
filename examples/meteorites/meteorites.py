@@ -28,6 +28,9 @@ if __name__ == "__main__":
     # Example: Mixed with base types
     df["mixed"] = np.random.choice([1, "A"], df.shape[0])
 
+    # Example: Unhashable
+    df["unhashable"] = [[1]] * df.shape[0]
+
     # Example: Highly correlated variables
     df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
 
