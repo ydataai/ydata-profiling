@@ -122,7 +122,7 @@ def render_url(summary):
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts"],
+            freqtable=summary["value_counts_without_nan"],
             n=summary["n"],
             max_number_to_print=n_obs_cat,
         ),

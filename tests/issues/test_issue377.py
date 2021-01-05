@@ -24,7 +24,7 @@ def test_issue377():
     original_order = tuple(df.columns.values)
 
     profile = pandas_profiling.ProfileReport(
-        df, sort="None", pool_size=5, progress_bar=False
+        df, sort="None", pool_size=1, progress_bar=False
     )
     new_order = tuple(profile.get_description()["variables"].keys())
     assert original_order == new_order

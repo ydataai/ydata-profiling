@@ -81,6 +81,8 @@ The following examples can give you an impression of what the package can do:
 * [Stata Auto](https://pandas-profiling.github.io/pandas-profiling/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
 * [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html) (a simple colors dataset)
+* [UCI Bank Dataset](https://pandas-profiling.github.io/pandas-profiling/examples/master/cbank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
+
 
 Specific features:
 
@@ -250,7 +252,7 @@ profile.to_file("output.html")
 
 ## Supporting open source
 
-Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible with support of our gracious sponsors.
+Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible without support of our gracious sponsors.
 
 <table>
 <tr>

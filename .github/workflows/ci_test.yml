@@ -1,14 +1,30 @@
 name: CI Tests
 
+on: push
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ 3.6, 3.7, 3.8 ]
-        pandas: ["<1", "1.0.5", ">1.1"]
-    name: Python ${{ matrix.python-version }} sample
+        os: [ ubuntu-latest ]
+        python-version: [ 3.8 ]
+        pandas: ["==0.25.3", "==1.0.5", ">1.1"]
+        include:
+          - os: macos-latest
+            python-version: 3.6
+            pandas: ">1.1"
+#          - os: windows-2016
+#            python-version: 3.6
+#            pandas: ">1.1"
+          - os: ubuntu-latest
+            python-version: 3.6
+            pandas: ">1.1"
+          - os: ubuntu-latest
+            python-version: 3.7
+            pandas: ">1.1"
+
+    name: CI Tests (py${{ matrix.python-version }}, ${{ matrix.os }}, pandas${{ matrix.pandas }})
     steps:
       - uses: actions/checkout@v2
       - name: Setup python
@@ -16,12 +32,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - run: make install
-      - run: |
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-          pip install "pandas${{ matrix.pandas }}"
       - uses: actions/cache@v2
         if: startsWith(runner.os, 'Linux')
         with:
@@ -45,5 +55,11 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
-
-      - run: echo "test"
+      - run: |
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+          pip install "pandas${{ matrix.pandas }}"
+      - run: make install
+      - run: make test_cov
+      - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}

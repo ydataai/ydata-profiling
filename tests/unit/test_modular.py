@@ -48,10 +48,11 @@ def test_modular_description_set(tdf):
             "dendrogram": False,
             "heatmap": False,
         },
+        pool_size=1,
     )
 
     html = profile.get_description()
-    print(html)
+    assert len(html) > 0
 
 
 def test_modular_absent(tdf):
@@ -60,14 +61,7 @@ def test_modular_absent(tdf):
         duplicates={"head": 0},
         samples={"head": 0, "tail": 0},
         interactions=None,
-        correlations={
-            "pearson": {"calculate": False},
-            "spearman": {"calculate": False},
-            "kendall": {"calculate": False},
-            "phi_k": {"calculate": False},
-            "cramers": {"calculate": False},
-            "recoded": {"calculate": False},
-        },
+        correlations=None,
         missing_diagrams=None,
     )
 
@@ -89,7 +83,6 @@ def test_modular_present(tdf):
             "spearman": {"calculate": True},
             "kendall": {"calculate": True},
             "phi_k": {"calculate": True},
-            "recoded": {"calculate": True},
             "cramers": {"calculate": True},
         },
         missing_diagrams={
@@ -98,6 +91,7 @@ def test_modular_present(tdf):
             "dendrogram": True,
             "heatmap": True,
         },
+        pool_size=1,
     )
 
     html = profile.to_html()

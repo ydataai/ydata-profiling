@@ -58,10 +58,10 @@ class Config:
         "explorative": {
             "vars": {
                 "cat": {"characters": True, "words": True},
+                "url": {"active": True},
+                "path": {"active": True},
                 "file": {"active": True},
-                "image": {
-                    "active": True,
-                },
+                "image": {"active": True},
             },
             "n_obs_unique": 10,
             "n_extreme_obs": 10,
@@ -105,7 +105,7 @@ class Config:
             copyright_year="",
             url="",
         ),
-        "samples": {"head": 0, "tail": 0},
+        "samples": {"head": 0, "tail": 0, "random": 0},
         "duplicates": {"head": 0},
         "interactions": {"targets": [], "continuous": False},
         "missing_diagrams": {

@@ -3,13 +3,12 @@ Test for issue 416:
 https://github.com/pandas-profiling/pandas-profiling/issues/416
 """
 import pandas as pd
-import pytest
 
 import pandas_profiling
+from pandas_profiling.model.typeset import URL, Categorical, Path
 from pandas_profiling.utils.cache import cache_file
 
 
-@pytest.mark.linux
 def test_issue416():
     file_name = cache_file(
         "products.tsv",
@@ -20,8 +19,14 @@ def test_issue416():
     df["path"] = df["url"].str.replace("http://www.acme.com", "")
 
     profile = pandas_profiling.ProfileReport(
-        df, title="Pandas Profiling Report", html={"style": {"full_width": True}}
+        df,
+        title="Pandas Profiling Report",
+        html={"style": {"full_width": True}},
+        explorative=True,
     )
-    data = profile.to_json()
-    assert '"PATH": 1' in data
-    assert '"common_prefix": "/",' in data
+    data = profile.get_description()
+
+    assert data["table"]["types"][Categorical] == 1
+    assert data["table"]["types"][Path] == 1
+    assert data["table"]["types"][URL] == 1
+    assert data["variables"]["path"]["common_prefix"] == "/"

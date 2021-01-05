@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from pandas_profiling.controller import console
@@ -12,6 +14,7 @@ def console_data(get_data_file):
     )
 
 
+@pytest.mark.skipif(os.name == "nt", reason="multiprocessing+pytest broken on Windows")
 def test_console_multiprocessing(console_data, test_output_dir):
     report = test_output_dir / "test_samples.html"
     console.main(["-s", "--pool_size", "0", str(console_data), str(report)])

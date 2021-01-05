@@ -4,7 +4,7 @@ codecov
 pytest-mypy
 pytest-cov
 nbval
-fastparquet>=0.3.3
+fastparquet==0.4.1
 flake8
 check-manifest>=0.41
 twine>=3.1.1
