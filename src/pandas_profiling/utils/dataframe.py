@@ -108,6 +108,10 @@ def read_pandas(file_name: Path) -> pd.DataFrame:
         df = pd.read_parquet(str(file_name))
     elif extension in [".pkl", ".pickle"]:
         df = pd.read_pickle(str(file_name))
+    elif extension == ".tar":
+        raise ValueError(
+            "tar compression is not supported directly by pandas, please use the 'tarfile' module"
+        )
     else:
         if extension != ".csv":
             warn_read(extension)
