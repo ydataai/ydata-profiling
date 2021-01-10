@@ -17,6 +17,10 @@ Some users experience that ``conda install -c conda-forge pandas-profiling`` def
 
 More details, `here <https://github.com/conda-forge/pandas-profiling-feedstock/issues/22>`_, `here <https://github.com/pandas-profiling/pandas-profiling/issues/448>`__ and `here <https://github.com/pandas-profiling/pandas-profiling/issues/563>`__.
 
+If creating a new environment with a fresh installation does not resolve this issue, or you have good reason to persist with the current environment, then you could try installing a specific version e.g. ``conda install -c conda-forge pandas-profiling=2.10.0``. 
+If it fails with an **UnsatisfiableError** that suggests dependant packages are either missing or incompatible, then further intervention is required to resolve the *environment* issue. However, *conda* error messages in this regard may be too cryptic or insufficient to pinpoint the culprit, therefore you may have to resort to an alternate means of troubleshooting e.g using the `Mamba Package Manager <https://github.com/mamba-org/mamba.git>`_.
+For an illustration of this approach see `here <https://github.com/pandas-profiling/pandas-profiling/issues/655>`_.
+
 Jupyter "IntSlider(value=0)"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 When in a Jupyter environment, you see some text, such as ``IntSlider(value=0)`` or interactive ``(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))``, then the Jupyter Widgets are not activated. The :doc:`installation` page contains instructions on how to resolve this problem.
