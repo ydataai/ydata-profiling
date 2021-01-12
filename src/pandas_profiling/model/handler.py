@@ -13,6 +13,7 @@ def compose(functions):
     :param functions: sequence of functions
     :return: combined functions, e.g. [f(x), g(x)] -> g(f(x))
     """
+
     def func(f, g):
         def func2(*x):
             res = g(*x)
@@ -20,7 +21,9 @@ def compose(functions):
                 return False
             else:
                 return f(*res)
+
         return func2
+
     return reduce(func, reversed(functions), lambda *x: x)
 
 
