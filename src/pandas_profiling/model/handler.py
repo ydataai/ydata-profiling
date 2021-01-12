@@ -13,7 +13,15 @@ def compose(functions):
     :param functions: sequence of functions
     :return: combined functions, e.g. [f(x), g(x)] -> g(f(x))
     """
-    return reduce(lambda f, g: lambda *x: f(*g(*x)), reversed(functions), lambda *x: x)
+    def func(f, g):
+        def func2(*x):
+            res = g(*x)
+            if type(res) == bool:
+                return False
+            else:
+                return f(*res)
+        return func2
+    return reduce(func, reversed(functions), lambda *x: x)
 
 
 class Handler:
