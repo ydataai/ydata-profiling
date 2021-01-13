@@ -15,7 +15,7 @@ UNWRAPPED_SERIES_WARNING = """Attempting to pass a pandas series directly into a
 
 
 @attr.s
-class Sample(object):
+class Sample:
     id = attr.ib()
     data = attr.ib()
     name = attr.ib()
@@ -63,7 +63,11 @@ class SparkSeries(GenericSeries):
 
         # if series type is dict, handle that separately
         if isinstance(self.series.schema[0].dataType, MapType):
-            series= series.select(array(map_keys(series[self.name]), map_values(series[self.name])).alias(self.name))
+            series = series.select(
+                array(map_keys(series[self.name]), map_values(series[self.name])).alias(
+                    self.name
+                )
+            )
         self.series = series
         self.persist_bool = persist
         series_without_na = self.series.na.drop()

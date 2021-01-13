@@ -114,7 +114,7 @@ def _missing_bar_spark(data: SparkDataFrame) -> str:
     """
     labels = config["plot"]["missing"]["force_labels"].get(bool)
 
-    class MissingnoBarSparkPatch(object):
+    class MissingnoBarSparkPatch:
         """
         Technical Debt :
         This is a monkey patching object that allows usage of the library missingno as is for spark dataframes.

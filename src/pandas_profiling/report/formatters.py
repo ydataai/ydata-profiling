@@ -233,7 +233,7 @@ def fmt_number(value: int) -> str:
     Returns:
         The numeric value with the given precision.
     """
-    return "{:n}".format(value)
+    return f"{value:n}"
 
 
 def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
