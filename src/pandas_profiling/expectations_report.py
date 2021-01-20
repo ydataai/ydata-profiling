@@ -21,11 +21,11 @@ class ExpectationHandler(Handler):
         mapping = {
             Unsupported: [expectation_algorithms.generic_expectations],
             Categorical: [expectation_algorithms.categorical_expectations],
+            Boolean: [expectation_algorithms.categorical_expectations],
             Numeric: [expectation_algorithms.numeric_expectations],
             URL: [expectation_algorithms.url_expectations],
             File: [expectation_algorithms.file_expectations],
             Path: [expectation_algorithms.path_expectations],
-            Boolean: [expectation_algorithms.boolean_expectations],
             DateTime: [expectation_algorithms.datetime_expectations],
             Image: [expectation_algorithms.image_expectations],
         }
@@ -33,7 +33,7 @@ class ExpectationHandler(Handler):
 
 
 class ExpectationsReport:
-    def to_expectations_suite(self, suite_name=None, handler=None):
+    def to_expectation_suite(self, suite_name=None, handler=None):
         try:
             import great_expectations as ge
         except ImportError:
@@ -64,9 +64,11 @@ class ExpectationsReport:
         for name, variable_summary in summary["variables"].items():
             handler.handle(variable_summary["type"], name, variable_summary, batch)
 
-        return batch
+        return batch.get_expectation_suite()
 
-    def to_expectations(self, suite_name=None, handler=None, build_data_docs=True):
+    def to_expectations_with_validation_operator(
+        self, suite_name=None, handler=None, build_data_docs=True
+    ):
         try:
             import great_expectations as ge
         except ImportError:
@@ -76,15 +78,20 @@ class ExpectationsReport:
 
         context = ge.data_context.DataContext()
 
-        batch = self.to_expectations_suite(suite_name, handler)
+        suite = self.to_expectation_suite(suite_name, handler)
 
+        # Instantiate an in-memory pandas dataset
+        batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
+
+        # This validation operator works with great_expectations < 0.12 API, and will need migrating with new style
+        # batches and validator
         results = context.run_validation_operator(
             "action_list_operator", assets_to_validate=[batch]
         )
         validation_result_identifier = results.list_validation_result_identifiers()[0]
 
         # Write expectations and open data docs
-        context.save_expectation_suite(batch.get_expectation_suite())
+        context.save_expectation_suite(suite)
 
         if build_data_docs:
             context.build_data_docs()

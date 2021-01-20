@@ -40,10 +40,14 @@ def numeric_expectations(name, summary, batch, *args):
 
 
 def categorical_expectations(name, summary, batch, *args):
-    return name, summary, batch
-
-
-def boolean_expectations(name, summary, batch, *args):
+    # Use for both categorical and special case (boolean)
+    absolute_threshold = 10
+    relative_threshold = 0.2
+    if (
+        summary["n_distinct"] < absolute_threshold
+        or summary["p_distinct"] < relative_threshold
+    ):
+        batch.expect_column_values_to_be_in_set(name, summary["value_counts_without_nan"].keys())
     return name, summary, batch
 
 

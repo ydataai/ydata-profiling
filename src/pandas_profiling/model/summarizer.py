@@ -1,4 +1,3 @@
-from functools import reduce
 from typing import Type
 
 import networkx as nx
@@ -6,6 +5,7 @@ import numpy as np
 import pandas as pd
 from visions import VisionsBaseType
 
+from pandas_profiling.model.handler import compose
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
     describe_counts,
@@ -29,15 +29,6 @@ from pandas_profiling.model.typeset import (
     Path,
     Unsupported,
 )
-
-
-def compose(functions):
-    """
-    Compose a sequence of functions
-    :param functions: sequence of functions
-    :return: combined functions, e.g. [f(x), g(x)] -> g(f(x))
-    """
-    return reduce(lambda f, g: lambda *x: f(*g(*x)), reversed(functions), lambda *x: x)
 
 
 class BaseSummarizer:

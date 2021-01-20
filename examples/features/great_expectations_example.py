@@ -13,7 +13,7 @@ df = pd.read_csv(file_name)
 profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 
 # Obtain expectations suite, this includes profiling the dataset
-suite = profile.to_expectations_suite()
+suite = profile.to_expectation_suite()
 
 # Or write directly as expectation suite json in GE
-profile.to_expectations(suite_name="titanic_expectations")
+profile.to_expectations_with_validation_operator(suite_name="titanic_expectations")
