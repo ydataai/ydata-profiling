@@ -9,9 +9,7 @@ from pandas_profiling import ProfileReport
 
 
 def test_issue664():
-    test = pd.DataFrame(
-        [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan], columns=["a"]
-    )
+    test = pd.DataFrame([np.nan] * 100, columns=["a"])
 
     profile = ProfileReport(test)
     assert len(profile.to_html()) > 0
