@@ -64,9 +64,6 @@ class DateTime(visions.VisionsBaseType):
     def get_relations(cls):
         return [
             IdentityRelation(cls, Unsupported),
-            # TODO: optional
-            # TODO: coerce
-            # InferenceRelation(cls, Categorical, relationship=is_date, transformer=to_date),
         ]
 
     @classmethod

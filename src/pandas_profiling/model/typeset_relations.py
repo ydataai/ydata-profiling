@@ -50,14 +50,15 @@ def string_to_bool(series, state):
 
 
 def numeric_is_category(series, state):
-    n_unique = series.nunique(dropna=False)
+    n_unique = series.nunique()
     threshold = config["vars"]["num"]["low_categorical_threshold"].get(int)
     return 1 <= n_unique <= threshold
 
 
 def to_category(series, state):
-    # TODO: deal with nans
-    return series.astype(str)
+    # TODO: deal with nans in lower pandas versions
+    # return series.astype(str)
+    return series.astype("string")
 
 
 @func_nullable_series_contains
