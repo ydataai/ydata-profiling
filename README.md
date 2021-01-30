@@ -157,6 +157,9 @@ df = pd.DataFrame(
 To generate the report, run:
 ```python
 profile = ProfileReport(df, title="Pandas Profiling Report")
+
+# when dtypes are changed by `astype` function. Detect (new)dtypes from dataframe itself
+profile2 = ProfileReport(df, title="Pandas Profiling Report", infer_dtypes=False)
 ```
 
 ### Explore deeper
@@ -238,6 +241,9 @@ A set of options is available in order to adapt the report generated.
 * `title` (`str`): Title for the report ('Pandas Profiling Report' by default).
 * `pool_size` (`int`): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).
 * `progress_bar` (`bool`): If True, `pandas-profiling` will display a progress bar.
+* `infer_dtypes` (`bool`): 
+  * `True` by default. When `True` the `dtype` of variables are inferred by `pandas-profiling`.
+  * When `False`, the data-types of variables are detected from `pandas`. dataframe. (A variable `dtype` can be changed using `astype` function and the same `dtype` is used by `pandas-profiling`).
 
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 
@@ -246,6 +252,10 @@ More settings can be found in the [default configuration file](https://github.co
 ```python
 profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file("output.html")
+
+# If dtypes are changed (using `astype`) and need to consider new dtypes, set `infer_dtypes`: False
+profile2 = df.profile_report(title='Alternative Report', infer_dtypes=False)
+profie2.to_file('output2.html')
 ```
 
 ## Supporting open source
