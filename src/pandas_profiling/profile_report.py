@@ -50,6 +50,7 @@ class ProfileReport(SerializeReport):
             sample: optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
+        config.clear() # to reset (previous) config.
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
@@ -90,6 +91,7 @@ class ProfileReport(SerializeReport):
         self._json = None
         self._typeset = None
         self._summarizer = None
+        self._infer_dtypes = None
 
         if df is not None:
             # preprocess df
@@ -146,6 +148,7 @@ class ProfileReport(SerializeReport):
             self._html = None
             self._widgets = None
             self._json = None
+            self._infer_dtypes = None
 
         if len(vars) == 1:
             config[list(vars.keys())[0]] = list(vars.values())[0]
@@ -171,6 +174,12 @@ class ProfileReport(SerializeReport):
                 self.title, self.df, self.summarizer, self.typeset, self._sample
             )
         return self._description_set
+
+    @property
+    def infer_dtypes(self):
+        if self._infer_dtypes is None:
+            self._infer_dtypes = config["infer_dtypes"].get(bool)
+        return self._infer_dtypes
 
     @property
     def title(self):

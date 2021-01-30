@@ -27,7 +27,9 @@ from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
-    """Describe a series (infer the variable type, then calculate type-specific values).
+    """Describe a series based on infer_dtypes param in config which is set True by default
+    when infer_dtypes is True, infer the variable type then calculate type-specific values
+    when infer_dtypes is False, detect type as read by pandas.
 
     Args:
         series: The Series to describe.
@@ -39,9 +41,14 @@ def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
 
-    # Infer variable types
-    vtype = typeset.infer_type(series)
-    series = typeset.cast_to_inferred(series)
+    infer_dtypes = config["infer_dtypes"].get(bool)
+    if infer_dtypes:
+        # Infer variable types
+        vtype = typeset.infer_type(series)
+        series = typeset.cast_to_inferred(series)
+    else:
+        # Detect variable types as read by pandas
+        vtype = typeset.detect_type(series)
 
     return summarizer.summarize(series, dtype=vtype)
 

@@ -13,6 +13,9 @@ dataset:
 variables:
   descriptions: {}
 
+# infer dtypes
+infer_dtypes: True
+
 # Show the description at each variable (in addition to the overview tab)
 show_variable_description: True
 
