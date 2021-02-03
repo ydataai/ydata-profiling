@@ -56,9 +56,12 @@ def numeric_is_category(series, state):
 
 
 def to_category(series, state):
-    # TODO: deal with nans in lower pandas versions
-    return series.astype(str)
-    # return series.astype("string")
+    if int(pd.__version__.split(".")[0]) < 1:
+        import numpy as np
+
+        return series.astype(str).replace("nan", np.nan)
+    else:
+        return series.astype("string")
 
 
 @func_nullable_series_contains
