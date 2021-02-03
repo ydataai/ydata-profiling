@@ -31,6 +31,9 @@ from pandas_profiling.model.typeset import (
     Unsupported,
 )
 
+if int(pd.__version__.split(".")[0]) < 1:
+    from visions.dtypes.boolean import BoolDtype
+
 base_path = os.path.abspath(os.path.dirname(__file__))
 
 
