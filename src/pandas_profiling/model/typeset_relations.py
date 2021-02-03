@@ -56,12 +56,12 @@ def numeric_is_category(series, state):
 
 
 def to_category(series, state):
-    if int(pd.__version__.split(".")[0]) < 1:
-        import numpy as np
+    import numpy as np
 
-        return series.astype(str).replace("nan", np.nan)
-    else:
-        return series.astype("string")
+    val = series.astype(str).replace("nan", np.nan)
+    if int(pd.__version__.split(".")[0]) >= 1:
+        val = val.astype("string")
+    return val
 
 
 @func_nullable_series_contains
