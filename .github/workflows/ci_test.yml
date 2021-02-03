@@ -9,7 +9,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ 3.8 ]
-        pandas: ["==0.25.3\" \"numpy<1.19\" \"fastparquet==0.4.1", "==1.0.5", ">1.1"]
+        pandas: ["==0.25.3\" \"numpy<1.20", "==1.0.5", ">1.1"]
         include:
           - os: macos-latest
             python-version: 3.6
@@ -57,9 +57,8 @@ jobs:
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
       - run: |
           pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt
+          pip install -r requirements.txt "pandas${{ matrix.pandas }}"
           pip install -r requirements-test.txt
-          pip install "pandas${{ matrix.pandas }}"
       - run: make install
       - run: make test_cov
       - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
