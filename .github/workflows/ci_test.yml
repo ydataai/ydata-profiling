@@ -9,7 +9,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ 3.8 ]
-        pandas: ["==0.25.3\" \"numpy<1.20", "==1.0.5", ">1.1"]
+        pandas: ["==0.25.3\" \"numpy<1.20\" \"fastparquet", "==1.0.5", ">1.1"]
         include:
           - os: macos-latest
             python-version: 3.6
@@ -60,8 +60,6 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-test.txt
           pip install "pandas${{ matrix.pandas }}"
-          # reinstall fastparquet (binary compatibility)
-          pip install -U fastparquet
       - run: make install
       - run: make test_cov
       - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
