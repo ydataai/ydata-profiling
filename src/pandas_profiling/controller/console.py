@@ -71,7 +71,7 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
         "--no-infer_dtypes",
         dest="infer_dtypes",
         action="store_false",
-        help="To read dtypes as read by pandas"
+        help="To read dtypes as read by pandas",
     )
 
     parser.add_argument(
