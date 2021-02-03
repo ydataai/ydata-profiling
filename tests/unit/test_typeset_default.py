@@ -34,6 +34,10 @@ from pandas_profiling.model.typeset import (
 if int(pd.__version__.split(".")[0]) < 1:
     from visions.dtypes.boolean import BoolDtype
 
+    btype = "Bool"
+else:
+    btype = "boolean"
+
 base_path = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -134,7 +138,7 @@ def get_series():
         # Bool Series
         pd.Series([True, False], name="bool_series"),
         pd.Series([True, False, None], name="bool_nan_series"),
-        pd.Series([True, False, None], name="nullable_bool_series", dtype="Bool"),
+        pd.Series([True, False, None], name="nullable_bool_series", dtype=btype),
         pd.Series([True, False, False, True], name="bool_series2", dtype=bool),
         pd.Series([True, False, False, True], name="bool_series2", dtype=bool),
         pd.Series(np.array([1, 0, 0, 1], dtype=np.bool), name="bool_series3"),
