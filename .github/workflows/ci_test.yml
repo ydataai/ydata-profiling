@@ -60,6 +60,8 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-test.txt
           pip install "pandas${{ matrix.pandas }}"
+          # reinstall fastparquet (binary compatibility)
+          pip install -U fastparquet
       - run: make install
       - run: make test_cov
       - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
