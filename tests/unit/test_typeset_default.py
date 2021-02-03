@@ -68,7 +68,7 @@ def get_series():
             ["Georgia", "Sam"], dtype="category", name="categorical_string_series"
         ),
         pd.Series(
-            [np.complex(0, 0), np.complex(1, 2), np.complex(3, -1)],
+            [np.complex128(0, 0), np.complex128(1, 2), np.complex128(3, -1)],
             name="categorical_complex_series",
             dtype="category",
         ),
@@ -83,8 +83,8 @@ def get_series():
         pd.Series([1.0, 2.1, 3.0], name="float_series"),
         pd.Series([1.0, 2.5, np.nan], name="float_nan_series"),
         pd.Series([1.0, 2.0, 3.0, 4.0], name="float_series2"),
-        pd.Series(np.array([1.2, 2, 3, 4], dtype=np.float), name="float_series3"),
-        pd.Series([1, 2, 3.05, 4], dtype=np.float, name="float_series4"),
+        pd.Series(np.array([1.2, 2, 3, 4], dtype=np.float64), name="float_series3"),
+        pd.Series([1, 2, 3.05, 4], dtype=np.float64, name="float_series4"),
         pd.Series([np.nan, 1.2], name="float_series5"),
         pd.Series([np.nan, 1.1], dtype=np.single, name="float_series6"),
         pd.Series([np.inf, np.NINF, np.PINF, 1000000.0, 5.5], name="float_with_inf"),
@@ -141,25 +141,25 @@ def get_series():
         pd.Series([True, False, None], name="nullable_bool_series", dtype=btype),
         pd.Series([True, False, False, True], name="bool_series2", dtype=bool),
         pd.Series([True, False, False, True], name="bool_series2", dtype=bool),
-        pd.Series(np.array([1, 0, 0, 1], dtype=np.bool), name="bool_series3"),
+        pd.Series(np.array([1, 0, 0, 1], dtype=bool), name="bool_series3"),
         # Complex Series
         pd.Series(
-            [np.complex(0, 0), np.complex(1, 2), np.complex(3, -1)],
+            [np.complex128(0, 0), np.complex128(1, 2), np.complex128(3, -1)],
             name="complex_series",
         ),
         pd.Series(
             [
-                np.complex(0, 0),
-                np.complex(1, 2),
-                np.complex(3, -1),
-                np.complex(np.nan, np.nan),
+                np.complex128(0, 0),
+                np.complex128(1, 2),
+                np.complex128(3, -1),
+                np.complex128(np.nan, np.nan),
             ],
             name="complex_series_nan",
         ),
         pd.Series(["(1+1j)", "(2+2j)", "(10+100j)"], name="str_complex"),
         pd.Series(["(1+1j)", "(2+2j)", "(10+100j)", "NaN"], name="str_complex_nan"),
         pd.Series(
-            [np.complex(0, 0), np.complex(1, 2), np.complex(3, -1), np.nan],
+            [np.complex128(0, 0), np.complex128(1, 2), np.complex128(3, -1), np.nan],
             name="complex_series_nan_2",
         ),
         pd.Series(
@@ -170,7 +170,12 @@ def get_series():
             [complex(0, 0), complex(1, 2), complex(3, -1)], name="complex_series_py"
         ),
         pd.Series(
-            [np.complex(0, 0), np.complex(1, 0), np.complex(3, 0), np.complex(-1, 0)],
+            [
+                np.complex128(0, 0),
+                np.complex128(1, 0),
+                np.complex128(3, 0),
+                np.complex128(-1, 0),
+            ],
             name="complex_series_float",
         ),
         # Datetime Series
