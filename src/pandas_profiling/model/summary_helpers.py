@@ -164,7 +164,7 @@ def extract_exif_series(image_exifs: list) -> dict:
 
             exif_values[exif_key].append(exif_val)
 
-    series = {"exif_keys": pd.Series(exif_keys).value_counts().to_dict()}
+    series = {"exif_keys": pd.Series(exif_keys, dtype=object).value_counts().to_dict()}
 
     for k, v in exif_values.items():
         series[k] = pd.Series(v).value_counts()
