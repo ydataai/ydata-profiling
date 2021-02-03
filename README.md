@@ -157,9 +157,6 @@ df = pd.DataFrame(
 To generate the report, run:
 ```python
 profile = ProfileReport(df, title="Pandas Profiling Report")
-
-# when dtypes are changed by `astype` function. Detect (new)dtypes from dataframe itself
-profile2 = ProfileReport(df, title="Pandas Profiling Report", infer_dtypes=False)
 ```
 
 ### Explore deeper
@@ -248,14 +245,31 @@ A set of options is available in order to adapt the report generated.
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 
 **Example**
-
+- configure your report. You can refer advanced usage docs [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html)
 ```python
 profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file("output.html")
+```
 
-# If dtypes are changed (using `astype`) and need to consider new dtypes, set `infer_dtypes`: False
-profile2 = df.profile_report(title='Alternative Report', infer_dtypes=False)
-profie2.to_file('output2.html')
+- If dtypes are changed (using `astype`) and need to consider the new dtypes, set `infer_dtypes`: False
+```python3
+df = pd.DataFrame({
+    'Dummy': ['X', 'Y', 'X', 'X', 'Y', 'Y', 'Y', 'X'],
+    'EmpID': [9940243658, 9940243537, 9940243103, 9940242844, 9940242844, 9940242840, 9940242774, 9940242774]
+})
+
+df['EmpID'] = df['EmpID'].astype('str')
+
+# `EmpID` would be considered as `real number` in below report eventhough it is casted as `str` above.
+# This is because by default pandas-profiling tries to infer the dtype.
+profile2 = df.profile_report(title='Inferred dtype - Report')
+profile2.to_file('output2.html')
+
+
+# To read `EmpID` as a category item / use the same dtypes as read by pandas (df.dtypes)
+profile3 = df.profile_report(title='Detected dtype - Report', infer_dtypes=False)
+profile3.to_file('output3.html')
+
 ```
 
 ## Supporting open source
