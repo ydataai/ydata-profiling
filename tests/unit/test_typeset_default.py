@@ -68,7 +68,7 @@ def get_series():
             ["Georgia", "Sam"], dtype="category", name="categorical_string_series"
         ),
         pd.Series(
-            [np.complex128(0, 0), np.complex128(1, 2), np.complex128(3, -1)],
+            [complex(0, 0), complex(1, 2), complex(3, -1)],
             name="categorical_complex_series",
             dtype="category",
         ),
@@ -144,22 +144,22 @@ def get_series():
         pd.Series(np.array([1, 0, 0, 1], dtype=bool), name="bool_series3"),
         # Complex Series
         pd.Series(
-            [np.complex128(0, 0), np.complex128(1, 2), np.complex128(3, -1)],
+            [complex(0, 0), complex(1, 2), complex(3, -1)],
             name="complex_series",
         ),
         pd.Series(
             [
-                np.complex128(0, 0),
-                np.complex128(1, 2),
-                np.complex128(3, -1),
-                np.complex128(np.nan, np.nan),
+                complex(0, 0),
+                complex(1, 2),
+                complex(3, -1),
+                complex(np.nan, np.nan),
             ],
             name="complex_series_nan",
         ),
         pd.Series(["(1+1j)", "(2+2j)", "(10+100j)"], name="str_complex"),
         pd.Series(["(1+1j)", "(2+2j)", "(10+100j)", "NaN"], name="str_complex_nan"),
         pd.Series(
-            [np.complex128(0, 0), np.complex128(1, 2), np.complex128(3, -1), np.nan],
+            [complex(0, 0), complex(1, 2), complex(3, -1), np.nan],
             name="complex_series_nan_2",
         ),
         pd.Series(
@@ -171,10 +171,10 @@ def get_series():
         ),
         pd.Series(
             [
-                np.complex128(0, 0),
-                np.complex128(1, 0),
-                np.complex128(3, 0),
-                np.complex128(-1, 0),
+                complex(0, 0),
+                complex(1, 0),
+                complex(3, 0),
+                complex(-1, 0),
             ],
             name="complex_series_float",
         ),
@@ -368,7 +368,7 @@ def get_series():
         pd.Series([IPv4Address("127.0.0.1"), IPv4Address("127.0.0.1")], name="ip"),
         pd.Series(["127.0.0.1", "127.0.0.1"], name="ip_str"),
         # Empty
-        pd.Series([], name="empty"),
+        pd.Series([], name="empty", dtype=np.float64),
         pd.Series([], name="empty_float", dtype=float),
         pd.Series([], name="empty_int64", dtype="Int64"),
         pd.Series([], name="empty_object", dtype="object"),
