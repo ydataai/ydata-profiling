@@ -3,6 +3,7 @@ Resources
 =========
 
 This page contains a series of community-contributed resources that can be found over the web.
+Found, written or recorded a contribution? Feel free to contribute it via de pull request on Github.
 
 Notebooks
 ---------
@@ -14,6 +15,8 @@ Notebooks
 Articles
 --------
 
+- `Beginner Friendly Data Science Projects Accepting Contributions <https://towardsdatascience.com/beginner-friendly-data-science-projects-accepting-contributions-3b8e26f7e88e>`_ (Adam Ross Nelson, January 18, 2021)
+- `Pandas profiling and exploratory data analysis with line one of code! <https://towardsdatascience.com/pandas-profiling-and-exploratory-data-analysis-with-line-one-of-code-423111991e58>`_ (Magdalena Konkiewicz, Jun 10, 2020)
 - `The Covid 19 health issue <https://concillier.squarespace.com/datasets/covid-19>`_ (Concillier Kitungulu, April 20, 2020)
 - `Accelerate Your Exploratory Data Analysis With Pandas-Profiling <https://towardsdatascience.com/accelerate-your-exploratory-data-analysis-with-pandas-profiling-4eca0cb770d1>`_ (Sukanta Roy, April 19, 2020)
 - `Pandas-Profiling, explore your data faster in Python <https://www.datacourses.com/pandas-1150/>`_ (Gabriel Fuhr, May 31, 2020)
@@ -46,4 +49,16 @@ Videos
 Books
 -----
 
-- Python Data Science Essentials - Third Edition, Alberto Boschetti and Luca Massaron, September 2018, ISBN: 9781789537864
+.. image:: https://learning.oreilly.com/library/cover/9781492047537/250w/
+
+- `Machine Learning Pocket Reference <https://www.oreilly.com/library/view/machine-learning-pocket/9781492047537/>`_ by Matt Harrison, August 2019, ISBN: 9781492047544
+
+.. image:: https://static.packt-cdn.com/products/9781789537864/cover/smaller
+
+- `Python Data Science Essentials <https://www.packtpub.com/product/python-data-science-essentials-third-edition/9781789537864>`_ by Alberto Boschetti and Luca Massaron, September 2018, ISBN: 9781789537864
+
+Miscellaneous
+-------------
+
+- `Penn Machine Learning Benchmarks (PMLB) <https://epistasislab.github.io/pmlb/>`_ (`description <https://arxiv.org/ftp/arxiv/papers/2012/2012.00058.pdf>`_)
+- `dabl package <https://github.com/dabl/dabl>`_

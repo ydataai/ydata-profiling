@@ -235,9 +235,9 @@ def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
         The string representation of the numpy array.
     """
     with np.printoptions(threshold=3, edgeitems=threshold):
-        value = str(value)
+        return_value = str(value)
 
-    return value
+    return return_value
 
 
 def fmt(value) -> str:
