@@ -1,5 +1,6 @@
 import functools
 
+import numpy as np
 import pandas as pd
 from pandas.api import types as pdt
 from visions.utils import func_nullable_series_contains
@@ -56,8 +57,6 @@ def numeric_is_category(series, state):
 
 
 def to_category(series, state):
-    import numpy as np
-
     hasnans = series.hasnans
     val = series.astype(str)
     if hasnans:

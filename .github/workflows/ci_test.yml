@@ -9,22 +9,31 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ 3.8 ]
-        pandas: ["==0.25.3\" \"numpy<1.20", "==1.0.5\" \"numpy<1.20", ">1.1"]
+        pandas: ["pandas==0.25.3", "pandas==1.0.5"]
+        numpy: ["numpy<1.20"]
         include:
           - os: macos-latest
             python-version: 3.6
-            pandas: ">1.1"
+            pandas: "pandas>1.1"
+            numpy: "numpy"
 #          - os: windows-2016
 #            python-version: 3.6
-#            pandas: ">1.1"
+#            pandas: "pandas>1.1"
+#            numpy: "numpy"
           - os: ubuntu-latest
             python-version: 3.6
-            pandas: ">1.1"
+            pandas: "pandas>1.1"
+            numpy: "numpy"
           - os: ubuntu-latest
             python-version: 3.7
-            pandas: ">1.1"
+            pandas: "pandas>1.1"
+            numpy: "numpy"
+          - os: ubuntu-latest
+            python-version: 3.8
+            pandas: "pandas>1.1"
+            numpy: "numpy"
 
-    name: CI Tests (py${{ matrix.python-version }}, ${{ matrix.os }}, pandas${{ matrix.pandas }})
+    name: CI Tests (py${{ matrix.python-version }}, ${{ matrix.os }}, {{ matrix.pandas }}, {{ matrix.numpy }})
     steps:
       - uses: actions/checkout@v2
       - name: Setup python
@@ -57,8 +66,8 @@ jobs:
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
       - run: |
           pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt "pandas${{ matrix.pandas }}"
+          pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
           pip install -r requirements-test.txt
       - run: make install
       - run: make test_cov
-      - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-pandas${{ matrix.pandas }}
+      - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
