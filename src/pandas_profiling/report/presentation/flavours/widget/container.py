@@ -55,6 +55,14 @@ def get_row(items):
     return widgets.GridBox([item.render() for item in items], layout=layout)
 
 
+def get_batch_grid(items, batch_size, titles):
+    layout = widgets.Layout(
+        width="100%",
+        grid_template_columns=" ".join([f"{int(100 / batch_size)}%"] * batch_size),
+    )
+    return widgets.GridBox([item.render() for item in items], layout=layout)
+
+
 def get_accordion(items):
     children = []
     titles = []
@@ -81,6 +89,12 @@ class WidgetContainer(Container):
             widget = get_accordion(self.content["items"])
         elif self.sequence_type == "grid":
             widget = get_row(self.content["items"])
+        elif self.sequence_type == "batch_grid":
+            widget = get_batch_grid(
+                self.content["items"],
+                self.content["batch_size"],
+                self.content.get("titles", True),
+            )
         else:
             raise ValueError("widget type not understood", self.sequence_type)
 
