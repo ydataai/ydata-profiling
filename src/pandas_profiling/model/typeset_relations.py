@@ -58,7 +58,11 @@ def numeric_is_category(series, state):
 def to_category(series, state):
     import numpy as np
 
-    val = series.astype(str).replace("nan", np.nan)
+    hasnans = series.hasnans
+    val = series.astype(str)
+    if hasnans:
+        val = val.replace("nan", np.nan)
+
     if int(pd.__version__.split(".")[0]) >= 1:
         val = val.astype("string")
     return val
