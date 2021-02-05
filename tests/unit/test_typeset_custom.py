@@ -131,7 +131,7 @@ def get_profiling_series():
         "nullable_int": pd.Series([1, None], dtype="Int64"),
     }
 
-    return [pd.Series(values, name=key) for key, values in data.items()]
+    return {key: pd.Series(values, name=key) for key, values in data.items()}
 
 
 series = get_profiling_series()
@@ -191,7 +191,7 @@ contains_map = {
 
 
 @pytest.mark.parametrize(**get_contains_cases(series, contains_map, typeset))
-def test_contains(series, type, member):
+def test_contains(name, series, type, member):
     """Test the generated combinations for "series in type"
 
     Args:
@@ -200,7 +200,7 @@ def test_contains(series, type, member):
         member: the result
     """
     config["vars"]["num"]["low_categorical_threshold"].set(0)
-    result, message = contains(series, type, member)
+    result, message = contains(name, series, type, member)
     assert result, message
 
 
@@ -240,7 +240,7 @@ inference_map = {
 
 
 @pytest.mark.parametrize(**get_inference_cases(series, inference_map, typeset))
-def test_inference(series, type, typeset, difference):
+def test_inference(name, series, type, typeset, difference):
     """Test the generated combinations for "inference(series) == type"
 
     Args:
@@ -248,7 +248,7 @@ def test_inference(series, type, typeset, difference):
         type: the type to test against
     """
     config["vars"]["num"]["low_categorical_threshold"].set(0)
-    result, message = infers(series, type, typeset, difference)
+    result, message = infers(name, series, type, typeset, difference)
     assert result, message
 
 
@@ -289,7 +289,7 @@ convert_map = [
 
 
 @pytest.mark.parametrize(**get_convert_cases(series, convert_map, typeset))
-def test_conversion(source_type, relation_type, series, member):
+def test_conversion(name, source_type, relation_type, series, member):
     """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type"
 
     Args:
@@ -297,5 +297,5 @@ def test_conversion(source_type, relation_type, series, member):
         source_type: the type to test against
     """
     config["vars"]["num"]["low_categorical_threshold"].set(2)
-    result, message = convert(source_type, relation_type, series, member)
+    result, message = convert(name, source_type, relation_type, series, member)
     assert result, message

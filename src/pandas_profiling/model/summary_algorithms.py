@@ -1,12 +1,11 @@
 import contextlib
 import functools
-from typing import Tuple
+from typing import Callable, Tuple, TypeVar
 from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.integer import _IntegerDtype
-from visions.utils import func_nullable_series_contains
 
 from pandas_profiling.config import config
 from pandas_profiling.model.summary_helpers import (
@@ -21,6 +20,8 @@ from pandas_profiling.model.summary_helpers import (
     url_summary,
     word_summary,
 )
+
+T = TypeVar("T")
 
 
 def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
@@ -65,11 +66,28 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     return series, summary
 
 
-def series_hashable(fn):
+def series_hashable(
+    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
+) -> Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
     @functools.wraps(fn)
-    def inner(series, summary):
+    def inner(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
         if not summary["hashable"]:
             return series, summary
+        return fn(series, summary)
+
+    return inner
+
+
+def series_handle_nulls(
+    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
+) -> Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
+    """Decorator for nullable series"""
+
+    @functools.wraps(fn)
+    def inner(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+        if series.hasnans:
+            series = series.dropna()
+
         return fn(series, summary)
 
     return inner
@@ -163,7 +181,7 @@ def numeric_stats_numpy(present_values, series, series_description):
 
 
 @series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a numeric series.
     Args:
@@ -255,7 +273,7 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
 
 
 @series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a date series.
 
@@ -287,7 +305,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
 
 
 @series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     """Describe a categorical series.
 

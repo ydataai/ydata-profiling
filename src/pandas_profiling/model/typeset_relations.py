@@ -3,7 +3,7 @@ import functools
 import numpy as np
 import pandas as pd
 from pandas.api import types as pdt
-from visions.utils import func_nullable_series_contains
+from visions.backends.pandas.series_utils import series_handle_nulls
 
 from pandas_profiling.config import config
 
@@ -35,7 +35,7 @@ PP_bool_map = get_boolean_map()
 
 
 def string_is_bool(series, state) -> bool:
-    @func_nullable_series_contains
+    @series_handle_nulls
     @try_func
     def tester(s: pd.Series, state: dict) -> bool:
         return s.str.lower().isin(PP_bool_map.keys()).all()
@@ -67,12 +67,12 @@ def to_category(series, state):
     return val
 
 
-@func_nullable_series_contains
+@series_handle_nulls
 def series_is_string(series: pd.Series, state: dict) -> bool:
     return all(isinstance(v, str) for v in series)
 
 
-@func_nullable_series_contains
+@series_handle_nulls
 def category_is_numeric(series, state):
     if pdt.is_bool_dtype(series) or object_is_bool(series, state):
         return False
@@ -100,7 +100,7 @@ def to_bool(series: pd.Series) -> pd.Series:
     return series.astype(dtype)
 
 
-@func_nullable_series_contains
+@series_handle_nulls
 def object_is_bool(series: pd.Series, state) -> bool:
     if pdt.is_object_dtype(series):
         bool_set = {True, False}
