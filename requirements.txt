@@ -4,7 +4,7 @@ pandas>=0.25.3,!=1.0.1,!=1.0.0,!=1.0.2,!=1.1.0
 matplotlib>=3.2.0
 confuse>=1.0.0
 jinja2>=2.11.1
-visions[type_image_path]==0.6.0
+visions[type_image_path]==0.7.1
 numpy>=1.16.0
 attrs>=19.3.0
 # Could be optional
