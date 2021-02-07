@@ -27,9 +27,7 @@ from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
-    """Describe a series based on infer_dtypes param in config which is set True by default
-    when infer_dtypes is True, infer the variable type then calculate type-specific values
-    when infer_dtypes is False, detect type as read by pandas.
+    """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
         series: The Series to describe.

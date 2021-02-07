@@ -238,38 +238,16 @@ A set of options is available in order to adapt the report generated.
 * `title` (`str`): Title for the report ('Pandas Profiling Report' by default).
 * `pool_size` (`int`): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).
 * `progress_bar` (`bool`): If True, `pandas-profiling` will display a progress bar.
-* `infer_dtypes` (`bool`): 
-  * `True` by default. When `True` the `dtype` of variables are inferred by `pandas-profiling`.
-  * When `False`, the data-types of variables are detected from `pandas`. dataframe. (A variable `dtype` can be changed using `astype` function and the same `dtype` is used by `pandas-profiling`).
+* `infer_dtypes` (`bool`): When `True` (default) the `dtype` of variables are inferred using `visions` using the typeset logic (for instance a column that has integers stored as string will be analyzed as if being numeric).
 
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 
+You find the configuration docs on the advanced usage page [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html)
+
 **Example**
-- configure your report. You can refer advanced usage docs [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html)
 ```python
 profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file("output.html")
-```
-
-- If dtypes are changed (using `astype`) and need to consider the new dtypes, set `infer_dtypes`: False
-```python3
-df = pd.DataFrame({
-    'Dummy': ['X', 'Y', 'X', 'X', 'Y', 'Y', 'Y', 'X'],
-    'EmpID': [9940243658, 9940243537, 9940243103, 9940242844, 9940242844, 9940242840, 9940242774, 9940242774]
-})
-
-df['EmpID'] = df['EmpID'].astype('str')
-
-# `EmpID` would be considered as `real number` in below report eventhough it is casted as `str` above.
-# This is because by default pandas-profiling tries to infer the dtype.
-profile2 = df.profile_report(title='Inferred dtype - Report')
-profile2.to_file('output2.html')
-
-
-# To read `EmpID` as a category item / use the same dtypes as read by pandas (df.dtypes)
-profile3 = df.profile_report(title='Detected dtype - Report', infer_dtypes=False)
-profile3.to_file('output3.html')
-
 ```
 
 ## Supporting open source
