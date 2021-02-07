@@ -37,28 +37,25 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-### Version v2.10.0rc1 released
-
-v2.10.0rc1 includes a major overhaul of the type system, now fully reliant on visions.
+**Version v2.10.1 released**: containing stability fixes for the previous release, which included a major overhaul of the type system, now fully reliant on visions.
 See the changelog below to know what has changed.
 
-### Spark backend in progress
-
-We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
+**Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Stay tuned.
 
 ### Support `pandas-profiling`
 
 The development of `pandas-profiling` relies completely on contributions.
-If you find value in the package, we welcome you to support the project through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
+If you find value in the package, we welcome you to support the project directly through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
+Please help me to continue to support this package.
 It's extra exciting that GitHub **matches your contribution** for the first year.
 
 Find more information here:
 
- - [Changelog v2.10.0rc1](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-10-0rc1)
+ - [Changelog v2.10.1](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-10-1)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
-_January 5, 2021 💘_
+_February 7, 2021 💘_
 
 ---
 

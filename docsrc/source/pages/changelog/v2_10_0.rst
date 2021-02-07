@@ -1,4 +1,4 @@
-Changelog v2.10.0rc1
+Changelog v2.10.0
 ----------------
 
 🎉 Features
