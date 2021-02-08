@@ -80,16 +80,6 @@ def test_load_error():
     ProfileReport.clear_config()
     ProfileReport(df, minimal=False).loads(data, ignore_config=True)
 
-    # config not match
-    with pytest.raises(ValueError) as e:
-        ProfileReport.clear_config()
-        ProfileReport(df, minimal=False).loads(data)
-
-    assert (
-        str(e.value)
-        == 'DataFrame or Config do not match with the current ProfileReport. If you want to overwrite the current configuration, use "ignore_config=True"'
-    )
-
     # df not match
     with pytest.raises(ValueError) as e:
         ProfileReport.clear_config()
@@ -97,7 +87,4 @@ def test_load_error():
             data, ignore_config=True
         )
 
-    assert (
-        str(e.value)
-        == 'DataFrame or Config do not match with the current ProfileReport. If you want to overwrite the current configuration, use "ignore_config=True"'
-    )
+    assert str(e.value) == "DataFrame does not match with the current ProfileReport."

@@ -72,11 +72,9 @@ class SerializeReport:
             raise ValueError(
                 f"Failed to load data: file may be damaged or from an incompatible version"
             )
-        if (df_hash == self.df_hash) and (
-            ignore_config
-            or config == loaded_config
-            or (config.is_default and self.df is None)  # load to an empty ProfileReport
-        ):
+        if (df_hash == self.df_hash) or (
+            config.is_default and self.df is None
+        ):  # load to an empty ProfileReport
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
                 self._description_set = loaded_description_set
@@ -91,9 +89,8 @@ class SerializeReport:
                     f"The report of current ProfileReport is not None. It won't be loaded."
                 )
 
-            # overwrite config if ignore_config set to True
-            if ignore_config:
-                config.update(loaded_config)
+            # overwrite config
+            config.update(loaded_config)
 
             # warn if version not equal
             if (
@@ -111,10 +108,7 @@ class SerializeReport:
             self._title = loaded_title
 
         else:
-            raise ValueError(
-                "DataFrame or Config do not match with the current ProfileReport. "
-                'If you want to overwrite the current configuration, use "ignore_config=True"'
-            )
+            raise ValueError("DataFrame does not match with the current ProfileReport.")
         return self
 
     def dump(self, output_file: Union[Path, str]):

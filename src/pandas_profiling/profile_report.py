@@ -50,6 +50,7 @@ class ProfileReport(SerializeReport):
             sample: optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
+        config.clear()  # to reset (previous) config.
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
