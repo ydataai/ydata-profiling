@@ -33,14 +33,15 @@ class ExpectationHandler(Handler):
 
 
 class ExpectationsReport:
-    def to_expectation_suite(self,
-                             suite_name=None,
-                             data_context=None,
-                             save_suite=True,
-                             run_validation=True,
-                             build_data_docs=True,
-                             handler=None,
-                             ):
+    def to_expectation_suite(
+        self,
+        suite_name=None,
+        data_context=None,
+        save_suite=True,
+        run_validation=True,
+        build_data_docs=True,
+        handler=None,
+    ):
         """
         All parameters default to True to make it easier to access the full functionality of Great Expectations out of
         the box.
@@ -75,7 +76,9 @@ class ExpectationsReport:
         if not data_context:
             data_context = ge.data_context.DataContext()
 
-        suite = data_context.create_expectation_suite(suite_name, overwrite_existing=True)
+        suite = data_context.create_expectation_suite(
+            suite_name, overwrite_existing=True
+        )
         if save_suite:
             data_context.save_expectation_suite(suite)
 
@@ -95,7 +98,9 @@ class ExpectationsReport:
             results = data_context.run_validation_operator(
                 "action_list_operator", assets_to_validate=[batch]
             )
-            validation_result_identifier = results.list_validation_result_identifiers()[0]
+            validation_result_identifier = results.list_validation_result_identifiers()[
+                0
+            ]
 
             # Write expectations and open data docs
 
