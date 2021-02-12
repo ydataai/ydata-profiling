@@ -61,6 +61,20 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--infer_dtypes",
+        default=False,
+        action="store_true",
+        help="To infer dtypes of the dataframe",
+    )
+
+    parser.add_argument(
+        "--no-infer_dtypes",
+        dest="infer_dtypes",
+        action="store_false",
+        help="To read dtypes as read by pandas",
+    )
+
+    parser.add_argument(
         "--config_file",
         type=str,
         default=None,

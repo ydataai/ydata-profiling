@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
   |
-  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-j619lvar-dgU_GA3zlhB1vNqJvbg8yg">Slack</a>
+  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-l2iqwb92-9JpTEdFBijR2G798j2MpQw">Slack</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
 </p>
@@ -37,28 +37,25 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-### Version v2.10.0rc1 released
-
-v2.10.0rc1 includes a major overhaul of the type system, now fully reliant on visions.
+**Version v2.10.1 released**: containing stability fixes for the previous release, which included a major overhaul of the type system, now fully reliant on visions.
 See the changelog below to know what has changed.
 
-### Spark backend in progress
-
-We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
+**Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Stay tuned.
 
 ### Support `pandas-profiling`
 
 The development of `pandas-profiling` relies completely on contributions.
-If you find value in the package, we welcome you to support the project through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
+If you find value in the package, we welcome you to support the project directly through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
+Please help me to continue to support this package.
 It's extra exciting that GitHub **matches your contribution** for the first year.
 
 Find more information here:
 
- - [Changelog v2.10.0rc1](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-10-0rc1)
+ - [Changelog v2.10.1](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-10-1)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
-_January 5, 2021 💘_
+_February 7, 2021 💘_
 
 ---
 
@@ -241,11 +238,13 @@ A set of options is available in order to adapt the report generated.
 * `title` (`str`): Title for the report ('Pandas Profiling Report' by default).
 * `pool_size` (`int`): Number of workers in thread pool. When set to zero, it is set to the number of CPUs available (0 by default).
 * `progress_bar` (`bool`): If True, `pandas-profiling` will display a progress bar.
+* `infer_dtypes` (`bool`): When `True` (default) the `dtype` of variables are inferred using `visions` using the typeset logic (for instance a column that has integers stored as string will be analyzed as if being numeric).
 
 More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
 
-**Example**
+You find the configuration docs on the advanced usage page [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html)
 
+**Example**
 ```python
 profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
 profile.to_file("output.html")

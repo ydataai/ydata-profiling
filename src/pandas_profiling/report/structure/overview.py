@@ -55,7 +55,7 @@ def get_dataset_overview(summary):
 
     dataset_types = Table(
         [
-            {"name": type_name, "value": count, "fmt": "fmt_numeric"}
+            {"name": str(type_name), "value": count, "fmt": "fmt_numeric"}
             for type_name, count in summary["table"]["types"].items()
         ],
         name="Variable types",

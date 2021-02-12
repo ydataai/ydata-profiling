@@ -12,12 +12,10 @@ from pandas_profiling.model.typeset import Categorical, Numeric
 
 def test_issue72_higher():
     # Showcase (and test) different ways of interfacing with config/profiling report
-    config["vars"]["num"]["low_categorical_threshold"].set(2)
-
     df = pd.DataFrame({"A": [1, 2, 3, 3]})
     df["B"] = df["A"].apply(str)
     report = pandas_profiling.ProfileReport(df, correlations=None)
-
+    report.set_variable("vars.num.low_categorical_threshold", 2)
     # 3 > 2, so numerical
     assert report.get_description()["variables"]["A"]["type"] == Numeric
     # Strings are always categorical
@@ -40,11 +38,10 @@ def test_issue72_equal():
 
 
 def test_issue72_lower():
-    config["vars"]["num"]["low_categorical_threshold"].set(10)
-
     df = pd.DataFrame({"A": [1, 2, 3, 3, np.nan]})
     df["B"] = df["A"].apply(str)
     report = df.profile_report(correlations=None)
+    report.set_variable("vars.num.low_categorical_threshold", 10)
 
     # 3 < 10, so categorical
     assert report.get_description()["variables"]["A"]["type"] == Categorical
