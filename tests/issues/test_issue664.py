@@ -18,7 +18,7 @@ def test_issue664():
     )
     _ = profile.get_description()
 
-    
+
 def test_issue664_alt():
     test = pd.DataFrame([np.nan] * 100, columns=["a"])
 
