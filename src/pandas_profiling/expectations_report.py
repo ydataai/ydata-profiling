@@ -33,7 +33,30 @@ class ExpectationHandler(Handler):
 
 
 class ExpectationsReport:
-    def to_expectation_suite(self, suite_name=None, handler=None):
+    def to_expectation_suite(
+        self,
+        suite_name=None,
+        data_context=None,
+        save_suite=True,
+        run_validation=True,
+        build_data_docs=True,
+        handler=None,
+    ):
+        """
+        All parameters default to True to make it easier to access the full functionality of Great Expectations out of
+        the box.
+        Args:
+            suite_name: The name of your expectation suite
+            data_context: A user-specified data context
+            save_suite: Boolean to determine whether to save the suite to .json as part of the method
+            run_validation: Boolean to determine whether to run validation as part of the method
+            build_data_docs: Boolean to determine whether to build data docs, save the .html file, and open data docs in
+                your browser
+            handler: The handler to use for building expectation
+
+        Returns:
+            An ExpectationSuite
+        """
         try:
             import great_expectations as ge
         except ImportError:
@@ -50,9 +73,14 @@ class ExpectationsReport:
             handler = ExpectationHandler(ProfilingTypeSet())
 
         # Obtain the ge context and create the expectation suite
-        context = ge.data_context.DataContext()
-        suite = context.create_expectation_suite(suite_name, overwrite_existing=True)
-        context.save_expectation_suite(suite)
+        if not data_context:
+            data_context = ge.data_context.DataContext()
+
+        suite = data_context.create_expectation_suite(
+            suite_name, overwrite_existing=True
+        )
+        if save_suite:
+            data_context.save_expectation_suite(suite)
 
         # Instantiate an in-memory pandas dataset
         batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
@@ -64,35 +92,26 @@ class ExpectationsReport:
         for name, variable_summary in summary["variables"].items():
             handler.handle(variable_summary["type"], name, variable_summary, batch)
 
-        return batch.get_expectation_suite()
+        if run_validation:
+            batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
 
-    def to_expectations_with_validation_operator(
-        self, suite_name=None, handler=None, build_data_docs=True
-    ):
-        try:
-            import great_expectations as ge
-        except ImportError:
-            raise ImportError(
-                "Please install great expectations before using the expectation functionality"
+            results = data_context.run_validation_operator(
+                "action_list_operator", assets_to_validate=[batch]
             )
+            validation_result_identifier = results.list_validation_result_identifiers()[
+                0
+            ]
 
-        context = ge.data_context.DataContext()
+            # Write expectations and open data docs
 
-        suite = self.to_expectation_suite(suite_name, handler)
+            if build_data_docs:
+                data_context.save_expectation_suite(suite)
+                data_context.build_data_docs()
+                data_context.open_data_docs(validation_result_identifier)
 
-        # Instantiate an in-memory pandas dataset
-        batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
+        if build_data_docs and not run_validation:
+            data_context.save_expectation_suite(suite)
+            data_context.build_data_docs()
+            data_context.open_data_docs()
 
-        # This validation operator works with great_expectations < 0.12 API, and will need migrating with new style
-        # batches and validator
-        results = context.run_validation_operator(
-            "action_list_operator", assets_to_validate=[batch]
-        )
-        validation_result_identifier = results.list_validation_result_identifiers()[0]
-
-        # Write expectations and open data docs
-        context.save_expectation_suite(suite)
-
-        if build_data_docs:
-            context.build_data_docs()
-            context.open_data_docs(validation_result_identifier)
+        return batch.get_expectation_suite()
