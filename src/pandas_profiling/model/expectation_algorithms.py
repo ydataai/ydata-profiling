@@ -36,7 +36,7 @@ def numeric_expectations(name, summary, batch, *args):
             name, strictly=summary["monotonic_decrease_strict"]
         )
 
-    if summary.get("min") or summary.get("max"):
+    if any(k in summary for k in ["min", "max"]):
         batch.expect_column_values_to_be_between(
             name, min_value=summary.get("min"), max_value=summary.get("max")
         )
@@ -63,7 +63,7 @@ def path_expectations(name, summary, batch, *args):
 
 
 def datetime_expectations(name, summary, batch, *args):
-    if summary.get("min") or summary.get("max"):
+    if any(k in summary for k in ["min", "max"]):
         batch.expect_column_values_to_be_between(
             name, min_value=summary.get("min"), max_value=summary.get("max")
         )
