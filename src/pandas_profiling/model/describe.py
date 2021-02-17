@@ -48,7 +48,7 @@ def describe(
         warnings.warn("df is not of type pandas.DataFrame")
 
     if df.empty:
-        raise ValueError("df can not be empty")
+        pass
 
     disable_progress_bar = not config["progress_bar"].get(bool)
 
