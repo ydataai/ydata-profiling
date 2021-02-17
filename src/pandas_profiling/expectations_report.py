@@ -91,6 +91,10 @@ class ExpectationsReport:
         for name, variable_summary in summary["variables"].items():
             handler.handle(variable_summary["type"], name, variable_summary, batch)
 
+        # We don't actually update the suite object on the batch in place, so need
+        # to get the populated suite from the batch
+        suite = batch.get_expectation_suite()
+
         validation_result_identifier = None
         if run_validation:
             batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
