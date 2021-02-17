@@ -120,12 +120,12 @@ def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
     summary.update(
         {
             "n": length,
-            "p_missing": summary["n_missing"] / length,
+            "p_missing": summary["n_missing"] / length if length > 0 else 0,
             "count": length - summary["n_missing"],
             "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }
     )
-
+    
     return series, summary
 
 

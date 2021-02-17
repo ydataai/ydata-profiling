@@ -124,7 +124,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     n = len(df)
 
     memory_size = df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
-    record_size = float(memory_size) / n
+    record_size = float(memory_size) / n if n > 0 else 0
 
     table_stats = {
         "n": n,
@@ -144,8 +144,8 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
                 table_stats["n_vars_all_missing"] += 1
 
     table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-        table_stats["n"] * table_stats["n_var"]
-    )
+        table_stats["n"] * table_stats["n_var"] 
+    ) if table_stats["n"] > 0 else 0
 
     supported_columns = [
         k for k, v in variable_stats.items() if v["type"] != Unsupported
