@@ -68,15 +68,14 @@ You can also configure each feature individually in the function call:
         handler=handler
     )
 
-TODO: explain the handler
-
 See `the Great Expectations Examples <https://pandas-profiling.github.io/pandas-profiling/examples/master/features/great_expectations_example.html>`_ for complete examples.
 
 
 Included Expectation types
 --------------------------
 
-The ``to_expectation_suite`` method returns a default set of Expectations if Pandas Profiling determines that the assertion holds true for the profiled dataset. The Expectation types depend on the datatype of a column:
+The ``to_expectation_suite`` method returns a default set of Expectations if Pandas Profiling determines that the assertion holds true for the profiled dataset.
+The Expectation types depend on the datatype of a column:
 
 **All columns**
 
@@ -101,3 +100,51 @@ The ``to_expectation_suite`` method returns a default set of Expectations if Pan
 **Filename columns**
 
 * ``expect_file_to_exist``
+
+
+The default logic is straight forward and can be found here in `expectation_algorithms.py <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/model/expectation_algorithms.py>`_.
+
+Rolling your own Expectation Generation Logic
+---------------------------------------------
+
+If you would like to profile datasets at scale, your use case might require to change the default expectations logic.
+The ``to_expectation_suite`` takes the ``handler`` parameter, that allows you to take full control of the generation process.
+Generating expectations takes place in two steps:
+
+- mapping the detected type of each column to a generator function (that receives the columns' summary statistics);
+- generating expectations based on the summary (e.g. ``expect_column_values_to_not_be_null`` if ``summary["n_missing"] == 0``)
+
+Adding an expectation to columns with constant length can be achieved for instance using this code:
+
+.. code-block:: python
+
+    def fixed_length(name, summary, batch, *args):
+        """Add a length expectation to columns with constant length values"""
+        if summary["min_length"] == summary["max_length"]:
+            batch.expect_column_value_lengths_to_equal(summary["min_length"])
+        return name, summary, batch
+
+
+    class MyExpectationHandler(Handler):
+        def __init__(self, typeset, *args, **kwargs):
+            mapping = {
+                Unsupported: [expectation_algorithms.generic_expectations],
+                Categorical: [expectation_algorithms.categorical_expectations, fixed_length],
+                Boolean: [expectation_algorithms.categorical_expectations],
+                Numeric: [expectation_algorithms.numeric_expectations],
+                URL: [expectation_algorithms.url_expectations],
+                File: [expectation_algorithms.file_expectations],
+                Path: [expectation_algorithms.path_expectations],
+                DateTime: [expectation_algorithms.datetime_expectations],
+                Image: [expectation_algorithms.image_expectations],
+            }
+            super().__init__(mapping, typeset, *args, **kwargs)
+
+    # (initiate report)
+
+    suite = report.to_expectation_suite(
+        handler=MyExpectationHandler(report.typeset)
+    )
+
+You can automate even more by extending the typeset (by default the ``ProfilingTypeSet``) with semantic data types specific to your company or use case (for instance disease classification in healthcare or currency and IBAN in finance).
+For that, you can find details in the `visions <https://github.com/dylan-profiler/visions>` documentation.
