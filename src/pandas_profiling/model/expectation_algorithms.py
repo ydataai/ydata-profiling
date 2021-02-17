@@ -13,9 +13,13 @@ def generic_expectations(name, summary, batch, *args):
 def numeric_expectations(name, summary, batch, *args):
     from great_expectations.profile.base import ProfilerTypeMapping
 
+    numeric_type_names = (
+        ProfilerTypeMapping.INT_TYPE_NAMES + ProfilerTypeMapping.FLOAT_TYPE_NAMES
+    )
+
     batch.expect_column_values_to_be_in_type_list(
         name,
-        ProfilerTypeMapping.INT_TYPE_NAMES + ProfilerTypeMapping.FLOAT_TYPE_NAMES,
+        numeric_type_names,
         meta={
             "notes": {
                 "format": "markdown",

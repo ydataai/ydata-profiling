@@ -355,7 +355,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 elif isinstance(o, set):
                     return {encode_it(v) for v in o}
                 elif isinstance(o, (pd.DataFrame, pd.Series)):
-                    return encode_it(o.to_dict(orient="record"))
+                    return encode_it(o.to_dict(orient="records"))
                 elif isinstance(o, np.ndarray):
                     return encode_it(o.tolist())
                 elif isinstance(o, Sample):

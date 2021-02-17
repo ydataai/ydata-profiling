@@ -33,10 +33,20 @@ def test_generic_expectations_min(batch):
     batch.expect_column_values_to_be_unique.assert_not_called()
 
 
-@patch("great_expectations.profile.base.ProfilerTypeMapping.INT_TYPE_NAMES", ["hallo"])
-@patch(
-    "great_expectations.profile.base.ProfilerTypeMapping.FLOAT_TYPE_NAMES", ["hallo"]
-)
+orig_import = __import__
+
+
+def import_mock(name, *args):
+    if name == "great_expectations.profile.base":
+        mod = Mock()
+        mod.ProfilerTypeMapping.INT_TYPE_NAMES = []
+        mod.ProfilerTypeMapping.FLOAT_TYPE_NAMES = []
+        return mod
+
+    return orig_import(name, *args)
+
+
+@patch("builtins.__import__", side_effect=import_mock)
 def test_numeric_expectations(batch):
     numeric_expectations(
         "column",
@@ -64,10 +74,7 @@ def test_numeric_expectations(batch):
     )
 
 
-@patch("great_expectations.profile.base.ProfilerTypeMapping.INT_TYPE_NAMES", ["hallo"])
-@patch(
-    "great_expectations.profile.base.ProfilerTypeMapping.FLOAT_TYPE_NAMES", ["hallo"]
-)
+@patch("builtins.__import__", side_effect=import_mock)
 def test_numeric_expectations_min(batch):
     numeric_expectations(
         "column",
