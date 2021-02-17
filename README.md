@@ -250,6 +250,19 @@ profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': 
 profile.to_file("output.html")
 ```
 
+
+### Integration with Great Expectations
+
+`Great Expectations <https://www.greatexpectations.io>`_ is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically *unit tests for your data*. Pandas Profiling features a method to create a suite of Expectations based on the results of your ProfileReport, which you can store and use to validate another (or future) dataset.
+
+You can find more details on the Great Expectations integration [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/great_expectations_integration.html)
+
+**Example**
+```python
+ profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
+ suite = profile.to_expectation_suite() # this returns an ExpectationSuite object
+```
+
 ## Supporting open source
 
 Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible without support of our gracious sponsors.
