@@ -147,4 +147,4 @@ Adding an expectation to columns with constant length can be achieved for instan
     )
 
 You can automate even more by extending the typeset (by default the ``ProfilingTypeSet``) with semantic data types specific to your company or use case (for instance disease classification in healthcare or currency and IBAN in finance).
-For that, you can find details in the `visions <https://github.com/dylan-profiler/visions>` documentation.
+For that, you can find details in the `visions <https://github.com/dylan-profiler/visions>`_ documentation.
