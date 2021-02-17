@@ -88,10 +88,15 @@ The ``to_expectation_suite`` method returns a default set of Expectations if Pan
 * ``expect_column_values_to_be_in_type_list``
 * ``expect_column_values_to_be_increasing``
 * ``expect_column_values_to_be_decreasing``
+* ``expect_column_values_to_be_between``
 
 **Categorical columns**
 
 * ``expect_column_values_to_be_in_set``
+
+**Datetime columns**
+
+* ``expect_column_values_to_be_between``
 
 **Filename columns**
 
