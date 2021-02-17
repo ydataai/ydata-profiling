@@ -271,7 +271,7 @@ Maintaining and developing the open-source code for pandas-profiling, with milli
 
 We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: 
 
-    Martin Sotir, Joseph Yuen, Brian Lee, Stephanie Rivera, nscsekhar, abdulAziz
+    Martin Sotir, Brian Lee, Stephanie Rivera, abdulAziz, gramster
 
 More info if you would like to appear here: [Github Sponsor page](https://github.com/sponsors/sbrugman)
 
@@ -279,7 +279,7 @@ More info if you would like to appear here: [Github Sponsor page](https://github
 ## Types
 
 Types are a powerful abstraction for effective data analysis, that goes beyond the logical data types (integer, float etc.).
-`pandas-profiling` currently recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
+`pandas-profiling` currently, recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
 
 We have developed a type system for Python, tailored for data analysis: [visions](https://github.com/dylan-profiler/visions).
 Selecting the right typeset drastically reduces the complexity the code of your analysis.
