@@ -250,6 +250,31 @@ profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': 
 profile.to_file("output.html")
 ```
 
+## Integrations
+
+### Great Expectations
+
+<table>
+<tr>
+<td>
+
+<img alt="Great Expectations" src="https://github.com/great-expectations/great_expectations/raw/develop/generic_dickens_protagonist.png" width="900" />
+
+</td>
+<td>
+
+Profiling your data is closely related to data validation: often validation rules are defined in terms of well-known statistics.
+For that purpose, `pandas-profiling` integrates with [Great Expectations](https://www.greatexpectations.io>). 
+This a world-class open-source library that helps you to maintain data quality and improve communication about data between teams.
+Great Expectations allows you to create Expectations (which are basically unit tests for your data) and Data Docs (conveniently shareable HTML data reports).
+`pandas-profiling` features a method to create a suite of Expectations based on the results of your ProfileReport, which you can store, and use to validate another (or future) dataset.
+
+You can find more details on the Great Expectations integration [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/great_expectations_integration.html)
+
+</td>
+</tr>
+</table>
+
 ## Supporting open source
 
 Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible without support of our gracious sponsors.

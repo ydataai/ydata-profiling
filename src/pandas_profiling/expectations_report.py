@@ -9,7 +9,6 @@ from pandas_profiling.model.typeset import (
     Image,
     Numeric,
     Path,
-    ProfilingTypeSet,
     Unsupported,
 )
 from pandas_profiling.utils.dataframe import slugify
@@ -70,7 +69,7 @@ class ExpectationsReport:
 
         # Use the default handler if none
         if handler is None:
-            handler = ExpectationHandler(ProfilingTypeSet())
+            handler = ExpectationHandler(self.typeset)
 
         # Obtain the ge context and create the expectation suite
         if not data_context:
@@ -79,8 +78,6 @@ class ExpectationsReport:
         suite = data_context.create_expectation_suite(
             suite_name, overwrite_existing=True
         )
-        if save_suite:
-            data_context.save_expectation_suite(suite)
 
         # Instantiate an in-memory pandas dataset
         batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
@@ -96,6 +93,7 @@ class ExpectationsReport:
         # to get the populated suite from the batch
         suite = batch.get_expectation_suite()
 
+        validation_result_identifier = None
         if run_validation:
             batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
 
@@ -106,16 +104,12 @@ class ExpectationsReport:
                 0
             ]
 
-            # Write expectations and open data docs
-
-            if build_data_docs:
-                data_context.save_expectation_suite(suite)
-                data_context.build_data_docs()
-                data_context.open_data_docs(validation_result_identifier)
-
-        if build_data_docs and not run_validation:
+        # Write expectations and open data docs
+        if save_suite or build_data_docs:
             data_context.save_expectation_suite(suite)
+
+        if build_data_docs:
             data_context.build_data_docs()
-            data_context.open_data_docs()
+            data_context.open_data_docs(validation_result_identifier)
 
         return batch.get_expectation_suite()
