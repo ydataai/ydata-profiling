@@ -24,12 +24,12 @@ Creating Expectation Suites with Pandas Profiling
 
 An *Expectation Suite* is simply a set of Expectations. You can create Expectation Suites by writing out individual statements, such as the one above, or by automatically generating them based on profiler results.
 
-Pandas Profiling provides a simple ``get_expectation_suite()`` method that returns a Great Expectations ``ExpectationSuite`` object which contains a set of Expectations.
+Pandas Profiling provides a simple ``to_expectation_suite()`` method that returns a Great Expectations ``ExpectationSuite`` object which contains a set of Expectations.
 
-**Pre-requisites**: In order to run the ``get_expectation_suite()`` method, you will need to install Great Expectations:
+**Pre-requisites**: In order to run the ``to_expectation_suite()`` method, you will need to install Great Expectations:
 `pip install great_expectations`
 
-If you would like to use the additional features such as saving the Suite and building Data Docs, you will also need to configure a Great Expectations Data Context by running ``great_expectations init``.
+If you would like to use the additional features such as saving the Suite and building Data Docs, you will also need to configure a Great Expectations Data Context by running ``great_expectations init`` while in your project directory.
 
 .. code-block:: python
 
@@ -107,8 +107,8 @@ The default logic is straight forward and can be found here in `expectation_algo
 Rolling your own Expectation Generation Logic
 ---------------------------------------------
 
-If you would like to profile datasets at scale, your use case might require to change the default expectations logic.
-The ``to_expectation_suite`` takes the ``handler`` parameter, that allows you to take full control of the generation process.
+If you would like to profile datasets at scale, your use case might require changing the default expectations logic.
+The ``to_expectation_suite`` takes the ``handler`` parameter, which allows you to take full control of the generation process.
 Generating expectations takes place in two steps:
 
 - mapping the detected type of each column to a generator function (that receives the columns' summary statistics);
