@@ -53,7 +53,7 @@ def categorical_expectations(name, summary, batch, *args):
         or summary["p_distinct"] < relative_threshold
     ):
         batch.expect_column_values_to_be_in_set(
-            name, summary["value_counts_without_nan"].keys()
+            name, set(summary["value_counts_without_nan"].keys())
         )
     return name, summary, batch
 
