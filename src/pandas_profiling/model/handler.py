@@ -1,8 +1,8 @@
 from functools import reduce
-from typing import Type
+from typing import Type, Callable, Dict, List
 
 import networkx as nx
-from visions import VisionsBaseType
+from visions import VisionsBaseType, VisionsTypeset
 
 from pandas_profiling.model import typeset as ppt
 
@@ -28,7 +28,11 @@ def compose(functions):
 
 
 class Handler:
-    def __init__(self, mapping, typeset, *args, **kwargs):
+    """A generic handler
+
+    Allows any custom mapping between data types and functions
+    """
+    def __init__(self, mapping: Dict[Type[VisionsBaseType], List[Callable]], typeset: VisionsTypeset, *args, **kwargs):
         self.mapping = mapping
         self.typeset = typeset
 
@@ -39,6 +43,9 @@ class Handler:
             nx.line_graph(self.typeset.base_graph)
         ):
             self.mapping[to_type] = self.mapping[from_type] + self.mapping[to_type]
+
+    def op(self, dtype: Type[VisionsBaseType]) -> Callable:
+        return compose(self.mapping.get(dtype, []))
 
     def handle(self, dtype: Type[VisionsBaseType], *args, **kwargs) -> dict:
         """
