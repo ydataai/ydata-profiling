@@ -14,7 +14,11 @@ from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.model.sample import Sample
-from pandas_profiling.model.summarizer import PandasProfilingSummarizer, format_summary
+from pandas_profiling.model.summarizer import (
+    BaseSummarizer,
+    PandasProfilingSummarizer,
+    format_summary,
+)
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
@@ -23,7 +27,6 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
 from pandas_profiling.utils.paths import get_config
-from pandas_profiling.model.summarizer import BaseSummarizer
 
 
 class ProfileReport(SerializeReport, ExpectationsReport):

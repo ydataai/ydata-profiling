@@ -36,6 +36,7 @@ class BaseSummarizer(Handler):
 
     Can be used to define custom summarizations
     """
+
     def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -> dict:
         """
 

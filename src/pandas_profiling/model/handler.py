@@ -1,5 +1,5 @@
 from functools import reduce
-from typing import Type, Callable, Dict, List
+from typing import Callable, Dict, List, Type
 
 import networkx as nx
 from visions import VisionsBaseType, VisionsTypeset
@@ -32,7 +32,14 @@ class Handler:
 
     Allows any custom mapping between data types and functions
     """
-    def __init__(self, mapping: Dict[Type[VisionsBaseType], List[Callable]], typeset: VisionsTypeset, *args, **kwargs):
+
+    def __init__(
+        self,
+        mapping: Dict[Type[VisionsBaseType], List[Callable]],
+        typeset: VisionsTypeset,
+        *args,
+        **kwargs
+    ):
         self.mapping = mapping
         self.typeset = typeset
 
