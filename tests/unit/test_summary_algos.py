@@ -24,3 +24,10 @@ def test_count_summary_category():
     )
     sn, r = describe_counts(s, {})
     assert len(r["value_counts_without_nan"].index) == 2
+
+
+def test_count_summary_empty_df():
+    s = pd.DataFrame({'A': []})
+    sn, r = describe_counts(s, {})
+    assert r['n_missing'].index == 'A'
+
