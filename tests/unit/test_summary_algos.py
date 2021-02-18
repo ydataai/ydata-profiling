@@ -27,7 +27,6 @@ def test_count_summary_category():
 
 
 def test_count_summary_empty_df():
-    s = pd.DataFrame({'A': []})
+    s = pd.DataFrame({"A": []})
     sn, r = describe_counts(s, {})
-    assert r['n_missing'].index == 'A'
-
+    assert r["n_missing"].index == "A"
