@@ -37,8 +37,7 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-**Version v2.10.1 released**: containing stability fixes for the previous release, which included a major overhaul of the type system, now fully reliant on visions.
-See the changelog below to know what has changed.
+**Version v2.11.0 released** featuring an exciting integration with Great Expectations that many of you requested (see details below).
 
 **Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Stay tuned.
@@ -52,18 +51,18 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 
 Find more information here:
 
- - [Changelog v2.10.1](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-10-1)
+ - [Changelog v2.11.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-11-0)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
-_February 7, 2021 💘_
+_February 20, 2021 💘_
 
 ---
 
 _Contents:_ **[Examples](#examples)** |
 **[Installation](#installation)** | **[Documentation](#documentation)** |
 **[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
-**[Advanced usage](#advanced-usage)** | **[Support](#supporting-open-source)** |
-**[Types](#types)** | **[How to contribute](#contributing)** |
+**[Advanced usage](#advanced-usage)** | **[integrations](#integrations)** |
+**[Support](#supporting-open-source)** | **[Types](#types)** | **[How to contribute](#contributing)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
 
 ---
