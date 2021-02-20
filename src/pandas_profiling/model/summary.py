@@ -39,9 +39,15 @@ def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
 
-    # Infer variable types
-    vtype = typeset.infer_type(series)
-    series = typeset.cast_to_inferred(series)
+    # get `infer_dtypes` (bool) from config
+    infer_dtypes = config["infer_dtypes"].get(bool)
+    if infer_dtypes:
+        # Infer variable types
+        vtype = typeset.infer_type(series)
+        series = typeset.cast_to_inferred(series)
+    else:
+        # Detect variable types from pandas dataframe (df.dtypes). [new dtypes, changed using `astype` function are now considered]
+        vtype = typeset.detect_type(series)
 
     return summarizer.summarize(series, dtype=vtype)
 

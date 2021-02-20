@@ -18,7 +18,7 @@ def compose(functions):
         def func2(*x):
             res = g(*x)
             if type(res) == bool:
-                return False
+                return f(*x)
             else:
                 return f(*res)
 
