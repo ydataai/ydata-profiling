@@ -51,9 +51,6 @@ class Handler:
         ):
             self.mapping[to_type] = self.mapping[from_type] + self.mapping[to_type]
 
-    def op(self, dtype: Type[VisionsBaseType]) -> Callable:
-        return compose(self.mapping.get(dtype, []))
-
     def handle(self, dtype: Type[VisionsBaseType], *args, **kwargs) -> dict:
         """
 
