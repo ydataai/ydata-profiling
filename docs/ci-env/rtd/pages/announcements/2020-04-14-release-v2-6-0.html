@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>New in v2.6.0 &mdash; pandas-profiling 2.11.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #174C4F" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Pandas Profiling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../announcements.html">Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../big_data.html">Big Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata.html">Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../great_expectations_integration.html">Integration with Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribution_guidelines.html">Contribution Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+
+            
+          
+
+    <div style="padding-top: 20px">
+        <a href="https://github.com/sponsors/sbrugman">
+            <summary id="sponsor-button-repo" class="btn btn-sm" title="Sponsor pandas-profiling/pandas-profiling" data-ga-click="Repository, show sponsor modal, action:files#disambiguate; text:Sponsor" role="button">
+              <svg class="octicon octicon-heart text-pink v-align-text-bottom" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.727 3C7.091 3 6.001 4.65 6.001 4.65S4.909 3 3.273 3C1.636 3 0 4.1 0 6.3 0 9.6 6 14 6 14s6-4.4 6-7.7C12 4.1 10.364 3 8.727 3z"></path></svg>
+              Sponsor
+            </summary>
+        </a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pandas-profiling</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>New in v2.6.0</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/pages/announcements/2020-04-14-release-v2-6-0.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="new-in-v2-6-0">
+<h1>New in v2.6.0<a class="headerlink" href="#new-in-v2-6-0" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="dependency-policy">
+<h2>Dependency policy<a class="headerlink" href="#dependency-policy" title="Permalink to this headline">¶</a></h2>
+<p>The current dependency policy is suboptimal.
+Pinning the dependencies is great for reproducibility (high guarantee to work), but on the downside requires frequent maintenance and introduces compatibility issues with other packages.
+Therefore, we are moving away from pinning dependencies and instead specify a minimum version.</p>
+</div>
+<div class="section" id="pandas-v1">
+<h2>Pandas v1<a class="headerlink" href="#pandas-v1" title="Permalink to this headline">¶</a></h2>
+<p>Early releases of pandas v1 demonstrated many regressions that broke functionality (as acknowledged by the authors <a class="reference external" href="https://github.com/pandas-dev/pandas/issues/31523)">here</a>. At this point, pandas is more stable and we notice high demand for compatibility. We move on to support pandas’ latest versions.
+To ensure compatibility with both versions, we have extended the test matrix to test against both pandas 0.x.y and 1.x.y.</p>
+</div>
+<div class="section" id="python-3-6-features">
+<h2>Python 3.6+ features<a class="headerlink" href="#python-3-6-features" title="Permalink to this headline">¶</a></h2>
+<p>Python 3.6 introduces ordered dicts and f-strings, which we now rely on.
+This means that from pandas-profiling 2.6, you should minimally run Python 3.6.
+For users that for some reason cannot update, you can use pandas-profiling 2.5.0, but you unfortunately won’t benefit from updates or maintenance.</p>
+</div>
+<div class="section" id="extended-continuous-integration">
+<h2>Extended continuous integration<a class="headerlink" href="#extended-continuous-integration" title="Permalink to this headline">¶</a></h2>
+<p>Starting from this release, we use Github Actions and Travis CI combined to increase maintainability.
+Travis CI handles the testing, Github Actions automates part of the development process by running black and building the docs.</p>
+</div>
+<div class="section" id="support-pandas-profiling">
+<h2>Support pandas-profiling<a class="headerlink" href="#support-pandas-profiling" title="Permalink to this headline">¶</a></h2>
+<p>With your help, we got approved for <a class="reference external" href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
+It’s extra exciting that GitHub matches your contribution for the first year.
+Therefore, we welcome you to support the project through GitHub!</p>
+<p>Find more information here:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></p></li>
+<li><p><a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.6.0">Read the release notes v2.6.0</a></p></li>
+</ul>
+<p>April 14, 2020 💘</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Simon Brugman.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

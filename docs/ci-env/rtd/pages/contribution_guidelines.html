@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Contribution Guidelines &mdash; pandas-profiling 2.11.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Resources" href="resources.html" />
+    <link rel="prev" title="Support" href="support.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #174C4F" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pandas-profiling
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Pandas Profiling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="announcements.html">Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="big_data.html">Big Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="great_expectations_integration.html">Integration with Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Support and contribution</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contribution Guidelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#contributing-a-new-feature">Contributing a new feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#developer-tools">Developer tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#git-workflow">Git workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributor-license-agreement-cla">Contributor License Agreement (CLA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-information">More information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+            
+          
+
+    <div style="padding-top: 20px">
+        <a href="https://github.com/sponsors/sbrugman">
+            <summary id="sponsor-button-repo" class="btn btn-sm" title="Sponsor pandas-profiling/pandas-profiling" data-ga-click="Repository, show sponsor modal, action:files#disambiguate; text:Sponsor" role="button">
+              <svg class="octicon octicon-heart text-pink v-align-text-bottom" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.727 3C7.091 3 6.001 4.65 6.001 4.65S4.909 3 3.273 3C1.636 3 0 4.1 0 6.3 0 9.6 6 14 6 14s6-4.4 6-7.7C12 4.1 10.364 3 8.727 3z"></path></svg>
+              Sponsor
+            </summary>
+        </a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pandas-profiling</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Contribution Guidelines</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/pages/contribution_guidelines.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="contribution-guidelines">
+<h1>Contribution Guidelines<a class="headerlink" href="#contribution-guidelines" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="contributing-a-new-feature">
+<h2>Contributing a new feature<a class="headerlink" href="#contributing-a-new-feature" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Open a new Github pull request with the patch.</p></li>
+<li><p>Ensure the PR description clearly describes the problem and solution.
+Include the relevant issue number if applicable.</p></li>
+</ul>
+</div>
+<div class="section" id="developer-tools">
+<h2>Developer tools<a class="headerlink" href="#developer-tools" title="Permalink to this headline">¶</a></h2>
+<p>There are tools available to ease the development cycle. These can be called from the root directory with the <code class="docutils literal notranslate"><span class="pre">make</span></code> command.</p>
+<p>The following commands are supported:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">lint</span>
+<span class="n">make</span> <span class="n">install</span>
+<span class="n">make</span> <span class="n">examples</span>
+<span class="n">make</span> <span class="n">docs</span>
+<span class="n">make</span> <span class="n">test</span>
+<span class="n">make</span> <span class="n">clean</span>
+<span class="n">make</span> <span class="n">typing</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="git-workflow">
+<h2>Git workflow<a class="headerlink" href="#git-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The git workflow used in this project is based on <a class="reference external" href="https://nvie.com/posts/a-successful-git-branching-model/">this blog post</a>.
+Using this workflow allows for better collaboration between contributors and automation of repetitive tasks.</p>
+<p>In addition to the workflow described in the blog post, Github Actions lints the code automatically on the release branches and builds documentation from each push to the master branch. For now, we don’t use hotfix branches.</p>
+<p>Branch naming:
+- develop: development branch
+- master: master branch
+- feature/[FEATURE NAME]: feature branches
+- release/v[VERSION]: releases
+- gh-pages: documentation and examples are hosted here</p>
+<div class="figure align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/figure-git-workflow.svg"><img alt="Workflow" src="../_images/figure-git-workflow.svg" width="80%" /></a>
+<p class="caption"><span class="caption-text">Git workflow for this project. Based on work by Vincent Driessen, Creative Commons BY-SA.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="contributor-license-agreement-cla">
+<h2>Contributor License Agreement (CLA)<a class="headerlink" href="#contributor-license-agreement-cla" title="Permalink to this headline">¶</a></h2>
+<p>This package does not have a Contributor License Agreement (CLA), as the GitHub Terms of Service provides a sensible <a class="reference external" href="https://help.github.com/en/github/site-policy/github-terms-of-service#6-contributions-under-repository-license">explicit default</a>:</p>
+<blockquote>
+<div><p><em>Whenever you make a contribution to a repository containing notice of a license, you license your contribution under the same terms, and you agree that you have the right to license your contribution under those terms.</em></p>
+</div></blockquote>
+<p>Read Github’s <a class="reference external" href="https://opensource.guide/legal/#does-my-project-need-an-additional-contributor-agreement">open source legal guide</a> for further details.</p>
+</div>
+<div class="section" id="more-information">
+<h2>More information<a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
+<p>Read more on getting involved in the <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md">Contribution Guide</a> on Github.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="resources.html" class="btn btn-neutral float-right" title="Resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="support.html" class="btn btn-neutral float-left" title="Support" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Simon Brugman.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

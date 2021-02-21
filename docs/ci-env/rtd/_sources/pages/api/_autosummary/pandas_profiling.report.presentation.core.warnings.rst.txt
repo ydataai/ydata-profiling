@@ -1,0 +1,29 @@
+﻿pandas\_profiling.report.presentation.core.warnings
+===================================================
+
+.. automodule:: pandas_profiling.report.presentation.core.warnings
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Warnings
+   
+   
+
+   
+   
+   
+
+
+
