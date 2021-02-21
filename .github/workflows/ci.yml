@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - release/v**
+      - hotfix/*
       - master
 
 jobs:
