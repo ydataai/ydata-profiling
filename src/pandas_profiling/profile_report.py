@@ -9,7 +9,6 @@ import pandas as pd
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
-
 from pandas_profiling.config import config
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.describe import describe as describe_df
