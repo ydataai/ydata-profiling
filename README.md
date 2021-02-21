@@ -263,7 +263,7 @@ profile.to_file("output.html")
 <td>
 
 Profiling your data is closely related to data validation: often validation rules are defined in terms of well-known statistics.
-For that purpose, `pandas-profiling` integrates with [Great Expectations](https://www.greatexpectations.io>). 
+For that purpose, `pandas-profiling` integrates with [Great Expectations](https://www.greatexpectations.io). 
 This a world-class open-source library that helps you to maintain data quality and improve communication about data between teams.
 Great Expectations allows you to create Expectations (which are basically unit tests for your data) and Data Docs (conveniently shareable HTML data reports).
 `pandas-profiling` features a method to create a suite of Expectations based on the results of your ProfileReport, which you can store, and use to validate another (or future) dataset.
