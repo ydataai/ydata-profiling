@@ -105,7 +105,7 @@ jobs:
       - name: Create branch name
         run: |
           export BRANCH_NAME="${GITHUB_REF##*/}/"
-          echo "name=BRANCH_NAME" >> $BRANCH_NAME
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
       - name: Move the changes to the gh-pages branch (release branch)
         run: |
