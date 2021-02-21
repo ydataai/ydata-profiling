@@ -58,7 +58,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         lazy: bool = True,
         typeset: Optional[VisionsTypeset] = None,
         summarizer: Optional[BaseSummarizer] = None,
-        config: Optional[Settings] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -108,8 +107,17 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         self.config = report_config
         self._df_hash = None
         self._sample = sample
+        self._title = None
+        self._report = None
+        self._html = None
+        self._widgets = None
+        self._json = None
         self._typeset = typeset
         self._summarizer = summarizer
+
+        if df is not None:
+            # preprocess df
+            self.df = self.preprocess(df)
 
         if not lazy:
             # Trigger building the report structure
