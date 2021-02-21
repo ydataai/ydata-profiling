@@ -8,8 +8,17 @@ Model
 .. autosummary::
    :toctree: _autosummary
 
-   base
    describe
+   handler
    summary
+   summary_algorithms
+   summary_helpers
+   summary_helpers_image
+   summarizer
+   typeset
+   typeset_relations
    messages
    correlations
+   duplicates
+   sample
+   expectation_algorithms
