@@ -1,5 +1,5 @@
 Changelog v2.10.0
-----------------
+-----------------
 
 🎉 Features
 ^^^^^^^^^^^
@@ -9,7 +9,7 @@ Changelog v2.10.0
 - Restructure categorical variable overview
 
 👷‍♂️ Internal Improvements
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - Full visions integration for type system: read more `here <https://github.com/dylan-profiler/visions>`_.
 - Migrate from Travis CI to Github Actions...
 

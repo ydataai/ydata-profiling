@@ -12,7 +12,7 @@ About Great Expectations
 
     ``expect_column_values_to_be_between(column="passenger_count", min_value=1, max_value=6)``
 
-Great Expectations then uses this statement to validate whether the column ``passenger_count`` in a given table is indeed between 1 and 6, and returns a success or failure result. The library currently provides :ref:`several dozen highly expressive built-in Expectations<expectation_glossary>`, and allows you to write custom Expectations.
+Great Expectations then uses this statement to validate whether the column ``passenger_count`` in a given table is indeed between 1 and 6, and returns a success or failure result. The library currently provides `several dozen highly expressive built-in Expectations <https://docs.greatexpectations.io/en/latest/reference/glossary_of_expectations.html>`_, and allows you to write custom Expectations.
 
 Great Expectations renders Expectations to clean, human-readable documentation called *Data Docs*. These HTML docs contain both your Expectation Suites as well as your data validation results each time validation is run – think of it as a continuously updated data quality report.
 

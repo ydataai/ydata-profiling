@@ -15,7 +15,7 @@ Conda install defaults to v1.4.1
 
 Some users experience that ``conda install -c conda-forge pandas-profiling`` defaults to 1.4.1.
 
-More details, `here <https://github.com/conda-forge/pandas-profiling-feedstock/issues/22>`_, `here <https://github.com/pandas-profiling/pandas-profiling/issues/448>`__ and `here <https://github.com/pandas-profiling/pandas-profiling/issues/563>`__.
+More details, `[22] <https://github.com/conda-forge/pandas-profiling-feedstock/issues/22>`_, `[448] <https://github.com/pandas-profiling/pandas-profiling/issues/448>`__ and `[563] <https://github.com/pandas-profiling/pandas-profiling/issues/563>`__.
 
 If creating a new environment with a fresh installation does not resolve this issue, or you have good reason to persist with the current environment, then you could try installing a specific version e.g. ``conda install -c conda-forge pandas-profiling=2.10.0``. 
 If it fails with an **UnsatisfiableError** that suggests dependant packages are either missing or incompatible, then further intervention is required to resolve the *environment* issue. However, *conda* error messages in this regard may be too cryptic or insufficient to pinpoint the culprit, therefore you may have to resort to an alternate means of troubleshooting e.g using the `Mamba Package Manager <https://github.com/mamba-org/mamba.git>`_.
