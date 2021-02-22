@@ -3,9 +3,9 @@ import pandas as pd
 
 from pandas_profiling.model.summary_algorithms import (
     describe_counts,
-    describe_supported,
     describe_generic,
-    )
+    describe_supported,
+)
 
 
 def test_count_summary_sorted():
@@ -33,20 +33,19 @@ def test_count_summary_category():
 def test_count_summary_empty_df():
     s = pd.DataFrame({"A": []})
     sn, r = describe_counts(s, {})
-    assert r['n_missing'].index == 'A'
+    assert r["n_missing"].index == "A"
 
 
 def test_summary_supported_empty_df():
-    s = pd.DataFrame({'A': []})
+    s = pd.DataFrame({"A": []})
     s, series_description = describe_counts(s, {})
     sn, r = describe_supported(s, series_description)
-    assert r['n_missing'].index == 'A'
+    assert r["n_missing"].index == "A"
 
 
 def test_summary_generric_empty_df():
-    s = pd.DataFrame({'A': []})
+    s = pd.DataFrame({"A": []})
     s, summary = describe_counts(s, {})
     sn, r = describe_generic(s, summary)
     assert r["p_missing"] == 0
     assert r["n_missing"].index == "A"
-
