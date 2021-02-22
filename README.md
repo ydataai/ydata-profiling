@@ -37,8 +37,7 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-**Version v2.10.1 released**: containing stability fixes for the previous release, which included a major overhaul of the type system, now fully reliant on visions.
-See the changelog below to know what has changed.
+**Version v2.11.0 released** featuring an exciting integration with Great Expectations that many of you requested (see details below).
 
 **Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Stay tuned.
@@ -52,18 +51,18 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 
 Find more information here:
 
- - [Changelog v2.10.1](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-10-1)
+ - [Changelog v2.11.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-11-0)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
-_February 7, 2021 💘_
+_February 20, 2021 💘_
 
 ---
 
 _Contents:_ **[Examples](#examples)** |
 **[Installation](#installation)** | **[Documentation](#documentation)** |
 **[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
-**[Advanced usage](#advanced-usage)** | **[Support](#supporting-open-source)** |
-**[Types](#types)** | **[How to contribute](#contributing)** |
+**[Advanced usage](#advanced-usage)** | **[integrations](#integrations)** |
+**[Support](#supporting-open-source)** | **[Types](#types)** | **[How to contribute](#contributing)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
 
 ---
@@ -250,6 +249,31 @@ profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': 
 profile.to_file("output.html")
 ```
 
+## Integrations
+
+### Great Expectations
+
+<table>
+<tr>
+<td>
+
+<img alt="Great Expectations" src="https://github.com/great-expectations/great_expectations/raw/develop/generic_dickens_protagonist.png" width="900" />
+
+</td>
+<td>
+
+Profiling your data is closely related to data validation: often validation rules are defined in terms of well-known statistics.
+For that purpose, `pandas-profiling` integrates with [Great Expectations](https://www.greatexpectations.io). 
+This a world-class open-source library that helps you to maintain data quality and improve communication about data between teams.
+Great Expectations allows you to create Expectations (which are basically unit tests for your data) and Data Docs (conveniently shareable HTML data reports).
+`pandas-profiling` features a method to create a suite of Expectations based on the results of your ProfileReport, which you can store, and use to validate another (or future) dataset.
+
+You can find more details on the Great Expectations integration [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/great_expectations_integration.html)
+
+</td>
+</tr>
+</table>
+
 ## Supporting open source
 
 Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible without support of our gracious sponsors.
@@ -271,7 +295,7 @@ Maintaining and developing the open-source code for pandas-profiling, with milli
 
 We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: 
 
-    Martin Sotir, Joseph Yuen, Brian Lee, Stephanie Rivera, nscsekhar, abdulAziz
+    Martin Sotir, Brian Lee, Stephanie Rivera, abdulAziz, gramster
 
 More info if you would like to appear here: [Github Sponsor page](https://github.com/sponsors/sbrugman)
 
@@ -279,7 +303,7 @@ More info if you would like to appear here: [Github Sponsor page](https://github
 ## Types
 
 Types are a powerful abstraction for effective data analysis, that goes beyond the logical data types (integer, float etc.).
-`pandas-profiling` currently recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
+`pandas-profiling` currently, recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
 
 We have developed a type system for Python, tailored for data analysis: [visions](https://github.com/dylan-profiler/visions).
 Selecting the right typeset drastically reduces the complexity the code of your analysis.

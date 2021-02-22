@@ -1,8 +1,8 @@
 from functools import reduce
-from typing import Type
+from typing import Callable, Dict, List, Type
 
 import networkx as nx
-from visions import VisionsBaseType
+from visions import VisionsBaseType, VisionsTypeset
 
 from pandas_profiling.model import typeset as ppt
 
@@ -18,7 +18,7 @@ def compose(functions):
         def func2(*x):
             res = g(*x)
             if type(res) == bool:
-                return False
+                return f(*x)
             else:
                 return f(*res)
 
@@ -28,7 +28,18 @@ def compose(functions):
 
 
 class Handler:
-    def __init__(self, mapping, typeset, *args, **kwargs):
+    """A generic handler
+
+    Allows any custom mapping between data types and functions
+    """
+
+    def __init__(
+        self,
+        mapping: Dict[Type[VisionsBaseType], List[Callable]],
+        typeset: VisionsTypeset,
+        *args,
+        **kwargs
+    ):
         self.mapping = mapping
         self.typeset = typeset
 

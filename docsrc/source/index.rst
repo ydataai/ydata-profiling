@@ -15,6 +15,7 @@
    pages/sensitive_data
    pages/metadata
    pages/integrations
+   pages/great_expectations_integration
    pages/changelog
 
 .. toctree::

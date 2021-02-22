@@ -1,11 +1,10 @@
 from typing import Type
 
-import networkx as nx
 import numpy as np
 import pandas as pd
 from visions import VisionsBaseType
 
-from pandas_profiling.model.handler import compose
+from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
     describe_counts,
@@ -31,20 +30,11 @@ from pandas_profiling.model.typeset import (
 )
 
 
-class BaseSummarizer:
-    def __init__(self, summary_map, typeset, *args, **kwargs):
-        self.summary_map = summary_map
-        self.typeset = typeset
+class BaseSummarizer(Handler):
+    """A base summarizer
 
-        self._complete_summaries()
-
-    def _complete_summaries(self):
-        for from_type, to_type in nx.topological_sort(
-            nx.line_graph(self.typeset.base_graph)
-        ):
-            self.summary_map[to_type] = (
-                self.summary_map[from_type] + self.summary_map[to_type]
-            )
+    Can be used to define custom summarizations
+    """
 
     def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -> dict:
         """
@@ -52,12 +42,13 @@ class BaseSummarizer:
         Returns:
             object:
         """
-        summarizer_func = compose(self.summary_map.get(dtype, []))
-        _, summary = summarizer_func(series, {"type": dtype})
+        _, summary = self.handle(dtype, series, {"type": dtype})
         return summary
 
 
 class PandasProfilingSummarizer(BaseSummarizer):
+    """The default Pandas Profiling summarizer"""
+
     def __init__(self, typeset, *args, **kwargs):
         summary_map = {
             Unsupported: [
