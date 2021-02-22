@@ -67,7 +67,6 @@ def render_real(summary):
                 "fmt": "fmt_percent",
                 "alert": "p_infinite" in summary["warn_fields"],
             },
-
             {
                 "name": "Mean",
                 "value": summary["mean"],
