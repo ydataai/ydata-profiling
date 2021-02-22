@@ -10,10 +10,10 @@ def apply_renderable_mapping(mapping, structure, flavour):
 
 
 def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
-    """Workaround variable type annotations not being supported in Python 3.5
+    """Workaround variable types annotations not being supported in Python 3.5
 
     Returns:
-        type annotated mapping dict
+        types annotated mapping dict
     """
     from pandas_profiling.report.presentation.core import (
         HTML,

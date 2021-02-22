@@ -7,32 +7,28 @@ import attr
 import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
-from visions import VisionsTypeset
 
 from pandas_profiling.config import config
 from pandas_profiling.expectations_report import ExpectationsReport
+from pandas_profiling.model.dataframe_wrappers import get_appropriate_wrapper
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.model.sample import Sample
-from pandas_profiling.model.summarizer import (
-    BaseSummarizer,
-    PandasProfilingSummarizer,
-    format_summary,
-)
+from pandas_profiling.model.summarizer import PandasProfilingSummarizer, format_summary
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
-from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
+from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
 
 class ProfileReport(SerializeReport, ExpectationsReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
-    Used as is, it will output its content as an HTML report in a Jupyter notebook.
+    Used has is it will output its content as an HTML report in a Jupyter notebook.
     """
 
     def __init__(
@@ -46,8 +42,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
-        typeset: Optional[VisionsTypeset] = None,
-        summarizer: Optional[BaseSummarizer] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -58,8 +52,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             config_file: a config file (.yml), mutually exclusive with `minimal`
             lazy: compute when needed
             sample: optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())
-            typeset: optional user typeset to use for type inference
-            summarizer: optional user summarizer to generate custom summary output
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
         config.clear()  # to reset (previous) config.
@@ -70,6 +62,28 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
+
+        self.df = None
+        self._df_hash = -1
+        self._description_set = None
+        self._sample = sample
+        self._title = None
+        self._report = None
+        self._html = None
+        self._widgets = None
+        self._json = None
+        self._typeset = None
+        self._summarizer = None
+
+        if df is not None:
+            # get appropriate backend
+            df_wrapper = get_appropriate_wrapper(df)
+            # preprocess df (if required)
+            processed_df = df_wrapper.preprocess(df)
+            # wrap and store df
+            self.df = df_wrapper(processed_df)
+            # set appropriate default config
+            config.set_default_config(df_wrapper.engine)
 
         if config_file:
             config.set_file(config_file)
@@ -91,22 +105,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             config.set_arg_group("orange_mode")
 
         config.set_kwargs(kwargs)
-
-        self.df = None
-        self._df_hash = -1
-        self._description_set = None
-        self._sample = sample
-        self._title = None
-        self._report = None
-        self._html = None
-        self._widgets = None
-        self._json = None
-        self._typeset = typeset
-        self._summarizer = summarizer
-
-        if df is not None:
-            # preprocess df
-            self.df = self.preprocess(df)
 
         if not lazy:
             # Trigger building the report structure
@@ -447,34 +445,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
-
-    @staticmethod
-    def preprocess(df):
-        """Preprocess the dataframe
-
-        - Appends the index to the dataframe when it contains information
-        - Rename the "index" column to "df_index", if exists
-        - Convert the DataFrame's columns to str
-
-        Args:
-            df: the pandas DataFrame
-
-        Returns:
-            The preprocessed DataFrame
-        """
-        # Treat index as any other column
-        if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
-
-        # Rename reserved column names
-        df = rename_index(df)
-
-        # Ensure that columns are strings
-        df.columns = df.columns.astype("str")
-        return df
 
     @staticmethod
     def clear_config():

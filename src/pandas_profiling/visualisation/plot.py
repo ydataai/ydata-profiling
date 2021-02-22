@@ -269,11 +269,64 @@ def scatter_pairwise(series1, series2, x_label, y_label) -> str:
     color = config["html"]["style"]["primary_color"].get(str)
     scatter_threshold = config["plot"]["scatter_threshold"].get(int)
 
+    indices = (series1.notna()) & (series2.notna())
+
     if len(series1) > scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
-        plt.hexbin(series1, series2, gridsize=15, cmap=cmap)
+        plt.hexbin(series1[indices], series2[indices], gridsize=15, cmap=cmap)
     else:
-        plt.scatter(series1, series2, color=color)
+        plt.scatter(series1[indices], series2[indices], color=color)
+    return plot_360_n0sc0pe(plt)
+
+
+@manage_matplotlib_context()
+def spark_scatter_pairwise(df, x_label, y_label) -> str:
+    """Scatter plot (or hexbin plot) from two series
+
+    Examples:
+        >>> widths = pd.Series([800, 1024])
+        >>> heights = pd.Series([600, 768])
+        >>> scatter_series(widths, heights, "Width", "Height")
+
+    Args:
+        series1: the series corresponding to the x-axis
+        series2: the series corresponding to the y-axis
+        x_label: the label on the x-axis
+        y_label: the label on the y-axis
+
+    Returns:
+        A string containing (a reference to) the image
+    """
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    color = config["html"]["style"]["primary_color"].get(str)
+    scatter_threshold = config["plot"]["scatter_threshold"].get(int)
+
+    if x_label == y_label:
+        df = (
+            df.get_spark_df()
+            .select(x_label)
+            .na.drop()
+            .groupby(x_label)
+            .count()
+            .toPandas()
+        )
+    else:
+        df = (
+            df.get_spark_df()
+            .select(x_label, y_label)
+            .na.drop()
+            .groupby(x_label, y_label)
+            .count()
+            .toPandas()
+        )
+
+    if df["count"].sum() > scatter_threshold:
+        cmap = sns.light_palette(color, as_cmap=True)
+        plt.hexbin(df[x_label], df[y_label], C=df["count"], gridsize=15, cmap=cmap)
+    else:
+        plt.scatter(df[x_label], df[y_label], s=df["count"], color=color)
     return plot_360_n0sc0pe(plt)
 
 

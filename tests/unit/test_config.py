@@ -1,5 +1,9 @@
+import pandas as pd
+import pytest
+
 from pandas_profiling import ProfileReport
 from pandas_profiling.config import config
+from pandas_profiling.model.dataframe_wrappers import PandasDataFrame, SparkDataFrame
 
 
 def test_set_variable():
@@ -35,3 +39,34 @@ def test_config_shorthands():
     assert config["duplicates"]["head"].get(int) == 0
     assert not config["correlations"]["spearman"]["calculate"].get(bool)
     assert not config["missing_diagrams"]["bar"].get(bool)
+
+
+def test_set_pandas_config():
+
+    r = ProfileReport(
+        pd.DataFrame(
+            [
+                {"col_1": 4412344, "col_2": 45930434},
+            ]
+        )
+    )
+
+    assert config["correlations"]["pearson"]["calculate"].get(bool)
+    assert config["correlations"]["spearman"]["calculate"].get(bool)
+
+
+@pytest.mark.sparktest
+def test_set_config(spark_session):
+
+    r = ProfileReport(
+        spark_session.createDataFrame(
+            pd.DataFrame(
+                [
+                    {"col_1": 4412344, "col_2": 45930434},
+                ]
+            )
+        )
+    )
+
+    assert config["correlations"]["pearson"]["calculate"].get(bool)
+    assert not config["correlations"]["spearman"]["calculate"].get(bool)

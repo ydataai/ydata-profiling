@@ -1,5 +1,6 @@
 """Common util functions (e.g. missing in Python)."""
 import collections
+import warnings
 import zipfile
 from datetime import datetime, timedelta
 
@@ -7,6 +8,12 @@ from datetime import datetime, timedelta
 from imghdr import tests
 from pathlib import Path
 from typing import Mapping
+
+VERSION_WARNING = """Warning : using pyspark 2.3/2.4 with pyarrow >= 0.15 
+                        you might get errors with pyarrow's toPandas() functions because 
+                        pyspark 2.3/2.4 is incompatible with pyarrow >= 0.15. You may need to set ARROW_PRE_0_15_IPC_FORMAT=1
+                        in your spark.env to fix pyarrows errors if they occur.
+                see https://spark.apache.org/docs/3.0.0-preview/sql-pyspark-pandas-with-arrow.html#compatibiliy-setting-for-pyarrow--0150-and-spark-23x-24x"""
 
 
 def update(d: dict, u: Mapping) -> dict:
@@ -88,3 +95,41 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
         return datetime.fromtimestamp(timestamp)
     else:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
+
+
+def test_for_pyspark_pyarrow_incompatibility():
+    """
+    This code checks if the env is using pyspark 2.3/2.4 with pyarrow >= 0.15, but has not set ARROW_PRE_0_15_IPC_FORMAT to 1
+    This will cause all toPandas() functions to break. If the env fits the pattern above, this code raises an warning
+    in warnings module in order to let the user know how to fix this problem
+
+    """
+
+    try:
+        # check versions
+        import os
+
+        import pyarrow
+        import pyspark
+
+        # get spark version as a tuple
+        spark_version = pyspark.__version__.split(".")
+
+        # if spark version == 2.3 or 2.4
+        if spark_version[0] == "2" and spark_version[1] in ["3", "4"]:
+
+            pyarrow_version = pyarrow.__version__.split(".")
+
+            # this checks if the env has an incompatible arrow version (not < 0.15)
+            if not (pyarrow_version[0] == "0" and int(pyarrow_version[1]) < 15):
+                # if os variable is not set, likely unhandled
+                if "ARROW_PRE_0_15_IPC_FORMAT" not in os.environ:
+                    warnings.warn(VERSION_WARNING)
+                else:
+                    # if variable is not set to 1, incompatibility error
+                    if os.environ["ARROW_PRE_0_15_IPC_FORMAT"] != 1:
+                        warnings.warn(VERSION_WARNING)
+    except Exception as e:
+        warnings.warn(
+            f"test for pyspark 2.3,2.4 incompatibility with arrow >= 0.15 failed, Exception {str(e)} raised"
+        )

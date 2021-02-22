@@ -1,0 +1,6 @@
+Parameter,Type,Default,Description
+``spark.persist``,boolean,True,"Whether to persist intermediate dataframes - set False to reduce memory usage, but increase computation time"
+``spark.quantile_error``,float,0.05,"set the threshold for spark's ApproxQuantile function. Lower for more precise percentile operations, but increase computation time"
+``spark.scatter``,boolean,False,"Whether to compute scatter matrixes - set True to enable, but increase computation time"
+``spark.to_pandas_limit``,int,250,"For groupby and histogram computation values, only return top {to_pandas_limit} rows to pandas to prevent local memory overload."
+``spark.length_values_sample``,int,10000,"For string length computations, only sample {length_values_sample} rows to pandas to prevent local memory overload."

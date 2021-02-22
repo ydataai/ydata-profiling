@@ -1,5 +1,5 @@
 # Title of the document
-title: "Pandas Profiling Report"
+title: "Spark Profiling Report"
 
 # Metadata
 dataset:
@@ -13,14 +13,12 @@ dataset:
 variables:
   descriptions: {}
 
-# infer dtypes
-infer_dtypes: True
-
 # Show the description at each variable (in addition to the overview tab)
 show_variable_description: True
 
 # Number of workers (0=multiprocessing.cpu_count())
-pool_size: 0
+# Spark pool size set as 1 because multiprocessing is not really needed
+pool_size: 1
 
 # Show the progress bar
 progress_bar: True
@@ -83,23 +81,23 @@ correlations:
       warn_high_correlations: True
       threshold: 0.9
     spearman:
-      calculate: True
+      calculate: False
       warn_high_correlations: False
       threshold: 0.9
     kendall:
-      calculate: True
+      calculate: False
       warn_high_correlations: False
       threshold: 0.9
     phi_k:
-      calculate: True
+      calculate: False
       warn_high_correlations: False
       threshold: 0.9
     cramers:
-      calculate: True
+      calculate: False
       warn_high_correlations: True
       threshold: 0.9
 
-# Spark specific config - not used here
+# Spark specific config
 spark:
     persist: True
     quantile_error: 0.05

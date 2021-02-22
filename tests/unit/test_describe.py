@@ -1,24 +1,29 @@
 import datetime
 
-import numpy as np
-import pandas as pd
 import pytest
 
-from pandas_profiling import config
 from pandas_profiling.model.describe import describe
-from pandas_profiling.model.summary import describe_1d
+from pandas_profiling.model.summary import *
 from pandas_profiling.model.typeset import DateTime, Numeric
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
-
-testdata = [
+pandas_testdata = [
     # Unique values
-    (pd.Series([1, 2]), {"is_unique": True, "p_distinct": 1, "p_unique": 1}),
+    (
+        pd.Series([1, 2]),
+        {"is_unique": True, "p_distinct": 1, "p_unique": 1},
+    ),
     # Unique values including nan
-    (pd.Series([np.nan]), {"is_unique": None, "p_distinct": None, "p_unique": None}),
+    (
+        pd.Series([np.nan]),
+        {"is_unique": None, "p_distinct": None, "p_unique": None},
+    ),
     # Unique values all nan
-    (pd.Series([1, 2, np.nan]), {"is_unique": True, "p_distinct": 1, "p_unique": 1}),
+    (
+        pd.Series([1, 2, np.nan]),
+        {"is_unique": True, "p_distinct": 1, "p_unique": 1},
+    ),
     # Non unique values
     (
         pd.Series([1, 2, 2]),
@@ -42,7 +47,7 @@ testdata = [
 ]
 
 
-@pytest.mark.parametrize("data,expected", testdata)
+@pytest.mark.parametrize("data,expected", pandas_testdata)
 def test_describe_unique(data, expected, summarizer, typeset):
     """Test the unique feature of 1D data"""
     config["vars"]["num"]["low_categorical_threshold"] = 0
@@ -116,7 +121,7 @@ def describe_data():
             np.nan,
             datetime.datetime(1990, 12, 9),
             datetime.datetime(1950, 12, 9),
-            datetime.datetime(1898, 1, 2),
+            datetime.datetime(1902, 1, 2),
             datetime.datetime(1950, 12, 9),
             datetime.datetime(1950, 12, 9),
         ],
@@ -363,12 +368,12 @@ def expected_results():
             "mad": check_is_NaN,
             "max": datetime.datetime(2022, 1, 1, 13, 57),
             "mean": check_is_NaN,
-            "min": datetime.datetime(1898, 1, 2),
+            "min": datetime.datetime(1902, 1, 2),
             "n_missing": 1,
             "p_missing": 0.11111111111111116,
             "p_distinct": 5 / 8,
             "p_zeros": check_is_NaN,
-            "range": datetime.timedelta(45289, hours=13, minutes=57),
+            "range": datetime.timedelta(43829, hours=13, minutes=57),
             "skewness": check_is_NaN,
             "std": check_is_NaN,
             "sum": check_is_NaN,
@@ -503,6 +508,57 @@ def expected_results():
     }
 
 
+@pytest.fixture
+def expected_spark_results(expected_results):
+    """
+    This overrides the expected results for describe when using a spark backend, primarily because spark's
+    quantile functions do not interpolate unlike pandas' quantile functions. Thus the quantile functions
+    and all the other functions that depend on quantile based stuff have different results, spark
+    returns an exact result from the given list of variables when given a quantile, while pandas
+    by default does linear interpolation
+    """
+    expected_results["x"]["25%"] = -3.0
+    expected_results["x"]["5%"] = -10.0
+    expected_results["x"]["50%"] = 0.0
+    expected_results["x"]["75%"] = 15.0
+    expected_results["x"]["cv"] = 1.771071190261633
+    expected_results["x"]["iqr"] = 18.0
+    expected_results["x"]["kurtosis"] = -0.9061564710904944
+    expected_results["x"]["mad"] = 5.0
+    expected_results["x"]["skewness"] = 0.8700654233008703
+
+    expected_results["y"]["25%"] = 1e-06
+    expected_results["y"]["5%"] = -3.1415926535
+    expected_results["y"]["50%"] = 15.9
+    expected_results["y"]["75%"] = 111.0
+    expected_results["y"]["95%"] = 3122.0
+    expected_results["y"]["iqr"] = 110.999999
+    expected_results["y"]["kurtosis"] = 2.6543509612939804
+    expected_results["y"]["mad"] = 15.9
+    expected_results["y"]["skewness"] = 2.097192909339154
+
+    expected_results["bool_01_with_nan"]["50%"] = 0.0
+    expected_results["bool_01_with_nan"]["kurtosis"] = -2.0
+    expected_results["bool_01_with_nan"]["mad"] = 0.0
+    expected_results["bool_01_with_nan"]["skewness"] = 2.7755575615628914e-17
+
+    expected_results["s1"]["kurtosis"] = np.nan
+    expected_results["s1"]["skewness"] = np.nan
+    expected_results["s1"]["monotonic_increase"] = False
+
+    expected_results["bool_tf_with_nan"]["count"] = 9
+    expected_results["bool_tf_with_nan"]["p_distinct"] = 0.2222222222222222
+    expected_results["bool_tf_with_nan"]["n_missing"] = 0
+    expected_results["bool_tf_with_nan"]["p_missing"] = 0.0
+
+    # date indexing is different due to lack of a native date function in spark
+    del expected_results["somedate"]["max"]
+    del expected_results["somedate"]["min"]
+    del expected_results["somedate"]["range"]
+
+    return expected_results
+
+
 @pytest.mark.parametrize(
     "column",
     [
@@ -525,10 +581,10 @@ def expected_results():
 )
 def test_describe_df(column, describe_data, expected_results, summarizer, typeset):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
-    describe_data_frame = pd.DataFrame({column: describe_data[column]})
+    describe_data_frame = PandasDataFrame(pd.DataFrame({column: describe_data[column]}))
     if column == "somedate":
-        describe_data_frame["somedate"] = pd.to_datetime(
-            describe_data_frame["somedate"]
+        describe_data_frame.get_pandas_df()["somedate"] = pd.to_datetime(
+            describe_data_frame.get_pandas_df()["somedate"]
         )
 
     results = describe("title", describe_data_frame, summarizer, typeset)
@@ -551,7 +607,9 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
         if v == check_is_NaN:
             test_condition = k not in results["variables"][column]
         elif isinstance(v, float):
-            test_condition = pytest.approx(v) == results["variables"][column][k]
+            test_condition = (
+                pytest.approx(v, nan_ok=True) == results["variables"][column][k]
+            )
         else:
             test_condition = v == results["variables"][column][k]
 
@@ -565,6 +623,86 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
         ), f"Histogram missing for column {column}"
 
 
+@pytest.mark.sparktest
+@pytest.mark.parametrize(
+    "column",
+    [
+        "id",
+        "x",
+        "y",
+        "cat",
+        "s1",
+        "s2",
+        "somedate",
+        "bool_tf",
+        "bool_tf_with_nan",
+        "bool_01",
+        "bool_01_with_nan",
+        "list",
+        "mixed",
+        "dict",
+        "tuple",
+    ],
+)
+def test_describe_spark_df(
+    column,
+    describe_data,
+    expected_spark_results,
+    summarizer,
+    typeset,
+    spark_session,
+    spark_context,
+):
+    config["vars"]["num"]["low_categorical_threshold"].set(0)
+    config["spark"]["quantile_error"].set(0)
+
+    spark = spark_session
+
+    if column == "mixed":
+        describe_data[column] = [str(i) for i in describe_data[column]]
+    if column == "bool_tf_with_nan":
+        describe_data[column] = [True if i else False for i in describe_data[column]]
+    sdf = spark.createDataFrame(pd.DataFrame({column: describe_data[column]}))
+
+    describe_data_frame = SparkDataFrame(sdf)
+
+    results = describe("title", describe_data_frame, summarizer, typeset)
+
+    assert {
+        "analysis",
+        "table",
+        "variables",
+        "scatter",
+        "correlations",
+        "missing",
+        "messages",
+        "package",
+        "sample",
+        "duplicates",
+    } == set(results.keys()), "Not in results"
+    for key, value in results["variables"][column].items():
+        print(key, value)
+    # Loop over variables
+    for k, v in expected_spark_results[column].items():
+        if v == check_is_NaN:
+            test_condition = k not in results["variables"][column]
+        elif isinstance(v, float):
+            test_condition = (
+                pytest.approx(v, nan_ok=True) == results["variables"][column][k]
+            )
+        else:
+            test_condition = v == results["variables"][column][k]
+
+        assert (
+            test_condition
+        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+
+    if results["variables"][column]["type"] in [SparkNumeric]:
+        assert (
+            "histogram" in results["variables"][column]
+        ), f"Histogram missing for column {column}"
+
+
 def test_describe_empty(summarizer, typeset):
     empty_frame = pd.DataFrame()
     with pytest.raises(ValueError):
@@ -572,6 +710,53 @@ def test_describe_empty(summarizer, typeset):
 
 
 def test_describe_list(summarizer, typeset):
-    with pytest.raises(AttributeError):
-        with pytest.warns(UserWarning):
-            describe("", [1, 2, 3], summarizer, typeset)
+    with pytest.raises(NotImplementedError):
+        describe("", [1, 2, 3], summarizer, typeset)
+
+
+def test_not_implemented():
+    with pytest.raises(NotImplementedError):
+        describe_1d(None, None, None)
+
+    with pytest.raises(NotImplementedError):
+        get_table_stats(None, None)
+
+    with pytest.raises(NotImplementedError):
+        get_missing_diagrams(None, None)
+
+    with pytest.raises(NotImplementedError):
+        get_scatter_matrix(None, None)
+
+
+import pandas_profiling
+
+
+@pytest.mark.sparktest
+def test_get_scatter_matrix(spark_session, monkeypatch):
+    def mockreturn(df, x, y):
+        return (df.get_spark_df().toPandas().to_dict(), x, y)
+
+    monkeypatch.setattr(
+        pandas_profiling.model.summary, "spark_scatter_pairwise", mockreturn
+    )
+
+    df = spark_session.createDataFrame(
+        pd.DataFrame(
+            [
+                {"col_1": 4412344, "col_2": 45930434},
+                {"col_1": 541234234, "col_2": 45930434},
+                {"col_1": 63412351234, "col_2": 45930434},
+            ]
+        )
+    )
+
+    result = get_scatter_matrix(SparkDataFrame(df), ["col_1", "col_2"])
+
+    assert result["col_1"]["col_2"] == (
+        {
+            "col_1": {0: 4412344, 1: 541234234, 2: 63412351234},
+            "col_2": {0: 45930434, 1: 45930434, 2: 45930434},
+        },
+        "col_1",
+        "col_2",
+    )

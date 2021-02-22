@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+markers =  ["sparktest"]
+[tool.pytest.ini_options.spark_options]
+"spark.executor.id" = "driver"
+"spark.app.name" = "PySparkShell"
+"spark.executor.instances" = 1
+"master" = "local[*]"
+"spark.driver.host" = "192.168.1.78"
+"spark.sql.catalogImplementation" = "in-memory"

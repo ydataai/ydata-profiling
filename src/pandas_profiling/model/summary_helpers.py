@@ -2,7 +2,7 @@ import os
 import string
 from collections import Counter
 from datetime import datetime
-from functools import partial
+from functools import partial, singledispatch
 from pathlib import Path
 
 import numpy as np
@@ -11,6 +11,7 @@ from scipy.stats.stats import chisquare
 from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
 from pandas_profiling.config import config
+from pandas_profiling.model.series_wrappers import SparkSeries
 from pandas_profiling.model.summary_helpers_image import (
     extract_exif,
     hash_image,
@@ -27,7 +28,14 @@ def mad(arr):
     return np.median(np.abs(arr - np.median(arr)))
 
 
-def named_aggregate_summary(series: pd.Series, key: str):
+@singledispatch
+def named_aggregate_summary(series, key: str):
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+@named_aggregate_summary.register(pd.Series)
+def _named_aggregate_summary_pandas(series: pd.Series, key: str):
     summary = {
         f"max_{key}": np.max(series),
         f"mean_{key}": np.mean(series),
@@ -38,14 +46,70 @@ def named_aggregate_summary(series: pd.Series, key: str):
     return summary
 
 
-def length_summary(series: pd.Series, summary=None) -> dict:
-    if summary is None:
-        summary = {}
+@named_aggregate_summary.register(SparkSeries)
+def _named_aggregate_summary_spark(series: SparkSeries, key: str):
+    import pyspark.sql.functions as F
 
+    lengths = series.dropna.select(F.length(series.name).alias("length"))
+
+    # do not count length of nans
+    numeric_results_df = (
+        lengths.select(
+            F.mean("length").alias("mean"),
+            F.min("length").alias("min"),
+            F.max("length").alias("max"),
+        )
+        .toPandas()
+        .T
+    )
+
+    quantile_error = config["spark"]["quantile_error"].get(float)
+    median = lengths.stat.approxQuantile("length", [0.5], quantile_error)[0]
+    summary = {
+        f"max_{key}": numeric_results_df.loc["max"][0],
+        f"mean_{key}": numeric_results_df.loc["mean"][0],
+        f"median_{key}": median,
+        f"min_{key}": numeric_results_df.loc["min"][0],
+    }
+
+    return summary
+
+
+@singledispatch
+def length_summary(series, summary: dict = {}) -> dict:
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+@length_summary.register(pd.Series)
+def _length_summary_pandas(series: pd.Series, summary: dict = {}) -> dict:
     length = series.str.len()
 
     summary.update({"length": length})
     summary.update(named_aggregate_summary(length, "length"))
+
+    return summary
+
+
+@length_summary.register(SparkSeries)
+def _length_summary_spark(series: SparkSeries, summary: dict = {}) -> dict:
+    import pyspark.sql.functions as F
+
+    length_values_sample = config["spark"]["length_values_sample"].get(int)
+    if length_values_sample >= series.n_rows:
+        percentage = 1.0
+    else:
+        percentage = length_values_sample / series.n_rows
+    # do not count length of nans
+    length = (
+        series.dropna.select(F.length(series.name))
+        .sample(percentage)
+        .toPandas()
+        .squeeze()
+    )
+
+    summary.update({"length": length})
+    summary.update(named_aggregate_summary(series, "length"))
 
     return summary
 
@@ -245,7 +309,14 @@ def image_summary(series: pd.Series, exif: bool = False, hash: bool = False) -> 
     return summary
 
 
-def get_character_counts(series: pd.Series) -> Counter:
+@singledispatch
+def get_character_counts(series) -> Counter:
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+@get_character_counts.register(pd.Series)
+def _get_character_counts_pandas(series: pd.Series) -> Counter:
     """Function to return the character counts
 
     Args:
@@ -257,6 +328,38 @@ def get_character_counts(series: pd.Series) -> Counter:
     return Counter(series.str.cat())
 
 
+@get_character_counts.register(SparkSeries)
+def _get_character_counts_spark(series: SparkSeries) -> Counter:
+    """Function to return the character counts
+
+    Args:
+        series: the Series to process
+
+    Returns:
+        A dict with character counts
+    """
+    import pyspark.sql.functions as F
+
+    # this function is optimised to split all characters and explode the characters and then groupby the characters
+    # because the number of characters is limited, the return dataset is small -> can return everything to pandas
+    df = (
+        series.dropna.select(F.explode(F.split(F.col(series.name), "")))
+        .groupby("col")
+        .count()
+        .toPandas()
+    )
+
+    # standardise return as Counter object
+    my_dict = Counter(
+        {
+            x[0]: x[1]
+            for x in filter(lambda x: x[0], zip(df["col"].values, df["count"].values))
+        }
+    )
+
+    return my_dict
+
+
 def counter_to_series(counter: Counter) -> pd.Series:
     if not counter:
         return pd.Series([], dtype=object)
@@ -266,8 +369,10 @@ def counter_to_series(counter: Counter) -> pd.Series:
     return pd.Series(counts, index=items)
 
 
-def unicode_summary(series: pd.Series) -> dict:
+def unicode_summary(series) -> dict:
     # Unicode Character Summaries (category and script name)
+
+    # this is the function that properly computes the character counts based on type
     character_counts = get_character_counts(series)
 
     character_counts_series = counter_to_series(character_counts)

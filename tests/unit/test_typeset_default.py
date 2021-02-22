@@ -29,6 +29,7 @@ from pandas_profiling.model.typeset import (
     Numeric,
     ProfilingTypeSet,
     Unsupported,
+    is_date,
 )
 
 if int(pd.__version__.split(".")[0]) < 1:
@@ -797,3 +798,8 @@ def test_conversion(source_type, relation_type, series, member):
     config["vars"]["num"]["low_categorical_threshold"].set(0)
     result, message = convert(source_type, relation_type, series, member)
     assert result, message
+
+
+def test_datetime():
+    assert is_date(pd.Series({"date": "2017-01-01"}), None)
+    assert not is_date(pd.Series({"date": "2017-01-32"}), None)
