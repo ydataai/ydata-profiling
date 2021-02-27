@@ -14,9 +14,7 @@ def test_issue147(get_data_file):
     )
 
     df = pd.read_parquet(str(file_name), engine="pyarrow")
-    report = ProfileReport(
-        df, title="PyArrow with Pandas Parquet Backend", progress_bar=False, pool_size=1
-    )
+    report = ProfileReport(df, title="PyArrow with Pandas Parquet Backend")
     html = report.to_html()
     assert type(html) == str
     assert "<p class=h4>Dataset statistics</p>" in html
