@@ -13,7 +13,7 @@ def test_issue147(get_data_file):
         "https://github.com/Teradata/kylo/raw/master/samples/sample-data/parquet/userdata2.parquet",
     )
 
-    df = pd.read_parquet(str(file_name), engine="fastparquet")
+    df = pd.read_parquet(str(file_name), engine="pyarrow")
     report = ProfileReport(df, title="PyArrow with Pandas Parquet Backend")
     html = report.to_html()
     assert type(html) == str
