@@ -27,4 +27,4 @@ Changelog v2.12.0
 
 ⬆️ Dependencies
 ^^^^^^^^^^^^^^^^^^
--
+- The `ipywidgets` dependency was moved to the `[notebook]` extra, so most of Jupyter will not be installed alongside this package by default.
