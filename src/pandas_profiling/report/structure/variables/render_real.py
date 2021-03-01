@@ -75,6 +75,12 @@ def render_real(config: Settings, summary: dict) -> dict:
                 ),
                 "alert": False,
             },
+            {
+                "name": "Mean",
+                "value": summary["mean"],
+                "fmt": "fmt_numeric",
+                "alert": False,
+            },
         ]
     )
 
@@ -108,6 +114,18 @@ def render_real(config: Settings, summary: dict) -> dict:
             {
                 "name": "Negative (%)",
                 "value": fmt_percent(summary["p_negative"]),
+                "alert": False,
+            },
+            {
+                "name": "Negative",
+                "value": summary["n_negative"],
+                "fmt": "fmt",
+                "alert": False,
+            },
+            {
+                "name": "Negative (%)",
+                "value": summary["p_negative"],
+                "fmt": "fmt_percent",
                 "alert": False,
             },
             {
