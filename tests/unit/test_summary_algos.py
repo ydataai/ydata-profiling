@@ -31,21 +31,23 @@ def test_count_summary_category():
 
 
 def test_count_summary_empty_df():
-    s = pd.DataFrame({"A": []})
+    s = pd.Series([], dtype=object)
     sn, r = describe_counts(s, {})
-    assert r["n_missing"].index == "A"
+    assert r["n_missing"] == 0
 
 
 def test_summary_supported_empty_df():
-    s = pd.DataFrame({"A": []})
-    s, series_description = describe_counts(s, {})
+    s = pd.Series([], dtype=object)
+    s, series_description = describe_counts(s, {"count": 0})
     sn, r = describe_supported(s, series_description)
-    assert r["n_missing"].index == "A"
+    assert not r["is_unique"]
 
 
-def test_summary_generric_empty_df():
-    s = pd.DataFrame({"A": []})
+def test_summary_generic_empty_df():
+    s = pd.Series([], dtype=object)
     s, summary = describe_counts(s, {})
     sn, r = describe_generic(s, summary)
     assert r["p_missing"] == 0
-    assert r["n_missing"].index == "A"
+    assert r["n_missing"] == 0
+    assert r["n"] == 0
+    assert r["count"] == 0

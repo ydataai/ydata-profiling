@@ -251,6 +251,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         for name, settings in missing_map.items()
         if config["missing_diagrams"][name].get(bool)
         and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+        and table_stats["n"] > 0
     }
     missing = {}
 

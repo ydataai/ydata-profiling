@@ -117,7 +117,7 @@ def describe(
         # Sample
         pbar.set_postfix_str("Take sample")
         if sample is None:
-            samples = get_sample(df)
+            samples = get_sample(df, table_stats["n"])
         else:
             if "name" not in sample:
                 sample["name"] = None

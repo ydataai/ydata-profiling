@@ -96,7 +96,7 @@ def describe_supported(
     stats = {
         "n_distinct": distinct_count,
         "p_distinct": distinct_count / count if count > 0 else 0,
-        "is_unique": unique_count == count,
+        "is_unique": unique_count == count and count > 0,
         "n_unique": unique_count,
         "p_unique": unique_count / count if count > 0 else 0,
     }
