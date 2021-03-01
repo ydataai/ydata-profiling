@@ -5,7 +5,7 @@ repos:
     - id: black
       language_version: python3.8
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 0.5.7
+    rev: 0.5.9
     hooks:
     - id: nbqa-black
       additional_dependencies: [ black==20.8b1 ]
