@@ -181,6 +181,9 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     value_counts = summary["value_counts_without_nan"]
 
     summary["n_zeros"] = 0
+    negative_index = value_counts.index < 0
+    summary["n_negative"] = value_counts.loc[negative_index].sum()
+    summary["p_negative"] = summary["n_negative"] / summary["n"]
 
     infinity_values = [np.inf, -np.inf]
     infinity_index = value_counts.index.isin(infinity_values)
