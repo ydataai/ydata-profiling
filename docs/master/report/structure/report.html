@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.report.structure.report API documentation</title>
 <meta name="description" content="Generate the report." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -28,53 +28,27 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Generate the report.&#34;&#34;&#34;
-import re
 from typing import List
 
 import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import (
-    AbsolutePath,
-    Boolean,
-    Categorical,
-    Complex,
-    Count,
-    Date,
-    FilePath,
-    Generic,
-    ImagePath,
-    Real,
-    Url,
-)
+from pandas_profiling.model.handler import get_render_map
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
     Container,
     Duplicate,
-    Image,
-    Sample,
-    ToggleButton,
-    Variable,
 )
+from pandas_profiling.report.presentation.core import Image as ImageWidget
+from pandas_profiling.report.presentation.core import Sample, ToggleButton, Variable
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import get_dataset_items
-from pandas_profiling.report.structure.variables import (
-    render_boolean,
-    render_categorical,
-    render_complex,
-    render_date,
-    render_generic,
-    render_image,
-    render_path,
-    render_real,
-    render_url,
-)
-from pandas_profiling.report.structure.variables.render_file import render_file
+from pandas_profiling.utils.dataframe import slugify
 
 
 def get_missing_items(summary) -&gt; list:
@@ -90,13 +64,13 @@ def get_missing_items(summary) -&gt; list:
     items = []
     for key, item in summary[&#34;missing&#34;].items():
         items.append(
-            # TODO: Add informative caption
-            Image(
+            ImageWidget(
                 item[&#34;matrix&#34;],
                 image_format=image_format,
                 alt=item[&#34;name&#34;],
                 name=item[&#34;name&#34;],
                 anchor_id=key,
+                caption=item[&#34;caption&#34;],
             )
         )
 
@@ -113,21 +87,14 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
     Returns:
         The rendered HTML, where each row represents a variable.
     &#34;&#34;&#34;
-    type_to_func = {
-        Boolean: render_boolean,
-        Real: render_real,
-        Count: render_real,
-        Complex: render_complex,
-        Date: render_date,
-        Categorical: render_categorical,
-        Url: render_url,
-        AbsolutePath: render_path,
-        FilePath: render_file,
-        ImagePath: render_image,
-        Generic: render_generic,
-    }
 
     templs = []
+
+    descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
+    show_description = config[&#34;show_variable_description&#34;].get(bool)
+    reject_variables = config[&#34;reject_variables&#34;].get(bool)
+
+    render_map = get_render_map()
 
     for idx, summary in dataframe_summary[&#34;variables&#34;].items():
         # Common template variables
@@ -150,9 +117,6 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
             if warning.column_name == idx
         }
 
-        descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
-        show_description = config[&#34;show_variable_description&#34;].get(bool)
-
         template_variables = {
             &#34;varname&#34;: idx,
             &#34;varid&#34;: hash(idx),
@@ -164,10 +128,10 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(type_to_func[summary[&#34;type&#34;]](template_variables))
+        template_variables.update(render_map[summary[&#34;type&#34;]](template_variables))
 
         # Ignore these
-        if config[&#34;reject_variables&#34;].get(bool):
+        if reject_variables:
             ignore = MessageType.REJECTED in warning_types
         else:
             ignore = False
@@ -241,13 +205,10 @@ def get_sample_items(sample: dict):
     Returns:
         List of sample items to show in the interface.
     &#34;&#34;&#34;
-    items = []
-    for obj in sample:
-        items.append(
-            Sample(
-                sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption
-            )
-        )
+    items = [
+        Sample(sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption)
+        for obj in sample
+    ]
     return items
 
 
@@ -264,20 +225,15 @@ def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
 
     titems = []
 
-    alphanum = re.compile(&#34;[^a-zA-Z\s]&#34;)
-
-    def clean_name(name):
-        return alphanum.sub(&#34;&#34;, name).replace(&#34; &#34;, &#34;_&#34;)
-
     for x_col, y_cols in scatter_matrix.items():
         items = []
         for y_col, splot in y_cols.items():
             items.append(
-                Image(
+                ImageWidget(
                     splot,
                     image_format=image_format,
                     alt=f&#34;{x_col} x {y_col}&#34;,
-                    anchor_id=f&#34;interactions_{clean_name(x_col)}_{clean_name(y_col)}&#34;,
+                    anchor_id=f&#34;interactions_{slugify(x_col)}_{slugify(y_col)}&#34;,
                     name=y_col,
                 )
             )
@@ -288,7 +244,7 @@ def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
                 sequence_type=&#34;tabs&#34; if len(items) &lt;= 10 else &#34;select&#34;,
                 name=x_col,
                 nested=len(scatter_matrix) &gt; 10,
-                anchor_id=f&#34;interactions_{clean_name(x_col)}&#34;,
+                anchor_id=f&#34;interactions_{slugify(x_col)}&#34;,
             )
         )
     return titems
@@ -492,13 +448,13 @@ def get_report_structure(summary: dict) -&gt; Renderable:
     items = []
     for key, item in summary[&#34;missing&#34;].items():
         items.append(
-            # TODO: Add informative caption
-            Image(
+            ImageWidget(
                 item[&#34;matrix&#34;],
                 image_format=image_format,
                 alt=item[&#34;name&#34;],
                 name=item[&#34;name&#34;],
                 anchor_id=key,
+                caption=item[&#34;caption&#34;],
             )
         )
 
@@ -634,13 +590,10 @@ def get_report_structure(summary: dict) -&gt; Renderable:
     Returns:
         List of sample items to show in the interface.
     &#34;&#34;&#34;
-    items = []
-    for obj in sample:
-        items.append(
-            Sample(
-                sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption
-            )
-        )
+    items = [
+        Sample(sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption)
+        for obj in sample
+    ]
     return items</code></pre>
 </details>
 </dd>
@@ -673,20 +626,15 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 
     titems = []
 
-    alphanum = re.compile(&#34;[^a-zA-Z\s]&#34;)
-
-    def clean_name(name):
-        return alphanum.sub(&#34;&#34;, name).replace(&#34; &#34;, &#34;_&#34;)
-
     for x_col, y_cols in scatter_matrix.items():
         items = []
         for y_col, splot in y_cols.items():
             items.append(
-                Image(
+                ImageWidget(
                     splot,
                     image_format=image_format,
                     alt=f&#34;{x_col} x {y_col}&#34;,
-                    anchor_id=f&#34;interactions_{clean_name(x_col)}_{clean_name(y_col)}&#34;,
+                    anchor_id=f&#34;interactions_{slugify(x_col)}_{slugify(y_col)}&#34;,
                     name=y_col,
                 )
             )
@@ -697,7 +645,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                 sequence_type=&#34;tabs&#34; if len(items) &lt;= 10 else &#34;select&#34;,
                 name=x_col,
                 nested=len(scatter_matrix) &gt; 10,
-                anchor_id=f&#34;interactions_{clean_name(x_col)}&#34;,
+                anchor_id=f&#34;interactions_{slugify(x_col)}&#34;,
             )
         )
     return titems</code></pre>
@@ -728,21 +676,14 @@ def get_report_structure(summary: dict) -&gt; Renderable:
     Returns:
         The rendered HTML, where each row represents a variable.
     &#34;&#34;&#34;
-    type_to_func = {
-        Boolean: render_boolean,
-        Real: render_real,
-        Count: render_real,
-        Complex: render_complex,
-        Date: render_date,
-        Categorical: render_categorical,
-        Url: render_url,
-        AbsolutePath: render_path,
-        FilePath: render_file,
-        ImagePath: render_image,
-        Generic: render_generic,
-    }
 
     templs = []
+
+    descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
+    show_description = config[&#34;show_variable_description&#34;].get(bool)
+    reject_variables = config[&#34;reject_variables&#34;].get(bool)
+
+    render_map = get_render_map()
 
     for idx, summary in dataframe_summary[&#34;variables&#34;].items():
         # Common template variables
@@ -765,9 +706,6 @@ def get_report_structure(summary: dict) -&gt; Renderable:
             if warning.column_name == idx
         }
 
-        descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
-        show_description = config[&#34;show_variable_description&#34;].get(bool)
-
         template_variables = {
             &#34;varname&#34;: idx,
             &#34;varid&#34;: hash(idx),
@@ -779,10 +717,10 @@ def get_report_structure(summary: dict) -&gt; Renderable:
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(type_to_func[summary[&#34;type&#34;]](template_variables))
+        template_variables.update(render_map[summary[&#34;type&#34;]](template_variables))
 
         # Ignore these
-        if config[&#34;reject_variables&#34;].get(bool):
+        if reject_variables:
             ignore = MessageType.REJECTED in warning_types
         else:
             ignore = False
@@ -836,7 +774,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

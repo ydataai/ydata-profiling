@@ -1,0 +1,15 @@
+Changelog v2.10.1
+-----------------
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+- Fixed recursion error for NaN values `[683] <https://github.com/pandas-profiling/pandas-profiling/issues/683>`_ and `[671] <https://github.com/pandas-profiling/pandas-profiling/issues/671>`_
+- Fixed error for empty dataframe `[664] <https://github.com/pandas-profiling/pandas-profiling/issues/664>`_
+- Fixed Jupyter notebook widget string rendering issue `[668] <https://github.com/pandas-profiling/pandas-profiling/issues/668>`_
+- Fixed histogram of string length with NaNs `[642] <https://github.com/pandas-profiling/pandas-profiling/issues/642>`_ and `[613] <https://github.com/pandas-profiling/pandas-profiling/issues/613>`_
+- Fixed slugify logic for interaction columns `[663] <https://github.com/pandas-profiling/pandas-profiling/issues/663>`
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+- Update Slack community link on readme `[673] <https://github.com/pandas-profiling/pandas-profiling/issues/673>`_
+- Include recent contributions to the "Resources" page.

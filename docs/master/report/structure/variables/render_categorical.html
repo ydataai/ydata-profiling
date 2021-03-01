@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.report.structure.variables.render_categorical API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -58,7 +58,7 @@ def render_categorical_frequency(summary, varid, image_format):
             },
         ],
         name=&#34;Unique&#34;,
-        anchor_id=f&#34;{varid}uniquenessstats&#34;,
+        anchor_id=f&#34;{varid}_unique_stats&#34;,
     )
 
     frequencies = Image(
@@ -70,13 +70,7 @@ def render_categorical_frequency(summary, varid, image_format):
         anchor_id=f&#34;{varid}frequencies&#34;,
     )
 
-    frequency_tab = Container(
-        [frequencies, frequency_table],
-        anchor_id=f&#34;{varid}tbl&#34;,
-        name=&#34;Overview&#34;,
-        sequence_type=&#34;grid&#34;,
-    )
-    return frequency_tab
+    return frequency_table, frequencies
 
 
 def render_categorical_length(summary, varid, image_format):
@@ -111,7 +105,7 @@ def render_categorical_length(summary, varid, image_format):
         anchor_id=f&#34;{varid}lengthstats&#34;,
     )
 
-    length = Image(
+    length_histo = Image(
         histogram(*summary[&#34;histogram_length&#34;]),
         image_format=image_format,
         alt=&#34;length histogram&#34;,
@@ -120,137 +114,166 @@ def render_categorical_length(summary, varid, image_format):
         anchor_id=f&#34;{varid}length&#34;,
     )
 
-    length_tab = Container(
-        [length, length_table],
-        anchor_id=f&#34;{varid}tbl&#34;,
-        name=&#34;Length&#34;,
-        sequence_type=&#34;grid&#34;,
-    )
-    return length_tab
+    return length_table, length_histo
 
 
 def render_categorical_unicode(summary, varid, redact):
     n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
 
-    category_items = [
-        FrequencyTable(
-            freq_table(
-                freqtable=summary[&#34;category_alias_counts&#34;],
-                n=summary[&#34;category_alias_counts&#34;].sum(),
-                max_number_to_print=n_freq_table_max,
-            ),
-            name=&#34;Most occurring categories&#34;,
-            anchor_id=f&#34;{varid}category_long_values&#34;,
-            redact=False,
-        )
-    ]
-    for category_alias_name, category_alias_counts in summary[
-        &#34;category_alias_char_counts&#34;
-    ].items():
+    category_overview = FrequencyTable(
+        freq_table(
+            freqtable=summary[&#34;category_alias_counts&#34;],
+            n=summary[&#34;category_alias_counts&#34;].sum(),
+            max_number_to_print=n_freq_table_max,
+        ),
+        name=&#34;Most occurring categories&#34;,
+        anchor_id=f&#34;{varid}category_long_values&#34;,
+        redact=False,
+    )
+
+    cats = []
+    for category_alias_name, category_alias_counts in sorted(
+        summary[&#34;category_alias_char_counts&#34;].items(), key=lambda x: -len(x[1])
+    ):
         category_alias_name = category_alias_name.replace(&#34;_&#34;, &#34; &#34;)
-        category_items.append(
+        cats.append(
             FrequencyTable(
                 freq_table(
                     freqtable=category_alias_counts,
                     n=category_alias_counts.sum(),
                     max_number_to_print=n_freq_table_max,
                 ),
-                name=f&#34;Most frequent {category_alias_name} characters&#34;,
+                name=f&#34;{category_alias_name}&#34;,
                 anchor_id=f&#34;{varid}category_alias_values_{category_alias_name}&#34;,
                 redact=redact,
             )
         )
 
-    script_items = [
-        FrequencyTable(
-            freq_table(
-                freqtable=summary[&#34;script_counts&#34;],
-                n=summary[&#34;script_counts&#34;].sum(),
-                max_number_to_print=n_freq_table_max,
-            ),
-            name=&#34;Most occurring scripts&#34;,
-            anchor_id=f&#34;{varid}script_values&#34;,
-            redact=False,
+    category_items = [
+        category_overview,
+        Container(
+            cats,
+            name=&#34;Most frequent character per category&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            anchor_id=f&#34;{varid}categories&#34;,
+            batch_size=3,
         ),
     ]
-    for script_name, script_counts in summary[&#34;script_char_counts&#34;].items():
-        script_items.append(
+
+    script_overview = FrequencyTable(
+        freq_table(
+            freqtable=summary[&#34;script_counts&#34;],
+            n=summary[&#34;script_counts&#34;].sum(),
+            max_number_to_print=n_freq_table_max,
+        ),
+        name=&#34;Most occurring scripts&#34;,
+        anchor_id=f&#34;{varid}script_values&#34;,
+        redact=False,
+    )
+
+    scripts = []
+    for script_name, script_counts in sorted(
+        summary[&#34;script_char_counts&#34;].items(), key=lambda x: -len(x[1])
+    ):
+        scripts.append(
             FrequencyTable(
                 freq_table(
                     freqtable=script_counts,
                     n=script_counts.sum(),
                     max_number_to_print=n_freq_table_max,
                 ),
-                name=f&#34;Most frequent {script_name} characters&#34;,
+                name=f&#34;{script_name}&#34;,
                 anchor_id=f&#34;{varid}script_values_{script_name}&#34;,
                 redact=redact,
             )
         )
 
-    block_items = [
-        FrequencyTable(
-            freq_table(
-                freqtable=summary[&#34;block_alias_counts&#34;],
-                n=summary[&#34;block_alias_counts&#34;].sum(),
-                max_number_to_print=n_freq_table_max,
-            ),
-            name=&#34;Most occurring blocks&#34;,
-            anchor_id=f&#34;{varid}block_alias_values&#34;,
-            redact=False,
-        )
+    script_items = [
+        script_overview,
+        Container(
+            scripts,
+            name=&#34;Most frequent character per script&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            anchor_id=f&#34;{varid}scripts&#34;,
+            batch_size=3,
+        ),
     ]
+
+    block_overview = FrequencyTable(
+        freq_table(
+            freqtable=summary[&#34;block_alias_counts&#34;],
+            n=summary[&#34;block_alias_counts&#34;].sum(),
+            max_number_to_print=n_freq_table_max,
+        ),
+        name=&#34;Most occurring blocks&#34;,
+        anchor_id=f&#34;{varid}block_alias_values&#34;,
+        redact=False,
+    )
+
+    blocks = []
     for block_name, block_counts in summary[&#34;block_alias_char_counts&#34;].items():
-        block_items.append(
+        blocks.append(
             FrequencyTable(
                 freq_table(
                     freqtable=block_counts,
                     n=block_counts.sum(),
                     max_number_to_print=n_freq_table_max,
                 ),
-                name=f&#34;Most frequent {block_name} characters&#34;,
+                name=f&#34;{block_name}&#34;,
                 anchor_id=f&#34;{varid}block_alias_values_{block_name}&#34;,
                 redact=redact,
             )
         )
 
-    citems = [
+    block_items = [
+        block_overview,
         Container(
-            [
-                Table(
-                    [
-                        {
-                            &#34;name&#34;: &#34;Unique unicode characters&#34;,
-                            &#34;value&#34;: summary[&#34;n_characters&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                        {
-                            &#34;name&#34;: &#34;Unique unicode categories&#34;,
-                            &#34;value&#34;: f&#34;{summary[&#39;n_category&#39;]} {help(title=&#39;Unicode categories (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_character_property#General_Category&#39;)}&#34;,
-                            &#34;fmt&#34;: &#34;raw&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                        {
-                            &#34;name&#34;: &#34;Unique unicode scripts&#34;,
-                            &#34;value&#34;: f&#34;{summary[&#39;n_scripts&#39;]} {help(title=&#39;Unicode scripts (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode&#39;)}&#34;,
-                            &#34;fmt&#34;: &#34;raw&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                        {
-                            &#34;name&#34;: &#34;Unique unicode blocks&#34;,
-                            &#34;value&#34;: f&#34;{summary[&#39;n_block_alias&#39;]} {help(title=&#39;Unicode blocks (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_block&#39;)}&#34;,
-                            &#34;fmt&#34;: &#34;raw&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                    ],
-                    name=&#34;Overview of Unicode Properties&#34;,
-                    caption=&#34;The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. &#34;,
-                ),
-            ],
-            anchor_id=f&#34;{varid}character_overview&#34;,
-            name=&#34;Overview&#34;,
-            sequence_type=&#34;list&#34;,
+            blocks,
+            name=&#34;Most frequent character per block&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            anchor_id=f&#34;{varid}blocks&#34;,
+            batch_size=3,
         ),
+    ]
+
+    overview_table = Table(
+        [
+            {
+                &#34;name&#34;: &#34;Total characters&#34;,
+                &#34;value&#34;: summary[&#34;n_characters&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct characters&#34;,
+                &#34;value&#34;: summary[&#34;n_characters_distinct&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct categories&#34;,
+                &#34;value&#34;: f&#34;{summary[&#39;n_category&#39;]} {help(title=&#39;Unicode categories (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_character_property#General_Category&#39;)}&#34;,
+                &#34;fmt&#34;: &#34;raw&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct scripts&#34;,
+                &#34;value&#34;: f&#34;{summary[&#39;n_scripts&#39;]} {help(title=&#39;Unicode scripts (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode&#39;)}&#34;,
+                &#34;fmt&#34;: &#34;raw&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct blocks&#34;,
+                &#34;value&#34;: f&#34;{summary[&#39;n_block_alias&#39;]} {help(title=&#39;Unicode blocks (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_block&#39;)}&#34;,
+                &#34;fmt&#34;: &#34;raw&#34;,
+                &#34;alert&#34;: False,
+            },
+        ],
+        name=&#34;Characters and Unicode&#34;,
+        caption=&#34;The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. &#34;,
+    )
+
+    citems = [
         Container(
             [
                 FrequencyTable(
@@ -288,7 +311,7 @@ def render_categorical_unicode(summary, varid, redact):
         ),
     ]
 
-    return Container(
+    return overview_table, Container(
         citems,
         name=&#34;Unicode&#34;,
         sequence_type=&#34;tabs&#34;,
@@ -296,12 +319,14 @@ def render_categorical_unicode(summary, varid, redact):
     )
 
 
-# TODO: merge with boolean
 def render_categorical(summary):
     varid = summary[&#34;varid&#34;]
     n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     redact = config[&#34;vars&#34;][&#34;cat&#34;][&#34;redact&#34;].get(bool)
+    words = config[&#34;vars&#34;][&#34;cat&#34;][&#34;words&#34;].get(bool)
+    characters = config[&#34;vars&#34;][&#34;cat&#34;][&#34;characters&#34;].get(bool)
+    length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
 
     template_variables = render_common(summary)
 
@@ -350,7 +375,7 @@ def render_categorical(summary):
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary[&#34;value_counts&#34;],
+            freqtable=summary[&#34;value_counts_without_nan&#34;],
             n=summary[&#34;count&#34;],
             max_number_to_print=n_obs_cat,
         ),
@@ -359,48 +384,123 @@ def render_categorical(summary):
 
     template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
 
-    citems = [
-        FrequencyTable(
-            template_variables[&#34;freq_table_rows&#34;],
-            name=&#34;Common Values&#34;,
-            anchor_id=f&#34;{varid}common_values&#34;,
-            redact=redact,
-        ),
-        render_categorical_frequency(summary, varid, image_format),
-    ]
+    # ============================================================================================
+
+    frequency_table = FrequencyTable(
+        template_variables[&#34;freq_table_rows&#34;],
+        name=&#34;Common Values&#34;,
+        anchor_id=f&#34;{varid}common_values&#34;,
+        redact=redact,
+    )
+
+    unique_stats, value_counts = render_categorical_frequency(
+        summary, varid, image_format
+    )
+
+    overview_items = []
+
+    if length:
+        length_table, length_histo = render_categorical_length(
+            summary, varid, image_format
+        )
+        overview_items.append(length_table)
+
+    if characters:
+        overview_table_char, unitab = render_categorical_unicode(summary, varid, redact)
+        overview_items.append(overview_table_char)
+
+    overview_items.append(unique_stats)
+
+    if not redact:
+        rows = (&#34;1st row&#34;, &#34;2nd row&#34;, &#34;3rd row&#34;, &#34;4th row&#34;, &#34;5th row&#34;)
+
+        sample = Table(
+            [
+                {
+                    &#34;name&#34;: name,
+                    &#34;value&#34;: value,
+                    &#34;fmt&#34;: &#34;fmt&#34;,
+                    &#34;alert&#34;: False,
+                }
+                for name, value in zip(rows, summary[&#34;first_rows&#34;])
+            ],
+            name=&#34;Sample&#34;,
+        )
+        overview_items.append(sample)
+
+    string_items = [frequency_table]
+    if length:
+        string_items.append(length_histo)
 
     max_unique = config[&#34;plot&#34;][&#34;pie&#34;][&#34;max_unique&#34;].get(int)
     if max_unique &gt; 0 and summary[&#34;n_distinct&#34;] &lt;= max_unique:
-        citems.append(
+        string_items.append(
             Image(
-                pie_plot(summary[&#34;value_counts&#34;], legend_kws={&#34;loc&#34;: &#34;upper right&#34;}),
+                pie_plot(
+                    summary[&#34;value_counts_without_nan&#34;],
+                    legend_kws={&#34;loc&#34;: &#34;upper right&#34;},
+                ),
                 image_format=image_format,
-                alt=&#34;Chart&#34;,
-                name=&#34;Chart&#34;,
+                alt=&#34;Pie chart&#34;,
+                name=&#34;Pie chart&#34;,
                 anchor_id=f&#34;{varid}pie_chart&#34;,
             )
         )
 
-    # Bottom
-    items = [
+    bottom_items = [
         Container(
-            citems,
-            name=&#34;Frequencies&#34;,
-            anchor_id=f&#34;{varid}frequencies&#34;,
-            sequence_type=&#34;tabs&#34;,
+            overview_items,
+            name=&#34;Overview&#34;,
+            anchor_id=f&#34;{varid}overview&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            batch_size=len(overview_items),
+            titles=False,
+        ),
+        Container(
+            string_items,
+            name=&#34;Categories&#34;,
+            anchor_id=f&#34;{varid}string&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            batch_size=len(string_items),
         ),
     ]
 
-    check_length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
-    if check_length:
-        items.append(render_categorical_length(summary, varid, image_format))
+    if words:
+        woc = freq_table(
+            freqtable=summary[&#34;word_counts&#34;],
+            n=summary[&#34;word_counts&#34;].sum(),
+            max_number_to_print=10,
+        )
 
-    check_unicode = config[&#34;vars&#34;][&#34;cat&#34;][&#34;unicode&#34;].get(bool)
-    if check_unicode:
-        items.append(render_categorical_unicode(summary, varid, redact))
+        fqwo = FrequencyTable(
+            woc,
+            name=&#34;Common words&#34;,
+            anchor_id=f&#34;{varid}cwo&#34;,
+            redact=redact,
+        )
 
+        bottom_items.append(
+            Container(
+                [fqwo],
+                name=&#34;Words&#34;,
+                anchor_id=f&#34;{varid}word&#34;,
+                sequence_type=&#34;grid&#34;,
+            )
+        )
+
+    if characters:
+        bottom_items.append(
+            Container(
+                [unitab],
+                name=&#34;Characters&#34;,
+                anchor_id=f&#34;{varid}characters&#34;,
+                sequence_type=&#34;grid&#34;,
+            )
+        )
+
+    # Bottom
     template_variables[&#34;bottom&#34;] = Container(
-        items, sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
+        bottom_items, sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
     )
 
     return template_variables</code></pre>
@@ -427,6 +527,9 @@ def render_categorical(summary):
     n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
     image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
     redact = config[&#34;vars&#34;][&#34;cat&#34;][&#34;redact&#34;].get(bool)
+    words = config[&#34;vars&#34;][&#34;cat&#34;][&#34;words&#34;].get(bool)
+    characters = config[&#34;vars&#34;][&#34;cat&#34;][&#34;characters&#34;].get(bool)
+    length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
 
     template_variables = render_common(summary)
 
@@ -475,7 +578,7 @@ def render_categorical(summary):
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary[&#34;value_counts&#34;],
+            freqtable=summary[&#34;value_counts_without_nan&#34;],
             n=summary[&#34;count&#34;],
             max_number_to_print=n_obs_cat,
         ),
@@ -484,48 +587,123 @@ def render_categorical(summary):
 
     template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
 
-    citems = [
-        FrequencyTable(
-            template_variables[&#34;freq_table_rows&#34;],
-            name=&#34;Common Values&#34;,
-            anchor_id=f&#34;{varid}common_values&#34;,
-            redact=redact,
-        ),
-        render_categorical_frequency(summary, varid, image_format),
-    ]
+    # ============================================================================================
+
+    frequency_table = FrequencyTable(
+        template_variables[&#34;freq_table_rows&#34;],
+        name=&#34;Common Values&#34;,
+        anchor_id=f&#34;{varid}common_values&#34;,
+        redact=redact,
+    )
+
+    unique_stats, value_counts = render_categorical_frequency(
+        summary, varid, image_format
+    )
+
+    overview_items = []
+
+    if length:
+        length_table, length_histo = render_categorical_length(
+            summary, varid, image_format
+        )
+        overview_items.append(length_table)
+
+    if characters:
+        overview_table_char, unitab = render_categorical_unicode(summary, varid, redact)
+        overview_items.append(overview_table_char)
+
+    overview_items.append(unique_stats)
+
+    if not redact:
+        rows = (&#34;1st row&#34;, &#34;2nd row&#34;, &#34;3rd row&#34;, &#34;4th row&#34;, &#34;5th row&#34;)
+
+        sample = Table(
+            [
+                {
+                    &#34;name&#34;: name,
+                    &#34;value&#34;: value,
+                    &#34;fmt&#34;: &#34;fmt&#34;,
+                    &#34;alert&#34;: False,
+                }
+                for name, value in zip(rows, summary[&#34;first_rows&#34;])
+            ],
+            name=&#34;Sample&#34;,
+        )
+        overview_items.append(sample)
+
+    string_items = [frequency_table]
+    if length:
+        string_items.append(length_histo)
 
     max_unique = config[&#34;plot&#34;][&#34;pie&#34;][&#34;max_unique&#34;].get(int)
     if max_unique &gt; 0 and summary[&#34;n_distinct&#34;] &lt;= max_unique:
-        citems.append(
+        string_items.append(
             Image(
-                pie_plot(summary[&#34;value_counts&#34;], legend_kws={&#34;loc&#34;: &#34;upper right&#34;}),
+                pie_plot(
+                    summary[&#34;value_counts_without_nan&#34;],
+                    legend_kws={&#34;loc&#34;: &#34;upper right&#34;},
+                ),
                 image_format=image_format,
-                alt=&#34;Chart&#34;,
-                name=&#34;Chart&#34;,
+                alt=&#34;Pie chart&#34;,
+                name=&#34;Pie chart&#34;,
                 anchor_id=f&#34;{varid}pie_chart&#34;,
             )
         )
 
-    # Bottom
-    items = [
+    bottom_items = [
         Container(
-            citems,
-            name=&#34;Frequencies&#34;,
-            anchor_id=f&#34;{varid}frequencies&#34;,
-            sequence_type=&#34;tabs&#34;,
+            overview_items,
+            name=&#34;Overview&#34;,
+            anchor_id=f&#34;{varid}overview&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            batch_size=len(overview_items),
+            titles=False,
+        ),
+        Container(
+            string_items,
+            name=&#34;Categories&#34;,
+            anchor_id=f&#34;{varid}string&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            batch_size=len(string_items),
         ),
     ]
 
-    check_length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
-    if check_length:
-        items.append(render_categorical_length(summary, varid, image_format))
+    if words:
+        woc = freq_table(
+            freqtable=summary[&#34;word_counts&#34;],
+            n=summary[&#34;word_counts&#34;].sum(),
+            max_number_to_print=10,
+        )
 
-    check_unicode = config[&#34;vars&#34;][&#34;cat&#34;][&#34;unicode&#34;].get(bool)
-    if check_unicode:
-        items.append(render_categorical_unicode(summary, varid, redact))
+        fqwo = FrequencyTable(
+            woc,
+            name=&#34;Common words&#34;,
+            anchor_id=f&#34;{varid}cwo&#34;,
+            redact=redact,
+        )
 
+        bottom_items.append(
+            Container(
+                [fqwo],
+                name=&#34;Words&#34;,
+                anchor_id=f&#34;{varid}word&#34;,
+                sequence_type=&#34;grid&#34;,
+            )
+        )
+
+    if characters:
+        bottom_items.append(
+            Container(
+                [unitab],
+                name=&#34;Characters&#34;,
+                anchor_id=f&#34;{varid}characters&#34;,
+                sequence_type=&#34;grid&#34;,
+            )
+        )
+
+    # Bottom
     template_variables[&#34;bottom&#34;] = Container(
-        items, sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
+        bottom_items, sequence_type=&#34;tabs&#34;, anchor_id=f&#34;{varid}bottom&#34;
     )
 
     return template_variables</code></pre>
@@ -557,7 +735,7 @@ def render_categorical(summary):
             },
         ],
         name=&#34;Unique&#34;,
-        anchor_id=f&#34;{varid}uniquenessstats&#34;,
+        anchor_id=f&#34;{varid}_unique_stats&#34;,
     )
 
     frequencies = Image(
@@ -569,13 +747,7 @@ def render_categorical(summary):
         anchor_id=f&#34;{varid}frequencies&#34;,
     )
 
-    frequency_tab = Container(
-        [frequencies, frequency_table],
-        anchor_id=f&#34;{varid}tbl&#34;,
-        name=&#34;Overview&#34;,
-        sequence_type=&#34;grid&#34;,
-    )
-    return frequency_tab</code></pre>
+    return frequency_table, frequencies</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_categorical.render_categorical_length"><code class="name flex">
@@ -619,7 +791,7 @@ def render_categorical(summary):
         anchor_id=f&#34;{varid}lengthstats&#34;,
     )
 
-    length = Image(
+    length_histo = Image(
         histogram(*summary[&#34;histogram_length&#34;]),
         image_format=image_format,
         alt=&#34;length histogram&#34;,
@@ -628,13 +800,7 @@ def render_categorical(summary):
         anchor_id=f&#34;{varid}length&#34;,
     )
 
-    length_tab = Container(
-        [length, length_table],
-        anchor_id=f&#34;{varid}tbl&#34;,
-        name=&#34;Length&#34;,
-        sequence_type=&#34;grid&#34;,
-    )
-    return length_tab</code></pre>
+    return length_table, length_histo</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_categorical.render_categorical_unicode"><code class="name flex">
@@ -649,125 +815,160 @@ def render_categorical(summary):
 <pre><code class="python">def render_categorical_unicode(summary, varid, redact):
     n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
 
-    category_items = [
-        FrequencyTable(
-            freq_table(
-                freqtable=summary[&#34;category_alias_counts&#34;],
-                n=summary[&#34;category_alias_counts&#34;].sum(),
-                max_number_to_print=n_freq_table_max,
-            ),
-            name=&#34;Most occurring categories&#34;,
-            anchor_id=f&#34;{varid}category_long_values&#34;,
-            redact=False,
-        )
-    ]
-    for category_alias_name, category_alias_counts in summary[
-        &#34;category_alias_char_counts&#34;
-    ].items():
+    category_overview = FrequencyTable(
+        freq_table(
+            freqtable=summary[&#34;category_alias_counts&#34;],
+            n=summary[&#34;category_alias_counts&#34;].sum(),
+            max_number_to_print=n_freq_table_max,
+        ),
+        name=&#34;Most occurring categories&#34;,
+        anchor_id=f&#34;{varid}category_long_values&#34;,
+        redact=False,
+    )
+
+    cats = []
+    for category_alias_name, category_alias_counts in sorted(
+        summary[&#34;category_alias_char_counts&#34;].items(), key=lambda x: -len(x[1])
+    ):
         category_alias_name = category_alias_name.replace(&#34;_&#34;, &#34; &#34;)
-        category_items.append(
+        cats.append(
             FrequencyTable(
                 freq_table(
                     freqtable=category_alias_counts,
                     n=category_alias_counts.sum(),
                     max_number_to_print=n_freq_table_max,
                 ),
-                name=f&#34;Most frequent {category_alias_name} characters&#34;,
+                name=f&#34;{category_alias_name}&#34;,
                 anchor_id=f&#34;{varid}category_alias_values_{category_alias_name}&#34;,
                 redact=redact,
             )
         )
 
-    script_items = [
-        FrequencyTable(
-            freq_table(
-                freqtable=summary[&#34;script_counts&#34;],
-                n=summary[&#34;script_counts&#34;].sum(),
-                max_number_to_print=n_freq_table_max,
-            ),
-            name=&#34;Most occurring scripts&#34;,
-            anchor_id=f&#34;{varid}script_values&#34;,
-            redact=False,
+    category_items = [
+        category_overview,
+        Container(
+            cats,
+            name=&#34;Most frequent character per category&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            anchor_id=f&#34;{varid}categories&#34;,
+            batch_size=3,
         ),
     ]
-    for script_name, script_counts in summary[&#34;script_char_counts&#34;].items():
-        script_items.append(
+
+    script_overview = FrequencyTable(
+        freq_table(
+            freqtable=summary[&#34;script_counts&#34;],
+            n=summary[&#34;script_counts&#34;].sum(),
+            max_number_to_print=n_freq_table_max,
+        ),
+        name=&#34;Most occurring scripts&#34;,
+        anchor_id=f&#34;{varid}script_values&#34;,
+        redact=False,
+    )
+
+    scripts = []
+    for script_name, script_counts in sorted(
+        summary[&#34;script_char_counts&#34;].items(), key=lambda x: -len(x[1])
+    ):
+        scripts.append(
             FrequencyTable(
                 freq_table(
                     freqtable=script_counts,
                     n=script_counts.sum(),
                     max_number_to_print=n_freq_table_max,
                 ),
-                name=f&#34;Most frequent {script_name} characters&#34;,
+                name=f&#34;{script_name}&#34;,
                 anchor_id=f&#34;{varid}script_values_{script_name}&#34;,
                 redact=redact,
             )
         )
 
-    block_items = [
-        FrequencyTable(
-            freq_table(
-                freqtable=summary[&#34;block_alias_counts&#34;],
-                n=summary[&#34;block_alias_counts&#34;].sum(),
-                max_number_to_print=n_freq_table_max,
-            ),
-            name=&#34;Most occurring blocks&#34;,
-            anchor_id=f&#34;{varid}block_alias_values&#34;,
-            redact=False,
-        )
+    script_items = [
+        script_overview,
+        Container(
+            scripts,
+            name=&#34;Most frequent character per script&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            anchor_id=f&#34;{varid}scripts&#34;,
+            batch_size=3,
+        ),
     ]
+
+    block_overview = FrequencyTable(
+        freq_table(
+            freqtable=summary[&#34;block_alias_counts&#34;],
+            n=summary[&#34;block_alias_counts&#34;].sum(),
+            max_number_to_print=n_freq_table_max,
+        ),
+        name=&#34;Most occurring blocks&#34;,
+        anchor_id=f&#34;{varid}block_alias_values&#34;,
+        redact=False,
+    )
+
+    blocks = []
     for block_name, block_counts in summary[&#34;block_alias_char_counts&#34;].items():
-        block_items.append(
+        blocks.append(
             FrequencyTable(
                 freq_table(
                     freqtable=block_counts,
                     n=block_counts.sum(),
                     max_number_to_print=n_freq_table_max,
                 ),
-                name=f&#34;Most frequent {block_name} characters&#34;,
+                name=f&#34;{block_name}&#34;,
                 anchor_id=f&#34;{varid}block_alias_values_{block_name}&#34;,
                 redact=redact,
             )
         )
 
-    citems = [
+    block_items = [
+        block_overview,
         Container(
-            [
-                Table(
-                    [
-                        {
-                            &#34;name&#34;: &#34;Unique unicode characters&#34;,
-                            &#34;value&#34;: summary[&#34;n_characters&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                        {
-                            &#34;name&#34;: &#34;Unique unicode categories&#34;,
-                            &#34;value&#34;: f&#34;{summary[&#39;n_category&#39;]} {help(title=&#39;Unicode categories (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_character_property#General_Category&#39;)}&#34;,
-                            &#34;fmt&#34;: &#34;raw&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                        {
-                            &#34;name&#34;: &#34;Unique unicode scripts&#34;,
-                            &#34;value&#34;: f&#34;{summary[&#39;n_scripts&#39;]} {help(title=&#39;Unicode scripts (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode&#39;)}&#34;,
-                            &#34;fmt&#34;: &#34;raw&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                        {
-                            &#34;name&#34;: &#34;Unique unicode blocks&#34;,
-                            &#34;value&#34;: f&#34;{summary[&#39;n_block_alias&#39;]} {help(title=&#39;Unicode blocks (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_block&#39;)}&#34;,
-                            &#34;fmt&#34;: &#34;raw&#34;,
-                            &#34;alert&#34;: False,
-                        },
-                    ],
-                    name=&#34;Overview of Unicode Properties&#34;,
-                    caption=&#34;The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. &#34;,
-                ),
-            ],
-            anchor_id=f&#34;{varid}character_overview&#34;,
-            name=&#34;Overview&#34;,
-            sequence_type=&#34;list&#34;,
+            blocks,
+            name=&#34;Most frequent character per block&#34;,
+            sequence_type=&#34;batch_grid&#34;,
+            anchor_id=f&#34;{varid}blocks&#34;,
+            batch_size=3,
         ),
+    ]
+
+    overview_table = Table(
+        [
+            {
+                &#34;name&#34;: &#34;Total characters&#34;,
+                &#34;value&#34;: summary[&#34;n_characters&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct characters&#34;,
+                &#34;value&#34;: summary[&#34;n_characters_distinct&#34;],
+                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct categories&#34;,
+                &#34;value&#34;: f&#34;{summary[&#39;n_category&#39;]} {help(title=&#39;Unicode categories (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_character_property#General_Category&#39;)}&#34;,
+                &#34;fmt&#34;: &#34;raw&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct scripts&#34;,
+                &#34;value&#34;: f&#34;{summary[&#39;n_scripts&#39;]} {help(title=&#39;Unicode scripts (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode&#39;)}&#34;,
+                &#34;fmt&#34;: &#34;raw&#34;,
+                &#34;alert&#34;: False,
+            },
+            {
+                &#34;name&#34;: &#34;Distinct blocks&#34;,
+                &#34;value&#34;: f&#34;{summary[&#39;n_block_alias&#39;]} {help(title=&#39;Unicode blocks (click for more information)&#39;, url=&#39;https://en.wikipedia.org/wiki/Unicode_block&#39;)}&#34;,
+                &#34;fmt&#34;: &#34;raw&#34;,
+                &#34;alert&#34;: False,
+            },
+        ],
+        name=&#34;Characters and Unicode&#34;,
+        caption=&#34;The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. &#34;,
+    )
+
+    citems = [
         Container(
             [
                 FrequencyTable(
@@ -805,7 +1006,7 @@ def render_categorical(summary):
         ),
     ]
 
-    return Container(
+    return overview_table, Container(
         citems,
         name=&#34;Unicode&#34;,
         sequence_type=&#34;tabs&#34;,
@@ -841,7 +1042,7 @@ def render_categorical(summary):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

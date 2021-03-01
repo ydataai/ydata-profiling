@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Integrations &mdash; pandas-profiling 2.9.0 documentation</title>
+  <title>Integrations &mdash; pandas-profiling 2.12.0 documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,14 +33,13 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="next" title="Integration with Great Expectations" href="great_expectations_integration.html" />
     <link rel="prev" title="Metadata" href="metadata.html" /> 
 </head>
 
@@ -52,7 +54,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
+            <a href="../index.html" class="icon icon-home"> pandas-profiling
           
 
           
@@ -102,7 +104,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#html-report">HTML Report</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jupyter-lab-notebook">Jupyter Lab/Notebook</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#command-line">Command line</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pyqt-experimental">PyQt (experimental)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#streamlit">Streamlit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#panel">Panel</a></li>
 </ul>
@@ -124,6 +125,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Support and contribution</span></p>
@@ -204,6 +206,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -215,7 +219,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/pages/integrations.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -297,23 +301,6 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 </div>
 <p>for information about options and arguments.</p>
 <a class="reference internal image-reference" href="../_images/cli.png"><img alt="../_images/cli.png" src="../_images/cli.png" style="width: 80%;" /></a>
-</div>
-<div class="section" id="pyqt-experimental">
-<h3>PyQt (experimental)<a class="headerlink" href="#pyqt-experimental" title="Permalink to this headline">¶</a></h3>
-<p>There is some initial work on a PyQt interface, however it should be noted that much more work is needed. Contributions are very much welcome.</p>
-<img alt="../_images/qt.png" src="../_images/qt.png" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">pandas_profiling</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">])</span>
-<span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">()</span>
-<span class="n">report</span><span class="o">.</span><span class="n">to_app</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Ensure to install <code class="docutils literal notranslate"><span class="pre">pyqt5</span></code>. Via pip use the extras <code class="docutils literal notranslate"><span class="pre">app</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install pandas-profiling[app]</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="streamlit">
 <h3>Streamlit<a class="headerlink" href="#streamlit" title="Permalink to this headline">¶</a></h3>
@@ -409,12 +396,12 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 </ol>
 <blockquote>
 <div><p>On macOS / Linux / BSD:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> which pandas_profiling
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>which pandas_profiling
 <span class="gp gp-VirtualEnv">(example)</span> <span class="go">/usr/local/bin/pandas_profiling</span>
 </pre></div>
 </div>
 <p>On Windows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> where pandas_profiling
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>where pandas_profiling
 <span class="gp gp-VirtualEnv">(example)</span> <span class="go">C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe</span>
 </pre></div>
 </div>
@@ -447,37 +434,29 @@ For standard formatted CSV files that can be read immediately by pandas, you can
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="metadata.html" class="btn btn-neutral float-left" title="Metadata" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="great_expectations_integration.html" class="btn btn-neutral float-right" title="Integration with Great Expectations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="metadata.html" class="btn btn-neutral float-left" title="Metadata" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Simon Brugman
+        &#169; Copyright 2021, Simon Brugman.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -26,7 +26,7 @@
       ~ProfileReport.preprocess
       ~ProfileReport.set_variable
       ~ProfileReport.set_variables
-      ~ProfileReport.to_app
+      ~ProfileReport.to_expectation_suite
       ~ProfileReport.to_file
       ~ProfileReport.to_html
       ~ProfileReport.to_json
@@ -47,7 +47,9 @@
       ~ProfileReport.html
       ~ProfileReport.json
       ~ProfileReport.report
+      ~ProfileReport.summarizer
       ~ProfileReport.title
+      ~ProfileReport.typeset
       ~ProfileReport.widgets
    
    

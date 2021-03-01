@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.model.messages API documentation</title>
 <meta name="description" content="Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)." />
@@ -32,13 +32,13 @@ values, high correlations).</p>
 <pre><code class="python">&#34;&#34;&#34;Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations).&#34;&#34;&#34;
 from enum import Enum, auto, unique
-from typing import List, Union
+from typing import Dict, List, Optional, Set, Union
 
 import numpy as np
 
 from pandas_profiling.config import config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import perform_check_correlation
+from pandas_profiling.model.typeset import Categorical, Numeric, Unsupported
 
 
 @unique
@@ -88,16 +88,18 @@ class MessageType(Enum):
     &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;
 
 
-class Message(object):
+class Message:
     &#34;&#34;&#34;A message object (type, values, column).&#34;&#34;&#34;
 
     def __init__(
         self,
         message_type: MessageType,
-        values: dict,
+        values: Optional[Dict] = None,
         column_name: Union[str, None] = None,
-        fields=None,
+        fields: Optional[Set] = None,
     ):
+        if values is None:
+            values = {}
         if fields is None:
             fields = set()
 
@@ -105,7 +107,13 @@ class Message(object):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self.anchor_id = hash(column_name)
+        self._anchor_id = None
+
+    @property
+    def anchor_id(self):
+        if self._anchor_id is None:
+            self._anchor_id = hash(self.column_name)
+        return self._anchor_id
 
     def fmt(self):
         # TODO: render in template
@@ -143,6 +151,143 @@ def check_table_messages(table: dict) -&gt; List[Message]:
     return messages
 
 
+def numeric_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
+    chi_squared_threshold_num = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+        float
+    )
+
+    # Skewness
+    if warning_skewness(summary[&#34;skewness&#34;]):
+        messages.append(
+            Message(
+                message_type=MessageType.SKEWED,
+                fields={&#34;skewness&#34;},
+            )
+        )
+
+    # Infinite values
+    if warning_value(summary[&#34;p_infinite&#34;]):
+        messages.append(
+            Message(
+                message_type=MessageType.INFINITE,
+                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
+            )
+        )
+
+    # Zeros
+    if warning_value(summary[&#34;p_zeros&#34;]):
+        messages.append(
+            Message(
+                message_type=MessageType.ZEROS,
+                fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
+            )
+        )
+
+    if (
+        &#34;chi_squared&#34; in summary
+        and summary[&#34;chi_squared&#34;][&#34;pvalue&#34;] &gt; chi_squared_threshold_num
+    ):
+        messages.append(Message(message_type=MessageType.UNIFORM))
+
+    return messages
+
+
+def categorical_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
+    cardinality_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;cardinality_threshold&#34;].get(int)
+    chi_squared_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+        float
+    )
+
+    # High cardinality
+    if summary[&#34;n_distinct&#34;] &gt; cardinality_threshold_cat:
+        messages.append(
+            Message(
+                message_type=MessageType.HIGH_CARDINALITY,
+                fields={&#34;n_distinct&#34;},
+            )
+        )
+
+    if (
+        &#34;chi_squared&#34; in summary
+        and summary[&#34;chi_squared&#34;][&#34;pvalue&#34;] &gt; chi_squared_threshold_cat
+    ):
+        messages.append(Message(message_type=MessageType.UNIFORM))
+
+    if &#34;date_warning&#34; in summary and summary[&#34;date_warning&#34;]:
+        messages.append(Message(message_type=MessageType.TYPE_DATE))
+
+    # Constant length
+    if &#34;composition&#34; in summary and summary[&#34;min_length&#34;] == summary[&#34;max_length&#34;]:
+        messages.append(
+            Message(
+                message_type=MessageType.CONSTANT_LENGTH,
+                fields={&#34;composition_min_length&#34;, &#34;composition_max_length&#34;},
+            )
+        )
+
+    return messages
+
+
+def generic_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
+    # Missing
+    if warning_value(summary[&#34;p_missing&#34;]):
+        messages.append(
+            Message(
+                message_type=MessageType.MISSING,
+                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
+            )
+        )
+
+    return messages
+
+
+def supported_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
+    if summary[&#34;n_distinct&#34;] == summary[&#34;n&#34;]:
+        messages.append(
+            Message(
+                message_type=MessageType.UNIQUE,
+                fields={&#34;n_distinct&#34;, &#34;p_distinct&#34;, &#34;n_unique&#34;, &#34;p_unique&#34;},
+            )
+        )
+    if summary[&#34;n_distinct&#34;] == 1:
+        summary[&#34;mode&#34;] = summary[&#34;value_counts_without_nan&#34;].index[0]
+        messages.append(
+            Message(
+                message_type=MessageType.CONSTANT,
+                fields={&#34;n_distinct&#34;},
+            )
+        )
+        messages.append(
+            Message(
+                message_type=MessageType.REJECTED,
+                fields=set(),
+            )
+        )
+    return messages
+
+
+def unsupported_warnings(summary):
+    messages = [
+        Message(
+            message_type=MessageType.UNSUPPORTED,
+            fields=set(),
+        ),
+        Message(
+            message_type=MessageType.REJECTED,
+            fields=set(),
+        ),
+    ]
+    return messages
+
+
 def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
     &#34;&#34;&#34;Checks individual variables for warnings.
 
@@ -155,150 +300,21 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
     &#34;&#34;&#34;
     messages = []
 
-    # Missing
-    if warning_value(description[&#34;p_missing&#34;]):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.MISSING,
-                values=description,
-                fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
-            )
-        )
+    messages += generic_warnings(description)
 
-    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.UNSUPPORTED,
-                values=description,
-                fields={},
-            )
-        )
-    elif description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
-        description[&#34;mode&#34;] = description[&#34;value_counts&#34;].iloc[0]
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.CONSTANT,
-                values=description,
-                fields={&#34;n_distinct&#34;},
-            )
-        )
+    if description[&#34;type&#34;] == Unsupported:
+        messages += unsupported_warnings(description)
+    else:
+        messages += supported_warnings(description)
 
-    if (
-        description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED
-        or description[&#34;distinct_count_with_nan&#34;] &lt;= 1
-    ):
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.REJECTED,
-                values=description,
-                fields={},
-            )
-        )
-    elif description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
-        messages.append(
-            Message(
-                column_name=col,
-                message_type=MessageType.UNIQUE,
-                values=description,
-                fields={&#34;n_distinct&#34;, &#34;p_distinct&#34;, &#34;n_unique&#34;, &#34;p_unique&#34;},
-            )
-        )
-    elif description[&#34;type&#34;] in [
-        Variable.TYPE_NUM,
-        Variable.TYPE_CAT,
-        Variable.TYPE_DATE,
-    ]:
-        # Uniformity
-        if description[&#34;type&#34;] == Variable.TYPE_CAT:
-            # High cardinality
-            if description[&#34;n_distinct&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
-                &#34;cardinality_threshold&#34;
-            ].get(int):
-                messages.append(
-                    Message(
-                        column_name=col,
-                        message_type=MessageType.HIGH_CARDINALITY,
-                        values=description,
-                        fields={&#34;n_distinct&#34;},
-                    )
-                )
+        if description[&#34;type&#34;] == Categorical:
+            messages += categorical_warnings(description)
+        if description[&#34;type&#34;] == Numeric:
+            messages += numeric_warnings(description)
 
-            chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
-                float
-            )
-        else:
-            chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-                float
-            )
-
-        if (
-            &#34;chi_squared&#34; in description
-            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
-        ):
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
-            )
-
-    # Categorical
-    if description[&#34;type&#34;] == Variable.TYPE_CAT:
-        if &#34;date_warning&#34; in description and description[&#34;date_warning&#34;]:
-            messages.append(
-                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
-            )
-
-        # Constant length
-        if (
-            &#34;composition&#34; in description
-            and description[&#34;min_length&#34;] == description[&#34;max_length&#34;]
-        ):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.CONSTANT_LENGTH,
-                    values=description,
-                    fields={&#34;composition_min_length&#34;, &#34;composition_max_length&#34;},
-                )
-            )
-
-    # Numerical
-    if description[&#34;type&#34;] == Variable.TYPE_NUM:
-        # Skewness
-        if warning_skewness(description[&#34;skewness&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.SKEWED,
-                    values=description,
-                    fields={&#34;skewness&#34;},
-                )
-            )
-
-        # Infinite values
-        if warning_value(description[&#34;p_infinite&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.INFINITE,
-                    values=description,
-                    fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
-                )
-            )
-
-        # Zeros
-        if warning_value(description[&#34;p_zeros&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.ZEROS,
-                    values=description,
-                    fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
-                )
-            )
-
+    for idx in range(len(messages)):
+        messages[idx].column_name = col
+        messages[idx].values = description
     return messages
 
 
@@ -349,6 +365,53 @@ def warning_type_date(series):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.model.messages.categorical_warnings"><code class="name flex">
+<span>def <span class="ident">categorical_warnings</span></span>(<span>summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def categorical_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
+    cardinality_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;cardinality_threshold&#34;].get(int)
+    chi_squared_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
+        float
+    )
+
+    # High cardinality
+    if summary[&#34;n_distinct&#34;] &gt; cardinality_threshold_cat:
+        messages.append(
+            Message(
+                message_type=MessageType.HIGH_CARDINALITY,
+                fields={&#34;n_distinct&#34;},
+            )
+        )
+
+    if (
+        &#34;chi_squared&#34; in summary
+        and summary[&#34;chi_squared&#34;][&#34;pvalue&#34;] &gt; chi_squared_threshold_cat
+    ):
+        messages.append(Message(message_type=MessageType.UNIFORM))
+
+    if &#34;date_warning&#34; in summary and summary[&#34;date_warning&#34;]:
+        messages.append(Message(message_type=MessageType.TYPE_DATE))
+
+    # Constant length
+    if &#34;composition&#34; in summary and summary[&#34;min_length&#34;] == summary[&#34;max_length&#34;]:
+        messages.append(
+            Message(
+                message_type=MessageType.CONSTANT_LENGTH,
+                fields={&#34;composition_min_length&#34;, &#34;composition_max_length&#34;},
+            )
+        )
+
+    return messages</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.messages.check_correlation_messages"><code class="name flex">
 <span>def <span class="ident">check_correlation_messages</span></span>(<span>correlations)</span>
 </code></dt>
@@ -444,150 +507,156 @@ def warning_type_date(series):
     &#34;&#34;&#34;
     messages = []
 
+    messages += generic_warnings(description)
+
+    if description[&#34;type&#34;] == Unsupported:
+        messages += unsupported_warnings(description)
+    else:
+        messages += supported_warnings(description)
+
+        if description[&#34;type&#34;] == Categorical:
+            messages += categorical_warnings(description)
+        if description[&#34;type&#34;] == Numeric:
+            messages += numeric_warnings(description)
+
+    for idx in range(len(messages)):
+        messages[idx].column_name = col
+        messages[idx].values = description
+    return messages</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.messages.generic_warnings"><code class="name flex">
+<span>def <span class="ident">generic_warnings</span></span>(<span>summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generic_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
     # Missing
-    if warning_value(description[&#34;p_missing&#34;]):
+    if warning_value(summary[&#34;p_missing&#34;]):
         messages.append(
             Message(
-                column_name=col,
                 message_type=MessageType.MISSING,
-                values=description,
                 fields={&#34;p_missing&#34;, &#34;n_missing&#34;},
             )
         )
 
-    if description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
+    return messages</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.messages.numeric_warnings"><code class="name flex">
+<span>def <span class="ident">numeric_warnings</span></span>(<span>summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def numeric_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
+    chi_squared_threshold_num = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
+        float
+    )
+
+    # Skewness
+    if warning_skewness(summary[&#34;skewness&#34;]):
         messages.append(
             Message(
-                column_name=col,
-                message_type=MessageType.UNSUPPORTED,
-                values=description,
-                fields={},
+                message_type=MessageType.SKEWED,
+                fields={&#34;skewness&#34;},
             )
         )
-    elif description[&#34;distinct_count_with_nan&#34;] &lt;= 1:
-        description[&#34;mode&#34;] = description[&#34;value_counts&#34;].iloc[0]
+
+    # Infinite values
+    if warning_value(summary[&#34;p_infinite&#34;]):
         messages.append(
             Message(
-                column_name=col,
-                message_type=MessageType.CONSTANT,
-                values=description,
-                fields={&#34;n_distinct&#34;},
+                message_type=MessageType.INFINITE,
+                fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
+            )
+        )
+
+    # Zeros
+    if warning_value(summary[&#34;p_zeros&#34;]):
+        messages.append(
+            Message(
+                message_type=MessageType.ZEROS,
+                fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
             )
         )
 
     if (
-        description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED
-        or description[&#34;distinct_count_with_nan&#34;] &lt;= 1
+        &#34;chi_squared&#34; in summary
+        and summary[&#34;chi_squared&#34;][&#34;pvalue&#34;] &gt; chi_squared_threshold_num
     ):
+        messages.append(Message(message_type=MessageType.UNIFORM))
+
+    return messages</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.messages.supported_warnings"><code class="name flex">
+<span>def <span class="ident">supported_warnings</span></span>(<span>summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def supported_warnings(summary: dict) -&gt; List[Message]:
+    messages = []
+
+    if summary[&#34;n_distinct&#34;] == summary[&#34;n&#34;]:
         messages.append(
             Message(
-                column_name=col,
-                message_type=MessageType.REJECTED,
-                values=description,
-                fields={},
-            )
-        )
-    elif description[&#34;distinct_count_without_nan&#34;] == description[&#34;n&#34;]:
-        messages.append(
-            Message(
-                column_name=col,
                 message_type=MessageType.UNIQUE,
-                values=description,
                 fields={&#34;n_distinct&#34;, &#34;p_distinct&#34;, &#34;n_unique&#34;, &#34;p_unique&#34;},
             )
         )
-    elif description[&#34;type&#34;] in [
-        Variable.TYPE_NUM,
-        Variable.TYPE_CAT,
-        Variable.TYPE_DATE,
-    ]:
-        # Uniformity
-        if description[&#34;type&#34;] == Variable.TYPE_CAT:
-            # High cardinality
-            if description[&#34;n_distinct&#34;] &gt; config[&#34;vars&#34;][&#34;cat&#34;][
-                &#34;cardinality_threshold&#34;
-            ].get(int):
-                messages.append(
-                    Message(
-                        column_name=col,
-                        message_type=MessageType.HIGH_CARDINALITY,
-                        values=description,
-                        fields={&#34;n_distinct&#34;},
-                    )
-                )
-
-            chi_squared_threshold = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
-                float
+    if summary[&#34;n_distinct&#34;] == 1:
+        summary[&#34;mode&#34;] = summary[&#34;value_counts_without_nan&#34;].index[0]
+        messages.append(
+            Message(
+                message_type=MessageType.CONSTANT,
+                fields={&#34;n_distinct&#34;},
             )
-        else:
-            chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-                float
+        )
+        messages.append(
+            Message(
+                message_type=MessageType.REJECTED,
+                fields=set(),
             )
-
-        if (
-            &#34;chi_squared&#34; in description
-            and description[&#34;chi_squared&#34;][1] &gt; chi_squared_threshold
-        ):
-            messages.append(
-                Message(column_name=col, message_type=MessageType.UNIFORM, values={})
-            )
-
-    # Categorical
-    if description[&#34;type&#34;] == Variable.TYPE_CAT:
-        if &#34;date_warning&#34; in description and description[&#34;date_warning&#34;]:
-            messages.append(
-                Message(column_name=col, message_type=MessageType.TYPE_DATE, values={})
-            )
-
-        # Constant length
-        if (
-            &#34;composition&#34; in description
-            and description[&#34;min_length&#34;] == description[&#34;max_length&#34;]
-        ):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.CONSTANT_LENGTH,
-                    values=description,
-                    fields={&#34;composition_min_length&#34;, &#34;composition_max_length&#34;},
-                )
-            )
-
-    # Numerical
-    if description[&#34;type&#34;] == Variable.TYPE_NUM:
-        # Skewness
-        if warning_skewness(description[&#34;skewness&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.SKEWED,
-                    values=description,
-                    fields={&#34;skewness&#34;},
-                )
-            )
-
-        # Infinite values
-        if warning_value(description[&#34;p_infinite&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.INFINITE,
-                    values=description,
-                    fields={&#34;p_infinite&#34;, &#34;n_infinite&#34;},
-                )
-            )
-
-        # Zeros
-        if warning_value(description[&#34;p_zeros&#34;]):
-            messages.append(
-                Message(
-                    column_name=col,
-                    message_type=MessageType.ZEROS,
-                    values=description,
-                    fields={&#34;n_zeros&#34;, &#34;p_zeros&#34;},
-                )
-            )
-
+        )
+    return messages</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.messages.unsupported_warnings"><code class="name flex">
+<span>def <span class="ident">unsupported_warnings</span></span>(<span>summary)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unsupported_warnings(summary):
+    messages = [
+        Message(
+            message_type=MessageType.UNSUPPORTED,
+            fields=set(),
+        ),
+        Message(
+            message_type=MessageType.REJECTED,
+            fields=set(),
+        ),
+    ]
     return messages</code></pre>
 </details>
 </dd>
@@ -646,7 +715,7 @@ def warning_type_date(series):
 <dl>
 <dt id="pandas_profiling.model.messages.Message"><code class="flex name class">
 <span>class <span class="ident">Message</span></span>
-<span>(</span><span>message_type: <a title="pandas_profiling.model.messages.MessageType" href="#pandas_profiling.model.messages.MessageType">MessageType</a>, values: dict, column_name: Union[str, NoneType] = None, fields=None)</span>
+<span>(</span><span>message_type: <a title="pandas_profiling.model.messages.MessageType" href="#pandas_profiling.model.messages.MessageType">MessageType</a>, values: Union[Dict, NoneType] = None, column_name: Union[str, NoneType] = None, fields: Union[Set, NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A message object (type, values, column).</p></div>
@@ -654,16 +723,18 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Message(object):
+<pre><code class="python">class Message:
     &#34;&#34;&#34;A message object (type, values, column).&#34;&#34;&#34;
 
     def __init__(
         self,
         message_type: MessageType,
-        values: dict,
+        values: Optional[Dict] = None,
         column_name: Union[str, None] = None,
-        fields=None,
+        fields: Optional[Set] = None,
     ):
+        if values is None:
+            values = {}
         if fields is None:
             fields = set()
 
@@ -671,7 +742,13 @@ def warning_type_date(series):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self.anchor_id = hash(column_name)
+        self._anchor_id = None
+
+    @property
+    def anchor_id(self):
+        if self._anchor_id is None:
+            self._anchor_id = hash(self.column_name)
+        return self._anchor_id
 
     def fmt(self):
         # TODO: render in template
@@ -687,6 +764,23 @@ def warning_type_date(series):
         column = self.column_name
         return f&#34;[{message_type}] warning on column {column}&#34;</code></pre>
 </details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pandas_profiling.model.messages.Message.anchor_id"><code class="name">var <span class="ident">anchor_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def anchor_id(self):
+    if self._anchor_id is None:
+        self._anchor_id = hash(self.column_name)
+    return self._anchor_id</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.model.messages.Message.fmt"><code class="name flex">
@@ -845,9 +939,14 @@ def warning_type_date(series):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.model.messages.categorical_warnings" href="#pandas_profiling.model.messages.categorical_warnings">categorical_warnings</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.check_correlation_messages" href="#pandas_profiling.model.messages.check_correlation_messages">check_correlation_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.check_table_messages" href="#pandas_profiling.model.messages.check_table_messages">check_table_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.check_variable_messages" href="#pandas_profiling.model.messages.check_variable_messages">check_variable_messages</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.generic_warnings" href="#pandas_profiling.model.messages.generic_warnings">generic_warnings</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.numeric_warnings" href="#pandas_profiling.model.messages.numeric_warnings">numeric_warnings</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.supported_warnings" href="#pandas_profiling.model.messages.supported_warnings">supported_warnings</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.unsupported_warnings" href="#pandas_profiling.model.messages.unsupported_warnings">unsupported_warnings</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.warning_skewness" href="#pandas_profiling.model.messages.warning_skewness">warning_skewness</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.warning_type_date" href="#pandas_profiling.model.messages.warning_type_date">warning_type_date</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.warning_value" href="#pandas_profiling.model.messages.warning_value">warning_value</a></code></li>
@@ -858,6 +957,7 @@ def warning_type_date(series):
 <li>
 <h4><code><a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a></code></h4>
 <ul class="">
+<li><code><a title="pandas_profiling.model.messages.Message.anchor_id" href="#pandas_profiling.model.messages.Message.anchor_id">anchor_id</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.Message.fmt" href="#pandas_profiling.model.messages.Message.fmt">fmt</a></code></li>
 </ul>
 </li>
@@ -886,7 +986,7 @@ def warning_type_date(series):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

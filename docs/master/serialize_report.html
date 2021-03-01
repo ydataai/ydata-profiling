@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.serialize_report API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -35,7 +35,7 @@ from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.version import __version__
 
 
-class SerializeReport(object):
+class SerializeReport:
     &#34;&#34;&#34;Extend the report to be able to dump and load reports.&#34;&#34;&#34;
 
     df_hash = None
@@ -100,11 +100,9 @@ class SerializeReport(object):
             raise ValueError(
                 f&#34;Failed to load data: file may be damaged or from an incompatible version&#34;
             )
-        if (df_hash == self.df_hash) and (
-            ignore_config
-            or config == loaded_config
-            or (config.is_default and self.df is None)  # load to an empty ProfileReport
-        ):
+        if (df_hash == self.df_hash) or (
+            config.is_default and self.df is None
+        ):  # load to an empty ProfileReport
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
                 self._description_set = loaded_description_set
@@ -119,9 +117,8 @@ class SerializeReport(object):
                     f&#34;The report of current ProfileReport is not None. It won&#39;t be loaded.&#34;
                 )
 
-            # overwrite config if ignore_config set to True
-            if ignore_config:
-                config.update(loaded_config)
+            # overwrite config
+            config.update(loaded_config)
 
             # warn if version not equal
             if (
@@ -139,10 +136,7 @@ class SerializeReport(object):
             self._title = loaded_title
 
         else:
-            raise ValueError(
-                &#34;DataFrame or Config do not match with the current ProfileReport. &#34;
-                &#39;If you want to overwrite the current configuration, use &#34;ignore_config=True&#34;&#39;
-            )
+            raise ValueError(&#34;DataFrame does not match with the current ProfileReport.&#34;)
         return self
 
     def dump(self, output_file: Union[Path, str]):
@@ -187,7 +181,7 @@ class SerializeReport(object):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SerializeReport(object):
+<pre><code class="python">class SerializeReport:
     &#34;&#34;&#34;Extend the report to be able to dump and load reports.&#34;&#34;&#34;
 
     df_hash = None
@@ -252,11 +246,9 @@ class SerializeReport(object):
             raise ValueError(
                 f&#34;Failed to load data: file may be damaged or from an incompatible version&#34;
             )
-        if (df_hash == self.df_hash) and (
-            ignore_config
-            or config == loaded_config
-            or (config.is_default and self.df is None)  # load to an empty ProfileReport
-        ):
+        if (df_hash == self.df_hash) or (
+            config.is_default and self.df is None
+        ):  # load to an empty ProfileReport
             # Set description_set, report, sample if they are None，or raise an warning.
             if self._description_set is None:
                 self._description_set = loaded_description_set
@@ -271,9 +263,8 @@ class SerializeReport(object):
                     f&#34;The report of current ProfileReport is not None. It won&#39;t be loaded.&#34;
                 )
 
-            # overwrite config if ignore_config set to True
-            if ignore_config:
-                config.update(loaded_config)
+            # overwrite config
+            config.update(loaded_config)
 
             # warn if version not equal
             if (
@@ -291,10 +282,7 @@ class SerializeReport(object):
             self._title = loaded_title
 
         else:
-            raise ValueError(
-                &#34;DataFrame or Config do not match with the current ProfileReport. &#34;
-                &#39;If you want to overwrite the current configuration, use &#34;ignore_config=True&#34;&#39;
-            )
+            raise ValueError(&#34;DataFrame does not match with the current ProfileReport.&#34;)
         return self
 
     def dump(self, output_file: Union[Path, str]):
@@ -476,11 +464,9 @@ If set to False, the function checks if the configs match</dd>
         raise ValueError(
             f&#34;Failed to load data: file may be damaged or from an incompatible version&#34;
         )
-    if (df_hash == self.df_hash) and (
-        ignore_config
-        or config == loaded_config
-        or (config.is_default and self.df is None)  # load to an empty ProfileReport
-    ):
+    if (df_hash == self.df_hash) or (
+        config.is_default and self.df is None
+    ):  # load to an empty ProfileReport
         # Set description_set, report, sample if they are None，or raise an warning.
         if self._description_set is None:
             self._description_set = loaded_description_set
@@ -495,9 +481,8 @@ If set to False, the function checks if the configs match</dd>
                 f&#34;The report of current ProfileReport is not None. It won&#39;t be loaded.&#34;
             )
 
-        # overwrite config if ignore_config set to True
-        if ignore_config:
-            config.update(loaded_config)
+        # overwrite config
+        config.update(loaded_config)
 
         # warn if version not equal
         if (
@@ -515,10 +500,7 @@ If set to False, the function checks if the configs match</dd>
         self._title = loaded_title
 
     else:
-        raise ValueError(
-            &#34;DataFrame or Config do not match with the current ProfileReport. &#34;
-            &#39;If you want to overwrite the current configuration, use &#34;ignore_config=True&#34;&#39;
-        )
+        raise ValueError(&#34;DataFrame does not match with the current ProfileReport.&#34;)
     return self</code></pre>
 </details>
 </dd>
@@ -557,7 +539,7 @@ If set to False, the function checks if the configs match</dd>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

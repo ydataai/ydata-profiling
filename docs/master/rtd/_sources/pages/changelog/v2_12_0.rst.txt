@@ -1,0 +1,16 @@
+Changelog v2.12.0
+-----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Add the number and the percentage of negative values for numerical variables `[695] <https://github.com/pandas-profiling/pandas-profiling/issues/695>`- (contributed by @gverbock). 
+- Enable setting of typeset/summarizer (contributed by @ieaves)
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+- Fix link syntax (contributed by @ChrisCarini)
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+- The `ipywidgets` dependency was moved to the `[notebook]` extra, so most of Jupyter will not be installed alongside this package by default (contributed by @akx).
+- Replaced the (testing only) `fastparquet` dependency with `pyarrow` (default pandas parquet engine, contributed by @kurosch).

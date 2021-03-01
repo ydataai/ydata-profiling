@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.profile_report.ProfileReport &mdash; pandas-profiling 2.9.0 documentation</title>
+  <title>pandas_profiling.profile_report.ProfileReport &mdash; pandas-profiling 2.12.0 documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,7 +33,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -52,7 +54,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
+            <a href="../../../index.html" class="icon icon-home"> pandas-profiling
           
 
           
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../sensitive_data.html">Sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../metadata.html">Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Support and contribution</span></p>
@@ -192,6 +195,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -207,7 +212,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../../../_sources/pages/api/_autosummary/pandas_profiling.profile_report.ProfileReport.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -225,32 +230,38 @@
 <h1>pandas_profiling.profile_report.ProfileReport<a class="headerlink" href="#pandas-profiling-profile-report-profilereport" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="pandas_profiling.profile_report.ProfileReport">
-<em class="property">class </em><code class="sig-prename descclassname">pandas_profiling.profile_report.</code><code class="sig-name descname">ProfileReport</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minimal</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">explorative</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sensitive</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dark_mode</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">orange_mode</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sample</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">config_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lazy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pandas_profiling/profile_report.html#ProfileReport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pandas_profiling.profile_report.ProfileReport" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pandas_profiling.profile_report.</span></code><code class="sig-name descname"><span class="pre">ProfileReport</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explorative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orange_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summarizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pandas_profiling/profile_report.html#ProfileReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.profile_report.ProfileReport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a profile report from a Dataset stored as a pandas <cite>DataFrame</cite>.</p>
-<p>Used has is it will output its content as an HTML report in a Jupyter notebook.</p>
+<p>Used as is, it will output its content as an HTML report in a Jupyter notebook.</p>
 <p>Generate a ProfileReport based on a pandas DataFrame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – the pandas DataFrame</p></li>
-<li><p><strong>minimal</strong> – minimal mode is a default configuration with minimal computation</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – the pandas DataFrame</p></li>
+<li><p><strong>minimal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – minimal mode is a default configuration with minimal computation</p></li>
 <li><p><strong>config_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – a config file (.yml), mutually exclusive with <cite>minimal</cite></p></li>
 <li><p><strong>lazy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – compute when needed</p></li>
+<li><p><strong>sample</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – optional dict(name=”Sample title”, caption=”Caption”, data=pd.DataFrame())</p></li>
+<li><p><strong>typeset</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">VisionsTypeset</span></code>]) – optional user typeset to use for type inference</p></li>
+<li><p><strong>summarizer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSummarizer</span></code>]) – optional user summarizer to generate custom summary output</p></li>
 <li><p><strong>**kwargs</strong> – other arguments, for valid arguments, check the default configuration file.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt id="pandas_profiling.profile_report.ProfileReport.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minimal</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">explorative</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sensitive</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dark_mode</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">orange_mode</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sample</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">config_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lazy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pandas_profiling/profile_report.html#ProfileReport.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pandas_profiling.profile_report.ProfileReport.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explorative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orange_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summarizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pandas_profiling/profile_report.html#ProfileReport.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.profile_report.ProfileReport.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a ProfileReport based on a pandas DataFrame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> – the pandas DataFrame</p></li>
-<li><p><strong>minimal</strong> – minimal mode is a default configuration with minimal computation</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – the pandas DataFrame</p></li>
+<li><p><strong>minimal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – minimal mode is a default configuration with minimal computation</p></li>
 <li><p><strong>config_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – a config file (.yml), mutually exclusive with <cite>minimal</cite></p></li>
 <li><p><strong>lazy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – compute when needed</p></li>
+<li><p><strong>sample</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – optional dict(name=”Sample title”, caption=”Caption”, data=pd.DataFrame())</p></li>
+<li><p><strong>typeset</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">VisionsTypeset</span></code>]) – optional user typeset to use for type inference</p></li>
+<li><p><strong>summarizer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSummarizer</span></code>]) – optional user summarizer to generate custom summary output</p></li>
 <li><p><strong>**kwargs</strong> – other arguments, for valid arguments, check the default configuration file.</p></li>
 </ul>
 </dd>
@@ -303,8 +314,8 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_variables</span></code>(**vars)</p></td>
 <td><p>Change configuration variables (invalidates caches where necessary)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_app</span></code>()</p></td>
-<td><p>(Experimental) PyQt5 user interface, not ready to be used.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_expectation_suite</span></code>([suite_name, …])</p></td>
+<td><p>All parameters default to True to make it easier to access the full functionality of Great Expectations out of the box. :param suite_name: The name of your expectation suite :param data_context: A user-specified data context :param save_suite: Boolean to determine whether to save the suite to .json as part of the method :param run_validation: Boolean to determine whether to run validation as part of the method :param build_data_docs: Boolean to determine whether to build data docs, save the .html file, and open data docs in                         your browser :param handler: The handler to use for building expectation.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_file</span></code>(output_file[, silent])</p></td>
 <td><p>Write the report to a file.</p></td>
@@ -348,7 +359,13 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">report</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">title</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">summarizer</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">title</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">typeset</span></code></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">widgets</span></code></p></td>
@@ -365,37 +382,29 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="pandas_profiling.serialize_report.SerializeReport.html" class="btn btn-neutral float-right" title="pandas_profiling.serialize_report.SerializeReport" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../profile_report.html" class="btn btn-neutral float-left" title="Profile Report" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="pandas_profiling.serialize_report.SerializeReport.html" class="btn btn-neutral float-right" title="pandas_profiling.serialize_report.SerializeReport" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../profile_report.html" class="btn btn-neutral float-left" title="Profile Report" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Simon Brugman
+        &#169; Copyright 2021, Simon Brugman.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

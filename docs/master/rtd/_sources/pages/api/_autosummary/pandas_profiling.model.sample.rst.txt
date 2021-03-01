@@ -1,0 +1,35 @@
+﻿pandas\_profiling.model.sample
+==============================
+
+.. automodule:: pandas_profiling.model.sample
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_sample
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Sample
+   
+   
+
+   
+   
+   
+
+
+

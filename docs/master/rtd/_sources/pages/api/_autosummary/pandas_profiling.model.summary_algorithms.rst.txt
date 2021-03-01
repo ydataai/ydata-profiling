@@ -1,0 +1,42 @@
+﻿pandas\_profiling.model.summary\_algorithms
+===========================================
+
+.. automodule:: pandas_profiling.model.summary_algorithms
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      describe_boolean_1d
+      describe_categorical_1d
+      describe_counts
+      describe_date_1d
+      describe_file_1d
+      describe_generic
+      describe_image_1d
+      describe_numeric_1d
+      describe_path_1d
+      describe_supported
+      describe_url_1d
+      numeric_stats_numpy
+      numeric_stats_pandas
+      series_hashable
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

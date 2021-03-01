@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.profile_report API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -29,15 +29,25 @@
 <pre><code class="python">import json
 import warnings
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
+import attr
 import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
+from visions import VisionsTypeset
 
 from pandas_profiling.config import config
+from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.model.sample import Sample
+from pandas_profiling.model.summarizer import (
+    BaseSummarizer,
+    PandasProfilingSummarizer,
+    format_summary,
+)
+from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
@@ -47,23 +57,25 @@ from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
 from pandas_profiling.utils.paths import get_config
 
 
-class ProfileReport(SerializeReport, object):
+class ProfileReport(SerializeReport, ExpectationsReport):
     &#34;&#34;&#34;Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
-    Used has is it will output its content as an HTML report in a Jupyter notebook.
+    Used as is, it will output its content as an HTML report in a Jupyter notebook.
     &#34;&#34;&#34;
 
     def __init__(
         self,
-        df=None,
-        minimal=False,
-        explorative=False,
-        sensitive=False,
-        dark_mode=False,
-        orange_mode=False,
-        sample=None,
+        df: Optional[pd.DataFrame] = None,
+        minimal: bool = False,
+        explorative: bool = False,
+        sensitive: bool = False,
+        dark_mode: bool = False,
+        orange_mode: bool = False,
+        sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
+        typeset: Optional[VisionsTypeset] = None,
+        summarizer: Optional[BaseSummarizer] = None,
         **kwargs,
     ):
         &#34;&#34;&#34;Generate a ProfileReport based on a pandas DataFrame
@@ -73,8 +85,12 @@ class ProfileReport(SerializeReport, object):
             minimal: minimal mode is a default configuration with minimal computation
             config_file: a config file (.yml), mutually exclusive with `minimal`
             lazy: compute when needed
+            sample: optional dict(name=&#34;Sample title&#34;, caption=&#34;Caption&#34;, data=pd.DataFrame())
+            typeset: optional user typeset to use for type inference
+            summarizer: optional user summarizer to generate custom summary output
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         &#34;&#34;&#34;
+        config.clear()  # to reset (previous) config.
         if config_file is not None and minimal:
             raise ValueError(
                 &#34;Arguments `config_file` and `minimal` are mutually exclusive.&#34;
@@ -89,7 +105,6 @@ class ProfileReport(SerializeReport, object):
             config.set_file(get_config(&#34;config_minimal.yaml&#34;))
         elif not config.is_default:
             pass
-            # TODO: logging instead of warning
             # warnings.warn(
             #     &#34;Currently configuration is not the default, if you want to restore &#34;
             #     &#34;default configuration, please run &#39;pandas_profiling.clear_config()&#39;&#34;
@@ -114,6 +129,8 @@ class ProfileReport(SerializeReport, object):
         self._html = None
         self._widgets = None
         self._json = None
+        self._typeset = typeset
+        self._summarizer = summarizer
 
         if df is not None:
             # preprocess df
@@ -123,7 +140,7 @@ class ProfileReport(SerializeReport, object):
             # Trigger building the report structure
             _ = self.report
 
-    def set_variable(self, key, value):
+    def set_variable(self, key: str, value: Any):
         &#34;&#34;&#34;Change a single configuration variable
 
         Args:
@@ -136,11 +153,11 @@ class ProfileReport(SerializeReport, object):
             &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
 
         &#34;&#34;&#34;
-        key = key.split(&#34;.&#34;)
-        for e in reversed(key[1:]):
+        keys = key.split(&#34;.&#34;)
+        for e in reversed(keys[1:]):
             value = {e: value}
 
-        self.set_variables(**{key[0]: value})
+        self.set_variables(**{keys[0]: value})
 
     def set_variables(self, **vars):
         &#34;&#34;&#34;Change configuration variables (invalidates caches where necessary)
@@ -177,9 +194,23 @@ class ProfileReport(SerializeReport, object):
             config.set_kwargs(vars)
 
     @property
+    def typeset(self):
+        if self._typeset is None:
+            self._typeset = ProfilingTypeSet()
+        return self._typeset
+
+    @property
+    def summarizer(self):
+        if self._summarizer is None:
+            self._summarizer = PandasProfilingSummarizer(self.typeset)
+        return self._summarizer
+
+    @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.df, self._sample)
+            self._description_set = describe_df(
+                self.title, self.df, self.summarizer, self.typeset, self._sample
+            )
         return self._description_set
 
     @property
@@ -350,29 +381,34 @@ class ProfileReport(SerializeReport, object):
         return widgets
 
     def _render_json(self):
-        class CustomEncoder(json.JSONEncoder):
-            def key_to_json(self, data):
-                if data is None or isinstance(data, (bool, int, str)):
-                    return data
-                return str(data)
-
-            def default(self, o):
-                if isinstance(o, pd.Series):
-                    return self.default(o.to_dict())
-
-                if isinstance(o, np.integer):
-                    return o.tolist()
-
-                if isinstance(o, dict):
-                    return {self.key_to_json(key): self.default(o[key]) for key in o}
-
-                return str(o)
+        def encode_it(o):
+            if isinstance(o, dict):
+                return {encode_it(k): encode_it(v) for k, v in o.items()}
+            else:
+                if isinstance(o, (bool, int, float, str)):
+                    return o
+                elif isinstance(o, list):
+                    return [encode_it(v) for v in o]
+                elif isinstance(o, set):
+                    return {encode_it(v) for v in o}
+                elif isinstance(o, (pd.DataFrame, pd.Series)):
+                    return encode_it(o.to_dict(orient=&#34;records&#34;))
+                elif isinstance(o, np.ndarray):
+                    return encode_it(o.tolist())
+                elif isinstance(o, Sample):
+                    return encode_it(attr.asdict(o))
+                elif isinstance(o, np.generic):
+                    return o.item()
+                else:
+                    return str(o)
 
         description = self.description_set
 
         disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
         with tqdm(total=1, desc=&#34;Render JSON&#34;, disable=disable_progress_bar) as pbar:
-            data = json.dumps(description, indent=4, cls=CustomEncoder)
+            description = format_summary(description)
+            description = encode_it(description)
+            data = json.dumps(description, indent=4)
             pbar.update()
         return data
 
@@ -439,26 +475,6 @@ class ProfileReport(SerializeReport, object):
     def __repr__(self):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
         return &#34;&#34;
-
-    def to_app(self):
-        &#34;&#34;&#34;
-        (Experimental) PyQt5 user interface, not ready to be used.
-        You are welcome to contribute a pull request if you like this feature.
-        &#34;&#34;&#34;
-        # TODO: _render_app
-        # TODO: make functional
-        from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication
-
-        from pandas_profiling.report.presentation.flavours import QtReport
-        from pandas_profiling.report.presentation.flavours.qt.app import get_app
-
-        app = QtCore.QCoreApplication.instance()
-        if app is None:
-            app = QApplication([])
-
-        app_widgets = QtReport(self.report).render()
-        app = get_app(app, self.title, app_widgets)
 
     @staticmethod
     def preprocess(df):
@@ -507,11 +523,11 @@ class ProfileReport(SerializeReport, object):
 <dl>
 <dt id="pandas_profiling.profile_report.ProfileReport"><code class="flex name class">
 <span>class <span class="ident">ProfileReport</span></span>
-<span>(</span><span>df=None, minimal=False, explorative=False, sensitive=False, dark_mode=False, orange_mode=False, sample=None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, **kwargs)</span>
+<span>(</span><span>df: Union[pandas.core.frame.DataFrame, NoneType] = None, minimal: bool = False, explorative: bool = False, sensitive: bool = False, dark_mode: bool = False, orange_mode: bool = False, sample: Union[dict, NoneType] = None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, typeset: Union[visions.typesets.typeset.VisionsTypeset, NoneType] = None, summarizer: Union[<a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a profile report from a Dataset stored as a pandas <code>DataFrame</code>.</p>
-<p>Used has is it will output its content as an HTML report in a Jupyter notebook.</p>
+<p>Used as is, it will output its content as an HTML report in a Jupyter notebook.</p>
 <p>Generate a ProfileReport based on a pandas DataFrame</p>
 <h2 id="args">Args</h2>
 <dl>
@@ -523,6 +539,12 @@ class ProfileReport(SerializeReport, object):
 <dd>a config file (.yml), mutually exclusive with <code>minimal</code></dd>
 <dt><strong><code>lazy</code></strong></dt>
 <dd>compute when needed</dd>
+<dt><strong><code>sample</code></strong></dt>
+<dd>optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())</dd>
+<dt><strong><code>typeset</code></strong></dt>
+<dd>optional user typeset to use for type inference</dd>
+<dt><strong><code>summarizer</code></strong></dt>
+<dd>optional user summarizer to generate custom summary output</dd>
 <dt><strong><code>**kwargs</code></strong></dt>
 <dd>other arguments, for valid arguments, check the default configuration file.</dd>
 </dl></div>
@@ -530,23 +552,25 @@ class ProfileReport(SerializeReport, object):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ProfileReport(SerializeReport, object):
+<pre><code class="python">class ProfileReport(SerializeReport, ExpectationsReport):
     &#34;&#34;&#34;Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
-    Used has is it will output its content as an HTML report in a Jupyter notebook.
+    Used as is, it will output its content as an HTML report in a Jupyter notebook.
     &#34;&#34;&#34;
 
     def __init__(
         self,
-        df=None,
-        minimal=False,
-        explorative=False,
-        sensitive=False,
-        dark_mode=False,
-        orange_mode=False,
-        sample=None,
+        df: Optional[pd.DataFrame] = None,
+        minimal: bool = False,
+        explorative: bool = False,
+        sensitive: bool = False,
+        dark_mode: bool = False,
+        orange_mode: bool = False,
+        sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
+        typeset: Optional[VisionsTypeset] = None,
+        summarizer: Optional[BaseSummarizer] = None,
         **kwargs,
     ):
         &#34;&#34;&#34;Generate a ProfileReport based on a pandas DataFrame
@@ -556,8 +580,12 @@ class ProfileReport(SerializeReport, object):
             minimal: minimal mode is a default configuration with minimal computation
             config_file: a config file (.yml), mutually exclusive with `minimal`
             lazy: compute when needed
+            sample: optional dict(name=&#34;Sample title&#34;, caption=&#34;Caption&#34;, data=pd.DataFrame())
+            typeset: optional user typeset to use for type inference
+            summarizer: optional user summarizer to generate custom summary output
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         &#34;&#34;&#34;
+        config.clear()  # to reset (previous) config.
         if config_file is not None and minimal:
             raise ValueError(
                 &#34;Arguments `config_file` and `minimal` are mutually exclusive.&#34;
@@ -572,7 +600,6 @@ class ProfileReport(SerializeReport, object):
             config.set_file(get_config(&#34;config_minimal.yaml&#34;))
         elif not config.is_default:
             pass
-            # TODO: logging instead of warning
             # warnings.warn(
             #     &#34;Currently configuration is not the default, if you want to restore &#34;
             #     &#34;default configuration, please run &#39;pandas_profiling.clear_config()&#39;&#34;
@@ -597,6 +624,8 @@ class ProfileReport(SerializeReport, object):
         self._html = None
         self._widgets = None
         self._json = None
+        self._typeset = typeset
+        self._summarizer = summarizer
 
         if df is not None:
             # preprocess df
@@ -606,7 +635,7 @@ class ProfileReport(SerializeReport, object):
             # Trigger building the report structure
             _ = self.report
 
-    def set_variable(self, key, value):
+    def set_variable(self, key: str, value: Any):
         &#34;&#34;&#34;Change a single configuration variable
 
         Args:
@@ -619,11 +648,11 @@ class ProfileReport(SerializeReport, object):
             &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
 
         &#34;&#34;&#34;
-        key = key.split(&#34;.&#34;)
-        for e in reversed(key[1:]):
+        keys = key.split(&#34;.&#34;)
+        for e in reversed(keys[1:]):
             value = {e: value}
 
-        self.set_variables(**{key[0]: value})
+        self.set_variables(**{keys[0]: value})
 
     def set_variables(self, **vars):
         &#34;&#34;&#34;Change configuration variables (invalidates caches where necessary)
@@ -660,9 +689,23 @@ class ProfileReport(SerializeReport, object):
             config.set_kwargs(vars)
 
     @property
+    def typeset(self):
+        if self._typeset is None:
+            self._typeset = ProfilingTypeSet()
+        return self._typeset
+
+    @property
+    def summarizer(self):
+        if self._summarizer is None:
+            self._summarizer = PandasProfilingSummarizer(self.typeset)
+        return self._summarizer
+
+    @property
     def description_set(self):
         if self._description_set is None:
-            self._description_set = describe_df(self.title, self.df, self._sample)
+            self._description_set = describe_df(
+                self.title, self.df, self.summarizer, self.typeset, self._sample
+            )
         return self._description_set
 
     @property
@@ -833,29 +876,34 @@ class ProfileReport(SerializeReport, object):
         return widgets
 
     def _render_json(self):
-        class CustomEncoder(json.JSONEncoder):
-            def key_to_json(self, data):
-                if data is None or isinstance(data, (bool, int, str)):
-                    return data
-                return str(data)
-
-            def default(self, o):
-                if isinstance(o, pd.Series):
-                    return self.default(o.to_dict())
-
-                if isinstance(o, np.integer):
-                    return o.tolist()
-
-                if isinstance(o, dict):
-                    return {self.key_to_json(key): self.default(o[key]) for key in o}
-
-                return str(o)
+        def encode_it(o):
+            if isinstance(o, dict):
+                return {encode_it(k): encode_it(v) for k, v in o.items()}
+            else:
+                if isinstance(o, (bool, int, float, str)):
+                    return o
+                elif isinstance(o, list):
+                    return [encode_it(v) for v in o]
+                elif isinstance(o, set):
+                    return {encode_it(v) for v in o}
+                elif isinstance(o, (pd.DataFrame, pd.Series)):
+                    return encode_it(o.to_dict(orient=&#34;records&#34;))
+                elif isinstance(o, np.ndarray):
+                    return encode_it(o.tolist())
+                elif isinstance(o, Sample):
+                    return encode_it(attr.asdict(o))
+                elif isinstance(o, np.generic):
+                    return o.item()
+                else:
+                    return str(o)
 
         description = self.description_set
 
         disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
         with tqdm(total=1, desc=&#34;Render JSON&#34;, disable=disable_progress_bar) as pbar:
-            data = json.dumps(description, indent=4, cls=CustomEncoder)
+            description = format_summary(description)
+            description = encode_it(description)
+            data = json.dumps(description, indent=4)
             pbar.update()
         return data
 
@@ -923,26 +971,6 @@ class ProfileReport(SerializeReport, object):
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
         return &#34;&#34;
 
-    def to_app(self):
-        &#34;&#34;&#34;
-        (Experimental) PyQt5 user interface, not ready to be used.
-        You are welcome to contribute a pull request if you like this feature.
-        &#34;&#34;&#34;
-        # TODO: _render_app
-        # TODO: make functional
-        from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication
-
-        from pandas_profiling.report.presentation.flavours import QtReport
-        from pandas_profiling.report.presentation.flavours.qt.app import get_app
-
-        app = QtCore.QCoreApplication.instance()
-        if app is None:
-            app = QApplication([])
-
-        app_widgets = QtReport(self.report).render()
-        app = get_app(app, self.title, app_widgets)
-
     @staticmethod
     def preprocess(df):
         &#34;&#34;&#34;Preprocess the dataframe
@@ -981,6 +1009,7 @@ class ProfileReport(SerializeReport, object):
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="pandas_profiling.serialize_report.SerializeReport" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport">SerializeReport</a></li>
+<li><a title="pandas_profiling.expectations_report.ExpectationsReport" href="expectations_report.html#pandas_profiling.expectations_report.ExpectationsReport">ExpectationsReport</a></li>
 </ul>
 <h3>Static methods</h3>
 <dl>
@@ -1064,7 +1093,9 @@ def preprocess(df):
 <pre><code class="python">@property
 def description_set(self):
     if self._description_set is None:
-        self._description_set = describe_df(self.title, self.df, self._sample)
+        self._description_set = describe_df(
+            self.title, self.df, self.summarizer, self.typeset, self._sample
+        )
     return self._description_set</code></pre>
 </details>
 </dd>
@@ -1124,6 +1155,20 @@ def report(self):
     return self._report</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.profile_report.ProfileReport.summarizer"><code class="name">var <span class="ident">summarizer</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def summarizer(self):
+    if self._summarizer is None:
+        self._summarizer = PandasProfilingSummarizer(self.typeset)
+    return self._summarizer</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.title"><code class="name">var <span class="ident">title</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -1137,6 +1182,20 @@ def title(self):
         self._title = config[&#34;title&#34;].get(str)
 
     return self._title</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.profile_report.ProfileReport.typeset"><code class="name">var <span class="ident">typeset</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def typeset(self):
+    if self._typeset is None:
+        self._typeset = ProfilingTypeSet()
+    return self._typeset</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.widgets"><code class="name">var <span class="ident">widgets</span></code></dt>
@@ -1257,7 +1316,7 @@ def widgets(self):
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.set_variable"><code class="name flex">
-<span>def <span class="ident">set_variable</span></span>(<span>self, key, value)</span>
+<span>def <span class="ident">set_variable</span></span>(<span>self, key: str, value: Any)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Change a single configuration variable</p>
@@ -1277,7 +1336,7 @@ def widgets(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_variable(self, key, value):
+<pre><code class="python">def set_variable(self, key: str, value: Any):
     &#34;&#34;&#34;Change a single configuration variable
 
     Args:
@@ -1290,11 +1349,11 @@ def widgets(self):
         &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
 
     &#34;&#34;&#34;
-    key = key.split(&#34;.&#34;)
-    for e in reversed(key[1:]):
+    keys = key.split(&#34;.&#34;)
+    for e in reversed(keys[1:]):
         value = {e: value}
 
-    self.set_variables(**{key[0]: value})</code></pre>
+    self.set_variables(**{keys[0]: value})</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.set_variables"><code class="name flex">
@@ -1347,37 +1406,6 @@ def widgets(self):
         config[list(vars.keys())[0]] = list(vars.values())[0]
     else:
         config.set_kwargs(vars)</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.profile_report.ProfileReport.to_app"><code class="name flex">
-<span>def <span class="ident">to_app</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>(Experimental) PyQt5 user interface, not ready to be used.
-You are welcome to contribute a pull request if you like this feature.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_app(self):
-    &#34;&#34;&#34;
-    (Experimental) PyQt5 user interface, not ready to be used.
-    You are welcome to contribute a pull request if you like this feature.
-    &#34;&#34;&#34;
-    # TODO: _render_app
-    # TODO: make functional
-    from PyQt5 import QtCore
-    from PyQt5.QtWidgets import QApplication
-
-    from pandas_profiling.report.presentation.flavours import QtReport
-    from pandas_profiling.report.presentation.flavours.qt.app import get_app
-
-    app = QtCore.QCoreApplication.instance()
-    if app is None:
-        app = QApplication([])
-
-    app_widgets = QtReport(self.report).render()
-    app = get_app(app, self.title, app_widgets)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.to_file"><code class="name flex">
@@ -1563,6 +1591,11 @@ the Iframe.</p>
 <li><code><a title="pandas_profiling.serialize_report.SerializeReport.loads" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport.loads">loads</a></code></li>
 </ul>
 </li>
+<li><code><b><a title="pandas_profiling.expectations_report.ExpectationsReport" href="expectations_report.html#pandas_profiling.expectations_report.ExpectationsReport">ExpectationsReport</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pandas_profiling.expectations_report.ExpectationsReport.to_expectation_suite" href="expectations_report.html#pandas_profiling.expectations_report.ExpectationsReport.to_expectation_suite">to_expectation_suite</a></code></li>
+</ul>
+</li>
 </ul>
 </dd>
 </dl>
@@ -1597,13 +1630,14 @@ the Iframe.</p>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.report" href="#pandas_profiling.profile_report.ProfileReport.report">report</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.set_variable" href="#pandas_profiling.profile_report.ProfileReport.set_variable">set_variable</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.set_variables" href="#pandas_profiling.profile_report.ProfileReport.set_variables">set_variables</a></code></li>
+<li><code><a title="pandas_profiling.profile_report.ProfileReport.summarizer" href="#pandas_profiling.profile_report.ProfileReport.summarizer">summarizer</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.title" href="#pandas_profiling.profile_report.ProfileReport.title">title</a></code></li>
-<li><code><a title="pandas_profiling.profile_report.ProfileReport.to_app" href="#pandas_profiling.profile_report.ProfileReport.to_app">to_app</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.to_file" href="#pandas_profiling.profile_report.ProfileReport.to_file">to_file</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.to_html" href="#pandas_profiling.profile_report.ProfileReport.to_html">to_html</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.to_json" href="#pandas_profiling.profile_report.ProfileReport.to_json">to_json</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.to_notebook_iframe" href="#pandas_profiling.profile_report.ProfileReport.to_notebook_iframe">to_notebook_iframe</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.to_widgets" href="#pandas_profiling.profile_report.ProfileReport.to_widgets">to_widgets</a></code></li>
+<li><code><a title="pandas_profiling.profile_report.ProfileReport.typeset" href="#pandas_profiling.profile_report.ProfileReport.typeset">typeset</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.widgets" href="#pandas_profiling.profile_report.ProfileReport.widgets">widgets</a></code></li>
 </ul>
 </li>
@@ -1613,7 +1647,7 @@ the Iframe.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

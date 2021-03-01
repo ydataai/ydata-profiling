@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Index &mdash; pandas-profiling 2.9.0 documentation</title>
+  <title>Index &mdash; pandas-profiling 2.12.0 documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,7 +33,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
+            <a href="index.html" class="icon icon-home"> pandas-profiling
           
 
           
@@ -94,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pages/sensitive_data.html">Sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/metadata.html">Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/changelog.html">Changelog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Support and contribution</span></p>
@@ -174,6 +177,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -185,7 +190,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -241,15 +246,33 @@
 </li>
         <li><a href="pages/api/_autosummary/pandas_profiling.controller.pandas_decorator.html#module-pandas_profiling.controller.pandas_decorator">pandas_profiling.controller.pandas_decorator</a>
 </li>
-        <li><a href="pages/api/_autosummary/pandas_profiling.model.base.html#module-pandas_profiling.model.base">pandas_profiling.model.base</a>
-</li>
         <li><a href="pages/api/_autosummary/pandas_profiling.model.correlations.html#module-pandas_profiling.model.correlations">pandas_profiling.model.correlations</a>
 </li>
         <li><a href="pages/api/_autosummary/pandas_profiling.model.describe.html#module-pandas_profiling.model.describe">pandas_profiling.model.describe</a>
 </li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.duplicates.html#module-pandas_profiling.model.duplicates">pandas_profiling.model.duplicates</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.expectation_algorithms.html#module-pandas_profiling.model.expectation_algorithms">pandas_profiling.model.expectation_algorithms</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.handler.html#module-pandas_profiling.model.handler">pandas_profiling.model.handler</a>
+</li>
         <li><a href="pages/api/_autosummary/pandas_profiling.model.messages.html#module-pandas_profiling.model.messages">pandas_profiling.model.messages</a>
 </li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.sample.html#module-pandas_profiling.model.sample">pandas_profiling.model.sample</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summarizer.html#module-pandas_profiling.model.summarizer">pandas_profiling.model.summarizer</a>
+</li>
         <li><a href="pages/api/_autosummary/pandas_profiling.model.summary.html#module-pandas_profiling.model.summary">pandas_profiling.model.summary</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summary_algorithms.html#module-pandas_profiling.model.summary_algorithms">pandas_profiling.model.summary_algorithms</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summary_helpers.html#module-pandas_profiling.model.summary_helpers">pandas_profiling.model.summary_helpers</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summary_helpers_image.html#module-pandas_profiling.model.summary_helpers_image">pandas_profiling.model.summary_helpers_image</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.typeset.html#module-pandas_profiling.model.typeset">pandas_profiling.model.typeset</a>
+</li>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.typeset_relations.html#module-pandas_profiling.model.typeset_relations">pandas_profiling.model.typeset_relations</a>
 </li>
         <li><a href="pages/api/_autosummary/pandas_profiling.report.presentation.core.collapse.html#module-pandas_profiling.report.presentation.core.collapse">pandas_profiling.report.presentation.core.collapse</a>
 </li>
@@ -327,13 +350,6 @@
 </li>
       </ul></li>
       <li>
-    pandas_profiling.model.base
-
-      <ul>
-        <li><a href="pages/api/_autosummary/pandas_profiling.model.base.html#module-pandas_profiling.model.base">module</a>
-</li>
-      </ul></li>
-      <li>
     pandas_profiling.model.correlations
 
       <ul>
@@ -348,6 +364,27 @@
 </li>
       </ul></li>
       <li>
+    pandas_profiling.model.duplicates
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.duplicates.html#module-pandas_profiling.model.duplicates">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.expectation_algorithms
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.expectation_algorithms.html#module-pandas_profiling.model.expectation_algorithms">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.handler
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.handler.html#module-pandas_profiling.model.handler">module</a>
+</li>
+      </ul></li>
+      <li>
     pandas_profiling.model.messages
 
       <ul>
@@ -355,10 +392,59 @@
 </li>
       </ul></li>
       <li>
+    pandas_profiling.model.sample
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.sample.html#module-pandas_profiling.model.sample">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.summarizer
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summarizer.html#module-pandas_profiling.model.summarizer">module</a>
+</li>
+      </ul></li>
+      <li>
     pandas_profiling.model.summary
 
       <ul>
         <li><a href="pages/api/_autosummary/pandas_profiling.model.summary.html#module-pandas_profiling.model.summary">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.summary_algorithms
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summary_algorithms.html#module-pandas_profiling.model.summary_algorithms">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.summary_helpers
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summary_helpers.html#module-pandas_profiling.model.summary_helpers">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.summary_helpers_image
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.summary_helpers_image.html#module-pandas_profiling.model.summary_helpers_image">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.typeset
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.typeset.html#module-pandas_profiling.model.typeset">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.typeset_relations
+
+      <ul>
+        <li><a href="pages/api/_autosummary/pandas_profiling.model.typeset_relations.html#module-pandas_profiling.model.typeset_relations">module</a>
 </li>
       </ul></li>
       <li>
@@ -403,6 +489,8 @@
         <li><a href="pages/api/_autosummary/pandas_profiling.report.presentation.core.html.html#module-pandas_profiling.report.presentation.core.html">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pandas_profiling.report.presentation.core.image
 
@@ -431,8 +519,6 @@
         <li><a href="pages/api/_autosummary/pandas_profiling.report.presentation.core.root.html#module-pandas_profiling.report.presentation.core.root">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pandas_profiling.report.presentation.core.sample
 
@@ -571,28 +657,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Simon Brugman
+        &#169; Copyright 2021, Simon Brugman.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

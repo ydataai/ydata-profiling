@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.model.correlations &mdash; pandas-profiling 2.9.0 documentation</title>
+  <title>pandas_profiling.model.correlations &mdash; pandas-profiling 2.12.0 documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,14 +33,13 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Report" href="../report.html" />
+    <link rel="next" title="pandas_profiling.model.duplicates" href="pandas_profiling.model.duplicates.html" />
     <link rel="prev" title="pandas_profiling.model.messages" href="pandas_profiling.model.messages.html" /> 
 </head>
 
@@ -52,7 +54,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
+            <a href="../../../index.html" class="icon icon-home"> pandas-profiling
           
 
           
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../sensitive_data.html">Sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../metadata.html">Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Support and contribution</span></p>
@@ -110,11 +113,20 @@
 <li class="toctree-l2"><a class="reference internal" href="../profile_report.html">Profile Report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../controller.html">Controller</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../model.html">Model</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.base.html">pandas_profiling.model.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.describe.html">pandas_profiling.model.describe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.handler.html">pandas_profiling.model.handler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.summary.html">pandas_profiling.model.summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.summary_algorithms.html">pandas_profiling.model.summary_algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.summary_helpers.html">pandas_profiling.model.summary_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.summary_helpers_image.html">pandas_profiling.model.summary_helpers_image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.summarizer.html">pandas_profiling.model.summarizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.typeset.html">pandas_profiling.model.typeset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.typeset_relations.html">pandas_profiling.model.typeset_relations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.messages.html">pandas_profiling.model.messages</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.model.correlations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.duplicates.html">pandas_profiling.model.duplicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.sample.html">pandas_profiling.model.sample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.model.expectation_algorithms.html">pandas_profiling.model.expectation_algorithms</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../report.html">Report</a></li>
@@ -191,6 +203,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -206,7 +220,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../../../_sources/pages/api/_autosummary/pandas_profiling.model.correlations.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -230,22 +244,40 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_correlation</span></code>(df, variables, …)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_correlation</span></code>(df, correlation_name, …)</p></td>
 <td><p>Calculate the correlation coefficients between variables for the correlation types selected in the config (pearson, spearman, kendall, phi_k, cramers).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">categorical_matrix</span></code>(df, variables, …)</p></td>
-<td><p>Calculate a correlation matrix for categorical variables.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cramers_corrected_stat</span></code>(confusion_matrix, …)</p></td>
-<td><p>Calculate the Cramer’s V corrected stat for two variables.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cramers_matrix</span></code>(df, variables)</p></td>
-<td><p>Calculate the Cramer’s V correlation matrix.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">perform_check_correlation</span></code>(…)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">perform_check_correlation</span></code>(…)</p></td>
 <td><p>Check whether selected variables are highly correlated values in the correlation matrix.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">warn_correlation</span></code>(correlation_name, error)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">warn_correlation</span></code>(correlation_name, error)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Correlation</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cramers</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Kendall</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pearson</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhiK</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spearman</span></code>()</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -257,37 +289,29 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../report.html" class="btn btn-neutral float-right" title="Report" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="pandas_profiling.model.messages.html" class="btn btn-neutral float-left" title="pandas_profiling.model.messages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="pandas_profiling.model.duplicates.html" class="btn btn-neutral float-right" title="pandas_profiling.model.duplicates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pandas_profiling.model.messages.html" class="btn btn-neutral float-left" title="pandas_profiling.model.messages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Simon Brugman
+        &#169; Copyright 2021, Simon Brugman.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

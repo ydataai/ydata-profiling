@@ -15,6 +15,6 @@ if __name__ == "__main__":
     profile = ProfileReport(
         df,
         title="Website Inaccessibility Test Lists",
-        correlations={"cramers": {"calculate": False}},
+        vars=dict(url=dict(active=True)),
     )
     profile.to_file(Path("./website_inaccessibility_report.html"))

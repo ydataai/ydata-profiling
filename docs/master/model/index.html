@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.model API documentation</title>
 <meta name="description" content="The model module handles all logic/calculations, e.g. calculate statistics, testing for special conditions." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -33,10 +33,6 @@
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt><code class="name"><a title="pandas_profiling.model.base" href="base.html">pandas_profiling.model.base</a></code></dt>
-<dd>
-<div class="desc"><p>Common parts to all other modules, mainly utility functions.</p></div>
-</dd>
 <dt><code class="name"><a title="pandas_profiling.model.correlations" href="correlations.html">pandas_profiling.model.correlations</a></code></dt>
 <dd>
 <div class="desc"><p>Correlations between variables.</p></div>
@@ -44,6 +40,22 @@
 <dt><code class="name"><a title="pandas_profiling.model.describe" href="describe.html">pandas_profiling.model.describe</a></code></dt>
 <dd>
 <div class="desc"><p>Organize the calculation of statistics for each series in this DataFrame.</p></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.duplicates" href="duplicates.html">pandas_profiling.model.duplicates</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.expectation_algorithms" href="expectation_algorithms.html">pandas_profiling.model.expectation_algorithms</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.handler" href="handler.html">pandas_profiling.model.handler</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.imghdr_patch" href="imghdr_patch.html">pandas_profiling.model.imghdr_patch</a></code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="pandas_profiling.model.messages" href="messages.html">pandas_profiling.model.messages</a></code></dt>
 <dd>
@@ -54,9 +66,33 @@ values, high correlations).</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt><code class="name"><a title="pandas_profiling.model.summarizer" href="summarizer.html">pandas_profiling.model.summarizer</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt><code class="name"><a title="pandas_profiling.model.summary" href="summary.html">pandas_profiling.model.summary</a></code></dt>
 <dd>
 <div class="desc"><p>Compute statistical description of datasets.</p></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.summary_algorithms" href="summary_algorithms.html">pandas_profiling.model.summary_algorithms</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.summary_helpers" href="summary_helpers.html">pandas_profiling.model.summary_helpers</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.summary_helpers_image" href="summary_helpers_image.html">pandas_profiling.model.summary_helpers_image</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.typeset" href="typeset.html">pandas_profiling.model.typeset</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.model.typeset_relations" href="typeset_relations.html">pandas_profiling.model.typeset_relations</a></code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 </dl>
 </section>
@@ -80,19 +116,28 @@ values, high correlations).</p></div>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="pandas_profiling.model.base" href="base.html">pandas_profiling.model.base</a></code></li>
 <li><code><a title="pandas_profiling.model.correlations" href="correlations.html">pandas_profiling.model.correlations</a></code></li>
 <li><code><a title="pandas_profiling.model.describe" href="describe.html">pandas_profiling.model.describe</a></code></li>
+<li><code><a title="pandas_profiling.model.duplicates" href="duplicates.html">pandas_profiling.model.duplicates</a></code></li>
+<li><code><a title="pandas_profiling.model.expectation_algorithms" href="expectation_algorithms.html">pandas_profiling.model.expectation_algorithms</a></code></li>
+<li><code><a title="pandas_profiling.model.handler" href="handler.html">pandas_profiling.model.handler</a></code></li>
+<li><code><a title="pandas_profiling.model.imghdr_patch" href="imghdr_patch.html">pandas_profiling.model.imghdr_patch</a></code></li>
 <li><code><a title="pandas_profiling.model.messages" href="messages.html">pandas_profiling.model.messages</a></code></li>
 <li><code><a title="pandas_profiling.model.sample" href="sample.html">pandas_profiling.model.sample</a></code></li>
+<li><code><a title="pandas_profiling.model.summarizer" href="summarizer.html">pandas_profiling.model.summarizer</a></code></li>
 <li><code><a title="pandas_profiling.model.summary" href="summary.html">pandas_profiling.model.summary</a></code></li>
+<li><code><a title="pandas_profiling.model.summary_algorithms" href="summary_algorithms.html">pandas_profiling.model.summary_algorithms</a></code></li>
+<li><code><a title="pandas_profiling.model.summary_helpers" href="summary_helpers.html">pandas_profiling.model.summary_helpers</a></code></li>
+<li><code><a title="pandas_profiling.model.summary_helpers_image" href="summary_helpers_image.html">pandas_profiling.model.summary_helpers_image</a></code></li>
+<li><code><a title="pandas_profiling.model.typeset" href="typeset.html">pandas_profiling.model.typeset</a></code></li>
+<li><code><a title="pandas_profiling.model.typeset_relations" href="typeset_relations.html">pandas_profiling.model.typeset_relations</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

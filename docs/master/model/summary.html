@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.model.summary API documentation</title>
 <meta name="description" content="Compute statistical description of datasets." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -32,34 +32,20 @@
 import multiprocessing
 import multiprocessing.pool
 import warnings
-from pathlib import Path
+from collections import Counter
 from typing import Callable, Mapping, Optional, Tuple
-from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
-from pandas.core.arrays.integer import _IntegerDtype
-from scipy.stats.stats import chisquare
-from visions.application.summaries.series import (
-    file_summary,
-    image_summary,
-    path_summary,
-    url_summary,
-)
-from visions.application.summaries.series.text_summary import (
-    length_summary,
-    unicode_summary,
-)
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model import base
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.messages import (
     check_correlation_messages,
     check_table_messages,
     check_variable_messages,
-    warning_type_date,
 )
+from pandas_profiling.model.summarizer import BaseSummarizer
+from pandas_profiling.model.typeset import Unsupported
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
@@ -67,6 +53,32 @@ from pandas_profiling.visualisation.missing import (
     missing_matrix,
 )
 from pandas_profiling.visualisation.plot import scatter_pairwise
+
+
+def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -&gt; dict:
+    &#34;&#34;&#34;Describe a series (infer the variable type, then calculate type-specific values).
+
+    Args:
+        series: The Series to describe.
+
+    Returns:
+        A Series containing calculated series description values.
+    &#34;&#34;&#34;
+
+    # Make sure pd.NA is not in the series
+    series = series.fillna(np.nan)
+
+    # get `infer_dtypes` (bool) from config
+    infer_dtypes = config[&#34;infer_dtypes&#34;].get(bool)
+    if infer_dtypes:
+        # Infer variable types
+        vtype = typeset.infer_type(series)
+        series = typeset.cast_to_inferred(series)
+    else:
+        # Detect variable types from pandas dataframe (df.dtypes). [new dtypes, changed using `astype` function are now considered]
+        vtype = typeset.detect_type(series)
+
+    return summarizer.summarize(series, dtype=vtype)
 
 
 def sort_column_names(dct: Mapping, sort: str):
@@ -80,437 +92,7 @@ def sort_column_names(dct: Mapping, sort: str):
     return dct
 
 
-def describe_1d(series: pd.Series) -&gt; dict:
-    &#34;&#34;&#34;Describe a series (infer the variable type, then calculate type-specific values).
-
-    Args:
-        series: The Series to describe.
-
-    Returns:
-        A Series containing calculated series description values.
-    &#34;&#34;&#34;
-
-    def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a supported series.
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-
-        # number of observations in the Series
-        length = len(series)
-
-        # number of non-NaN observations in the Series
-        count = series.count()
-
-        distinct_count = series_description[&#34;distinct_count_without_nan&#34;]
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-        unique_count = value_counts.where(value_counts == 1).count()
-
-        stats = {
-            &#34;n&#34;: length,
-            &#34;count&#34;: count,
-            &#34;n_distinct&#34;: distinct_count,
-            &#34;p_distinct&#34;: distinct_count / count,
-            &#34;p_missing&#34;: 1 - (count / length),
-            &#34;n_missing&#34;: length - count,
-            &#34;is_unique&#34;: unique_count == count,
-            &#34;n_unique&#34;: unique_count,
-            &#34;p_unique&#34;: unique_count / count,
-            &#34;memory_size&#34;: series.memory_usage(config[&#34;memory_deep&#34;].get(bool)),
-        }
-
-        return stats
-
-    def describe_unsupported(series: pd.Series, series_description: dict):
-        &#34;&#34;&#34;Describe an unsupported series.
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-
-        # number of observations in the Series
-        length = len(series)
-
-        # number of non-NaN observations in the Series
-        count = series.count()
-
-        results_data = {
-            &#34;n&#34;: length,
-            &#34;count&#34;: count,
-            &#34;p_missing&#34;: 1 - count / length,
-            &#34;n_missing&#34;: length - count,
-            &#34;memory_size&#34;: series.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)),
-        }
-
-        return results_data
-
-    def histogram_compute(finite_values, n_unique, name=&#34;histogram&#34;):
-        stats = {}
-        bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
-        bins = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
-        stats[name] = np.histogram(finite_values, bins)
-
-        max_bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;max_bins&#34;].get(int)
-        if bins == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
-            stats[name] = np.histogram(finite_values, max_bins)
-
-        return stats
-
-    def numeric_stats_pandas(series: pd.Series):
-        return {
-            &#34;mean&#34;: series.mean(),
-            &#34;std&#34;: series.std(),
-            &#34;variance&#34;: series.var(),
-            &#34;min&#34;: series.min(),
-            &#34;max&#34;: series.max(),
-            # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-            &#34;kurtosis&#34;: series.kurt(),
-            # Unbiased skew normalized by N-1
-            &#34;skewness&#34;: series.skew(),
-            &#34;sum&#34;: series.sum(),
-        }
-
-    def numeric_stats_numpy(present_values):
-        return {
-            &#34;mean&#34;: np.mean(present_values),
-            &#34;std&#34;: np.std(present_values, ddof=1),
-            &#34;variance&#34;: np.var(present_values, ddof=1),
-            &#34;min&#34;: np.min(present_values),
-            &#34;max&#34;: np.max(present_values),
-            # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-            &#34;kurtosis&#34;: series.kurt(),
-            # Unbiased skew normalized by N-1
-            &#34;skewness&#34;: series.skew(),
-            &#34;sum&#34;: np.sum(present_values),
-            &#34;n_zeros&#34;: (series_description[&#34;count&#34;] - np.count_nonzero(present_values)),
-        }
-
-    def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a numeric series.
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-        Returns:
-            A dict containing calculated series description values.
-        Notes:
-            When &#39;bins_type&#39; is set to &#39;bayesian_blocks&#39;, astropy.stats.bayesian_blocks is used to determine the number of
-            bins. Read the docs:
-            https://docs.astropy.org/en/stable/visualization/histogram.html
-            https://docs.astropy.org/en/stable/api/astropy.stats.bayesian_blocks.html
-            This method might print warnings, which we suppress.
-            https://github.com/astropy/astropy/issues/4927
-        &#34;&#34;&#34;
-
-        def mad(arr):
-            &#34;&#34;&#34;Median Absolute Deviation: a &#34;Robust&#34; version of standard deviation.
-            Indices variability of the sample.
-            https://en.wikipedia.org/wiki/Median_absolute_deviation
-            &#34;&#34;&#34;
-            return np.median(np.abs(arr - np.median(arr)))
-
-        quantiles = config[&#34;vars&#34;][&#34;num&#34;][&#34;quantiles&#34;].get(list)
-
-        n_infinite = ((series == np.inf) | (series == -np.inf)).sum()
-
-        if isinstance(series.dtype, _IntegerDtype):
-            stats = numeric_stats_pandas(series)
-            present_values = series.loc[series.notnull()].astype(
-                str(series.dtype).lower()
-            )
-            stats[&#34;n_zeros&#34;] = series_description[&#34;count&#34;] - np.count_nonzero(
-                present_values
-            )
-            stats[&#34;histogram_data&#34;] = present_values
-            finite_values = present_values
-        else:
-            values = series.values
-            present_values = values[~np.isnan(values)]
-            finite_values = values[np.isfinite(values)]
-            stats = numeric_stats_numpy(present_values)
-            stats[&#34;histogram_data&#34;] = finite_values
-
-        stats.update(
-            {
-                &#34;mad&#34;: mad(present_values),
-                &#34;scatter_data&#34;: series,  # For complex
-                &#34;p_infinite&#34;: n_infinite / series_description[&#34;n&#34;],
-                &#34;n_infinite&#34;: n_infinite,
-            }
-        )
-
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if chi_squared_threshold &gt; 0.0:
-            histogram, _ = np.histogram(finite_values, bins=&#34;auto&#34;)
-            stats[&#34;chi_squared&#34;] = chisquare(histogram)
-
-        stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
-        stats.update(
-            {
-                f&#34;{percentile:.0%}&#34;: value
-                for percentile, value in series.quantile(quantiles).to_dict().items()
-            }
-        )
-        stats[&#34;iqr&#34;] = stats[&#34;75%&#34;] - stats[&#34;25%&#34;]
-        stats[&#34;cv&#34;] = stats[&#34;std&#34;] / stats[&#34;mean&#34;] if stats[&#34;mean&#34;] else np.NaN
-        stats[&#34;p_zeros&#34;] = stats[&#34;n_zeros&#34;] / series_description[&#34;n&#34;]
-
-        stats[&#34;monotonic_increase&#34;] = series.is_monotonic_increasing
-        stats[&#34;monotonic_decrease&#34;] = series.is_monotonic_decreasing
-
-        stats[&#34;monotonic_increase_strict&#34;] = (
-            stats[&#34;monotonic_increase&#34;] and series.is_unique
-        )
-        stats[&#34;monotonic_decrease_strict&#34;] = (
-            stats[&#34;monotonic_decrease&#34;] and series.is_unique
-        )
-
-        stats.update(histogram_compute(finite_values, series_description[&#34;n_distinct&#34;]))
-
-        return stats
-
-    def describe_date_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a date series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        stats = {
-            &#34;min&#34;: pd.Timestamp.to_pydatetime(series.min()),
-            &#34;max&#34;: pd.Timestamp.to_pydatetime(series.max()),
-        }
-
-        stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
-
-        values = series[series.notnull()].values.astype(np.int64) // 10 ** 9
-
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if chi_squared_threshold &gt; 0.0:
-            histogram, _ = np.histogram(values, bins=&#34;auto&#34;)
-            stats[&#34;chi_squared&#34;] = chisquare(histogram)
-
-        stats.update(histogram_compute(values, series_description[&#34;n_distinct&#34;]))
-        return stats
-
-    def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a categorical series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        # Make sure we deal with strings (Issue #100)
-        series = series.astype(str)
-
-        # Only run if at least 1 non-missing value
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
-
-        stats.update(
-            histogram_compute(
-                value_counts, len(value_counts), name=&#34;histogram_frequencies&#34;
-            )
-        )
-
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if chi_squared_threshold &gt; 0.0:
-            stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
-
-        check_length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
-        if check_length:
-            stats.update(length_summary(series))
-            stats.update(
-                histogram_compute(
-                    stats[&#34;length&#34;], stats[&#34;length&#34;].nunique(), name=&#34;histogram_length&#34;
-                )
-            )
-
-        check_unicode = config[&#34;vars&#34;][&#34;cat&#34;][&#34;unicode&#34;].get(bool)
-        if check_unicode:
-            stats.update(unicode_summary(series))
-
-            stats[&#34;category_alias_counts&#34;].index = stats[
-                &#34;category_alias_counts&#34;
-            ].index.str.replace(&#34;_&#34;, &#34; &#34;)
-
-        coerce_str_to_date = config[&#34;vars&#34;][&#34;cat&#34;][&#34;coerce_str_to_date&#34;].get(bool)
-        if coerce_str_to_date:
-            stats[&#34;date_warning&#34;] = warning_type_date(series)
-
-        return stats
-
-    def describe_url_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a url series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        # Make sure we deal with strings (Issue #100)
-        series = series[~series.isnull()].astype(str)
-        series = series.apply(urlsplit)
-
-        stats = url_summary(series)
-
-        # Only run if at least 1 non-missing value
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats[&#34;top&#34;] = value_counts.index[0]
-        stats[&#34;freq&#34;] = value_counts.iloc[0]
-
-        return stats
-
-    def describe_file_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        if &#34;p_series&#34; not in series_description:
-            series = series[~series.isnull()].astype(str)
-            series = series.map(Path)
-            series_description[&#34;p_series&#34;] = series
-        else:
-            series = series_description[&#34;p_series&#34;]
-
-        stats = file_summary(series)
-
-        series_description.update(describe_path_1d(series, series_description))
-        stats.update(
-            histogram_compute(
-                stats[&#34;file_size&#34;],
-                stats[&#34;file_size&#34;].nunique(),
-                name=&#34;histogram_file_size&#34;,
-            )
-        )
-
-        return stats
-
-    def describe_path_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a path series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        series_description.update(describe_categorical_1d(series, series_description))
-
-        # Make sure we deal with strings (Issue #100)
-        if &#34;p_series&#34; not in series_description:
-            series = series[~series.isnull()].astype(str)
-            series = series.map(Path)
-        else:
-            series = series_description[&#34;p_series&#34;]
-            del series_description[&#34;p_series&#34;]
-
-        stats = path_summary(series)
-
-        # Only run if at least 1 non-missing value
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats[&#34;top&#34;] = value_counts.index[0]
-        stats[&#34;freq&#34;] = value_counts.iloc[0]
-
-        return stats
-
-    def describe_image_1d(series: pd.Series, series_description: dict):
-        if &#34;p_series&#34; not in series_description:
-            series = series[~series.isnull()].astype(str)
-            series = series.map(Path)
-            series_description[&#34;p_series&#34;] = series
-        else:
-            series = series_description[&#34;p_series&#34;]
-
-        extract_exif = config[&#34;vars&#34;][&#34;image&#34;][&#34;exif&#34;].get(bool)
-
-        stats = image_summary(series, extract_exif)
-
-        series_description.update(describe_file_1d(series, series_description))
-
-        return stats
-
-    def describe_boolean_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a boolean series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
-
-        return stats
-
-    # Make sure pd.NA is not in the series
-    series = series.fillna(np.nan)
-
-    # Infer variable types
-    # TODO: use visions for type inference
-    # https://github.com/dylan-profiler/visions
-    series_description = base.get_var_type(series)
-
-    # Run type specific analysis
-    if series_description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
-        series_description.update(describe_unsupported(series, series_description))
-    else:
-        series_description.update(describe_supported(series, series_description))
-
-        type_to_func = {
-            Variable.TYPE_BOOL: describe_boolean_1d,
-            Variable.TYPE_NUM: describe_numeric_1d,
-            Variable.TYPE_DATE: describe_date_1d,
-            Variable.TYPE_CAT: describe_categorical_1d,
-            Variable.TYPE_URL: describe_url_1d,
-            Variable.TYPE_PATH: describe_path_1d,
-            Variable.TYPE_IMAGE: describe_image_1d,
-            Variable.TYPE_FILE: describe_file_1d,
-        }
-
-        if series_description[&#34;type&#34;] in type_to_func:
-            series_description.update(
-                type_to_func[series_description[&#34;type&#34;]](series, series_description)
-            )
-        else:
-            raise ValueError(&#34;Unexpected type&#34;)
-
-    # light weight of series_description
-    if &#34;value_counts_with_nan&#34; in series_description.keys():
-        del series_description[&#34;value_counts_with_nan&#34;]
-    if &#34;value_counts_without_nan&#34; in series_description.keys():
-        del series_description[&#34;value_counts_without_nan&#34;]
-
-    # Return the description obtained
-    return series_description
-
-
-def get_series_description(series):
-    return describe_1d(series)
-
-
-def get_series_descriptions(df, pbar):
+def get_series_descriptions(df, summarizer, typeset, pbar):
     def multiprocess_1d(args) -&gt; Tuple[str, dict]:
         &#34;&#34;&#34;Wrapper to process series in parallel.
 
@@ -522,14 +104,16 @@ def get_series_descriptions(df, pbar):
             A tuple with column and the series description.
         &#34;&#34;&#34;
         column, series = args
-        return column, describe_1d(series)
+        return column, describe_1d(series, summarizer, typeset)
+
+    pool_size = config[&#34;pool_size&#34;].get(int)
+    sort = config[&#34;sort&#34;].get(str)
 
     # Multiprocessing of Describe 1D for each column
-    pool_size = config[&#34;pool_size&#34;].get(int)
     if pool_size &lt;= 0:
         pool_size = multiprocessing.cpu_count()
 
-    args = [(column, series) for column, series in df.iteritems()]
+    args = [(name, series) for name, series in df.iteritems()]
     series_description = {}
 
     if pool_size == 1:
@@ -539,9 +123,6 @@ def get_series_descriptions(df, pbar):
             series_description[column] = description
             pbar.update()
     else:
-        # Store the original order
-        original_order = {k: v for v, k in enumerate([column for column, _ in args])}
-
         # TODO: use `Pool` for Linux-based systems
         with multiprocessing.pool.ThreadPool(pool_size) as executor:
             for i, (column, description) in enumerate(
@@ -552,20 +133,14 @@ def get_series_descriptions(df, pbar):
                 pbar.update()
 
         # Restore the original order
-        series_description = dict(
-            sorted(
-                series_description.items(),
-                key=lambda index: original_order.get(index[0]),
-            )
-        )
+        series_description = {k: series_description[k] for k in df.columns}
 
     # Mapping from column name to variable type
-    sort = config[&#34;sort&#34;].get(str)
     series_description = sort_column_names(series_description, sort)
     return series_description
 
 
-def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
+def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
     &#34;&#34;&#34;General statistics for the DataFrame.
 
     Args:
@@ -585,18 +160,25 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
         &#34;n_var&#34;: len(df.columns),
         &#34;memory_size&#34;: memory_size,
         &#34;record_size&#34;: record_size,
-        &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
-        &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
-        &#34;n_vars_all_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] == n).astype(int)),
+        &#34;n_cells_missing&#34;: 0,
+        &#34;n_vars_with_missing&#34;: 0,
+        &#34;n_vars_all_missing&#34;: 0,
     }
+
+    for series_summary in variable_stats.values():
+        if &#34;n_missing&#34; in series_summary and series_summary[&#34;n_missing&#34;] &gt; 0:
+            table_stats[&#34;n_vars_with_missing&#34;] += 1
+            table_stats[&#34;n_cells_missing&#34;] += series_summary[&#34;n_missing&#34;]
+            if series_summary[&#34;n_missing&#34;] == n:
+                table_stats[&#34;n_vars_all_missing&#34;] += 1
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
         table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;]
     )
 
-    supported_columns = variable_stats.transpose()[
-        variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-    ].index.tolist()
+    supported_columns = [
+        k for k, v in variable_stats.items() if v[&#34;type&#34;] != Unsupported
+    ]
     table_stats[&#34;n_duplicates&#34;] = (
         sum(df.duplicated(subset=supported_columns))
         if len(supported_columns) &gt; 0
@@ -609,13 +191,8 @@ def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
     )
 
     # Variable type counts
-    table_stats.update({k.value: 0 for k in Variable})
     table_stats.update(
-        {
-            &#34;types&#34;: dict(
-                variable_stats.loc[&#34;type&#34;].apply(lambda x: x.value).value_counts()
-            )
-        }
+        {&#34;types&#34;: dict(Counter([v[&#34;type&#34;] for v in variable_stats.values()]))}
     )
 
     return table_stats
@@ -674,10 +251,26 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
         }[name]
 
     missing_map = {
-        &#34;bar&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
-        &#34;matrix&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
-        &#34;heatmap&#34;: {&#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
-        &#34;dendrogram&#34;: {&#34;min_missing&#34;: 1, &#34;name&#34;: &#34;Dendrogram&#34;},
+        &#34;bar&#34;: {
+            &#34;min_missing&#34;: 0,
+            &#34;name&#34;: &#34;Count&#34;,
+            &#34;caption&#34;: &#34;A simple visualization of nullity by column.&#34;,
+        },
+        &#34;matrix&#34;: {
+            &#34;min_missing&#34;: 0,
+            &#34;name&#34;: &#34;Matrix&#34;,
+            &#34;caption&#34;: &#34;Nullity matrix is a data-dense display which lets you quickly visually pick out patterns in data completion.&#34;,
+        },
+        &#34;heatmap&#34;: {
+            &#34;min_missing&#34;: 2,
+            &#34;name&#34;: &#34;Heatmap&#34;,
+            &#34;caption&#34;: &#34;The correlation heatmap measures nullity correlation: how strongly the presence or absence of one variable affects the presence of another.&#34;,
+        },
+        &#34;dendrogram&#34;: {
+            &#34;min_missing&#34;: 1,
+            &#34;name&#34;: &#34;Dendrogram&#34;,
+            &#34;caption&#34;: &#34;The dendrogram allows you to more fully correlate variable completion, revealing trends deeper than the pairwise ones visible in the correlation heatmap.&#34;,
+        },
     }
 
     missing_map = {
@@ -698,6 +291,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
                 ):
                     missing[name] = {
                         &#34;name&#34;: settings[&#34;name&#34;],
+                        &#34;caption&#34;: settings[&#34;caption&#34;],
                         &#34;matrix&#34;: missing_diagram(name)(df),
                     }
             except ValueError as e:
@@ -706,25 +300,25 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     return missing
 
 
-def get_scatter_matrix(df, variables):
+def get_scatter_matrix(df, continuous_variables):
     if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
-        continuous_variables = [
-            column for column, type in variables.items() if type == Variable.TYPE_NUM
-        ]
-
         targets = config[&#34;interactions&#34;][&#34;targets&#34;].get(list)
         if len(targets) == 0:
             targets = continuous_variables
 
         scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
 
-        # check if any na still exists, and remove it before computing scatter matrix
-        df = df.dropna(subset=continuous_variables)
-
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
-                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                    if y == x:
+                        continue
+
+                    # check if any na still exists, and remove it before computing scatter matrix
+                    df_temp = df[[x, y]].dropna()
+                    scatter_matrix[x][y] = scatter_pairwise(
+                        df_temp[x], df_temp[y], x, y
+                    )
     else:
         scatter_matrix = {}
 
@@ -748,7 +342,7 @@ def get_messages(table_stats, series_description, correlations):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.summary.describe_1d"><code class="name flex">
-<span>def <span class="ident">describe_1d</span></span>(<span>series: pandas.core.series.Series) ‑> dict</span>
+<span>def <span class="ident">describe_1d</span></span>(<span>series: pandas.core.series.Series, summarizer: <a title="pandas_profiling.model.summarizer.BaseSummarizer" href="summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, typeset) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Describe a series (infer the variable type, then calculate type-specific values).</p>
@@ -763,7 +357,7 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe_1d(series: pd.Series) -&gt; dict:
+<pre><code class="python">def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -&gt; dict:
     &#34;&#34;&#34;Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -773,420 +367,20 @@ def get_messages(table_stats, series_description, correlations):
         A Series containing calculated series description values.
     &#34;&#34;&#34;
 
-    def describe_supported(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a supported series.
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-
-        # number of observations in the Series
-        length = len(series)
-
-        # number of non-NaN observations in the Series
-        count = series.count()
-
-        distinct_count = series_description[&#34;distinct_count_without_nan&#34;]
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-        unique_count = value_counts.where(value_counts == 1).count()
-
-        stats = {
-            &#34;n&#34;: length,
-            &#34;count&#34;: count,
-            &#34;n_distinct&#34;: distinct_count,
-            &#34;p_distinct&#34;: distinct_count / count,
-            &#34;p_missing&#34;: 1 - (count / length),
-            &#34;n_missing&#34;: length - count,
-            &#34;is_unique&#34;: unique_count == count,
-            &#34;n_unique&#34;: unique_count,
-            &#34;p_unique&#34;: unique_count / count,
-            &#34;memory_size&#34;: series.memory_usage(config[&#34;memory_deep&#34;].get(bool)),
-        }
-
-        return stats
-
-    def describe_unsupported(series: pd.Series, series_description: dict):
-        &#34;&#34;&#34;Describe an unsupported series.
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-
-        # number of observations in the Series
-        length = len(series)
-
-        # number of non-NaN observations in the Series
-        count = series.count()
-
-        results_data = {
-            &#34;n&#34;: length,
-            &#34;count&#34;: count,
-            &#34;p_missing&#34;: 1 - count / length,
-            &#34;n_missing&#34;: length - count,
-            &#34;memory_size&#34;: series.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)),
-        }
-
-        return results_data
-
-    def histogram_compute(finite_values, n_unique, name=&#34;histogram&#34;):
-        stats = {}
-        bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
-        bins = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
-        stats[name] = np.histogram(finite_values, bins)
-
-        max_bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;max_bins&#34;].get(int)
-        if bins == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
-            stats[name] = np.histogram(finite_values, max_bins)
-
-        return stats
-
-    def numeric_stats_pandas(series: pd.Series):
-        return {
-            &#34;mean&#34;: series.mean(),
-            &#34;std&#34;: series.std(),
-            &#34;variance&#34;: series.var(),
-            &#34;min&#34;: series.min(),
-            &#34;max&#34;: series.max(),
-            # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-            &#34;kurtosis&#34;: series.kurt(),
-            # Unbiased skew normalized by N-1
-            &#34;skewness&#34;: series.skew(),
-            &#34;sum&#34;: series.sum(),
-        }
-
-    def numeric_stats_numpy(present_values):
-        return {
-            &#34;mean&#34;: np.mean(present_values),
-            &#34;std&#34;: np.std(present_values, ddof=1),
-            &#34;variance&#34;: np.var(present_values, ddof=1),
-            &#34;min&#34;: np.min(present_values),
-            &#34;max&#34;: np.max(present_values),
-            # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-            &#34;kurtosis&#34;: series.kurt(),
-            # Unbiased skew normalized by N-1
-            &#34;skewness&#34;: series.skew(),
-            &#34;sum&#34;: np.sum(present_values),
-            &#34;n_zeros&#34;: (series_description[&#34;count&#34;] - np.count_nonzero(present_values)),
-        }
-
-    def describe_numeric_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a numeric series.
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-        Returns:
-            A dict containing calculated series description values.
-        Notes:
-            When &#39;bins_type&#39; is set to &#39;bayesian_blocks&#39;, astropy.stats.bayesian_blocks is used to determine the number of
-            bins. Read the docs:
-            https://docs.astropy.org/en/stable/visualization/histogram.html
-            https://docs.astropy.org/en/stable/api/astropy.stats.bayesian_blocks.html
-            This method might print warnings, which we suppress.
-            https://github.com/astropy/astropy/issues/4927
-        &#34;&#34;&#34;
-
-        def mad(arr):
-            &#34;&#34;&#34;Median Absolute Deviation: a &#34;Robust&#34; version of standard deviation.
-            Indices variability of the sample.
-            https://en.wikipedia.org/wiki/Median_absolute_deviation
-            &#34;&#34;&#34;
-            return np.median(np.abs(arr - np.median(arr)))
-
-        quantiles = config[&#34;vars&#34;][&#34;num&#34;][&#34;quantiles&#34;].get(list)
-
-        n_infinite = ((series == np.inf) | (series == -np.inf)).sum()
-
-        if isinstance(series.dtype, _IntegerDtype):
-            stats = numeric_stats_pandas(series)
-            present_values = series.loc[series.notnull()].astype(
-                str(series.dtype).lower()
-            )
-            stats[&#34;n_zeros&#34;] = series_description[&#34;count&#34;] - np.count_nonzero(
-                present_values
-            )
-            stats[&#34;histogram_data&#34;] = present_values
-            finite_values = present_values
-        else:
-            values = series.values
-            present_values = values[~np.isnan(values)]
-            finite_values = values[np.isfinite(values)]
-            stats = numeric_stats_numpy(present_values)
-            stats[&#34;histogram_data&#34;] = finite_values
-
-        stats.update(
-            {
-                &#34;mad&#34;: mad(present_values),
-                &#34;scatter_data&#34;: series,  # For complex
-                &#34;p_infinite&#34;: n_infinite / series_description[&#34;n&#34;],
-                &#34;n_infinite&#34;: n_infinite,
-            }
-        )
-
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if chi_squared_threshold &gt; 0.0:
-            histogram, _ = np.histogram(finite_values, bins=&#34;auto&#34;)
-            stats[&#34;chi_squared&#34;] = chisquare(histogram)
-
-        stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
-        stats.update(
-            {
-                f&#34;{percentile:.0%}&#34;: value
-                for percentile, value in series.quantile(quantiles).to_dict().items()
-            }
-        )
-        stats[&#34;iqr&#34;] = stats[&#34;75%&#34;] - stats[&#34;25%&#34;]
-        stats[&#34;cv&#34;] = stats[&#34;std&#34;] / stats[&#34;mean&#34;] if stats[&#34;mean&#34;] else np.NaN
-        stats[&#34;p_zeros&#34;] = stats[&#34;n_zeros&#34;] / series_description[&#34;n&#34;]
-
-        stats[&#34;monotonic_increase&#34;] = series.is_monotonic_increasing
-        stats[&#34;monotonic_decrease&#34;] = series.is_monotonic_decreasing
-
-        stats[&#34;monotonic_increase_strict&#34;] = (
-            stats[&#34;monotonic_increase&#34;] and series.is_unique
-        )
-        stats[&#34;monotonic_decrease_strict&#34;] = (
-            stats[&#34;monotonic_decrease&#34;] and series.is_unique
-        )
-
-        stats.update(histogram_compute(finite_values, series_description[&#34;n_distinct&#34;]))
-
-        return stats
-
-    def describe_date_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a date series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        stats = {
-            &#34;min&#34;: pd.Timestamp.to_pydatetime(series.min()),
-            &#34;max&#34;: pd.Timestamp.to_pydatetime(series.max()),
-        }
-
-        stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
-
-        values = series[series.notnull()].values.astype(np.int64) // 10 ** 9
-
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if chi_squared_threshold &gt; 0.0:
-            histogram, _ = np.histogram(values, bins=&#34;auto&#34;)
-            stats[&#34;chi_squared&#34;] = chisquare(histogram)
-
-        stats.update(histogram_compute(values, series_description[&#34;n_distinct&#34;]))
-        return stats
-
-    def describe_categorical_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a categorical series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        # Make sure we deal with strings (Issue #100)
-        series = series.astype(str)
-
-        # Only run if at least 1 non-missing value
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
-
-        stats.update(
-            histogram_compute(
-                value_counts, len(value_counts), name=&#34;histogram_frequencies&#34;
-            )
-        )
-
-        chi_squared_threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-            float
-        )
-        if chi_squared_threshold &gt; 0.0:
-            stats[&#34;chi_squared&#34;] = list(chisquare(value_counts.values))
-
-        check_length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
-        if check_length:
-            stats.update(length_summary(series))
-            stats.update(
-                histogram_compute(
-                    stats[&#34;length&#34;], stats[&#34;length&#34;].nunique(), name=&#34;histogram_length&#34;
-                )
-            )
-
-        check_unicode = config[&#34;vars&#34;][&#34;cat&#34;][&#34;unicode&#34;].get(bool)
-        if check_unicode:
-            stats.update(unicode_summary(series))
-
-            stats[&#34;category_alias_counts&#34;].index = stats[
-                &#34;category_alias_counts&#34;
-            ].index.str.replace(&#34;_&#34;, &#34; &#34;)
-
-        coerce_str_to_date = config[&#34;vars&#34;][&#34;cat&#34;][&#34;coerce_str_to_date&#34;].get(bool)
-        if coerce_str_to_date:
-            stats[&#34;date_warning&#34;] = warning_type_date(series)
-
-        return stats
-
-    def describe_url_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a url series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        # Make sure we deal with strings (Issue #100)
-        series = series[~series.isnull()].astype(str)
-        series = series.apply(urlsplit)
-
-        stats = url_summary(series)
-
-        # Only run if at least 1 non-missing value
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats[&#34;top&#34;] = value_counts.index[0]
-        stats[&#34;freq&#34;] = value_counts.iloc[0]
-
-        return stats
-
-    def describe_file_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        if &#34;p_series&#34; not in series_description:
-            series = series[~series.isnull()].astype(str)
-            series = series.map(Path)
-            series_description[&#34;p_series&#34;] = series
-        else:
-            series = series_description[&#34;p_series&#34;]
-
-        stats = file_summary(series)
-
-        series_description.update(describe_path_1d(series, series_description))
-        stats.update(
-            histogram_compute(
-                stats[&#34;file_size&#34;],
-                stats[&#34;file_size&#34;].nunique(),
-                name=&#34;histogram_file_size&#34;,
-            )
-        )
-
-        return stats
-
-    def describe_path_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a path series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        series_description.update(describe_categorical_1d(series, series_description))
-
-        # Make sure we deal with strings (Issue #100)
-        if &#34;p_series&#34; not in series_description:
-            series = series[~series.isnull()].astype(str)
-            series = series.map(Path)
-        else:
-            series = series_description[&#34;p_series&#34;]
-            del series_description[&#34;p_series&#34;]
-
-        stats = path_summary(series)
-
-        # Only run if at least 1 non-missing value
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats[&#34;top&#34;] = value_counts.index[0]
-        stats[&#34;freq&#34;] = value_counts.iloc[0]
-
-        return stats
-
-    def describe_image_1d(series: pd.Series, series_description: dict):
-        if &#34;p_series&#34; not in series_description:
-            series = series[~series.isnull()].astype(str)
-            series = series.map(Path)
-            series_description[&#34;p_series&#34;] = series
-        else:
-            series = series_description[&#34;p_series&#34;]
-
-        extract_exif = config[&#34;vars&#34;][&#34;image&#34;][&#34;exif&#34;].get(bool)
-
-        stats = image_summary(series, extract_exif)
-
-        series_description.update(describe_file_1d(series, series_description))
-
-        return stats
-
-    def describe_boolean_1d(series: pd.Series, series_description: dict) -&gt; dict:
-        &#34;&#34;&#34;Describe a boolean series.
-
-        Args:
-            series: The Series to describe.
-            series_description: The dict containing the series description so far.
-
-        Returns:
-            A dict containing calculated series description values.
-        &#34;&#34;&#34;
-        value_counts = series_description[&#34;value_counts_without_nan&#34;]
-
-        stats = {&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]}
-
-        return stats
-
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
 
-    # Infer variable types
-    # TODO: use visions for type inference
-    # https://github.com/dylan-profiler/visions
-    series_description = base.get_var_type(series)
-
-    # Run type specific analysis
-    if series_description[&#34;type&#34;] == Variable.S_TYPE_UNSUPPORTED:
-        series_description.update(describe_unsupported(series, series_description))
+    # get `infer_dtypes` (bool) from config
+    infer_dtypes = config[&#34;infer_dtypes&#34;].get(bool)
+    if infer_dtypes:
+        # Infer variable types
+        vtype = typeset.infer_type(series)
+        series = typeset.cast_to_inferred(series)
     else:
-        series_description.update(describe_supported(series, series_description))
+        # Detect variable types from pandas dataframe (df.dtypes). [new dtypes, changed using `astype` function are now considered]
+        vtype = typeset.detect_type(series)
 
-        type_to_func = {
-            Variable.TYPE_BOOL: describe_boolean_1d,
-            Variable.TYPE_NUM: describe_numeric_1d,
-            Variable.TYPE_DATE: describe_date_1d,
-            Variable.TYPE_CAT: describe_categorical_1d,
-            Variable.TYPE_URL: describe_url_1d,
-            Variable.TYPE_PATH: describe_path_1d,
-            Variable.TYPE_IMAGE: describe_image_1d,
-            Variable.TYPE_FILE: describe_file_1d,
-        }
-
-        if series_description[&#34;type&#34;] in type_to_func:
-            series_description.update(
-                type_to_func[series_description[&#34;type&#34;]](series, series_description)
-            )
-        else:
-            raise ValueError(&#34;Unexpected type&#34;)
-
-    # light weight of series_description
-    if &#34;value_counts_with_nan&#34; in series_description.keys():
-        del series_description[&#34;value_counts_with_nan&#34;]
-    if &#34;value_counts_without_nan&#34; in series_description.keys():
-        del series_description[&#34;value_counts_without_nan&#34;]
-
-    # Return the description obtained
-    return series_description</code></pre>
+    return summarizer.summarize(series, dtype=vtype)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_duplicates"><code class="name flex">
@@ -1296,10 +490,26 @@ def get_messages(table_stats, series_description, correlations):
         }[name]
 
     missing_map = {
-        &#34;bar&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Count&#34;},
-        &#34;matrix&#34;: {&#34;min_missing&#34;: 0, &#34;name&#34;: &#34;Matrix&#34;},
-        &#34;heatmap&#34;: {&#34;min_missing&#34;: 2, &#34;name&#34;: &#34;Heatmap&#34;},
-        &#34;dendrogram&#34;: {&#34;min_missing&#34;: 1, &#34;name&#34;: &#34;Dendrogram&#34;},
+        &#34;bar&#34;: {
+            &#34;min_missing&#34;: 0,
+            &#34;name&#34;: &#34;Count&#34;,
+            &#34;caption&#34;: &#34;A simple visualization of nullity by column.&#34;,
+        },
+        &#34;matrix&#34;: {
+            &#34;min_missing&#34;: 0,
+            &#34;name&#34;: &#34;Matrix&#34;,
+            &#34;caption&#34;: &#34;Nullity matrix is a data-dense display which lets you quickly visually pick out patterns in data completion.&#34;,
+        },
+        &#34;heatmap&#34;: {
+            &#34;min_missing&#34;: 2,
+            &#34;name&#34;: &#34;Heatmap&#34;,
+            &#34;caption&#34;: &#34;The correlation heatmap measures nullity correlation: how strongly the presence or absence of one variable affects the presence of another.&#34;,
+        },
+        &#34;dendrogram&#34;: {
+            &#34;min_missing&#34;: 1,
+            &#34;name&#34;: &#34;Dendrogram&#34;,
+            &#34;caption&#34;: &#34;The dendrogram allows you to more fully correlate variable completion, revealing trends deeper than the pairwise ones visible in the correlation heatmap.&#34;,
+        },
     }
 
     missing_map = {
@@ -1320,6 +530,7 @@ def get_messages(table_stats, series_description, correlations):
                 ):
                     missing[name] = {
                         &#34;name&#34;: settings[&#34;name&#34;],
+                        &#34;caption&#34;: settings[&#34;caption&#34;],
                         &#34;matrix&#34;: missing_diagram(name)(df),
                     }
             except ValueError as e:
@@ -1329,7 +540,7 @@ def get_messages(table_stats, series_description, correlations):
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_scatter_matrix"><code class="name flex">
-<span>def <span class="ident">get_scatter_matrix</span></span>(<span>df, variables)</span>
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>df, continuous_variables)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1337,46 +548,33 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_scatter_matrix(df, variables):
+<pre><code class="python">def get_scatter_matrix(df, continuous_variables):
     if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
-        continuous_variables = [
-            column for column, type in variables.items() if type == Variable.TYPE_NUM
-        ]
-
         targets = config[&#34;interactions&#34;][&#34;targets&#34;].get(list)
         if len(targets) == 0:
             targets = continuous_variables
 
         scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
 
-        # check if any na still exists, and remove it before computing scatter matrix
-        df = df.dropna(subset=continuous_variables)
-
         for x in targets:
             for y in continuous_variables:
                 if x in continuous_variables:
-                    scatter_matrix[x][y] = scatter_pairwise(df[x], df[y], x, y)
+                    if y == x:
+                        continue
+
+                    # check if any na still exists, and remove it before computing scatter matrix
+                    df_temp = df[[x, y]].dropna()
+                    scatter_matrix[x][y] = scatter_pairwise(
+                        df_temp[x], df_temp[y], x, y
+                    )
     else:
         scatter_matrix = {}
 
     return scatter_matrix</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.model.summary.get_series_description"><code class="name flex">
-<span>def <span class="ident">get_series_description</span></span>(<span>series)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_series_description(series):
-    return describe_1d(series)</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.model.summary.get_series_descriptions"><code class="name flex">
-<span>def <span class="ident">get_series_descriptions</span></span>(<span>df, pbar)</span>
+<span>def <span class="ident">get_series_descriptions</span></span>(<span>df, summarizer, typeset, pbar)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1384,7 +582,7 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_series_descriptions(df, pbar):
+<pre><code class="python">def get_series_descriptions(df, summarizer, typeset, pbar):
     def multiprocess_1d(args) -&gt; Tuple[str, dict]:
         &#34;&#34;&#34;Wrapper to process series in parallel.
 
@@ -1396,14 +594,16 @@ def get_messages(table_stats, series_description, correlations):
             A tuple with column and the series description.
         &#34;&#34;&#34;
         column, series = args
-        return column, describe_1d(series)
+        return column, describe_1d(series, summarizer, typeset)
+
+    pool_size = config[&#34;pool_size&#34;].get(int)
+    sort = config[&#34;sort&#34;].get(str)
 
     # Multiprocessing of Describe 1D for each column
-    pool_size = config[&#34;pool_size&#34;].get(int)
     if pool_size &lt;= 0:
         pool_size = multiprocessing.cpu_count()
 
-    args = [(column, series) for column, series in df.iteritems()]
+    args = [(name, series) for name, series in df.iteritems()]
     series_description = {}
 
     if pool_size == 1:
@@ -1413,9 +613,6 @@ def get_messages(table_stats, series_description, correlations):
             series_description[column] = description
             pbar.update()
     else:
-        # Store the original order
-        original_order = {k: v for v, k in enumerate([column for column, _ in args])}
-
         # TODO: use `Pool` for Linux-based systems
         with multiprocessing.pool.ThreadPool(pool_size) as executor:
             for i, (column, description) in enumerate(
@@ -1426,21 +623,15 @@ def get_messages(table_stats, series_description, correlations):
                 pbar.update()
 
         # Restore the original order
-        series_description = dict(
-            sorted(
-                series_description.items(),
-                key=lambda index: original_order.get(index[0]),
-            )
-        )
+        series_description = {k: series_description[k] for k in df.columns}
 
     # Mapping from column name to variable type
-    sort = config[&#34;sort&#34;].get(str)
     series_description = sort_column_names(series_description, sort)
     return series_description</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_table_stats"><code class="name flex">
-<span>def <span class="ident">get_table_stats</span></span>(<span>df: pandas.core.frame.DataFrame, variable_stats: pandas.core.frame.DataFrame) ‑> dict</span>
+<span>def <span class="ident">get_table_stats</span></span>(<span>df: pandas.core.frame.DataFrame, variable_stats: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>General statistics for the DataFrame.</p>
@@ -1457,7 +648,7 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_table_stats(df: pd.DataFrame, variable_stats: pd.DataFrame) -&gt; dict:
+<pre><code class="python">def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
     &#34;&#34;&#34;General statistics for the DataFrame.
 
     Args:
@@ -1477,18 +668,25 @@ def get_messages(table_stats, series_description, correlations):
         &#34;n_var&#34;: len(df.columns),
         &#34;memory_size&#34;: memory_size,
         &#34;record_size&#34;: record_size,
-        &#34;n_cells_missing&#34;: variable_stats.loc[&#34;n_missing&#34;].sum(),
-        &#34;n_vars_with_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] &gt; 0).astype(int)),
-        &#34;n_vars_all_missing&#34;: sum((variable_stats.loc[&#34;n_missing&#34;] == n).astype(int)),
+        &#34;n_cells_missing&#34;: 0,
+        &#34;n_vars_with_missing&#34;: 0,
+        &#34;n_vars_all_missing&#34;: 0,
     }
+
+    for series_summary in variable_stats.values():
+        if &#34;n_missing&#34; in series_summary and series_summary[&#34;n_missing&#34;] &gt; 0:
+            table_stats[&#34;n_vars_with_missing&#34;] += 1
+            table_stats[&#34;n_cells_missing&#34;] += series_summary[&#34;n_missing&#34;]
+            if series_summary[&#34;n_missing&#34;] == n:
+                table_stats[&#34;n_vars_all_missing&#34;] += 1
 
     table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
         table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;]
     )
 
-    supported_columns = variable_stats.transpose()[
-        variable_stats.transpose().type != Variable.S_TYPE_UNSUPPORTED
-    ].index.tolist()
+    supported_columns = [
+        k for k, v in variable_stats.items() if v[&#34;type&#34;] != Unsupported
+    ]
     table_stats[&#34;n_duplicates&#34;] = (
         sum(df.duplicated(subset=supported_columns))
         if len(supported_columns) &gt; 0
@@ -1501,13 +699,8 @@ def get_messages(table_stats, series_description, correlations):
     )
 
     # Variable type counts
-    table_stats.update({k.value: 0 for k in Variable})
     table_stats.update(
-        {
-            &#34;types&#34;: dict(
-                variable_stats.loc[&#34;type&#34;].apply(lambda x: x.value).value_counts()
-            )
-        }
+        {&#34;types&#34;: dict(Counter([v[&#34;type&#34;] for v in variable_stats.values()]))}
     )
 
     return table_stats</code></pre>
@@ -1556,7 +749,6 @@ def get_messages(table_stats, series_description, correlations):
 <li><code><a title="pandas_profiling.model.summary.get_messages" href="#pandas_profiling.model.summary.get_messages">get_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.get_missing_diagrams" href="#pandas_profiling.model.summary.get_missing_diagrams">get_missing_diagrams</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.get_scatter_matrix" href="#pandas_profiling.model.summary.get_scatter_matrix">get_scatter_matrix</a></code></li>
-<li><code><a title="pandas_profiling.model.summary.get_series_description" href="#pandas_profiling.model.summary.get_series_description">get_series_description</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.get_series_descriptions" href="#pandas_profiling.model.summary.get_series_descriptions">get_series_descriptions</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.get_table_stats" href="#pandas_profiling.model.summary.get_table_stats">get_table_stats</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.sort_column_names" href="#pandas_profiling.model.summary.sort_column_names">sort_column_names</a></code></li>
@@ -1566,7 +758,7 @@ def get_messages(table_stats, series_description, correlations):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

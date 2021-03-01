@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.utils.dataframe API documentation</title>
 <meta name="description" content="Utils for pandas DataFrames." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -28,6 +28,8 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Utils for pandas DataFrames.&#34;&#34;&#34;
+import re
+import unicodedata
 import warnings
 from pathlib import Path
 
@@ -50,6 +52,55 @@ https://github.com/pandas-profiling/pandas-profiling/issues&#34;&#34;&#34;
     )
 
 
+def is_supported_compression(file_extension: str) -&gt; bool:
+    &#34;&#34;&#34;Determine if the given file extension indicates a compression format that pandas can handle automatically.
+
+    Args:
+        file_extension (str): the file extension to test
+
+    Returns:
+        bool: True if the extension indicates a compression format that pandas handles automatically and False otherwise
+
+    Notes:
+        Pandas can handle on the fly decompression from the following extensions: ‘.bz2’, ‘.gz’, ‘.zip’, or ‘.xz’
+        (otherwise no decompression). If using ‘.zip’, the ZIP file must contain exactly one data file to be read in.
+    &#34;&#34;&#34;
+    return file_extension.lower() in [&#34;.bz2&#34;, &#34;.gz&#34;, &#34;.xz&#34;, &#34;.zip&#34;]
+
+
+def remove_suffix(text: str, suffix: str) -&gt; str:
+    &#34;&#34;&#34;Removes the given suffix from the given string.
+
+    Args:
+        text (str): the string to remove the suffix from
+        suffix (str): the suffix to remove from the string
+
+    Returns:
+        str: the string with the suffix removed, if the string ends with the suffix, otherwise the unmodified string
+
+    Notes:
+        In python 3.9+, there is a built-in string method called removesuffix() that can serve this purpose.
+    &#34;&#34;&#34;
+    return text[: -len(suffix)] if suffix and text.endswith(suffix) else text
+
+
+def uncompressed_extension(file_name: Path) -&gt; str:
+    &#34;&#34;&#34;Returns the uncompressed extension of the given file name.
+
+    Args:
+        file_name (Path): the file name to get the uncompressed extension of
+
+    Returns:
+        str: the uncompressed extension, or the original extension if pandas doesn&#39;t handle it automatically
+    &#34;&#34;&#34;
+    extension = file_name.suffix.lower()
+    return (
+        Path(remove_suffix(str(file_name).lower(), extension)).suffix
+        if is_supported_compression(extension)
+        else extension
+    )
+
+
 def read_pandas(file_name: Path) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Read DataFrame based on the file extension. This function is used when the file is in a standard format.
     Various file types are supported (.csv, .json, .jsonl, .data, .tsv, .xls, .xlsx, .xpt, .sas7bdat, .parquet)
@@ -69,7 +120,7 @@ def read_pandas(file_name: Path) -&gt; pd.DataFrame:
         user input, which is currently used in the editor integration. For more advanced use cases, the user should load
         the DataFrame in code.
     &#34;&#34;&#34;
-    extension = file_name.suffix.lower()
+    extension = uncompressed_extension(file_name)
     if extension == &#34;.json&#34;:
         df = pd.read_json(str(file_name))
     elif extension == &#34;.jsonl&#34;:
@@ -88,6 +139,10 @@ def read_pandas(file_name: Path) -&gt; pd.DataFrame:
         df = pd.read_parquet(str(file_name))
     elif extension in [&#34;.pkl&#34;, &#34;.pickle&#34;]:
         df = pd.read_pickle(str(file_name))
+    elif extension == &#34;.tar&#34;:
+        raise ValueError(
+            &#34;tar compression is not supported directly by pandas, please use the &#39;tarfile&#39; module&#34;
+        )
     else:
         if extension != &#34;.csv&#34;:
             warn_read(extension)
@@ -162,7 +217,28 @@ def hash_dataframe(df):
     Returns:
         The DataFrame&#39;s hash
     &#34;&#34;&#34;
-    return joblib.hash(df)</code></pre>
+    return joblib.hash(df)
+
+
+def slugify(value, allow_unicode=False):
+    &#34;&#34;&#34;
+    Taken from https://github.com/django/django/blob/master/django/utils/text.py
+    Convert to ASCII if &#39;allow_unicode&#39; is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren&#39;t alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+    &#34;&#34;&#34;
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize(&#34;NFKC&#34;, value)
+    else:
+        value = (
+            unicodedata.normalize(&#34;NFKD&#34;, value)
+            .encode(&#34;ascii&#34;, &#34;ignore&#34;)
+            .decode(&#34;ascii&#34;)
+        )
+    value = re.sub(r&#34;[^\w\s-]&#34;, &#34;&#34;, value.lower())
+    return re.sub(r&#34;[-\s]+&#34;, &#34;-&#34;, value).strip(&#34;-_&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -261,6 +337,44 @@ TODO: allow for expansion of nested data structures.</p></div>
     return joblib.hash(df)</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.utils.dataframe.is_supported_compression"><code class="name flex">
+<span>def <span class="ident">is_supported_compression</span></span>(<span>file_extension: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Determine if the given file extension indicates a compression format that pandas can handle automatically.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_extension</code></strong> :&ensp;<code>str</code></dt>
+<dd>the file extension to test</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if the extension indicates a compression format that pandas handles automatically and False otherwise</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>Pandas can handle on the fly decompression from the following extensions: ‘.bz2’, ‘.gz’, ‘.zip’, or ‘.xz’
+(otherwise no decompression). If using ‘.zip’, the ZIP file must contain exactly one data file to be read in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_supported_compression(file_extension: str) -&gt; bool:
+    &#34;&#34;&#34;Determine if the given file extension indicates a compression format that pandas can handle automatically.
+
+    Args:
+        file_extension (str): the file extension to test
+
+    Returns:
+        bool: True if the extension indicates a compression format that pandas handles automatically and False otherwise
+
+    Notes:
+        Pandas can handle on the fly decompression from the following extensions: ‘.bz2’, ‘.gz’, ‘.zip’, or ‘.xz’
+        (otherwise no decompression). If using ‘.zip’, the ZIP file must contain exactly one data file to be read in.
+    &#34;&#34;&#34;
+    return file_extension.lower() in [&#34;.bz2&#34;, &#34;.gz&#34;, &#34;.xz&#34;, &#34;.zip&#34;]</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.utils.dataframe.read_pandas"><code class="name flex">
 <span>def <span class="ident">read_pandas</span></span>(<span>file_name: pathlib.Path) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
@@ -304,7 +418,7 @@ the DataFrame in code.</p></div>
         user input, which is currently used in the editor integration. For more advanced use cases, the user should load
         the DataFrame in code.
     &#34;&#34;&#34;
-    extension = file_name.suffix.lower()
+    extension = uncompressed_extension(file_name)
     if extension == &#34;.json&#34;:
         df = pd.read_json(str(file_name))
     elif extension == &#34;.jsonl&#34;:
@@ -323,12 +437,55 @@ the DataFrame in code.</p></div>
         df = pd.read_parquet(str(file_name))
     elif extension in [&#34;.pkl&#34;, &#34;.pickle&#34;]:
         df = pd.read_pickle(str(file_name))
+    elif extension == &#34;.tar&#34;:
+        raise ValueError(
+            &#34;tar compression is not supported directly by pandas, please use the &#39;tarfile&#39; module&#34;
+        )
     else:
         if extension != &#34;.csv&#34;:
             warn_read(extension)
 
         df = pd.read_csv(str(file_name))
     return df</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.dataframe.remove_suffix"><code class="name flex">
+<span>def <span class="ident">remove_suffix</span></span>(<span>text: str, suffix: str) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the given suffix from the given string.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
+<dd>the string to remove the suffix from</dd>
+<dt><strong><code>suffix</code></strong> :&ensp;<code>str</code></dt>
+<dd>the suffix to remove from the string</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>the string with the suffix removed, if the string ends with the suffix, otherwise the unmodified string</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>In python 3.9+, there is a built-in string method called removesuffix() that can serve this purpose.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_suffix(text: str, suffix: str) -&gt; str:
+    &#34;&#34;&#34;Removes the given suffix from the given string.
+
+    Args:
+        text (str): the string to remove the suffix from
+        suffix (str): the suffix to remove from the string
+
+    Returns:
+        str: the string with the suffix removed, if the string ends with the suffix, otherwise the unmodified string
+
+    Notes:
+        In python 3.9+, there is a built-in string method called removesuffix() that can serve this purpose.
+    &#34;&#34;&#34;
+    return text[: -len(suffix)] if suffix and text.endswith(suffix) else text</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.dataframe.rename_index"><code class="name flex">
@@ -363,6 +520,76 @@ to be <code>df_index</code>.</p>
     if &#34;index&#34; in df.index.names:
         df.index.names = [x if x != &#34;index&#34; else &#34;df_index&#34; for x in df.index.names]
     return df</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.dataframe.slugify"><code class="name flex">
+<span>def <span class="ident">slugify</span></span>(<span>value, allow_unicode=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Taken from <a href="https://github.com/django/django/blob/master/django/utils/text.py">https://github.com/django/django/blob/master/django/utils/text.py</a>
+Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
+dashes to single dashes. Remove characters that aren't alphanumerics,
+underscores, or hyphens. Convert to lowercase. Also strip leading and
+trailing whitespace, dashes, and underscores.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def slugify(value, allow_unicode=False):
+    &#34;&#34;&#34;
+    Taken from https://github.com/django/django/blob/master/django/utils/text.py
+    Convert to ASCII if &#39;allow_unicode&#39; is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren&#39;t alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+    &#34;&#34;&#34;
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize(&#34;NFKC&#34;, value)
+    else:
+        value = (
+            unicodedata.normalize(&#34;NFKD&#34;, value)
+            .encode(&#34;ascii&#34;, &#34;ignore&#34;)
+            .decode(&#34;ascii&#34;)
+        )
+    value = re.sub(r&#34;[^\w\s-]&#34;, &#34;&#34;, value.lower())
+    return re.sub(r&#34;[-\s]+&#34;, &#34;-&#34;, value).strip(&#34;-_&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.dataframe.uncompressed_extension"><code class="name flex">
+<span>def <span class="ident">uncompressed_extension</span></span>(<span>file_name: pathlib.Path) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the uncompressed extension of the given file name.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_name</code></strong> :&ensp;<code>Path</code></dt>
+<dd>the file name to get the uncompressed extension of</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>the uncompressed extension, or the original extension if pandas doesn't handle it automatically</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def uncompressed_extension(file_name: Path) -&gt; str:
+    &#34;&#34;&#34;Returns the uncompressed extension of the given file name.
+
+    Args:
+        file_name (Path): the file name to get the uncompressed extension of
+
+    Returns:
+        str: the uncompressed extension, or the original extension if pandas doesn&#39;t handle it automatically
+    &#34;&#34;&#34;
+    extension = file_name.suffix.lower()
+    return (
+        Path(remove_suffix(str(file_name).lower(), extension)).suffix
+        if is_supported_compression(extension)
+        else extension
+    )</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.dataframe.warn_read"><code class="name flex">
@@ -414,8 +641,12 @@ https://github.com/pandas-profiling/pandas-profiling/issues&#34;&#34;&#34;
 <ul class="">
 <li><code><a title="pandas_profiling.utils.dataframe.expand_mixed" href="#pandas_profiling.utils.dataframe.expand_mixed">expand_mixed</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.hash_dataframe" href="#pandas_profiling.utils.dataframe.hash_dataframe">hash_dataframe</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.is_supported_compression" href="#pandas_profiling.utils.dataframe.is_supported_compression">is_supported_compression</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.read_pandas" href="#pandas_profiling.utils.dataframe.read_pandas">read_pandas</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.remove_suffix" href="#pandas_profiling.utils.dataframe.remove_suffix">remove_suffix</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.rename_index" href="#pandas_profiling.utils.dataframe.rename_index">rename_index</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.slugify" href="#pandas_profiling.utils.dataframe.slugify">slugify</a></code></li>
+<li><code><a title="pandas_profiling.utils.dataframe.uncompressed_extension" href="#pandas_profiling.utils.dataframe.uncompressed_extension">uncompressed_extension</a></code></li>
 <li><code><a title="pandas_profiling.utils.dataframe.warn_read" href="#pandas_profiling.utils.dataframe.warn_read">warn_read</a></code></li>
 </ul>
 </li>
@@ -423,7 +654,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues&#34;&#34;&#34;
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

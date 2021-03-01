@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.model.describe API documentation</title>
 <meta name="description" content="Organize the calculation of statistics for each series in this DataFrame." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -36,21 +36,23 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
-from pandas_profiling.model.base import Variable
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
-    get_duplicates,
     get_messages,
     get_missing_diagrams,
     get_scatter_matrix,
     get_series_descriptions,
     get_table_stats,
 )
+from pandas_profiling.model.typeset import Numeric, Unsupported
 from pandas_profiling.version import __version__
 
 
-def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; dict:
+def describe(
+    title: str, df: pd.DataFrame, summarizer, typeset, sample: Optional[dict] = None
+) -&gt; dict:
     &#34;&#34;&#34;Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -93,23 +95,26 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
         if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
     ]
 
-    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 8 + len(df.columns) + len(correlation_names)
 
     with tqdm(
         total=number_of_tasks, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
     ) as pbar:
-        series_description = get_series_descriptions(df, pbar)
+        series_description = get_series_descriptions(df, summarizer, typeset, pbar)
 
         pbar.set_postfix_str(&#34;Get variable types&#34;)
         variables = {
             column: description[&#34;type&#34;]
             for column, description in series_description.items()
         }
-        pbar.update()
-
-        # Transform the series_description in a DataFrame
-        pbar.set_postfix_str(&#34;Get variable statistics&#34;)
-        variable_stats = pd.DataFrame(series_description)
+        supported_columns = [
+            column
+            for column, type_name in variables.items()
+            if type_name != Unsupported
+        ]
+        interval_columns = [
+            column for column, type_name in variables.items() if type_name == Numeric
+        ]
         pbar.update()
 
         # Get correlations
@@ -117,7 +122,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
         for correlation_name in correlation_names:
             pbar.set_postfix_str(f&#34;Calculate {correlation_name} correlation&#34;)
             correlations[correlation_name] = calculate_correlation(
-                df, variables, correlation_name
+                df, correlation_name, series_description
             )
             pbar.update()
 
@@ -128,12 +133,12 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 
         # Scatter matrix
         pbar.set_postfix_str(&#34;Get scatter matrix&#34;)
-        scatter_matrix = get_scatter_matrix(df, variables)
+        scatter_matrix = get_scatter_matrix(df, interval_columns)
         pbar.update()
 
         # Table statistics
         pbar.set_postfix_str(&#34;Get table statistics&#34;)
-        table_stats = get_table_stats(df, variable_stats)
+        table_stats = get_table_stats(df, series_description)
         pbar.update()
 
         # missing diagrams
@@ -158,12 +163,6 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 
         # Duplicates
         pbar.set_postfix_str(&#34;Locating duplicates&#34;)
-        supported_columns = [
-            key
-            for key, value in series_description.items()
-            if value[&#34;type&#34;] != Variable.S_TYPE_UNSUPPORTED
-        ]
-
         duplicates = get_duplicates(df, supported_columns)
         pbar.update()
 
@@ -222,7 +221,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.describe.describe"><code class="name flex">
-<span>def <span class="ident">describe</span></span>(<span>title: str, df: pandas.core.frame.DataFrame, sample: Union[dict, NoneType] = None) ‑> dict</span>
+<span>def <span class="ident">describe</span></span>(<span>title: str, df: pandas.core.frame.DataFrame, summarizer, typeset, sample: Union[dict, NoneType] = None) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the statistics for each series in this DataFrame.</p>
@@ -247,7 +246,9 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; dict:
+<pre><code class="python">def describe(
+    title: str, df: pd.DataFrame, summarizer, typeset, sample: Optional[dict] = None
+) -&gt; dict:
     &#34;&#34;&#34;Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -290,23 +291,26 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
         if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
     ]
 
-    number_of_tasks = 9 + len(df.columns) + len(correlation_names)
+    number_of_tasks = 8 + len(df.columns) + len(correlation_names)
 
     with tqdm(
         total=number_of_tasks, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
     ) as pbar:
-        series_description = get_series_descriptions(df, pbar)
+        series_description = get_series_descriptions(df, summarizer, typeset, pbar)
 
         pbar.set_postfix_str(&#34;Get variable types&#34;)
         variables = {
             column: description[&#34;type&#34;]
             for column, description in series_description.items()
         }
-        pbar.update()
-
-        # Transform the series_description in a DataFrame
-        pbar.set_postfix_str(&#34;Get variable statistics&#34;)
-        variable_stats = pd.DataFrame(series_description)
+        supported_columns = [
+            column
+            for column, type_name in variables.items()
+            if type_name != Unsupported
+        ]
+        interval_columns = [
+            column for column, type_name in variables.items() if type_name == Numeric
+        ]
         pbar.update()
 
         # Get correlations
@@ -314,7 +318,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
         for correlation_name in correlation_names:
             pbar.set_postfix_str(f&#34;Calculate {correlation_name} correlation&#34;)
             correlations[correlation_name] = calculate_correlation(
-                df, variables, correlation_name
+                df, correlation_name, series_description
             )
             pbar.update()
 
@@ -325,12 +329,12 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 
         # Scatter matrix
         pbar.set_postfix_str(&#34;Get scatter matrix&#34;)
-        scatter_matrix = get_scatter_matrix(df, variables)
+        scatter_matrix = get_scatter_matrix(df, interval_columns)
         pbar.update()
 
         # Table statistics
         pbar.set_postfix_str(&#34;Get table statistics&#34;)
-        table_stats = get_table_stats(df, variable_stats)
+        table_stats = get_table_stats(df, series_description)
         pbar.update()
 
         # missing diagrams
@@ -355,12 +359,6 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 
         # Duplicates
         pbar.set_postfix_str(&#34;Locating duplicates&#34;)
-        supported_columns = [
-            key
-            for key, value in series_description.items()
-            if value[&#34;type&#34;] != Variable.S_TYPE_UNSUPPORTED
-        ]
-
         duplicates = get_duplicates(df, supported_columns)
         pbar.update()
 
@@ -436,7 +434,7 @@ def describe(title: str, df: pd.DataFrame, sample: Optional[dict] = None) -&gt; 
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

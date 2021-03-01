@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.profile_report &mdash; pandas-profiling 2.9.0 documentation</title>
+  <title>pandas_profiling.profile_report &mdash; pandas-profiling 2.12.0 documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,7 +33,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> pandas-profiling
           
 
           
@@ -94,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pages/sensitive_data.html">Sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/metadata.html">Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/changelog.html">Changelog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Support and contribution</span></p>
@@ -174,6 +177,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -201,15 +206,25 @@
 <span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">import</span> <span class="nn">attr</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">visions</span> <span class="kn">import</span> <span class="n">VisionsTypeset</span>
 
 <span class="kn">from</span> <span class="nn">pandas_profiling.config</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">pandas_profiling.expectations_report</span> <span class="kn">import</span> <span class="n">ExpectationsReport</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.model.describe</span> <span class="kn">import</span> <span class="n">describe</span> <span class="k">as</span> <span class="n">describe_df</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.model.messages</span> <span class="kn">import</span> <span class="n">MessageType</span>
+<span class="kn">from</span> <span class="nn">pandas_profiling.model.sample</span> <span class="kn">import</span> <span class="n">Sample</span>
+<span class="kn">from</span> <span class="nn">pandas_profiling.model.summarizer</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseSummarizer</span><span class="p">,</span>
+    <span class="n">PandasProfilingSummarizer</span><span class="p">,</span>
+    <span class="n">format_summary</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pandas_profiling.model.typeset</span> <span class="kn">import</span> <span class="n">ProfilingTypeSet</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.report</span> <span class="kn">import</span> <span class="n">get_report_structure</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.flavours.html.templates</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">create_html_assets</span><span class="p">,</span>
@@ -219,23 +234,25 @@
 <span class="kn">from</span> <span class="nn">pandas_profiling.utils.paths</span> <span class="kn">import</span> <span class="n">get_config</span>
 
 
-<div class="viewcode-block" id="ProfileReport"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport">[docs]</a><span class="k">class</span> <span class="nc">ProfileReport</span><span class="p">(</span><span class="n">SerializeReport</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ProfileReport"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport">[docs]</a><span class="k">class</span> <span class="nc">ProfileReport</span><span class="p">(</span><span class="n">SerializeReport</span><span class="p">,</span> <span class="n">ExpectationsReport</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate a profile report from a Dataset stored as a pandas `DataFrame`.</span>
 
-<span class="sd">    Used has is it will output its content as an HTML report in a Jupyter notebook.</span>
+<span class="sd">    Used as is, it will output its content as an HTML report in a Jupyter notebook.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ProfileReport.__init__"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">explorative</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">dark_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">orange_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">minimal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">explorative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">sensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dark_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">orange_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">config_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">lazy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">typeset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VisionsTypeset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">summarizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseSummarizer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate a ProfileReport based on a pandas DataFrame</span>
@@ -245,8 +262,12 @@
 <span class="sd">            minimal: minimal mode is a default configuration with minimal computation</span>
 <span class="sd">            config_file: a config file (.yml), mutually exclusive with `minimal`</span>
 <span class="sd">            lazy: compute when needed</span>
+<span class="sd">            sample: optional dict(name=&quot;Sample title&quot;, caption=&quot;Caption&quot;, data=pd.DataFrame())</span>
+<span class="sd">            typeset: optional user typeset to use for type inference</span>
+<span class="sd">            summarizer: optional user summarizer to generate custom summary output</span>
 <span class="sd">            **kwargs: other arguments, for valid arguments, check the default configuration file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># to reset (previous) config.</span>
         <span class="k">if</span> <span class="n">config_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">minimal</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Arguments `config_file` and `minimal` are mutually exclusive.&quot;</span>
@@ -261,7 +282,6 @@
             <span class="n">config</span><span class="o">.</span><span class="n">set_file</span><span class="p">(</span><span class="n">get_config</span><span class="p">(</span><span class="s2">&quot;config_minimal.yaml&quot;</span><span class="p">))</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">is_default</span><span class="p">:</span>
             <span class="k">pass</span>
-            <span class="c1"># TODO: logging instead of warning</span>
             <span class="c1"># warnings.warn(</span>
             <span class="c1">#     &quot;Currently configuration is not the default, if you want to restore &quot;</span>
             <span class="c1">#     &quot;default configuration, please run &#39;pandas_profiling.clear_config()&#39;&quot;</span>
@@ -286,6 +306,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_html</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_json</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_typeset</span> <span class="o">=</span> <span class="n">typeset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_summarizer</span> <span class="o">=</span> <span class="n">summarizer</span>
 
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># preprocess df</span>
@@ -295,7 +317,7 @@
             <span class="c1"># Trigger building the report structure</span>
             <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span></div>
 
-    <span class="k">def</span> <span class="nf">set_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change a single configuration variable</span>
 
 <span class="sd">        Args:</span>
@@ -308,11 +330,11 @@
 <span class="sd">            &gt;&gt;&gt; ProfileReport(df).set_variables(&quot;html.minify_html&quot;, False)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="p">{</span><span class="n">e</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_variables</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">value</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_variables</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">value</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change configuration variables (invalidates caches where necessary)</span>
@@ -349,9 +371,23 @@
             <span class="n">config</span><span class="o">.</span><span class="n">set_kwargs</span><span class="p">(</span><span class="nb">vars</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">typeset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typeset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_typeset</span> <span class="o">=</span> <span class="n">ProfilingTypeSet</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typeset</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">summarizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summarizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_summarizer</span> <span class="o">=</span> <span class="n">PandasProfilingSummarizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">typeset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summarizer</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">description_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="o">=</span> <span class="n">describe_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="o">=</span> <span class="n">describe_df</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">summarizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">typeset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span>
 
     <span class="nd">@property</span>
@@ -522,29 +558,34 @@
         <span class="k">return</span> <span class="n">widgets</span>
 
     <span class="k">def</span> <span class="nf">_render_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">class</span> <span class="nc">CustomEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">key_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
-                    <span class="k">return</span> <span class="n">data</span>
-                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">key_to_json</span><span class="p">(</span><span class="n">key</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">o</span><span class="p">}</span>
-
-                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">encode_it</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="n">encode_it</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+                    <span class="k">return</span> <span class="n">o</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">encode_it</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="p">{</span><span class="n">encode_it</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="p">}</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)):</span>
+                    <span class="k">return</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">Sample</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
 
         <span class="n">description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span>
 
         <span class="n">disable_progress_bar</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;progress_bar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Render JSON&quot;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="n">disable_progress_bar</span><span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">CustomEncoder</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">format_summary</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
             <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">data</span>
 
@@ -612,26 +653,6 @@
         <span class="sd">&quot;&quot;&quot;Override so that Jupyter Notebook does not print the object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">to_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        (Experimental) PyQt5 user interface, not ready to be used.</span>
-<span class="sd">        You are welcome to contribute a pull request if you like this feature.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># TODO: _render_app</span>
-        <span class="c1"># TODO: make functional</span>
-        <span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtCore</span>
-        <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span>
-
-        <span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.flavours</span> <span class="kn">import</span> <span class="n">QtReport</span>
-        <span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.flavours.qt.app</span> <span class="kn">import</span> <span class="n">get_app</span>
-
-        <span class="n">app</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">([])</span>
-
-        <span class="n">app_widgets</span> <span class="o">=</span> <span class="n">QtReport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
-        <span class="n">app</span> <span class="o">=</span> <span class="n">get_app</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">app_widgets</span><span class="p">)</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Preprocess the dataframe</span>
@@ -672,28 +693,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Simon Brugman
+        &#169; Copyright 2021, Simon Brugman.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -14,15 +14,23 @@
    .. autosummary::
    
       calculate_correlation
-      categorical_matrix
-      cramers_corrected_stat
-      cramers_matrix
       perform_check_correlation
       warn_correlation
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Correlation
+      Cramers
+      Kendall
+      Pearson
+      PhiK
+      Spearman
    
    
 

@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Support &mdash; pandas-profiling 2.9.0 documentation</title>
+  <title>Support &mdash; pandas-profiling 2.12.0 documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -30,7 +33,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -52,7 +54,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pandas-profiling
+            <a href="../index.html" class="icon icon-home"> pandas-profiling
           
 
           
@@ -96,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Support and contribution</span></p>
@@ -188,6 +191,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -199,7 +204,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/pages/support.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -223,7 +228,10 @@
 <div class="section" id="conda-install-defaults-to-v1-4-1">
 <h4>Conda install defaults to v1.4.1<a class="headerlink" href="#conda-install-defaults-to-v1-4-1" title="Permalink to this headline">¶</a></h4>
 <p>Some users experience that <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">pandas-profiling</span></code> defaults to 1.4.1.</p>
-<p>More details, <a class="reference external" href="https://github.com/conda-forge/pandas-profiling-feedstock/issues/22">here</a>, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/448">here</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/563">here</a>.</p>
+<p>More details, <a class="reference external" href="https://github.com/conda-forge/pandas-profiling-feedstock/issues/22">[22]</a>, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/448">[448]</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/563">[563]</a>.</p>
+<p>If creating a new environment with a fresh installation does not resolve this issue, or you have good reason to persist with the current environment, then you could try installing a specific version e.g. <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">pandas-profiling=2.10.0</span></code>.
+If it fails with an <strong>UnsatisfiableError</strong> that suggests dependant packages are either missing or incompatible, then further intervention is required to resolve the <em>environment</em> issue. However, <em>conda</em> error messages in this regard may be too cryptic or insufficient to pinpoint the culprit, therefore you may have to resort to an alternate means of troubleshooting e.g using the <a class="reference external" href="https://github.com/mamba-org/mamba.git">Mamba Package Manager</a>.
+For an illustration of this approach see <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/655">here</a>.</p>
 </div>
 <div class="section" id="jupyter-intslider-value-0">
 <h4>Jupyter “IntSlider(value=0)”<a class="headerlink" href="#jupyter-intslider-value-0" title="Permalink to this headline">¶</a></h4>
@@ -264,37 +272,29 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="contribution_guidelines.html" class="btn btn-neutral float-right" title="Contribution Guidelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="changelog.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="contribution_guidelines.html" class="btn btn-neutral float-right" title="Contribution Guidelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="changelog.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Simon Brugman
+        &#169; Copyright 2021, Simon Brugman.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
