@@ -67,17 +67,17 @@ def render_real(summary):
                 "fmt": "fmt_percent",
                 "alert": "p_infinite" in summary["warn_fields"],
             },
-        ]
-    )
-
-    table2 = Table(
-        [
             {
                 "name": "Mean",
                 "value": summary["mean"],
                 "fmt": "fmt_numeric",
                 "alert": False,
             },
+        ]
+    )
+
+    table2 = Table(
+        [
             {
                 "name": "Minimum",
                 "value": summary["min"],
@@ -101,6 +101,18 @@ def render_real(summary):
                 "value": summary["p_zeros"],
                 "fmt": "fmt_percent",
                 "alert": "p_zeros" in summary["warn_fields"],
+            },
+            {
+                "name": "Negative",
+                "value": summary["n_negative"],
+                "fmt": "fmt",
+                "alert": False,
+            },
+            {
+                "name": "Negative (%)",
+                "value": summary["p_negative"],
+                "fmt": "fmt_percent",
+                "alert": False,
             },
             {
                 "name": "Memory size",
