@@ -306,8 +306,9 @@ Types are a powerful abstraction for effective data analysis, that goes beyond t
 `pandas-profiling` currently, recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
 
 We have developed a type system for Python, tailored for data analysis: [visions](https://github.com/dylan-profiler/visions).
-Selecting the right typeset drastically reduces the complexity the code of your analysis.
-Future versions of `pandas-profiling` will have extended type support through `visions`!
+Choosing an appropriate typeset can both improve the overall expressiveness and reduce the complexity of your analysis/code.
+To learn more about `pandas-profiling`'s type system, check out the default implementation [here](https://github.com/pandas-profiling/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py).
+In the meantime, user customized summarizations and type definitions are now fully supported - if you have a specific use-case please reach out with ideas or a PR!
 
 ## Contributing
 
