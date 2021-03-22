@@ -17,12 +17,12 @@ repos:
       additional_dependencies: [ pyupgrade==2.7.3 ]
       args: [ --nbqa-mutate, --py36-plus ]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.10.0
+    rev: v2.11.0
     hooks:
     -   id: pyupgrade
         args: ['--py36-plus','--exit-zero-even-if-changed']
 -   repo: https://github.com/pycqa/isort
-    rev: 5.7.0
+    rev: 5.8.0
     hooks:
       - id: isort
         files: '.*'
@@ -32,7 +32,7 @@ repos:
     hooks:
     -   id: check-manifest
 -   repo: https://gitlab.com/pycqa/flake8
-    rev: "3.8.4"
+    rev: "3.9.0"
     hooks:
     -   id: flake8
         args: [ "--select=E9,F63,F7,F82"] #,T001
