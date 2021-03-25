@@ -206,8 +206,10 @@ def fmt_numeric(value: float, precision=10) -> str:
     fmtted = f"{{:.{precision}g}}".format(value)
     for v in ["e+", "e-"]:
         if v in fmtted:
+            sign = "-" if v in "e-" else ""
             fmtted = fmtted.replace(v, " × 10<sup>") + "</sup>"
             fmtted = fmtted.replace("<sup>0", "<sup>")
+            fmtted = fmtted.replace("<sup>", f"<sup>{sign}")
 
     return fmtted
 
