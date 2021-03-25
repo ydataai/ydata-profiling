@@ -79,7 +79,10 @@ def test_fmt_array(array, threshold, expected):
         (81.000000, 10, "81"),
         (81, 10, "81"),
         (81.999861123123123123, 10, "81.99986112"),
-    ],
+        (1e+20, 10, "1 × 10<sup>20</sup>"),
+        (1e-20, 10, "1 × 10<sup>-20</sup>"),
+        (1e+8, 3, "1 × 10<sup>8</sup>"),
+    ],  
 )
 def test_fmt_numeric(value, precision, expected):
     assert fmt_numeric(value, precision) == expected
