@@ -123,6 +123,7 @@ def test_datetime_expectations(batch):
         "column",
         min_value=0,
         max_value=100,
+        parse_strings_as_datetimes=True,
     )
 
 
