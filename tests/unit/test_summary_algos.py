@@ -57,3 +57,4 @@ def test_summary_supported_empty_df(empty_data):
     assert result["n_distinct"] == 0
     assert result["p_distinct"] == 0
     assert result["n_unique"] == 0
+    assert not result["is_unique"]
