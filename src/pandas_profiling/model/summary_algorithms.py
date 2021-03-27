@@ -125,7 +125,7 @@ def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
             "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }
     )
-    
+
     return series, summary
 
 
