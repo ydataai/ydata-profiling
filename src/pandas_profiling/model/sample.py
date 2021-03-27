@@ -22,6 +22,9 @@ def get_sample(df: pd.DataFrame) -> list:
         a list of Sample objects
     """
     samples = []
+    if len(df) == 0:
+        return samples
+
     n_head = config["samples"]["head"].get(int)
     if n_head > 0:
         samples.append(Sample("head", df.head(n=n_head), "First rows"))

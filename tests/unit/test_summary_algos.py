@@ -1,11 +1,12 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 from pandas_profiling.model.summary_algorithms import (
     describe_counts,
-    describe_supported,
     describe_generic,
-    )
+    describe_supported,
+)
 
 
 def test_count_summary_sorted():
@@ -30,22 +31,29 @@ def test_count_summary_category():
     assert len(r["value_counts_without_nan"].index) == 2
 
 
-def test_count_summary_empty_df():
-    s = pd.DataFrame({'A': []})
-    sn, r = describe_counts(s, {})
-    assert r['n_missing'].index == 'A'
+@pytest.fixture(scope="class")
+def empty_data() -> pd.DataFrame:
+    return pd.DataFrame({"A": []})
 
 
-def test_summary_supported_empty_df():
-    s = pd.DataFrame({'A': []})
-    s, series_description = describe_counts(s, {})
-    sn, r = describe_supported(s, series_description)
-    assert r['n_missing'].index == 'A'
+def test_count_summary_empty_df(empty_data):
+    _, result = describe_counts(empty_data["A"], {})
+    assert result["n_missing"] == 0
+    assert "p_missing" not in result
 
 
-def test_summary_generric_empty_df():
-    s = pd.DataFrame({'A': []})
-    s, summary = describe_counts(s, {})
-    sn, r = describe_generic(s, summary)
-    assert r["p_missing"] == 0
+def test_summary_generic_empty_df(empty_data):
+    series, summary = describe_counts(empty_data["A"], {})
+    _, result = describe_generic(series, summary)
+    assert result["n_missing"] == 0
+    assert result["p_missing"] == 0
+    assert result["count"] == 0
 
+
+def test_summary_supported_empty_df(empty_data):
+    series, summary = describe_counts(empty_data["A"], {})
+    series, summary = describe_generic(series, summary)
+    _, result = describe_supported(series, summary)
+    assert result["n_distinct"] == 0
+    assert result["p_distinct"] == 0
+    assert result["n_unique"] == 0

@@ -50,3 +50,16 @@ def test_example(get_data_file, test_output_dir):
         and len(profile.get_description().items()) == 10
     ), "Unexpected result"
     assert "<span class=badge>12</span>" in profile.to_html()
+
+
+def test_example_empty():
+    df = pd.DataFrame({"A": [], "B": []})
+    profile = ProfileReport(df)
+    description = profile.get_description()
+
+    assert len(description["correlations"]) == 0
+    assert len(description["missing"]) == 0
+    assert len(description["sample"]) == 0
+
+    html = profile.to_html()
+    assert "Dataset is empty" in html

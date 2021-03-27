@@ -203,6 +203,9 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
 
+    if len(df) == 0:
+        return {}
+
     def warn_missing(missing_name, error):
         warnings.warn(
             f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
