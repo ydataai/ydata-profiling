@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
   |
-  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-l2iqwb92-9JpTEdFBijR2G798j2MpQw">Slack</a>
+  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
 </p>
@@ -314,7 +314,7 @@ In the meantime, user customized summarizations and type definitions are now ful
 
 Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html).
 
-A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-hfy3iwp2-qEJSItye5QBZf8YGFMaMnQ).
+A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA).
 
 ## Editor integration
 
