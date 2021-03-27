@@ -9,6 +9,10 @@ Contributing a new feature
 
 * Ensure the PR description clearly describes the problem and solution.
   Include the relevant issue number if applicable.
+  
+Slack community
+---------------
+A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. `Join the Slack community <https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA>`_.
 
 Developer tools
 ---------------
