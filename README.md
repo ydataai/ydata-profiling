@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
   |
-  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-l2iqwb92-9JpTEdFBijR2G798j2MpQw">Slack</a>
+  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
 </p>
