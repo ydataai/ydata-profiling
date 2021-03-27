@@ -571,12 +571,6 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
         ), f"Histogram missing for column {column}"
 
 
-def test_describe_empty(summarizer, typeset):
-    empty_frame = pd.DataFrame()
-    with pytest.raises(ValueError):
-        describe("", empty_frame, summarizer, typeset)
-
-
 def test_describe_list(summarizer, typeset):
     with pytest.raises(AttributeError):
         with pytest.warns(UserWarning):
