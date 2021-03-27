@@ -1,9 +1,9 @@
-Changelog vx.y.z
-----------------
+Changelog v2.13.0
+-----------------
 
 🎉 Features
 ^^^^^^^^^^^
--
+- Allow empty data frames `[678] <https://github.com/pandas-profiling/pandas-profiling/issues/678>`_ "contributed by @spbail, @fwd2020-c"
 
 🐛 Bug fixes
 ^^^^^^^^^^^^
