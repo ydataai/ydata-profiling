@@ -124,7 +124,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     n = len(df)
 
     memory_size = df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
-    record_size = float(memory_size) / n
+    record_size = float(memory_size) / n if n > 0 else 0
 
     table_stats = {
         "n": n,
@@ -143,8 +143,10 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
             if series_summary["n_missing"] == n:
                 table_stats["n_vars_all_missing"] += 1
 
-    table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-        table_stats["n"] * table_stats["n_var"]
+    table_stats["p_cells_missing"] = (
+        table_stats["n_cells_missing"] / (table_stats["n"] * table_stats["n_var"])
+        if table_stats["n"] > 0
+        else 0
     )
 
     supported_columns = [
@@ -202,6 +204,9 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
+
+    if len(df) == 0:
+        return {}
 
     def warn_missing(missing_name, error):
         warnings.warn(

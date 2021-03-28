@@ -25,6 +25,7 @@ class WidgetWarnings(Warnings):
             "skewed": "info",
             "high_correlation": "",
             "duplicates": "",
+            "empty": "",
         }
 
         items = []

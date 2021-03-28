@@ -96,7 +96,7 @@ def describe_supported(
     stats = {
         "n_distinct": distinct_count,
         "p_distinct": distinct_count / count if count > 0 else 0,
-        "is_unique": unique_count == count,
+        "is_unique": unique_count == count and count > 0,
         "n_unique": unique_count,
         "p_unique": unique_count / count if count > 0 else 0,
     }
@@ -120,7 +120,7 @@ def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
     summary.update(
         {
             "n": length,
-            "p_missing": summary["n_missing"] / length,
+            "p_missing": summary["n_missing"] / length if length > 0 else 0,
             "count": length - summary["n_missing"],
             "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }

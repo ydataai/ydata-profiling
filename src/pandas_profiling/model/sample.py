@@ -1,3 +1,5 @@
+from typing import List
+
 import attr
 import pandas as pd
 
@@ -12,7 +14,7 @@ class Sample:
     caption = attr.ib(default=None)
 
 
-def get_sample(df: pd.DataFrame) -> list:
+def get_sample(df: pd.DataFrame) -> List[Sample]:
     """Obtains a sample from head and tail of the DataFrame
 
     Args:
@@ -21,7 +23,10 @@ def get_sample(df: pd.DataFrame) -> list:
     Returns:
         a list of Sample objects
     """
-    samples = []
+    samples: List[Sample] = []
+    if len(df) == 0:
+        return samples
+
     n_head = config["samples"]["head"].get(int)
     if n_head > 0:
         samples.append(Sample("head", df.head(n=n_head), "First rows"))
