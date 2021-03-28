@@ -47,9 +47,6 @@ def describe(
     if not isinstance(df, pd.DataFrame):
         warnings.warn("df is not of type pandas.DataFrame")
 
-    if df.empty:
-        raise ValueError("df can not be empty")
-
     disable_progress_bar = not config["progress_bar"].get(bool)
 
     date_start = datetime.utcnow()
