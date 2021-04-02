@@ -232,7 +232,7 @@ Similarly, one can change the palette for *Missing values* using the ``missing``
   profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True,
                        plot={
                            'missing':{
-                               'cmap': 'RdBu_r''}}
+                               'cmap': 'RdBu_r'}}
                        )
 
 
