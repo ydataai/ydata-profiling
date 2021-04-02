@@ -1,8 +1,11 @@
 """Formatters are mappings from object(s) to a string."""
+from functools import partial
 from typing import Callable, Dict
 
 import numpy as np
 from jinja2.utils import escape
+
+from pandas_profiling.config import config
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -304,8 +307,10 @@ def get_fmt_mapping() -> Dict[str, Callable]:
         "fmt_percent": fmt_percent,
         "fmt_bytesize": fmt_bytesize,
         "fmt_timespan": fmt_timespan,
-        "fmt_numeric": fmt_numeric,
         "fmt_monotonic": fmt_monotonic,
+        "fmt_numeric": partial(
+            fmt_numeric, precision=config["report"]["precision"].get(int)
+        ),
         "fmt_number": fmt_number,
         "fmt_array": fmt_array,
         "fmt": fmt,

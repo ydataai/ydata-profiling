@@ -109,6 +109,9 @@ interactions:
 # For categorical
 categorical_maximum_correlation_distinct: 100
 
+report:
+  precision: 10
+
 # Plot-specific settings
 plot:
 # Image format (svg or png)
