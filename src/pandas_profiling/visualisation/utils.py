@@ -13,6 +13,7 @@ from pandas_profiling.config import config
 def non_interactive_backend():
     file_type = config["plot"]["image_format"].get(str)
     import matplotlib
+
     matplotlib.interactive(False)
 
     available_backends = matplotlib.rcsetup.non_interactive_bk
