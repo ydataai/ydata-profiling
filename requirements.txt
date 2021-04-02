@@ -8,6 +8,7 @@ visions[type_image_path]==0.6.0
 numpy>=1.16.0
 attrs>=19.3.0
 # Could be optional
+pybase64~=1.1.4
 # Related to HTML report
 htmlmin>=0.1.12
 # Missing values

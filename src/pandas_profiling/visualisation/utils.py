@@ -1,12 +1,33 @@
 """Plotting utility functions."""
-import base64
 import uuid
 from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Tuple, Union
 from urllib.parse import quote
 
+import pybase64
+
 from pandas_profiling.config import config
+
+
+def non_interactive_backend():
+    file_type = config["plot"]["image_format"].get(str)
+    import matplotlib
+    matplotlib.interactive(False)
+
+    available_backends = matplotlib.rcsetup.non_interactive_bk
+    current_backend = matplotlib.get_backend()
+    if file_type == "svg" and "svg" in available_backends:
+        backend = "svg"
+    elif file_type == "png" and "agg" in available_backends:
+        backend = "agg"
+    else:
+        return
+
+    if backend == current_backend:
+        return
+
+    matplotlib.use(backend)
 
 
 def hex_to_rgb(hex: str) -> Tuple[float, ...]:
@@ -35,7 +56,7 @@ def base64_image(image: bytes, mime_type: str):
     Returns:
         A string starting with "data:{mime_type};base64,"
     """
-    base64_data = base64.b64encode(image)
+    base64_data = pybase64.b64encode(image)
     image_data = quote(base64_data)
     return f"data:{mime_type};base64,{image_data}"
 
@@ -66,14 +87,12 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
             if image_format == "svg":
                 image_str = StringIO()
                 plt.savefig(image_str, format=image_format)
-                image_str.seek(0)
                 result_string = image_str.getvalue()
             else:
                 image_bytes = BytesIO()
                 plt.savefig(
                     image_bytes, dpi=config["plot"]["dpi"].get(int), format=image_format
                 )
-                image_bytes.seek(0)
                 result_string = base64_image(
                     image_bytes.getvalue(), mime_types[image_format]
                 )
