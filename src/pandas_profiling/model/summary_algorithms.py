@@ -233,6 +233,16 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     stats["monotonic_decrease_strict"] = (
         stats["monotonic_decrease"] and series.is_unique
     )
+    if summary["monotonic_increase_strict"]:
+        stats["monotonic"] = 2
+    elif summary["monotonic_decrease_strict"]:
+        stats["monotonic"] = -2
+    elif summary["monotonic_increase"]:
+        stats["monotonic"] = 1
+    elif summary["monotonic_decrease"]:
+        stats["monotonic"] = -1
+    else:
+        stats["monotonic"] = 0
 
     stats.update(
         histogram_compute(

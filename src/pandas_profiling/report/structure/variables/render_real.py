@@ -152,17 +152,6 @@ def render_real(summary):
         name="Quantile statistics",
     )
 
-    if summary["monotonic_increase_strict"]:
-        monotocity = "Strictly increasing"
-    elif summary["monotonic_decrease_strict"]:
-        monotocity = "Strictly decreasing"
-    elif summary["monotonic_increase"]:
-        monotocity = "Increasing"
-    elif summary["monotonic_decrease"]:
-        monotocity = "Decreasing"
-    else:
-        monotocity = "Not monotonic"
-
     descriptive_statistics = Table(
         [
             {
@@ -190,7 +179,11 @@ def render_real(summary):
             },
             {"name": "Sum", "value": summary["sum"], "fmt": "fmt_numeric"},
             {"name": "Variance", "value": summary["variance"], "fmt": "fmt_numeric"},
-            {"name": "Monotocity", "value": monotocity, "fmt": "fmt"},
+            {
+                "name": "Monotonicity",
+                "value": summary["monotonic"],
+                "fmt": "fmt_monotonic",
+            },
         ],
         name="Descriptive statistics",
     )
