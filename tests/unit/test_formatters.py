@@ -6,6 +6,7 @@ from pandas_profiling.report.formatters import (
     fmt_bytesize,
     fmt_class,
     fmt_color,
+    fmt_monotonic,
     fmt_numeric,
 )
 
@@ -86,3 +87,29 @@ def test_fmt_array(array, threshold, expected):
 )
 def test_fmt_numeric(value, precision, expected):
     assert fmt_numeric(value, precision) == expected
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        (-2, "Strictly decreasing"),
+        (-1, "Decreasing"),
+        (0, "Not monotonic"),
+        (1, "Increasing"),
+        (2, "Strictly increasing"),
+    ],
+)
+def test_fmt_monotonic(value, expected):
+    assert fmt_monotonic(value) == expected
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        -3,
+        3,
+    ],
+)
+def test_fmt_monotonic_err(value):
+    with pytest.raises(ValueError):
+        fmt_monotonic(value)
