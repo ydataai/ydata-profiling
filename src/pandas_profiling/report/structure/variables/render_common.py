@@ -1,15 +1,13 @@
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.frequency_table_utils import (
     extreme_obs_table,
     freq_table,
 )
 
 
-def render_common(summary):
-    n_extreme_obs = config["n_extreme_obs"].get(int)
-    n_freq_table_max = config["n_freq_table_max"].get(int)
-
-    sorted_freqtable = summary["value_counts_without_nan"].sort_index(ascending=True)
+def render_common(config: Settings, summary: dict):
+    n_extreme_obs = config.n_extreme_obs
+    n_freq_table_max = config.n_freq_table_max
 
     template_variables = {
         # TODO: with nan
@@ -19,12 +17,12 @@ def render_common(summary):
             max_number_to_print=n_freq_table_max,
         ),
         "firstn_expanded": extreme_obs_table(
-            freqtable=sorted_freqtable,
+            freqtable=summary["value_counts_index_sorted"],
             number_to_print=n_extreme_obs,
             n=summary["n"],
         ),
         "lastn_expanded": extreme_obs_table(
-            freqtable=sorted_freqtable[::-1],
+            freqtable=summary["value_counts_index_sorted"][::-1],
             number_to_print=n_extreme_obs,
             n=summary["n"],
         ),

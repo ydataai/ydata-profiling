@@ -8,31 +8,30 @@ import pandas as pd
 from pandas.core.base import DataError
 from scipy import stats
 
-from pandas_profiling.config import config
-from pandas_profiling.model.typeset import Boolean, Categorical, Numeric, Unsupported
+from pandas_profiling.config import Settings
 
 
 class Correlation:
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
-        return NotImplemented
+    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+        raise NotImplementedError()
 
 
 class Spearman(Correlation):
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
         return df.corr(method="spearman")
 
 
 class Pearson(Correlation):
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
         return df.corr(method="pearson")
 
 
 class Kendall(Correlation):
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
+    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
         return df.corr(method="kendall")
 
 
@@ -67,13 +66,13 @@ class Cramers(Correlation):
         return corr
 
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
-        threshold = config["categorical_maximum_correlation_distinct"].get(int)
+    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+        threshold = config.categorical_maximum_correlation_distinct
 
         categoricals = {
             key
             for key, value in summary.items()
-            if value["type"] in {Categorical, Boolean}
+            if value["type"] in {"Categorical", "Boolean"}
             and value["n_distinct"] <= threshold
         }
 
@@ -99,21 +98,21 @@ class Cramers(Correlation):
 
 class PhiK(Correlation):
     @staticmethod
-    def compute(df, summary) -> Optional[pd.DataFrame]:
-        threshold = config["categorical_maximum_correlation_distinct"].get(int)
+    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+        threshold = config.categorical_maximum_correlation_distinct
         intcols = {
             key
             for key, value in summary.items()
             # DateTime currently excluded
             # In some use cases, it makes sense to convert it to interval
             # See https://github.com/KaveIO/PhiK/issues/7
-            if value["type"] == Numeric and 1 < value["n_distinct"]
+            if value["type"] == "Numeric" and 1 < value["n_distinct"]
         }
 
         selcols = {
             key
             for key, value in summary.items()
-            if value["type"] != Unsupported and 1 < value["n_distinct"] <= threshold
+            if value["type"] != "Unsupported" and 1 < value["n_distinct"] <= threshold
         }
         selcols = selcols.union(intcols)
 
@@ -141,7 +140,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 
 
 def calculate_correlation(
-    df: pd.DataFrame, correlation_name: str, summary: dict
+    config: Settings, df: pd.DataFrame, correlation_name: str, summary: dict
 ) -> Optional[pd.DataFrame]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, phi_k, cramers).
@@ -168,7 +167,9 @@ def calculate_correlation(
 
     correlation = None
     try:
-        correlation = correlation_measures[correlation_name].compute(df, summary)
+        correlation = correlation_measures[correlation_name].compute(
+            config, df, summary
+        )
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
         warn_correlation(correlation_name, e)
 

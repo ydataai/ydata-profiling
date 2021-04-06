@@ -43,12 +43,9 @@ profile = ProfileReport(
     explorative=True,
 )
 # We can also configure the report like this
-profile.set_variable(
-    "variables.descriptions",
-    {
-        "files": "The 5 Celebrity Faces Dataset found on Kaggle (dansbecker/5-celebrity-faces-dataset)."
-    },
-)
+profile.config.variables.descriptions = {
+    "files": "The 5 Celebrity Faces Dataset found on Kaggle (dansbecker/5-celebrity-faces-dataset)."
+}
 
 # Save the report
 profile.to_file("celebrity-faces.html")

@@ -1,11 +1,12 @@
 """Formatters are mappings from object(s) to a string."""
-from functools import partial
-from typing import Callable, Dict
+import decimal
+import math
+import numbers
+import re
+from datetime import timedelta
 
 import numpy as np
 from jinja2.utils import escape
-
-from pandas_profiling.config import config
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -76,12 +77,6 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     # https://github.com/xolox/python-humanfriendly/
     # Author: Peter Odding <peter@peterodding.com>
     # URL: https://humanfriendly.readthedocs.io
-
-    import decimal
-    import math
-    import numbers
-    import re
-    from datetime import timedelta
 
     time_units = [
         {
@@ -298,21 +293,5 @@ def help(title, url=None) -> str:
         return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
 
 
-def get_fmt_mapping() -> Dict[str, Callable]:
-    """Get a mapping from formatter name to the function
-
-    Returns: formatter mapping
-    """
-    return {
-        "fmt_percent": fmt_percent,
-        "fmt_bytesize": fmt_bytesize,
-        "fmt_timespan": fmt_timespan,
-        "fmt_monotonic": fmt_monotonic,
-        "fmt_numeric": partial(
-            fmt_numeric, precision=config["report"]["precision"].get(int)
-        ),
-        "fmt_number": fmt_number,
-        "fmt_array": fmt_array,
-        "fmt": fmt,
-        "raw": lambda x: x,
-    }
+def fmt_badge(value) -> str:
+    return re.sub(r"\((\d+)\)", r'<span class="badge">\1</span>', value)

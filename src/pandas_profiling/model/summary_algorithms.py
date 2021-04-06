@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from pandas.core.arrays.integer import _IntegerDtype
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.summary_helpers import (
     chi_square,
     file_summary,
@@ -24,11 +24,27 @@ from pandas_profiling.model.summary_helpers import (
 T = TypeVar("T")
 
 
-def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def func_nullable_series_contains(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def inner(config, series: pd.Series, state={}, *args, **kwargs) -> bool:
+        if series.hasnans:
+            series = series.dropna()
+            if series.empty:
+                return False
+
+        return fn(config, series, state, *args, **kwargs)
+
+    return inner
+
+
+def describe_counts(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Counts the values in a series (with and without NaN, distinct).
 
     Args:
         series: Series for which we want to calculate the values.
+        summary: series' summary
 
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
@@ -58,45 +74,58 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
                 "value_counts_without_nan": value_counts_without_nan,
             }
         )
+        try:
+            summary["value_counts_index_sorted"] = summary[
+                "value_counts_without_nan"
+            ].sort_index(ascending=True)
+            ordering = True
+        except TypeError:
+            ordering = False
     else:
         n_missing = series.isna().sum()
+        ordering = False
 
+    summary["ordering"] = ordering
     summary["n_missing"] = n_missing
 
-    return series, summary
+    return config, series, summary
 
 
 def series_hashable(
-    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
-) -> Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
+    fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
+) -> Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]:
     @functools.wraps(fn)
-    def inner(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+    def inner(
+        config: Settings, series: pd.Series, summary: dict
+    ) -> Tuple[Settings, pd.Series, dict]:
         if not summary["hashable"]:
-            return series, summary
-        return fn(series, summary)
+            return config, series, summary
+        return fn(config, series, summary)
 
     return inner
 
 
 def series_handle_nulls(
-    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
-) -> Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
+    fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
+) -> Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]:
     """Decorator for nullable series"""
 
     @functools.wraps(fn)
-    def inner(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+    def inner(
+        config: Settings, series: pd.Series, summary: dict
+    ) -> Tuple[Settings, pd.Series, dict]:
         if series.hasnans:
             series = series.dropna()
 
-        return fn(series, summary)
+        return fn(config, series, summary)
 
     return inner
 
 
 @series_hashable
 def describe_supported(
-    series: pd.Series, series_description: dict
-) -> Tuple[pd.Series, dict]:
+    config: Settings, series: pd.Series, series_description: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe a supported series.
     Args:
         series: The Series to describe.
@@ -121,10 +150,12 @@ def describe_supported(
     }
     stats.update(series_description)
 
-    return series, stats
+    return config, series, stats
 
 
-def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_generic(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe generic series.
     Args:
         series: The Series to describe.
@@ -141,11 +172,11 @@ def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
             "n": length,
             "p_missing": summary["n_missing"] / length if length > 0 else 0,
             "count": length - summary["n_missing"],
-            "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
+            "memory_size": series.memory_usage(deep=config.memory_deep),
         }
     )
 
-    return series, summary
+    return config, series, summary
 
 
 def numeric_stats_pandas(series: pd.Series):
@@ -182,7 +213,9 @@ def numeric_stats_numpy(present_values, series, series_description):
 
 @series_hashable
 @series_handle_nulls
-def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_numeric_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe a numeric series.
     Args:
         series: The Series to describe.
@@ -191,9 +224,8 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
         A dict containing calculated series description values.
     """
 
-    # Config
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
-    quantiles = config["vars"]["num"]["quantiles"].get(list)
+    chi_squared_threshold = config.vars.num.chi_squared_threshold
+    quantiles = config.vars.num.quantiles
 
     value_counts = summary["value_counts_without_nan"]
 
@@ -263,18 +295,21 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
 
     stats.update(
         histogram_compute(
+            config,
             value_counts[~infinity_index].index.values,
             summary["n_distinct"],
             weights=value_counts[~infinity_index].values,
         )
     )
 
-    return series, stats
+    return config, series, stats
 
 
 @series_hashable
 @series_handle_nulls
-def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_date_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe a date series.
 
     Args:
@@ -284,7 +319,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
     Returns:
         A dict containing calculated series description values.
     """
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    chi_squared_threshold = config.vars.num.chi_squared_threshold
 
     summary.update(
         {
@@ -300,16 +335,19 @@ def describe_date_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
     if chi_squared_threshold > 0.0:
         summary["chi_squared"] = chi_square(values)
 
-    summary.update(histogram_compute(values, summary["n_distinct"]))
-    return values, summary
+    summary.update(histogram_compute(config, values, summary["n_distinct"]))
+    return config, values, summary
 
 
 @series_hashable
 @series_handle_nulls
-def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_categorical_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe a categorical series.
 
     Args:
+        config: report Settings
         series: The Series to describe.
         summary: The dict containing the series description so far.
 
@@ -322,38 +360,40 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
 
     # Only run if at least 1 non-missing value
     value_counts = summary["value_counts_without_nan"]
-    histogram_largest = config["vars"]["cat"]["histogram_largest"].get(int)
+    histogram_largest = config.vars.cat.histogram_largest
     histogram_data = value_counts
     if histogram_largest > 0:
         histogram_data = histogram_data.nlargest(histogram_largest)
 
     summary.update(
         histogram_compute(
+            config,
             histogram_data,
             summary["n_distinct"],
             name="histogram_frequencies",
         )
     )
 
-    redact = config["vars"]["cat"]["redact"].get(float)
+    redact = config.vars.cat.redact
     if not redact:
         summary.update({"first_rows": series.head(5)})
 
-    chi_squared_threshold = config["vars"]["num"]["chi_squared_threshold"].get(float)
+    chi_squared_threshold = config.vars.num.chi_squared_threshold
     if chi_squared_threshold > 0.0:
         summary["chi_squared"] = chi_square(histogram=value_counts.values)
 
-    check_length = config["vars"]["cat"]["length"].get(bool)
-    if check_length:
+    if config.vars.cat.length:
         summary.update(length_summary(series))
         summary.update(
             histogram_compute(
-                summary["length"], summary["length"].nunique(), name="histogram_length"
+                config,
+                summary["length"],
+                summary["length"].nunique(),
+                name="histogram_length",
             )
         )
 
-    check_unicode = config["vars"]["cat"]["characters"].get(bool)
-    if check_unicode:
+    if config.vars.cat.characters:
         summary.update(unicode_summary(series))
         summary["n_characters_distinct"] = summary["n_characters"]
         summary["n_characters"] = summary["character_counts"].values.sum()
@@ -363,14 +403,15 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
                 "category_alias_counts"
             ].index.str.replace("_", " ")
 
-    words = config["vars"]["cat"]["words"]
-    if words:
+    if config.vars.cat.words:
         summary.update(word_summary(series))
 
-    return series, summary
+    return config, series, summary
 
 
-def describe_url_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_url_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe a url series.
 
     Args:
@@ -391,26 +432,31 @@ def describe_url_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
     # Update
     summary.update(url_summary(series))
 
-    return series, summary
+    return config, series, summary
 
 
-def describe_file_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_file_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     assert not series.hasnans
     assert hasattr(series, "str")
 
     summary.update(file_summary(series))
     summary.update(
         histogram_compute(
+            config,
             summary["file_size"],
             summary["file_size"].nunique(),
             name="histogram_file_size",
         )
     )
 
-    return series, summary
+    return config, series, summary
 
 
-def describe_path_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_path_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe a path series.
 
     Args:
@@ -427,25 +473,28 @@ def describe_path_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
 
     summary.update(path_summary(series))
 
-    return series, summary
+    return config, series, summary
 
 
-def describe_image_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_image_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     assert not series.hasnans
     assert hasattr(series, "str")
 
-    extract_exif = config["vars"]["image"]["exif"].get(bool)
+    summary.update(image_summary(series, config.vars.image.exif))
 
-    summary.update(image_summary(series, extract_exif))
-
-    return series, summary
+    return config, series, summary
 
 
 @series_hashable
-def describe_boolean_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+def describe_boolean_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     """Describe a boolean series.
 
     Args:
+        config: report Settings object
         series: The Series to describe.
         summary: The dict containing the series description so far.
 
@@ -456,4 +505,4 @@ def describe_boolean_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     value_counts = summary["value_counts_without_nan"]
     summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
 
-    return series, summary
+    return config, series, summary

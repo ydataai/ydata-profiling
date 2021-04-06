@@ -1,32 +1,37 @@
-from typing import Optional
+from typing import List
 from urllib.parse import quote
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.messages import MessageType
+from pandas_profiling.report.formatters import (
+    fmt,
+    fmt_bytesize,
+    fmt_number,
+    fmt_numeric,
+    fmt_percent,
+    fmt_timespan,
+)
 from pandas_profiling.report.presentation.core import Container, Table, Warnings
+from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
-def get_dataset_overview(summary):
+def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
     table_metrics = [
         {
             "name": "Number of variables",
-            "value": summary["table"]["n_var"],
-            "fmt": "fmt_number",
+            "value": fmt_number(summary["table"]["n_var"]),
         },
         {
             "name": "Number of observations",
-            "value": summary["table"]["n"],
-            "fmt": "fmt_number",
+            "value": fmt_number(summary["table"]["n"]),
         },
         {
             "name": "Missing cells",
-            "value": summary["table"]["n_cells_missing"],
-            "fmt": "fmt_number",
+            "value": fmt_number(summary["table"]["n_cells_missing"]),
         },
         {
             "name": "Missing cells (%)",
-            "value": summary["table"]["p_cells_missing"],
-            "fmt": "fmt_percent",
+            "value": fmt_percent(summary["table"]["p_cells_missing"]),
         },
     ]
     if "n_duplicates" in summary["table"]:
@@ -34,13 +39,11 @@ def get_dataset_overview(summary):
             [
                 {
                     "name": "Duplicate rows",
-                    "value": summary["table"]["n_duplicates"],
-                    "fmt": "fmt_number",
+                    "value": fmt_number(summary["table"]["n_duplicates"]),
                 },
                 {
                     "name": "Duplicate rows (%)",
-                    "value": summary["table"]["p_duplicates"],
-                    "fmt": "fmt_percent",
+                    "value": fmt_percent(summary["table"]["p_duplicates"]),
                 },
             ]
         )
@@ -49,13 +52,11 @@ def get_dataset_overview(summary):
         [
             {
                 "name": "Total size in memory",
-                "value": summary["table"]["memory_size"],
-                "fmt": "fmt_bytesize",
+                "value": fmt_bytesize(summary["table"]["memory_size"]),
             },
             {
                 "name": "Average record size in memory",
-                "value": summary["table"]["record_size"],
-                "fmt": "fmt_bytesize",
+                "value": fmt_bytesize(summary["table"]["record_size"]),
             },
         ]
     )
@@ -67,7 +68,10 @@ def get_dataset_overview(summary):
 
     dataset_types = Table(
         [
-            {"name": str(type_name), "value": count, "fmt": "fmt_numeric"}
+            {
+                "name": str(type_name),
+                "value": fmt_numeric(count, precision=config.report.precision),
+            }
             for type_name, count in summary["table"]["types"].items()
         ],
         name="Variable types",
@@ -81,12 +85,12 @@ def get_dataset_overview(summary):
     )
 
 
-def get_dataset_schema(metadata) -> Optional[Container]:
+def get_dataset_schema(metadata) -> Container:
     about_dataset = []
     for key in ["description", "creator", "author"]:
         if key in metadata and len(metadata[key]) > 0:
             about_dataset.append(
-                {"name": key.capitalize(), "value": metadata[key], "fmt": "fmt"}
+                {"name": key.capitalize(), "value": fmt(metadata[key])}
             )
 
     if "url" in metadata:
@@ -94,7 +98,6 @@ def get_dataset_schema(metadata) -> Optional[Container]:
             {
                 "name": "URL",
                 "value": f'<a href="{metadata["url"]}">{metadata["url"]}</a>',
-                "fmt": "raw",
             }
         )
 
@@ -103,16 +106,16 @@ def get_dataset_schema(metadata) -> Optional[Container]:
             about_dataset.append(
                 {
                     "name": "Copyright",
-                    "value": f"(c) {metadata['copyright_holder']}",
-                    "fmt": "fmt",
+                    "value": fmt(f"(c) {metadata['copyright_holder']}"),
                 }
             )
         else:
             about_dataset.append(
                 {
                     "name": "Copyright",
-                    "value": f"(c) {metadata['copyright_holder']} {metadata['copyright_year']}",
-                    "fmt": "fmt",
+                    "value": fmt(
+                        f"(c) {metadata['copyright_holder']} {metadata['copyright_year']}"
+                    ),
                 }
             )
 
@@ -133,18 +136,16 @@ def get_dataset_reproduction(summary: dict):
 
     reproduction_table = Table(
         [
-            {"name": "Analysis started", "value": date_start, "fmt": "fmt"},
-            {"name": "Analysis finished", "value": date_end, "fmt": "fmt"},
-            {"name": "Duration", "value": duration, "fmt": "fmt_timespan"},
+            {"name": "Analysis started", "value": fmt(date_start)},
+            {"name": "Analysis finished", "value": fmt(date_end)},
+            {"name": "Duration", "value": fmt_timespan(duration)},
             {
                 "name": "Software version",
                 "value": f'<a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{version}</a>',
-                "fmt": "raw",
             },
             {
                 "name": "Download configuration",
-                "value": f'<a download="config.yaml" href="data:text/plain;charset=utf-8,{config}">config.yaml</a>',
-                "fmt": "raw",
+                "value": f'<a download="config.json" href="data:text/plain;charset=utf-8,{config}">config.json</a>',
             },
         ],
         name="Reproduction",
@@ -172,7 +173,7 @@ def get_dataset_column_definitions(definitions: dict):
     variable_descriptions = [
         Table(
             [
-                {"name": column, "value": value, "fmt": "fmt"}
+                {"name": column, "value": fmt(value)}
                 for column, value in definitions.items()
             ],
             name="Variable descriptions",
@@ -199,7 +200,7 @@ def get_dataset_warnings(warnings: list) -> Warnings:
     return Warnings(warnings=warnings, name=f"Warnings ({count})", anchor_id="warnings")
 
 
-def get_dataset_items(summary: dict, warnings: list) -> list:
+def get_dataset_items(config: Settings, summary: dict, warnings: list) -> list:
     """Returns the dataset overview (at the top of the report)
 
     Args:
@@ -210,18 +211,16 @@ def get_dataset_items(summary: dict, warnings: list) -> list:
         A list with components for the dataset overview (overview, reproduction, warnings)
     """
 
-    items = [get_dataset_overview(summary)]
+    items: List[Renderable] = [get_dataset_overview(config, summary)]
 
-    metadata = {
-        key: config["dataset"][key].get(str) for key in config["dataset"].keys()
-    }
+    metadata = {key: config.dataset.dict()[key] for key in config.dataset.dict().keys()}
 
     if len(metadata) > 0 and any(len(value) > 0 for value in metadata.values()):
         items.append(get_dataset_schema(metadata))
 
     column_details = {
-        key: config["variables"]["descriptions"][key].get(str)
-        for key in config["variables"]["descriptions"].keys()
+        key: config.variables.descriptions[key]
+        for key in config.variables.descriptions.keys()
     }
 
     if len(column_details) > 0:

@@ -5,6 +5,7 @@ API
 .. toctree::
 
     api/profile_report
+    api/settings
     api/controller
     api/model
     api/report

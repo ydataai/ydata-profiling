@@ -38,6 +38,7 @@ def test_html_export_svg(test_output_dir):
     )
 
     profile = ProfileReport(df, minimal=True, html={"inline": False})
+    assert not profile.config.html.inline
 
     report = test_output_dir / "export_svg.html"
     profile.to_file(report)
@@ -58,6 +59,7 @@ def test_html_export_png(test_output_dir):
     profile = ProfileReport(
         df, minimal=True, html={"inline": False}, plot={"image_format": "png"}
     )
+    assert not profile.config.html.inline
 
     report = test_output_dir / "export_png.html"
     profile.to_file(report)

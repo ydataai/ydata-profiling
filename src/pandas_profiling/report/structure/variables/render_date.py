@@ -1,4 +1,5 @@
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
+from pandas_profiling.report.formatters import fmt, fmt_bytesize, fmt_percent
 from pandas_profiling.report.presentation.core import (
     Container,
     Image,
@@ -8,11 +9,11 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
-def render_date(summary):
+def render_date(config: Settings, summary):
     varid = summary["varid"]
     template_variables = {}
 
-    image_format = config["plot"]["image_format"].get(str)
+    image_format = config.plot.image_format
 
     # Top
     info = VariableInfo(
@@ -27,32 +28,27 @@ def render_date(summary):
         [
             {
                 "name": "Distinct",
-                "value": summary["n_distinct"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_distinct"]),
                 "alert": False,
             },
             {
                 "name": "Distinct (%)",
-                "value": summary["p_distinct"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_distinct"]),
                 "alert": False,
             },
             {
                 "name": "Missing",
-                "value": summary["n_missing"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_missing"]),
                 "alert": False,
             },
             {
                 "name": "Missing (%)",
-                "value": summary["p_missing"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_missing"]),
                 "alert": False,
             },
             {
                 "name": "Memory size",
-                "value": summary["memory_size"],
-                "fmt": "fmt_bytesize",
+                "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
         ]
@@ -60,13 +56,15 @@ def render_date(summary):
 
     table2 = Table(
         [
-            {"name": "Minimum", "value": summary["min"], "fmt": "fmt", "alert": False},
-            {"name": "Maximum", "value": summary["max"], "fmt": "fmt", "alert": False},
+            {"name": "Minimum", "value": fmt(summary["min"]), "alert": False},
+            {"name": "Maximum", "value": fmt(summary["max"]), "alert": False},
         ]
     )
 
     mini_histo = Image(
-        mini_histogram(*summary["histogram"], date=True),
+        mini_histogram(
+            config, summary["histogram"][0], summary["histogram"][1], date=True
+        ),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -79,7 +77,9 @@ def render_date(summary):
     bottom = Container(
         [
             Image(
-                histogram(*summary["histogram"], date=True),
+                histogram(
+                    config, summary["histogram"][0], summary["histogram"][1], date=True
+                ),
                 image_format=image_format,
                 alt="Histogram",
                 caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",

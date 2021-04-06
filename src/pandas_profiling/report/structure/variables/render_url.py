@@ -1,4 +1,5 @@
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
+from pandas_profiling.report.formatters import fmt, fmt_bytesize, fmt_percent
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
@@ -7,17 +8,17 @@ from pandas_profiling.report.presentation.core import (
     VariableInfo,
 )
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
-from pandas_profiling.report.structure.variables import render_common
+from pandas_profiling.report.structure.variables.render_common import render_common
 
 
-def render_url(summary):
+def render_url(config: Settings, summary):
     varid = summary["varid"]
-    n_freq_table_max = config["n_freq_table_max"].get(int)
+    n_freq_table_max = config.n_freq_table_max
 
-    n_obs_cat = config["vars"]["cat"]["n_obs"].get(int)
-    redact = config["vars"]["cat"]["redact"].get(bool)
+    n_obs_cat = config.vars.cat.n_obs
+    redact = config.vars.cat.redact
 
-    template_variables = render_common(summary)
+    template_variables = render_common(config, summary)
 
     keys = ["scheme", "netloc", "path", "query", "fragment"]
     for url_part in keys:
@@ -89,32 +90,27 @@ def render_url(summary):
         [
             {
                 "name": "Distinct",
-                "value": summary["n_distinct"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Distinct (%)",
-                "value": summary["p_distinct"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
-                "value": summary["n_missing"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["warn_fields"],
             },
             {
                 "name": "Missing (%)",
-                "value": summary["p_missing"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["warn_fields"],
             },
             {
                 "name": "Memory size",
-                "value": summary["memory_size"],
-                "fmt": "fmt_bytesize",
+                "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
         ]

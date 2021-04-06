@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Tuple, Union
 from urllib.parse import quote
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 
 
 def hex_to_rgb(hex: str) -> Tuple[float, ...]:
@@ -40,10 +40,13 @@ def base64_image(image: bytes, mime_type: str):
     return f"data:{mime_type};base64,{image_data}"
 
 
-def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> str:
+def plot_360_n0sc0pe(
+    config: Settings, plt, image_format: Union[str, None] = None, attempts=0
+) -> str:
     """Quickscope the plot to a base64 encoded string.
 
     Args:
+        config: Settings
         image_format: png or svg, overrides config.
         plt: The pyplot module.
         attempts: number to tries
@@ -53,53 +56,40 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -> 
     """
 
     if image_format is None:
-        image_format = config["plot"]["image_format"].get(str)
-    if image_format not in ["svg", "png"]:
-        raise ValueError('Can only 360 n0sc0pe "png" or "svg" format.')
-
-    inline = config["html"]["inline"].get(bool)
+        image_format = config.plot.image_format.value
 
     mime_types = {"png": "image/png", "svg": "image/svg+xml"}
+    if image_format not in mime_types:
+        raise ValueError('Can only 360 n0sc0pe "png" or "svg" format.')
 
-    try:
-        if inline:
-            if image_format == "svg":
-                image_str = StringIO()
-                plt.savefig(image_str, format=image_format)
-                image_str.seek(0)
-                result_string = image_str.getvalue()
-            else:
-                image_bytes = BytesIO()
-                plt.savefig(
-                    image_bytes, dpi=config["plot"]["dpi"].get(int), format=image_format
-                )
-                image_bytes.seek(0)
-                result_string = base64_image(
-                    image_bytes.getvalue(), mime_types[image_format]
-                )
+    if config.html.inline:
+        if image_format == "svg":
+            image_str = StringIO()
+            plt.savefig(image_str, format=image_format)
+            plt.close()
+            result_string = image_str.getvalue()
         else:
-            file_path = Path(config["html"]["file_name"].get(str))
-            suffix = f"_assets/images/{uuid.uuid4().hex}.{image_format}"
-            args = {
-                "fname": f"{file_path.with_suffix('')}{suffix}",
-                "format": image_format,
-            }
+            image_bytes = BytesIO()
+            plt.savefig(image_bytes, dpi=config.plot.dpi, format=image_format)
+            plt.close()
+            result_string = base64_image(
+                image_bytes.getvalue(), mime_types[image_format]
+            )
+    else:
+        if config.html.assets_path is None:
+            raise ValueError("config.html.assets_path may not be none")
 
-            if image_format == "png":
-                args["dpi"] = config["plot"]["dpi"].get(int)
+        file_path = Path(config.html.assets_path)
+        suffix = f"{config.html.assets_prefix}/images/{uuid.uuid4().hex}.{image_format}"
+        args = {
+            "fname": file_path / suffix,
+            "format": image_format,
+        }
 
-            plt.savefig(**args)
-            result_string = f"{file_path.stem}{suffix}"
+        if image_format == "png":
+            args["dpi"] = config.plot.dpi
+        plt.savefig(**args)
         plt.close()
-    except RuntimeError:
-        plt.close()
-        # Hack https://stackoverflow.com/questions/44666207/matplotlib-error-when-running-plotting-in-multiprocess
-        # #comment79373127_44666207
-        if attempts > 10:
-            return ""
-        else:
-            return plot_360_n0sc0pe(plt, image_format, attempts + 1)
-    finally:
-        plt.close("all")
+        result_string = suffix
 
     return result_string
