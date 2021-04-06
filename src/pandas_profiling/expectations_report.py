@@ -1,8 +1,3 @@
-from typing import Any, Optional
-
-import pandas as pd
-from visions import VisionsTypeset
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
 from pandas_profiling.model.handler import Handler
@@ -29,11 +24,8 @@ class ExpectationHandler(Handler):
 
 class ExpectationsReport:
     config: Settings
-    df: Optional[pd.DataFrame] = None
-
-    @property
-    def typeset(self) -> Optional[VisionsTypeset]:
-        return None
+    typeset = None
+    df = None
 
     def to_expectation_suite(
         self,

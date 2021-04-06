@@ -1,10 +1,9 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
 from enum import Enum, auto, unique
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set, Union
 
 import numpy as np
-import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import perform_check_correlation
@@ -63,8 +62,6 @@ class MessageType(Enum):
 class Message:
     """A message object (type, values, column)."""
 
-    _anchor_id: Optional[str] = None
-
     def __init__(
         self,
         message_type: MessageType,
@@ -81,14 +78,15 @@ class Message:
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
+        self._anchor_id = None
 
     @property
-    def anchor_id(self) -> Optional[str]:
+    def anchor_id(self):
         if self._anchor_id is None:
-            self._anchor_id = str(hash(self.column_name))
+            self._anchor_id = hash(self.column_name)
         return self._anchor_id
 
-    def fmt(self) -> str:
+    def fmt(self):
         # TODO: render in template
         name = self.message_type.name.replace("_", " ")
         if name == "HIGH CORRELATION":
@@ -135,6 +133,8 @@ def check_table_messages(table: dict) -> List[Message]:
 def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
     messages = []
 
+    chi_squared_threshold_num = config.vars.num.chi_squared_threshold
+
     # Skewness
     if warning_skewness(summary["skewness"], config.vars.num.skewness_threshold):
         messages.append(
@@ -164,7 +164,7 @@ def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
 
     if (
         "chi_squared" in summary
-        and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
+        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_num
     ):
         messages.append(Message(message_type=MessageType.UNIFORM))
 
@@ -174,8 +174,11 @@ def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
 def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
     messages = []
 
+    cardinality_threshold_cat = config.vars.cat.cardinality_threshold
+    chi_squared_threshold_cat = config.vars.cat.chi_squared_threshold
+
     # High cardinality
-    if summary.get("n_distinct", np.nan) > config.vars.cat.cardinality_threshold:
+    if summary["n_distinct"] > cardinality_threshold_cat:
         messages.append(
             Message(
                 message_type=MessageType.HIGH_CARDINALITY,
@@ -185,7 +188,7 @@ def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
 
     if (
         "chi_squared" in summary
-        and summary["chi_squared"]["pvalue"] > config.vars.cat.chi_squared_threshold
+        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_cat
     ):
         messages.append(Message(message_type=MessageType.UNIFORM))
 
@@ -246,7 +249,7 @@ def supported_warnings(summary: dict) -> List[Message]:
     return messages
 
 
-def unsupported_warnings(summary: Dict[str, Any]) -> List[Message]:
+def unsupported_warnings(summary):
     messages = [
         Message(
             message_type=MessageType.UNSUPPORTED,
@@ -292,7 +295,7 @@ def check_variable_messages(
     return messages
 
 
-def check_correlation_messages(config: Settings, correlations: dict) -> List[Message]:
+def check_correlation_messages(config: Settings, correlations):
     messages = []
 
     for corr, matrix in correlations.items():
@@ -319,7 +322,7 @@ def warning_skewness(v: float, threshold: int) -> bool:
     return not np.isnan(v) and (v < (-1 * threshold) or v > threshold)
 
 
-def warning_type_date(series: pd.Series) -> bool:
+def warning_type_date(series):
     from dateutil.parser import ParserError, parse
 
     try:

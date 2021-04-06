@@ -37,7 +37,7 @@ def test_issue51_similar():
     report = ProfileReport(
         df, title="Pandas Profiling Report", progress_bar=False, explorative=True
     )
-    report.set_variable("vars.num.low_categorical_threshold", 0)
+    report.config.vars.num.low_categorical_threshold = 0
     # FIXME: assert correlation values (report.description_set["correlations"])
 
     assert (

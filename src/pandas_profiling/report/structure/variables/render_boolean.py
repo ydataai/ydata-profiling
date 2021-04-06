@@ -16,10 +16,10 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 from pandas_profiling.visualisation.plot import pie_plot
 
 
-def render_boolean(config: Settings, summary: dict) -> dict:
+def render_boolean(config: Settings, summary: dict):
     varid = summary["varid"]
     n_obs_bool = config.vars.bool.n_obs
-    image_format = config.plot.image_format
+    image_format = config.plot.image_format.value
 
     # Prepare variables
     template_variables = render_common(config, summary)

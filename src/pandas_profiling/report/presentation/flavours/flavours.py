@@ -4,11 +4,7 @@ from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
-def apply_renderable_mapping(
-    mapping: Dict[Type[Renderable], Type[Renderable]],
-    structure: Renderable,
-    flavour: Callable,
-) -> None:
+def apply_renderable_mapping(mapping, structure, flavour):
     mapping[type(structure)].convert_to_class(structure, flavour)
 
 

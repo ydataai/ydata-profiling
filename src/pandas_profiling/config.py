@@ -1,11 +1,11 @@
 """Configuration for the package."""
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, BaseSettings, Field
 
 
-def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
+def _merge_dictionaries(dict1, dict2):
     """
     Recursive merge dictionaries.
 
@@ -196,7 +196,6 @@ class Correlations(BaseModel):
 
 class Interactions(BaseModel):
     continuous: bool = True
-    """Set to False to disable scatterplots"""
     # FIXME: validate with column names
     targets: List[str] = []
 
@@ -291,13 +290,13 @@ class Settings(BaseSettings):
     html: Html = Html()
     notebook = Notebook()
 
-    def update(self, updates: dict) -> "Settings":
+    def update(self, updates):
         update = _merge_dictionaries(self.dict(), updates)
         return self.parse_obj(self.copy(update=update))
 
 
 class Config:
-    arg_groups: Dict[str, Any] = {
+    arg_groups = {
         "sensitive": {
             "samples": None,
             "duplicates": None,
@@ -362,12 +361,12 @@ class Config:
     }
 
     @staticmethod
-    def get_arg_groups(key: str) -> dict:
+    def get_arg_groups(key):
         kwargs = Config.arg_groups[key]
         return Config.shorthands(kwargs)
 
     @staticmethod
-    def shorthands(kwargs: dict) -> dict:
+    def shorthands(kwargs):
         for key, value in list(kwargs.items()):
             if value is None and key in Config._shorthands:
                 kwargs[key] = Config._shorthands[key]

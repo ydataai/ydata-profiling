@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List
 
 from pandas_profiling.config import Settings
 from pandas_profiling.report.formatters import (
@@ -23,9 +23,7 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 from pandas_profiling.visualisation.plot import histogram, pie_plot
 
 
-def render_categorical_frequency(
-    config: Settings, summary: dict, varid: str
-) -> Tuple[Renderable, Renderable]:
+def render_categorical_frequency(config: Settings, summary, varid):
     frequency_table = Table(
         [
             {
@@ -55,9 +53,7 @@ def render_categorical_frequency(
     return frequency_table, frequencies
 
 
-def render_categorical_length(
-    config: Settings, summary: dict, varid: str
-) -> Tuple[Renderable, Renderable]:
+def render_categorical_length(config, summary, varid):
     length_table = Table(
         [
             {
@@ -99,9 +95,7 @@ def render_categorical_length(
     return length_table, length_histo
 
 
-def render_categorical_unicode(
-    config: Settings, summary: dict, varid: str
-) -> Tuple[Renderable, Renderable]:
+def render_categorical_unicode(config: Settings, summary, varid):
     n_freq_table_max = config.n_freq_table_max
 
     category_overview = FrequencyTable(
@@ -307,7 +301,7 @@ def render_categorical_unicode(
     )
 
 
-def render_categorical(config: Settings, summary: dict) -> dict:
+def render_categorical(config: Settings, summary: dict):
     varid = summary["varid"]
     n_obs_cat = config.vars.cat.n_obs
     image_format = config.plot.image_format

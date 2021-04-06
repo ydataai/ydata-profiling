@@ -40,8 +40,8 @@ class BaseSummarizer(Handler):
 class PandasProfilingSummarizer(BaseSummarizer):
     """The default Pandas Profiling summarizer"""
 
-    def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
-        summary_map: Dict[str, List[Callable]] = {
+    def __init__(self, typeset, *args, **kwargs):
+        summary_map = {
             "Unsupported": [
                 describe_counts,
                 describe_generic,

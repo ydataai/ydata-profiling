@@ -2,7 +2,7 @@ import imghdr
 import os
 import warnings
 from functools import partial, wraps
-from typing import Callable, Sequence, Set
+from typing import Callable
 from urllib.parse import urlparse
 
 import pandas as pd
@@ -10,7 +10,7 @@ import visions
 from multimethod import multimethod
 from pandas.api import types as pdt
 from visions.backends.pandas.series_utils import series_not_empty
-from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
+from visions.relations import IdentityRelation, InferenceRelation
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.typeset_relations import (
@@ -23,140 +23,6 @@ from pandas_profiling.model.typeset_relations import (
     to_bool,
     to_category,
 )
-
-
-class Unsupported(visions.Generic):
-    pass
-
-
-class Numeric(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        return [
-            IdentityRelation(cls, Unsupported),
-            InferenceRelation(
-                cls,
-                Categorical,
-                relationship=category_is_numeric,
-                transformer=category_to_numeric,
-            ),
-        ]
-
-    @classmethod
-    @nullable_series_contains
-    @series_not_empty
-    def contains_op(cls, series: pd.Series, state: dict) -> bool:
-        return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
-
-
-def is_date(series, state):
-    try:
-        _ = pd.to_datetime(series)
-        return True
-    except:  # noqa: E722
-        return False
-
-
-def to_date(series):
-    return pd.to_datetime(series)
-
-
-class DateTime(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        return [
-            IdentityRelation(cls, Unsupported),
-        ]
-
-    @classmethod
-    def contains_op(cls, series: pd.Series, state: dict) -> bool:
-        return pdt.is_datetime64_any_dtype(series)
-
-
-class Categorical(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        return [
-            IdentityRelation(cls, Unsupported),
-            InferenceRelation(
-                cls,
-                Numeric,
-                relationship=numeric_is_category,
-                transformer=to_category,
-            ),
-        ]
-
-    @classmethod
-    @series_not_empty
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -> bool:
-        is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
-            series
-        )
-        if is_valid_dtype:
-            return True
-
-        return series_is_string(series)
-
-
-class Boolean(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        # Numeric [0, 1] goes via Categorical with distinct_count_without_nan <= 2
-        return [
-            IdentityRelation(cls, Unsupported),
-            InferenceRelation(
-                cls,
-                Categorical,
-                relationship=string_is_bool,
-                transformer=lambda s, st: to_bool(string_to_bool(s, st)),
-            ),
-        ]
-
-    @classmethod
-    @series_not_empty
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -> bool:
-        if pdt.is_object_dtype(series):
-            try:
-                return series.isin({True, False}).all()
-            except:  # noqa: E722
-                return False
-
-        return pdt.is_bool_dtype(series)
-
-
-class URL(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Categorical)]
-        return relations
-
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -> bool:
-        # TODO: use coercion utils
-        try:
-            url_gen = (urlparse(x) for x in series)
-            return all(x.netloc and x.scheme for x in url_gen)
-        except AttributeError:
-            return False
-
-
-class Path(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Categorical)]
-        return relations
-
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -> bool:
-        # TODO: use coercion utils
-        try:
-            return all(os.path.isabs(p) for p in series)
-        except TypeError:
-            return False
 
 
 def series_handle_nulls(fn: Callable[..., bool]) -> Callable[..., bool]:
@@ -177,7 +43,7 @@ def series_handle_nulls(fn: Callable[..., bool]) -> Callable[..., bool]:
     return inner
 
 
-def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
+def typeset_types(config):
     """Define types based on the config"""
 
     class Unsupported(visions.Generic):
@@ -185,7 +51,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class Numeric(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             return [
                 IdentityRelation(Unsupported),
                 InferenceRelation(
@@ -206,7 +72,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class DateTime(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             return [
                 IdentityRelation(Unsupported),
             ]
@@ -220,7 +86,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class Categorical(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             return [
                 IdentityRelation(Unsupported),
                 InferenceRelation(
@@ -249,7 +115,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class Boolean(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             # Numeric [0, 1] goes via Categorical with distinct_count_without_nan <= 2
             mapping = config.vars.bool.mappings
 
@@ -279,7 +145,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class URL(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             return [IdentityRelation(Categorical)]
 
         @staticmethod
@@ -295,7 +161,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class Path(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             return [IdentityRelation(Categorical)]
 
         @staticmethod
@@ -310,7 +176,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class File(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             return [IdentityRelation(Path)]
 
         @staticmethod
@@ -321,7 +187,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     class Image(visions.VisionsBaseType):
         @staticmethod
-        def get_relations() -> Sequence[TypeRelation]:
+        def get_relations():
             return [IdentityRelation(File)]
 
         @staticmethod

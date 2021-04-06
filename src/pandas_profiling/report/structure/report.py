@@ -21,7 +21,7 @@ from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.utils.dataframe import slugify
 
 
-def get_missing_items(config: Settings, summary: dict) -> list:
+def get_missing_items(config: Settings, summary) -> list:
     """Return the missing diagrams
 
     Args:
@@ -219,7 +219,7 @@ def get_scatter_matrix(config: Settings, scatter_matrix: dict) -> list:
     return titems
 
 
-def get_report_structure(config: Settings, summary: dict) -> Root:
+def get_report_structure(config: Settings, summary: dict) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:

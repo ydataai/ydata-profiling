@@ -104,8 +104,8 @@ def main(args: Optional[List[Any]] = None) -> None:
     """
 
     # Parse the arguments
-    parsed_args = parse_args(args)
-    kwargs = vars(parsed_args)
+    args = parse_args(args)
+    kwargs = vars(args)
 
     input_file = Path(kwargs.pop("input_file"))
     output_file = kwargs.pop("output_file")
