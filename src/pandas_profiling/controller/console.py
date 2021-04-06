@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Union
 
 from pandas_profiling.__init__ import ProfileReport, __version__
-from pandas_profiling.config import config
 from pandas_profiling.utils.dataframe import read_pandas
 
 
@@ -106,18 +105,21 @@ def main(args=None) -> None:
 
     # Parse the arguments
     args = parse_args(args)
-    if args.output_file is None:
-        args.output_file = str(Path(args.input_file).with_suffix(".html"))
-    config.set_args(args, dots=True)
+    kwargs = vars(args)
+
+    input_file = Path(kwargs.pop("input_file"))
+    output_file = kwargs.pop("output_file")
+    if output_file is None:
+        output_file = str(input_file.with_suffix(".html"))
+
+    silent = kwargs.pop("silent")
 
     # read the DataFrame
-    df = read_pandas(Path(args.input_file))
+    df = read_pandas(input_file)
 
     # Generate the profiling report
     p = ProfileReport(
         df,
-        minimal=args.minimal,
-        explorative=args.explorative,
-        config_file=args.config_file,
+        **kwargs,
     )
-    p.to_file(Path(args.output_file), silent=args.silent)
+    p.to_file(Path(output_file), silent=silent)

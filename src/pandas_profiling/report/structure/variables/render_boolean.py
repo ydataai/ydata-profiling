@@ -1,4 +1,7 @@
-from pandas_profiling.config import config
+from typing import List
+
+from pandas_profiling.config import Settings
+from pandas_profiling.report.formatters import fmt, fmt_bytesize, fmt_percent
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
@@ -7,18 +10,19 @@ from pandas_profiling.report.presentation.core import (
     Table,
     VariableInfo,
 )
+from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
 from pandas_profiling.visualisation.plot import pie_plot
 
 
-def render_boolean(summary):
+def render_boolean(config: Settings, summary: dict):
     varid = summary["varid"]
-    n_obs_bool = config["vars"]["bool"]["n_obs"].get(int)
-    image_format = config["plot"]["image_format"].get(str)
+    n_obs_bool = config.vars.bool.n_obs
+    image_format = config.plot.image_format.value
 
     # Prepare variables
-    template_variables = render_common(summary)
+    template_variables = render_common(config, summary)
 
     # Element composition
     info = VariableInfo(
@@ -33,32 +37,27 @@ def render_boolean(summary):
         [
             {
                 "name": "Distinct",
-                "value": summary["n_distinct"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Distinct (%)",
-                "value": summary["p_distinct"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
-                "value": summary["n_missing"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["warn_fields"],
             },
             {
                 "name": "Missing (%)",
-                "value": summary["p_missing"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["warn_fields"],
             },
             {
                 "name": "Memory size",
-                "value": summary["memory_size"],
-                "fmt": "fmt_bytesize",
+                "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
         ]
@@ -75,7 +74,7 @@ def render_boolean(summary):
 
     template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
 
-    items = [
+    items: List[Renderable] = [
         FrequencyTable(
             template_variables["freq_table_rows"],
             name="Common Values",
@@ -84,11 +83,12 @@ def render_boolean(summary):
         )
     ]
 
-    max_unique = config["plot"]["pie"]["max_unique"].get(int)
+    max_unique = config.plot.pie.max_unique
     if max_unique > 0:
         items.append(
             Image(
                 pie_plot(
+                    config,
                     summary["value_counts_without_nan"],
                     legend_kws={"loc": "upper right"},
                 ),

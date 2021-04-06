@@ -1,15 +1,16 @@
+import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Optional, Union
 
-import attr
 import numpy as np
 import pandas as pd
+import yaml
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.describe import describe as describe_df
 from pandas_profiling.model.messages import MessageType
@@ -36,6 +37,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     Used as is, it will output its content as an HTML report in a Jupyter notebook.
     """
 
+    _description_set = None
+    _report = None
+    _html = None
+    _widgets = None
+    _json = None
+    config: Settings
+
     def __init__(
         self,
         df: Optional[pd.DataFrame] = None,
@@ -49,6 +57,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         lazy: bool = True,
         typeset: Optional[VisionsTypeset] = None,
         summarizer: Optional[BaseSummarizer] = None,
+        config: Optional[Settings] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -63,42 +72,41 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             summarizer: optional user summarizer to generate custom summary output
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
-        config.clear()  # to reset (previous) config.
+
+        if df is None and not lazy:
+            raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
+
+        report_config: Settings = Settings() if config is None else config
+
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
             )
 
-        if df is None and not lazy:
-            raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
+        if config_file or minimal:
+            if not config_file:
+                config_file = get_config("config_minimal.yaml")
 
-        if config_file:
-            config.set_file(config_file)
-        elif minimal:
-            config.set_file(get_config("config_minimal.yaml"))
-        elif not config.is_default:
-            pass
+            with open(config_file) as f:
+                data = yaml.safe_load(f)
+
+            report_config = report_config.parse_obj(data)
 
         if explorative:
-            config.set_arg_group("explorative")
+            report_config = report_config.update(Config.get_arg_groups("explorative"))
         if sensitive:
-            config.set_arg_group("sensitive")
+            report_config = report_config.update(Config.get_arg_groups("sensitive"))
         if dark_mode:
-            config.set_arg_group("dark_mode")
+            report_config = report_config.update(Config.get_arg_groups("dark_mode"))
         if orange_mode:
-            config.set_arg_group("orange_mode")
-
-        config.set_kwargs(kwargs)
+            report_config = report_config.update(Config.get_arg_groups("orange_mode"))
+        if len(kwargs) > 0:
+            report_config = report_config.update(Config.shorthands(kwargs))
 
         self.df = None
+        self.config = report_config
         self._df_hash = -1
-        self._description_set = None
         self._sample = sample
-        self._title = None
-        self._report = None
-        self._html = None
-        self._widgets = None
-        self._json = None
         self._typeset = typeset
         self._summarizer = summarizer
 
@@ -110,65 +118,38 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             # Trigger building the report structure
             _ = self.report
 
-    def set_variable(self, key: str, value: Any):
-        """Change a single configuration variable
+    def invalidate_cache(self, subset: Optional[str] = None):
+        """Invalidate report cache. Useful after changing setting.
 
         Args:
-            key: configuration parameter name. Accepts nested syntax, e.g. "html.minify_html"
-            value: the new value
+            subset:
+            - "rendering" to invalidate the html, json and widget report rendering
+            - "report" to remove the caching of the report structure
+            - None (default) to invalidate all caches
 
-        Examples:
-            >>> ProfileReport(df).set_variables("title", "NewTitle")
-            >>> ProfileReport(df).set_variables("html", {"minify_html": False})
-            >>> ProfileReport(df).set_variables("html.minify_html", False)
-
+        Returns:
+            None
         """
-        keys = key.split(".")
-        for e in reversed(keys[1:]):
-            value = {e: value}
+        if subset is not None and subset not in ["rendering", "report"]:
+            raise ValueError(
+                "'subset' parameter should be None, 'rendering' or 'report'"
+            )
 
-        self.set_variables(**{keys[0]: value})
-
-    def set_variables(self, **vars):
-        """Change configuration variables (invalidates caches where necessary)
-
-        Args:
-            **vars: configuration parameters to change
-
-        Examples:
-            >>> ProfileReport(df).set_variables(title="NewTitle", html={"minify_html": False})
-        """
-        changed = set(vars.keys())
-        if len({"progress_bar", "pool_size"} & changed) > 0:
-            # Cache can persist
-            pass
-
-        if len({"notebook"} & changed) > 0:
-            self._widgets = None
-
-        if len({"html", "title"} & changed) > 0:
-            self._html = None
-
-        if not {"progress_bar", "pool_size", "notebook", "html", "title"}.issuperset(
-            changed
-        ):
-            # In all other cases, empty cache
-            self._description_set = None
-            self._title = None
-            self._report = None
-            self._html = None
+        if subset is None or subset in ["rendering", "report"]:
             self._widgets = None
             self._json = None
+            self._html = None
 
-        if len(vars) == 1:
-            config[list(vars.keys())[0]] = list(vars.values())[0]
-        else:
-            config.set_kwargs(vars)
+        if subset is None or subset == "report":
+            self._report = None
+
+        if subset is None:
+            self._description_set = None
 
     @property
     def typeset(self):
         if self._typeset is None:
-            self._typeset = ProfilingTypeSet()
+            self._typeset = ProfilingTypeSet(self.config)
         return self._typeset
 
     @property
@@ -181,16 +162,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def description_set(self):
         if self._description_set is None:
             self._description_set = describe_df(
-                self.title, self.df, self.summarizer, self.typeset, self._sample
+                self.config,
+                self.df,
+                self.summarizer,
+                self.typeset,
+                self._sample,
             )
         return self._description_set
-
-    @property
-    def title(self):
-        if self._title is None:
-            self._title = config["title"].get(str)
-
-        return self._title
 
     @property
     def df_hash(self):
@@ -201,7 +179,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     @property
     def report(self):
         if self._report is None:
-            self._report = get_report_structure(self.description_set)
+            self._report = get_report_structure(self.config, self.description_set)
         return self._report
 
     @property
@@ -222,22 +200,16 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             self._widgets = self._render_widgets()
         return self._widgets
 
-    def get_duplicates(self, df=None) -> Optional[pd.DataFrame]:
+    def get_duplicates(self) -> Optional[pd.DataFrame]:
         """Get duplicate rows and counts based on the configuration
-
-        Args:
-            df: Deprecated, for compatibility
 
         Returns:
             A DataFrame with the duplicate rows and their counts.
         """
         return self.description_set["duplicates"]
 
-    def get_sample(self, df=None) -> dict:
+    def get_sample(self) -> dict:
         """Get head/tail samples based on the configuration
-
-        Args:
-            df: Deprecated, for compatibility
 
         Returns:
             A dict with the head and tail samples.
@@ -279,10 +251,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if output_file.suffix == ".json":
             data: Union[str, bytes] = self.to_json()
         else:
-            inline = config["html"]["inline"].get(bool)
-            if not inline:
-                config["html"]["file_name"] = str(output_file)
-                create_html_assets(output_file)
+            if not self.config.html.inline:
+                self.config.html.assets_path = str(output_file.parent)
+                if self.config.html.assets_prefix is None:
+                    self.config.html.assets_prefix = str(output_file.stem) + "_assets"
+                create_html_assets(self.config, output_file)
 
             if output_file.suffix not in (".html", ".pdf"):
                 suffix = output_file.suffix
@@ -296,7 +269,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             elif output_file.suffix == ".pdf":
                 data: Union[str, bytes] = self.to_pdf()
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
+        disable_progress_bar = not self.config.progress_bar
         with tqdm(
             total=1, desc="Export report to file", disable=disable_progress_bar
         ) as pbar:
@@ -308,7 +281,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         if not silent:
             try:
-                from google.colab import files
+                from google.colab import files  # noqa: F401
 
                 files.download(output_file.absolute().as_uri())
             except ModuleNotFoundError:
@@ -321,23 +294,23 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         report = self.report
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
-        with tqdm(total=1, desc="Render HTML", disable=disable_progress_bar) as pbar:
-            html = HTMLReport(report).render(
-                nav=config["html"]["navbar_show"].get(bool),
-                offline=config["html"]["use_local_assets"].get(bool),
-                inline=config["html"]["inline"].get(bool),
-                file_name=Path(config["html"]["file_name"].get(str)).stem,
-                primary_color=config["html"]["style"]["primary_color"].get(str),
-                logo=config["html"]["style"]["logo"].get(str),
-                theme=config["html"]["style"]["theme"].get(str),
+        with tqdm(
+            total=1, desc="Render HTML", disable=not self.config.progress_bar
+        ) as pbar:
+            html = HTMLReport(copy.deepcopy(report)).render(
+                nav=self.config.html.navbar_show,
+                offline=self.config.html.use_local_assets,
+                inline=self.config.html.inline,
+                assets_prefix=self.config.html.assets_prefix,
+                primary_color=self.config.html.style.primary_color,
+                logo=self.config.html.style.logo,
+                theme=self.config.html.style.theme,
                 title=self.description_set["analysis"]["title"],
                 date=self.description_set["analysis"]["date_start"],
                 version=self.description_set["package"]["pandas_profiling_version"],
             )
 
-            minify_html = config["html"]["minify_html"].get(bool)
-            if minify_html:
+            if self.config.html.minify_html:
                 from htmlmin.main import minify
 
                 html = minify(html, remove_all_empty_space=True, remove_comments=True)
@@ -357,11 +330,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         report = self.report
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
-            total=1, desc="Render widgets", disable=disable_progress_bar, leave=False
+            total=1,
+            desc="Render widgets",
+            disable=not self.config.progress_bar,
+            leave=False,
         ) as pbar:
-            widgets = WidgetReport(report).render()
+            widgets = WidgetReport(copy.deepcopy(report)).render()
             pbar.update()
         return widgets
 
@@ -381,7 +356,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 elif isinstance(o, np.ndarray):
                     return encode_it(o.tolist())
                 elif isinstance(o, Sample):
-                    return encode_it(attr.asdict(o))
+                    return encode_it(o.dict())
                 elif isinstance(o, np.generic):
                     return o.item()
                 else:
@@ -389,8 +364,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         description = self.description_set
 
-        disable_progress_bar = not config["progress_bar"].get(bool)
-        with tqdm(total=1, desc="Render JSON", disable=disable_progress_bar) as pbar:
+        with tqdm(
+            total=1, desc="Render JSON", disable=not self.config.progress_bar
+        ) as pbar:
             description = format_summary(description)
             description = encode_it(description)
             data = json.dumps(description, indent=4)
@@ -445,7 +421,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         # Ignore warning: https://github.com/ipython/ipython/pull/11350/files
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            display(get_notebook_iframe(self))
+            display(get_notebook_iframe(self.config, self))
 
     def to_widgets(self):
         """The ipython notebook widgets user interface."""
@@ -498,10 +474,3 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         # Ensure that columns are strings
         df.columns = df.columns.astype("str")
         return df
-
-    @staticmethod
-    def clear_config():
-        """
-        Restore the configuration to default
-        """
-        config.clear()

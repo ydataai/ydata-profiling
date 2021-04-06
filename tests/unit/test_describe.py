@@ -4,10 +4,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
-from pandas_profiling.model.typeset import DateTime, Numeric
+from pandas_profiling.model.typeset import ProfilingTypeSet
 
 check_is_NaN = "pandas_profiling.check_is_NaN"
 
@@ -45,9 +45,10 @@ testdata = [
 @pytest.mark.parametrize("data,expected", testdata)
 def test_describe_unique(data, expected, summarizer, typeset):
     """Test the unique feature of 1D data"""
-    config["vars"]["num"]["low_categorical_threshold"] = 0
+    config = Settings()
+    config.vars.num.low_categorical_threshold = 0
 
-    desc_1d = describe_1d(data, summarizer, typeset)
+    desc_1d = describe_1d(config, data, summarizer, typeset)
     if expected["is_unique"] is not None:
         assert (
             desc_1d["p_unique"] == expected["p_unique"]
@@ -529,15 +530,19 @@ def expected_results():
         "tuple",
     ],
 )
-def test_describe_df(column, describe_data, expected_results, summarizer, typeset):
-    config["vars"]["num"]["low_categorical_threshold"].set(0)
+def test_describe_df(column, describe_data, expected_results, summarizer):
+    config = Settings()
+    config.vars.num.low_categorical_threshold = 0
+
+    typeset = ProfilingTypeSet(config)
+
     describe_data_frame = pd.DataFrame({column: describe_data[column]})
     if column == "somedate":
         describe_data_frame["somedate"] = pd.to_datetime(
             describe_data_frame["somedate"]
         )
 
-    results = describe("title", describe_data_frame, summarizer, typeset)
+    results = describe(config, describe_data_frame, summarizer, typeset)
 
     assert {
         "analysis",
@@ -565,12 +570,14 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
             test_condition
         ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
 
-    if results["variables"][column]["type"] in [Numeric, DateTime]:
+    if results["variables"][column]["type"] in ["Numeric", "DateTime"]:
         assert (
             "histogram" in results["variables"][column]
         ), f"Histogram missing for column {column}"
 
 
 def test_describe_list(summarizer, typeset):
+    config = Settings()
+
     with pytest.raises(AttributeError), pytest.warns(UserWarning):
-        describe("", [1, 2, 3], summarizer, typeset)
+        describe(config, "", [1, 2, 3], summarizer, typeset)

@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 
 import pandas_profiling
-from pandas_profiling.model.typeset import Categorical, Numeric
 
 
 def test_issue397():
@@ -24,10 +23,11 @@ def test_issue397():
     report = pandas_profiling.ProfileReport(
         df, vars={"num": {"low_categorical_threshold": 0}}
     )
+    assert report.config.vars.num.low_categorical_threshold == 0
 
     description = report.description_set
 
-    assert description["table"]["types"] == {Categorical: 1, Numeric: 4}
+    assert description["table"]["types"] == {"Categorical": 1, "Numeric": 4}
 
     assert description["variables"]["float-inf"]["p_infinite"] == 0.5
     assert description["variables"]["float-inf"]["n_infinite"] == 2

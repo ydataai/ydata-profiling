@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from visions import VisionsBaseType
 
+from pandas_profiling.config import Settings
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -17,17 +18,6 @@ from pandas_profiling.model.summary_algorithms import (
     describe_supported,
     describe_url_1d,
 )
-from pandas_profiling.model.typeset import (
-    URL,
-    Boolean,
-    Categorical,
-    DateTime,
-    File,
-    Image,
-    Numeric,
-    Path,
-    Unsupported,
-)
 
 
 class BaseSummarizer(Handler):
@@ -36,13 +26,15 @@ class BaseSummarizer(Handler):
     Can be used to define custom summarizations
     """
 
-    def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -> dict:
+    def summarize(
+        self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
+    ) -> dict:
         """
 
         Returns:
             object:
         """
-        _, summary = self.handle(dtype, series, {"type": dtype})
+        _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
         return summary
 
 
@@ -51,31 +43,31 @@ class PandasProfilingSummarizer(BaseSummarizer):
 
     def __init__(self, typeset, *args, **kwargs):
         summary_map = {
-            Unsupported: [
+            "Unsupported": [
                 describe_counts,
                 describe_generic,
                 describe_supported,
             ],
-            Numeric: [
+            "Numeric": [
                 describe_numeric_1d,
             ],
-            DateTime: [
+            "DateTime": [
                 describe_date_1d,
             ],
-            Categorical: [
+            "Categorical": [
                 describe_categorical_1d,
             ],
-            Boolean: [],
-            URL: [
+            "Boolean": [],
+            "URL": [
                 describe_url_1d,
             ],
-            Path: [
+            "Path": [
                 describe_path_1d,
             ],
-            File: [
+            "File": [
                 describe_file_1d,
             ],
-            Image: [
+            "Image": [
                 describe_image_1d,
             ],
         }

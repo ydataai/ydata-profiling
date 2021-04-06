@@ -72,8 +72,8 @@ By default, the descriptions are presented in the overview tab and next to each 
 
         # We can disable showing the descriptions next to each variable
         report = df.profile_report(
-                variable=dict(descriptions=definitions),
-                show_variable_description=False
+            variable=dict(descriptions=definitions),
+            show_variable_description=False
         )
 
         report.to_file('report.html')

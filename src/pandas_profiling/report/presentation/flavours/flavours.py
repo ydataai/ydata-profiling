@@ -4,9 +4,7 @@ from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 def apply_renderable_mapping(mapping, structure, flavour):
-    for key, value in mapping.items():
-        if isinstance(structure, key):
-            value.convert_to_class(structure, flavour)
+    mapping[type(structure)].convert_to_class(structure, flavour)
 
 
 def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:

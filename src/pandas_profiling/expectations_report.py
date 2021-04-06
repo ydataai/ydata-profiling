@@ -1,16 +1,6 @@
+from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
 from pandas_profiling.model.handler import Handler
-from pandas_profiling.model.typeset import (
-    URL,
-    Boolean,
-    Categorical,
-    DateTime,
-    File,
-    Image,
-    Numeric,
-    Path,
-    Unsupported,
-)
 from pandas_profiling.utils.dataframe import slugify
 
 
@@ -18,20 +8,24 @@ from pandas_profiling.utils.dataframe import slugify
 class ExpectationHandler(Handler):
     def __init__(self, typeset, *args, **kwargs):
         mapping = {
-            Unsupported: [expectation_algorithms.generic_expectations],
-            Categorical: [expectation_algorithms.categorical_expectations],
-            Boolean: [expectation_algorithms.categorical_expectations],
-            Numeric: [expectation_algorithms.numeric_expectations],
-            URL: [expectation_algorithms.url_expectations],
-            File: [expectation_algorithms.file_expectations],
-            Path: [expectation_algorithms.path_expectations],
-            DateTime: [expectation_algorithms.datetime_expectations],
-            Image: [expectation_algorithms.image_expectations],
+            "Unsupported": [expectation_algorithms.generic_expectations],
+            "Categorical": [expectation_algorithms.categorical_expectations],
+            "Boolean": [expectation_algorithms.categorical_expectations],
+            "Numeric": [expectation_algorithms.numeric_expectations],
+            "URL": [expectation_algorithms.url_expectations],
+            "File": [expectation_algorithms.file_expectations],
+            "Path": [expectation_algorithms.path_expectations],
+            "DateTime": [expectation_algorithms.datetime_expectations],
+            "Image": [expectation_algorithms.image_expectations],
         }
         super().__init__(mapping, typeset, *args, **kwargs)
 
 
 class ExpectationsReport:
+    config: Settings
+    typeset = None
+    df = None
+
     def to_expectation_suite(
         self,
         suite_name=None,
@@ -65,7 +59,7 @@ class ExpectationsReport:
 
         # Use report title if suite is empty
         if suite_name is None:
-            suite_name = slugify(self.title)
+            suite_name = slugify(self.config.title)
 
         # Use the default handler if none
         if handler is None:

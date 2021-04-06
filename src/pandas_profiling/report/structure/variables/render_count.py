@@ -1,4 +1,10 @@
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
+from pandas_profiling.report.formatters import (
+    fmt,
+    fmt_bytesize,
+    fmt_numeric,
+    fmt_percent,
+)
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
@@ -10,9 +16,9 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
-def render_count(summary):
-    template_variables = render_common(summary)
-    image_format = config["plot"]["image_format"].get(str)
+def render_count(config: Settings, summary):
+    template_variables = render_common(config, summary)
+    image_format = config.plot.image_format.value
 
     # Top
     info = VariableInfo(
@@ -27,26 +33,22 @@ def render_count(summary):
         [
             {
                 "name": "Distinct",
-                "value": summary["n_distinct"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_distinct"]),
                 "alert": False,
             },
             {
                 "name": "Distinct (%)",
-                "value": summary["p_distinct"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_distinct"]),
                 "alert": False,
             },
             {
                 "name": "Missing",
-                "value": summary["n_missing"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_missing"]),
                 "alert": False,
             },
             {
                 "name": "Missing (%)",
-                "value": summary["p_missing"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_missing"]),
                 "alert": False,
             },
         ]
@@ -56,45 +58,41 @@ def render_count(summary):
         [
             {
                 "name": "Mean",
-                "value": summary["mean"],
-                "fmt": "fmt_numeric",
+                "value": fmt_numeric(
+                    summary["mean"], precision=config.report.precision
+                ),
                 "alert": False,
             },
             {
                 "name": "Minimum",
-                "value": summary["min"],
-                "fmt": "fmt_numeric",
+                "value": fmt_numeric(summary["min"], precision=config.report.precision),
                 "alert": False,
             },
             {
                 "name": "Maximum",
-                "value": summary["max"],
-                "fmt": "fmt_numeric",
+                "value": fmt_numeric(summary["max"], precision=config.report.precision),
                 "alert": False,
             },
             {
                 "name": "Zeros",
-                "value": summary["n_zeros"],
-                "fmt": "fmt",
+                "value": fmt(summary["n_zeros"]),
                 "alert": False,
             },
             {
                 "name": "Zeros (%)",
-                "value": summary["p_zeros"],
-                "fmt": "fmt_percent",
+                "value": fmt_percent(summary["p_zeros"]),
                 "alert": False,
             },
             {
                 "name": "Memory size",
-                "value": summary["memory_size"],
-                "fmt": "fmt_bytesize",
+                "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
         ]
     )
 
     mini_histo = Image(
-        mini_histogram(*summary["histogram"]),
+        mini_histogram(config, *summary["histogram"]),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -105,7 +103,7 @@ def render_count(summary):
 
     seqs = [
         Image(
-            histogram(*summary["histogram"]),
+            histogram(config, *summary["histogram"]),
             image_format=image_format,
             alt="Histogram",
             caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",

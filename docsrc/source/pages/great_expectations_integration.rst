@@ -16,7 +16,7 @@ Great Expectations then uses this statement to validate whether the column ``pas
 
 Great Expectations renders Expectations to clean, human-readable documentation called *Data Docs*. These HTML docs contain both your Expectation Suites as well as your data validation results each time validation is run – think of it as a continuously updated data quality report.
 
-For more information about Great Expectations, check out the `Great Expectations documentation <https://docs.greatexpectations.io/en/latest/>`_ and join the `Great Expectations Slack channel <https://www.greatexpectations.io/slack>` for help.
+For more information about Great Expectations, check out the `Great Expectations documentation <https://docs.greatexpectations.io/en/latest/>`_ and join the `Great Expectations Slack channel <https://www.greatexpectations.io/slack>`_ for help.
 
 
 Creating Expectation Suites with Pandas Profiling

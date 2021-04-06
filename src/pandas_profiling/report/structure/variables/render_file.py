@@ -1,26 +1,29 @@
-from pandas_profiling.config import config
+from typing import List
+
+from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.core import Container, FrequencyTable, Image
+from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_path import render_path
 from pandas_profiling.visualisation.plot import histogram
 
 
-def render_file(summary):
+def render_file(config: Settings, summary: dict):
     varid = summary["varid"]
 
-    template_variables = render_path(summary)
+    template_variables = render_path(config, summary)
 
     # Top
     template_variables["top"].content["items"][0].content["var_type"] = "File"
 
-    n_freq_table_max = config["n_freq_table_max"].get(int)
-    image_format = config["plot"]["image_format"].get(str)
+    n_freq_table_max = config.n_freq_table_max
+    image_format = config.plot.image_format
 
-    file_tabs = []
+    file_tabs: List[Renderable] = []
     if "file_size" in summary:
         file_tabs.append(
             Image(
-                histogram(*summary["histogram_file_size"]),
+                histogram(config, *summary["histogram_file_size"]),
                 image_format=image_format,
                 alt="Size",
                 caption=f"<strong>Histogram with fixed size bins of file sizes (in bytes)</strong> (bins={len(summary['histogram_file_size'][1]) - 1})",
