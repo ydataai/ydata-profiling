@@ -1,4 +1,5 @@
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
+from pandas_profiling.report.formatters import fmt, fmt_numeric
 from pandas_profiling.report.presentation.core import Container, FrequencyTable, Table
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_categorical import (
@@ -6,12 +7,12 @@ from pandas_profiling.report.structure.variables.render_categorical import (
 )
 
 
-def render_path(summary):
+def render_path(config: Settings, summary: dict):
     varid = summary["varid"]
-    n_freq_table_max = config["n_freq_table_max"].get(int)
-    redact = config["vars"]["cat"]["redact"].get(bool)
+    n_freq_table_max = config.n_freq_table_max
+    redact = config.vars.cat.redact
 
-    template_variables = render_categorical(summary)
+    template_variables = render_categorical(config, summary)
 
     keys = ["name", "parent", "suffix", "stem", "anchor"]
     for path_part in keys:
@@ -31,38 +32,45 @@ def render_path(summary):
                 [
                     {
                         "name": "Common prefix",
-                        "value": summary["common_prefix"],
-                        "fmt": "fmt",
+                        "value": fmt(summary["common_prefix"]),
                         "alert": False,
                     },
                     {
                         "name": "Unique stems",
-                        "value": summary["n_stem_unique"],
-                        "fmt": "fmt_numeric",
+                        "value": fmt_numeric(
+                            summary["n_stem_unique"], precision=config.report.precision
+                        ),
                         "alert": False,
                     },
                     {
                         "name": "Unique names",
-                        "value": summary["n_name_unique"],
-                        "fmt": "fmt_numeric",
+                        "value": fmt_numeric(
+                            summary["n_name_unique"], precision=config.report.precision
+                        ),
                         "alert": False,
                     },
                     {
                         "name": "Unique extensions",
-                        "value": summary["n_suffix_unique"],
-                        "fmt": "fmt_numeric",
+                        "value": fmt_numeric(
+                            summary["n_suffix_unique"],
+                            precision=config.report.precision,
+                        ),
                         "alert": False,
                     },
                     {
                         "name": "Unique directories",
-                        "value": summary["n_parent_unique"],
-                        "fmt": "fmt_numeric",
+                        "value": fmt_numeric(
+                            summary["n_parent_unique"],
+                            precision=config.report.precision,
+                        ),
                         "alert": False,
                     },
                     {
                         "name": "Unique anchors",
-                        "value": summary["n_anchor_unique"],
-                        "fmt": "fmt_numeric",
+                        "value": fmt_numeric(
+                            summary["n_anchor_unique"],
+                            precision=config.report.precision,
+                        ),
                         "alert": False,
                     },
                 ]

@@ -17,14 +17,14 @@ def test_data():
     return df
 
 
-def test_issue725(test_data):
-    metrics, duplicates = get_duplicates(test_data, list(test_data.columns))
+def test_issue725(config, test_data):
+    metrics, duplicates = get_duplicates(config, test_data, list(test_data.columns))
     assert metrics["n_duplicates"] == 100
     assert metrics["p_duplicates"] == 0.5
     assert set(duplicates.columns) == set(test_data.columns).union({"# duplicates"})
 
 
-def test_issue725_existing(test_data):
+def test_issue725_existing(config, test_data):
     test_data = test_data.rename(columns={"count": "# duplicates"})
     with pytest.raises(ValueError):
-        _, _ = get_duplicates(test_data, list(test_data.columns))
+        _, _ = get_duplicates(config, test_data, list(test_data.columns))

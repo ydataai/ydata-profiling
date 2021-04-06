@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -12,7 +12,7 @@ from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
 
 
-def get_correlation_items(summary) -> Optional[Renderable]:
+def get_correlation_items(config: Settings, summary) -> Optional[Renderable]:
     """Create the list of correlation items
 
     Args:
@@ -62,13 +62,13 @@ def get_correlation_items(summary) -> Optional[Renderable]:
         "cramers": (0, "Cramér's V (φc)", cramers_description),
     }
 
-    image_format = config["plot"]["image_format"].get(str)
+    image_format = config.plot.image_format
 
     for key, item in summary["correlations"].items():
         vmin, name, description = key_to_data[key]
 
         diagram = Image(
-            plot.correlation_matrix(item, vmin=vmin),
+            plot.correlation_matrix(config, item, vmin=vmin),
             image_format=image_format,
             alt=name,
             anchor_id=f"{key}_diagram",

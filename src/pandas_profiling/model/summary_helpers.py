@@ -10,7 +10,7 @@ import pandas as pd
 from scipy.stats.stats import chisquare
 from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.summary_helpers_image import (
     extract_exif,
     hash_image,
@@ -336,13 +336,15 @@ def unicode_summary(series: pd.Series) -> dict:
     return summary
 
 
-def histogram_compute(finite_values, n_unique, name="histogram", weights=None):
+def histogram_compute(
+    config: Settings, finite_values, n_unique, name="histogram", weights=None
+):
     stats = {}
-    bins = config["plot"]["histogram"]["bins"].get(int)
+    bins = config.plot.histogram.bins
     bins = "auto" if bins == 0 else min(bins, n_unique)
     stats[name] = np.histogram(finite_values, bins=bins, weights=weights)
 
-    max_bins = config["plot"]["histogram"]["max_bins"].get(int)
+    max_bins = config.plot.histogram.max_bins
     if bins == "auto" and len(stats[name][1]) > max_bins:
         stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
 

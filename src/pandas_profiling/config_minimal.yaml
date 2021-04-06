@@ -14,16 +14,16 @@ variables:
   descriptions: {}
 
 # infer dtypes
-infer_dtypes: False
+infer_dtypes: false
 
 # Show the description at each variable (in addition to the overview tab)
-show_variable_description: True
+show_variable_description: true
 
 # Number of workers (0=multiprocessing.cpu_count())
 pool_size: 0
 
 # Show the progress bar
-progress_bar: True
+progress_bar: true
 
 # Per variable type description settings
 vars:
@@ -36,76 +36,80 @@ vars:
               - 0.95
         skewness_threshold: 20
         low_categorical_threshold: 5
-# Set to zero to disable
+        # Set to zero to disable
         chi_squared_threshold: 0.0
     cat:
-        length: False
-        characters: False
-        words: False
+        length: false
+        characters: false
+        words: false
         cardinality_threshold: 50
         n_obs: 5
-# Set to zero to disable
+        # Set to zero to disable
         chi_squared_threshold: 0.0
-        coerce_str_to_date: False
-        redact: False
+        coerce_str_to_date: false
+        redact: false
         histogram_largest: 10
     bool:
         n_obs: 3
-# string to boolean mappings pairs (true, false)
+        # string to boolean mapping dict
         mappings:
-          - ["t", "f"]
-          - ["yes", "no"]
-          - ["y", "n"]
-          - ["true", "false"]
+            t: true
+            f: false
+            yes: true
+            no: false
+            y: true
+            n: false
+            true: true
+            false: false
     path:
-        active: False
+        active: false
     file:
-        active: False
+        active: false
     image:
-        active: False
-        exif: False
-        hash: False
+        active: false
+        exif: false
+        hash: false
     url:
-        active: False
+        active: false
 
 
-# Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
-sort: None
+# Sort the variables. Possible values: "ascending", "descending" or null (leaves original sorting)
+sort: null
 
 # which diagrams to show
 missing_diagrams:
-    bar: False
-    matrix: False
-    heatmap: False
-    dendrogram: False
+    bar: false
+    matrix: false
+    heatmap: false
+    dendrogram: false
 
 correlations:
     pearson:
-      calculate: False
-      warn_high_correlations: True
+      calculate: false
+      warn_high_correlations: true
       threshold: 0.9
     spearman:
-      calculate: False
-      warn_high_correlations: False
+      calculate: false
+      warn_high_correlations: false
       threshold: 0.9
     kendall:
-      calculate: False
-      warn_high_correlations: False
+      calculate: false
+      warn_high_correlations: false
       threshold: 0.9
     phi_k:
-      calculate: False
-      warn_high_correlations: False
+      calculate: false
+      warn_high_correlations: false
       threshold: 0.9
     cramers:
-      calculate: False
-      warn_high_correlations: True
+      calculate: false
+      warn_high_correlations: true
       threshold: 0.9
 
 
 # Bivariate / Pairwise relations
 interactions:
   targets: []
-  continuous: False
+  continuous: false
 
 # For categorical
 categorical_maximum_correlation_distinct: 100
@@ -115,7 +119,7 @@ report:
 
 # Plot-specific settings
 plot:
-# Image format (svg or png)
+    # Image format (svg or png)
     image_format: "svg"
     dpi: 800
 
@@ -127,21 +131,21 @@ plot:
 
     missing:
         cmap: 'RdBu'
-# Force labels when there are > 50 variables
-# https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
-        force_labels: True
+        # Force labels when there are > 50 variables
+        # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+        force_labels: true
 
     pie:
-# display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+      # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
       max_unique: 0
 
     histogram:
-        x_axis_labels: True
+        x_axis_labels: true
 
-# Number of bins (set to 0 to automatically detect the bin size)
+        # Number of bins (set to 0 to automatically detect the bin size)
         bins: 50
 
-# Maximum number of bins (when bins=0)
+        # Maximum number of bins (when bins=0)
         max_bins: 250
 
 # The number of observations to show
@@ -150,7 +154,7 @@ n_extreme_obs: 5
 n_freq_table_max: 10
 
 # Use `deep` flag for memory_usage
-memory_deep: False
+memory_deep: false
 
 # Configuration related to the duplicates
 duplicates:
@@ -164,35 +168,36 @@ samples:
     random: 0
 
 # Configuration related to the rejection of variables
-reject_variables: True
+reject_variables: true
 
 # When in a Jupyter notebook
 notebook:
     iframe:
         height: '800px'
         width: '100%'
-# or 'src'
+        # or 'src'
         attribute: 'srcdoc'
 
 html:
-# Minify the html
-    minify_html: True
+    # Minify the html
+    minify_html: true
 
-# Offline support
-    use_local_assets: True
+    # Offline support
+    use_local_assets: true
 
-# If True, single file, else directory with assets
-    inline: True
+    # If true, single file, else directory with assets
+    inline: true
 
-# Show navbar
-    navbar_show: True
+    # Show navbar
+    navbar_show: true
 
-# For internal use
-    file_name: None
+    # Assets prefix if inline = true
+    assets_prefix: null
 
-# Styling options for the HTML report
+    # Styling options for the HTML report
     style:
-      theme: None
+      theme: null
       logo: ""
       primary_color: "#337ab7"
-      full_width: False
+
+    full_width: false

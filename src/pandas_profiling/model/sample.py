@@ -1,23 +1,25 @@
-from typing import List
+from typing import List, Optional, TypeVar
 
-import attr
 import pandas as pd
+from pydantic.main import BaseModel
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 
-
-@attr.s
-class Sample:
-    id = attr.ib()
-    data = attr.ib()
-    name = attr.ib()
-    caption = attr.ib(default=None)
+PandasDataFrame = TypeVar("pandas.core.frame.DataFrame")  # type: ignore
 
 
-def get_sample(df: pd.DataFrame) -> List[Sample]:
+class Sample(BaseModel):
+    id: str
+    data: PandasDataFrame  # type: ignore
+    name: str
+    caption: Optional[str] = None
+
+
+def get_sample(config: Settings, df: pd.DataFrame) -> List[Sample]:
     """Obtains a sample from head and tail of the DataFrame
 
     Args:
+        config: Settings object
         df: the pandas DataFrame
 
     Returns:
@@ -27,16 +29,18 @@ def get_sample(df: pd.DataFrame) -> List[Sample]:
     if len(df) == 0:
         return samples
 
-    n_head = config["samples"]["head"].get(int)
+    n_head = config.samples.head
     if n_head > 0:
-        samples.append(Sample("head", df.head(n=n_head), "First rows"))
+        samples.append(Sample(id="head", data=df.head(n=n_head), name="First rows"))
 
-    n_tail = config["samples"]["tail"].get(int)
+    n_tail = config.samples.tail
     if n_tail > 0:
-        samples.append(Sample("tail", df.tail(n=n_tail), "Last rows"))
+        samples.append(Sample(id="tail", data=df.tail(n=n_tail), name="Last rows"))
 
-    n_random = config["samples"]["random"].get(int)
+    n_random = config.samples.random
     if n_random > 0:
-        samples.append(Sample("random", df.sample(n=n_random), "Random sample"))
+        samples.append(
+            Sample(id="random", data=df.sample(n=n_random), name="Random sample")
+        )
 
     return samples

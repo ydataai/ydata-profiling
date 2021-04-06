@@ -1,12 +1,11 @@
 """Contains all templates used for generating the HTML profile report"""
-import re
 import shutil
 from pathlib import Path
 
 import jinja2
 
-from pandas_profiling.config import config
-from pandas_profiling.report.formatters import get_fmt_mapping
+from pandas_profiling.config import Settings, Theme
+from pandas_profiling.report.formatters import fmt, fmt_badge, fmt_numeric, fmt_percent
 
 # Initializing Jinja
 package_loader = jinja2.PackageLoader(
@@ -15,14 +14,11 @@ package_loader = jinja2.PackageLoader(
 jinja2_env = jinja2.Environment(
     lstrip_blocks=True, trim_blocks=True, loader=package_loader
 )
-fmt_mapping = get_fmt_mapping()
-for key, value in fmt_mapping.items():
-    jinja2_env.filters[key] = value
-
-jinja2_env.filters["fmt_badge"] = lambda x: re.sub(
-    r"\((\d+)\)", r'<span class="badge">\1</span>', x
-)
-jinja2_env.filters["dynamic_filter"] = lambda x, v: fmt_mapping[v](x)
+jinja2_env.filters["is_list"] = lambda x: isinstance(x, list)
+jinja2_env.filters["fmt_badge"] = fmt_badge
+jinja2_env.filters["fmt_percent"] = fmt_percent
+jinja2_env.filters["fmt_numeric"] = fmt_numeric
+jinja2_env.filters["fmt"] = fmt
 
 
 def template(template_name: str) -> jinja2.Template:
@@ -38,11 +34,10 @@ def template(template_name: str) -> jinja2.Template:
     return jinja2_env.get_template(template_name)
 
 
-def create_html_assets(output_file):
-    theme = config["html"]["style"]["theme"].get(str)
-    offline = config["html"]["use_local_assets"].get(bool)
+def create_html_assets(config: Settings, output_file):
+    theme = config.html.style.theme
 
-    path = output_file.with_name(output_file.stem + "_assets")
+    path = output_file.with_name(config.html.assets_prefix)
     if path.is_dir():
         shutil.rmtree(path)
 
@@ -51,11 +46,11 @@ def create_html_assets(output_file):
     css = []
     js = []
 
-    if offline:
-        if theme != "None":
-            if theme == "flatly":
+    if config.html.use_local_assets:
+        if theme is not None:
+            if theme == Theme.flatly:
                 css.append("wrapper/assets/flatly.bootstrap.min.css")
-            if theme == "united":
+            if theme == Theme.united:
                 css.append("wrapper/assets/united.bootstrap.min.css")
         else:
             css.append("wrapper/assets/bootstrap.min.css")
@@ -72,8 +67,8 @@ def create_html_assets(output_file):
         for css_file in css:
             (css_dir / Path(css_file).name).write_text(
                 template(css_file).render(
-                    primary_color=config["html"]["style"]["primary_color"].get(str),
-                    nav=config["html"]["navbar_show"].get(bool),
+                    primary_color=config.html.style.primary_color,
+                    nav=config.html.navbar_show,
                 )
             )
 
