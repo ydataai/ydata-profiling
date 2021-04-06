@@ -13,11 +13,12 @@ from pandas_profiling.report.presentation.core import (
     Table,
     VariableInfo,
 )
+from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.structure.variables.render_common import render_common
 from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
-def render_real(config: Settings, summary: dict) -> dict:
+def render_real(config: Settings, summary: dict) -> Renderable:
     varid = summary["varid"]
     template_variables = render_common(config, summary)
     image_format = config.plot.image_format
@@ -41,44 +42,38 @@ def render_real(config: Settings, summary: dict) -> dict:
             {
                 "name": "Distinct",
                 "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["alert_fields"],
+                "alert": "n_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Distinct (%)",
                 "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["alert_fields"],
+                "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
                 "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["alert_fields"],
+                "alert": "n_missing" in summary["warn_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["alert_fields"],
+                "alert": "p_missing" in summary["warn_fields"],
             },
             {
                 "name": "Infinite",
                 "value": fmt(summary["n_infinite"]),
-                "alert": "n_infinite" in summary["alert_fields"],
+                "alert": "n_infinite" in summary["warn_fields"],
             },
             {
                 "name": "Infinite (%)",
                 "value": fmt_percent(summary["p_infinite"]),
-                "alert": "p_infinite" in summary["alert_fields"],
+                "alert": "p_infinite" in summary["warn_fields"],
             },
             {
                 "name": "Mean",
                 "value": fmt_numeric(
                     summary["mean"], precision=config.report.precision
                 ),
-                "alert": False,
-            },
-            {
-                "name": "Mean",
-                "value": summary["mean"],
-                "fmt": "fmt_numeric",
                 "alert": False,
             },
         ]
@@ -99,12 +94,12 @@ def render_real(config: Settings, summary: dict) -> dict:
             {
                 "name": "Zeros",
                 "value": fmt(summary["n_zeros"]),
-                "alert": "n_zeros" in summary["alert_fields"],
+                "alert": "n_zeros" in summary["warn_fields"],
             },
             {
                 "name": "Zeros (%)",
                 "value": fmt_percent(summary["p_zeros"]),
-                "alert": "p_zeros" in summary["alert_fields"],
+                "alert": "p_zeros" in summary["warn_fields"],
             },
             {
                 "name": "Negative",
@@ -114,18 +109,6 @@ def render_real(config: Settings, summary: dict) -> dict:
             {
                 "name": "Negative (%)",
                 "value": fmt_percent(summary["p_negative"]),
-                "alert": False,
-            },
-            {
-                "name": "Negative",
-                "value": summary["n_negative"],
-                "fmt": "fmt",
-                "alert": False,
-            },
-            {
-                "name": "Negative (%)",
-                "value": summary["p_negative"],
-                "fmt": "fmt_percent",
                 "alert": False,
             },
             {
@@ -221,7 +204,7 @@ def render_real(config: Settings, summary: dict) -> dict:
                 "value": fmt_numeric(
                     summary["skewness"], precision=config.report.precision
                 ),
-                "class": "alert" if "skewness" in summary["alert_fields"] else "",
+                "class": "alert" if "skewness" in summary["warn_fields"] else "",
             },
             {
                 "name": "Sum",

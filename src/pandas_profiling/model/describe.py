@@ -7,34 +7,29 @@ from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.alerts import get_alerts
-from pandas_profiling.model.correlations import (
-    calculate_correlation,
-    get_active_correlations,
-)
-from pandas_profiling.model.dataframe import check_dataframe, preprocess
+from pandas_profiling.model.correlations import calculate_correlation
 from pandas_profiling.model.duplicates import get_duplicates
-from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
-from pandas_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
-from pandas_profiling.model.sample import get_custom_sample, get_sample
-from pandas_profiling.model.summarizer import BaseSummarizer
-from pandas_profiling.model.summary import get_series_descriptions
-from pandas_profiling.model.table import get_table_stats
-from pandas_profiling.utils.progress_bar import progress
+from pandas_profiling.model.sample import Sample, get_sample
+from pandas_profiling.model.summary import (
+    get_messages,
+    get_missing_diagrams,
+    get_scatter_matrix,
+    get_series_descriptions,
+    get_table_stats,
+)
 from pandas_profiling.version import __version__
 
 
 def describe(
     config: Settings,
     df: pd.DataFrame,
-    summarizer: BaseSummarizer,
-    typeset: VisionsTypeset,
+    summarizer,
+    typeset,
     sample: Optional[dict] = None,
 ) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
-        config: report Settings object
         df: DataFrame.
         summarizer: summarizer object
         typeset: visions typeset
@@ -53,8 +48,24 @@ def describe(
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    check_dataframe(df)
-    df = preprocess(config, df)
+    if not isinstance(df, pd.DataFrame):
+        warnings.warn("df is not of type pandas.DataFrame")
+
+    disable_progress_bar = not config.progress_bar
+
+    date_start = datetime.utcnow()
+
+    correlation_names = [
+        correlation_name
+        for correlation_name in [
+            "pearson",
+            "spearman",
+            "kendall",
+            "phi_k",
+            "cramers",
+        ]
+        if config.correlations[correlation_name].calculate
+    ]
 
     number_of_tasks = 5
 
@@ -64,10 +75,6 @@ def describe(
         disable=not config.progress_bar,
         position=0,
     ) as pbar:
-        date_start = datetime.utcnow()
-
-        # Variable-specific
-        pbar.total += len(df.columns)
         series_description = get_series_descriptions(
             config, df, summarizer, typeset, pbar
         )
@@ -89,15 +96,13 @@ def describe(
         pbar.update()
 
         # Get correlations
-        correlation_names = get_active_correlations(config)
-        pbar.total += len(correlation_names)
-
-        correlations = {
-            correlation_name: progress(
-                calculate_correlation, pbar, f"Calculate {correlation_name} correlation"
-            )(config, df, correlation_name, series_description)
-            for correlation_name in correlation_names
-        }
+        correlations = {}
+        for correlation_name in correlation_names:
+            pbar.set_postfix_str(f"Calculate {correlation_name} correlation")
+            correlations[correlation_name] = calculate_correlation(
+                config, df, correlation_name, series_description
+            )
+            pbar.update()
 
         # make sure correlations is not None
         correlations = {
@@ -106,49 +111,48 @@ def describe(
 
         # Scatter matrix
         pbar.set_postfix_str("Get scatter matrix")
-        scatter_tasks = get_scatter_tasks(config, interval_columns)
-        pbar.total += len(scatter_tasks)
-        scatter_matrix: Dict[Any, Dict[Any, Any]] = {
-            x: {y: None} for x, y in scatter_tasks
-        }
-        for x, y in scatter_tasks:
-            scatter_matrix[x][y] = progress(
-                get_scatter_plot, pbar, f"scatter {x}, {y}"
-            )(config, df, x, y, interval_columns)
+        scatter_matrix = get_scatter_matrix(config, df, interval_columns)
+        pbar.update()
 
         # Table statistics
-        table_stats = progress(get_table_stats, pbar, "Get dataframe statistics")(
-            config, df, series_description
-        )
+        pbar.set_postfix_str("Get table statistics")
+        table_stats = get_table_stats(config, df, series_description)
+        pbar.update()
 
         # missing diagrams
-        missing_map = get_missing_active(config, table_stats)
-        pbar.total += len(missing_map)
-        missing = {
-            name: progress(get_missing_diagram, pbar, f"Missing diagram {name}")(
-                config, df, settings
-            )
-            for name, settings in missing_map.items()
-        }
-        missing = {name: value for name, value in missing.items() if value is not None}
+        pbar.set_postfix_str("Get missing diagrams")
+        missing = get_missing_diagrams(config, df, table_stats)
+        pbar.update()
 
         # Sample
         pbar.set_postfix_str("Take sample")
         if sample is None:
             samples = get_sample(config, df)
         else:
-            samples = get_custom_sample(sample)
+            if "name" not in sample:
+                sample["name"] = None
+            if "caption" not in sample:
+                sample["caption"] = None
+
+            samples = [
+                Sample(
+                    id="custom",
+                    data=sample["data"],
+                    name=sample["name"],
+                    caption=sample["caption"],
+                )
+            ]
         pbar.update()
 
         # Duplicates
-        metrics, duplicates = progress(get_duplicates, pbar, "Detecting duplicates")(
-            config, df, supported_columns
-        )
+        pbar.set_postfix_str("Locating duplicates")
+        metrics, duplicates = get_duplicates(config, df, supported_columns)
         table_stats.update(metrics)
 
-        alerts = progress(get_alerts, pbar, "Get alerts")(
-            config, table_stats, series_description, correlations
-        )
+        # Messages
+        pbar.set_postfix_str("Get messages/warnings")
+        messages = get_messages(config, table_stats, series_description, correlations)
+        pbar.update()
 
         pbar.set_postfix_str("Get reproduction details")
         package = {

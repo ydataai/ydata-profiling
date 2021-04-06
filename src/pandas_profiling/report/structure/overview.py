@@ -2,7 +2,7 @@ from typing import List
 from urllib.parse import quote
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.alerts import AlertType
+from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.formatters import (
     fmt,
     fmt_bytesize,
@@ -11,7 +11,7 @@ from pandas_profiling.report.formatters import (
     fmt_percent,
     fmt_timespan,
 )
-from pandas_profiling.report.presentation.core import Alerts, Container, Table
+from pandas_profiling.report.presentation.core import Container, Table, Warnings
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
@@ -85,7 +85,7 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
     )
 
 
-def get_dataset_schema(metadata: dict) -> Container:
+def get_dataset_schema(metadata) -> Container:
     about_dataset = []
     for key in ["description", "creator", "author"]:
         if key in metadata and len(metadata[key]) > 0:
@@ -194,7 +194,7 @@ def get_dataset_alerts(alerts: list) -> Alerts:
     return Alerts(alerts=alerts, name=f"Alerts ({count})", anchor_id="alerts")
 
 
-def get_dataset_items(config: Settings, summary: dict, alerts: list) -> list:
+def get_dataset_items(config: Settings, summary: dict, warnings: list) -> list:
     """Returns the dataset overview (at the top of the report)
 
     Args:

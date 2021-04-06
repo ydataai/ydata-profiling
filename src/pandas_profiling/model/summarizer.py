@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from visions import VisionsBaseType, VisionsTypeset
 
+from pandas_profiling.config import Settings
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -32,7 +33,7 @@ class BaseSummarizer(Handler):
         Returns:
             object:
         """
-        _, summary = self.handle(dtype, series, {"type": dtype})
+        _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
         return summary
 
 
@@ -41,7 +42,7 @@ class PandasProfilingSummarizer(BaseSummarizer):
 
     def __init__(self, typeset, *args, **kwargs):
         summary_map = {
-            Unsupported: [
+            "Unsupported": [
                 describe_counts,
                 describe_generic,
                 describe_supported,

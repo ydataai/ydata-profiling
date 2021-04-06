@@ -2,7 +2,7 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -58,6 +58,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         lazy: bool = True,
         typeset: Optional[VisionsTypeset] = None,
         summarizer: Optional[BaseSummarizer] = None,
+        config: Optional[Settings] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -92,13 +93,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
             report_config = report_config.parse_obj(data)
 
-        if config_file:
-            config.set_file(config_file)
-        elif minimal:
-            config.set_file(get_config("config_minimal.yaml"))
-        elif not config.is_default:
-            pass
-
         if explorative:
             report_config = report_config.update(Config.get_arg_groups("explorative"))
         if sensitive:
@@ -110,15 +104,10 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len(kwargs) > 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 
-        self.df = df
+        self.df = None
         self.config = report_config
-        self._df_hash = None
+        self._df_hash = -1
         self._sample = sample
-        self._title = None
-        self._report = None
-        self._html = None
-        self._widgets = None
-        self._json = None
         self._typeset = typeset
         self._summarizer = summarizer
 
@@ -130,7 +119,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             # Trigger building the report structure
             _ = self.report
 
-    def invalidate_cache(self, subset: Optional[str] = None) -> None:
+    def invalidate_cache(self, subset: Optional[str] = None):
         """Invalidate report cache. Useful after changing setting.
 
         Args:
@@ -152,12 +141,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             self._json = None
             self._html = None
 
-        if not {"progress_bar", "pool_size", "notebook", "html", "title"}.issuperset(
-            changed
-        ):
-            # In all other cases, empty cache
-            self._description_set = None
-            self._title = None
+        if subset is None or subset == "report":
             self._report = None
 
         if subset is None:
@@ -188,8 +172,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._description_set
 
     @property
-    def df_hash(self) -> Optional[str]:
-        if self._df_hash is None and self.df is not None:
+    def df_hash(self):
+        if self._df_hash == -1 and self.df is not None:
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 
@@ -463,3 +447,31 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
+
+    @staticmethod
+    def preprocess(df):
+        """Preprocess the dataframe
+
+        - Appends the index to the dataframe when it contains information
+        - Rename the "index" column to "df_index", if exists
+        - Convert the DataFrame's columns to str
+
+        Args:
+            df: the pandas DataFrame
+
+        Returns:
+            The preprocessed DataFrame
+        """
+        # Treat index as any other column
+        if (
+            not pd.Index(np.arange(0, len(df))).equals(df.index)
+            or df.index.dtype != np.int64
+        ):
+            df = df.reset_index()
+
+        # Rename reserved column names
+        df = rename_index(df)
+
+        # Ensure that columns are strings
+        df.columns = df.columns.astype("str")
+        return df

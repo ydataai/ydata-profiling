@@ -1,12 +1,12 @@
 """Formatters are mappings from object(s) to a string."""
 import decimal
 import math
+import numbers
 import re
 from datetime import timedelta
-from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from markupsafe import escape
+from jinja2.utils import escape
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -78,7 +78,7 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
     # Author: Peter Odding <peter@peterodding.com>
     # URL: https://humanfriendly.readthedocs.io
 
-    time_units: List[Dict[str, Any]] = [
+    time_units = [
         {
             "divider": 1e-9,
             "singular": "nanosecond",
@@ -293,5 +293,5 @@ def help(title: str, url: Optional[str] = None) -> str:
         return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
 
 
-def fmt_badge(value: str) -> str:
+def fmt_badge(value) -> str:
     return re.sub(r"\((\d+)\)", r'<span class="badge">\1</span>', value)

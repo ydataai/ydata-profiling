@@ -5,7 +5,6 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.handler import get_render_map
 from pandas_profiling.report.presentation.core import (
     HTML,
@@ -22,7 +21,7 @@ from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.utils.dataframe import slugify
 
 
-def get_missing_items(config: Settings, summary: dict) -> list:
+def get_missing_items(config: Settings, summary) -> list:
     """Return the missing diagrams
 
     Args:
@@ -220,7 +219,7 @@ def get_scatter_matrix(config: Settings, scatter_matrix: dict) -> list:
     return titems
 
 
-def get_report_structure(config: Settings, summary: dict) -> Root:
+def get_report_structure(config: Settings, summary: dict) -> Renderable:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -238,7 +237,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
 
         section_items: List[Renderable] = [
             Container(
-                get_dataset_items(config, summary, alerts),
+                get_dataset_items(config, summary, warnings),
                 sequence_type="tabs",
                 name="Overview",
                 anchor_id="overview",

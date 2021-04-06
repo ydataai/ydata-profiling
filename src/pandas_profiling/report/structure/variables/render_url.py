@@ -11,7 +11,7 @@ from pandas_profiling.report.presentation.frequency_table_utils import freq_tabl
 from pandas_profiling.report.structure.variables.render_common import render_common
 
 
-def render_url(config: Settings, summary: dict) -> dict:
+def render_url(config: Settings, summary):
     varid = summary["varid"]
     n_freq_table_max = config.n_freq_table_max
 
@@ -91,22 +91,22 @@ def render_url(config: Settings, summary: dict) -> dict:
             {
                 "name": "Distinct",
                 "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["alert_fields"],
+                "alert": "n_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Distinct (%)",
                 "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["alert_fields"],
+                "alert": "p_distinct" in summary["warn_fields"],
             },
             {
                 "name": "Missing",
                 "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["alert_fields"],
+                "alert": "n_missing" in summary["warn_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["alert_fields"],
+                "alert": "p_missing" in summary["warn_fields"],
             },
             {
                 "name": "Memory size",

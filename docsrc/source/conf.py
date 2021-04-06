@@ -50,7 +50,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "sphinx.ext.viewcode",
-    "sphinxcontrib.autodoc_pydantic",
+    "sphinx-pydantic",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

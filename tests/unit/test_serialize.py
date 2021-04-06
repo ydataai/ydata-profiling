@@ -78,12 +78,10 @@ def test_load_error():
     data = profile1.dumps()
 
     # config not match but ignore_config
-    ProfileReport(df, minimal=False, progress_bar=False).loads(data)
+    ProfileReport(df, minimal=False).loads(data)
 
     # df not match
     with pytest.raises(ValueError) as e:
-        ProfileReport(df=df[["a", "b"]][:], minimal=True, progress_bar=False).loads(
-            data
-        )
+        ProfileReport(df=df[["a", "b"]][:], minimal=True).loads(data)
 
     assert str(e.value) == "DataFrame does not match with the current ProfileReport."

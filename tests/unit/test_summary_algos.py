@@ -23,11 +23,9 @@ def test_count_summary_nat(config):
 
 
 def test_count_summary_category(config):
-    s = pd.Series(
-        pd.Categorical(
-            ["Poor", "Neutral"] + [np.nan] * 100,
-            categories=["Poor", "Neutral", "Excellent"],
-        )
+    s = pd.Categorical(
+        ["Poor", "Neutral"] + [np.nan] * 100,
+        categories=["Poor", "Neutral", "Excellent"],
     )
     _, sn, r = describe_counts(config, s, {})
     assert len(r["value_counts_without_nan"].index) == 2

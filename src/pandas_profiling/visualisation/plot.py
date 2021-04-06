@@ -61,18 +61,14 @@ def _plot_histogram(
 
 @manage_matplotlib_context()
 def histogram(
-    config: Settings,
-    series: np.ndarray,
-    bins: Union[int, np.ndarray],
-    date: bool = False,
+    config: Settings, series: np.ndarray, bins: Union[int, np.ndarray], date=False
 ) -> str:
     """Plot an histogram of the data.
 
     Args:
-        config: Settings
-        series: The data to plot.
-        bins: number of bins (int for equal size, ndarray for variable size)
-        date: is histogram of date(time)?
+      config: Settings
+      series: The data to plot.
+      bins: number of bins (int for equal size, ndarray for variable size)
 
     Returns:
       The resulting histogram encoded as a string.
@@ -81,15 +77,12 @@ def histogram(
     plot = _plot_histogram(config, series, bins, date=date)
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
-    return plot_360_n0sc0pe(config)
+    return plot_360_n0sc0pe(config, plt)
 
 
 @manage_matplotlib_context()
 def mini_histogram(
-    config: Settings,
-    series: np.ndarray,
-    bins: Union[int, np.ndarray],
-    date: bool = False,
+    config: Settings, series: np.ndarray, bins: Union[int, np.ndarray], date=False
 ) -> str:
     """Plot a small (mini) histogram of the data.
 
@@ -110,7 +103,7 @@ def mini_histogram(
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
 
-    return plot_360_n0sc0pe(config)
+    return plot_360_n0sc0pe(config, plt)
 
 
 def get_cmap_half(
@@ -199,7 +192,7 @@ def correlation_matrix(config: Settings, data: pd.DataFrame, vmin: int = -1) -> 
     axes_cor.set_yticklabels(labels, fontsize=font_size)
     plt.subplots_adjust(bottom=0.2)
 
-    return plot_360_n0sc0pe(config)
+    return plot_360_n0sc0pe(config, plt)
 
 
 @manage_matplotlib_context()
@@ -228,13 +221,11 @@ def scatter_complex(config: Settings, series: pd.Series) -> str:
     else:
         plt.scatter(series.real, series.imag, color=color)
 
-    return plot_360_n0sc0pe(config)
+    return plot_360_n0sc0pe(config, plt)
 
 
 @manage_matplotlib_context()
-def scatter_series(
-    config: Settings, series: pd.Series, x_label: str = "Width", y_label: str = "Height"
-) -> str:
+def scatter_series(config: Settings, series, x_label="Width", y_label="Height") -> str:
     """Scatter plot (or hexbin plot) from one series of sequences with length 2
 
     Examples:
@@ -260,13 +251,11 @@ def scatter_series(
         plt.hexbin(*data, cmap=cmap)
     else:
         plt.scatter(*data, color=color)
-    return plot_360_n0sc0pe(config)
+    return plot_360_n0sc0pe(config, plt)
 
 
 @manage_matplotlib_context()
-def scatter_pairwise(
-    config: Settings, series1: pd.Series, series2: pd.Series, x_label: str, y_label: str
-) -> str:
+def scatter_pairwise(config: Settings, series1, series2, x_label, y_label) -> str:
     """Scatter plot (or hexbin plot) from two series
 
     Examples:
@@ -289,19 +278,16 @@ def scatter_pairwise(
 
     color = config.html.style.primary_color
 
-    indices = (series1.notna()) & (series2.notna())
     if len(series1) > config.plot.scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1[indices], series2[indices], gridsize=15, cmap=cmap)
     else:
-        plt.scatter(series1[indices], series2[indices], color=color)
-    return plot_360_n0sc0pe(config)
+        plt.scatter(series1, series2, color=color)
+    return plot_360_n0sc0pe(config, plt)
 
 
 @manage_matplotlib_context()
-def pie_plot(
-    config: Settings, data: pd.Series, legend_kws: Optional[dict] = None
-) -> str:
+def pie_plot(config: Settings, data, legend_kws=None):
     if legend_kws is None:
         legend_kws = {}
 
@@ -316,4 +302,4 @@ def pie_plot(
     wedges, _, _ = plt.pie(data, autopct=make_autopct(data), textprops={"color": "w"})
     plt.legend(wedges, data.index.values, **legend_kws)
 
-    return plot_360_n0sc0pe(config)
+    return plot_360_n0sc0pe(config, plt)

@@ -1,11 +1,11 @@
 """Configuration for the package."""
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, BaseSettings, Field
 
 
-def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
+def _merge_dictionaries(dict1, dict2):
     """
     Recursive merge dictionaries.
 
@@ -37,22 +37,22 @@ class Dataset(BaseModel):
 
 class NumVars(BaseModel):
     quantiles: List[float] = [0.05, 0.25, 0.5, 0.75, 0.95]
-    skewness_threshold: int = 20
-    low_categorical_threshold: int = 5
+    skewness_threshold = 20
+    low_categorical_threshold = 5
     # Set to zero to disable
-    chi_squared_threshold: float = 0.999
+    chi_squared_threshold = 0.999
 
 
 class CatVars(BaseModel):
-    length: bool = True
-    characters: bool = True
-    words: bool = True
-    cardinality_threshold: int = 50
-    n_obs: int = 5
+    length = True
+    characters = True
+    words = True
+    cardinality_threshold = 50
+    n_obs = 5
     # Set to zero to disable
-    chi_squared_threshold: float = 0.999
-    coerce_str_to_date: bool = False
-    redact: bool = False
+    chi_squared_threshold = 0.999
+    coerce_str_to_date = False
+    redact = False
     histogram_largest: int = 50
 
 
@@ -60,7 +60,7 @@ class BoolVars(BaseModel):
     n_obs: int = 3
 
     # string to boolean mapping dict
-    mappings: Dict[str, bool] = {
+    mappings = {
         "t": True,
         "f": False,
         "yes": True,
@@ -81,9 +81,9 @@ class PathVars(BaseModel):
 
 
 class ImageVars(BaseModel):
-    active: bool = False
-    exif: bool = True
-    hash: bool = True
+    active = False
+    exif = True
+    hash = True
 
 
 class UrlVars(BaseModel):
@@ -91,19 +91,19 @@ class UrlVars(BaseModel):
 
 
 class Univariate(BaseModel):
-    num: NumVars = NumVars()
-    cat: CatVars = CatVars()
-    image: ImageVars = ImageVars()
-    bool: BoolVars = BoolVars()
-    path: PathVars = PathVars()
-    file: FileVars = FileVars()
-    url: UrlVars = UrlVars()
+    num = NumVars()
+    cat = CatVars()
+    image = ImageVars()
+    bool = BoolVars()
+    path = PathVars()
+    file = FileVars()
+    url = UrlVars()
 
 
 class MissingPlot(BaseModel):
     # Force labels when there are > 50 variables
     # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
-    force_labels: bool = True
+    force_labels = True
     cmap: str = "RdBu"
 
 
@@ -119,25 +119,25 @@ class CorrelationPlot(BaseModel):
 
 class Histogram(BaseModel):
     # Number of bins (set to 0 to automatically detect the bin size)
-    bins: int = 50
+    bins = 50
     # Maximum number of bins (when bins=0)
-    max_bins: int = 250
+    max_bins = 250
     x_axis_labels: bool = True
 
 
 class Pie(BaseModel):
     # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
-    max_unique: int = 10
+    max_unique = 10
 
 
 class Plot(BaseModel):
-    missing: MissingPlot = MissingPlot()
+    missing = MissingPlot()
     image_format: ImageType = ImageType.svg
     correlation: CorrelationPlot = CorrelationPlot()
     # PNG dpi
     dpi: int = 800
-    histogram: Histogram = Histogram()
-    scatter_threshold: int = 1000
+    histogram = Histogram()
+    scatter_threshold = 1000
     pie: Pie = Pie()
 
 
@@ -147,7 +147,7 @@ class Theme(Enum):
 
 
 class Style(BaseModel):
-    primary_color: str = "#337ab7"
+    primary_color = "#337ab7"
     logo: str = ""
     theme: Optional[Theme] = None
 
@@ -183,28 +183,27 @@ class Duplicates(BaseModel):
 
 
 class Correlation(BaseModel):
-    key: str = ""
-    calculate: bool = Field(default=True)
-    warn_high_correlations: int = Field(default=10)
-    threshold: float = Field(default=0.5)
+    key = ""
+    calculate = Field(default=True)
+    warn_high_correlations = Field(default=10)
+    threshold = Field(default=0.5)
 
 
 class Correlations(BaseModel):
-    pearson: Correlation = Correlation(key="pearson")
-    spearman: Correlation = Correlation(key="spearman")
+    pearson = Correlation(key="pearson")
+    spearman = Correlation(key="spearman")
 
 
 class Interactions(BaseModel):
-    # Set to False to disable scatter plots
     continuous: bool = True
-
+    # FIXME: validate with column names
     targets: List[str] = []
 
 
 class Samples(BaseModel):
-    head: int = 10
-    tail: int = 10
-    random: int = 0
+    head = 10
+    tail = 10
+    random = 0
 
 
 class Variables(BaseModel):
@@ -217,26 +216,22 @@ class IframeAttribute(Enum):
 
 
 class Iframe(BaseModel):
-    height: str = "800px"
-    width: str = "100%"
-    attribute: IframeAttribute = IframeAttribute.srcdoc
+    height = "800px"
+    width = "100%"
+    attribute = IframeAttribute.srcdoc
 
 
 class Notebook(BaseModel):
     """When in a Jupyter notebook"""
 
-    iframe: Iframe = Iframe()
+    iframe = Iframe()
 
 
 class Report(BaseModel):
-    precision: int = 10
+    precision = 10
 
 
 class Settings(BaseSettings):
-    # Default prefix to avoid collisions with environment variables
-    class Config:
-        env_prefix = "profile_"
-
     # Title of the document
     title: str = "Pandas Profiling Report"
 
@@ -276,7 +271,7 @@ class Settings(BaseSettings):
 
     interactions: Interactions = Interactions()
 
-    categorical_maximum_correlation_distinct: int = 100
+    categorical_maximum_correlation_distinct = 100
     # Use `deep` flag for memory_usage
     memory_deep: bool = False
     plot: Plot = Plot()
@@ -286,22 +281,22 @@ class Settings(BaseSettings):
     reject_variables: bool = True
 
     # The number of observations to show
-    n_obs_unique: int = 10
-    n_freq_table_max: int = 10
-    n_extreme_obs: int = 10
+    n_obs_unique = 10
+    n_freq_table_max = 10
+    n_extreme_obs = 10
 
     # Report rendering
     report: Report = Report()
     html: Html = Html()
     notebook = Notebook()
 
-    def update(self, updates: dict) -> "Settings":
+    def update(self, updates):
         update = _merge_dictionaries(self.dict(), updates)
         return self.parse_obj(self.copy(update=update))
 
 
 class Config:
-    arg_groups: Dict[str, Any] = {
+    arg_groups = {
         "sensitive": {
             "samples": None,
             "duplicates": None,
@@ -366,12 +361,12 @@ class Config:
     }
 
     @staticmethod
-    def get_arg_groups(key: str) -> dict:
+    def get_arg_groups(key):
         kwargs = Config.arg_groups[key]
         return Config.shorthands(kwargs)
 
     @staticmethod
-    def shorthands(kwargs: dict) -> dict:
+    def shorthands(kwargs):
         for key, value in list(kwargs.items()):
             if value is None and key in Config._shorthands:
                 kwargs[key] = Config._shorthands[key]

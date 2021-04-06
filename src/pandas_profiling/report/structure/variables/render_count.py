@@ -16,9 +16,9 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
-def render_count(config: Settings, summary: dict) -> dict:
+def render_count(config: Settings, summary):
     template_variables = render_common(config, summary)
-    image_format = config.plot.image_format
+    image_format = config.plot.image_format.value
 
     # Top
     info = VariableInfo(

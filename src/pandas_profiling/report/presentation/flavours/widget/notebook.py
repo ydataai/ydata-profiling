@@ -4,15 +4,11 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING, Union
 
-if TYPE_CHECKING:
-    from IPython.core.display import HTML
-    from IPython.lib.display import IFrame
-
 from pandas_profiling import ProfileReport
 from pandas_profiling.config import IframeAttribute, Settings
 
 
-def get_notebook_iframe_srcdoc(config: Settings, profile: ProfileReport) -> "HTML":
+def get_notebook_iframe_srcdoc(config: Settings, profile: ProfileReport):
     """Get the IPython HTML object with iframe with the srcdoc attribute
 
     Args:
@@ -33,7 +29,7 @@ def get_notebook_iframe_srcdoc(config: Settings, profile: ProfileReport) -> "HTM
     return HTML(iframe)
 
 
-def get_notebook_iframe_src(config: Settings, profile: ProfileReport) -> "IFrame":
+def get_notebook_iframe_src(config: Settings, profile: ProfileReport):
     """Get the IPython IFrame object
 
     Args:
@@ -55,9 +51,7 @@ def get_notebook_iframe_src(config: Settings, profile: ProfileReport) -> "IFrame
     )
 
 
-def get_notebook_iframe(
-    config: Settings, profile: ProfileReport
-) -> Union["IFrame", "HTML"]:
+def get_notebook_iframe(config: Settings, profile: ProfileReport):
     """Display the profile report in an iframe in the Jupyter notebook
 
     Args:
