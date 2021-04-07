@@ -24,9 +24,11 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Run benchmark
         run: |
+          pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
           pip install -r requirements-test.txt
-          pytest tests/benchmarks/bench.py --benchmark-json benchmark.json
+      - run: make install
+      - run: pytest tests/benchmarks/bench.py --benchmark-json benchmark.json
       - name: Store benchmark result
         uses: rhysd/github-action-benchmark@v1
         with:
