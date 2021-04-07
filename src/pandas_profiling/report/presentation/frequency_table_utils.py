@@ -100,7 +100,7 @@ def extreme_obs_table(freqtable, number_to_print: int, n: int) -> List[Dict[str,
     #     freqtable.index = freqtable.index.astype(str)
 
     obs_to_print = freqtable.iloc[:number_to_print]
-    max_freq = np.max(obs_to_print.values)
+    max_freq = obs_to_print.max()
 
     rows = [
         {
