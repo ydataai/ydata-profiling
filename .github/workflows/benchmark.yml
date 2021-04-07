@@ -37,3 +37,6 @@ jobs:
           output-file-path: benchmark.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
+
+          comment-on-alert: true
+          alert-comment-cc-users: '@sbrugman'
