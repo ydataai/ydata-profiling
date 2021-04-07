@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1617815636312,
+  "lastUpdate": 1617817417481,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -90,6 +90,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.010350385961682996",
             "extra": "mean: 2.905302143400013 sec\nrounds: 5"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sfbbrugman@gmail.com",
+            "name": "sbrugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "sfbbrugman@gmail.com",
+            "name": "sbrugman",
+            "username": "sbrugman"
+          },
+          "distinct": true,
+          "id": "1780bc2996d40d224139e9f4944ba33f6ffac2f5",
+          "message": "Merge branch 'develop' of https://github.com/pandas-profiling/pandas-profiling into develop",
+          "timestamp": "2021-04-07T19:39:31+02:00",
+          "tree_id": "723c7a0ab0aa04a924d8f175c14ff133b0cdc81a",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/1780bc2996d40d224139e9f4944ba33f6ffac2f5"
+        },
+        "date": 1617817412367,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.11387477764480958,
+            "unit": "iter/sec",
+            "range": "stddev: 0.1219784785317657",
+            "extra": "mean: 8.781575873800005 sec\nrounds: 5"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.11298269833978357,
+            "unit": "iter/sec",
+            "range": "stddev: 0.11822176817063018",
+            "extra": "mean: 8.850912703399995 sec\nrounds: 5"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.4082012579467626,
+            "unit": "iter/sec",
+            "range": "stddev: 0.07455069344379953",
+            "extra": "mean: 2.449771970400002 sec\nrounds: 5"
           }
         ]
       }
