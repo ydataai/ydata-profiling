@@ -28,7 +28,7 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-test.txt
       - run: make install
-      - run: pytest tests/benchmarks/bench.py --benchmark-json benchmark.json
+      - run: pytest tests/benchmarks/bench.py --benchmark-min-rounds 10 --benchmark-warmup "on" --benchmark-json benchmark.json
       - name: Store benchmark result
         uses: rhysd/github-action-benchmark@v1
         with:
