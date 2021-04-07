@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1617825465670,
+  "lastUpdate": 1617832642687,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -395,6 +395,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.21724676670455945",
             "extra": "mean: 24.977626876499993 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "0a2d1dbf866b3491105e36d798ec8b089c89895e",
+          "message": "perf: performance improvements (#755)\n\n* perf: do not infer dtypes in minimal mode\r\n* perf: reuse duplicate row statistics and exclude in minimal mode\r\n* perf: take top-n values in categorical histograms\r\n* perf: reuse sorted values for frequency tables\r\n* fix: unused imports",
+          "timestamp": "2021-04-07T23:39:29+02:00",
+          "tree_id": "0a428f903a8cdf498a138ba5648016171fb22588",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/0a2d1dbf866b3491105e36d798ec8b089c89895e"
+        },
+        "date": 1617832635998,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.09727349201777626,
+            "unit": "iter/sec",
+            "range": "stddev: 0.11803337695806652",
+            "extra": "mean: 10.280293009500008 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.09820464218396817,
+            "unit": "iter/sec",
+            "range": "stddev: 0.1517309123330746",
+            "extra": "mean: 10.182818019200004 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.3312982519898185,
+            "unit": "iter/sec",
+            "range": "stddev: 0.07030942587925809",
+            "extra": "mean: 3.0184282409999925 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.05521960367306819,
+            "unit": "iter/sec",
+            "range": "stddev: 0.202714789536184",
+            "extra": "mean: 18.109510635399978 sec\nrounds: 10"
           }
         ]
       }
