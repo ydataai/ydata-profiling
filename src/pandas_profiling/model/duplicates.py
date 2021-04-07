@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple
 
 import pandas as pd
 
@@ -7,7 +7,7 @@ from pandas_profiling.config import config
 
 def get_duplicates(
     df: pd.DataFrame, supported_columns
-) -> Tuple[Dict[str, Union[float, int]], Optional[pd.DataFrame]]:
+) -> Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -19,7 +19,7 @@ def get_duplicates(
     """
     n_head = config["duplicates"]["head"].get(int)
 
-    metrics = {}
+    metrics: Dict[str, Any] = {}
     if n_head > 0:
         if supported_columns and len(df) > 0:
             duplicates_key = config["duplicates"]["key"].get(str)
