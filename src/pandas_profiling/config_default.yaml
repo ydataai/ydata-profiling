@@ -48,6 +48,7 @@ vars:
         chi_squared_threshold: 0.999
         coerce_str_to_date: False
         redact: False
+        histogram_largest: 50
     bool:
         n_obs: 3
 # string to boolean mappings pairs (true, false)

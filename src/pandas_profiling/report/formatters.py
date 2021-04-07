@@ -78,7 +78,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     import math
     import numbers
     import re
-    from datetime import datetime, timedelta
+    from datetime import timedelta
 
     time_units = (
         dict(

@@ -1,7 +1,4 @@
-"""
-Test for issue 725:
-https://github.com/pandas-profiling/pandas-profiling/issues/725
-"""
+"""Test for the duplicates functionality"""
 import numpy as np
 import pandas as pd
 import pytest
@@ -21,11 +18,13 @@ def test_data():
 
 
 def test_issue725(test_data):
-    duplicates = get_duplicates(test_data, list(test_data.columns))
+    metrics, duplicates = get_duplicates(test_data, list(test_data.columns))
+    assert metrics["n_duplicates"] == 100
+    assert metrics["p_duplicates"] == 0.5
     assert set(duplicates.columns) == set(test_data.columns).union({"# duplicates"})
 
 
 def test_issue725_existing(test_data):
     test_data = test_data.rename(columns={"count": "# duplicates"})
     with pytest.raises(ValueError):
-        _ = get_duplicates(test_data, list(test_data.columns))
+        _, _ = get_duplicates(test_data, list(test_data.columns))

@@ -7,9 +7,6 @@ import pandas as pd
 
 import pandas_profiling
 
-# FIXME: correlations can be computed stand alone to speed up tests
-from pandas_profiling.config import config
-
 
 def test_issue51(get_data_file):
     # Categorical has empty ('') value
