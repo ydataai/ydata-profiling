@@ -79,6 +79,7 @@ The following examples can give you an impression of what the package can do:
 * [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html) (a simple colors dataset)
 * [UCI Bank Dataset](https://pandas-profiling.github.io/pandas-profiling/examples/master/cbank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
+* [RDW](https://pandas-profiling.github.io/pandas-profiling/examples/master/rdw/rdw.html) (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)
 
 
 Specific features:
