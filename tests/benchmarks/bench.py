@@ -56,19 +56,19 @@ def test_titanic_minimal(benchmark):
     benchmark(func, data)
 
 
-def test_rdw_minimal(benchmark):
-    file_name = cache_file(
-        "rdw.parquet",
-        "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/rdw.parquet",
-    )
-
-    data = pd.read_parquet(file_name)
-
-    def func(df):
-        profile = ProfileReport(
-            df, title="RDW Dataset", minimal=True, progress_bar=False
-        )
-        report = profile.to_html()
-        return report
-
-    benchmark(func, data)
+# def test_rdw_minimal(benchmark):
+#     file_name = cache_file(
+#         "rdw.parquet",
+#         "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/rdw.parquet",
+#     )
+#
+#     data = pd.read_parquet(file_name)
+#
+#     def func(df):
+#         profile = ProfileReport(
+#             df, title="RDW Dataset", minimal=True, progress_bar=False
+#         )
+#         report = profile.to_html()
+#         return report
+#
+#     benchmark(func, data)
