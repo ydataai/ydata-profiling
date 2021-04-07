@@ -46,7 +46,7 @@ def get_duplicates(
             )
         else:
             metrics["n_duplicates"] = 0
-            metrics["p_duplicates"] = 0.
+            metrics["p_duplicates"] = 0.0
             return metrics, None
     else:
         return metrics, None
