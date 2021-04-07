@@ -220,6 +220,8 @@ profile = ProfileReport(large_dataset, minimal=True)
 profile.to_file("output.html")
 ```
 
+Benchmarks are available [here](https://pandas-profiling.github.io/pandas-profiling/dev/bench/).
+
 ### Command line usage
 
 For standard formatted CSV files that can be read immediately by pandas, you can use the `pandas_profiling` executable. 
