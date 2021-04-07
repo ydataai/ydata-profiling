@@ -1,7 +1,15 @@
+from functools import partial
+
 import pandas as pd
 
 from pandas_profiling import ProfileReport
 from pandas_profiling.utils.cache import cache_file
+
+
+def func(df, **kwargs):
+    profile = ProfileReport(df, progress_bar=False, **kwargs)
+    report = profile.to_html()
+    return report
 
 
 def test_titanic_explorative(benchmark):
@@ -12,14 +20,8 @@ def test_titanic_explorative(benchmark):
 
     data = pd.read_parquet(file_name)
 
-    def func(df):
-        profile = ProfileReport(
-            df, title="Titanic Dataset", explorative=True, progress_bar=False
-        )
-        report = profile.to_html()
-        return report
-
-    benchmark(func, data)
+    kwargs = dict(explorative=True)
+    benchmark(partial(func, **kwargs), data)
 
 
 def test_titanic_default(benchmark):
@@ -30,12 +32,7 @@ def test_titanic_default(benchmark):
 
     data = pd.read_parquet(file_name)
 
-    def func(df):
-        profile = ProfileReport(df, title="Titanic Dataset", progress_bar=False)
-        report = profile.to_html()
-        return report
-
-    benchmark(func, data)
+    benchmark(partial(func), data)
 
 
 def test_titanic_minimal(benchmark):
@@ -46,29 +43,17 @@ def test_titanic_minimal(benchmark):
 
     data = pd.read_parquet(file_name)
 
-    def func(df):
-        profile = ProfileReport(
-            df, title="Titanic Dataset", minimal=True, progress_bar=False
-        )
-        report = profile.to_html()
-        return report
-
-    benchmark(func, data)
+    kwargs = dict(minimal=True)
+    benchmark(partial(func, **kwargs), data)
 
 
-# def test_rdw_minimal(benchmark):
-#     file_name = cache_file(
-#         "rdw.parquet",
-#         "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/rdw.parquet",
-#     )
-#
-#     data = pd.read_parquet(file_name)
-#
-#     def func(df):
-#         profile = ProfileReport(
-#             df, title="RDW Dataset", minimal=True, progress_bar=False
-#         )
-#         report = profile.to_html()
-#         return report
-#
-#     benchmark(func, data)
+def test_rdw_minimal(benchmark):
+    file_name = cache_file(
+        "rdw_sample_100k.parquet",
+        "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/rdw_sample_100k.parquet",
+    )
+
+    data = pd.read_parquet(file_name)
+
+    kwargs = dict(minimal=True)
+    benchmark(partial(func, **kwargs), data)
