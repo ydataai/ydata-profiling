@@ -211,7 +211,7 @@ profile.to_file("your_report.json")
 
 Version 2.4 introduces minimal mode. 
 
-This is a default configuration that disables expensive computations (such as correlations and dynamic binning).
+This is a default configuration that disables expensive computations (such as correlations and duplicate row detection).
 
 Use the following syntax:
 
