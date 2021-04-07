@@ -30,17 +30,19 @@ def get_duplicates(
                 )
 
             duplicated_rows = df.duplicated(subset=supported_columns, keep=False)
-
-            metrics["n_duplicates"] = duplicated_rows.sum()
-            metrics["p_duplicates"] = metrics["n_duplicates"] / len(df)
-
-            return (
-                metrics,
+            duplicated_rows = (
                 df[duplicated_rows]
                 .groupby(supported_columns)
                 .size()
                 .reset_index(name=duplicates_key)
-                .nlargest(n_head, duplicates_key),
+            )
+
+            metrics["n_duplicates"] = len(duplicated_rows[duplicates_key])
+            metrics["p_duplicates"] = metrics["n_duplicates"] / len(df)
+
+            return (
+                metrics,
+                duplicated_rows.nlargest(n_head, duplicates_key),
             )
         else:
             metrics["n_duplicates"] = 0
