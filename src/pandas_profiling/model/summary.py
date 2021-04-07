@@ -4,7 +4,7 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, Mapping, Optional, Tuple
+from typing import Callable, Mapping, Tuple
 
 import numpy as np
 import pandas as pd
@@ -16,7 +16,6 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
 )
 from pandas_profiling.model.summarizer import BaseSummarizer
-from pandas_profiling.model.typeset import Unsupported
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
