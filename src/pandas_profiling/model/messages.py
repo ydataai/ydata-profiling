@@ -112,7 +112,7 @@ def check_table_messages(table: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
-    if warning_value(table["n_duplicates"]):
+    if "n_duplicates" in table and warning_value(table["n_duplicates"]):
         messages.append(
             Message(
                 message_type=MessageType.DUPLICATES,

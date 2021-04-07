@@ -14,7 +14,7 @@ variables:
   descriptions: {}
 
 # infer dtypes
-infer_dtypes: True
+infer_dtypes: False
 
 # Show the description at each variable (in addition to the overview tab)
 show_variable_description: True
@@ -48,6 +48,7 @@ vars:
         chi_squared_threshold: 0.0
         coerce_str_to_date: False
         redact: False
+        histogram_largest: 10
     bool:
         n_obs: 3
 # string to boolean mappings pairs (true, false)

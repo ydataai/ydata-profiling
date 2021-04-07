@@ -131,7 +131,8 @@ def describe(
 
         # Duplicates
         pbar.set_postfix_str("Locating duplicates")
-        duplicates = get_duplicates(df, supported_columns)
+        metrics, duplicates = get_duplicates(df, supported_columns)
+        table_stats.update(metrics)
         pbar.update()
 
         # Messages

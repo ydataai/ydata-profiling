@@ -8,5 +8,3 @@ def test_get_table_stats_empty_df():
     table_stats = get_table_stats(df, {})
     assert table_stats["n"] == 0
     assert table_stats["p_cells_missing"] == 0
-    assert table_stats["n_duplicates"] == 0
-    assert table_stats["p_duplicates"] == 0
