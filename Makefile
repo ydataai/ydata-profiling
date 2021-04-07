@@ -16,7 +16,9 @@ test:
 	pytest tests/issues/
 	pytest --nbval tests/notebooks/
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
-	
+	pandas_profiling -h
+	make typing
+
 test_cov:
 	pytest --cov=. tests/unit/
 	pytest --cov=. --cov-append tests/issues/
