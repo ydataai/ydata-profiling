@@ -14,7 +14,7 @@ variables:
   descriptions: {}
 
 # infer dtypes
-infer_dtypes: True
+infer_dtypes: False
 
 # Show the description at each variable (in addition to the overview tab)
 show_variable_description: True
