@@ -76,8 +76,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ 3.8 ]
-        pandas: ["pandas==0.25.3", "pandas==1.0.5"]
-        numpy: ["numpy==1.19.5"]
+        pandas: [ "pandas>1.1"]
+        numpy: ["numpy"]
 
     name: Coverage | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     steps:
