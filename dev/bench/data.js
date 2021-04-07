@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1617814820495,
+  "lastUpdate": 1617815636312,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -45,6 +45,51 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.01974421087856087",
             "extra": "mean: 3.878163107199998 sec\nrounds: 5"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "bbea211ee34763b5a713917fc5a99e8d840f48bb",
+          "message": "Split tests and coverage in CI/CD (#754)\n\n* Split tests and coverage in CI/CD\r\n\r\nCo-authored-by: chanedwin <edwinchan@u.nus.edu>",
+          "timestamp": "2021-04-07T19:09:24+02:00",
+          "tree_id": "4a4e9a11a27d77f0a504d49c42398b2b82ef075f",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/bbea211ee34763b5a713917fc5a99e8d840f48bb"
+        },
+        "date": 1617815629119,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.09528599312196534,
+            "unit": "iter/sec",
+            "range": "stddev: 0.046725770567867884",
+            "extra": "mean: 10.494721912800003 sec\nrounds: 5"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.09621246824237442,
+            "unit": "iter/sec",
+            "range": "stddev: 0.020040485298812204",
+            "extra": "mean: 10.3936632982 sec\nrounds: 5"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.34419827978019574,
+            "unit": "iter/sec",
+            "range": "stddev: 0.010350385961682996",
+            "extra": "mean: 2.905302143400013 sec\nrounds: 5"
           }
         ]
       }
