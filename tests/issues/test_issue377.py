@@ -8,14 +8,14 @@ import pandas as pd
 import pytest
 
 import pandas_profiling
-from pandas_profiling.utils.cache import cache_file
+from pandas_profiling.utils.cache import cache_zipped_file
 
 
 @pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
 def test_issue377():
-    file_name = cache_file(
+    file_name = cache_zipped_file(
         "bank-full.csv",
-        "https://storage.googleapis.com/erwinh-public-data/bankingdata/bank-full.csv",
+        "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank.zip",
     )
 
     # Download the UCI Bank Marketing Dataset
