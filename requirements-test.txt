@@ -3,7 +3,7 @@ coverage<5
 codecov
 pytest-mypy
 pytest-cov
-pytest-benchmark~=3.2.3
+pytest-benchmark~=3.4.1
 nbval
 pyarrow
 flake8
