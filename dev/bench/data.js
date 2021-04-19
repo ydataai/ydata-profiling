@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1618749846338,
+  "lastUpdate": 1618816942183,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -759,6 +759,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.29682089444192183",
             "extra": "mean: 20.84608339800002 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "27856297+dependabot-preview[bot]@users.noreply.github.com",
+            "name": "dependabot-preview[bot]",
+            "username": "dependabot-preview[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "4d676361e7b164e1d192ed5ffb87223ec3680296",
+          "message": "build(deps): update pytest-benchmark requirement from ~=3.2.3 to ~=3.4.1 (#764)\n\nUpdates the requirements on [pytest-benchmark](https://github.com/ionelmc/pytest-benchmark) to permit the latest version.\r\n- [Release notes](https://github.com/ionelmc/pytest-benchmark/releases)\r\n- [Changelog](https://github.com/ionelmc/pytest-benchmark/blob/master/CHANGELOG.rst)\r\n- [Commits](https://github.com/ionelmc/pytest-benchmark/compare/v3.2.3...v3.4.1)",
+          "timestamp": "2021-04-19T09:00:07+02:00",
+          "tree_id": "d599b7cf753c35155b6080d4cdcb39ecb7ce5596",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/4d676361e7b164e1d192ed5ffb87223ec3680296"
+        },
+        "date": 1618816934791,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.07695119597036089,
+            "unit": "iter/sec",
+            "range": "stddev: 0.11216246736225208",
+            "extra": "mean: 12.995249617500003 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.07832454383004385,
+            "unit": "iter/sec",
+            "range": "stddev: 0.08983259273490196",
+            "extra": "mean: 12.767390030000001 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.2553128594831377,
+            "unit": "iter/sec",
+            "range": "stddev: 0.08498839056272596",
+            "extra": "mean: 3.9167631510000205 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.042169826171353175,
+            "unit": "iter/sec",
+            "range": "stddev: 0.18322400692061014",
+            "extra": "mean: 23.71363818139996 sec\nrounds: 10"
           }
         ]
       }
