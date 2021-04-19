@@ -5,7 +5,7 @@ repos:
     - id: black
       language_version: python3.8
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 0.5.9
+    rev: 0.7.0
     hooks:
     - id: nbqa-black
       args: [--nbqa-mutate ]
@@ -29,7 +29,7 @@ repos:
     hooks:
     -   id: check-manifest
 -   repo: https://github.com/PyCQA/flake8
-    rev: "3.9.2"
+    rev: "3.9.1"
     hooks:
     -   id: flake8
         args: [ "--ignore=E203,E501,W291,W503,SFS301,SIM106" ]
