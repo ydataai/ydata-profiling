@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1618816942183,
+  "lastUpdate": 1618859776877,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -811,6 +811,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.18322400692061014",
             "extra": "mean: 23.71363818139996 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "66853113+pre-commit-ci[bot]@users.noreply.github.com",
+            "name": "pre-commit-ci[bot]",
+            "username": "pre-commit-ci[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b91771d7995c349430ea4b115477ed3707eae49a",
+          "message": "build: pre-commit autoupdate (#765)\n\nbuild: pre-commit autoupdate (#765)\r\n\r\n- [github.com/nbQA-dev/nbQA: 0.6.0 → 0.7.0](https://github.com/nbQA-dev/nbQA/compare/0.6.0...0.7.0)\r\n- [github.com/PyCQA/flake8: 3.9.0 → 3.9.1](https://github.com/PyCQA/flake8/compare/3.9.0...3.9.1)",
+          "timestamp": "2021-04-19T20:56:58+02:00",
+          "tree_id": "55313ae5fb6d4ff1eadd6850d7d250126f636798",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/b91771d7995c349430ea4b115477ed3707eae49a"
+        },
+        "date": 1618859770344,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.09058826361268033,
+            "unit": "iter/sec",
+            "range": "stddev: 0.07825543820496805",
+            "extra": "mean: 11.038957588099994 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.090711246688242,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0844299027248511",
+            "extra": "mean: 11.0239913628 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.2845612818485304,
+            "unit": "iter/sec",
+            "range": "stddev: 0.030837985429857898",
+            "extra": "mean: 3.5141815270999928 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.048011722531495465,
+            "unit": "iter/sec",
+            "range": "stddev: 0.6136125436189179",
+            "extra": "mean: 20.828246671300008 sec\nrounds: 10"
           }
         ]
       }
