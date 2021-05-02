@@ -27,6 +27,7 @@ import numpy as np
 import pandas as pd
 import requests
 
+from pandas_profiling.model.dataframe_wrappers import PandasDataFrame
 from pandas_profiling.model.summary import describe_1d
 
 
@@ -49,7 +50,7 @@ def test_multiprocessing_describe1d(summarizer, typeset):
     """
     this test serves to get a large dataset, and ensure that even across parallelised describe1d operations,
     there is no ValueError raised. Previously, series.fillna(np.nan,inplace=True) was used instead of
-    series = series.fillna(np.nan) in model.summary.describe1d, resulting in a race condition where the underlying
+    series = series.fillna(np.nan) in model.summmary.describe1d, resulting in a race condition where the underlying
     df was being mutated by two threads at the same time creating a ValueError. This test checks that this does not
     occur again by running a parallelised describe1d and testing if a ValueError is raised.
 
@@ -109,14 +110,15 @@ def test_multiprocessing_describe1d(summarizer, typeset):
         split_text = np.asarray(split_text, dtype=object)
         for j in range(42):
             split_text[:, j] = split_text[:, j].astype(DT[j])
-        df = pd.DataFrame(split_text)
+        df = PandasDataFrame(pd.DataFrame(split_text))
         return df
 
     def run_multiprocess(df):
         pool = multiprocessing.pool.ThreadPool(10)
         args = [(column, series) for column, series in df.iteritems()]
         results = pool.imap_unordered(
-            partial(mock_multiprocess_1d, summarizer=summarizer, typeset=typeset), args
+            partial(mock_multiprocess_1d, summarizer=summarizer, typeset=typeset),
+            args,
         )
         pool.close()
         pool.join()

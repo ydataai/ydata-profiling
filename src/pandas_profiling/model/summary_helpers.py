@@ -2,7 +2,7 @@ import os
 import string
 from collections import Counter
 from datetime import datetime
-from functools import partial
+from functools import partial, singledispatch
 from pathlib import Path
 
 import numpy as np
@@ -11,12 +11,53 @@ from scipy.stats.stats import chisquare
 from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
 from pandas_profiling.config import config
+from pandas_profiling.model.series_wrappers import SparkSeries
 from pandas_profiling.model.summary_helpers_image import (
     extract_exif,
     hash_image,
     is_image_truncated,
     open_image,
 )
+from pandas_profiling.model.summary_helpers_pandas import (
+    get_character_counts_pandas,
+    length_summary_pandas,
+    named_aggregate_summary_pandas,
+)
+from pandas_profiling.model.summary_helpers_spark import (
+    get_character_counts_spark,
+    length_summary_spark,
+    named_aggregate_summary_spark,
+)
+
+
+@singledispatch
+def named_aggregate_summary(series, key: str):
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+named_aggregate_summary.register(pd.Series, named_aggregate_summary_pandas)
+named_aggregate_summary.register(SparkSeries, named_aggregate_summary_spark)
+
+
+@singledispatch
+def length_summary(series, summary: dict = {}) -> dict:
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+length_summary.register(pd.Series, length_summary_pandas)
+length_summary.register(SparkSeries, length_summary_spark)
+
+
+@singledispatch
+def get_character_counts(series) -> Counter:
+    series_type = type(series)
+    raise NotImplementedError(f"Function not implemented for series type {series_type}")
+
+
+get_character_counts.register(pd.Series, get_character_counts_pandas)
+get_character_counts.register(SparkSeries, get_character_counts_spark)
 
 
 def mad(arr):
@@ -25,29 +66,6 @@ def mad(arr):
     https://en.wikipedia.org/wiki/Median_absolute_deviation
     """
     return np.median(np.abs(arr - np.median(arr)))
-
-
-def named_aggregate_summary(series: pd.Series, key: str):
-    summary = {
-        f"max_{key}": np.max(series),
-        f"mean_{key}": np.mean(series),
-        f"median_{key}": np.median(series),
-        f"min_{key}": np.min(series),
-    }
-
-    return summary
-
-
-def length_summary(series: pd.Series, summary=None) -> dict:
-    if summary is None:
-        summary = {}
-
-    length = series.str.len()
-
-    summary.update({"length": length})
-    summary.update(named_aggregate_summary(length, "length"))
-
-    return summary
 
 
 def file_summary(series: pd.Series) -> dict:
@@ -245,18 +263,6 @@ def image_summary(series: pd.Series, exif: bool = False, hash: bool = False) -> 
     return summary
 
 
-def get_character_counts(series: pd.Series) -> Counter:
-    """Function to return the character counts
-
-    Args:
-        series: the Series to process
-
-    Returns:
-        A dict with character counts
-    """
-    return Counter(series.str.cat())
-
-
 def counter_to_series(counter: Counter) -> pd.Series:
     if not counter:
         return pd.Series([], dtype=object)
@@ -266,8 +272,10 @@ def counter_to_series(counter: Counter) -> pd.Series:
     return pd.Series(counts, index=items)
 
 
-def unicode_summary(series: pd.Series) -> dict:
+def unicode_summary(series) -> dict:
     # Unicode Character Summaries (category and script name)
+
+    # this is the function that properly computes the character counts based on type
     character_counts = get_character_counts(series)
 
     character_counts_series = counter_to_series(character_counts)

@@ -29,44 +29,62 @@ def render_real(summary):
         summary["description"],
     )
 
+    compute_distinct = config["engine"].get(str) != "spark" or config["spark"][
+        "compute_distinct"
+    ].get(bool)
+
     table1 = Table(
+        list(
+            filter(
+                lambda x: x,
+                [
+                    {
+                        "name": "Distinct",
+                        "value": summary["n_distinct"],
+                        "fmt": "fmt",
+                        "alert": "n_distinct" in summary["warn_fields"],
+                    }
+                    if compute_distinct
+                    else None,
+                    {
+                        "name": "Distinct (%)",
+                        "value": summary["p_distinct"],
+                        "fmt": "fmt_percent",
+                        "alert": "p_distinct" in summary["warn_fields"],
+                    }
+                    if compute_distinct
+                    else None,
+                    {
+                        "name": "Missing",
+                        "value": summary["n_missing"],
+                        "fmt": "fmt",
+                        "alert": "n_missing" in summary["warn_fields"],
+                    },
+                    {
+                        "name": "Missing (%)",
+                        "value": summary["p_missing"],
+                        "fmt": "fmt_percent",
+                        "alert": "p_missing" in summary["warn_fields"],
+                    },
+                    {
+                        "name": "Infinite",
+                        "value": summary["n_infinite"],
+                        "fmt": "fmt",
+                        "alert": "n_infinite" in summary["warn_fields"],
+                    },
+                    {
+                        "name": "Infinite (%)",
+                        "value": summary["p_infinite"],
+                        "fmt": "fmt_percent",
+                        "alert": "p_infinite" in summary["warn_fields"],
+                    },
+                ],
+            )
+        )
+    )
+
+    table2 = Table(
         [
-            {
-                "name": "Distinct",
-                "value": summary["n_distinct"],
-                "fmt": "fmt",
-                "alert": "n_distinct" in summary["warn_fields"],
-            },
-            {
-                "name": "Distinct (%)",
-                "value": summary["p_distinct"],
-                "fmt": "fmt_percent",
-                "alert": "p_distinct" in summary["warn_fields"],
-            },
-            {
-                "name": "Missing",
-                "value": summary["n_missing"],
-                "fmt": "fmt",
-                "alert": "n_missing" in summary["warn_fields"],
-            },
-            {
-                "name": "Missing (%)",
-                "value": summary["p_missing"],
-                "fmt": "fmt_percent",
-                "alert": "p_missing" in summary["warn_fields"],
-            },
-            {
-                "name": "Infinite",
-                "value": summary["n_infinite"],
-                "fmt": "fmt",
-                "alert": "n_infinite" in summary["warn_fields"],
-            },
-            {
-                "name": "Infinite (%)",
-                "value": summary["p_infinite"],
-                "fmt": "fmt_percent",
-                "alert": "p_infinite" in summary["warn_fields"],
-            },
             {
                 "name": "Mean",
                 "value": summary["mean"],

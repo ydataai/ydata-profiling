@@ -119,6 +119,13 @@ Interactions
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
+Spark
+____________
+.. csv-table::
+   :file: config_spark.csv
+   :widths: 30, 200, 200, 200
+   :header-rows: 1
+
 The HTML Report
 ---------------
 

@@ -3,26 +3,32 @@ import warnings
 from datetime import datetime
 from typing import Optional
 
-import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import config as config
 from pandas_profiling.model.correlations import calculate_correlation
+from pandas_profiling.model.dataframe_wrappers import (
+    UNWRAPPED_DATAFRAME_WARNING,
+    GenericDataFrame,
+    SparkDataFrame,
+    get_appropriate_wrapper,
+)
 from pandas_profiling.model.duplicates import get_duplicates
+from pandas_profiling.model.messages import get_messages
 from pandas_profiling.model.sample import Sample, get_sample
 from pandas_profiling.model.summary import (
-    get_messages,
     get_missing_diagrams,
     get_scatter_matrix,
     get_series_descriptions,
     get_table_stats,
 )
-from pandas_profiling.model.typeset import Numeric, Unsupported
+from pandas_profiling.model.typeset import Numeric, SparkNumeric, Unsupported
+from pandas_profiling.utils.common import test_for_pyspark_pyarrow_incompatibility
 from pandas_profiling.version import __version__
 
 
 def describe(
-    title: str, df: pd.DataFrame, summarizer, typeset, sample: Optional[dict] = None
+    title: str, df: GenericDataFrame, summarizer, typeset, sample: Optional[dict] = None
 ) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
@@ -40,16 +46,33 @@ def describe(
             - messages: direct special attention to these patterns in your data.
             - package: package details.
     """
-
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    if not isinstance(df, pd.DataFrame):
-        warnings.warn("df is not of type pandas.DataFrame")
+    # check for unwrapped dataframes and warn
+    if not isinstance(df, GenericDataFrame):
+        warnings.warn(UNWRAPPED_DATAFRAME_WARNING)
+        df_wrapper = get_appropriate_wrapper(df)
+        df = df_wrapper.preprocess(df)
+        df = df_wrapper(df)
+
+    # run spark specific logic
+    if isinstance(df, SparkDataFrame):
+        # test if the version pyspark and pyarrow versions are compatible
+        test_for_pyspark_pyarrow_incompatibility()
+
+        # save the dataframe to speed up compute time
+
+        df.persist_bool = config["spark"]["persist"].get(bool)
+        df.persist()
 
     disable_progress_bar = not config["progress_bar"].get(bool)
 
     date_start = datetime.utcnow()
+
+    # if there are specific config for each correlation, then use those
+
+    correlation_key = "calculate"
 
     correlation_names = [
         correlation_name
@@ -60,7 +83,7 @@ def describe(
             "phi_k",
             "cramers",
         ]
-        if config["correlations"][correlation_name]["calculate"].get(bool)
+        if config["correlations"][correlation_name][correlation_key].get(bool)
     ]
 
     number_of_tasks = 8 + len(df.columns) + len(correlation_names)
@@ -75,13 +98,17 @@ def describe(
             column: description["type"]
             for column, description in series_description.items()
         }
+
         supported_columns = [
             column
             for column, type_name in variables.items()
             if type_name != Unsupported
         ]
+
         interval_columns = [
-            column for column, type_name in variables.items() if type_name == Numeric
+            column
+            for column, type_name in variables.items()
+            if type_name in [Numeric, SparkNumeric]
         ]
         pbar.update()
 
@@ -99,9 +126,11 @@ def describe(
             key: value for key, value in correlations.items() if value is not None
         }
 
-        # Scatter matrix
         pbar.set_postfix_str("Get scatter matrix")
-        scatter_matrix = get_scatter_matrix(df, interval_columns)
+        if config["scatter"]["compute"].get(bool):
+            scatter_matrix = get_scatter_matrix(df, interval_columns)
+        else:
+            scatter_matrix = {}
         pbar.update()
 
         # Table statistics

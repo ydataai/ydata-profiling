@@ -5,7 +5,7 @@ from typing import Union
 
 import confuse
 
-from pandas_profiling.utils.paths import get_config_default
+from pandas_profiling.utils.paths import get_config
 
 
 class Config:
@@ -16,12 +16,11 @@ class Config:
     config = None
     """The confuse.Configuration object."""
 
-    def __init__(self):
-        """The config constructor should be called only once."""
-        if self.config is None:
-            self.clear()
-        else:
-            self.set_file(str(get_config_default()))
+    def __init__(self, default_config=None):
+        self.default_config = (
+            default_config if default_config else "config_default.yaml"
+        )
+        self.clear()
 
     def set_file(self, file_name: Union[str, Path]) -> None:
         """
@@ -164,11 +163,30 @@ class Config:
 
     def clear(self):
         self.config = confuse.Configuration("PandasProfiling", __name__, read=False)
-        self.set_file(str(get_config_default()))
+        self.set_file(str(get_config(self.default_config)))
+
+    def set_default_config(self, engine):
+        """
+        set the default config file based on the engine type - different engines have different defaults
+
+        Args:
+            engine: "spark" or "pandas", depending on the datatype presented
+
+        Returns: None - sets self.default_config as the correct file
+
+        """
+        if engine == "spark":
+            self.default_config = "config_default_spark.yaml"
+        elif engine == "pandas":
+            self.default_config = "config_default.yaml"
+        self.clear()
+
+    def set_spark(self):
+        self.set_file(str(get_config("config_default_spark.yaml")))
 
     @property
     def is_default(self):
-        default_config = Config()
+        default_config = Config(default_config=self.default_config)
         return self == default_config
 
     def __eq__(self, other):

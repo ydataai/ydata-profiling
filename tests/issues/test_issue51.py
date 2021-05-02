@@ -2,6 +2,7 @@
 Test for issue 51:
 https://github.com/pandas-profiling/pandas-profiling/issues/51
 """
+
 import numpy as np
 import pandas as pd
 

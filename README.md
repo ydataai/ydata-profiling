@@ -222,6 +222,43 @@ profile.to_file("output.html")
 ```
 
 Benchmarks are available [here](https://pandas-profiling.github.io/pandas-profiling/dev/bench/).
+### Spark profiling
+
+Version 3.0 introduces the profiling of spark dataframes using same syntax as profiling pandas DataFrames.
+
+#### Requirements
+* pyspark >= 2.3.0
+* pyarrow >= 0.8.0 - note that if your PyArrow version is >= 0.15.0 and your spark is 2.3.x, 2.4.x, you will need to [configure your pyarrow](https://spark.apache.org/docs/latest/sql-pyspark-pandas-with-arrow.html#compatibility-setting-for-pyarrow--0150-and-spark-23x-24x).
+* a working SparkSession - see [here](https://spark.apache.org/docs/latest/sql-getting-started.html#starting-point-sparksession)
+
+```python
+spark
+>>>SparkSession - hive
+>>>SparkContext
+>>>Version
+>>>v2.3.0
+```
+```python
+import numpy as np
+import pandas as pd
+from spark_profiling import ProfileReport
+
+pdf = pd.DataFrame(
+    np.random.rand(100, 5),
+    columns=["a", "b", "c", "d", "e"]
+)
+sdf = spark.createDataFrame(pdf)
+```
+To generate the report, run:
+```python
+profile = ProfileReport(sdf, title="Spark Profiling Report")
+```
+
+By default, for Spark, all correlations except pearson's as well as scatter matrices are disabled as they are computationally intensive, requiring much more computation time.
+To enable them you can head to the advanced configuration docs on the advanced usage page [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html)
+
+By default, `spark-profiling` also persists all dataframes and intermediate dataframes to speed up computation.
+You can also disable this feature in the config.
 
 ### Command line usage
 

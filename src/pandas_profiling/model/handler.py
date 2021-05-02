@@ -1,8 +1,8 @@
 from functools import reduce
-from typing import Callable, Dict, List, Type
+from typing import Type
 
 import networkx as nx
-from visions import VisionsBaseType, VisionsTypeset
+from visions import VisionsBaseType
 
 from pandas_profiling.model import typeset as ppt
 
@@ -28,18 +28,7 @@ def compose(functions):
 
 
 class Handler:
-    """A generic handler
-
-    Allows any custom mapping between data types and functions
-    """
-
-    def __init__(
-        self,
-        mapping: Dict[Type[VisionsBaseType], List[Callable]],
-        typeset: VisionsTypeset,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, mapping, typeset, *args, **kwargs):
         self.mapping = mapping
         self.typeset = typeset
 
@@ -75,6 +64,10 @@ def get_render_map():
         ppt.File: render_algorithms.render_file,
         ppt.Image: render_algorithms.render_image,
         ppt.Unsupported: render_algorithms.render_generic,
+        ppt.SparkNumeric: render_algorithms.render_real,
+        ppt.SparkCategorical: render_algorithms.render_categorical,
+        ppt.SparkBoolean: render_algorithms.render_complex,
+        ppt.SparkUnsupported: render_algorithms.render_generic,
     }
 
     return render_map

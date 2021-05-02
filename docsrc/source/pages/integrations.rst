@@ -2,11 +2,52 @@
 Integrations
 ============
 
+Engines
+----------------
+
+
+
 Pandas
-------
+~~~~~~~~~~~~~~~~~
 `pandas-profiling` is built on `pandas` and `numpy`.
 Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata.
 Read more on `supported formats by Pandas <https://pandas.pydata.org/docs/user_guide/io.html>`_.
+
+Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata.
+Read more on `supported formats by Pandas <https://pandas.pydata.org/docs/user_guide/io.html>`_.
+
+Spark
+~~~~~~~~~~~~~~~~
+Since pandas-profiling 3.0.0, `pandas-profiling` has begun to support spark DataFrame profiling.
+
+For this to work, you need to have pyspark (>=2.3.0) and pyarrow installed, as spark-profiling calls the pyspark library, and uses
+pyarrow to do spark to pandas dataframe conversions. Fastparquet might work as well instead of pyarrow, but has not tested.
+
+Notes - Spark operations naturally take longer to complete. As such, all correlations except pearson's as well as scatter matrixes
+are turned off by default.
+
+To enable correlations or scatter matrixes, see the `advanced config page <https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html>`_
+
+Implementation
+~~~~~~~~~~~~~~~
+
+The GenericDataFrame object provides an abstraction layer over pandas, spark and potentially other dataframes types to enable multiple computation engines.
+This follows the `Bridge design pattern <https://sourcemaking.com/design_patterns/bridge>`_, with the GenericDataFrame as the
+bridge and SparkDataFrame/PandasDataFrame as the implementations of the specific functionality for each engine.
+This separation of interface and implementation allows functions to call methods on GenericDataFrame without
+being concerned about the underlying implementation.
+
+Singledispatch is also used for functions which require operations specific to each engine.
+Operations like correlations in pandas is different from spark, and thus different
+implementations of a correlation function is needed for each engine. To achieve a common interface, singledispatch
+functions are used to override a function and channel the runtime operation to the correct implementation.
+
+To implement a new engine, a new implementation DataFrame object must be created (KoalasDataFrame) for example, and
+all the functions in GenericDataFrame needs to be implemented in the respective language. All the singledispatch
+functions also need to handle this new datatype. One thing to note is the returns of the DataFrame methods and singledispatch
+methods must exactly match the returns of the other engines, as latter functions expect these methods to return
+a specific datatype/object. This is documented in the GenericDataFrame methods as well as the base singledispatch methods.
+
 
 Other frameworks
 ----------------

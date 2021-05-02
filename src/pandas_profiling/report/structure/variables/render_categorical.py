@@ -14,21 +14,33 @@ from pandas_profiling.visualisation.plot import histogram, pie_plot
 
 
 def render_categorical_frequency(summary, varid, image_format):
+    compute_unique = config["engine"].get(str) != "spark" or config["spark"][
+        "compute_unique"
+    ].get(bool)
     frequency_table = Table(
-        [
-            {
-                "name": "Unique",
-                "value": f"{summary['n_unique']} {help('The number of unique values (all values that occur exactly once in the dataset).')}",
-                "fmt": "raw",
-                "alert": "n_unique" in summary["warn_fields"],
-            },
-            {
-                "name": "Unique (%)",
-                "value": summary["p_unique"],
-                "fmt": "fmt_percent",
-                "alert": "p_unique" in summary["warn_fields"],
-            },
-        ],
+        list(
+            filter(
+                lambda x: x,
+                [
+                    {
+                        "name": "Unique",
+                        "value": f"{summary['n_unique']} {help('The number of unique values (all values that occur exactly once in the dataset).')}",
+                        "fmt": "raw",
+                        "alert": "n_unique" in summary["warn_fields"],
+                    }
+                    if compute_unique
+                    else None,
+                    {
+                        "name": "Unique (%)",
+                        "value": summary["p_unique"],
+                        "fmt": "fmt_percent",
+                        "alert": "p_unique" in summary["warn_fields"],
+                    }
+                    if compute_unique
+                    else None,
+                ],
+            )
+        ),
         name="Unique",
         anchor_id=f"{varid}_unique_stats",
     )
@@ -310,41 +322,53 @@ def render_categorical(summary):
         summary["description"],
     )
 
-    table = Table(
-        [
-            {
-                "name": "Distinct",
-                "value": summary["n_distinct"],
-                "fmt": "fmt",
-                "alert": "n_distinct" in summary["warn_fields"],
-            },
-            {
-                "name": "Distinct (%)",
-                "value": summary["p_distinct"],
-                "fmt": "fmt_percent",
-                "alert": "p_distinct" in summary["warn_fields"],
-            },
-            {
-                "name": "Missing",
-                "value": summary["n_missing"],
-                "fmt": "fmt",
-                "alert": "n_missing" in summary["warn_fields"],
-            },
-            {
-                "name": "Missing (%)",
-                "value": summary["p_missing"],
-                "fmt": "fmt_percent",
-                "alert": "p_missing" in summary["warn_fields"],
-            },
-            {
-                "name": "Memory size",
-                "value": summary["memory_size"],
-                "fmt": "fmt_bytesize",
-                "alert": False,
-            },
-        ]
-    )
+    compute_distinct = config["engine"].get(str) != "spark" or config["spark"][
+        "compute_distinct"
+    ].get(bool)
 
+    table = Table(
+        list(
+            filter(
+                lambda x: x,
+                [
+                    {
+                        "name": "Distinct",
+                        "value": summary["n_distinct"],
+                        "fmt": "fmt",
+                        "alert": "n_distinct" in summary["warn_fields"],
+                    }
+                    if compute_distinct
+                    else None,
+                    {
+                        "name": "Distinct (%)",
+                        "value": summary["p_distinct"],
+                        "fmt": "fmt_percent",
+                        "alert": "p_distinct" in summary["warn_fields"],
+                    }
+                    if compute_distinct
+                    else None,
+                    {
+                        "name": "Missing",
+                        "value": summary["n_missing"],
+                        "fmt": "fmt",
+                        "alert": "n_missing" in summary["warn_fields"],
+                    },
+                    {
+                        "name": "Missing (%)",
+                        "value": summary["p_missing"],
+                        "fmt": "fmt_percent",
+                        "alert": "p_missing" in summary["warn_fields"],
+                    },
+                    {
+                        "name": "Memory size",
+                        "value": summary["memory_size"],
+                        "fmt": "fmt_bytesize",
+                        "alert": False,
+                    },
+                ],
+            )
+        )
+    )
     fqm = FrequencyTableSmall(
         freq_table(
             freqtable=summary["value_counts_without_nan"],
@@ -405,19 +429,20 @@ def render_categorical(summary):
         string_items.append(length_histo)
 
     max_unique = config["plot"]["pie"]["max_unique"].get(int)
-    if max_unique > 0 and summary["n_distinct"] <= max_unique:
-        string_items.append(
-            Image(
-                pie_plot(
-                    summary["value_counts_without_nan"],
-                    legend_kws={"loc": "upper right"},
-                ),
-                image_format=image_format,
-                alt="Pie chart",
-                name="Pie chart",
-                anchor_id=f"{varid}pie_chart",
+    if compute_distinct:
+        if max_unique > 0 and summary["n_distinct"] <= max_unique:
+            string_items.append(
+                Image(
+                    pie_plot(
+                        summary["value_counts_without_nan"],
+                        legend_kws={"loc": "upper right"},
+                    ),
+                    image_format=image_format,
+                    alt="Pie chart",
+                    name="Pie chart",
+                    anchor_id=f"{varid}pie_chart",
+                )
             )
-        )
 
     bottom_items = [
         Container(

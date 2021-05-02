@@ -5,8 +5,6 @@ from typing import Optional, Tuple, Union
 import imagehash
 from PIL import ExifTags, Image
 
-from pandas_profiling.model.imghdr_patch import *
-
 
 def open_image(path: Path) -> Optional[Image.Image]:
     """

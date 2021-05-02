@@ -13,6 +13,9 @@ dataset:
 variables:
   descriptions: {}
 
+# computation engine/backend - this is determined at runtime
+engine : ""
+
 # infer dtypes
 infer_dtypes: True
 
@@ -29,15 +32,16 @@ progress_bar: True
 vars:
     num:
         quantiles:
-              - 0.05
-              - 0.25
-              - 0.5
-              - 0.75
-              - 0.95
+          - 0.05
+          - 0.25
+          - 0.5
+          - 0.75
+          - 0.95
         skewness_threshold: 20
         low_categorical_threshold: 5
 # Set to zero to disable
         chi_squared_threshold: 0.999
+
     cat:
         length: True
         characters: True
@@ -100,7 +104,19 @@ correlations:
       warn_high_correlations: True
       threshold: 0.9
 
+scatter:
+    compute: True
 
+# Spark specific config - not used here
+spark:
+    persist: True
+    quantile_error: 0.05
+    to_pandas_limit: 100
+    sample: 1000
+    dropna: dataframe
+    compute_distinct: True
+    compute_unique: True
+    
 # Bivariate / Pairwise relations
 interactions:
   targets: []

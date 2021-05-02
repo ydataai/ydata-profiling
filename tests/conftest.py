@@ -44,6 +44,11 @@ def summarizer(typeset):
 
 
 @pytest.fixture(scope="module")
+def spark_summarizer(typeset):
+    return PandasProfilingSummarizer(typeset)
+
+
+@pytest.fixture(scope="module")
 def typeset():
     return ProfilingTypeSet()
 

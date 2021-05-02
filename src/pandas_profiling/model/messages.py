@@ -182,14 +182,18 @@ def categorical_warnings(summary: dict) -> List[Message]:
         float
     )
 
-    # High cardinality
-    if summary["n_distinct"] > cardinality_threshold_cat:
-        messages.append(
-            Message(
-                message_type=MessageType.HIGH_CARDINALITY,
-                fields={"n_distinct"},
+    # compute if not spark OR spark distinct config enabled
+    if config["engine"].get(str) != "spark" or config["spark"]["compute_distinct"].get(
+        bool
+    ):
+        # High cardinality
+        if summary["n_distinct"] > cardinality_threshold_cat:
+            messages.append(
+                Message(
+                    message_type=MessageType.HIGH_CARDINALITY,
+                    fields={"n_distinct"},
+                )
             )
-        )
 
     if (
         "chi_squared" in summary
@@ -230,27 +234,30 @@ def generic_warnings(summary: dict) -> List[Message]:
 def supported_warnings(summary: dict) -> List[Message]:
     messages = []
 
-    if summary["n_distinct"] == summary["n"]:
-        messages.append(
-            Message(
-                message_type=MessageType.UNIQUE,
-                fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
+    if config["engine"].get(str) != "spark" or config["spark"]["compute_distinct"].get(
+        bool
+    ):
+        if summary["n_distinct"] == summary["n"]:
+            messages.append(
+                Message(
+                    message_type=MessageType.UNIQUE,
+                    fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
+                )
             )
-        )
-    if summary["n_distinct"] == 1:
-        summary["mode"] = summary["value_counts_without_nan"].index[0]
-        messages.append(
-            Message(
-                message_type=MessageType.CONSTANT,
-                fields={"n_distinct"},
+        if summary["n_distinct"] == 1:
+            summary["mode"] = summary["value_counts_without_nan"].index[0]
+            messages.append(
+                Message(
+                    message_type=MessageType.CONSTANT,
+                    fields={"n_distinct"},
+                )
             )
-        )
-        messages.append(
-            Message(
-                message_type=MessageType.REJECTED,
-                fields=set(),
+            messages.append(
+                Message(
+                    message_type=MessageType.REJECTED,
+                    fields=set(),
+                )
             )
-        )
     return messages
 
 
@@ -314,6 +321,15 @@ def check_correlation_messages(correlations):
                             values={"corr": corr, "fields": v},
                         )
                     )
+    return messages
+
+
+def get_messages(table_stats, series_description, correlations):
+    messages = check_table_messages(table_stats)
+    for col, description in series_description.items():
+        messages += check_variable_messages(col, description)
+    messages += check_correlation_messages(correlations)
+    messages.sort(key=lambda message: str(message.message_type))
     return messages
 
 

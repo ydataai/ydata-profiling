@@ -188,8 +188,48 @@ class Complex(visions.VisionsBaseType):
 
     @classmethod
     @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -> bool:
+    def contains_op(cls, series: pd.Series) -> bool:
         return pdt.is_complex_dtype(series)
+
+
+class SparkUnsupported(visions.VisionsBaseType):
+    pass
+
+
+class SparkNumeric(visions.VisionsBaseType):
+    @classmethod
+    def get_relations(cls):
+        return [IdentityRelation(cls, SparkUnsupported)]
+
+    @classmethod
+    def contains_op(cls, spark_type: str, state: dict) -> bool:
+        return spark_type in [
+            "DoubleType",
+            "LongType",
+            "IntegerType",
+            "ShortType",
+            "FloatType",
+        ]
+
+
+class SparkCategorical(visions.VisionsBaseType):
+    @classmethod
+    def get_relations(cls):
+        return [IdentityRelation(cls, SparkUnsupported)]
+
+    @classmethod
+    def contains_op(cls, spark_type: str, state: dict) -> bool:
+        return spark_type == "StringType"
+
+
+class SparkBoolean(visions.VisionsBaseType):
+    @classmethod
+    def get_relations(cls):
+        return [IdentityRelation(cls, SparkUnsupported)]
+
+    @classmethod
+    def contains_op(cls, spark_type: str, state: dict) -> bool:
+        return spark_type == "BooleanType"
 
 
 class ProfilingTypeSet(visions.VisionsTypeset):

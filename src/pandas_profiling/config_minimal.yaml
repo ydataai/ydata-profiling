@@ -13,6 +13,9 @@ dataset:
 variables:
   descriptions: {}
 
+# computation engine/backend - this is determined at runtime
+engine : ""
+
 # infer dtypes
 infer_dtypes: False
 
@@ -101,6 +104,18 @@ correlations:
       warn_high_correlations: True
       threshold: 0.9
 
+scatter:
+    compute: False
+
+# Spark specific correlations
+spark:
+    persist: True
+    quantile_error: 0.1
+    to_pandas_limit: 100
+    sample: 500
+    dropna: dataframe
+    compute_distinct: False
+    compute_unique: False
 
 # Bivariate / Pairwise relations
 interactions:
