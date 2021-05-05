@@ -9,3 +9,12 @@ from pandas_profiling.profile_report import ProfileReport
 from pandas_profiling.version import __version__
 
 clear_config = ProfileReport.clear_config
+
+__all__ = [
+    "Config",
+    "config",
+    "pandas_decorator",
+    "ProfileReport",
+    "__version__",
+    "clear_config",
+]
