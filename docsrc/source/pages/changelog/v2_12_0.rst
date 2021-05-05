@@ -3,14 +3,27 @@ Changelog v2.12.0
 
 🎉 Features
 ^^^^^^^^^^^
-- Add the number and the percentage of negative values for numerical variables `[695] <https://github.com/pandas-profiling/pandas-profiling/issues/695>`- (contributed by @gverbock). 
+- Add the number and the percentage of negative values for numerical variables `[695] <https://github.com/pandas-profiling/pandas-profiling/issues/695>`_ (contributed by @gverbock)
 - Enable setting of typeset/summarizer (contributed by @ieaves)
+- Allow empty data frames `[678] <https://github.com/pandas-profiling/pandas-profiling/issues/678>`_ (contributed by @spbail, @fwd2020-c)
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+- Patch args for great_expectations datetime profiler `[727] <https://github.com/pandas-profiling/pandas-profiling/issues/727>`_ (contributed by @jstammers)
+- Negative exponent formatting `[723]  <https://github.com/pandas-profiling/pandas-profiling/issues/723>`_ (reported by @rdpapworth)
 
 📖 Documentation
 ^^^^^^^^^^^^^^^^
 - Fix link syntax (contributed by @ChrisCarini)
 
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Several performance improvements (minimal mode, duplicates, frequency table sorting)
+- Introduce ``pytest-benchmark`` in CI to monitor commit performance impact
+- Introduce ``commitlint`` in CI to start automating the changelog generation
+
 ⬆️ Dependencies
 ^^^^^^^^^^^^^^^^^^
-- The `ipywidgets` dependency was moved to the `[notebook]` extra, so most of Jupyter will not be installed alongside this package by default (contributed by @akx).
-- Replaced the (testing only) `fastparquet` dependency with `pyarrow` (default pandas parquet engine, contributed by @kurosch).
+- The ``ipywidgets`` dependency was moved to the ``[notebook]`` extra, so most of Jupyter will not be installed alongside this package by default (contributed by @akx)
+- Replaced the (testing only) ``fastparquet`` dependency with ``pyarrow`` (default pandas parquet engine, contributed by @kurosch)
+- Upgrade ``phik``. This drops the hard dependency on numba (contributed by @akx)
