@@ -26,14 +26,16 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Optional
+<pre><code class="python">from typing import Any, Dict, Optional, Tuple
 
 import pandas as pd
 
 from pandas_profiling.config import config
 
 
-def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFrame]:
+def get_duplicates(
+    df: pd.DataFrame, supported_columns
+) -&gt; Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
     &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -45,15 +47,37 @@ def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFr
     &#34;&#34;&#34;
     n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
 
-    if n_head &gt; 0 and supported_columns:
-        return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name=&#34;count&#34;)
-            .nlargest(n_head, &#34;count&#34;)
-        )
-    return None</code></pre>
+    metrics: Dict[str, Any] = {}
+    if n_head &gt; 0:
+        if supported_columns and len(df) &gt; 0:
+            duplicates_key = config[&#34;duplicates&#34;][&#34;key&#34;].get(str)
+            if duplicates_key in df.columns:
+                raise ValueError(
+                    f&#34;Duplicates key ({duplicates_key}) may not be part of the DataFrame. Either change the &#34;
+                    f&#34; column name in the DataFrame or change the &#39;duplicates.key&#39; parameter.&#34;
+                )
+
+            duplicated_rows = df.duplicated(subset=supported_columns, keep=False)
+            duplicated_rows = (
+                df[duplicated_rows]
+                .groupby(supported_columns)
+                .size()
+                .reset_index(name=duplicates_key)
+            )
+
+            metrics[&#34;n_duplicates&#34;] = len(duplicated_rows[duplicates_key])
+            metrics[&#34;p_duplicates&#34;] = metrics[&#34;n_duplicates&#34;] / len(df)
+
+            return (
+                metrics,
+                duplicated_rows.nlargest(n_head, duplicates_key),
+            )
+        else:
+            metrics[&#34;n_duplicates&#34;] = 0
+            metrics[&#34;p_duplicates&#34;] = 0.0
+            return metrics, None
+    else:
+        return metrics, None</code></pre>
 </details>
 </section>
 <section>
@@ -64,7 +88,7 @@ def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFr
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.duplicates.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>df: pandas.core.frame.DataFrame, supported_columns) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">get_duplicates</span></span>(<span>df: pandas.core.frame.DataFrame, supported_columns) ‑> Tuple[Dict[str, Any], Union[pandas.core.frame.DataFrame, NoneType]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Obtain the most occurring duplicate rows in the DataFrame.</p>
@@ -81,7 +105,9 @@ def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFr
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFrame]:
+<pre><code class="python">def get_duplicates(
+    df: pd.DataFrame, supported_columns
+) -&gt; Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
     &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -93,15 +119,37 @@ def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFr
     &#34;&#34;&#34;
     n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
 
-    if n_head &gt; 0 and supported_columns:
-        return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name=&#34;count&#34;)
-            .nlargest(n_head, &#34;count&#34;)
-        )
-    return None</code></pre>
+    metrics: Dict[str, Any] = {}
+    if n_head &gt; 0:
+        if supported_columns and len(df) &gt; 0:
+            duplicates_key = config[&#34;duplicates&#34;][&#34;key&#34;].get(str)
+            if duplicates_key in df.columns:
+                raise ValueError(
+                    f&#34;Duplicates key ({duplicates_key}) may not be part of the DataFrame. Either change the &#34;
+                    f&#34; column name in the DataFrame or change the &#39;duplicates.key&#39; parameter.&#34;
+                )
+
+            duplicated_rows = df.duplicated(subset=supported_columns, keep=False)
+            duplicated_rows = (
+                df[duplicated_rows]
+                .groupby(supported_columns)
+                .size()
+                .reset_index(name=duplicates_key)
+            )
+
+            metrics[&#34;n_duplicates&#34;] = len(duplicated_rows[duplicates_key])
+            metrics[&#34;p_duplicates&#34;] = metrics[&#34;n_duplicates&#34;] / len(df)
+
+            return (
+                metrics,
+                duplicated_rows.nlargest(n_head, duplicates_key),
+            )
+        else:
+            metrics[&#34;n_duplicates&#34;] = 0
+            metrics[&#34;p_duplicates&#34;] = 0.0
+            return metrics, None
+    else:
+        return metrics, None</code></pre>
 </details>
 </dd>
 </dl>

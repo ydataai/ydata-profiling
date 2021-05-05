@@ -124,7 +124,7 @@ def describe_supported(
     stats = {
         &#34;n_distinct&#34;: distinct_count,
         &#34;p_distinct&#34;: distinct_count / count if count &gt; 0 else 0,
-        &#34;is_unique&#34;: unique_count == count,
+        &#34;is_unique&#34;: unique_count == count and count &gt; 0,
         &#34;n_unique&#34;: unique_count,
         &#34;p_unique&#34;: unique_count / count if count &gt; 0 else 0,
     }
@@ -148,7 +148,7 @@ def describe_generic(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, di
     summary.update(
         {
             &#34;n&#34;: length,
-            &#34;p_missing&#34;: summary[&#34;n_missing&#34;] / length,
+            &#34;p_missing&#34;: summary[&#34;n_missing&#34;] / length if length &gt; 0 else 0,
             &#34;count&#34;: length - summary[&#34;n_missing&#34;],
             &#34;memory_size&#34;: series.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)),
         }
@@ -261,6 +261,16 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series,
     stats[&#34;monotonic_decrease_strict&#34;] = (
         stats[&#34;monotonic_decrease&#34;] and series.is_unique
     )
+    if summary[&#34;monotonic_increase_strict&#34;]:
+        stats[&#34;monotonic&#34;] = 2
+    elif summary[&#34;monotonic_decrease_strict&#34;]:
+        stats[&#34;monotonic&#34;] = -2
+    elif summary[&#34;monotonic_increase&#34;]:
+        stats[&#34;monotonic&#34;] = 1
+    elif summary[&#34;monotonic_decrease&#34;]:
+        stats[&#34;monotonic&#34;] = -1
+    else:
+        stats[&#34;monotonic&#34;] = 0
 
     stats.update(
         histogram_compute(
@@ -323,10 +333,16 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Ser
 
     # Only run if at least 1 non-missing value
     value_counts = summary[&#34;value_counts_without_nan&#34;]
+    histogram_largest = config[&#34;vars&#34;][&#34;cat&#34;][&#34;histogram_largest&#34;].get(int)
+    histogram_data = value_counts
+    if histogram_largest &gt; 0:
+        histogram_data = histogram_data.nlargest(histogram_largest)
 
     summary.update(
         histogram_compute(
-            value_counts, summary[&#34;n_distinct&#34;], name=&#34;histogram_frequencies&#34;
+            histogram_data,
+            summary[&#34;n_distinct&#34;],
+            name=&#34;histogram_frequencies&#34;,
         )
     )
 
@@ -535,10 +551,16 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Ser
 
     # Only run if at least 1 non-missing value
     value_counts = summary[&#34;value_counts_without_nan&#34;]
+    histogram_largest = config[&#34;vars&#34;][&#34;cat&#34;][&#34;histogram_largest&#34;].get(int)
+    histogram_data = value_counts
+    if histogram_largest &gt; 0:
+        histogram_data = histogram_data.nlargest(histogram_largest)
 
     summary.update(
         histogram_compute(
-            value_counts, summary[&#34;n_distinct&#34;], name=&#34;histogram_frequencies&#34;
+            histogram_data,
+            summary[&#34;n_distinct&#34;],
+            name=&#34;histogram_frequencies&#34;,
         )
     )
 
@@ -745,7 +767,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, di
     summary.update(
         {
             &#34;n&#34;: length,
-            &#34;p_missing&#34;: summary[&#34;n_missing&#34;] / length,
+            &#34;p_missing&#34;: summary[&#34;n_missing&#34;] / length if length &gt; 0 else 0,
             &#34;count&#34;: length - summary[&#34;n_missing&#34;],
             &#34;memory_size&#34;: series.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)),
         }
@@ -862,6 +884,16 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series,
     stats[&#34;monotonic_decrease_strict&#34;] = (
         stats[&#34;monotonic_decrease&#34;] and series.is_unique
     )
+    if summary[&#34;monotonic_increase_strict&#34;]:
+        stats[&#34;monotonic&#34;] = 2
+    elif summary[&#34;monotonic_decrease_strict&#34;]:
+        stats[&#34;monotonic&#34;] = -2
+    elif summary[&#34;monotonic_increase&#34;]:
+        stats[&#34;monotonic&#34;] = 1
+    elif summary[&#34;monotonic_decrease&#34;]:
+        stats[&#34;monotonic&#34;] = -1
+    else:
+        stats[&#34;monotonic&#34;] = 0
 
     stats.update(
         histogram_compute(
@@ -952,7 +984,7 @@ def describe_supported(
     stats = {
         &#34;n_distinct&#34;: distinct_count,
         &#34;p_distinct&#34;: distinct_count / count if count &gt; 0 else 0,
-        &#34;is_unique&#34;: unique_count == count,
+        &#34;is_unique&#34;: unique_count == count and count &gt; 0,
         &#34;n_unique&#34;: unique_count,
         &#34;p_unique&#34;: unique_count / count if count &gt; 0 else 0,
     }

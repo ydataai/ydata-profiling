@@ -26,10 +26,12 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Dict, Sequence
+<pre><code class="python">from typing import Any, Dict, List
+
+import numpy as np
 
 
-def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; Sequence[Dict]:
+def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; List[Dict]:
     &#34;&#34;&#34;Render the rows for a frequency table (value, count).
 
     Args:
@@ -47,13 +49,13 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; Sequence[Dict]
         max_number_to_print = n
 
     if max_number_to_print &lt; len(freqtable):
-        freq_other = sum(freqtable.iloc[max_number_to_print:])
+        freq_other = np.sum(freqtable.iloc[max_number_to_print:])
         min_freq = freqtable.values[max_number_to_print]
     else:
         freq_other = 0
         min_freq = 0
 
-    freq_missing = n - sum(freqtable)
+    freq_missing = n - np.sum(freqtable)
     # No values
     if len(freqtable) == 0:
         return []
@@ -107,40 +109,38 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; Sequence[Dict]
     return rows
 
 
-def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; list:
+def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[str, Any]]:
     &#34;&#34;&#34;Similar to the frequency table, for extreme observations.
 
     Args:
-      freqtable: The frequency table.
+      freqtable: The (sorted) frequency table.
       number_to_print: The number of observations to print.
       n: The total number of observations.
-      ascending: The ordering of the observations (Default value = True)
 
     Returns:
         The HTML rendering of the extreme observation table.
     &#34;&#34;&#34;
+
     # If it&#39;s mixed between base types (str, int) convert to str. Pure &#34;mixed&#34; types are filtered during type
     # discovery
     # TODO: should be in cast?
-    if &#34;mixed&#34; in freqtable.index.inferred_type:
-        freqtable.index = freqtable.index.astype(str)
+    # if &#34;mixed&#34; in freqtable.index.inferred_type:
+    #     freqtable.index = freqtable.index.astype(str)
 
-    sorted_freqtable = freqtable.sort_index(ascending=ascending)
-    obs_to_print = sorted_freqtable.iloc[:number_to_print]
-    max_freq = max(obs_to_print.values)
+    obs_to_print = freqtable.iloc[:number_to_print]
+    max_freq = obs_to_print.max()
 
-    rows = []
-    for label, freq in obs_to_print.items():
-        rows.append(
-            {
-                &#34;label&#34;: label,
-                &#34;width&#34;: freq / max_freq if max_freq != 0 else 0,
-                &#34;count&#34;: freq,
-                &#34;percentage&#34;: float(freq) / n,
-                &#34;extra_class&#34;: &#34;&#34;,
-                &#34;n&#34;: n,
-            }
-        )
+    rows = [
+        {
+            &#34;label&#34;: label,
+            &#34;width&#34;: freq / max_freq if max_freq != 0 else 0,
+            &#34;count&#34;: freq,
+            &#34;percentage&#34;: float(freq) / n,
+            &#34;extra_class&#34;: &#34;&#34;,
+            &#34;n&#34;: n,
+        }
+        for label, freq in obs_to_print.items()
+    ]
 
     return rows</code></pre>
 </details>
@@ -153,20 +153,18 @@ def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; list:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.frequency_table_utils.extreme_obs_table"><code class="name flex">
-<span>def <span class="ident">extreme_obs_table</span></span>(<span>freqtable, number_to_print, n, ascending=True) ‑> list</span>
+<span>def <span class="ident">extreme_obs_table</span></span>(<span>freqtable, number_to_print: int, n: int) ‑> List[Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Similar to the frequency table, for extreme observations.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>freqtable</code></strong></dt>
-<dd>The frequency table.</dd>
+<dd>The (sorted) frequency table.</dd>
 <dt><strong><code>number_to_print</code></strong></dt>
 <dd>The number of observations to print.</dd>
 <dt><strong><code>n</code></strong></dt>
 <dd>The total number of observations.</dd>
-<dt><strong><code>ascending</code></strong></dt>
-<dd>The ordering of the observations (Default value = True)</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>The HTML rendering of the extreme observation table.</p></div>
@@ -174,46 +172,44 @@ def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; list:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; list:
+<pre><code class="python">def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[str, Any]]:
     &#34;&#34;&#34;Similar to the frequency table, for extreme observations.
 
     Args:
-      freqtable: The frequency table.
+      freqtable: The (sorted) frequency table.
       number_to_print: The number of observations to print.
       n: The total number of observations.
-      ascending: The ordering of the observations (Default value = True)
 
     Returns:
         The HTML rendering of the extreme observation table.
     &#34;&#34;&#34;
+
     # If it&#39;s mixed between base types (str, int) convert to str. Pure &#34;mixed&#34; types are filtered during type
     # discovery
     # TODO: should be in cast?
-    if &#34;mixed&#34; in freqtable.index.inferred_type:
-        freqtable.index = freqtable.index.astype(str)
+    # if &#34;mixed&#34; in freqtable.index.inferred_type:
+    #     freqtable.index = freqtable.index.astype(str)
 
-    sorted_freqtable = freqtable.sort_index(ascending=ascending)
-    obs_to_print = sorted_freqtable.iloc[:number_to_print]
-    max_freq = max(obs_to_print.values)
+    obs_to_print = freqtable.iloc[:number_to_print]
+    max_freq = obs_to_print.max()
 
-    rows = []
-    for label, freq in obs_to_print.items():
-        rows.append(
-            {
-                &#34;label&#34;: label,
-                &#34;width&#34;: freq / max_freq if max_freq != 0 else 0,
-                &#34;count&#34;: freq,
-                &#34;percentage&#34;: float(freq) / n,
-                &#34;extra_class&#34;: &#34;&#34;,
-                &#34;n&#34;: n,
-            }
-        )
+    rows = [
+        {
+            &#34;label&#34;: label,
+            &#34;width&#34;: freq / max_freq if max_freq != 0 else 0,
+            &#34;count&#34;: freq,
+            &#34;percentage&#34;: float(freq) / n,
+            &#34;extra_class&#34;: &#34;&#34;,
+            &#34;n&#34;: n,
+        }
+        for label, freq in obs_to_print.items()
+    ]
 
     return rows</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.frequency_table_utils.freq_table"><code class="name flex">
-<span>def <span class="ident">freq_table</span></span>(<span>freqtable, n: int, max_number_to_print: int) ‑> Sequence[Dict]</span>
+<span>def <span class="ident">freq_table</span></span>(<span>freqtable, n: int, max_number_to_print: int) ‑> List[Dict]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Render the rows for a frequency table (value, count).</p>
@@ -232,7 +228,7 @@ def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; list:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; Sequence[Dict]:
+<pre><code class="python">def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; List[Dict]:
     &#34;&#34;&#34;Render the rows for a frequency table (value, count).
 
     Args:
@@ -250,13 +246,13 @@ def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -&gt; list:
         max_number_to_print = n
 
     if max_number_to_print &lt; len(freqtable):
-        freq_other = sum(freqtable.iloc[max_number_to_print:])
+        freq_other = np.sum(freqtable.iloc[max_number_to_print:])
         min_freq = freqtable.values[max_number_to_print]
     else:
         freq_other = 0
         min_freq = 0
 
-    freq_missing = n - sum(freqtable)
+    freq_missing = n - np.sum(freqtable)
     # No values
     if len(freqtable) == 0:
         return []

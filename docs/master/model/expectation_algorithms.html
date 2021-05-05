@@ -97,7 +97,10 @@ def path_expectations(name, summary, batch, *args):
 def datetime_expectations(name, summary, batch, *args):
     if any(k in summary for k in [&#34;min&#34;, &#34;max&#34;]):
         batch.expect_column_values_to_be_between(
-            name, min_value=summary.get(&#34;min&#34;), max_value=summary.get(&#34;max&#34;)
+            name,
+            min_value=summary.get(&#34;min&#34;),
+            max_value=summary.get(&#34;max&#34;),
+            parse_strings_as_datetimes=True,
         )
 
     return name, summary, batch
@@ -160,7 +163,10 @@ def file_expectations(name, summary, batch, *args):
 <pre><code class="python">def datetime_expectations(name, summary, batch, *args):
     if any(k in summary for k in [&#34;min&#34;, &#34;max&#34;]):
         batch.expect_column_values_to_be_between(
-            name, min_value=summary.get(&#34;min&#34;), max_value=summary.get(&#34;max&#34;)
+            name,
+            min_value=summary.get(&#34;min&#34;),
+            max_value=summary.get(&#34;max&#34;),
+            parse_strings_as_datetimes=True,
         )
 
     return name, summary, batch</code></pre>

@@ -37,6 +37,8 @@ def render_common(summary):
     n_extreme_obs = config[&#34;n_extreme_obs&#34;].get(int)
     n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
 
+    sorted_freqtable = summary[&#34;value_counts_without_nan&#34;].sort_index(ascending=True)
+
     template_variables = {
         # TODO: with nan
         &#34;freq_table_rows&#34;: freq_table(
@@ -45,16 +47,14 @@ def render_common(summary):
             max_number_to_print=n_freq_table_max,
         ),
         &#34;firstn_expanded&#34;: extreme_obs_table(
-            freqtable=summary[&#34;value_counts_without_nan&#34;],
+            freqtable=sorted_freqtable,
             number_to_print=n_extreme_obs,
             n=summary[&#34;n&#34;],
-            ascending=True,
         ),
         &#34;lastn_expanded&#34;: extreme_obs_table(
-            freqtable=summary[&#34;value_counts_without_nan&#34;],
+            freqtable=sorted_freqtable[::-1],
             number_to_print=n_extreme_obs,
             n=summary[&#34;n&#34;],
-            ascending=False,
         ),
     }
 
@@ -81,6 +81,8 @@ def render_common(summary):
     n_extreme_obs = config[&#34;n_extreme_obs&#34;].get(int)
     n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
 
+    sorted_freqtable = summary[&#34;value_counts_without_nan&#34;].sort_index(ascending=True)
+
     template_variables = {
         # TODO: with nan
         &#34;freq_table_rows&#34;: freq_table(
@@ -89,16 +91,14 @@ def render_common(summary):
             max_number_to_print=n_freq_table_max,
         ),
         &#34;firstn_expanded&#34;: extreme_obs_table(
-            freqtable=summary[&#34;value_counts_without_nan&#34;],
+            freqtable=sorted_freqtable,
             number_to_print=n_extreme_obs,
             n=summary[&#34;n&#34;],
-            ascending=True,
         ),
         &#34;lastn_expanded&#34;: extreme_obs_table(
-            freqtable=summary[&#34;value_counts_without_nan&#34;],
+            freqtable=sorted_freqtable[::-1],
             number_to_print=n_extreme_obs,
             n=summary[&#34;n&#34;],
-            ascending=False,
         ),
     }
 

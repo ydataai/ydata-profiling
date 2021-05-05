@@ -26,7 +26,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import attr
+<pre><code class="python">from typing import List
+
+import attr
 import pandas as pd
 
 from pandas_profiling.config import config
@@ -40,7 +42,7 @@ class Sample:
     caption = attr.ib(default=None)
 
 
-def get_sample(df: pd.DataFrame) -&gt; list:
+def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
     &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
 
     Args:
@@ -49,7 +51,10 @@ def get_sample(df: pd.DataFrame) -&gt; list:
     Returns:
         a list of Sample objects
     &#34;&#34;&#34;
-    samples = []
+    samples: List[Sample] = []
+    if len(df) == 0:
+        return samples
+
     n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
     if n_head &gt; 0:
         samples.append(Sample(&#34;head&#34;, df.head(n=n_head), &#34;First rows&#34;))
@@ -73,7 +78,7 @@ def get_sample(df: pd.DataFrame) -&gt; list:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.sample.get_sample"><code class="name flex">
-<span>def <span class="ident">get_sample</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> list</span>
+<span>def <span class="ident">get_sample</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> List[<a title="pandas_profiling.model.sample.Sample" href="#pandas_profiling.model.sample.Sample">Sample</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Obtains a sample from head and tail of the DataFrame</p>
@@ -88,7 +93,7 @@ def get_sample(df: pd.DataFrame) -&gt; list:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_sample(df: pd.DataFrame) -&gt; list:
+<pre><code class="python">def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
     &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
 
     Args:
@@ -97,7 +102,10 @@ def get_sample(df: pd.DataFrame) -&gt; list:
     Returns:
         a list of Sample objects
     &#34;&#34;&#34;
-    samples = []
+    samples: List[Sample] = []
+    if len(df) == 0:
+        return samples
+
     n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
     if n_head &gt; 0:
         samples.append(Sample(&#34;head&#34;, df.head(n=n_head), &#34;First rows&#34;))

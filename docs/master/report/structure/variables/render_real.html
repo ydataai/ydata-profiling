@@ -180,17 +180,6 @@ def render_real(summary):
         name=&#34;Quantile statistics&#34;,
     )
 
-    if summary[&#34;monotonic_increase_strict&#34;]:
-        monotocity = &#34;Strictly increasing&#34;
-    elif summary[&#34;monotonic_decrease_strict&#34;]:
-        monotocity = &#34;Strictly decreasing&#34;
-    elif summary[&#34;monotonic_increase&#34;]:
-        monotocity = &#34;Increasing&#34;
-    elif summary[&#34;monotonic_decrease&#34;]:
-        monotocity = &#34;Decreasing&#34;
-    else:
-        monotocity = &#34;Not monotonic&#34;
-
     descriptive_statistics = Table(
         [
             {
@@ -218,7 +207,11 @@ def render_real(summary):
             },
             {&#34;name&#34;: &#34;Sum&#34;, &#34;value&#34;: summary[&#34;sum&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
             {&#34;name&#34;: &#34;Variance&#34;, &#34;value&#34;: summary[&#34;variance&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Monotocity&#34;, &#34;value&#34;: monotocity, &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Monotonicity&#34;,
+                &#34;value&#34;: summary[&#34;monotonic&#34;],
+                &#34;fmt&#34;: &#34;fmt_monotonic&#34;,
+            },
         ],
         name=&#34;Descriptive statistics&#34;,
     )
@@ -433,17 +426,6 @@ def render_real(summary):
         name=&#34;Quantile statistics&#34;,
     )
 
-    if summary[&#34;monotonic_increase_strict&#34;]:
-        monotocity = &#34;Strictly increasing&#34;
-    elif summary[&#34;monotonic_decrease_strict&#34;]:
-        monotocity = &#34;Strictly decreasing&#34;
-    elif summary[&#34;monotonic_increase&#34;]:
-        monotocity = &#34;Increasing&#34;
-    elif summary[&#34;monotonic_decrease&#34;]:
-        monotocity = &#34;Decreasing&#34;
-    else:
-        monotocity = &#34;Not monotonic&#34;
-
     descriptive_statistics = Table(
         [
             {
@@ -471,7 +453,11 @@ def render_real(summary):
             },
             {&#34;name&#34;: &#34;Sum&#34;, &#34;value&#34;: summary[&#34;sum&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
             {&#34;name&#34;: &#34;Variance&#34;, &#34;value&#34;: summary[&#34;variance&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Monotocity&#34;, &#34;value&#34;: monotocity, &#34;fmt&#34;: &#34;fmt&#34;},
+            {
+                &#34;name&#34;: &#34;Monotonicity&#34;,
+                &#34;value&#34;: summary[&#34;monotonic&#34;],
+                &#34;fmt&#34;: &#34;fmt_monotonic&#34;,
+            },
         ],
         name=&#34;Descriptive statistics&#34;,
     )

@@ -107,7 +107,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     import math
     import numbers
     import re
-    from datetime import datetime, timedelta
+    from datetime import timedelta
 
     time_units = (
         dict(
@@ -235,8 +235,10 @@ def fmt_numeric(value: float, precision=10) -&gt; str:
     fmtted = f&#34;{{:.{precision}g}}&#34;.format(value)
     for v in [&#34;e+&#34;, &#34;e-&#34;]:
         if v in fmtted:
+            sign = &#34;-&#34; if v in &#34;e-&#34; else &#34;&#34;
             fmtted = fmtted.replace(v, &#34; × 10&lt;sup&gt;&#34;) + &#34;&lt;/sup&gt;&#34;
             fmtted = fmtted.replace(&#34;&lt;sup&gt;0&#34;, &#34;&lt;sup&gt;&#34;)
+            fmtted = fmtted.replace(&#34;&lt;sup&gt;&#34;, f&#34;&lt;sup&gt;{sign}&#34;)
 
     return fmtted
 
@@ -284,6 +286,21 @@ def fmt(value) -&gt; str:
         return str(escape(value))
 
 
+def fmt_monotonic(value: int) -&gt; str:
+    if value == 2:
+        return &#34;Strictly increasing&#34;
+    elif value == 1:
+        return &#34;Increasing&#34;
+    elif value == 0:
+        return &#34;Not monotonic&#34;
+    elif value == -1:
+        return &#34;Decreasing&#34;
+    elif value == -2:
+        return &#34;Strictly decreasing&#34;
+    else:
+        raise ValueError(&#34;Value should be integer ranging from -2 to 2.&#34;)
+
+
 def help(title, url=None) -&gt; str:
     &#34;&#34;&#34;Creat help badge
 
@@ -310,6 +327,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
         &#34;fmt_bytesize&#34;: fmt_bytesize,
         &#34;fmt_timespan&#34;: fmt_timespan,
         &#34;fmt_numeric&#34;: fmt_numeric,
+        &#34;fmt_monotonic&#34;: fmt_monotonic,
         &#34;fmt_number&#34;: fmt_number,
         &#34;fmt_array&#34;: fmt_array,
         &#34;fmt&#34;: fmt,
@@ -486,6 +504,30 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     return f&#39;&lt;span style=&#34;color:{color}&#34;&gt;{text}&lt;/span&gt;&#39;</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.report.formatters.fmt_monotonic"><code class="name flex">
+<span>def <span class="ident">fmt_monotonic</span></span>(<span>value: int) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fmt_monotonic(value: int) -&gt; str:
+    if value == 2:
+        return &#34;Strictly increasing&#34;
+    elif value == 1:
+        return &#34;Increasing&#34;
+    elif value == 0:
+        return &#34;Not monotonic&#34;
+    elif value == -1:
+        return &#34;Decreasing&#34;
+    elif value == -2:
+        return &#34;Strictly decreasing&#34;
+    else:
+        raise ValueError(&#34;Value should be integer ranging from -2 to 2.&#34;)</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.report.formatters.fmt_number"><code class="name flex">
 <span>def <span class="ident">fmt_number</span></span>(<span>value: int) ‑> str</span>
 </code></dt>
@@ -545,8 +587,10 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     fmtted = f&#34;{{:.{precision}g}}&#34;.format(value)
     for v in [&#34;e+&#34;, &#34;e-&#34;]:
         if v in fmtted:
+            sign = &#34;-&#34; if v in &#34;e-&#34; else &#34;&#34;
             fmtted = fmtted.replace(v, &#34; × 10&lt;sup&gt;&#34;) + &#34;&lt;/sup&gt;&#34;
             fmtted = fmtted.replace(&#34;&lt;sup&gt;0&#34;, &#34;&lt;sup&gt;&#34;)
+            fmtted = fmtted.replace(&#34;&lt;sup&gt;&#34;, f&#34;&lt;sup&gt;{sign}&#34;)
 
     return fmtted</code></pre>
 </details>
@@ -608,7 +652,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     import math
     import numbers
     import re
-    from datetime import datetime, timedelta
+    from datetime import timedelta
 
     time_units = (
         dict(
@@ -743,6 +787,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
         &#34;fmt_bytesize&#34;: fmt_bytesize,
         &#34;fmt_timespan&#34;: fmt_timespan,
         &#34;fmt_numeric&#34;: fmt_numeric,
+        &#34;fmt_monotonic&#34;: fmt_monotonic,
         &#34;fmt_number&#34;: fmt_number,
         &#34;fmt_array&#34;: fmt_array,
         &#34;fmt&#34;: fmt,
@@ -807,6 +852,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
 <li><code><a title="pandas_profiling.report.formatters.fmt_bytesize" href="#pandas_profiling.report.formatters.fmt_bytesize">fmt_bytesize</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_class" href="#pandas_profiling.report.formatters.fmt_class">fmt_class</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_color" href="#pandas_profiling.report.formatters.fmt_color">fmt_color</a></code></li>
+<li><code><a title="pandas_profiling.report.formatters.fmt_monotonic" href="#pandas_profiling.report.formatters.fmt_monotonic">fmt_monotonic</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_number" href="#pandas_profiling.report.formatters.fmt_number">fmt_number</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_numeric" href="#pandas_profiling.report.formatters.fmt_numeric">fmt_numeric</a></code></li>
 <li><code><a title="pandas_profiling.report.formatters.fmt_percent" href="#pandas_profiling.report.formatters.fmt_percent">fmt_percent</a></code></li>

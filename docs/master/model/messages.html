@@ -87,6 +87,9 @@ class MessageType(Enum):
     UNIFORM = auto()
     &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;
 
+    EMPTY = auto()
+    &#34;&#34;&#34;The DataFrame is empty&#34;&#34;&#34;
+
 
 class Message:
     &#34;&#34;&#34;A message object (type, values, column).&#34;&#34;&#34;
@@ -140,12 +143,20 @@ def check_table_messages(table: dict) -&gt; List[Message]:
         A list of messages.
     &#34;&#34;&#34;
     messages = []
-    if warning_value(table[&#34;n_duplicates&#34;]):
+    if &#34;n_duplicates&#34; in table and warning_value(table[&#34;n_duplicates&#34;]):
         messages.append(
             Message(
                 message_type=MessageType.DUPLICATES,
                 values=table,
                 fields={&#34;n_duplicates&#34;},
+            )
+        )
+    if table[&#34;n&#34;] == 0:
+        messages.append(
+            Message(
+                message_type=MessageType.EMPTY,
+                values=table,
+                fields={&#34;n&#34;},
             )
         )
     return messages
@@ -466,12 +477,20 @@ def warning_type_date(series):
         A list of messages.
     &#34;&#34;&#34;
     messages = []
-    if warning_value(table[&#34;n_duplicates&#34;]):
+    if &#34;n_duplicates&#34; in table and warning_value(table[&#34;n_duplicates&#34;]):
         messages.append(
             Message(
                 message_type=MessageType.DUPLICATES,
                 values=table,
                 fields={&#34;n_duplicates&#34;},
+            )
+        )
+    if table[&#34;n&#34;] == 0:
+        messages.append(
+            Message(
+                message_type=MessageType.EMPTY,
+                values=table,
+                fields={&#34;n&#34;},
             )
         )
     return messages</code></pre>
@@ -857,7 +876,10 @@ def anchor_id(self):
     &#34;&#34;&#34;Variables are rejected if we do not want to consider them for further analysis.&#34;&#34;&#34;
 
     UNIFORM = auto()
-    &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;The variable is uniformly distributed&#34;&#34;&#34;
+
+    EMPTY = auto()
+    &#34;&#34;&#34;The DataFrame is empty&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -876,6 +898,10 @@ def anchor_id(self):
 <dt id="pandas_profiling.model.messages.MessageType.DUPLICATES"><code class="name">var <span class="ident">DUPLICATES</span></code></dt>
 <dd>
 <div class="desc"><p>This variable contains duplicates.</p></div>
+</dd>
+<dt id="pandas_profiling.model.messages.MessageType.EMPTY"><code class="name">var <span class="ident">EMPTY</span></code></dt>
+<dd>
+<div class="desc"><p>The DataFrame is empty</p></div>
 </dd>
 <dt id="pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY"><code class="name">var <span class="ident">HIGH_CARDINALITY</span></code></dt>
 <dd>
@@ -967,6 +993,7 @@ def anchor_id(self):
 <li><code><a title="pandas_profiling.model.messages.MessageType.CONSTANT" href="#pandas_profiling.model.messages.MessageType.CONSTANT">CONSTANT</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.CONSTANT_LENGTH" href="#pandas_profiling.model.messages.MessageType.CONSTANT_LENGTH">CONSTANT_LENGTH</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.DUPLICATES" href="#pandas_profiling.model.messages.MessageType.DUPLICATES">DUPLICATES</a></code></li>
+<li><code><a title="pandas_profiling.model.messages.MessageType.EMPTY" href="#pandas_profiling.model.messages.MessageType.EMPTY">EMPTY</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY" href="#pandas_profiling.model.messages.MessageType.HIGH_CARDINALITY">HIGH_CARDINALITY</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.HIGH_CORRELATION" href="#pandas_profiling.model.messages.MessageType.HIGH_CORRELATION">HIGH_CORRELATION</a></code></li>
 <li><code><a title="pandas_profiling.model.messages.MessageType.INFINITE" href="#pandas_profiling.model.messages.MessageType.INFINITE">INFINITE</a></code></li>

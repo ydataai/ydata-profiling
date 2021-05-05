@@ -209,8 +209,16 @@
 <div class="section" id="features">
 <h2>🎉 Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Add the number and the percentage of negative values for numerical variables <cite>[695] &lt;https://github.com/pandas-profiling/pandas-profiling/issues/695&gt;</cite>- (contributed by &#64;gverbock).</p></li>
+<li><p>Add the number and the percentage of negative values for numerical variables <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/695">[695]</a> (contributed by &#64;gverbock)</p></li>
 <li><p>Enable setting of typeset/summarizer (contributed by &#64;ieaves)</p></li>
+<li><p>Allow empty data frames <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/678">[678]</a> (contributed by &#64;spbail, &#64;fwd2020-c)</p></li>
+</ul>
+</div>
+<div class="section" id="bug-fixes">
+<h2>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Patch args for great_expectations datetime profiler <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/727">[727]</a> (contributed by &#64;jstammers)</p></li>
+<li><p>Negative exponent formatting <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/723">[723]</a> (reported by &#64;rdpapworth)</p></li>
 </ul>
 </div>
 <div class="section" id="documentation">
@@ -219,11 +227,20 @@
 <li><p>Fix link syntax (contributed by &#64;ChrisCarini)</p></li>
 </ul>
 </div>
+<div class="section" id="internal-improvements">
+<h2>👷‍♂️ Internal Improvements<a class="headerlink" href="#internal-improvements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Several performance improvements (minimal mode, duplicates, frequency table sorting)</p></li>
+<li><p>Introduce <code class="docutils literal notranslate"><span class="pre">pytest-benchmark</span></code> in CI to monitor commit performance impact</p></li>
+<li><p>Introduce <code class="docutils literal notranslate"><span class="pre">commitlint</span></code> in CI to start automating the changelog generation</p></li>
+</ul>
+</div>
 <div class="section" id="dependencies">
 <h2>⬆️ Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>The <cite>ipywidgets</cite> dependency was moved to the <cite>[notebook]</cite> extra, so most of Jupyter will not be installed alongside this package by default (contributed by &#64;akx).</p></li>
-<li><p>Replaced the (testing only) <cite>fastparquet</cite> dependency with <cite>pyarrow</cite> (default pandas parquet engine, contributed by &#64;kurosch).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ipywidgets</span></code> dependency was moved to the <code class="docutils literal notranslate"><span class="pre">[notebook]</span></code> extra, so most of Jupyter will not be installed alongside this package by default (contributed by &#64;akx)</p></li>
+<li><p>Replaced the (testing only) <code class="docutils literal notranslate"><span class="pre">fastparquet</span></code> dependency with <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> (default pandas parquet engine, contributed by &#64;kurosch)</p></li>
+<li><p>Upgrade <code class="docutils literal notranslate"><span class="pre">phik</span></code>. This drops the hard dependency on numba (contributed by &#64;akx)</p></li>
 </ul>
 </div>
 </div>

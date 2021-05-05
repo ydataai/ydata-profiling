@@ -184,6 +184,9 @@ def calculate_correlation(
         The correlation matrices for the given correlation measures. Return None if correlation is empty.
     &#34;&#34;&#34;
 
+    if len(df) == 0:
+        return None
+
     correlation_measures = {
         &#34;pearson&#34;: Pearson,
         &#34;spearman&#34;: Spearman,
@@ -268,6 +271,9 @@ def perform_check_correlation(
     Returns:
         The correlation matrices for the given correlation measures. Return None if correlation is empty.
     &#34;&#34;&#34;
+
+    if len(df) == 0:
+        return None
 
     correlation_measures = {
         &#34;pearson&#34;: Pearson,

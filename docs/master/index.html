@@ -33,7 +33,7 @@
 <p align="center">
 <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
 |
-<a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-l2iqwb92-9JpTEdFBijR2G798j2MpQw">Slack</a>
+<a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>
 |
 <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
 </p>
@@ -87,6 +87,7 @@ It's extra exciting that GitHub <strong>matches your contribution</strong> for t
 <li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html">Vektis</a> (Vektis Dutch Healthcare data)</li>
 <li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html">Colors</a> (a simple colors dataset)</li>
 <li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/cbank_marketing_data/uci_bank_marketing_report.html">UCI Bank Dataset</a> (banking marketing dataset)</li>
+<li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/rdw/rdw.html">RDW</a> (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)</li>
 </ul>
 <p>Specific features:</p>
 <ul>
@@ -168,11 +169,12 @@ profile.to_file(&quot;your_report.json&quot;)
 </code></pre>
 <h3 id="large-datasets">Large datasets</h3>
 <p>Version 2.4 introduces minimal mode. </p>
-<p>This is a default configuration that disables expensive computations (such as correlations and dynamic binning).</p>
+<p>This is a default configuration that disables expensive computations (such as correlations and duplicate row detection).</p>
 <p>Use the following syntax:</p>
 <pre><code class="language-python">profile = ProfileReport(large_dataset, minimal=True)
 profile.to_file(&quot;output.html&quot;)
 </code></pre>
+<p>Benchmarks are available <a href="https://pandas-profiling.github.io/pandas-profiling/dev/bench/">here</a>.</p>
 <h3 id="command-line-usage">Command line usage</h3>
 <p>For standard formatted CSV files that can be read immediately by pandas, you can use the <code><a title="pandas_profiling" href="#pandas_profiling">pandas_profiling</a></code> executable. </p>
 <p>Run the following for information about options and arguments.</p>
@@ -186,7 +188,7 @@ profile.to_file(&quot;output.html&quot;)
 <li><code>progress_bar</code> (<code>bool</code>): If True, <code>pandas-profiling</code> will display a progress bar.</li>
 <li><code>infer_dtypes</code> (<code>bool</code>): When <code>True</code> (default) the <code>dtype</code> of variables are inferred using <code>visions</code> using the typeset logic (for instance a column that has integers stored as string will be analyzed as if being numeric).</li>
 </ul>
-<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>, <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml">dark themed configuration file</a>.</p>
+<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a>.</p>
 <p>You find the configuration docs on the advanced usage page <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html">here</a></p>
 <p><strong>Example</strong></p>
 <pre><code class="language-python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
@@ -229,11 +231,12 @@ You can find more details on the Great Expectations integration [here](https://p
 <p>Types are a powerful abstraction for effective data analysis, that goes beyond the logical data types (integer, float etc.).
 <code>pandas-profiling</code> currently, recognizes the following types: <em>Boolean, Numerical, Date, Categorical, URL, Path, File</em> and <em>Image</em>.</p>
 <p>We have developed a type system for Python, tailored for data analysis: <a href="https://github.com/dylan-profiler/visions">visions</a>.
-Selecting the right typeset drastically reduces the complexity the code of your analysis.
-Future versions of <code>pandas-profiling</code> will have extended type support through <code>visions</code>!</p>
+Choosing an appropriate typeset can both improve the overall expressiveness and reduce the complexity of your analysis/code.
+To learn more about <code>pandas-profiling</code>'s type system, check out the default implementation <a href="https://github.com/pandas-profiling/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py">here</a>.
+In the meantime, user customized summarizations and type definitions are now fully supported - if you have a specific use-case please reach out with ideas or a PR!</p>
 <h2 id="contributing">Contributing</h2>
 <p>Read on getting involved in the <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html">Contribution Guide</a>.</p>
-<p>A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-hfy3iwp2-qEJSItye5QBZf8YGFMaMnQ">Join the Slack community</a>.</p>
+<p>A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Join the Slack community</a>.</p>
 <h2 id="editor-integration">Editor integration</h2>
 <h3 id="pycharm-integration">PyCharm integration</h3>
 <ol>

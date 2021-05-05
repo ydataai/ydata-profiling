@@ -33,7 +33,7 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, Mapping, Optional, Tuple
+from typing import Callable, Mapping, Tuple
 
 import numpy as np
 import pandas as pd
@@ -45,7 +45,6 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
 )
 from pandas_profiling.model.summarizer import BaseSummarizer
-from pandas_profiling.model.typeset import Unsupported
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
@@ -153,7 +152,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
     n = len(df)
 
     memory_size = df.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)).sum()
-    record_size = float(memory_size) / n
+    record_size = float(memory_size) / n if n &gt; 0 else 0
 
     table_stats = {
         &#34;n&#34;: n,
@@ -172,21 +171,9 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
             if series_summary[&#34;n_missing&#34;] == n:
                 table_stats[&#34;n_vars_all_missing&#34;] += 1
 
-    table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
-        table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;]
-    )
-
-    supported_columns = [
-        k for k, v in variable_stats.items() if v[&#34;type&#34;] != Unsupported
-    ]
-    table_stats[&#34;n_duplicates&#34;] = (
-        sum(df.duplicated(subset=supported_columns))
-        if len(supported_columns) &gt; 0
-        else 0
-    )
-    table_stats[&#34;p_duplicates&#34;] = (
-        (table_stats[&#34;n_duplicates&#34;] / len(df))
-        if (len(supported_columns) &gt; 0 and len(df) &gt; 0)
+    table_stats[&#34;p_cells_missing&#34;] = (
+        table_stats[&#34;n_cells_missing&#34;] / (table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;])
+        if table_stats[&#34;n&#34;] &gt; 0
         else 0
     )
 
@@ -196,29 +183,6 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
     )
 
     return table_stats
-
-
-def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFrame]:
-    &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
-
-    Args:
-        df: the Pandas DataFrame.
-        supported_columns: the columns to consider
-
-    Returns:
-        A subset of the DataFrame, ordered by occurrence.
-    &#34;&#34;&#34;
-    n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
-
-    if n_head &gt; 0 and supported_columns:
-        return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name=&#34;count&#34;)
-            .nlargest(n_head, &#34;count&#34;)
-        )
-    return None
 
 
 def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
@@ -231,6 +195,9 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
+
+    if len(df) == 0:
+        return {}
 
     def warn_missing(missing_name, error):
         warnings.warn(
@@ -383,47 +350,6 @@ def get_messages(table_stats, series_description, correlations):
     return summarizer.summarize(series, dtype=vtype)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.model.summary.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>df: pandas.core.frame.DataFrame, supported_columns) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Obtain the most occurring duplicate rows in the DataFrame.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>df</code></strong></dt>
-<dd>the Pandas DataFrame.</dd>
-<dt><strong><code>supported_columns</code></strong></dt>
-<dd>the columns to consider</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A subset of the DataFrame, ordered by occurrence.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_duplicates(df: pd.DataFrame, supported_columns) -&gt; Optional[pd.DataFrame]:
-    &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
-
-    Args:
-        df: the Pandas DataFrame.
-        supported_columns: the columns to consider
-
-    Returns:
-        A subset of the DataFrame, ordered by occurrence.
-    &#34;&#34;&#34;
-    n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
-
-    if n_head &gt; 0 and supported_columns:
-        return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name=&#34;count&#34;)
-            .nlargest(n_head, &#34;count&#34;)
-        )
-    return None</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.model.summary.get_messages"><code class="name flex">
 <span>def <span class="ident">get_messages</span></span>(<span>table_stats, series_description, correlations)</span>
 </code></dt>
@@ -470,6 +396,9 @@ def get_messages(table_stats, series_description, correlations):
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     &#34;&#34;&#34;
+
+    if len(df) == 0:
+        return {}
 
     def warn_missing(missing_name, error):
         warnings.warn(
@@ -661,7 +590,7 @@ def get_messages(table_stats, series_description, correlations):
     n = len(df)
 
     memory_size = df.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)).sum()
-    record_size = float(memory_size) / n
+    record_size = float(memory_size) / n if n &gt; 0 else 0
 
     table_stats = {
         &#34;n&#34;: n,
@@ -680,21 +609,9 @@ def get_messages(table_stats, series_description, correlations):
             if series_summary[&#34;n_missing&#34;] == n:
                 table_stats[&#34;n_vars_all_missing&#34;] += 1
 
-    table_stats[&#34;p_cells_missing&#34;] = table_stats[&#34;n_cells_missing&#34;] / (
-        table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;]
-    )
-
-    supported_columns = [
-        k for k, v in variable_stats.items() if v[&#34;type&#34;] != Unsupported
-    ]
-    table_stats[&#34;n_duplicates&#34;] = (
-        sum(df.duplicated(subset=supported_columns))
-        if len(supported_columns) &gt; 0
-        else 0
-    )
-    table_stats[&#34;p_duplicates&#34;] = (
-        (table_stats[&#34;n_duplicates&#34;] / len(df))
-        if (len(supported_columns) &gt; 0 and len(df) &gt; 0)
+    table_stats[&#34;p_cells_missing&#34;] = (
+        table_stats[&#34;n_cells_missing&#34;] / (table_stats[&#34;n&#34;] * table_stats[&#34;n_var&#34;])
+        if table_stats[&#34;n&#34;] &gt; 0
         else 0
     )
 
@@ -745,7 +662,6 @@ def get_messages(table_stats, series_description, correlations):
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.model.summary.describe_1d" href="#pandas_profiling.model.summary.describe_1d">describe_1d</a></code></li>
-<li><code><a title="pandas_profiling.model.summary.get_duplicates" href="#pandas_profiling.model.summary.get_duplicates">get_duplicates</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.get_messages" href="#pandas_profiling.model.summary.get_messages">get_messages</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.get_missing_diagrams" href="#pandas_profiling.model.summary.get_missing_diagrams">get_missing_diagrams</a></code></li>
 <li><code><a title="pandas_profiling.model.summary.get_scatter_matrix" href="#pandas_profiling.model.summary.get_scatter_matrix">get_scatter_matrix</a></code></li>

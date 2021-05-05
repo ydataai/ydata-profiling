@@ -76,9 +76,6 @@ def describe(
     if not isinstance(df, pd.DataFrame):
         warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
-    if df.empty:
-        raise ValueError(&#34;df can not be empty&#34;)
-
     disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
 
     date_start = datetime.utcnow()
@@ -163,7 +160,8 @@ def describe(
 
         # Duplicates
         pbar.set_postfix_str(&#34;Locating duplicates&#34;)
-        duplicates = get_duplicates(df, supported_columns)
+        metrics, duplicates = get_duplicates(df, supported_columns)
+        table_stats.update(metrics)
         pbar.update()
 
         # Messages
@@ -272,9 +270,6 @@ def describe(
     if not isinstance(df, pd.DataFrame):
         warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
-    if df.empty:
-        raise ValueError(&#34;df can not be empty&#34;)
-
     disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
 
     date_start = datetime.utcnow()
@@ -359,7 +354,8 @@ def describe(
 
         # Duplicates
         pbar.set_postfix_str(&#34;Locating duplicates&#34;)
-        duplicates = get_duplicates(df, supported_columns)
+        metrics, duplicates = get_duplicates(df, supported_columns)
+        table_stats.update(metrics)
         pbar.update()
 
         # Messages

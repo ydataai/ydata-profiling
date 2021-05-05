@@ -28,6 +28,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Dataset cache utility functions&#34;&#34;&#34;
+import zipfile
 from pathlib import Path
 
 import requests
@@ -49,12 +50,47 @@ def cache_file(file_name: str, url: str) -&gt; Path:
     data_path = get_data_path()
     data_path.mkdir(exist_ok=True)
 
-    # If not exists, download and create file
-    if not (data_path / file_name).exists():
-        data = requests.get(url)
-        (data_path / file_name).write_bytes(data.content)
+    file_path = data_path / file_name
 
-    return data_path / file_name</code></pre>
+    # If not exists, download and create file
+    if not file_path.exists():
+        response = requests.get(url)
+        file_path.write_bytes(response.content)
+
+    return file_path
+
+
+def cache_zipped_file(file_name: str, url: str) -&gt; Path:
+    &#34;&#34;&#34;Check if file_name already is in the data path, otherwise download it from url.
+
+    Args:
+        file_name: the file name
+        url: the URL of the dataset
+
+    Returns:
+        The relative path to the dataset
+    &#34;&#34;&#34;
+
+    data_path = get_data_path()
+    data_path.mkdir(exist_ok=True)
+
+    file_path = data_path / file_name
+
+    # If not exists, download and create file
+    if not file_path.exists():
+        response = requests.get(url)
+        if response.status_code != 200:
+            raise FileNotFoundError(&#34;Could not download resource&#34;)
+
+        tmp_path = data_path / &#34;tmp.zip&#34;
+        tmp_path.write_bytes(response.content)
+
+        with zipfile.ZipFile(tmp_path, &#34;r&#34;) as zip_file:
+            zip_file.extract(file_path.name, data_path)
+
+        tmp_path.unlink()
+
+    return file_path</code></pre>
 </details>
 </section>
 <section>
@@ -96,12 +132,65 @@ def cache_file(file_name: str, url: str) -&gt; Path:
     data_path = get_data_path()
     data_path.mkdir(exist_ok=True)
 
-    # If not exists, download and create file
-    if not (data_path / file_name).exists():
-        data = requests.get(url)
-        (data_path / file_name).write_bytes(data.content)
+    file_path = data_path / file_name
 
-    return data_path / file_name</code></pre>
+    # If not exists, download and create file
+    if not file_path.exists():
+        response = requests.get(url)
+        file_path.write_bytes(response.content)
+
+    return file_path</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.utils.cache.cache_zipped_file"><code class="name flex">
+<span>def <span class="ident">cache_zipped_file</span></span>(<span>file_name: str, url: str) ‑> pathlib.Path</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if file_name already is in the data path, otherwise download it from url.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_name</code></strong></dt>
+<dd>the file name</dd>
+<dt><strong><code>url</code></strong></dt>
+<dd>the URL of the dataset</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The relative path to the dataset</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cache_zipped_file(file_name: str, url: str) -&gt; Path:
+    &#34;&#34;&#34;Check if file_name already is in the data path, otherwise download it from url.
+
+    Args:
+        file_name: the file name
+        url: the URL of the dataset
+
+    Returns:
+        The relative path to the dataset
+    &#34;&#34;&#34;
+
+    data_path = get_data_path()
+    data_path.mkdir(exist_ok=True)
+
+    file_path = data_path / file_name
+
+    # If not exists, download and create file
+    if not file_path.exists():
+        response = requests.get(url)
+        if response.status_code != 200:
+            raise FileNotFoundError(&#34;Could not download resource&#34;)
+
+        tmp_path = data_path / &#34;tmp.zip&#34;
+        tmp_path.write_bytes(response.content)
+
+        with zipfile.ZipFile(tmp_path, &#34;r&#34;) as zip_file:
+            zip_file.extract(file_path.name, data_path)
+
+        tmp_path.unlink()
+
+    return file_path</code></pre>
 </details>
 </dd>
 </dl>
@@ -123,6 +212,7 @@ def cache_file(file_name: str, url: str) -&gt; Path:
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pandas_profiling.utils.cache.cache_file" href="#pandas_profiling.utils.cache.cache_file">cache_file</a></code></li>
+<li><code><a title="pandas_profiling.utils.cache.cache_zipped_file" href="#pandas_profiling.utils.cache.cache_zipped_file">cache_zipped_file</a></code></li>
 </ul>
 </li>
 </ul>

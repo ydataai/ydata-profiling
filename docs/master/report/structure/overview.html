@@ -35,38 +35,46 @@ from pandas_profiling.report.presentation.core import Container, Table, Warnings
 
 
 def get_dataset_overview(summary):
-    dataset_info = Table(
+    table_metrics = [
+        {
+            &#34;name&#34;: &#34;Number of variables&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;n_var&#34;],
+            &#34;fmt&#34;: &#34;fmt_number&#34;,
+        },
+        {
+            &#34;name&#34;: &#34;Number of observations&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;n&#34;],
+            &#34;fmt&#34;: &#34;fmt_number&#34;,
+        },
+        {
+            &#34;name&#34;: &#34;Missing cells&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;n_cells_missing&#34;],
+            &#34;fmt&#34;: &#34;fmt_number&#34;,
+        },
+        {
+            &#34;name&#34;: &#34;Missing cells (%)&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;p_cells_missing&#34;],
+            &#34;fmt&#34;: &#34;fmt_percent&#34;,
+        },
+    ]
+    if &#34;n_duplicates&#34; in summary[&#34;table&#34;]:
+        table_metrics.extend(
+            [
+                {
+                    &#34;name&#34;: &#34;Duplicate rows&#34;,
+                    &#34;value&#34;: summary[&#34;table&#34;][&#34;n_duplicates&#34;],
+                    &#34;fmt&#34;: &#34;fmt_number&#34;,
+                },
+                {
+                    &#34;name&#34;: &#34;Duplicate rows (%)&#34;,
+                    &#34;value&#34;: summary[&#34;table&#34;][&#34;p_duplicates&#34;],
+                    &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                },
+            ]
+        )
+
+    table_metrics.extend(
         [
-            {
-                &#34;name&#34;: &#34;Number of variables&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n_var&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Number of observations&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Missing cells&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n_cells_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Missing cells (%)&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;p_cells_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Duplicate rows&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n_duplicates&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Duplicate rows (%)&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;p_duplicates&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
-            },
             {
                 &#34;name&#34;: &#34;Total size in memory&#34;,
                 &#34;value&#34;: summary[&#34;table&#34;][&#34;memory_size&#34;],
@@ -77,7 +85,11 @@ def get_dataset_overview(summary):
                 &#34;value&#34;: summary[&#34;table&#34;][&#34;record_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
             },
-        ],
+        ]
+    )
+
+    dataset_info = Table(
+        table_metrics,
         name=&#34;Dataset statistics&#34;,
     )
 
@@ -367,38 +379,46 @@ def get_dataset_items(summary: dict, warnings: list) -&gt; list:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_dataset_overview(summary):
-    dataset_info = Table(
+    table_metrics = [
+        {
+            &#34;name&#34;: &#34;Number of variables&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;n_var&#34;],
+            &#34;fmt&#34;: &#34;fmt_number&#34;,
+        },
+        {
+            &#34;name&#34;: &#34;Number of observations&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;n&#34;],
+            &#34;fmt&#34;: &#34;fmt_number&#34;,
+        },
+        {
+            &#34;name&#34;: &#34;Missing cells&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;n_cells_missing&#34;],
+            &#34;fmt&#34;: &#34;fmt_number&#34;,
+        },
+        {
+            &#34;name&#34;: &#34;Missing cells (%)&#34;,
+            &#34;value&#34;: summary[&#34;table&#34;][&#34;p_cells_missing&#34;],
+            &#34;fmt&#34;: &#34;fmt_percent&#34;,
+        },
+    ]
+    if &#34;n_duplicates&#34; in summary[&#34;table&#34;]:
+        table_metrics.extend(
+            [
+                {
+                    &#34;name&#34;: &#34;Duplicate rows&#34;,
+                    &#34;value&#34;: summary[&#34;table&#34;][&#34;n_duplicates&#34;],
+                    &#34;fmt&#34;: &#34;fmt_number&#34;,
+                },
+                {
+                    &#34;name&#34;: &#34;Duplicate rows (%)&#34;,
+                    &#34;value&#34;: summary[&#34;table&#34;][&#34;p_duplicates&#34;],
+                    &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                },
+            ]
+        )
+
+    table_metrics.extend(
         [
-            {
-                &#34;name&#34;: &#34;Number of variables&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n_var&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Number of observations&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Missing cells&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n_cells_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Missing cells (%)&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;p_cells_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Duplicate rows&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;n_duplicates&#34;],
-                &#34;fmt&#34;: &#34;fmt_number&#34;,
-            },
-            {
-                &#34;name&#34;: &#34;Duplicate rows (%)&#34;,
-                &#34;value&#34;: summary[&#34;table&#34;][&#34;p_duplicates&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
-            },
             {
                 &#34;name&#34;: &#34;Total size in memory&#34;,
                 &#34;value&#34;: summary[&#34;table&#34;][&#34;memory_size&#34;],
@@ -409,7 +429,11 @@ def get_dataset_items(summary: dict, warnings: list) -&gt; list:
                 &#34;value&#34;: summary[&#34;table&#34;][&#34;record_size&#34;],
                 &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
             },
-        ],
+        ]
+    )
+
+    dataset_info = Table(
+        table_metrics,
         name=&#34;Dataset statistics&#34;,
     )
 
