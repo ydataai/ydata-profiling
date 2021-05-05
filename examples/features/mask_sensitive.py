@@ -31,19 +31,19 @@ if __name__ == "__main__":
     report = ProfileReport(
         df.sample(frac=0.25),
         title="Masked data",
-        dataset=dict(
-            description="This profiling report was generated using a sample of 5% of the original dataset.",
-            copyright_holder="StataCorp LLC",
-            copyright_year="2020",
-            url="http://www.stata-press.com/data/r15/auto2.dta",
-        ),
+        dataset={
+            "description": "This profiling report was generated using a sample of 5% of the original dataset.",
+            "copyright_holder": "StataCorp LLC",
+            "copyright_year": "2020",
+            "url": "http://www.stata-press.com/data/r15/auto2.dta",
+        },
         sensitive=True,
-        sample=dict(
-            name="Mock data sample",
-            data=mock_data,
-            caption="Disclaimer: this is synthetic data generated based on the format of the data in this table.",
-        ),
-        vars=dict(cat=dict(words=True, characters=True)),
+        sample={
+            "name": "Mock data sample",
+            "data": mock_data,
+            "caption": "Disclaimer: this is synthetic data generated based on the format of the data in this table.",
+        },
+        vars={"cat": {"words": True, "characters": True}},
         interactions=None,
     )
     report.to_file(Path("masked_report.html"))
