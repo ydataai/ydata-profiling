@@ -38,7 +38,6 @@ def test_html_export_svg(test_output_dir):
     )
 
     profile = ProfileReport(df, minimal=True, html={"inline": False})
-    assert not profile.config.html.inline
 
     report = test_output_dir / "export_svg.html"
     profile.to_file(report)

@@ -95,6 +95,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
             report_config = report_config.parse_obj(data)
 
+        if config_file:
+            config.set_file(config_file)
+        elif minimal:
+            config.set_file(get_config("config_minimal.yaml"))
+        elif not config.is_default:
+            pass
+
         if explorative:
             report_config = report_config.update(Config.get_arg_groups("explorative"))
         if sensitive:
@@ -139,7 +146,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             self._json = None
             self._html = None
 
-        if subset is None or subset == "report":
+        if not {"progress_bar", "pool_size", "notebook", "html", "title"}.issuperset(
+            changed
+        ):
+            # In all other cases, empty cache
+            self._description_set = None
+            self._title = None
             self._report = None
 
         if subset is None:

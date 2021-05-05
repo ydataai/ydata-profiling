@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 import pandas_profiling
+from pandas_profiling.model.typeset import Categorical, Numeric
 
 
 def test_issue72_higher():

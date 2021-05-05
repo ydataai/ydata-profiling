@@ -1,15 +1,148 @@
+import contextlib
 import functools
 from typing import Any, Callable, Optional, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
-from multimethod import multimethod
-from scipy.stats.stats import chisquare
+from pandas.core.arrays.integer import _IntegerDtype
+from visions.utils import func_nullable_series_contains
+
+from pandas_profiling.config import config
+from pandas_profiling.model.summary_helpers import (
+    chi_square,
+    file_summary,
+    histogram_compute,
+    image_summary,
+    length_summary,
+    mad,
+    path_summary,
+    unicode_summary,
+    url_summary,
+    word_summary,
+)
+
+
+def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+    """Counts the values in a series (with and without NaN, distinct).
+
+    Args:
+        series: Series for which we want to calculate the values.
+
+    Returns:
+        A dictionary with the count values (with and without NaN, distinct).
+    """
+    try:
+        value_counts_with_nan = series.value_counts(dropna=False)
+        _ = set(value_counts_with_nan.index)
+        hashable = True
+    except:  # noqa: E722
+        hashable = False
+
+    summary["hashable"] = hashable
+
+    if hashable:
+        value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
+
+        null_index = value_counts_with_nan.index.isnull()
+        if null_index.any():
+            n_missing = value_counts_with_nan[null_index].sum()
+            value_counts_without_nan = value_counts_with_nan[~null_index]
+        else:
+            n_missing = 0
+            value_counts_without_nan = value_counts_with_nan
+
+        summary.update(
+            {
+                "value_counts_without_nan": value_counts_without_nan,
+            }
+        )
+    else:
+        n_missing = series.isna().sum()
+
+    summary["n_missing"] = n_missing
+
+    return series, summary
+
+
+def series_hashable(fn):
+    @functools.wraps(fn)
+    def inner(series, summary):
+        if not summary["hashable"]:
+            return series, summary
+        return fn(series, summary)
 
 from pandas_profiling.config import Settings
 
 T = TypeVar("T")
 
+@series_hashable
+def describe_supported(
+    series: pd.Series, series_description: dict
+) -> Tuple[pd.Series, dict]:
+    """Describe a supported series.
+    Args:
+        series: The Series to describe.
+        series_description: The dict containing the series description so far.
+    Returns:
+        A dict containing calculated series description values.
+    """
+
+    # number of non-NaN observations in the Series
+    count = series_description["count"]
+
+    value_counts = series_description["value_counts_without_nan"]
+    distinct_count = len(value_counts)
+    unique_count = value_counts.where(value_counts == 1).count()
+
+    stats = {
+        "n_distinct": distinct_count,
+        "p_distinct": distinct_count / count if count > 0 else 0,
+        "is_unique": unique_count == count and count > 0,
+        "n_unique": unique_count,
+        "p_unique": unique_count / count if count > 0 else 0,
+    }
+    stats.update(series_description)
+
+    return series, stats
+
+
+def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+    """Describe generic series.
+    Args:
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+    Returns:
+        A dict containing calculated series description values.
+    """
+
+    # number of observations in the Series
+    length = len(series)
+
+    summary.update(
+        {
+            "n": length,
+            "p_missing": summary["n_missing"] / length if length > 0 else 0,
+            "count": length - summary["n_missing"],
+            "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
+        }
+    )
+
+    return series, summary
+
+
+def numeric_stats_pandas(series: pd.Series):
+    return {
+        "mean": series.mean(),
+        "std": series.std(),
+        "variance": series.var(),
+        "min": series.min(),
+        "max": series.max(),
+        # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+        "kurtosis": series.kurt(),
+        # Unbiased skew normalized by N-1
+        "skewness": series.skew(),
+        "sum": series.sum(),
+    }
 
 def func_nullable_series_contains(fn: Callable) -> Callable:
     @functools.wraps(fn)
@@ -45,12 +178,10 @@ def histogram_compute(
     return stats
 
 
-def chi_square(
-    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
-) -> dict:
-    if histogram is None:
-        histogram, _ = np.histogram(values, bins="auto")
-    return dict(chisquare(histogram)._asdict())
+        with contextlib.suppress(AttributeError):
+            summary["category_alias_counts"].index = summary[
+                "category_alias_counts"
+            ].index.str.replace("_", " ")
 
 
 def series_hashable(
