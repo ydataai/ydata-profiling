@@ -1,0 +1,42 @@
+name: Performance Benchmarks
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  benchmark:
+    name: ${{ matrix.os }} x ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ] #, macos-latest, windows-latest ]
+        python: ['3.8']
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run benchmark
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+      - run: make install
+      - run: pytest tests/benchmarks/bench.py --benchmark-min-rounds 10 --benchmark-warmup "on" --benchmark-json benchmark.json
+      - name: Store benchmark result
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          name: Pandas Profiling Benchmarks
+          tool: 'pytest'
+          output-file-path: benchmark.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+
+          comment-on-alert: true
+          alert-comment-cc-users: '@sbrugman'

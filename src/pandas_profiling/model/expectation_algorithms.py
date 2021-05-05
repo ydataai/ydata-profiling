@@ -69,7 +69,10 @@ def path_expectations(name, summary, batch, *args):
 def datetime_expectations(name, summary, batch, *args):
     if any(k in summary for k in ["min", "max"]):
         batch.expect_column_values_to_be_between(
-            name, min_value=summary.get("min"), max_value=summary.get("max")
+            name,
+            min_value=summary.get("min"),
+            max_value=summary.get("max"),
+            parse_strings_as_datetimes=True,
         )
 
     return name, summary, batch

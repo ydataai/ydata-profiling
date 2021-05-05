@@ -4,7 +4,7 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, Mapping, Optional, Tuple
+from typing import Callable, Mapping, Tuple
 
 import numpy as np
 import pandas as pd
@@ -16,7 +16,6 @@ from pandas_profiling.model.messages import (
     check_variable_messages,
 )
 from pandas_profiling.model.summarizer import BaseSummarizer
-from pandas_profiling.model.typeset import Unsupported
 from pandas_profiling.visualisation.missing import (
     missing_bar,
     missing_dendrogram,
@@ -124,7 +123,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     n = len(df)
 
     memory_size = df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
-    record_size = float(memory_size) / n
+    record_size = float(memory_size) / n if n > 0 else 0
 
     table_stats = {
         "n": n,
@@ -143,21 +142,9 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
             if series_summary["n_missing"] == n:
                 table_stats["n_vars_all_missing"] += 1
 
-    table_stats["p_cells_missing"] = table_stats["n_cells_missing"] / (
-        table_stats["n"] * table_stats["n_var"]
-    )
-
-    supported_columns = [
-        k for k, v in variable_stats.items() if v["type"] != Unsupported
-    ]
-    table_stats["n_duplicates"] = (
-        sum(df.duplicated(subset=supported_columns))
-        if len(supported_columns) > 0
-        else 0
-    )
-    table_stats["p_duplicates"] = (
-        (table_stats["n_duplicates"] / len(df))
-        if (len(supported_columns) > 0 and len(df) > 0)
+    table_stats["p_cells_missing"] = (
+        table_stats["n_cells_missing"] / (table_stats["n"] * table_stats["n_var"])
+        if table_stats["n"] > 0
         else 0
     )
 
@@ -167,29 +154,6 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     )
 
     return table_stats
-
-
-def get_duplicates(df: pd.DataFrame, supported_columns) -> Optional[pd.DataFrame]:
-    """Obtain the most occurring duplicate rows in the DataFrame.
-
-    Args:
-        df: the Pandas DataFrame.
-        supported_columns: the columns to consider
-
-    Returns:
-        A subset of the DataFrame, ordered by occurrence.
-    """
-    n_head = config["duplicates"]["head"].get(int)
-
-    if n_head > 0 and supported_columns:
-        return (
-            df[df.duplicated(subset=supported_columns, keep=False)]
-            .groupby(supported_columns)
-            .size()
-            .reset_index(name="count")
-            .nlargest(n_head, "count")
-        )
-    return None
 
 
 def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
@@ -202,6 +166,9 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
+
+    if len(df) == 0:
+        return {}
 
     def warn_missing(missing_name, error):
         warnings.warn(

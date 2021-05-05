@@ -1,9 +1,9 @@
-name: Tests and Coverage
+name: CI
 
 on: push
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -33,7 +33,53 @@ jobs:
             pandas: "pandas>1.1"
             numpy: "numpy"
 
-    name: python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
+    name: Tests | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Linux')
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'macOS')
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Windows')
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - run: |
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
+          pip install -r requirements-test.txt
+      - run: make install
+      - run: make test
+  coverage:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ 3.8 ]
+        pandas: [ "pandas>1.1"]
+        numpy: ["numpy"]
+
+    name: Coverage | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup python

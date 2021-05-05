@@ -1,7 +1,9 @@
-from typing import Dict, Sequence
+from typing import Any, Dict, List
+
+import numpy as np
 
 
-def freq_table(freqtable, n: int, max_number_to_print: int) -> Sequence[Dict]:
+def freq_table(freqtable, n: int, max_number_to_print: int) -> List[Dict]:
     """Render the rows for a frequency table (value, count).
 
     Args:
@@ -19,13 +21,13 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -> Sequence[Dict]:
         max_number_to_print = n
 
     if max_number_to_print < len(freqtable):
-        freq_other = sum(freqtable.iloc[max_number_to_print:])
+        freq_other = np.sum(freqtable.iloc[max_number_to_print:])
         min_freq = freqtable.values[max_number_to_print]
     else:
         freq_other = 0
         min_freq = 0
 
-    freq_missing = n - sum(freqtable)
+    freq_missing = n - np.sum(freqtable)
     # No values
     if len(freqtable) == 0:
         return []
@@ -79,39 +81,37 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -> Sequence[Dict]:
     return rows
 
 
-def extreme_obs_table(freqtable, number_to_print, n, ascending=True) -> list:
+def extreme_obs_table(freqtable, number_to_print: int, n: int) -> List[Dict[str, Any]]:
     """Similar to the frequency table, for extreme observations.
 
     Args:
-      freqtable: The frequency table.
+      freqtable: The (sorted) frequency table.
       number_to_print: The number of observations to print.
       n: The total number of observations.
-      ascending: The ordering of the observations (Default value = True)
 
     Returns:
         The HTML rendering of the extreme observation table.
     """
+
     # If it's mixed between base types (str, int) convert to str. Pure "mixed" types are filtered during type
     # discovery
     # TODO: should be in cast?
-    if "mixed" in freqtable.index.inferred_type:
-        freqtable.index = freqtable.index.astype(str)
+    # if "mixed" in freqtable.index.inferred_type:
+    #     freqtable.index = freqtable.index.astype(str)
 
-    sorted_freqtable = freqtable.sort_index(ascending=ascending)
-    obs_to_print = sorted_freqtable.iloc[:number_to_print]
-    max_freq = max(obs_to_print.values)
+    obs_to_print = freqtable.iloc[:number_to_print]
+    max_freq = obs_to_print.max()
 
-    rows = []
-    for label, freq in obs_to_print.items():
-        rows.append(
-            {
-                "label": label,
-                "width": freq / max_freq if max_freq != 0 else 0,
-                "count": freq,
-                "percentage": float(freq) / n,
-                "extra_class": "",
-                "n": n,
-            }
-        )
+    rows = [
+        {
+            "label": label,
+            "width": freq / max_freq if max_freq != 0 else 0,
+            "count": freq,
+            "percentage": float(freq) / n,
+            "extra_class": "",
+            "n": n,
+        }
+        for label, freq in obs_to_print.items()
+    ]
 
     return rows

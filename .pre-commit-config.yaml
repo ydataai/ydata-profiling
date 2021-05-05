@@ -5,7 +5,7 @@ repos:
     - id: black
       language_version: python3.8
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 0.5.9
+    rev: 0.7.0
     hooks:
     - id: nbqa-black
       additional_dependencies: [ black==20.8b1 ]
@@ -17,12 +17,12 @@ repos:
       additional_dependencies: [ pyupgrade==2.7.3 ]
       args: [ --nbqa-mutate, --py36-plus ]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.10.0
+    rev: v2.12.0
     hooks:
     -   id: pyupgrade
         args: ['--py36-plus','--exit-zero-even-if-changed']
 -   repo: https://github.com/pycqa/isort
-    rev: 5.7.0
+    rev: 5.8.0
     hooks:
       - id: isort
         files: '.*'
@@ -31,8 +31,8 @@ repos:
     rev: "0.46"
     hooks:
     -   id: check-manifest
--   repo: https://gitlab.com/pycqa/flake8
-    rev: "3.8.4"
+-   repo: https://github.com/PyCQA/flake8
+    rev: "3.9.1"
     hooks:
     -   id: flake8
         args: [ "--select=E9,F63,F7,F82"] #,T001

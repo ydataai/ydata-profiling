@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
   |
-  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-l2iqwb92-9JpTEdFBijR2G798j2MpQw">Slack</a>
+  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
 </p>
@@ -79,6 +79,7 @@ The following examples can give you an impression of what the package can do:
 * [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html) (a simple colors dataset)
 * [UCI Bank Dataset](https://pandas-profiling.github.io/pandas-profiling/examples/master/cbank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
+* [RDW](https://pandas-profiling.github.io/pandas-profiling/examples/master/rdw/rdw.html) (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)
 
 
 Specific features:
@@ -211,7 +212,7 @@ profile.to_file("your_report.json")
 
 Version 2.4 introduces minimal mode. 
 
-This is a default configuration that disables expensive computations (such as correlations and dynamic binning).
+This is a default configuration that disables expensive computations (such as correlations and duplicate row detection).
 
 Use the following syntax:
 
@@ -219,6 +220,8 @@ Use the following syntax:
 profile = ProfileReport(large_dataset, minimal=True)
 profile.to_file("output.html")
 ```
+
+Benchmarks are available [here](https://pandas-profiling.github.io/pandas-profiling/dev/bench/).
 
 ### Command line usage
 
@@ -239,7 +242,7 @@ A set of options is available in order to adapt the report generated.
 * `progress_bar` (`bool`): If True, `pandas-profiling` will display a progress bar.
 * `infer_dtypes` (`bool`): When `True` (default) the `dtype` of variables are inferred using `visions` using the typeset logic (for instance a column that has integers stored as string will be analyzed as if being numeric).
 
-More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml), [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml) and [dark themed configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_dark.yaml).
+More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml) and [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml).
 
 You find the configuration docs on the advanced usage page [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html)
 
@@ -306,14 +309,15 @@ Types are a powerful abstraction for effective data analysis, that goes beyond t
 `pandas-profiling` currently, recognizes the following types: _Boolean, Numerical, Date, Categorical, URL, Path, File_ and _Image_.
 
 We have developed a type system for Python, tailored for data analysis: [visions](https://github.com/dylan-profiler/visions).
-Selecting the right typeset drastically reduces the complexity the code of your analysis.
-Future versions of `pandas-profiling` will have extended type support through `visions`!
+Choosing an appropriate typeset can both improve the overall expressiveness and reduce the complexity of your analysis/code.
+To learn more about `pandas-profiling`'s type system, check out the default implementation [here](https://github.com/pandas-profiling/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py).
+In the meantime, user customized summarizations and type definitions are now fully supported - if you have a specific use-case please reach out with ideas or a PR!
 
 ## Contributing
 
 Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html).
 
-A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-hfy3iwp2-qEJSItye5QBZf8YGFMaMnQ).
+A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA).
 
 ## Editor integration
 

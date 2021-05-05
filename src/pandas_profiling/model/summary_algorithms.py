@@ -96,7 +96,7 @@ def describe_supported(
     stats = {
         "n_distinct": distinct_count,
         "p_distinct": distinct_count / count if count > 0 else 0,
-        "is_unique": unique_count == count,
+        "is_unique": unique_count == count and count > 0,
         "n_unique": unique_count,
         "p_unique": unique_count / count if count > 0 else 0,
     }
@@ -120,7 +120,7 @@ def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
     summary.update(
         {
             "n": length,
-            "p_missing": summary["n_missing"] / length,
+            "p_missing": summary["n_missing"] / length if length > 0 else 0,
             "count": length - summary["n_missing"],
             "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
         }
@@ -233,6 +233,16 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series, di
     stats["monotonic_decrease_strict"] = (
         stats["monotonic_decrease"] and series.is_unique
     )
+    if summary["monotonic_increase_strict"]:
+        stats["monotonic"] = 2
+    elif summary["monotonic_decrease_strict"]:
+        stats["monotonic"] = -2
+    elif summary["monotonic_increase"]:
+        stats["monotonic"] = 1
+    elif summary["monotonic_decrease"]:
+        stats["monotonic"] = -1
+    else:
+        stats["monotonic"] = 0
 
     stats.update(
         histogram_compute(
@@ -295,10 +305,16 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
 
     # Only run if at least 1 non-missing value
     value_counts = summary["value_counts_without_nan"]
+    histogram_largest = config["vars"]["cat"]["histogram_largest"].get(int)
+    histogram_data = value_counts
+    if histogram_largest > 0:
+        histogram_data = histogram_data.nlargest(histogram_largest)
 
     summary.update(
         histogram_compute(
-            value_counts, summary["n_distinct"], name="histogram_frequencies"
+            histogram_data,
+            summary["n_distinct"],
+            name="histogram_frequencies",
         )
     )
 

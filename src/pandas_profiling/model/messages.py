@@ -56,6 +56,9 @@ class MessageType(Enum):
     UNIFORM = auto()
     """The variable is uniformly distributed"""
 
+    EMPTY = auto()
+    """The DataFrame is empty"""
+
 
 class Message:
     """A message object (type, values, column)."""
@@ -109,12 +112,20 @@ def check_table_messages(table: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
-    if warning_value(table["n_duplicates"]):
+    if "n_duplicates" in table and warning_value(table["n_duplicates"]):
         messages.append(
             Message(
                 message_type=MessageType.DUPLICATES,
                 values=table,
                 fields={"n_duplicates"},
+            )
+        )
+    if table["n"] == 0:
+        messages.append(
+            Message(
+                message_type=MessageType.EMPTY,
+                values=table,
+                fields={"n"},
             )
         )
     return messages
