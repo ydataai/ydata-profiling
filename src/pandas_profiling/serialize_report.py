@@ -70,7 +70,7 @@ class SerializeReport:
             )
         ):
             raise ValueError(
-                f"Failed to load data: file may be damaged or from an incompatible version"
+                "Failed to load data: file may be damaged or from an incompatible version"
             )
         if (df_hash == self.df_hash) or (
             config.is_default and self.df is None
@@ -80,13 +80,13 @@ class SerializeReport:
                 self._description_set = loaded_description_set
             else:
                 warnings.warn(
-                    f"The description set of current ProfileReport is not None. It won't be loaded."
+                    "The description set of current ProfileReport is not None. It won't be loaded."
                 )
             if self._report is None:
                 self._report = loaded_report
             else:
                 warnings.warn(
-                    f"The report of current ProfileReport is not None. It won't be loaded."
+                    "The report of current ProfileReport is not None. It won't be loaded."
                 )
 
             # overwrite config

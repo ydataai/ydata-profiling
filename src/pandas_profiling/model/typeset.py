@@ -51,7 +51,7 @@ def is_date(series, state):
     try:
         _ = pd.to_datetime(series)
         return True
-    except:
+    except:  # noqa: E722
         return False
 
 
@@ -118,7 +118,7 @@ class Boolean(visions.VisionsBaseType):
         if pdt.is_object_dtype(series):
             try:
                 return series.isin({True, False}).all()
-            except:
+            except:  # noqa: E722
                 return False
 
         return pdt.is_bool_dtype(series)

@@ -572,6 +572,5 @@ def test_describe_df(column, describe_data, expected_results, summarizer, typese
 
 
 def test_describe_list(summarizer, typeset):
-    with pytest.raises(AttributeError):
-        with pytest.warns(UserWarning):
-            describe("", [1, 2, 3], summarizer, typeset)
+    with pytest.raises(AttributeError), pytest.warns(UserWarning):
+        describe("", [1, 2, 3], summarizer, typeset)

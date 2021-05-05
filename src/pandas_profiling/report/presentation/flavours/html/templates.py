@@ -9,8 +9,6 @@ from pandas_profiling.config import config
 from pandas_profiling.report.formatters import get_fmt_mapping
 
 # Initializing Jinja
-# from pandas_profiling.utils.paths import get_html_template_path
-
 package_loader = jinja2.PackageLoader(
     "pandas_profiling", "report/presentation/flavours/html/templates"
 )

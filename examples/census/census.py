@@ -43,7 +43,9 @@ if __name__ == "__main__":
     profile = ProfileReport(df, title="Census Dataset", explorative=True)
 
     # show column definition
-    definitions = json.load(open(f"census_column_definition.json"))
+    with open("census_column_definition.json") as f:
+        definitions = json.load(f)
+
     profile.set_variable(
         "dataset",
         {
