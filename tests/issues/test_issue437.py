@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling import ProfileReport
+from pandas_profiling.model.typeset import Numeric
 
 
 def test_issue437():

@@ -1,3 +1,4 @@
+import contextlib
 import functools
 from typing import Any, Callable, Optional, Tuple, TypeVar
 
@@ -6,7 +7,39 @@ import pandas as pd
 from multimethod import multimethod
 from scipy.stats.stats import chisquare
 
-from pandas_profiling.config import Settings
+    Args:
+        series: Series for which we want to calculate the values.
+
+    Returns:
+        A dictionary with the count values (with and without NaN, distinct).
+    """
+    try:
+        value_counts_with_nan = series.value_counts(dropna=False)
+        _ = set(value_counts_with_nan.index)
+        hashable = True
+    except:  # noqa: E722
+        hashable = False
+
+    summary["hashable"] = hashable
+
+    if hashable:
+        value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
+
+        null_index = value_counts_with_nan.index.isnull()
+        if null_index.any():
+            n_missing = value_counts_with_nan[null_index].sum()
+            value_counts_without_nan = value_counts_with_nan[~null_index]
+        else:
+            n_missing = 0
+            value_counts_without_nan = value_counts_with_nan
+
+        summary.update(
+            {
+                "value_counts_without_nan": value_counts_without_nan,
+            }
+        )
+    else:
+        n_missing = series.isna().sum()
 
 T = TypeVar("T")
 
@@ -21,7 +54,72 @@ def func_nullable_series_contains(fn: Callable) -> Callable:
             if series.empty:
                 return False
 
-        return fn(config, series, state, *args, **kwargs)
+    stats = {
+        "n_distinct": distinct_count,
+        "p_distinct": distinct_count / count if count > 0 else 0,
+        "is_unique": unique_count == count and count > 0,
+        "n_unique": unique_count,
+        "p_unique": unique_count / count if count > 0 else 0,
+    }
+    stats.update(series_description)
+
+    return series, stats
+
+
+def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
+    """Describe generic series.
+    Args:
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+    Returns:
+        A dict containing calculated series description values.
+    """
+
+    # number of observations in the Series
+    length = len(series)
+
+    summary.update(
+        {
+            "n": length,
+            "p_missing": summary["n_missing"] / length if length > 0 else 0,
+            "count": length - summary["n_missing"],
+            "memory_size": series.memory_usage(deep=config["memory_deep"].get(bool)),
+        }
+    )
+
+    return series, summary
+
+
+def numeric_stats_pandas(series: pd.Series):
+    return {
+        "mean": series.mean(),
+        "std": series.std(),
+        "variance": series.var(),
+        "min": series.min(),
+        "max": series.max(),
+        # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+        "kurtosis": series.kurt(),
+        # Unbiased skew normalized by N-1
+        "skewness": series.skew(),
+        "sum": series.sum(),
+    }
+
+
+def numeric_stats_numpy(present_values, series, series_description):
+    vc = series_description["value_counts_without_nan"]
+    index_values = vc.index.values
+    return {
+        "mean": np.mean(present_values),
+        "std": np.std(present_values, ddof=1),
+        "variance": np.var(present_values, ddof=1),
+        "min": np.min(index_values),
+        "max": np.max(index_values),
+        # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+        "kurtosis": series.kurt(),
+        # Unbiased skew normalized by N-1
+        "skewness": series.skew(),
+        "sum": np.sum(present_values),
+    }
 
     return inner
 
@@ -171,16 +269,10 @@ def chi_square(
     return dict(chisquare(histogram)._asdict())
 
 
-def series_hashable(
-    fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
-) -> Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]:
-    @functools.wraps(fn)
-    def inner(
-        config: Settings, series: pd.Series, summary: dict
-    ) -> Tuple[Settings, pd.Series, dict]:
-        if not summary["hashable"]:
-            return config, series, summary
-        return fn(config, series, summary)
+        with contextlib.suppress(AttributeError):
+            summary["category_alias_counts"].index = summary[
+                "category_alias_counts"
+            ].index.str.replace("_", " ")
 
     return inner
 

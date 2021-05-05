@@ -50,8 +50,16 @@ class PhiK(Correlation):
     def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
         raise NotImplementedError()
 
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            from phik import phik_matrix
 
-def warn_correlation(correlation_name: str, error: str) -> None:
+            correlation = phik_matrix(df[selcols], interval_cols=list(intcols))
+
+        return correlation
+
+
+def warn_correlation(correlation_name: str, error):
     warnings.warn(
         f"""There was an attempt to calculate the {correlation_name} correlation, but this failed.
 To hide this warning, disable the calculation

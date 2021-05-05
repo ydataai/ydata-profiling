@@ -135,7 +135,7 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
         },
     ]
 
-    def round_number(count: Any, keep_width: bool = False) -> str:
+    def round_number(count, keep_width=False):
         text = f"{float(count):.2f}"
         if not keep_width:
             text = re.sub("0+$", "", text)
@@ -145,7 +145,9 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
     def coerce_seconds(value: Union[timedelta, int, float]) -> float:
         if isinstance(value, timedelta):
             return value.total_seconds()
-        return float(value)
+        if not isinstance(value, numbers.Number):
+            raise ValueError(f"Failed to coerce value to number of seconds! ({value})")
+        return value
 
     def concatenate(items: List[str]) -> str:
         items = list(items)

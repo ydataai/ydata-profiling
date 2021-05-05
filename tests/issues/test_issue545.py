@@ -24,10 +24,6 @@ def test_issue545(get_data_file):
 
     sample_eda_df = pd.read_pickle(str(file_name))
     sample_profile = ProfileReport(
-        sample_eda_df,
-        title="Sample Profiling Report",
-        explorative=True,
-        pool_size=1,
-        progress_bar=False,
+        sample_eda_df, title="Sample Profiling Report", explorative=True, pool_size=1
     )
     assert len(sample_profile.to_html()) > 0

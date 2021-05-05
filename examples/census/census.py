@@ -47,12 +47,15 @@ if __name__ == "__main__":
     with open("census_column_definition.json") as f:
         definitions = json.load(f)
 
-    profile.config.dataset = Dataset(
-        description='Predict whether income exceeds $50K/yr based on census data. Also known as "Census Income" dataset. Extraction was done by Barry Becker from the 1994 Census database. A set of reasonably clean records was extracted using the following conditions: ((AAGE>16) && (AGI>100) && (AFNLWGT>1)&& (HRSWK>0)). Prediction task is to determine whether a person makes over 50K a year.',
-        copyright_year="1996",
-        author="Ronny Kohavi and Barry Becker",
-        creator="Barry Becker",
-        url="https://archive.ics.uci.edu/ml/datasets/adult",
+    profile.set_variable(
+        "dataset",
+        {
+            "description": 'Predict whether income exceeds $50K/yr based on census data. Also known as "Census Income" dataset. Extraction was done by Barry Becker from the 1994 Census database. A set of reasonably clean records was extracted using the following conditions: ((AAGE>16) && (AGI>100) && (AFNLWGT>1)&& (HRSWK>0)). Prediction task is to determine whether a person makes over 50K a year.',
+            "copyright_year": "1996",
+            "author": "Ronny Kohavi and Barry Becker",
+            "creator": "Barry Becker",
+            "url": "https://archive.ics.uci.edu/ml/datasets/adult",
+        },
     )
     profile.config.variables.descriptions = definitions
 
