@@ -7,14 +7,14 @@ def test_dataset_schema():
     file_name = cache_file("auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
     df = pd.read_stata(file_name)
 
-    metadata = dict(
-        creator="Firstname Lastname",
-        author="Firstname Lastname",
-        description="This profiling report was generated using a sample of 5% of the original dataset.",
-        copyright_holder="RandoCorp LLC",
-        copyright_year="2020",
-        url="http://www.dataset-sources.com/data/dataset.dat",
-    )
+    metadata = {
+        "creator": "Firstname Lastname",
+        "author": "Firstname Lastname",
+        "description": "This profiling report was generated using a sample of 5% of the original dataset.",
+        "copyright_holder": "RandoCorp LLC",
+        "copyright_year": "2020",
+        "url": "http://www.dataset-sources.com/data/dataset.dat",
+    }
 
     # Length left out due to correlation with weight.
     report = df.profile_report(

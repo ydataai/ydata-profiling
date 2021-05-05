@@ -97,14 +97,14 @@ class Config:
                 raise ValueError(f'Config parameter "{key}" does not exist.')
 
     _shorthands = {
-        "dataset": dict(
-            creator="",
-            author="",
-            description="",
-            copyright_holder="",
-            copyright_year="",
-            url="",
-        ),
+        "dataset": {
+            "creator": "",
+            "author": "",
+            "description": "",
+            "copyright_holder": "",
+            "copyright_year": "",
+            "url": "",
+        },
         "samples": {"head": 0, "tail": 0, "random": 0},
         "duplicates": {"head": 0},
         "interactions": {"targets": [], "continuous": False},

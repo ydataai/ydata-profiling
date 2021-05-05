@@ -56,7 +56,7 @@ def sort_column_names(dct: Mapping, sort: str):
     if sort.startswith("asc"):
         dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
     elif sort.startswith("desc"):
-        dct = dict(reversed(sorted(dct.items(), key=lambda x: x[0].casefold())))
+        dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold(), reverse=True))
     elif sort != "none":
         raise ValueError('"sort" should be "ascending", "descending" or "None".')
     return dct
