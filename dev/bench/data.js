@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1620240558229,
+  "lastUpdate": 1620241101036,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -1279,6 +1279,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.08277561332170416",
             "extra": "mean: 23.71445851650003 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sfbbrugman@gmail.com",
+            "name": "sbrugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "distinct": true,
+          "id": "4ed5c64e32035ec505d8aa99dc6d719e49840d51",
+          "message": "build: update coverage requirement from <5 to ~=5.5\n\nUpdates the requirements on [coverage](https://github.com/nedbat/coveragepy) to permit the latest version.\n- [Release notes](https://github.com/nedbat/coveragepy/releases)\n- [Changelog](https://github.com/nedbat/coveragepy/blob/master/CHANGES.rst)\n- [Commits](nedbat/coveragepy@coverage-3.0b1...coverage-5.5)",
+          "timestamp": "2021-05-05T20:39:55+02:00",
+          "tree_id": "236f659b8a8e47040d000a4e3cac4b9e80e1c9cb",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/4ed5c64e32035ec505d8aa99dc6d719e49840d51"
+        },
+        "date": 1620241094644,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.09520968774118614,
+            "unit": "iter/sec",
+            "range": "stddev: 0.14570122236852592",
+            "extra": "mean: 10.503132860999989 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.09621655682126712,
+            "unit": "iter/sec",
+            "range": "stddev: 0.18653819698523805",
+            "extra": "mean: 10.393221634999998 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.330748763819465,
+            "unit": "iter/sec",
+            "range": "stddev: 0.07289468416293891",
+            "extra": "mean: 3.0234428950000165 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.05316264182482516,
+            "unit": "iter/sec",
+            "range": "stddev: 0.19307158058886364",
+            "extra": "mean: 18.810201405999987 sec\nrounds: 10"
           }
         ]
       }
