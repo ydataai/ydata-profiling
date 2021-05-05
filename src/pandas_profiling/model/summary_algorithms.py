@@ -1,3 +1,4 @@
+import contextlib
 import functools
 from typing import Tuple
 from urllib.parse import urlsplit
@@ -35,7 +36,7 @@ def describe_counts(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]:
         value_counts_with_nan = series.value_counts(dropna=False)
         _ = set(value_counts_with_nan.index)
         hashable = True
-    except:
+    except:  # noqa: E722
         hashable = False
 
     summary["hashable"] = hashable
@@ -130,8 +131,6 @@ def describe_generic(series: pd.Series, summary: dict) -> Tuple[pd.Series, dict]
 
 
 def numeric_stats_pandas(series: pd.Series):
-    #     summary["min"] = summary["value_counts_without_nan"].index.min()
-    # vc.index.min()
     return {
         "mean": series.mean(),
         "std": series.std(),
@@ -341,12 +340,10 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -> Tuple[pd.Series
         summary["n_characters_distinct"] = summary["n_characters"]
         summary["n_characters"] = summary["character_counts"].values.sum()
 
-        try:
+        with contextlib.suppress(AttributeError):
             summary["category_alias_counts"].index = summary[
                 "category_alias_counts"
             ].index.str.replace("_", " ")
-        except AttributeError:
-            pass
 
     words = config["vars"]["cat"]["words"]
     if words:

@@ -6,7 +6,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues/545
 import pandas as pd
 import pytest
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 
 def pandas_version():
@@ -23,7 +23,7 @@ def test_issue545(get_data_file):
     )
 
     sample_eda_df = pd.read_pickle(str(file_name))
-    sample_profile = sample_eda_df.profile_report(
-        title="Sample Profiling Report", explorative=True, pool_size=1
+    sample_profile = ProfileReport(
+        sample_eda_df, title="Sample Profiling Report", explorative=True, pool_size=1
     )
     assert len(sample_profile.to_html()) > 0

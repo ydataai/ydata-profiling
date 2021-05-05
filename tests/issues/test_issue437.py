@@ -5,7 +5,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues/437
 import numpy as np
 import pandas as pd
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 from pandas_profiling.model.typeset import Numeric
 
 
@@ -13,7 +13,7 @@ def test_issue437():
     try:
         # pd.NA does not exist in some pandas versions
         _ = pd.NA
-    except:
+    except:  # noqa: E722
         pass
     else:
         tmp_list = [
@@ -37,7 +37,7 @@ def test_issue437():
             }
         )
 
-        report = pandas_profiling.ProfileReport(df)
+        report = ProfileReport(df)
         description_set = report.description_set
 
         assert description_set["variables"]["a"]["type"] == Numeric

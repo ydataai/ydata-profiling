@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 
 def check_assets(assets_dir: Path, file_type, n_css, n_js):
@@ -37,7 +37,7 @@ def test_html_export_svg(test_output_dir):
         columns=[f"column_{c}" for c in range(n_columns)],
     )
 
-    profile = df.profile_report(minimal=True, html={"inline": False})
+    profile = ProfileReport(df, minimal=True, html={"inline": False})
 
     report = test_output_dir / "export_svg.html"
     profile.to_file(report)
@@ -55,8 +55,8 @@ def test_html_export_png(test_output_dir):
         columns=[f"column_{c}" for c in range(n_columns)],
     )
 
-    profile = df.profile_report(
-        minimal=True, html={"inline": False}, plot={"image_format": "png"}
+    profile = ProfileReport(
+        df, minimal=True, html={"inline": False}, plot={"image_format": "png"}
     )
 
     report = test_output_dir / "export_png.html"
@@ -75,7 +75,8 @@ def test_html_export_cdn(test_output_dir):
         columns=[f"column_{c}" for c in range(n_columns)],
     )
 
-    profile = df.profile_report(
+    profile = ProfileReport(
+        df,
         minimal=True,
         html={"inline": False, "use_local_assets": False},
     )
@@ -96,7 +97,8 @@ def test_html_export_theme(test_output_dir):
         columns=[f"column_{c}" for c in range(n_columns)],
     )
 
-    profile = df.profile_report(
+    profile = ProfileReport(
+        df,
         minimal=True,
         html={"inline": False, "style": {"theme": "united"}},
     )
@@ -117,8 +119,8 @@ def test_multiple_times(test_output_dir):
         columns=[f"column_{c}" for c in range(n_columns)],
     )
 
-    profile = df.profile_report(
-        minimal=True, html={"inline": False, "use_local_assets": False}
+    profile = ProfileReport(
+        df, minimal=True, html={"inline": False, "use_local_assets": False}
     )
 
     report = test_output_dir / "cdn_multi.html"
@@ -143,7 +145,7 @@ def test_subdir(test_output_dir):
         columns=[f"column_{c}" for c in range(n_columns)],
     )
 
-    profile = df.profile_report(minimal=True, html={"inline": False})
+    profile = ProfileReport(df, minimal=True, html={"inline": False})
 
     subdir_path = test_output_dir / "subdir"
     subdir_path.mkdir()
