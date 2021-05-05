@@ -20,7 +20,7 @@ def test_titanic_explorative(benchmark):
 
     data = pd.read_parquet(file_name)
 
-    kwargs = dict(explorative=True)
+    kwargs = {"explorative": True}
     benchmark(partial(func, **kwargs), data)
 
 
@@ -43,7 +43,7 @@ def test_titanic_minimal(benchmark):
 
     data = pd.read_parquet(file_name)
 
-    kwargs = dict(minimal=True)
+    kwargs = {"minimal": True}
     benchmark(partial(func, **kwargs), data)
 
 
@@ -55,5 +55,5 @@ def test_rdw_minimal(benchmark):
 
     data = pd.read_parquet(file_name)
 
-    kwargs = dict(minimal=True)
+    kwargs = {"minimal": True}
     benchmark(partial(func, **kwargs), data)

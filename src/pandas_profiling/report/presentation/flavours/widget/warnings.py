@@ -6,7 +6,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 def get_row(items):
     layout = widgets.Layout(width="100%", grid_template_columns="75% 25%")
-    return widgets.GridBox([item for item in items], layout=layout)
+    return widgets.GridBox(items, layout=layout)
 
 
 class WidgetWarnings(Warnings):
