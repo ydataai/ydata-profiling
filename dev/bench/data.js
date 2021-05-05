@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1620236591408,
+  "lastUpdate": 1620240558229,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -1227,6 +1227,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.09500337470640795",
             "extra": "mean: 15.857191799700036 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sfbbrugman@gmail.com",
+            "name": "sbrugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "distinct": true,
+          "id": "d9dee084a6db37eb7de836a97e53ee3813679c5d",
+          "message": "build: bump visions frm 0.6.0 to 0.7.1\n\nBumps [visions](https://github.com/dylan-profiler/visions) from 0.6.0 to 0.7.1.\n- [Release notes](https://github.com/dylan-profiler/visions/releases)\n- [Commits](https://github.com/dylan-profiler/visions/compare/v0.6.0...v0.7.1)\n\nCo-authored-by: ieaves <ian.k.eaves@gmail.com>",
+          "timestamp": "2021-05-05T20:26:41+02:00",
+          "tree_id": "22507ee627264a71627b389aa60121a6bf135389",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/d9dee084a6db37eb7de836a97e53ee3813679c5d"
+        },
+        "date": 1620240552638,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.07691253816594155,
+            "unit": "iter/sec",
+            "range": "stddev: 0.08012960890667904",
+            "extra": "mean: 13.001781294 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.07864874279314084,
+            "unit": "iter/sec",
+            "range": "stddev: 0.09045425464937773",
+            "extra": "mean: 12.714761412400003 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.2591779483137732,
+            "unit": "iter/sec",
+            "range": "stddev: 0.04282349700375245",
+            "extra": "mean: 3.858352944400008 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.0421683674246334,
+            "unit": "iter/sec",
+            "range": "stddev: 0.08277561332170416",
+            "extra": "mean: 23.71445851650003 sec\nrounds: 10"
           }
         ]
       }
