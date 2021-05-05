@@ -14,3 +14,20 @@ from pandas_profiling.report.presentation.core.toggle_button import ToggleButton
 from pandas_profiling.report.presentation.core.variable import Variable
 from pandas_profiling.report.presentation.core.variable_info import VariableInfo
 from pandas_profiling.report.presentation.core.warnings import Warnings
+
+__all__ = [
+    "Collapse",
+    "Container",
+    "Duplicate",
+    "FrequencyTable",
+    "FrequencyTableSmall",
+    "HTML",
+    "Image",
+    "Root",
+    "Sample",
+    "Table",
+    "ToggleButton",
+    "Variable",
+    "VariableInfo",
+    "Warnings",
+]
