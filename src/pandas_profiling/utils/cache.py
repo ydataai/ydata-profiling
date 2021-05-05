@@ -50,6 +50,9 @@ def cache_zipped_file(file_name: str, url: str) -> Path:
     # If not exists, download and create file
     if not file_path.exists():
         response = requests.get(url)
+        if response.status_code != 200:
+            raise FileNotFoundError("Could not download resource")
+
         tmp_path = data_path / "tmp.zip"
         tmp_path.write_bytes(response.content)
 
