@@ -1,5 +1,5 @@
 pytest
-coverage<5
+coverage~=5.5
 codecov
 pytest-mypy
 pytest-cov
