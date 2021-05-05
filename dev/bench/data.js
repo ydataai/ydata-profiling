@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1620233289869,
+  "lastUpdate": 1620233696384,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -1071,6 +1071,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.08087478455713736",
             "extra": "mean: 22.225365572700003 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sfbbrugman@gmail.com",
+            "name": "sbrugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "distinct": true,
+          "id": "2f686b5c6d4c24515ace17920ac365ccb0186607",
+          "message": "ci: flake8 stronger qa\n\n- blacklist (ignore) instead of whitelist\n- additional dependencies: comprehensions, sfs, simplify, eradicate, print",
+          "timestamp": "2021-05-05T18:28:12+02:00",
+          "tree_id": "9a555b3c7bb6c932c93788948ae084935e7150f4",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/2f686b5c6d4c24515ace17920ac365ccb0186607"
+        },
+        "date": 1620233689531,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.08800313356270772,
+            "unit": "iter/sec",
+            "range": "stddev: 0.09660143582431746",
+            "extra": "mean: 11.363231734099987 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.08863388705365272,
+            "unit": "iter/sec",
+            "range": "stddev: 0.09434592954988856",
+            "extra": "mean: 11.28236652190003 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.28017906542405835,
+            "unit": "iter/sec",
+            "range": "stddev: 0.06051942435230497",
+            "extra": "mean: 3.569146033400011 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.04696434433640822,
+            "unit": "iter/sec",
+            "range": "stddev: 0.20784053841601757",
+            "extra": "mean: 21.292749087199944 sec\nrounds: 10"
           }
         ]
       }
