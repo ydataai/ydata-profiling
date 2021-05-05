@@ -138,7 +138,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     ]
 
     def round_number(count, keep_width=False):
-        text = "%.2f" % float(count)
+        text = f"{float(count):.2f}"
         if not keep_width:
             text = re.sub("0+$", "", text)
             text = re.sub(r"\.$", "", text)
@@ -148,8 +148,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
         if isinstance(value, timedelta):
             return value.total_seconds()
         if not isinstance(value, numbers.Number):
-            msg = "Failed to coerce value to number of seconds! (%r)"
-            raise ValueError(format(msg, value))
+            raise ValueError(f"Failed to coerce value to number of seconds! ({value})")
         return value
 
     def concatenate(items):
@@ -164,9 +163,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     def pluralize(count, singular, plural=None):
         if not plural:
             plural = singular + "s"
-        return "{} {}".format(
-            count, singular if math.floor(float(count)) == 1 else plural
-        )
+        return f"{count} {singular if math.floor(float(count)) == 1 else plural}"
 
     num_seconds = coerce_seconds(num_seconds)
     if num_seconds < 60 and not detailed:

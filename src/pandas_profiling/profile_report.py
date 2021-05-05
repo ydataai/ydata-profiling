@@ -78,10 +78,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             config.set_file(get_config("config_minimal.yaml"))
         elif not config.is_default:
             pass
-            # warnings.warn(
-            #     "Currently configuration is not the default, if you want to restore "
-            #     "default configuration, please run 'pandas_profiling.clear_config()'"
-            # )
+
         if explorative:
             config.set_arg_group("explorative")
         if sensitive:
@@ -152,7 +149,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len({"html", "title"} & changed) > 0:
             self._html = None
 
-        if not {"progress_bar", "pool_size", "notebook", "html", "title"} >= changed:
+        if not {"progress_bar", "pool_size", "notebook", "html", "title"}.issuperset(
+            changed
+        ):
             # In all other cases, empty cache
             self._description_set = None
             self._title = None
@@ -451,7 +450,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def to_widgets(self):
         """The ipython notebook widgets user interface."""
         try:
-            from google.colab import files
+            from google.colab import files  # noqa: F401
 
             warnings.warn(
                 "Ipywidgets is not yet fully supported on Google Colab (https://github.com/googlecolab/colabtools/issues/60)."

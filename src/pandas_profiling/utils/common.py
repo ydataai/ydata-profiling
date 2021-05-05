@@ -68,7 +68,7 @@ JPEG_MARK = (
 
 def test_jpeg2(h, f):
     """JPEG with small header"""
-    if len(h) >= 32 and 67 == h[5] and h[:32] == JPEG_MARK:
+    if len(h) >= 32 and h[5] == 67 and h[:32] == JPEG_MARK:
         return "jpeg"
 
 

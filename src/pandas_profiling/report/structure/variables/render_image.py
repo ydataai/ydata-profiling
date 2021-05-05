@@ -30,7 +30,7 @@ def render_image(summary):
     Mean Width          Mean Height         Mean Height
     Median Width        Median Height       Median Height
     Max Width           Max Height          Max Height
-    
+
     All dimension properties are in pixels.
     """
 

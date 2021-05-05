@@ -17,7 +17,7 @@ def try_func(fn):
     def inner(series: pd.Series, *args, **kwargs) -> bool:
         try:
             return fn(series, *args, **kwargs)
-        except:
+        except:  # noqa: E722
             return False
 
     return inner
@@ -82,7 +82,7 @@ def category_is_numeric(series, state):
         r = pd.to_numeric(series, errors="coerce")
         if r.hasnans and r.count() == 0:
             return False
-    except:
+    except:  # noqa: E722
         return False
 
     return not numeric_is_category(series, state)
@@ -106,7 +106,7 @@ def object_is_bool(series: pd.Series, state) -> bool:
         bool_set = {True, False}
         try:
             ret = all(item in bool_set for item in series)
-        except:
+        except:  # noqa: E722
             ret = False
 
         return ret

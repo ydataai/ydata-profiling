@@ -9,8 +9,6 @@ from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
 import pytest
-
-# from visions.test.series import get_series
 from visions.test.utils import (
     contains,
     convert,
@@ -32,7 +30,7 @@ from pandas_profiling.model.typeset import (
 )
 
 if int(pd.__version__.split(".")[0]) < 1:
-    from visions.dtypes.boolean import BoolDtype
+    from visions.dtypes.boolean import BoolDtype  # noqa: F401
 
     btype = "Bool"
 else:
@@ -241,18 +239,6 @@ def get_series():
             name="time",
         ),
         # http://pandas-docs.github.io/pandas-docs-travis/user_guide/timeseries.html#timestamp-limitations
-        # pd.to_datetime(
-        #     pd.Series(
-        #         [
-        #             datetime.datetime(year=1, month=1, day=1, hour=8, minute=43, second=12),
-        #             datetime.datetime(year=1, month=1, day=1, hour=9, minute=43, second=12),
-        #             datetime.datetime(
-        #                 year=1, month=1, day=1, hour=10, minute=43, second=12
-        #             ),
-        #         ],
-        #         name="datetime_to_time",
-        #     )
-        # ),
         # Timedelta Series
         pd.Series([pd.Timedelta(days=i) for i in range(3)], name="timedelta_series"),
         pd.Series(
