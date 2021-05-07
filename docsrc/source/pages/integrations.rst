@@ -4,7 +4,7 @@ Integrations
 
 Pandas
 ------
-`pandas-profiling` is built on `pandas` and `numpy`.
+``pandas-profiling`` is built on ``pandas`` and ``numpy``.
 Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata.
 Read more on `supported formats by Pandas <https://pandas.pydata.org/docs/user_guide/io.html>`_.
 
@@ -16,8 +16,8 @@ If you have data in another Python framework, you can use pandas-profiling by co
 .. code-block:: python
   :caption: PySpark to Pandas
 
-  # Convert spark RDD to a pandas DataFrame
-  df = spark_df.toPandas()
+   # Convert spark RDD to a pandas DataFrame
+   df = spark_df.toPandas()
 
 
 .. code-block:: python
@@ -82,7 +82,7 @@ for information about options and arguments.
 Streamlit
 ~~~~~~~~~
 
-`Streamlit <https://www.streamlit.io>` is an open-source Python library made to build web-apps for machine learning and data science.
+`Streamlit <https://www.streamlit.io>`_ is an open-source Python library made to build web-apps for machine learning and data science.
 
 .. image:: ../_static/streamlit-integration.gif
 
@@ -93,14 +93,16 @@ Streamlit
   import streamlit as st
   from streamlit_pandas_profiling import st_profile_report
 
-  df = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+  df = pd.read_csv(
+      "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+  )
   pr = df.profile_report()
 
   st.title("Pandas Profiling in Streamlit")
   st.write(df)
   st_profile_report(pr)
 
-You can install this `Pandas Profiling component <https://github.com/Ghasel/streamlit-pandas-profiling>` for Streamlit with pip:
+You can install this `Pandas Profiling component <https://github.com/Ghasel/streamlit-pandas-profiling>`_ for Streamlit with pip:
 
 .. code-block:: console
 
@@ -138,7 +140,7 @@ Kaggle
 Pipeline Integrations
 ---------------------
 
-With Python, command-line and Jupyter interfaces, `pandas-profiling` integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect.
+With Python, command-line and Jupyter interfaces, ``pandas-profiling`` integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect.
 
 Integration with `Dagster <https://github.com/dagster-io/dagster>`_ or `Prefect <https://github.com/prefecthq/prefect>`_ can be achieved in a similar way as with Airflow.
 
@@ -151,9 +153,9 @@ Integration with Airflow can be easily achieved through the `BashOperator <https
 
   # Using the command line interface
   profiling_task = BashOperator(
-    task_id='Profile Data',
-    bash_command='pandas_profiling dataset.csv report.html',
-    dag=dag,
+      task_id="Profile Data",
+      bash_command="pandas_profiling dataset.csv report.html",
+      dag=dag,
   )
 
 .. code-block:: python
@@ -161,19 +163,20 @@ Integration with Airflow can be easily achieved through the `BashOperator <https
   # Using the Python inferface
   import pandas_profiling
 
-  def profile_data(file_name, report_file):
-    df = pd.read_csv(file_name)
-    report = pandas_profiling.ProfileReport(df, title='Profiling Report in Airflow')
-    report.to_file(report_file)
 
-    return 'Report generated at {}'.format(report_file)
+  def profile_data(file_name, report_file):
+      df = pd.read_csv(file_name)
+      report = pandas_profiling.ProfileReport(df, title="Profiling Report in Airflow")
+      report.to_file(report_file)
+
+      return "Report generated at {}".format(report_file)
 
 
   profiling_task2 = PythonOperator(
-        task_id='Profile Data',
-        op_kwargs={'file_name': 'dataset.csv', 'report_file': 'report.html'},
-        python_callable=profile_data,
-        dag=dag,
+      task_id="Profile Data",
+      op_kwargs={"file_name": "dataset.csv", "report_file": "report.html"},
+      python_callable=profile_data,
+      dag=dag,
   )
 
 Kedro

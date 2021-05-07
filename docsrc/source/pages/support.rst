@@ -29,7 +29,8 @@ When in a Jupyter environment, you see some text, such as ``IntSlider(value=0)``
 Help on Stackoverflow
 ---------------------
 
-Users with a request for help on how to use `pandas-profiling` should consider asking their question on stackoverflow. There is a specific tag for `pandas-profiling`:
+Users with a request for help on how to use ``pandas-profiling`` should consider asking their question on stackoverflow.
+There is a specific tag for ``pandas-profiling``:
 
 .. image:: https://img.shields.io/badge/stackoverflow%20tag-pandas%20profiling-yellow
   :alt: Questions: Stackoverflow "pandas-profiling"
