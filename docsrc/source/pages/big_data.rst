@@ -12,7 +12,8 @@ You may try the options described in the following sections if calculation time 
 Minimal mode
 ------------
 
-`pandas-profiling` includes a minimal configuration file, with more expensive computations turned off by default. This is a great starting point for larger datasets.
+``pandas-profiling`` includes a minimal configuration file, with more expensive computations turned off by default.
+This is a great starting point for larger datasets.
 
 .. code-block:: python
 
@@ -20,7 +21,7 @@ Minimal mode
   profile.to_file("output.html")
 
 
-*(Minimal mode was introduced in `pandas-profiling` v2.4.0)*
+*(Minimal mode was introduced in ``pandas-profiling`` v2.4.0)*
 
 The configuration file can be found here: `config_minimal.yaml <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_.
 
@@ -51,4 +52,6 @@ An example of how to do this:
 
 Concurrency
 -----------
-`pandas-profiling` is under active development. One highly desired feature is to add a scalable backend such as `modin <https://github.com/modin-project/modin>`_, `spark <https://spark.apache.org/>`_ or `dask <https://dask.org/>`_. Keep an eye on the `GitHub <https://github.com/pandas-profiling/pandas-profiling/issues>`_ page to follow the updates on concurrent implementation.
+``pandas-profiling`` is under active development.
+One highly desired feature is to add a scalable backend such as `modin <https://github.com/modin-project/modin>`_, `spark <https://spark.apache.org/>`_ or `dask <https://dask.org/>`_.
+Keep an eye on the `GitHub <https://github.com/pandas-profiling/pandas-profiling/issues>`_ page to follow the updates on concurrent implementation.

@@ -36,7 +36,7 @@ import pandas_profiling
 
 
 def test_issueXXX():
-    df = pd.read_csv(r'<file>')
+    df = pd.read_csv(r"<file>")
 
     # Minimal reproducible code
 ```

@@ -9,6 +9,3 @@ Settings
    :toctree: _autosummary
 
    settings
-
-
-.. pydantic:: Settings

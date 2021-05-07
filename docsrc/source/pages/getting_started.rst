@@ -11,16 +11,13 @@ Start by loading in your pandas DataFrame, e.g. by using
         import pandas as pd
         from pandas_profiling import ProfileReport
 
-        df = pd.DataFrame(
-            np.random.rand(100, 5),
-            columns=['a', 'b', 'c', 'd', 'e']
-        )
+        df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 
 To generate the report, run:
 
 .. code-block:: python
 
-        profile = ProfileReport(df, title='Pandas Profiling Report')
+        profile = ProfileReport(df, title="Pandas Profiling Report")
 
 
 Explore deeper
@@ -30,7 +27,7 @@ You can configure the profile report in any way you like. The example code below
 
 .. code-block:: python
 
-        profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
+        profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 
 
 Learn more about configuring ``pandas-profiling`` on the :doc:`advanced_usage` page.
