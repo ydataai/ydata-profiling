@@ -149,10 +149,7 @@ import numpy as np
 import pandas as pd
 from pandas_profiling import ProfileReport
 
-df = pd.DataFrame(
-    np.random.rand(100, 5),
-    columns=["a", "b", "c", "d", "e"]
-)
+df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 ```
 To generate the report, run:
 ```python
@@ -164,7 +161,7 @@ profile = ProfileReport(df, title="Pandas Profiling Report")
 You can configure the profile report in any way you like. The example code below loads the [explorative configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml), that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml).
 
 ```python
-profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
+profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 ```
 
 Learn more about configuring `pandas-profiling` on the [Advanced usage](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html) page.
@@ -248,7 +245,9 @@ You find the configuration docs on the advanced usage page [here](https://pandas
 
 **Example**
 ```python
-profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
+profile = df.profile_report(
+    title="Pandas Profiling Report", plot={"histogram": {"bins": 8}}
+)
 profile.to_file("output.html")
 ```
 

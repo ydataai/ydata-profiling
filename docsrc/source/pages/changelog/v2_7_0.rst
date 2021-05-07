@@ -25,7 +25,7 @@ Changelog v2.7.0
 👷‍♂️ Internal Improvements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- The number of progress bars is reduced. The progress bars are now grouped by build phase (e.g. describing dataset, building report structure, rendering report, exporting to file, `#421 <https://github.com/pandas-profiling/pandas-profiling/issues/421>`_).
+- The number of progress bars is reduced. The progress bars are now grouped by build phase (e.g. describing dataset, building report structure, rendering report, exporting to file).
 - The progress bars provide more information about the current step to the user `#434 <https://github.com/pandas-profiling/pandas-profiling/issues/434>`_).
 - Invalid correlations coefficients do not cause it to drop the complete variable anymore, instead the plot now propagates the NaN (`#417 <https://github.com/pandas-profiling/pandas-profiling/issues/417>`_).
 - **Performance**: type inference test now short-circuit, as ``visions`` does by default.
