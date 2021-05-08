@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 
 def test_urls(get_data_file):
@@ -17,7 +17,8 @@ def test_urls(get_data_file):
     # Add ~10% missing values
     df = df.mask(np.random.random(df.shape) < 0.1)
 
-    profile = df.profile_report(
+    profile = ProfileReport(
+        df,
         title="DataFrame with URL column",
         samples={"head": 0, "tail": 0},
         explorative=True,

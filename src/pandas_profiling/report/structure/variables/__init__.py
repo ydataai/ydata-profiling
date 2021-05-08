@@ -12,3 +12,18 @@ from pandas_profiling.report.structure.variables.render_image import render_imag
 from pandas_profiling.report.structure.variables.render_path import render_path
 from pandas_profiling.report.structure.variables.render_real import render_real
 from pandas_profiling.report.structure.variables.render_url import render_url
+
+__all__ = [
+    "render_boolean",
+    "render_categorical",
+    "render_common",
+    "render_complex",
+    "render_count",
+    "render_date",
+    "render_file",
+    "render_generic",
+    "render_image",
+    "render_path",
+    "render_real",
+    "render_url",
+]

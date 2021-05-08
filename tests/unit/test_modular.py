@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 
 @pytest.fixture
@@ -36,7 +36,8 @@ def tdf(get_data_file):
 
 
 def test_modular_description_set(tdf):
-    profile = tdf.profile_report(
+    profile = ProfileReport(
+        tdf,
         title="Modular test",
         duplicates=None,
         samples={"head": 0, "tail": 0},
@@ -56,7 +57,8 @@ def test_modular_description_set(tdf):
 
 
 def test_modular_absent(tdf):
-    profile = tdf.profile_report(
+    profile = ProfileReport(
+        tdf,
         title="Modular test",
         duplicates={"head": 0},
         samples={"head": 0, "tail": 0},
@@ -73,7 +75,8 @@ def test_modular_absent(tdf):
 
 
 def test_modular_present(tdf):
-    profile = tdf.profile_report(
+    profile = ProfileReport(
+        tdf,
         title="Modular test",
         duplicates={"head": 10},
         samples={"head": 10, "tail": 10},

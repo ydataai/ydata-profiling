@@ -20,3 +20,20 @@ from pandas_profiling.report.presentation.flavours.html.variable_info import (
     HTMLVariableInfo,
 )
 from pandas_profiling.report.presentation.flavours.html.warnings import HTMLWarnings
+
+__all__ = [
+    "HTMLCollapse",
+    "HTMLContainer",
+    "HTMLDuplicate",
+    "HTMLFrequencyTable",
+    "HTMLFrequencyTableSmall",
+    "HTMLHTML",
+    "HTMLImage",
+    "HTMLRoot",
+    "HTMLSample",
+    "HTMLTable",
+    "HTMLToggleButton",
+    "HTMLVariable",
+    "HTMLVariableInfo",
+    "HTMLWarnings",
+]

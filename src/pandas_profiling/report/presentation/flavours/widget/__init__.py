@@ -24,3 +24,20 @@ from pandas_profiling.report.presentation.flavours.widget.variable_info import (
     WidgetVariableInfo,
 )
 from pandas_profiling.report.presentation.flavours.widget.warnings import WidgetWarnings
+
+__all__ = [
+    "WidgetCollapse",
+    "WidgetContainer",
+    "WidgetDuplicate",
+    "WidgetFrequencyTable",
+    "WidgetFrequencyTableSmall",
+    "WidgetHTML",
+    "WidgetImage",
+    "WidgetRoot",
+    "WidgetSample",
+    "WidgetTable",
+    "WidgetToggleButton",
+    "WidgetVariable",
+    "WidgetVariableInfo",
+    "WidgetWarnings",
+]

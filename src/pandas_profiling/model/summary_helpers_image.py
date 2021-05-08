@@ -5,7 +5,7 @@ from typing import Optional, Tuple, Union
 import imagehash
 from PIL import ExifTags, Image
 
-from pandas_profiling.model.imghdr_patch import *
+from pandas_profiling.model.imghdr_patch import *  # noqa: F401,F403
 
 
 def open_image(path: Path) -> Optional[Image.Image]:

@@ -37,7 +37,7 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-**Version v2.11.0 released** featuring an exciting integration with Great Expectations that many of you requested (see details below).
+**Version v2.13.0 released** featuring an exciting integration with Great Expectations that many of you requested (see details below).
 
 **Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Stay tuned.
@@ -51,10 +51,10 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 
 Find more information here:
 
- - [Changelog v2.11.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-11-0)
+ - [Changelog v2.13.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
-_February 20, 2021 💘_
+_May 8, 2021 💘_
 
 ---
 

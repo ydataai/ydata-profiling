@@ -1,8 +1,11 @@
 """Formatters are mappings from object(s) to a string."""
+from functools import partial
 from typing import Callable, Dict
 
 import numpy as np
 from jinja2.utils import escape
+
+from pandas_profiling.config import config
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -80,55 +83,65 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     import re
     from datetime import timedelta
 
-    time_units = (
-        dict(
-            divider=1e-9,
-            singular="nanosecond",
-            plural="nanoseconds",
-            abbreviations=["ns"],
-        ),
-        dict(
-            divider=1e-6,
-            singular="microsecond",
-            plural="microseconds",
-            abbreviations=["us"],
-        ),
-        dict(
-            divider=1e-3,
-            singular="millisecond",
-            plural="milliseconds",
-            abbreviations=["ms"],
-        ),
-        dict(
-            divider=1,
-            singular="second",
-            plural="seconds",
-            abbreviations=["s", "sec", "secs"],
-        ),
-        dict(
-            divider=60,
-            singular="minute",
-            plural="minutes",
-            abbreviations=["m", "min", "mins"],
-        ),
-        dict(divider=60 * 60, singular="hour", plural="hours", abbreviations=["h"]),
-        dict(divider=60 * 60 * 24, singular="day", plural="days", abbreviations=["d"]),
-        dict(
-            divider=60 * 60 * 24 * 7,
-            singular="week",
-            plural="weeks",
-            abbreviations=["w"],
-        ),
-        dict(
-            divider=60 * 60 * 24 * 7 * 52,
-            singular="year",
-            plural="years",
-            abbreviations=["y"],
-        ),
-    )
+    time_units = [
+        {
+            "divider": 1e-9,
+            "singular": "nanosecond",
+            "plural": "nanoseconds",
+            "abbreviations": ["ns"],
+        },
+        {
+            "divider": 1e-6,
+            "singular": "microsecond",
+            "plural": "microseconds",
+            "abbreviations": ["us"],
+        },
+        {
+            "divider": 1e-3,
+            "singular": "millisecond",
+            "plural": "milliseconds",
+            "abbreviations": ["ms"],
+        },
+        {
+            "divider": 1,
+            "singular": "second",
+            "plural": "seconds",
+            "abbreviations": ["s", "sec", "secs"],
+        },
+        {
+            "divider": 60,
+            "singular": "minute",
+            "plural": "minutes",
+            "abbreviations": ["m", "min", "mins"],
+        },
+        {
+            "divider": 60 * 60,
+            "singular": "hour",
+            "plural": "hours",
+            "abbreviations": ["h"],
+        },
+        {
+            "divider": 60 * 60 * 24,
+            "singular": "day",
+            "plural": "days",
+            "abbreviations": ["d"],
+        },
+        {
+            "divider": 60 * 60 * 24 * 7,
+            "singular": "week",
+            "plural": "weeks",
+            "abbreviations": ["w"],
+        },
+        {
+            "divider": 60 * 60 * 24 * 7 * 52,
+            "singular": "year",
+            "plural": "years",
+            "abbreviations": ["y"],
+        },
+    ]
 
     def round_number(count, keep_width=False):
-        text = "%.2f" % float(count)
+        text = f"{float(count):.2f}"
         if not keep_width:
             text = re.sub("0+$", "", text)
             text = re.sub(r"\.$", "", text)
@@ -138,8 +151,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
         if isinstance(value, timedelta):
             return value.total_seconds()
         if not isinstance(value, numbers.Number):
-            msg = "Failed to coerce value to number of seconds! (%r)"
-            raise ValueError(format(msg, value))
+            raise ValueError(f"Failed to coerce value to number of seconds! ({value})")
         return value
 
     def concatenate(items):
@@ -154,9 +166,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     def pluralize(count, singular, plural=None):
         if not plural:
             plural = singular + "s"
-        return "{} {}".format(
-            count, singular if math.floor(float(count)) == 1 else plural
-        )
+        return f"{count} {singular if math.floor(float(count)) == 1 else plural}"
 
     num_seconds = coerce_seconds(num_seconds)
     if num_seconds < 60 and not detailed:
@@ -297,8 +307,10 @@ def get_fmt_mapping() -> Dict[str, Callable]:
         "fmt_percent": fmt_percent,
         "fmt_bytesize": fmt_bytesize,
         "fmt_timespan": fmt_timespan,
-        "fmt_numeric": fmt_numeric,
         "fmt_monotonic": fmt_monotonic,
+        "fmt_numeric": partial(
+            fmt_numeric, precision=config["report"]["precision"].get(int)
+        ),
         "fmt_number": fmt_number,
         "fmt_array": fmt_array,
         "fmt": fmt,

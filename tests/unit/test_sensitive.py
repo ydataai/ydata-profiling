@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 
 def test_sensitive():
@@ -17,7 +17,7 @@ def test_sensitive():
         }
     )
 
-    report = df.profile_report(sensitive=True, explorative=True)
+    report = ProfileReport(df, sensitive=True, explorative=True)
 
     html = report.to_html()
     assert all(value not in html for value in df["name"].values.tolist())

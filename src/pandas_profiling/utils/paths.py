@@ -20,7 +20,7 @@ def get_config_default() -> Path:
     return Path(__file__).parent.parent / "config_default.yaml"
 
 
-def get_config(file_name) -> Path:
+def get_config(file_name: str) -> Path:
     """Returns the path a config file.
 
     Returns:

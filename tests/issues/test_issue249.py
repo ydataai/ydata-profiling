@@ -4,11 +4,11 @@ https://github.com/pandas-profiling/pandas-profiling/issues/249
 """
 import pandas as pd
 
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
 
 def test_issue249():
     df = pd.DataFrame(data=[[1], [2]], index=["foo", 1], columns=["a"])
-    report = df.profile_report(explorative=True)
+    report = ProfileReport(df, explorative=True)
     assert type(report.title) == str
     assert len(report.to_html()) > 0

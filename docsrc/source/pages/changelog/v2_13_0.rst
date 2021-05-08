@@ -3,28 +3,14 @@ Changelog v2.13.0
 
 🎉 Features
 ^^^^^^^^^^^
--
-
-🐛 Bug fixes
-^^^^^^^^^^^^
--
+- configurable numeric precision
 
 👷‍♂️ Internal Improvements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
--
-
-📖 Documentation
-^^^^^^^^^^^^^^^^
--
-
-⚠️  Deprecated
-^^^^^^^^^^^^^^^^^
--
-
-🚨 Breaking changes
-^^^^^^^^^^^^^^^^^^^
--
+- string type detection performance optimization
+- various improvements to software quality (flake8, commitlint)
 
 ⬆️ Dependencies
 ^^^^^^^^^^^^^^^^^^
--
+- upgrade from ``visions`` 0.6.0 to 0.7.1
+- upgrade from ``coverage`` <5 to ~=5.5
