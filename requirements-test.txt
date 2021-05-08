@@ -1,7 +1,6 @@
 pytest
 coverage~=5.5
 codecov
-pytest-mypy
 pytest-cov
 pytest-benchmark~=3.4.1
 nbval
