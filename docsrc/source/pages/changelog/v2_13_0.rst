@@ -7,6 +7,7 @@ Changelog vx.y.z
 
 👷‍♂️ Internal Improvements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- string type detection performance optimization
 - various improvements to software quality (flake8, commitlint)
 
 ⬆️ Dependencies

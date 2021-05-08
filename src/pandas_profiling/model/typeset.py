@@ -22,6 +22,8 @@ from pandas_profiling.model.typeset_relations import (
     to_category,
 )
 
+pandas_has_string_dtype_flag = hasattr(pdt, "is_string_dtype")
+
 
 class Unsupported(visions.Generic):
     pass
@@ -96,6 +98,8 @@ class Categorical(visions.VisionsBaseType):
         )
         if is_valid_dtype:
             return True
+        elif not pdt.is_object_dtype(series):
+            return pandas_has_string_dtype_flag and pdt.is_string_dtype(series)
 
         return series_is_string(series, state)
 
