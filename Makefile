@@ -17,14 +17,12 @@ test:
 	pytest --nbval tests/notebooks/
 	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 	pandas_profiling -h
-	make typing
 
 test_cov:
 	pytest --cov=. tests/unit/
 	pytest --cov=. --cov-append tests/issues/
 	pytest --cov=. --cov-append --nbval tests/notebooks/
 	pandas_profiling -h
-	make typing
 
 examples:
 	find ./examples -maxdepth 2 -type f -name "*.py" -execdir python {} \;
@@ -42,9 +40,6 @@ install:
 lint:
 	pre-commit run --all-files
 
-typing:
-	pytest --mypy -m mypy .
-
 clean:
 	git rm --cached `git ls-files -i --exclude-from=.gitignore`
 
@@ -54,4 +49,3 @@ all:
 	make examples
 	make docs
 	make test
-	make typing
