@@ -50,7 +50,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "sphinx.ext.viewcode",
-    "sphinx-pydantic",
+    "sphinxcontrib.autodoc_pydantic",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -82,3 +82,5 @@ html_css_files = [
 autodoc_mock_imports = [""]
 autoclass_content = "both"
 autosummary_generate = True
+
+autodoc_pydantic_model_show_json = False

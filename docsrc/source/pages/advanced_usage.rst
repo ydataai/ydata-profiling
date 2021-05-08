@@ -190,6 +190,7 @@ Supported values are:
 An example can be:
 
 .. code-block:: python
+
   from pandas_profiling import ProfileReport
 
   profile = ProfileReport(
@@ -202,6 +203,7 @@ An example can be:
 Similarly, one can change the palette for *Missing values* using the ``missing`` argument, eg:
 
 .. code-block:: python
+
   from pandas_profiling import ProfileReport
 
   profile = ProfileReport(
