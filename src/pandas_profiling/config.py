@@ -37,22 +37,22 @@ class Dataset(BaseModel):
 
 class NumVars(BaseModel):
     quantiles: List[float] = [0.05, 0.25, 0.5, 0.75, 0.95]
-    skewness_threshold = 20
-    low_categorical_threshold = 5
+    skewness_threshold: int = 20
+    low_categorical_threshold: int = 5
     # Set to zero to disable
-    chi_squared_threshold = 0.999
+    chi_squared_threshold: float = 0.999
 
 
 class CatVars(BaseModel):
-    length = True
-    characters = True
-    words = True
-    cardinality_threshold = 50
-    n_obs = 5
+    length: bool = True
+    characters: bool = True
+    words: bool = True
+    cardinality_threshold: int = 50
+    n_obs: int = 5
     # Set to zero to disable
-    chi_squared_threshold = 0.999
-    coerce_str_to_date = False
-    redact = False
+    chi_squared_threshold: float = 0.999
+    coerce_str_to_date: bool = False
+    redact: bool = False
     histogram_largest: int = 50
 
 
@@ -60,7 +60,7 @@ class BoolVars(BaseModel):
     n_obs: int = 3
 
     # string to boolean mapping dict
-    mappings = {
+    mappings: Dict[str, bool] = {
         "t": True,
         "f": False,
         "yes": True,
@@ -81,9 +81,9 @@ class PathVars(BaseModel):
 
 
 class ImageVars(BaseModel):
-    active = False
-    exif = True
-    hash = True
+    active: bool = False
+    exif: bool = True
+    hash: bool = True
 
 
 class UrlVars(BaseModel):
@@ -91,19 +91,19 @@ class UrlVars(BaseModel):
 
 
 class Univariate(BaseModel):
-    num = NumVars()
-    cat = CatVars()
-    image = ImageVars()
-    bool = BoolVars()
-    path = PathVars()
-    file = FileVars()
-    url = UrlVars()
+    num: NumVars = NumVars()
+    cat: CatVars = CatVars()
+    image: ImageVars = ImageVars()
+    bool: BoolVars = BoolVars()
+    path: PathVars = PathVars()
+    file: FileVars = FileVars()
+    url: UrlVars = UrlVars()
 
 
 class MissingPlot(BaseModel):
     # Force labels when there are > 50 variables
     # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
-    force_labels = True
+    force_labels: bool = True
     cmap: str = "RdBu"
 
 
@@ -119,25 +119,25 @@ class CorrelationPlot(BaseModel):
 
 class Histogram(BaseModel):
     # Number of bins (set to 0 to automatically detect the bin size)
-    bins = 50
+    bins: int = 50
     # Maximum number of bins (when bins=0)
-    max_bins = 250
+    max_bins: int = 250
     x_axis_labels: bool = True
 
 
 class Pie(BaseModel):
     # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
-    max_unique = 10
+    max_unique: int = 10
 
 
 class Plot(BaseModel):
-    missing = MissingPlot()
+    missing: MissingPlot = MissingPlot()
     image_format: ImageType = ImageType.svg
     correlation: CorrelationPlot = CorrelationPlot()
     # PNG dpi
     dpi: int = 800
-    histogram = Histogram()
-    scatter_threshold = 1000
+    histogram: Histogram = Histogram()
+    scatter_threshold: int = 1000
     pie: Pie = Pie()
 
 
@@ -147,7 +147,7 @@ class Theme(Enum):
 
 
 class Style(BaseModel):
-    primary_color = "#337ab7"
+    primary_color: str = "#337ab7"
     logo: str = ""
     theme: Optional[Theme] = None
 
@@ -183,15 +183,15 @@ class Duplicates(BaseModel):
 
 
 class Correlation(BaseModel):
-    key = ""
-    calculate = Field(default=True)
-    warn_high_correlations = Field(default=10)
-    threshold = Field(default=0.5)
+    key: str = ""
+    calculate: bool = Field(default=True)
+    warn_high_correlations: int = Field(default=10)
+    threshold: float = Field(default=0.5)
 
 
 class Correlations(BaseModel):
-    pearson = Correlation(key="pearson")
-    spearman = Correlation(key="spearman")
+    pearson: Correlation = Correlation(key="pearson")
+    spearman: Correlation = Correlation(key="spearman")
 
 
 class Interactions(BaseModel):
@@ -201,9 +201,9 @@ class Interactions(BaseModel):
 
 
 class Samples(BaseModel):
-    head = 10
-    tail = 10
-    random = 0
+    head: int = 10
+    tail: int = 10
+    random: int = 0
 
 
 class Variables(BaseModel):
@@ -216,19 +216,19 @@ class IframeAttribute(Enum):
 
 
 class Iframe(BaseModel):
-    height = "800px"
-    width = "100%"
-    attribute = IframeAttribute.srcdoc
+    height: str = "800px"
+    width: str = "100%"
+    attribute: IframeAttribute = IframeAttribute.srcdoc
 
 
 class Notebook(BaseModel):
     """When in a Jupyter notebook"""
 
-    iframe = Iframe()
+    iframe: Iframe = Iframe()
 
 
 class Report(BaseModel):
-    precision = 10
+    precision: int = 10
 
 
 class Settings(BaseSettings):
@@ -271,7 +271,7 @@ class Settings(BaseSettings):
 
     interactions: Interactions = Interactions()
 
-    categorical_maximum_correlation_distinct = 100
+    categorical_maximum_correlation_distinct: int = 100
     # Use `deep` flag for memory_usage
     memory_deep: bool = False
     plot: Plot = Plot()
@@ -281,9 +281,9 @@ class Settings(BaseSettings):
     reject_variables: bool = True
 
     # The number of observations to show
-    n_obs_unique = 10
-    n_freq_table_max = 10
-    n_extreme_obs = 10
+    n_obs_unique: int = 10
+    n_freq_table_max: int = 10
+    n_extreme_obs: int = 10
 
     # Report rendering
     report: Report = Report()
