@@ -47,6 +47,10 @@ repos:
     rev: v1.8.0
     hooks:
     -   id: rst-backticks
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v0.812'
+    hooks:
+    -   id: mypy
 
 ci:
   autoupdate_commit_msg: 'ci: pre-commit-config update'

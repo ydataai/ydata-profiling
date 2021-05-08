@@ -15,9 +15,6 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "win32: Test with windows")
     config.addinivalue_line("markers", "darwin: Test with darwin")
 
-    plugin = config.pluginmanager.getplugin("mypy")
-    plugin.mypy_argv.append("--ignore-missing-imports")
-
 
 @pytest.fixture(scope="function")
 def get_data_file(tmpdir):

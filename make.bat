@@ -57,11 +57,6 @@ IF "%1" == "install" (
 	GOTO end
 )
 
-if "%1" == "typing" (
-	pytest --mypy -m mypy .
-	GOTO end
-)
-
 IF "%1%" == "clean" (
 	ECHO "Not implemented yet"
 	GOTO end
@@ -73,7 +68,6 @@ IF "%1%" == "all" (
     make examples
     make docs
     make test
-    make typing
     GOTO end
 )
 
