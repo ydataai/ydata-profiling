@@ -69,7 +69,12 @@ def to_category(series, state):
 
 @series_handle_nulls
 def series_is_string(series: pd.Series, state: dict) -> bool:
-    return all(isinstance(v, str) for v in series)
+    if not all(isinstance(v, str) for v in series.values[0:5]):
+        return False
+    try:
+        return (series.astype(str).values == series.values).all()
+    except (TypeError, ValueError):
+        return False
 
 
 @series_handle_nulls
