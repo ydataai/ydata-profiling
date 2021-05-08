@@ -29,7 +29,12 @@
 <pre><code class="python">from pandas_profiling.report.presentation.flavours.flavours import (
     HTMLReport,
     WidgetReport,
-)</code></pre>
+)
+
+__all__ = [
+    &#34;HTMLReport&#34;,
+    &#34;WidgetReport&#34;,
+]</code></pre>
 </details>
 </section>
 <section>
@@ -52,6 +57,50 @@
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.HTMLReport"><code class="name flex">
+<span>def <span class="ident">HTMLReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds HTML flavour to Renderable</p>
+<h2 id="args">Args</h2>
+<p>structure:
+Returns:</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def HTMLReport(structure: Renderable):
+    &#34;&#34;&#34;Adds HTML flavour to Renderable
+
+    Args:
+        structure:
+
+    Returns:
+
+    &#34;&#34;&#34;
+    mapping = get_html_renderable_mapping()
+    apply_renderable_mapping(mapping, structure, flavour=HTMLReport)
+    return structure</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.WidgetReport"><code class="name flex">
+<span>def <span class="ident">WidgetReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def WidgetReport(structure: Renderable):
+    mapping = get_widget_renderable_mapping()
+    apply_renderable_mapping(mapping, structure, flavour=WidgetReport)
+    return structure</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -72,6 +121,12 @@
 <li><code><a title="pandas_profiling.report.presentation.flavours.flavours" href="flavours.html">pandas_profiling.report.presentation.flavours.flavours</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.html" href="html/index.html">pandas_profiling.report.presentation.flavours.html</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.flavours.widget" href="widget/index.html">pandas_profiling.report.presentation.flavours.widget</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.HTMLReport" href="#pandas_profiling.report.presentation.flavours.HTMLReport">HTMLReport</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.WidgetReport" href="#pandas_profiling.report.presentation.flavours.WidgetReport">WidgetReport</a></code></li>
 </ul>
 </li>
 </ul>

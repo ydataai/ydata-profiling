@@ -49,7 +49,7 @@ def get_config_default() -&gt; Path:
     return Path(__file__).parent.parent / &#34;config_default.yaml&#34;
 
 
-def get_config(file_name) -&gt; Path:
+def get_config(file_name: str) -&gt; Path:
     &#34;&#34;&#34;Returns the path a config file.
 
     Returns:
@@ -91,7 +91,7 @@ def get_html_template_path() -&gt; Path:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.utils.paths.get_config"><code class="name flex">
-<span>def <span class="ident">get_config</span></span>(<span>file_name) ‑> pathlib.Path</span>
+<span>def <span class="ident">get_config</span></span>(<span>file_name: str) ‑> pathlib.Path</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the path a config file.</p>
@@ -101,7 +101,7 @@ def get_html_template_path() -&gt; Path:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_config(file_name) -&gt; Path:
+<pre><code class="python">def get_config(file_name: str) -&gt; Path:
     &#34;&#34;&#34;Returns the path a config file.
 
     Returns:

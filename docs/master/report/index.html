@@ -28,7 +28,9 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;All functionality concerned with presentation to the user.&#34;&#34;&#34;
-from pandas_profiling.report.structure.report import get_report_structure</code></pre>
+from pandas_profiling.report.structure.report import get_report_structure
+
+__all__ = [&#34;get_report_structure&#34;]</code></pre>
 </details>
 </section>
 <section>
@@ -51,6 +53,113 @@ from pandas_profiling.report.structure.report import get_report_structure</code>
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pandas_profiling.report.get_report_structure"><code class="name flex">
+<span>def <span class="ident">get_report_structure</span></span>(<span>summary: dict) ‑> <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate a HTML report from summary statistics and a given sample.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>summary</code></strong></dt>
+<dd>Statistics to use for the overview, variables, correlations and missing values.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The profile report in HTML format</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_report_structure(summary: dict) -&gt; Renderable:
+    &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
+
+    Args:
+      summary: Statistics to use for the overview, variables, correlations and missing values.
+
+    Returns:
+      The profile report in HTML format
+    &#34;&#34;&#34;
+    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    with tqdm(
+        total=1, desc=&#34;Generate report structure&#34;, disable=disable_progress_bar
+    ) as pbar:
+        warnings = summary[&#34;messages&#34;]
+
+        section_items: List[Renderable] = [
+            Container(
+                get_dataset_items(summary, warnings),
+                sequence_type=&#34;tabs&#34;,
+                name=&#34;Overview&#34;,
+                anchor_id=&#34;overview&#34;,
+            ),
+            Container(
+                render_variables_section(summary),
+                sequence_type=&#34;accordion&#34;,
+                name=&#34;Variables&#34;,
+                anchor_id=&#34;variables&#34;,
+            ),
+        ]
+
+        scatter_items = get_scatter_matrix(summary[&#34;scatter&#34;])
+        if len(scatter_items) &gt; 0:
+            section_items.append(
+                Container(
+                    scatter_items,
+                    sequence_type=&#34;tabs&#34; if len(scatter_items) &lt;= 10 else &#34;select&#34;,
+                    name=&#34;Interactions&#34;,
+                    anchor_id=&#34;interactions&#34;,
+                ),
+            )
+
+        corr = get_correlation_items(summary)
+        if corr is not None:
+            section_items.append(corr)
+
+        missing_items = get_missing_items(summary)
+        if len(missing_items) &gt; 0:
+            section_items.append(
+                Container(
+                    missing_items,
+                    sequence_type=&#34;tabs&#34;,
+                    name=&#34;Missing values&#34;,
+                    anchor_id=&#34;missing&#34;,
+                )
+            )
+
+        sample_items = get_sample_items(summary[&#34;sample&#34;])
+        if len(sample_items) &gt; 0:
+            section_items.append(
+                Container(
+                    items=sample_items,
+                    sequence_type=&#34;list&#34;,
+                    name=&#34;Sample&#34;,
+                    anchor_id=&#34;sample&#34;,
+                )
+            )
+
+        duplicate_items = get_duplicates_items(summary[&#34;duplicates&#34;])
+        if len(duplicate_items) &gt; 0:
+            section_items.append(
+                Container(
+                    items=duplicate_items,
+                    sequence_type=&#34;list&#34;,
+                    name=&#34;Duplicate rows&#34;,
+                    anchor_id=&#34;duplicate&#34;,
+                )
+            )
+
+        sections = Container(section_items, name=&#34;Root&#34;, sequence_type=&#34;sections&#34;)
+        pbar.update()
+
+    footer = HTML(
+        content=&#39;Report generated with &lt;a href=&#34;https://github.com/pandas-profiling/pandas-profiling&#34;&gt;pandas-profiling&lt;/a&gt;.&#39;
+    )
+
+    return Root(&#34;Root&#34;, sections, footer)</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -71,6 +180,11 @@ from pandas_profiling.report.structure.report import get_report_structure</code>
 <li><code><a title="pandas_profiling.report.formatters" href="formatters.html">pandas_profiling.report.formatters</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation" href="presentation/index.html">pandas_profiling.report.presentation</a></code></li>
 <li><code><a title="pandas_profiling.report.structure" href="structure/index.html">pandas_profiling.report.structure</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.report.get_report_structure" href="#pandas_profiling.report.get_report_structure">get_report_structure</a></code></li>
 </ul>
 </li>
 </ul>

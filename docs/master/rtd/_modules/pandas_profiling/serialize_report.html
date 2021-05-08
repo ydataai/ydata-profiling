@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.serialize_report &mdash; pandas-profiling 2.12.0 documentation</title>
+  <title>pandas_profiling.serialize_report &mdash; pandas-profiling 2.13.0 documentation</title>
   
 
   
@@ -275,7 +275,7 @@
             <span class="p">)</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Failed to load data: file may be damaged or from an incompatible version&quot;</span>
+                <span class="s2">&quot;Failed to load data: file may be damaged or from an incompatible version&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">df_hash</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_hash</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
             <span class="n">config</span><span class="o">.</span><span class="n">is_default</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -285,13 +285,13 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="o">=</span> <span class="n">loaded_description_set</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The description set of current ProfileReport is not None. It won&#39;t be loaded.&quot;</span>
+                    <span class="s2">&quot;The description set of current ProfileReport is not None. It won&#39;t be loaded.&quot;</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_report</span> <span class="o">=</span> <span class="n">loaded_report</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The report of current ProfileReport is not None. It won&#39;t be loaded.&quot;</span>
+                    <span class="s2">&quot;The report of current ProfileReport is not None. It won&#39;t be loaded.&quot;</span>
                 <span class="p">)</span>
 
             <span class="c1"># overwrite config</span>

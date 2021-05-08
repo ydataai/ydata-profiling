@@ -28,10 +28,13 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Formatters are mappings from object(s) to a string.&#34;&#34;&#34;
+from functools import partial
 from typing import Callable, Dict
 
 import numpy as np
 from jinja2.utils import escape
+
+from pandas_profiling.config import config
 
 
 def fmt_color(text: str, color: str) -&gt; str:
@@ -109,55 +112,65 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     import re
     from datetime import timedelta
 
-    time_units = (
-        dict(
-            divider=1e-9,
-            singular=&#34;nanosecond&#34;,
-            plural=&#34;nanoseconds&#34;,
-            abbreviations=[&#34;ns&#34;],
-        ),
-        dict(
-            divider=1e-6,
-            singular=&#34;microsecond&#34;,
-            plural=&#34;microseconds&#34;,
-            abbreviations=[&#34;us&#34;],
-        ),
-        dict(
-            divider=1e-3,
-            singular=&#34;millisecond&#34;,
-            plural=&#34;milliseconds&#34;,
-            abbreviations=[&#34;ms&#34;],
-        ),
-        dict(
-            divider=1,
-            singular=&#34;second&#34;,
-            plural=&#34;seconds&#34;,
-            abbreviations=[&#34;s&#34;, &#34;sec&#34;, &#34;secs&#34;],
-        ),
-        dict(
-            divider=60,
-            singular=&#34;minute&#34;,
-            plural=&#34;minutes&#34;,
-            abbreviations=[&#34;m&#34;, &#34;min&#34;, &#34;mins&#34;],
-        ),
-        dict(divider=60 * 60, singular=&#34;hour&#34;, plural=&#34;hours&#34;, abbreviations=[&#34;h&#34;]),
-        dict(divider=60 * 60 * 24, singular=&#34;day&#34;, plural=&#34;days&#34;, abbreviations=[&#34;d&#34;]),
-        dict(
-            divider=60 * 60 * 24 * 7,
-            singular=&#34;week&#34;,
-            plural=&#34;weeks&#34;,
-            abbreviations=[&#34;w&#34;],
-        ),
-        dict(
-            divider=60 * 60 * 24 * 7 * 52,
-            singular=&#34;year&#34;,
-            plural=&#34;years&#34;,
-            abbreviations=[&#34;y&#34;],
-        ),
-    )
+    time_units = [
+        {
+            &#34;divider&#34;: 1e-9,
+            &#34;singular&#34;: &#34;nanosecond&#34;,
+            &#34;plural&#34;: &#34;nanoseconds&#34;,
+            &#34;abbreviations&#34;: [&#34;ns&#34;],
+        },
+        {
+            &#34;divider&#34;: 1e-6,
+            &#34;singular&#34;: &#34;microsecond&#34;,
+            &#34;plural&#34;: &#34;microseconds&#34;,
+            &#34;abbreviations&#34;: [&#34;us&#34;],
+        },
+        {
+            &#34;divider&#34;: 1e-3,
+            &#34;singular&#34;: &#34;millisecond&#34;,
+            &#34;plural&#34;: &#34;milliseconds&#34;,
+            &#34;abbreviations&#34;: [&#34;ms&#34;],
+        },
+        {
+            &#34;divider&#34;: 1,
+            &#34;singular&#34;: &#34;second&#34;,
+            &#34;plural&#34;: &#34;seconds&#34;,
+            &#34;abbreviations&#34;: [&#34;s&#34;, &#34;sec&#34;, &#34;secs&#34;],
+        },
+        {
+            &#34;divider&#34;: 60,
+            &#34;singular&#34;: &#34;minute&#34;,
+            &#34;plural&#34;: &#34;minutes&#34;,
+            &#34;abbreviations&#34;: [&#34;m&#34;, &#34;min&#34;, &#34;mins&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60,
+            &#34;singular&#34;: &#34;hour&#34;,
+            &#34;plural&#34;: &#34;hours&#34;,
+            &#34;abbreviations&#34;: [&#34;h&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60 * 24,
+            &#34;singular&#34;: &#34;day&#34;,
+            &#34;plural&#34;: &#34;days&#34;,
+            &#34;abbreviations&#34;: [&#34;d&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60 * 24 * 7,
+            &#34;singular&#34;: &#34;week&#34;,
+            &#34;plural&#34;: &#34;weeks&#34;,
+            &#34;abbreviations&#34;: [&#34;w&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60 * 24 * 7 * 52,
+            &#34;singular&#34;: &#34;year&#34;,
+            &#34;plural&#34;: &#34;years&#34;,
+            &#34;abbreviations&#34;: [&#34;y&#34;],
+        },
+    ]
 
     def round_number(count, keep_width=False):
-        text = &#34;%.2f&#34; % float(count)
+        text = f&#34;{float(count):.2f}&#34;
         if not keep_width:
             text = re.sub(&#34;0+$&#34;, &#34;&#34;, text)
             text = re.sub(r&#34;\.$&#34;, &#34;&#34;, text)
@@ -167,8 +180,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
         if isinstance(value, timedelta):
             return value.total_seconds()
         if not isinstance(value, numbers.Number):
-            msg = &#34;Failed to coerce value to number of seconds! (%r)&#34;
-            raise ValueError(format(msg, value))
+            raise ValueError(f&#34;Failed to coerce value to number of seconds! ({value})&#34;)
         return value
 
     def concatenate(items):
@@ -183,9 +195,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
     def pluralize(count, singular, plural=None):
         if not plural:
             plural = singular + &#34;s&#34;
-        return &#34;{} {}&#34;.format(
-            count, singular if math.floor(float(count)) == 1 else plural
-        )
+        return f&#34;{count} {singular if math.floor(float(count)) == 1 else plural}&#34;
 
     num_seconds = coerce_seconds(num_seconds)
     if num_seconds &lt; 60 and not detailed:
@@ -326,8 +336,10 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
         &#34;fmt_percent&#34;: fmt_percent,
         &#34;fmt_bytesize&#34;: fmt_bytesize,
         &#34;fmt_timespan&#34;: fmt_timespan,
-        &#34;fmt_numeric&#34;: fmt_numeric,
         &#34;fmt_monotonic&#34;: fmt_monotonic,
+        &#34;fmt_numeric&#34;: partial(
+            fmt_numeric, precision=config[&#34;report&#34;][&#34;precision&#34;].get(int)
+        ),
         &#34;fmt_number&#34;: fmt_number,
         &#34;fmt_array&#34;: fmt_array,
         &#34;fmt&#34;: fmt,
@@ -654,55 +666,65 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     import re
     from datetime import timedelta
 
-    time_units = (
-        dict(
-            divider=1e-9,
-            singular=&#34;nanosecond&#34;,
-            plural=&#34;nanoseconds&#34;,
-            abbreviations=[&#34;ns&#34;],
-        ),
-        dict(
-            divider=1e-6,
-            singular=&#34;microsecond&#34;,
-            plural=&#34;microseconds&#34;,
-            abbreviations=[&#34;us&#34;],
-        ),
-        dict(
-            divider=1e-3,
-            singular=&#34;millisecond&#34;,
-            plural=&#34;milliseconds&#34;,
-            abbreviations=[&#34;ms&#34;],
-        ),
-        dict(
-            divider=1,
-            singular=&#34;second&#34;,
-            plural=&#34;seconds&#34;,
-            abbreviations=[&#34;s&#34;, &#34;sec&#34;, &#34;secs&#34;],
-        ),
-        dict(
-            divider=60,
-            singular=&#34;minute&#34;,
-            plural=&#34;minutes&#34;,
-            abbreviations=[&#34;m&#34;, &#34;min&#34;, &#34;mins&#34;],
-        ),
-        dict(divider=60 * 60, singular=&#34;hour&#34;, plural=&#34;hours&#34;, abbreviations=[&#34;h&#34;]),
-        dict(divider=60 * 60 * 24, singular=&#34;day&#34;, plural=&#34;days&#34;, abbreviations=[&#34;d&#34;]),
-        dict(
-            divider=60 * 60 * 24 * 7,
-            singular=&#34;week&#34;,
-            plural=&#34;weeks&#34;,
-            abbreviations=[&#34;w&#34;],
-        ),
-        dict(
-            divider=60 * 60 * 24 * 7 * 52,
-            singular=&#34;year&#34;,
-            plural=&#34;years&#34;,
-            abbreviations=[&#34;y&#34;],
-        ),
-    )
+    time_units = [
+        {
+            &#34;divider&#34;: 1e-9,
+            &#34;singular&#34;: &#34;nanosecond&#34;,
+            &#34;plural&#34;: &#34;nanoseconds&#34;,
+            &#34;abbreviations&#34;: [&#34;ns&#34;],
+        },
+        {
+            &#34;divider&#34;: 1e-6,
+            &#34;singular&#34;: &#34;microsecond&#34;,
+            &#34;plural&#34;: &#34;microseconds&#34;,
+            &#34;abbreviations&#34;: [&#34;us&#34;],
+        },
+        {
+            &#34;divider&#34;: 1e-3,
+            &#34;singular&#34;: &#34;millisecond&#34;,
+            &#34;plural&#34;: &#34;milliseconds&#34;,
+            &#34;abbreviations&#34;: [&#34;ms&#34;],
+        },
+        {
+            &#34;divider&#34;: 1,
+            &#34;singular&#34;: &#34;second&#34;,
+            &#34;plural&#34;: &#34;seconds&#34;,
+            &#34;abbreviations&#34;: [&#34;s&#34;, &#34;sec&#34;, &#34;secs&#34;],
+        },
+        {
+            &#34;divider&#34;: 60,
+            &#34;singular&#34;: &#34;minute&#34;,
+            &#34;plural&#34;: &#34;minutes&#34;,
+            &#34;abbreviations&#34;: [&#34;m&#34;, &#34;min&#34;, &#34;mins&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60,
+            &#34;singular&#34;: &#34;hour&#34;,
+            &#34;plural&#34;: &#34;hours&#34;,
+            &#34;abbreviations&#34;: [&#34;h&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60 * 24,
+            &#34;singular&#34;: &#34;day&#34;,
+            &#34;plural&#34;: &#34;days&#34;,
+            &#34;abbreviations&#34;: [&#34;d&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60 * 24 * 7,
+            &#34;singular&#34;: &#34;week&#34;,
+            &#34;plural&#34;: &#34;weeks&#34;,
+            &#34;abbreviations&#34;: [&#34;w&#34;],
+        },
+        {
+            &#34;divider&#34;: 60 * 60 * 24 * 7 * 52,
+            &#34;singular&#34;: &#34;year&#34;,
+            &#34;plural&#34;: &#34;years&#34;,
+            &#34;abbreviations&#34;: [&#34;y&#34;],
+        },
+    ]
 
     def round_number(count, keep_width=False):
-        text = &#34;%.2f&#34; % float(count)
+        text = f&#34;{float(count):.2f}&#34;
         if not keep_width:
             text = re.sub(&#34;0+$&#34;, &#34;&#34;, text)
             text = re.sub(r&#34;\.$&#34;, &#34;&#34;, text)
@@ -712,8 +734,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
         if isinstance(value, timedelta):
             return value.total_seconds()
         if not isinstance(value, numbers.Number):
-            msg = &#34;Failed to coerce value to number of seconds! (%r)&#34;
-            raise ValueError(format(msg, value))
+            raise ValueError(f&#34;Failed to coerce value to number of seconds! ({value})&#34;)
         return value
 
     def concatenate(items):
@@ -728,9 +749,7 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
     def pluralize(count, singular, plural=None):
         if not plural:
             plural = singular + &#34;s&#34;
-        return &#34;{} {}&#34;.format(
-            count, singular if math.floor(float(count)) == 1 else plural
-        )
+        return f&#34;{count} {singular if math.floor(float(count)) == 1 else plural}&#34;
 
     num_seconds = coerce_seconds(num_seconds)
     if num_seconds &lt; 60 and not detailed:
@@ -786,8 +805,10 @@ def get_fmt_mapping() -&gt; Dict[str, Callable]:
         &#34;fmt_percent&#34;: fmt_percent,
         &#34;fmt_bytesize&#34;: fmt_bytesize,
         &#34;fmt_timespan&#34;: fmt_timespan,
-        &#34;fmt_numeric&#34;: fmt_numeric,
         &#34;fmt_monotonic&#34;: fmt_monotonic,
+        &#34;fmt_numeric&#34;: partial(
+            fmt_numeric, precision=config[&#34;report&#34;][&#34;precision&#34;].get(int)
+        ),
         &#34;fmt_number&#34;: fmt_number,
         &#34;fmt_array&#34;: fmt_array,
         &#34;fmt&#34;: fmt,

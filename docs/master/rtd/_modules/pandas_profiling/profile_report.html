@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.profile_report &mdash; pandas-profiling 2.12.0 documentation</title>
+  <title>pandas_profiling.profile_report &mdash; pandas-profiling 2.13.0 documentation</title>
   
 
   
@@ -282,10 +282,7 @@
             <span class="n">config</span><span class="o">.</span><span class="n">set_file</span><span class="p">(</span><span class="n">get_config</span><span class="p">(</span><span class="s2">&quot;config_minimal.yaml&quot;</span><span class="p">))</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">is_default</span><span class="p">:</span>
             <span class="k">pass</span>
-            <span class="c1"># warnings.warn(</span>
-            <span class="c1">#     &quot;Currently configuration is not the default, if you want to restore &quot;</span>
-            <span class="c1">#     &quot;default configuration, please run &#39;pandas_profiling.clear_config()&#39;&quot;</span>
-            <span class="c1"># )</span>
+
         <span class="k">if</span> <span class="n">explorative</span><span class="p">:</span>
             <span class="n">config</span><span class="o">.</span><span class="n">set_arg_group</span><span class="p">(</span><span class="s2">&quot;explorative&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sensitive</span><span class="p">:</span>
@@ -356,7 +353,9 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">({</span><span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">}</span> <span class="o">&amp;</span> <span class="n">changed</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_html</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">{</span><span class="s2">&quot;progress_bar&quot;</span><span class="p">,</span> <span class="s2">&quot;pool_size&quot;</span><span class="p">,</span> <span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">}</span> <span class="o">&gt;=</span> <span class="n">changed</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">{</span><span class="s2">&quot;progress_bar&quot;</span><span class="p">,</span> <span class="s2">&quot;pool_size&quot;</span><span class="p">,</span> <span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span>
+            <span class="n">changed</span>
+        <span class="p">):</span>
             <span class="c1"># In all other cases, empty cache</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="kc">None</span>
@@ -632,7 +631,7 @@
     <span class="k">def</span> <span class="nf">to_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The ipython notebook widgets user interface.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">files</span>
+            <span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">files</span>  <span class="c1"># noqa: F401</span>
 
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;Ipywidgets is not yet fully supported on Google Colab (https://github.com/googlecolab/colabtools/issues/60).&quot;</span>

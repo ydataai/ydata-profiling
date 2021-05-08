@@ -26,14 +26,14 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import functools
-from typing import Tuple
+<pre><code class="python">import contextlib
+import functools
+from typing import Callable, Tuple, TypeVar
 from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.integer import _IntegerDtype
-from visions.utils import func_nullable_series_contains
 
 from pandas_profiling.config import config
 from pandas_profiling.model.summary_helpers import (
@@ -49,6 +49,8 @@ from pandas_profiling.model.summary_helpers import (
     word_summary,
 )
 
+T = TypeVar(&#34;T&#34;)
+
 
 def describe_counts(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
     &#34;&#34;&#34;Counts the values in a series (with and without NaN, distinct).
@@ -63,7 +65,7 @@ def describe_counts(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dic
         value_counts_with_nan = series.value_counts(dropna=False)
         _ = set(value_counts_with_nan.index)
         hashable = True
-    except:
+    except:  # noqa: E722
         hashable = False
 
     summary[&#34;hashable&#34;] = hashable
@@ -92,11 +94,28 @@ def describe_counts(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dic
     return series, summary
 
 
-def series_hashable(fn):
+def series_hashable(
+    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
+) -&gt; Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
     @functools.wraps(fn)
-    def inner(series, summary):
+    def inner(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
         if not summary[&#34;hashable&#34;]:
             return series, summary
+        return fn(series, summary)
+
+    return inner
+
+
+def series_handle_nulls(
+    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
+) -&gt; Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
+    &#34;&#34;&#34;Decorator for nullable series&#34;&#34;&#34;
+
+    @functools.wraps(fn)
+    def inner(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
+        if series.hasnans:
+            series = series.dropna()
+
         return fn(series, summary)
 
     return inner
@@ -158,8 +177,6 @@ def describe_generic(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, di
 
 
 def numeric_stats_pandas(series: pd.Series):
-    #     summary[&#34;min&#34;] = summary[&#34;value_counts_without_nan&#34;].index.min()
-    # vc.index.min()
     return {
         &#34;mean&#34;: series.mean(),
         &#34;std&#34;: series.std(),
@@ -192,7 +209,7 @@ def numeric_stats_numpy(present_values, series, series_description):
 
 
 @series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_numeric_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
     &#34;&#34;&#34;Describe a numeric series.
     Args:
@@ -284,7 +301,7 @@ def describe_numeric_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series,
 
 
 @series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_date_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
     &#34;&#34;&#34;Describe a date series.
 
@@ -316,7 +333,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, di
 
 
 @series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
     &#34;&#34;&#34;Describe a categorical series.
 
@@ -369,12 +386,10 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Ser
         summary[&#34;n_characters_distinct&#34;] = summary[&#34;n_characters&#34;]
         summary[&#34;n_characters&#34;] = summary[&#34;character_counts&#34;].values.sum()
 
-        try:
+        with contextlib.suppress(AttributeError):
             summary[&#34;category_alias_counts&#34;].index = summary[
                 &#34;category_alias_counts&#34;
             ].index.str.replace(&#34;_&#34;, &#34; &#34;)
-        except AttributeError:
-            pass
 
     words = config[&#34;vars&#34;][&#34;cat&#34;][&#34;words&#34;]
     if words:
@@ -534,7 +549,7 @@ def describe_boolean_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series,
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
     &#34;&#34;&#34;Describe a categorical series.
 
@@ -587,12 +602,10 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Ser
         summary[&#34;n_characters_distinct&#34;] = summary[&#34;n_characters&#34;]
         summary[&#34;n_characters&#34;] = summary[&#34;character_counts&#34;].values.sum()
 
-        try:
+        with contextlib.suppress(AttributeError):
             summary[&#34;category_alias_counts&#34;].index = summary[
                 &#34;category_alias_counts&#34;
             ].index.str.replace(&#34;_&#34;, &#34; &#34;)
-        except AttributeError:
-            pass
 
     words = config[&#34;vars&#34;][&#34;cat&#34;][&#34;words&#34;]
     if words:
@@ -630,7 +643,7 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Ser
         value_counts_with_nan = series.value_counts(dropna=False)
         _ = set(value_counts_with_nan.index)
         hashable = True
-    except:
+    except:  # noqa: E722
         hashable = False
 
     summary[&#34;hashable&#34;] = hashable
@@ -678,7 +691,7 @@ def describe_categorical_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Ser
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_date_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
     &#34;&#34;&#34;Describe a date series.
 
@@ -815,7 +828,7 @@ def describe_date_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, di
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@series_hashable
-@func_nullable_series_contains
+@series_handle_nulls
 def describe_numeric_1d(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
     &#34;&#34;&#34;Describe a numeric series.
     Args:
@@ -1071,8 +1084,6 @@ def describe_supported(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def numeric_stats_pandas(series: pd.Series):
-    #     summary[&#34;min&#34;] = summary[&#34;value_counts_without_nan&#34;].index.min()
-    # vc.index.min()
     return {
         &#34;mean&#34;: series.mean(),
         &#34;std&#34;: series.std(),
@@ -1087,8 +1098,32 @@ def describe_supported(
     }</code></pre>
 </details>
 </dd>
+<dt id="pandas_profiling.model.summary_algorithms.series_handle_nulls"><code class="name flex">
+<span>def <span class="ident">series_handle_nulls</span></span>(<span>fn: Callable[[pandas.core.series.Series, dict], Tuple[pandas.core.series.Series, dict]]) ‑> Callable[[pandas.core.series.Series, dict], Tuple[pandas.core.series.Series, dict]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Decorator for nullable series</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def series_handle_nulls(
+    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
+) -&gt; Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
+    &#34;&#34;&#34;Decorator for nullable series&#34;&#34;&#34;
+
+    @functools.wraps(fn)
+    def inner(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
+        if series.hasnans:
+            series = series.dropna()
+
+        return fn(series, summary)
+
+    return inner</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.model.summary_algorithms.series_hashable"><code class="name flex">
-<span>def <span class="ident">series_hashable</span></span>(<span>fn)</span>
+<span>def <span class="ident">series_hashable</span></span>(<span>fn: Callable[[pandas.core.series.Series, dict], Tuple[pandas.core.series.Series, dict]]) ‑> Callable[[pandas.core.series.Series, dict], Tuple[pandas.core.series.Series, dict]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1096,9 +1131,11 @@ def describe_supported(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def series_hashable(fn):
+<pre><code class="python">def series_hashable(
+    fn: Callable[[pd.Series, dict], Tuple[pd.Series, dict]]
+) -&gt; Callable[[pd.Series, dict], Tuple[pd.Series, dict]]:
     @functools.wraps(fn)
-    def inner(series, summary):
+    def inner(series: pd.Series, summary: dict) -&gt; Tuple[pd.Series, dict]:
         if not summary[&#34;hashable&#34;]:
             return series, summary
         return fn(series, summary)
@@ -1137,6 +1174,7 @@ def describe_supported(
 <li><code><a title="pandas_profiling.model.summary_algorithms.describe_url_1d" href="#pandas_profiling.model.summary_algorithms.describe_url_1d">describe_url_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.numeric_stats_numpy" href="#pandas_profiling.model.summary_algorithms.numeric_stats_numpy">numeric_stats_numpy</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.numeric_stats_pandas" href="#pandas_profiling.model.summary_algorithms.numeric_stats_pandas">numeric_stats_pandas</a></code></li>
+<li><code><a title="pandas_profiling.model.summary_algorithms.series_handle_nulls" href="#pandas_profiling.model.summary_algorithms.series_handle_nulls">series_handle_nulls</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.series_hashable" href="#pandas_profiling.model.summary_algorithms.series_hashable">series_hashable</a></code></li>
 </ul>
 </li>

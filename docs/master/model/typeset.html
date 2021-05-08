@@ -33,10 +33,10 @@ from urllib.parse import urlparse
 
 import pandas as pd
 import visions
+from multimethod import multimethod
 from pandas.api import types as pdt
+from visions.backends.pandas.series_utils import series_handle_nulls, series_not_empty
 from visions.relations import IdentityRelation, InferenceRelation
-from visions.utils import nullable_series_contains
-from visions.utils.series_utils import series_not_empty
 
 from pandas_profiling.config import config
 from pandas_profiling.model.typeset_relations import (
@@ -50,28 +50,30 @@ from pandas_profiling.model.typeset_relations import (
     to_category,
 )
 
+pandas_has_string_dtype_flag = hasattr(pdt, &#34;is_string_dtype&#34;)
+
 
 class Unsupported(visions.Generic):
     pass
 
 
 class Numeric(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
             InferenceRelation(
-                cls,
                 Categorical,
                 relationship=category_is_numeric,
                 transformer=category_to_numeric,
             ),
         ]
 
-    @classmethod
-    @nullable_series_contains
+    @staticmethod
+    @multimethod
     @series_not_empty
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
 
 
@@ -79,7 +81,7 @@ def is_date(series, state):
     try:
         _ = pd.to_datetime(series)
         return True
-    except:
+    except:  # noqa: E722
         return False
 
 
@@ -88,79 +90,84 @@ def to_date(series):
 
 
 class DateTime(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
         ]
 
-    @classmethod
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_not_empty
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return pdt.is_datetime64_any_dtype(series)
 
 
 class Categorical(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
             InferenceRelation(
-                cls,
                 Numeric,
                 relationship=numeric_is_category,
                 transformer=to_category,
             ),
         ]
 
-    @classmethod
+    @staticmethod
+    @multimethod
     @series_not_empty
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
             series
         )
         if is_valid_dtype:
             return True
+        elif not pdt.is_object_dtype(series):
+            return pandas_has_string_dtype_flag and pdt.is_string_dtype(series)
 
-        return series_is_string(series)
+        return series_is_string(series, state)
 
 
 class Boolean(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         # Numeric [0, 1] goes via Categorical with distinct_count_without_nan &lt;= 2
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
             InferenceRelation(
-                cls,
                 Categorical,
                 relationship=string_is_bool,
                 transformer=lambda s, st: to_bool(string_to_bool(s, st)),
             ),
         ]
 
-    @classmethod
+    @staticmethod
+    @multimethod
     @series_not_empty
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         if pdt.is_object_dtype(series):
             try:
                 return series.isin({True, False}).all()
-            except:
+            except:  # noqa: E722
                 return False
 
         return pdt.is_bool_dtype(series)
 
 
 class URL(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Categorical)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Categorical)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         # TODO: use coercion utils
         try:
             url_gen = (urlparse(x) for x in series)
@@ -170,14 +177,14 @@ class URL(visions.VisionsBaseType):
 
 
 class Path(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Categorical)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Categorical)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         # TODO: use coercion utils
         try:
             return all(os.path.isabs(p) for p in series)
@@ -186,37 +193,38 @@ class Path(visions.VisionsBaseType):
 
 
 class File(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Path)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Path)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return all(os.path.exists(p) for p in series)
 
 
 class Image(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, File)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(File)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return all(imghdr.what(p) for p in series)
 
 
 class Complex(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        return [IdentityRelation(cls, Numeric)]
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Numeric)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return pdt.is_complex_dtype(series)
 
 
@@ -274,7 +282,7 @@ if __name__ == &#34;__main__&#34;:
     try:
         _ = pd.to_datetime(series)
         return True
-    except:
+    except:  # noqa: E722
         return False</code></pre>
 </details>
 </dd>
@@ -307,27 +315,27 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Boolean(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         # Numeric [0, 1] goes via Categorical with distinct_count_without_nan &lt;= 2
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
             InferenceRelation(
-                cls,
                 Categorical,
                 relationship=string_is_bool,
                 transformer=lambda s, st: to_bool(string_to_bool(s, st)),
             ),
         ]
 
-    @classmethod
+    @staticmethod
+    @multimethod
     @series_not_empty
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         if pdt.is_object_dtype(series):
             try:
                 return series.isin({True, False}).all()
-            except:
+            except:  # noqa: E722
                 return False
 
         return pdt.is_bool_dtype(series)</code></pre>
@@ -339,7 +347,7 @@ if __name__ == &#34;__main__&#34;:
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.Boolean.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -347,14 +355,15 @@ if __name__ == &#34;__main__&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
+<pre><code class="python">@staticmethod
+@multimethod
 @series_not_empty
-@nullable_series_contains
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     if pdt.is_object_dtype(series):
         try:
             return series.isin({True, False}).all()
-        except:
+        except:  # noqa: E722
             return False
 
     return pdt.is_bool_dtype(series)</code></pre>
@@ -369,13 +378,12 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
+<pre><code class="python">@staticmethod
+def get_relations():
     # Numeric [0, 1] goes via Categorical with distinct_count_without_nan &lt;= 2
     return [
-        IdentityRelation(cls, Unsupported),
+        IdentityRelation(Unsupported),
         InferenceRelation(
-            cls,
             Categorical,
             relationship=string_is_bool,
             transformer=lambda s, st: to_bool(string_to_bool(s, st)),
@@ -396,29 +404,31 @@ def get_relations(cls):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Categorical(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
             InferenceRelation(
-                cls,
                 Numeric,
                 relationship=numeric_is_category,
                 transformer=to_category,
             ),
         ]
 
-    @classmethod
+    @staticmethod
+    @multimethod
     @series_not_empty
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
             series
         )
         if is_valid_dtype:
             return True
+        elif not pdt.is_object_dtype(series):
+            return pandas_has_string_dtype_flag and pdt.is_string_dtype(series)
 
-        return series_is_string(series)</code></pre>
+        return series_is_string(series, state)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -427,7 +437,7 @@ def get_relations(cls):
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.Categorical.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -435,17 +445,20 @@ def get_relations(cls):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
+<pre><code class="python">@staticmethod
+@multimethod
 @series_not_empty
-@nullable_series_contains
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
         series
     )
     if is_valid_dtype:
         return True
+    elif not pdt.is_object_dtype(series):
+        return pandas_has_string_dtype_flag and pdt.is_string_dtype(series)
 
-    return series_is_string(series)</code></pre>
+    return series_is_string(series, state)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset.Categorical.get_relations"><code class="name flex">
@@ -457,12 +470,11 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
+<pre><code class="python">@staticmethod
+def get_relations():
     return [
-        IdentityRelation(cls, Unsupported),
+        IdentityRelation(Unsupported),
         InferenceRelation(
-            cls,
             Numeric,
             relationship=numeric_is_category,
             transformer=to_category,
@@ -483,13 +495,14 @@ def get_relations(cls):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Complex(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        return [IdentityRelation(cls, Numeric)]
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Numeric)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return pdt.is_complex_dtype(series)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -499,7 +512,7 @@ def get_relations(cls):
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.Complex.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -507,9 +520,10 @@ def get_relations(cls):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-@nullable_series_contains
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+<pre><code class="python">@staticmethod
+@multimethod
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     return pdt.is_complex_dtype(series)</code></pre>
 </details>
 </dd>
@@ -522,9 +536,9 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
-    return [IdentityRelation(cls, Numeric)]</code></pre>
+<pre><code class="python">@staticmethod
+def get_relations():
+    return [IdentityRelation(Numeric)]</code></pre>
 </details>
 </dd>
 </dl>
@@ -540,14 +554,17 @@ def get_relations(cls):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class DateTime(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
         ]
 
-    @classmethod
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_not_empty
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return pdt.is_datetime64_any_dtype(series)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -565,8 +582,11 @@ def get_relations(cls):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+<pre><code class="python">@staticmethod
+@multimethod
+@series_not_empty
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     return pdt.is_datetime64_any_dtype(series)</code></pre>
 </details>
 </dd>
@@ -579,10 +599,10 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
+<pre><code class="python">@staticmethod
+def get_relations():
     return [
-        IdentityRelation(cls, Unsupported),
+        IdentityRelation(Unsupported),
     ]</code></pre>
 </details>
 </dd>
@@ -599,14 +619,14 @@ def get_relations(cls):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class File(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Path)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Path)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return all(os.path.exists(p) for p in series)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -616,7 +636,7 @@ def get_relations(cls):
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.File.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -624,9 +644,10 @@ def get_relations(cls):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-@nullable_series_contains
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+<pre><code class="python">@staticmethod
+@multimethod
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     return all(os.path.exists(p) for p in series)</code></pre>
 </details>
 </dd>
@@ -639,10 +660,9 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
-    relations = [IdentityRelation(cls, Path)]
-    return relations</code></pre>
+<pre><code class="python">@staticmethod
+def get_relations():
+    return [IdentityRelation(Path)]</code></pre>
 </details>
 </dd>
 </dl>
@@ -658,14 +678,14 @@ def get_relations(cls):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Image(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, File)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(File)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return all(imghdr.what(p) for p in series)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -675,7 +695,7 @@ def get_relations(cls):
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.Image.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -683,9 +703,10 @@ def get_relations(cls):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-@nullable_series_contains
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+<pre><code class="python">@staticmethod
+@multimethod
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     return all(imghdr.what(p) for p in series)</code></pre>
 </details>
 </dd>
@@ -698,10 +719,9 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
-    relations = [IdentityRelation(cls, File)]
-    return relations</code></pre>
+<pre><code class="python">@staticmethod
+def get_relations():
+    return [IdentityRelation(File)]</code></pre>
 </details>
 </dd>
 </dl>
@@ -717,22 +737,22 @@ def get_relations(cls):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Numeric(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
+    @staticmethod
+    def get_relations():
         return [
-            IdentityRelation(cls, Unsupported),
+            IdentityRelation(Unsupported),
             InferenceRelation(
-                cls,
                 Categorical,
                 relationship=category_is_numeric,
                 transformer=category_to_numeric,
             ),
         ]
 
-    @classmethod
-    @nullable_series_contains
+    @staticmethod
+    @multimethod
     @series_not_empty
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -742,7 +762,7 @@ def get_relations(cls):
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.Numeric.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -750,10 +770,11 @@ def get_relations(cls):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-@nullable_series_contains
+<pre><code class="python">@staticmethod
+@multimethod
 @series_not_empty
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)</code></pre>
 </details>
 </dd>
@@ -766,12 +787,11 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
+<pre><code class="python">@staticmethod
+def get_relations():
     return [
-        IdentityRelation(cls, Unsupported),
+        IdentityRelation(Unsupported),
         InferenceRelation(
-            cls,
             Categorical,
             relationship=category_is_numeric,
             transformer=category_to_numeric,
@@ -792,14 +812,14 @@ def get_relations(cls):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Path(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Categorical)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Categorical)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         # TODO: use coercion utils
         try:
             return all(os.path.isabs(p) for p in series)
@@ -813,7 +833,7 @@ def get_relations(cls):
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.Path.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -821,9 +841,10 @@ def get_relations(cls):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-@nullable_series_contains
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+<pre><code class="python">@staticmethod
+@multimethod
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     # TODO: use coercion utils
     try:
         return all(os.path.isabs(p) for p in series)
@@ -840,10 +861,9 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
-    relations = [IdentityRelation(cls, Categorical)]
-    return relations</code></pre>
+<pre><code class="python">@staticmethod
+def get_relations():
+    return [IdentityRelation(Categorical)]</code></pre>
 </details>
 </dd>
 </dl>
@@ -861,7 +881,8 @@ associated relationship map between them.</p>
 <dt><strong><code>base_graph</code></strong></dt>
 <dd>The graph of relations composed exclusively of :class:<code>visions.relations.relations.IdentityRelation</code></dd>
 <dt><strong><code>relation_graph</code></strong></dt>
-<dd>The full relation graph including both :class:<code>visions.relations.relations.IdentityRelation</code> and :class:<code>visions.relations.relations.InferenceRelation</code></dd>
+<dd>The full relation graph including both :class:<code>visions.relations.relations.IdentityRelation</code>
+and :class:<code>visions.relations.relations.InferenceRelation</code></dd>
 </dl>
 <h2 id="args">Args</h2>
 <dl>
@@ -912,14 +933,14 @@ associated relationship map between them.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class URL(visions.VisionsBaseType):
-    @classmethod
-    def get_relations(cls):
-        relations = [IdentityRelation(cls, Categorical)]
-        return relations
+    @staticmethod
+    def get_relations():
+        return [IdentityRelation(Categorical)]
 
-    @classmethod
-    @nullable_series_contains
-    def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+    @staticmethod
+    @multimethod
+    @series_handle_nulls
+    def contains_op(series: pd.Series, state: dict) -&gt; bool:
         # TODO: use coercion utils
         try:
             url_gen = (urlparse(x) for x in series)
@@ -934,7 +955,7 @@ associated relationship map between them.</p>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.typeset.URL.contains_op"><code class="name flex">
-<span>def <span class="ident">contains_op</span></span>(<span>cls, series: pandas.core.series.Series, state: dict) ‑> bool</span>
+<span>def <span class="ident">contains_op</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -942,9 +963,10 @@ associated relationship map between them.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-@nullable_series_contains
-def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
+<pre><code class="python">@staticmethod
+@multimethod
+@series_handle_nulls
+def contains_op(series: pd.Series, state: dict) -&gt; bool:
     # TODO: use coercion utils
     try:
         url_gen = (urlparse(x) for x in series)
@@ -962,10 +984,9 @@ def contains_op(cls, series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
-def get_relations(cls):
-    relations = [IdentityRelation(cls, Categorical)]
-    return relations</code></pre>
+<pre><code class="python">@staticmethod
+def get_relations():
+    return [IdentityRelation(Categorical)]</code></pre>
 </details>
 </dd>
 </dl>
@@ -977,7 +998,8 @@ def get_relations(cls):
 <div class="desc"><p><strong>Generic</strong> implementation of :class:<code>visions.types.type.VisionsBaseType</code>.</p>
 <h2 id="examples">Examples</h2>
 <pre><code class="language-python-repl">&gt;&gt;&gt; import numpy as np
-&gt;&gt;&gt; x = pd.Series(['a', 1, np.nan])
+&gt;&gt;&gt; import visions
+&gt;&gt;&gt; x = ['a', 1, np.nan]
 &gt;&gt;&gt; x in visions.Generic
 True
 </code></pre></div>

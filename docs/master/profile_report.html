@@ -105,10 +105,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             config.set_file(get_config(&#34;config_minimal.yaml&#34;))
         elif not config.is_default:
             pass
-            # warnings.warn(
-            #     &#34;Currently configuration is not the default, if you want to restore &#34;
-            #     &#34;default configuration, please run &#39;pandas_profiling.clear_config()&#39;&#34;
-            # )
+
         if explorative:
             config.set_arg_group(&#34;explorative&#34;)
         if sensitive:
@@ -179,7 +176,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
             self._html = None
 
-        if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;} &gt;= changed:
+        if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;}.issuperset(
+            changed
+        ):
             # In all other cases, empty cache
             self._description_set = None
             self._title = None
@@ -455,7 +454,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def to_widgets(self):
         &#34;&#34;&#34;The ipython notebook widgets user interface.&#34;&#34;&#34;
         try:
-            from google.colab import files
+            from google.colab import files  # noqa: F401
 
             warnings.warn(
                 &#34;Ipywidgets is not yet fully supported on Google Colab (https://github.com/googlecolab/colabtools/issues/60).&#34;
@@ -600,10 +599,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             config.set_file(get_config(&#34;config_minimal.yaml&#34;))
         elif not config.is_default:
             pass
-            # warnings.warn(
-            #     &#34;Currently configuration is not the default, if you want to restore &#34;
-            #     &#34;default configuration, please run &#39;pandas_profiling.clear_config()&#39;&#34;
-            # )
+
         if explorative:
             config.set_arg_group(&#34;explorative&#34;)
         if sensitive:
@@ -674,7 +670,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
             self._html = None
 
-        if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;} &gt;= changed:
+        if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;}.issuperset(
+            changed
+        ):
             # In all other cases, empty cache
             self._description_set = None
             self._title = None
@@ -950,7 +948,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def to_widgets(self):
         &#34;&#34;&#34;The ipython notebook widgets user interface.&#34;&#34;&#34;
         try:
-            from google.colab import files
+            from google.colab import files  # noqa: F401
 
             warnings.warn(
                 &#34;Ipywidgets is not yet fully supported on Google Colab (https://github.com/googlecolab/colabtools/issues/60).&#34;
@@ -1393,7 +1391,9 @@ def widgets(self):
     if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
         self._html = None
 
-    if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;} &gt;= changed:
+    if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;}.issuperset(
+        changed
+    ):
         # In all other cases, empty cache
         self._description_set = None
         self._title = None
@@ -1566,7 +1566,7 @@ the Iframe.</p>
 <pre><code class="python">def to_widgets(self):
     &#34;&#34;&#34;The ipython notebook widgets user interface.&#34;&#34;&#34;
     try:
-        from google.colab import files
+        from google.colab import files  # noqa: F401
 
         warnings.warn(
             &#34;Ipywidgets is not yet fully supported on Google Colab (https://github.com/googlecolab/colabtools/issues/60).&#34;

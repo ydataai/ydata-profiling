@@ -151,9 +151,9 @@ class PhiK(Correlation):
 
         with warnings.catch_warnings():
             warnings.simplefilter(&#34;ignore&#34;)
-            import phik
+            from phik import phik_matrix
 
-            correlation = df[selcols].phik_matrix(interval_cols=intcols)
+            correlation = phik_matrix(df[selcols], interval_cols=list(intcols))
 
         return correlation
 
@@ -623,9 +623,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 
         with warnings.catch_warnings():
             warnings.simplefilter(&#34;ignore&#34;)
-            import phik
+            from phik import phik_matrix
 
-            correlation = df[selcols].phik_matrix(interval_cols=intcols)
+            correlation = phik_matrix(df[selcols], interval_cols=list(intcols))
 
         return correlation</code></pre>
 </details>
@@ -668,9 +668,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 
     with warnings.catch_warnings():
         warnings.simplefilter(&#34;ignore&#34;)
-        import phik
+        from phik import phik_matrix
 
-        correlation = df[selcols].phik_matrix(interval_cols=intcols)
+        correlation = phik_matrix(df[selcols], interval_cols=list(intcols))
 
     return correlation</code></pre>
 </details>

@@ -126,14 +126,14 @@ class Config:
                 raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
     _shorthands = {
-        &#34;dataset&#34;: dict(
-            creator=&#34;&#34;,
-            author=&#34;&#34;,
-            description=&#34;&#34;,
-            copyright_holder=&#34;&#34;,
-            copyright_year=&#34;&#34;,
-            url=&#34;&#34;,
-        ),
+        &#34;dataset&#34;: {
+            &#34;creator&#34;: &#34;&#34;,
+            &#34;author&#34;: &#34;&#34;,
+            &#34;description&#34;: &#34;&#34;,
+            &#34;copyright_holder&#34;: &#34;&#34;,
+            &#34;copyright_year&#34;: &#34;&#34;,
+            &#34;url&#34;: &#34;&#34;,
+        },
         &#34;samples&#34;: {&#34;head&#34;: 0, &#34;tail&#34;: 0, &#34;random&#34;: 0},
         &#34;duplicates&#34;: {&#34;head&#34;: 0},
         &#34;interactions&#34;: {&#34;targets&#34;: [], &#34;continuous&#34;: False},
@@ -316,14 +316,14 @@ various ways (notably via argparse and kwargs).</p>
                 raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
     _shorthands = {
-        &#34;dataset&#34;: dict(
-            creator=&#34;&#34;,
-            author=&#34;&#34;,
-            description=&#34;&#34;,
-            copyright_holder=&#34;&#34;,
-            copyright_year=&#34;&#34;,
-            url=&#34;&#34;,
-        ),
+        &#34;dataset&#34;: {
+            &#34;creator&#34;: &#34;&#34;,
+            &#34;author&#34;: &#34;&#34;,
+            &#34;description&#34;: &#34;&#34;,
+            &#34;copyright_holder&#34;: &#34;&#34;,
+            &#34;copyright_year&#34;: &#34;&#34;,
+            &#34;url&#34;: &#34;&#34;,
+        },
         &#34;samples&#34;: {&#34;head&#34;: 0, &#34;tail&#34;: 0, &#34;random&#34;: 0},
         &#34;duplicates&#34;: {&#34;head&#34;: 0},
         &#34;interactions&#34;: {&#34;targets&#34;: [], &#34;continuous&#34;: False},

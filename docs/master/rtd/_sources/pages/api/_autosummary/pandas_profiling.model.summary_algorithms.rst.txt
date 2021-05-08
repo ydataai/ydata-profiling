@@ -26,6 +26,7 @@
       describe_url_1d
       numeric_stats_numpy
       numeric_stats_pandas
+      series_handle_nulls
       series_hashable
    
    

@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # Example: Mixed with base types
     df["mixed"] = np.random.choice([1, "A"], df.shape[0])
 
-    # Example: Unhashable
+    # Example: unhashable column
     df["unhashable"] = [[1]] * df.shape[0]
 
     # Example: Highly correlated variables

@@ -121,12 +121,6 @@ def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[s
         The HTML rendering of the extreme observation table.
     &#34;&#34;&#34;
 
-    # If it&#39;s mixed between base types (str, int) convert to str. Pure &#34;mixed&#34; types are filtered during type
-    # discovery
-    # TODO: should be in cast?
-    # if &#34;mixed&#34; in freqtable.index.inferred_type:
-    #     freqtable.index = freqtable.index.astype(str)
-
     obs_to_print = freqtable.iloc[:number_to_print]
     max_freq = obs_to_print.max()
 
@@ -183,12 +177,6 @@ def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[s
     Returns:
         The HTML rendering of the extreme observation table.
     &#34;&#34;&#34;
-
-    # If it&#39;s mixed between base types (str, int) convert to str. Pure &#34;mixed&#34; types are filtered during type
-    # discovery
-    # TODO: should be in cast?
-    # if &#34;mixed&#34; in freqtable.index.inferred_type:
-    #     freqtable.index = freqtable.index.astype(str)
 
     obs_to_print = freqtable.iloc[:number_to_print]
     max_freq = obs_to_print.max()

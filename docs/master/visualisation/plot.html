@@ -316,7 +316,7 @@ def pie_plot(data, legend_kws=None):
         return f&#34;{pct:.1f}%\n({absolute:d})&#34;
 
     wedges, _, _ = plt.pie(
-        data, autopct=lambda pct: func(pct, data), textprops=dict(color=&#34;w&#34;)
+        data, autopct=lambda pct: func(pct, data), textprops={&#34;color&#34;: &#34;w&#34;}
     )
     plt.legend(wedges, data.index.values, **legend_kws)
 
@@ -566,7 +566,7 @@ def pie_plot(data, legend_kws=None):
         return f&#34;{pct:.1f}%\n({absolute:d})&#34;
 
     wedges, _, _ = plt.pie(
-        data, autopct=lambda pct: func(pct, data), textprops=dict(color=&#34;w&#34;)
+        data, autopct=lambda pct: func(pct, data), textprops={&#34;color&#34;: &#34;w&#34;}
     )
     plt.legend(wedges, data.index.values, **legend_kws)
 
