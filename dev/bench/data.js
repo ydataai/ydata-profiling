@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1620241101036,
+  "lastUpdate": 1620511144209,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -1331,6 +1331,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.19307158058886364",
             "extra": "mean: 18.810201405999987 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "66853113+pre-commit-ci[bot]@users.noreply.github.com",
+            "name": "pre-commit-ci[bot]",
+            "username": "pre-commit-ci[bot]"
+          },
+          "committer": {
+            "email": "66853113+pre-commit-ci[bot]@users.noreply.github.com",
+            "name": "pre-commit-ci[bot]",
+            "username": "pre-commit-ci[bot]"
+          },
+          "distinct": true,
+          "id": "df7366f7675b9ef9e21f3a29dd64de9e4302716c",
+          "message": "[pre-commit.ci] auto fixes from pre-commit.com hooks\n\nfor more information, see https://pre-commit.ci",
+          "timestamp": "2021-05-08T21:40:43Z",
+          "tree_id": "7116462b32dbddef888969f8011fca622d8ff775",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/df7366f7675b9ef9e21f3a29dd64de9e4302716c"
+        },
+        "date": 1620511139099,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.10178070529021481,
+            "unit": "iter/sec",
+            "range": "stddev: 0.05399385859676663",
+            "extra": "mean: 9.8250449056 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.1021013553133502,
+            "unit": "iter/sec",
+            "range": "stddev: 0.029882705417020743",
+            "extra": "mean: 9.794189283100001 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.3443103066193121,
+            "unit": "iter/sec",
+            "range": "stddev: 0.05028388903632352",
+            "extra": "mean: 2.9043568570999923 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.05502215441030101,
+            "unit": "iter/sec",
+            "range": "stddev: 0.06965651650035622",
+            "extra": "mean: 18.174497358700012 sec\nrounds: 10"
           }
         ]
       }
