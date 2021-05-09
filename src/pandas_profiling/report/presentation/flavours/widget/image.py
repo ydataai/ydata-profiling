@@ -2,13 +2,14 @@ import re
 
 from ipywidgets import widgets
 
+from pandas_profiling.config import ImageType
 from pandas_profiling.report.presentation.core.image import Image
 
 
 class WidgetImage(Image):
     def render(self):
         image = self.content["image"]
-        if self.content["image_format"] == "svg":
+        if self.content["image_format"] == ImageType.svg:
             image = image.replace("svg ", 'svg style="max-width: 100%" ')
 
             image = re.sub('height="[\\d]+pt"', "", image)

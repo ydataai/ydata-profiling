@@ -38,6 +38,7 @@ class HTMLContainer(Container):
                 items=self.content["items"],
                 batch_size=self.content["batch_size"],
                 titles=self.content.get("titles", True),
+                subtitles=self.content.get("subtitles", False),
             )
         else:
             raise ValueError("Template not understood", self.sequence_type)
