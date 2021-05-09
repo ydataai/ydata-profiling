@@ -55,12 +55,27 @@ def get_row(items):
     return widgets.GridBox([item.render() for item in items], layout=layout)
 
 
-def get_batch_grid(items, batch_size, titles):
+def get_batch_grid(items, batch_size, titles, subtitles):
     layout = widgets.Layout(
         width="100%",
         grid_template_columns=" ".join([f"{int(100 / batch_size)}%"] * batch_size),
     )
-    return widgets.GridBox([item.render() for item in items], layout=layout)
+    out = []
+    for item in items:
+        if subtitles:
+            out.append(
+                widgets.VBox(
+                    [widgets.HTML(f"<h5><em>{ item.name }</em></h5>"), item.render()]
+                )
+            )
+        elif titles:
+            out.append(
+                widgets.VBox([widgets.HTML(f"<h4>{ item.name }</h4>"), item.render()])
+            )
+        else:
+            out.append(item.render())
+
+    return widgets.GridBox(out, layout=layout)
 
 
 def get_accordion(items):
@@ -94,6 +109,7 @@ class WidgetContainer(Container):
                 self.content["items"],
                 self.content["batch_size"],
                 self.content.get("titles", True),
+                self.content.get("subtitles", False),
             )
         else:
             raise ValueError("widget type not understood", self.sequence_type)

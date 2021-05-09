@@ -138,7 +138,7 @@ def get_duplicates_items(duplicates: pd.DataFrame):
         items.append(
             Duplicate(
                 duplicate=duplicates,
-                name="Most frequent",
+                name="Most frequently occurring",
                 anchor_id="duplicates",
             )
         )

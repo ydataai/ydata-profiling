@@ -134,7 +134,8 @@ def render_categorical_unicode(config: Settings, summary, varid):
             name="Most frequent character per category",
             sequence_type="batch_grid",
             anchor_id=f"{varid}categories",
-            batch_size=3,
+            batch_size=2,
+            subtitles=True,
         ),
     ]
 
@@ -149,22 +150,21 @@ def render_categorical_unicode(config: Settings, summary, varid):
         redact=False,
     )
 
-    scripts = []
-    for script_name, script_counts in sorted(
-        summary["script_char_counts"].items(), key=lambda x: -len(x[1])
-    ):
-        scripts.append(
-            FrequencyTable(
-                freq_table(
-                    freqtable=script_counts,
-                    n=script_counts.sum(),
-                    max_number_to_print=n_freq_table_max,
-                ),
-                name=f"{script_name}",
-                anchor_id=f"{varid}script_values_{script_name}",
-                redact=config.vars.cat.redact,
-            )
+    scripts = [
+        FrequencyTable(
+            freq_table(
+                freqtable=script_counts,
+                n=script_counts.sum(),
+                max_number_to_print=n_freq_table_max,
+            ),
+            name=f"{script_name}",
+            anchor_id=f"{varid}script_values_{script_name}",
+            redact=config.vars.cat.redact,
         )
+        for script_name, script_counts in sorted(
+            summary["script_char_counts"].items(), key=lambda x: -len(x[1])
+        )
+    ]
 
     script_items = [
         script_overview,
@@ -173,7 +173,8 @@ def render_categorical_unicode(config: Settings, summary, varid):
             name="Most frequent character per script",
             sequence_type="batch_grid",
             anchor_id=f"{varid}scripts",
-            batch_size=3,
+            batch_size=2,
+            subtitles=True,
         ),
     ]
 
@@ -188,20 +189,19 @@ def render_categorical_unicode(config: Settings, summary, varid):
         redact=False,
     )
 
-    blocks = []
-    for block_name, block_counts in summary["block_alias_char_counts"].items():
-        blocks.append(
-            FrequencyTable(
-                freq_table(
-                    freqtable=block_counts,
-                    n=block_counts.sum(),
-                    max_number_to_print=n_freq_table_max,
-                ),
-                name=f"{block_name}",
-                anchor_id=f"{varid}block_alias_values_{block_name}",
-                redact=config.vars.cat.redact,
-            )
+    blocks = [
+        FrequencyTable(
+            freq_table(
+                freqtable=block_counts,
+                n=block_counts.sum(),
+                max_number_to_print=n_freq_table_max,
+            ),
+            name=f"{block_name}",
+            anchor_id=f"{varid}block_alias_values_{block_name}",
+            redact=config.vars.cat.redact,
         )
+        for block_name, block_counts in summary["block_alias_char_counts"].items()
+    ]
 
     block_items = [
         block_overview,
@@ -210,7 +210,8 @@ def render_categorical_unicode(config: Settings, summary, varid):
             name="Most frequent character per block",
             sequence_type="batch_grid",
             anchor_id=f"{varid}blocks",
-            batch_size=3,
+            batch_size=2,
+            subtitles=True,
         ),
     ]
 
