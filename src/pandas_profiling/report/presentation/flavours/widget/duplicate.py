@@ -10,4 +10,5 @@ class WidgetDuplicate(Duplicate):
         with out:
             display(self.content["duplicate"])
 
-        return widgets.VBox([out])
+        name = widgets.HTML(f"<h4>{self.content['name']}</h4>")
+        return widgets.VBox([name, out])
