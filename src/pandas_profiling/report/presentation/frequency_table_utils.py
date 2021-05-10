@@ -1,9 +1,10 @@
 from typing import Any, Dict, List
 
 import numpy as np
+import pandas as pd
 
 
-def freq_table(freqtable, n: int, max_number_to_print: int) -> List[Dict]:
+def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -> List[Dict]:
     """Render the rows for a frequency table (value, count).
 
     Args:
@@ -81,7 +82,9 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -> List[Dict]:
     return rows
 
 
-def extreme_obs_table(freqtable, number_to_print: int, n: int) -> List[Dict[str, Any]]:
+def extreme_obs_table(
+    freqtable: pd.Series, number_to_print: int, n: int
+) -> List[Dict[str, Any]]:
     """Similar to the frequency table, for extreme observations.
 
     Args:

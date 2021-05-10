@@ -1,19 +1,19 @@
 from functools import reduce
-from typing import Callable, Dict, List
+from typing import Any, Callable, Dict, List, Sequence
 
 import networkx as nx
 from visions import VisionsTypeset
 
 
-def compose(functions):
+def compose(functions: Sequence[Callable]) -> Callable:
     """
     Compose a sequence of functions
     :param functions: sequence of functions
     :return: combined functions, e.g. [f(x), g(x)] -> g(f(x))
     """
 
-    def func(f: Callable, g: Callable):
-        def func2(*x):
+    def func(f: Callable, g: Callable) -> Callable:
+        def func2(*x) -> Any:
             res = g(*x)
             if type(res) == bool:
                 return f(*x)
@@ -43,7 +43,7 @@ class Handler:
 
         self._complete_dag()
 
-    def _complete_dag(self):
+    def _complete_dag(self) -> None:
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
@@ -62,7 +62,7 @@ class Handler:
         return op(*args)
 
 
-def get_render_map():
+def get_render_map() -> Dict[str, Callable]:
     import pandas_profiling.report.structure.variables as render_algorithms
 
     render_map = {

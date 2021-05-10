@@ -3,7 +3,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLSample(Sample):
-    def render(self):
+    def render(self) -> str:
         sample_html = self.content["sample"].to_html(
             classes="sample table table-striped"
         )

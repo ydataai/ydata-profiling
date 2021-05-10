@@ -5,7 +5,7 @@ from pandas_profiling.report.presentation.core.duplicate import Duplicate
 
 
 class WidgetDuplicate(Duplicate):
-    def render(self):
+    def render(self) -> widgets.VBox:
         out = Output()
         with out:
             display(self.content["duplicate"])

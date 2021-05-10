@@ -5,7 +5,7 @@ from pandas_profiling.report.presentation.core.sample import Sample
 
 
 class WidgetSample(Sample):
-    def render(self):
+    def render(self) -> widgets.VBox:
         out = Output()
         with out:
             display(self.content["sample"])

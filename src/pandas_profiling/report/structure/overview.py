@@ -85,7 +85,7 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
     )
 
 
-def get_dataset_schema(metadata) -> Container:
+def get_dataset_schema(metadata: dict) -> Container:
     about_dataset = []
     for key in ["description", "creator", "author"]:
         if key in metadata and len(metadata[key]) > 0:
@@ -127,7 +127,7 @@ def get_dataset_schema(metadata) -> Container:
     )
 
 
-def get_dataset_reproduction(summary: dict):
+def get_dataset_reproduction(summary: dict) -> Renderable:
     version = summary["package"]["pandas_profiling_version"]
     config = quote(summary["package"]["pandas_profiling_config"])
     date_start = summary["analysis"]["date_start"]
@@ -160,7 +160,7 @@ def get_dataset_reproduction(summary: dict):
     )
 
 
-def get_dataset_column_definitions(definitions: dict):
+def get_dataset_column_definitions(definitions: dict) -> Container:
     """Generate an overview section for the variable description
 
     Args:

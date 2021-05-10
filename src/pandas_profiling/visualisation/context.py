@@ -1,5 +1,6 @@
 import contextlib
 import warnings
+from typing import Any
 
 import matplotlib
 import matplotlib.cbook
@@ -11,7 +12,7 @@ from pandas.plotting import (
 
 
 @contextlib.contextmanager
-def manage_matplotlib_context():
+def manage_matplotlib_context() -> Any:
     """Return a context manager for temporarily changing matplotlib unit registries and rcParams."""
     originalRcParams = matplotlib.rcParams.copy()
 

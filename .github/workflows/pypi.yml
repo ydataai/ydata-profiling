@@ -37,9 +37,11 @@ jobs:
     - name: Install
       run: make install
 
+    - name: Lint
+      run: make lint
+
     - name: Make distribution
       run: |
-        check-manifest
         python setup.py sdist bdist_wheel
         twine check dist/*
 

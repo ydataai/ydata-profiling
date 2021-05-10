@@ -7,7 +7,7 @@ from pandas_profiling.report.presentation.core.image import Image
 
 
 class WidgetImage(Image):
-    def render(self):
+    def render(self) -> widgets.Widget:
         image = self.content["image"]
         if self.content["image_format"] == ImageType.svg:
             image = image.replace("svg ", 'svg style="max-width: 100%" ')

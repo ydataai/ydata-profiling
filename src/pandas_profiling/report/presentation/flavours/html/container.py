@@ -3,7 +3,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLContainer(Container):
-    def render(self):
+    def render(self) -> str:
         if self.sequence_type in ["list", "accordion"]:
             return templates.template("sequence/list.html").render(
                 anchor_id=self.content["anchor_id"], items=self.content["items"]

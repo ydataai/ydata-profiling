@@ -2,7 +2,7 @@ import imghdr
 import os
 import warnings
 from functools import partial, wraps
-from typing import Callable
+from typing import Callable, Sequence, Set
 from urllib.parse import urlparse
 
 import pandas as pd
@@ -10,7 +10,7 @@ import visions
 from multimethod import multimethod
 from pandas.api import types as pdt
 from visions.backends.pandas.series_utils import series_not_empty
-from visions.relations import IdentityRelation, InferenceRelation
+from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.typeset_relations import (
@@ -45,7 +45,7 @@ def series_handle_nulls(fn: Callable[..., bool]) -> Callable[..., bool]:
     return inner
 
 
-def typeset_types(config):
+def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
     """Define types based on the config"""
 
     class Unsupported(visions.Generic):
@@ -53,7 +53,7 @@ def typeset_types(config):
 
     class Numeric(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             return [
                 IdentityRelation(Unsupported),
                 InferenceRelation(
@@ -74,7 +74,7 @@ def typeset_types(config):
 
     class DateTime(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             return [
                 IdentityRelation(Unsupported),
             ]
@@ -88,7 +88,7 @@ def typeset_types(config):
 
     class Categorical(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             return [
                 IdentityRelation(Unsupported),
                 InferenceRelation(
@@ -117,7 +117,7 @@ def typeset_types(config):
 
     class Boolean(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             # Numeric [0, 1] goes via Categorical with distinct_count_without_nan <= 2
             mapping = config.vars.bool.mappings
 
@@ -147,7 +147,7 @@ def typeset_types(config):
 
     class URL(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             return [IdentityRelation(Categorical)]
 
         @staticmethod
@@ -163,7 +163,7 @@ def typeset_types(config):
 
     class Path(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             return [IdentityRelation(Categorical)]
 
         @staticmethod
@@ -178,7 +178,7 @@ def typeset_types(config):
 
     class File(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             return [IdentityRelation(Path)]
 
         @staticmethod
@@ -189,7 +189,7 @@ def typeset_types(config):
 
     class Image(visions.VisionsBaseType):
         @staticmethod
-        def get_relations():
+        def get_relations() -> Sequence[TypeRelation]:
             return [IdentityRelation(File)]
 
         @staticmethod

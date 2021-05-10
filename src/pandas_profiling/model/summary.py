@@ -4,13 +4,16 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, Mapping, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
+from visions import VisionsTypeset
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.messages import (
+    Message,
     check_correlation_messages,
     check_table_messages,
     check_variable_messages,
@@ -26,12 +29,15 @@ from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
 def describe_1d(
-    config: Settings, series: pd.Series, summarizer: BaseSummarizer, typeset
+    config: Settings,
+    series: pd.Series,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
 ) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
-        config: Settings
+        config: report Settings object
         series: The Series to describe.
         summarizer: Summarizer object
         typeset: Typeset
@@ -56,7 +62,7 @@ def describe_1d(
     return summarizer.summarize(config, series, dtype=vtype)
 
 
-def sort_column_names(dct: Mapping, sort: Optional[str]):
+def sort_column_names(dct: dict, sort: Optional[str]) -> dict:
     if sort is None:
         return dct
 
@@ -70,8 +76,14 @@ def sort_column_names(dct: Mapping, sort: Optional[str]):
     return dct
 
 
-def get_series_descriptions(config: Settings, df, summarizer, typeset, pbar):
-    def multiprocess_1d(args) -> Tuple[str, dict]:
+def get_series_descriptions(
+    config: Settings,
+    df: pd.DataFrame,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+    pbar: tqdm,
+) -> dict:
+    def multiprocess_1d(args: tuple) -> Tuple[str, dict]:
         """Wrapper to process series in parallel.
 
         Args:
@@ -121,8 +133,9 @@ def get_table_stats(config: Settings, df: pd.DataFrame, variable_stats: dict) ->
     """General statistics for the DataFrame.
 
     Args:
-      df: The DataFrame to describe.
-      variable_stats: Previously calculated statistic on the DataFrame.
+        config: report Settings object
+        df: The DataFrame to describe.
+        variable_stats: Previously calculated statistic on the DataFrame.
 
     Returns:
         A dictionary that contains the table statistics.
@@ -177,7 +190,7 @@ def get_missing_diagrams(config: Settings, df: pd.DataFrame, table_stats: dict) 
     if len(df) == 0:
         return {}
 
-    def warn_missing(missing_name, error):
+    def warn_missing(missing_name: str, error: str) -> None:
         warnings.warn(
             f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
     To hide this warning, disable the calculation
@@ -187,7 +200,7 @@ def get_missing_diagrams(config: Settings, df: pd.DataFrame, table_stats: dict) 
     (include the error message: '{error}')"""
         )
 
-    def missing_diagram(name) -> Callable:
+    def missing_diagram(name: str) -> Callable:
         return {
             "bar": missing_bar,
             "matrix": missing_matrix,
@@ -240,12 +253,14 @@ def get_missing_diagrams(config: Settings, df: pd.DataFrame, table_stats: dict) 
                         "matrix": missing_diagram(name)(config, df),
                     }
             except ValueError as e:
-                warn_missing(name, e)
+                warn_missing(name, str(e))
 
     return missing
 
 
-def get_scatter_matrix(config: Settings, df, continuous_variables):
+def get_scatter_matrix(
+    config: Settings, df: pd.DataFrame, continuous_variables: list
+) -> dict:
     if not config.interactions.continuous:
         return {}
 
@@ -269,7 +284,9 @@ def get_scatter_matrix(config: Settings, df, continuous_variables):
     return scatter_matrix
 
 
-def get_messages(config: Settings, table_stats, series_description, correlations):
+def get_messages(
+    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+) -> List[Message]:
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():
         messages += check_variable_messages(config, col, description)

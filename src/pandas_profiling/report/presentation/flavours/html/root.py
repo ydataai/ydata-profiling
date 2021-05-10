@@ -3,7 +3,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLRoot(Root):
-    def render(self, **kwargs):
+    def render(self, **kwargs) -> str:
         nav_items = [
             (section.name, section.anchor_id)
             for section in self.content["body"].content["items"]

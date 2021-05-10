@@ -7,7 +7,7 @@ from pandas_profiling.report.structure.variables.render_categorical import (
 )
 
 
-def render_path(config: Settings, summary: dict):
+def render_path(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
     n_freq_table_max = config.n_freq_table_max
     redact = config.vars.cat.redact
