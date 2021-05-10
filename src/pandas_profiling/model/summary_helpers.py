@@ -4,6 +4,7 @@ from collections import Counter
 from datetime import datetime
 from functools import partial
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -19,7 +20,7 @@ from pandas_profiling.model.summary_helpers_image import (
 )
 
 
-def mad(arr):
+def mad(arr: np.ndarray) -> np.ndarray:
     """Median Absolute Deviation: a "Robust" version of standard deviation.
     Indices variability of the sample.
     https://en.wikipedia.org/wiki/Median_absolute_deviation
@@ -27,7 +28,7 @@ def mad(arr):
     return np.median(np.abs(arr - np.median(arr)))
 
 
-def named_aggregate_summary(series: pd.Series, key: str):
+def named_aggregate_summary(series: pd.Series, key: str) -> dict:
     summary = {
         f"max_{key}": np.max(series),
         f"mean_{key}": np.mean(series),
@@ -38,7 +39,7 @@ def named_aggregate_summary(series: pd.Series, key: str):
     return summary
 
 
-def length_summary(series: pd.Series, summary=None) -> dict:
+def length_summary(series: pd.Series, summary: dict = None) -> dict:
     if summary is None:
         summary = {}
 
@@ -63,7 +64,7 @@ def file_summary(series: pd.Series) -> dict:
     # Transform
     stats = series.map(lambda x: os.stat(x))
 
-    def convert_datetime(x):
+    def convert_datetime(x: float) -> str:
         return datetime.fromtimestamp(x).strftime("%Y-%m-%d %H:%M:%S")
 
     # Transform some more
@@ -337,21 +338,27 @@ def unicode_summary(series: pd.Series) -> dict:
 
 
 def histogram_compute(
-    config: Settings, finite_values, n_unique, name="histogram", weights=None
-):
+    config: Settings,
+    finite_values: np.ndarray,
+    n_unique: int,
+    name: str = "histogram",
+    weights: Optional[np.ndarray] = None,
+) -> dict:
     stats = {}
     bins = config.plot.histogram.bins
-    bins = "auto" if bins == 0 else min(bins, n_unique)
-    stats[name] = np.histogram(finite_values, bins=bins, weights=weights)
+    bins_arg = "auto" if bins == 0 else min(bins, n_unique)
+    stats[name] = np.histogram(finite_values, bins=bins_arg, weights=weights)
 
     max_bins = config.plot.histogram.max_bins
-    if bins == "auto" and len(stats[name][1]) > max_bins:
+    if bins_arg == "auto" and len(stats[name][1]) > max_bins:
         stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
 
     return stats
 
 
-def chi_square(values=None, histogram=None):
+def chi_square(
+    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
+) -> dict:
     if histogram is None:
         histogram, _ = np.histogram(values, bins="auto")
     return dict(chisquare(histogram)._asdict())

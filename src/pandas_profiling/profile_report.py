@@ -25,7 +25,6 @@ from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.report.presentation.core.renderable import Renderable
-from pandas_profiling.report.presentation.core import html
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
@@ -108,7 +107,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         self.df = df
         self.config = report_config
-        self._df_hash = -1
+        self._df_hash = None
         self._sample = sample
         self._typeset = typeset
         self._summarizer = summarizer
@@ -170,8 +169,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._description_set
 
     @property
-    def df_hash(self):
-        if self._df_hash == None and self.df is not None:
+    def df_hash(self) -> Optional[str]:
+        if self._df_hash is None and self.df is not None:
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 
@@ -447,7 +446,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return ""
 
     @staticmethod
-    def preprocess(df):
+    def preprocess(df: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the dataframe
 
         - Appends the index to the dataframe when it contains information

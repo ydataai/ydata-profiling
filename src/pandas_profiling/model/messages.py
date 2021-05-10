@@ -1,9 +1,10 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
 from enum import Enum, auto, unique
-from typing import Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
 import numpy as np
+import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import perform_check_correlation
@@ -62,6 +63,8 @@ class MessageType(Enum):
 class Message:
     """A message object (type, values, column)."""
 
+    _anchor_id: Optional[str] = None
+
     def __init__(
         self,
         message_type: MessageType,
@@ -78,15 +81,14 @@ class Message:
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self._anchor_id = None
 
     @property
-    def anchor_id(self):
+    def anchor_id(self) -> Optional[str]:
         if self._anchor_id is None:
-            self._anchor_id = hash(self.column_name)
+            self._anchor_id = str(hash(self.column_name))
         return self._anchor_id
 
-    def fmt(self):
+    def fmt(self) -> str:
         # TODO: render in template
         name = self.message_type.name.replace("_", " ")
         if name == "HIGH CORRELATION":
@@ -249,7 +251,7 @@ def supported_warnings(summary: dict) -> List[Message]:
     return messages
 
 
-def unsupported_warnings(summary):
+def unsupported_warnings(summary: Dict[str, Any]) -> List[Message]:
     messages = [
         Message(
             message_type=MessageType.UNSUPPORTED,
@@ -295,7 +297,7 @@ def check_variable_messages(
     return messages
 
 
-def check_correlation_messages(config: Settings, correlations):
+def check_correlation_messages(config: Settings, correlations: dict) -> List[Message]:
     messages = []
 
     for corr, matrix in correlations.items():
@@ -322,7 +324,7 @@ def warning_skewness(v: float, threshold: int) -> bool:
     return not np.isnan(v) and (v < (-1 * threshold) or v > threshold)
 
 
-def warning_type_date(series):
+def warning_type_date(series: pd.Series) -> bool:
     from dateutil.parser import ParserError, parse
 
     try:

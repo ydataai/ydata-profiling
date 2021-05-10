@@ -1,6 +1,7 @@
 import contextlib
 import functools
-from typing import Any, Callable, Optional, Tuple, TypeVar
+from typing import Any, Callable, Dict, Tuple, TypeVar
+from urllib.parse import urlsplit
 
 import numpy as np
 import pandas as pd
@@ -24,7 +25,9 @@ from pandas_profiling.model.summary_helpers import (
 
 def func_nullable_series_contains(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def inner(config, series: pd.Series, state={}, *args, **kwargs) -> bool:
+    def inner(
+        config: Settings, series: pd.Series, state: dict = {}, *args, **kwargs
+    ) -> bool:
         if series.hasnans:
             series = series.dropna()
             if series.empty:
@@ -178,7 +181,7 @@ def describe_generic(
     return config, series, summary
 
 
-def numeric_stats_pandas(series: pd.Series):
+def numeric_stats_pandas(series: pd.Series) -> Dict[str, Any]:
     return {
         "mean": series.mean(),
         "std": series.std(),
@@ -202,7 +205,9 @@ def func_nullable_series_contains(fn: Callable) -> Callable:
             if series.empty:
                 return False
 
-def numeric_stats_numpy(present_values, series, series_description):
+def numeric_stats_numpy(
+    present_values: np.ndarray, series: pd.Series, series_description: Dict[str, Any]
+) -> Dict[str, Any]:
     vc = series_description["value_counts_without_nan"]
     index_values = vc.index.values
     return {

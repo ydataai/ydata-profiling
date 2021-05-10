@@ -1,5 +1,5 @@
 from functools import reduce
-from typing import Callable, Dict, List
+from typing import Any, Callable, Dict, List, Sequence
 
 import networkx as nx
 from visions import VisionsTypeset
@@ -11,8 +11,8 @@ def compose(functions: Sequence[Callable]) -> Callable:
     :return: combined functions, e.g. [f(x), g(x)] -> g(f(x))
     """
 
-    def func(f: Callable, g: Callable):
-        def func2(*x):
+    def func(f: Callable, g: Callable) -> Callable:
+        def func2(*x) -> Any:
             res = g(*x)
             if type(res) == bool:
                 return f(*x)

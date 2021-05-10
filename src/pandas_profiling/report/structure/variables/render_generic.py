@@ -8,7 +8,7 @@ from pandas_profiling.report.presentation.core import (
 )
 
 
-def render_generic(config: Settings, summary: dict):
+def render_generic(config: Settings, summary: dict) -> dict:
     info = VariableInfo(
         anchor_id=summary["varid"],
         alerts=summary["alerts"],

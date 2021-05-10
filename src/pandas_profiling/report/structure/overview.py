@@ -85,7 +85,7 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
     )
 
 
-def get_dataset_schema(metadata) -> Container:
+def get_dataset_schema(metadata: dict) -> Container:
     about_dataset = []
     for key in ["description", "creator", "author"]:
         if key in metadata and len(metadata[key]) > 0:
