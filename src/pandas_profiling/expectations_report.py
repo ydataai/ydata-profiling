@@ -1,12 +1,18 @@
+from typing import Any, Optional
+
+import pandas as pd
+from visions import VisionsTypeset
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.utils.dataframe import slugify
 
 
-# Default handler
 class ExpectationHandler(Handler):
-    def __init__(self, typeset, *args, **kwargs):
+    """Default handler"""
+
+    def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
         mapping = {
             "Unsupported": [expectation_algorithms.generic_expectations],
             "Categorical": [expectation_algorithms.categorical_expectations],
@@ -23,18 +29,21 @@ class ExpectationHandler(Handler):
 
 class ExpectationsReport:
     config: Settings
-    typeset = None
-    df = None
+    df: Optional[pd.DataFrame] = None
+
+    @property
+    def typeset(self) -> Optional[VisionsTypeset]:
+        return None
 
     def to_expectation_suite(
         self,
-        suite_name=None,
-        data_context=None,
-        save_suite=True,
-        run_validation=True,
-        build_data_docs=True,
-        handler=None,
-    ):
+        suite_name: Optional[str] = None,
+        data_context: Optional[Any] = None,
+        save_suite: bool = True,
+        run_validation: bool = True,
+        build_data_docs: bool = True,
+        handler: Optional[Handler] = None,
+    ) -> Any:
         """
         All parameters default to True to make it easier to access the full functionality of Great Expectations out of
         the box.
@@ -77,7 +86,7 @@ class ExpectationsReport:
         batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
 
         # Obtain the profiling summary
-        summary = self.get_description()
+        summary = self.get_description()  # type: ignore
 
         # Dispatch to expectations per semantic variable type
         for name, variable_summary in summary["variables"].items():

@@ -5,7 +5,5 @@ pytest-cov
 pytest-benchmark~=3.4.1
 nbval
 pyarrow
-flake8
-check-manifest>=0.41
 twine>=3.1.1
 kaggle

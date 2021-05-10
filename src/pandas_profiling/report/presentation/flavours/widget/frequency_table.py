@@ -1,9 +1,13 @@
+from typing import List, Tuple
+
 from ipywidgets import GridspecLayout, VBox, widgets
 
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
 
 
-def get_table(items):
+def get_table(
+    items: List[Tuple[widgets.Label, widgets.FloatProgress, widgets.Label]]
+) -> VBox:
     table = GridspecLayout(len(items), 3)
     for row_id, (label, progress, count) in enumerate(items):
         table[row_id, 0] = label
@@ -14,7 +18,7 @@ def get_table(items):
 
 
 class WidgetFrequencyTable(FrequencyTable):
-    def render(self):
+    def render(self) -> VBox:
         items = []
 
         for row in self.content["rows"]:

@@ -13,12 +13,11 @@ from pandas_profiling.report.presentation.core import (
     Table,
     VariableInfo,
 )
-from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.structure.variables.render_common import render_common
 from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
-def render_real(config: Settings, summary: dict) -> Renderable:
+def render_real(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
     template_variables = render_common(config, summary)
     image_format = config.plot.image_format

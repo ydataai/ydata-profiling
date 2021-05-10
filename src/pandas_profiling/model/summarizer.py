@@ -1,8 +1,8 @@
-from typing import Type
+from typing import Any, Callable, Dict, List, Type
 
 import numpy as np
 import pandas as pd
-from visions import VisionsBaseType
+from visions import VisionsBaseType, VisionsTypeset
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.handler import Handler
@@ -41,8 +41,8 @@ class BaseSummarizer(Handler):
 class PandasProfilingSummarizer(BaseSummarizer):
     """The default Pandas Profiling summarizer"""
 
-    def __init__(self, typeset, *args, **kwargs):
-        summary_map = {
+    def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
+        summary_map: Dict[str, List[Callable]] = {
             "Unsupported": [
                 describe_counts,
                 describe_generic,
@@ -74,8 +74,8 @@ class PandasProfilingSummarizer(BaseSummarizer):
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
-def format_summary(summary):
-    def fmt(v):
+def format_summary(summary: dict) -> dict:
+    def fmt(v: Any) -> Any:
         if isinstance(v, dict):
             return {k: fmt(va) for k, va in v.items()}
         else:

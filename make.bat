@@ -17,7 +17,6 @@ IF "%1" == "test" (
     pytest tests/unit/
     pytest tests/issues/
     pytest --nbval tests/notebooks/
-    flake8 . --select=E9,F63,F7,F82 --show-source --statistics
     ECHO "Tests completed!"
     GOTO end
 )
@@ -34,16 +33,6 @@ IF "%1" == "examples" (
     )
 
     ECHO "Example runs completed!"
-    GOTO end
-)
-
-IF "%1" == "pypi_package" (
-    make install
-    check-manifest
-    python setup.py sdist bdist_wheel
-    twine check dist/*
-    twine upload --skip-existing dist/*
-    ECHO "PyPi package completed"
     GOTO end
 )
 

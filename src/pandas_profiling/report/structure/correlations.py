@@ -12,10 +12,11 @@ from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
 
 
-def get_correlation_items(config: Settings, summary) -> Optional[Renderable]:
+def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderable]:
     """Create the list of correlation items
 
     Args:
+        config: report Settings object
         summary: dict of correlations
 
     Returns:

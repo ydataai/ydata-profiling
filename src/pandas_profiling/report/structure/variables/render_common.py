@@ -5,7 +5,7 @@ from pandas_profiling.report.presentation.frequency_table_utils import (
 )
 
 
-def render_common(config: Settings, summary: dict):
+def render_common(config: Settings, summary: dict) -> dict:
     n_extreme_obs = config.n_extreme_obs
     n_freq_table_max = config.n_freq_table_max
 

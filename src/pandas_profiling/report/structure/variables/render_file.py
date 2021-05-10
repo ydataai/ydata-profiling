@@ -8,7 +8,7 @@ from pandas_profiling.report.structure.variables.render_path import render_path
 from pandas_profiling.visualisation.plot import histogram
 
 
-def render_file(config: Settings, summary: dict):
+def render_file(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
 
     template_variables = render_path(config, summary)

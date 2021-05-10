@@ -4,7 +4,7 @@ from pandas import DataFrame
 from pandas_profiling.profile_report import ProfileReport
 
 
-def profile_report(df, **kwargs) -> ProfileReport:
+def profile_report(df: DataFrame, **kwargs) -> ProfileReport:
     """Profile a DataFrame.
 
     Args:

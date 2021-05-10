@@ -4,7 +4,7 @@ from pandas_profiling.report.presentation.core import ToggleButton
 
 
 class WidgetToggleButton(ToggleButton):
-    def render(self):
+    def render(self) -> widgets.HBox:
         toggle = widgets.ToggleButton(description=self.content["text"])
         toggle.layout.width = "fit-content"
 

@@ -1,13 +1,13 @@
 """This file add the console interface to the package."""
 import argparse
 from pathlib import Path
-from typing import Union
+from typing import Any, List, Optional
 
 from pandas_profiling.__init__ import ProfileReport, __version__
 from pandas_profiling.utils.dataframe import read_pandas
 
 
-def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
+def parse_args(args: Optional[List[Any]] = None) -> argparse.Namespace:
     """Parse the command line arguments for the `pandas_profiling` binary.
 
     Args:
@@ -96,7 +96,7 @@ def parse_args(args: Union[list, None] = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def main(args=None) -> None:
+def main(args: Optional[List[Any]] = None) -> None:
     """Run the `pandas_profiling` package.
 
     Args:
@@ -104,8 +104,8 @@ def main(args=None) -> None:
     """
 
     # Parse the arguments
-    args = parse_args(args)
-    kwargs = vars(args)
+    parsed_args = parse_args(args)
+    kwargs = vars(parsed_args)
 
     input_file = Path(kwargs.pop("input_file"))
     output_file = kwargs.pop("output_file")

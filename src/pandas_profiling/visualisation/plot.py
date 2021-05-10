@@ -1,12 +1,12 @@
 """Plot functions for the profiling report."""
 import copy
-from typing import Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 
@@ -21,8 +21,8 @@ def _plot_histogram(
     series: np.ndarray,
     bins: Union[int, np.ndarray],
     figsize: tuple = (6, 4),
-    date=False,
-):
+    date: bool = False,
+) -> plt.Figure:
     """Plot an histogram from the data and return the AxesSubplot object.
 
     Args:
@@ -48,7 +48,7 @@ def _plot_histogram(
 
     if date:
 
-        def format_fn(tick_val, tick_pos):
+        def format_fn(tick_val: int, tick_pos: Any) -> str:
             return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
 
         plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
@@ -61,7 +61,10 @@ def _plot_histogram(
 
 @manage_matplotlib_context()
 def histogram(
-    config: Settings, series: np.ndarray, bins: Union[int, np.ndarray], date=False
+    config: Settings,
+    series: np.ndarray,
+    bins: Union[int, np.ndarray],
+    date: bool = False,
 ) -> str:
     """Plot an histogram of the data.
 
@@ -77,12 +80,15 @@ def histogram(
     plot = _plot_histogram(config, series, bins, date=date)
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
 def mini_histogram(
-    config: Settings, series: np.ndarray, bins: Union[int, np.ndarray], date=False
+    config: Settings,
+    series: np.ndarray,
+    bins: Union[int, np.ndarray],
+    date: bool = False,
 ) -> str:
     """Plot a small (mini) histogram of the data.
 
@@ -103,10 +109,12 @@ def mini_histogram(
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
 
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
-def get_cmap_half(cmap):
+def get_cmap_half(
+    cmap: Union[Colormap, LinearSegmentedColormap, ListedColormap]
+) -> LinearSegmentedColormap:
     """Get the upper half of the color map
 
     Args:
@@ -125,7 +133,7 @@ def get_cmap_half(cmap):
     return LinearSegmentedColormap.from_list("cmap_half", colors)
 
 
-def get_correlation_font_size(n_labels) -> Optional[int]:
+def get_correlation_font_size(n_labels: int) -> Optional[int]:
     """Dynamic label font sizes in correlation plots
 
     Args:
@@ -190,7 +198,7 @@ def correlation_matrix(config: Settings, data: pd.DataFrame, vmin: int = -1) -> 
     axes_cor.set_yticklabels(labels, fontsize=font_size)
     plt.subplots_adjust(bottom=0.2)
 
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
@@ -219,17 +227,20 @@ def scatter_complex(config: Settings, series: pd.Series) -> str:
     else:
         plt.scatter(series.real, series.imag, color=color)
 
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
-def scatter_series(config: Settings, series, x_label="Width", y_label="Height") -> str:
+def scatter_series(
+    config: Settings, series: pd.Series, x_label: str = "Width", y_label: str = "Height"
+) -> str:
     """Scatter plot (or hexbin plot) from one series of sequences with length 2
 
     Examples:
         >>> scatter_series(file_sizes, "Width", "Height")
 
     Args:
+        config: report Settings object
         series: the Series
         x_label: the label on the x-axis
         y_label: the label on the y-axis
@@ -248,11 +259,13 @@ def scatter_series(config: Settings, series, x_label="Width", y_label="Height") 
         plt.hexbin(*data, cmap=cmap)
     else:
         plt.scatter(*data, color=color)
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
-def scatter_pairwise(config: Settings, series1, series2, x_label, y_label) -> str:
+def scatter_pairwise(
+    config: Settings, series1: pd.Series, series2: pd.Series, x_label: str, y_label: str
+) -> str:
     """Scatter plot (or hexbin plot) from two series
 
     Examples:
@@ -280,21 +293,25 @@ def scatter_pairwise(config: Settings, series1, series2, x_label, y_label) -> st
         plt.hexbin(series1, series2, gridsize=15, cmap=cmap)
     else:
         plt.scatter(series1, series2, color=color)
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
-def pie_plot(config: Settings, data, legend_kws=None):
+def pie_plot(
+    config: Settings, data: pd.Series, legend_kws: Optional[dict] = None
+) -> str:
     if legend_kws is None:
         legend_kws = {}
 
-    def func(pct, allvals):
-        absolute = int(pct / 100.0 * np.sum(allvals))
-        return f"{pct:.1f}%\n({absolute:d})"
+    def make_autopct(values: pd.Series) -> Callable:
+        def my_autopct(pct: float) -> str:
+            total = np.sum(values)
+            val = int(round(pct * total / 100.0))
+            return f"{pct:.1f}%  ({val:d})"
 
-    wedges, _, _ = plt.pie(
-        data, autopct=lambda pct: func(pct, data), textprops={"color": "w"}
-    )
+        return my_autopct
+
+    wedges, _, _ = plt.pie(data, autopct=make_autopct(data), textprops={"color": "w"})
     plt.legend(wedges, data.index.values, **legend_kws)
 
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)

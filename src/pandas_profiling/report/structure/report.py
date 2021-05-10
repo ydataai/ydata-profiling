@@ -1,5 +1,5 @@
 """Generate the report."""
-from typing import List
+from typing import List, Sequence
 
 import pandas as pd
 from tqdm.auto import tqdm
@@ -22,10 +22,11 @@ from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.utils.dataframe import slugify
 
 
-def get_missing_items(config: Settings, summary) -> list:
+def get_missing_items(config: Settings, summary: dict) -> list:
     """Return the missing diagrams
 
     Args:
+        config: report Settings object
         summary: the dataframe summary
 
     Returns:
@@ -50,6 +51,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
     """Render the HTML for each of the variables in the DataFrame.
 
     Args:
+        config: report Settings object
         dataframe_summary: The statistics for each variable.
 
     Returns:
@@ -124,7 +126,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
     return templs
 
 
-def get_duplicates_items(duplicates: pd.DataFrame):
+def get_duplicates_items(duplicates: pd.DataFrame) -> Sequence[Renderable]:
     """Create the list of duplicates items
 
     Args:
@@ -145,7 +147,7 @@ def get_duplicates_items(duplicates: pd.DataFrame):
     return items
 
 
-def get_definition_items(definitions: pd.DataFrame):
+def get_definition_items(definitions: pd.DataFrame) -> Sequence[Renderable]:
     """Create the list of duplicates items
 
     Args:
@@ -166,7 +168,7 @@ def get_definition_items(definitions: pd.DataFrame):
     return items
 
 
-def get_sample_items(sample: dict):
+def get_sample_items(sample: dict) -> List[Sample]:
     """Create the list of sample items
 
     Args:
@@ -217,10 +219,11 @@ def get_scatter_matrix(config: Settings, scatter_matrix: dict) -> list:
     return titems
 
 
-def get_report_structure(config: Settings, summary: dict) -> Renderable:
+def get_report_structure(config: Settings, summary: dict) -> Root:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
+      config: report Settings object
       summary: Statistics to use for the overview, variables, correlations and missing values.
 
     Returns:

@@ -15,7 +15,6 @@ test:
 	pytest tests/unit/
 	pytest tests/issues/
 	pytest --nbval tests/notebooks/
-	flake8 . --select=E9,F63,F7,F82 --show-source --statistics
 	pandas_profiling -h
 
 test_cov:
@@ -26,13 +25,6 @@ test_cov:
 
 examples:
 	find ./examples -maxdepth 2 -type f -name "*.py" -execdir python {} \;
-
-pypi_package:
-	make install
-	check-manifest
-	python setup.py sdist bdist_wheel
-	twine check dist/*
-	twine upload --skip-existing dist/*
 
 install:
 	pip install -e .[notebook]
