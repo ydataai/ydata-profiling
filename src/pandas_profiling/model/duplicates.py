@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 import pandas as pd
 
@@ -6,11 +6,12 @@ from pandas_profiling.config import Settings
 
 
 def get_duplicates(
-    config: Settings, df: pd.DataFrame, supported_columns
+    config: Settings, df: pd.DataFrame, supported_columns: Sequence
 ) -> Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
+        config: report Settings object
         df: the Pandas DataFrame.
         supported_columns: the columns to consider
 

@@ -5,11 +5,13 @@ from typing import Optional
 
 import pandas as pd
 from tqdm.auto import tqdm
+from visions import VisionsTypeset
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import calculate_correlation
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
+from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.model.summary import (
     get_messages,
     get_missing_diagrams,
@@ -23,13 +25,14 @@ from pandas_profiling.version import __version__
 def describe(
     config: Settings,
     df: pd.DataFrame,
-    summarizer,
-    typeset,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
     sample: Optional[dict] = None,
 ) -> dict:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
+        config: report Settings object
         df: DataFrame.
         sample: optional, dict with custom sample
 

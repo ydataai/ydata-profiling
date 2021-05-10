@@ -34,10 +34,10 @@ def template(template_name: str) -> jinja2.Template:
     return jinja2_env.get_template(template_name)
 
 
-def create_html_assets(config: Settings, output_file):
+def create_html_assets(config: Settings, output_file: Path) -> None:
     theme = config.html.style.theme
 
-    path = output_file.with_name(config.html.assets_prefix)
+    path = output_file.with_name(str(config.html.assets_prefix))
     if path.is_dir():
         shutil.rmtree(path)
 

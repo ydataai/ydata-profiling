@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Callable, Union
 
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.core.renderable import Renderable
@@ -32,7 +32,7 @@ class Variable(ItemRenderer):
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -> None:
         obj.__class__ = cls
         if "top" in obj.content and obj.content["top"] is not None:
             flv(obj.content["top"])

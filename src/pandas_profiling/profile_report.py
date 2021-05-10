@@ -2,7 +2,7 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -22,6 +22,8 @@ from pandas_profiling.model.summarizer import (
 )
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
+from pandas_profiling.report.presentation.core import Root
+from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
@@ -104,7 +106,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         self.df = None
         self.config = report_config
-        self._df_hash = -1
+        self._df_hash = None
         self._sample = sample
         self._typeset = typeset
         self._summarizer = summarizer
@@ -117,7 +119,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             # Trigger building the report structure
             _ = self.report
 
-    def invalidate_cache(self, subset: Optional[str] = None):
+    def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.
 
         Args:
@@ -146,19 +148,19 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             self._description_set = None
 
     @property
-    def typeset(self):
+    def typeset(self) -> Optional[VisionsTypeset]:
         if self._typeset is None:
             self._typeset = ProfilingTypeSet(self.config)
         return self._typeset
 
     @property
-    def summarizer(self):
+    def summarizer(self) -> BaseSummarizer:
         if self._summarizer is None:
             self._summarizer = PandasProfilingSummarizer(self.typeset)
         return self._summarizer
 
     @property
-    def description_set(self):
+    def description_set(self) -> Dict[str, Any]:
         if self._description_set is None:
             self._description_set = describe_df(
                 self.config,
@@ -170,31 +172,31 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._description_set
 
     @property
-    def df_hash(self):
-        if self._df_hash == -1 and self.df is not None:
+    def df_hash(self) -> Optional[str]:
+        if self._df_hash is None and self.df is not None:
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 
     @property
-    def report(self):
+    def report(self) -> Root:
         if self._report is None:
             self._report = get_report_structure(self.config, self.description_set)
         return self._report
 
     @property
-    def html(self):
+    def html(self) -> str:
         if self._html is None:
             self._html = self._render_html()
         return self._html
 
     @property
-    def json(self):
+    def json(self) -> str:
         if self._json is None:
             self._json = self._render_json()
         return self._json
 
     @property
-    def widgets(self):
+    def widgets(self) -> Renderable:
         if self._widgets is None:
             self._widgets = self._render_widgets()
         return self._widgets
@@ -283,7 +285,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
                 webbrowser.open_new_tab(output_file.absolute().as_uri())
 
-    def _render_html(self):
+    def _render_html(self) -> str:
         from pandas_profiling.report.presentation.flavours import HTMLReport
 
         report = self.report
@@ -311,7 +313,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             pbar.update()
         return html
 
-    def _render_widgets(self):
+    def _render_widgets(self) -> Renderable:
         from pandas_profiling.report.presentation.flavours import WidgetReport
 
         report = self.report
@@ -326,8 +328,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             pbar.update()
         return widgets
 
-    def _render_json(self):
-        def encode_it(o):
+    def _render_json(self) -> str:
+        def encode_it(o: Any) -> Any:
             if isinstance(o, dict):
                 return {encode_it(k): encode_it(v) for k, v in o.items()}
             else:
@@ -378,7 +380,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         return self.json
 
-    def to_notebook_iframe(self):
+    def to_notebook_iframe(self) -> None:
         """Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is "src", this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
@@ -399,7 +401,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             warnings.simplefilter("ignore")
             display(get_notebook_iframe(self.config, self))
 
-    def to_widgets(self):
+    def to_widgets(self) -> None:
         """The ipython notebook widgets user interface."""
         try:
             from google.colab import files  # noqa: F401
@@ -415,16 +417,16 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         display(self.widgets)
 
-    def _repr_html_(self):
+    def _repr_html_(self) -> None:
         """The ipython notebook widgets user interface gets called by the jupyter notebook."""
         self.to_notebook_iframe()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
 
     @staticmethod
-    def preprocess(df):
+    def preprocess(df: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the dataframe
 
         - Appends the index to the dataframe when it contains information

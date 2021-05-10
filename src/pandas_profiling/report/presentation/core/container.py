@@ -1,4 +1,4 @@
-from typing import Any, Sequence
+from typing import Any, Callable, Optional, Sequence
 
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
@@ -8,10 +8,10 @@ class Container(Renderable):
         self,
         items: Sequence[Renderable],
         sequence_type: str,
-        nested=False,
-        name=None,
-        anchor_id=None,
-        classes=None,
+        nested: bool = False,
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
         **kwargs,
     ):
         args = {"items": items, "nested": nested}
@@ -38,7 +38,7 @@ class Container(Renderable):
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -> None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -> None:
         obj.__class__ = cls
         if "items" in obj.content:
             for item in obj.content["items"]:

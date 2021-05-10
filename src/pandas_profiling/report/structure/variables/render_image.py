@@ -13,7 +13,7 @@ from pandas_profiling.report.structure.variables.render_file import render_file
 from pandas_profiling.visualisation.plot import scatter_series
 
 
-def render_image(config: Settings, summary: dict):
+def render_image(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
     n_freq_table_max = config.n_freq_table_max
     redact = config.vars.cat.redact

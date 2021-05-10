@@ -1,3 +1,5 @@
+from typing import List
+
 from ipywidgets import widgets
 
 from pandas_profiling.report.presentation.core.frequency_table_small import (
@@ -6,11 +8,11 @@ from pandas_profiling.report.presentation.core.frequency_table_small import (
 
 
 class WidgetFrequencyTableSmall(FrequencyTableSmall):
-    def render(self):
+    def render(self) -> widgets.VBox:
         return frequency_table_nb(self.content["rows"])
 
 
-def frequency_table_nb(rows):
+def frequency_table_nb(rows: List[dict]) -> widgets.VBox:
     items = []
 
     for row in rows:

@@ -1,6 +1,9 @@
 import warnings
 from pathlib import Path
-from typing import Union
+from typing import TYPE_CHECKING, Optional, Union
+
+if TYPE_CHECKING:
+    from pandas_profiling.profile_report import ProfileReport
 
 from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.core import Root
@@ -10,12 +13,15 @@ from pandas_profiling.version import __version__
 class SerializeReport:
     """Extend the report to be able to dump and load reports."""
 
-    df_hash = None
     df = None
     config = None
-    _df_hash = None
+    _df_hash: Optional[str] = None
     _report = None
     _description_set = None
+
+    @property
+    def df_hash(self) -> Optional[str]:
+        return None
 
     def dumps(self) -> bytes:
         """
@@ -36,7 +42,7 @@ class SerializeReport:
             ]
         )
 
-    def loads(self, data: bytes):
+    def loads(self, data: bytes) -> Union["ProfileReport", "SerializeReport"]:
         """
         Deserialize the serialized report
 
@@ -110,7 +116,7 @@ class SerializeReport:
             raise ValueError("DataFrame does not match with the current ProfileReport.")
         return self
 
-    def dump(self, output_file: Union[Path, str]):
+    def dump(self, output_file: Union[Path, str]) -> None:
         """
         Dump ProfileReport to file
         """
@@ -120,7 +126,9 @@ class SerializeReport:
         output_file = output_file.with_suffix(".pp")
         output_file.write_bytes(self.dumps())
 
-    def load(self, load_file: Union[Path, str]):
+    def load(
+        self, load_file: Union[Path, str]
+    ) -> Union["ProfileReport", "SerializeReport"]:
         """
         Load ProfileReport from file
 
