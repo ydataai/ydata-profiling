@@ -2,7 +2,7 @@ from pandas_profiling.report.presentation.core.alerts import Alerts
 from pandas_profiling.report.presentation.flavours.html import templates
 
 
-class HTMLAlerts(Alerts):
+class HTMLWarnings(Warnings):
     def render(self) -> str:
         styles = {
             "constant": "warning",

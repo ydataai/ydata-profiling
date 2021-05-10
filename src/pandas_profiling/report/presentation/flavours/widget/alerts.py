@@ -11,7 +11,7 @@ def get_row(items: List[widgets.Widget]) -> widgets.GridBox:
     return widgets.GridBox(items, layout=layout)
 
 
-class WidgetAlerts(Alerts):
+class WidgetWarnings(Warnings):
     def render(self) -> widgets.GridBox:
         styles = {
             "constant": "warning",

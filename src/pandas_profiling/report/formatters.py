@@ -1,9 +1,9 @@
 """Formatters are mappings from object(s) to a string."""
 import decimal
 import math
-import numbers
 import re
 from datetime import timedelta
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 from jinja2.utils import escape
@@ -78,7 +78,7 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
     # Author: Peter Odding <peter@peterodding.com>
     # URL: https://humanfriendly.readthedocs.io
 
-    time_units = [
+    time_units: List[Dict[str, Any]] = [
         {
             "divider": 1e-9,
             "singular": "nanosecond",
@@ -135,7 +135,7 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
         },
     ]
 
-    def round_number(count, keep_width=False):
+    def round_number(count: Any, keep_width: bool = False) -> str:
         text = f"{float(count):.2f}"
         if not keep_width:
             text = re.sub("0+$", "", text)
@@ -145,9 +145,7 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
     def coerce_seconds(value: Union[timedelta, int, float]) -> float:
         if isinstance(value, timedelta):
             return value.total_seconds()
-        if not isinstance(value, numbers.Number):
-            raise ValueError(f"Failed to coerce value to number of seconds! ({value})")
-        return value
+        return float(value)
 
     def concatenate(items: List[str]) -> str:
         items = list(items)
@@ -293,5 +291,5 @@ def help(title: str, url: Optional[str] = None) -> str:
         return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
 
 
-def fmt_badge(value) -> str:
+def fmt_badge(value: str) -> str:
     return re.sub(r"\((\d+)\)", r'<span class="badge">\1</span>', value)

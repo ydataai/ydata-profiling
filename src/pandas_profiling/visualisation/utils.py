@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Tuple, Union
 from urllib.parse import quote
 
+import matplotlib.pyplot as plt
+
 from pandas_profiling.config import Settings
 
 
@@ -40,9 +42,7 @@ def base64_image(image: bytes, mime_type: str) -> str:
     return f"data:{mime_type};base64,{image_data}"
 
 
-def plot_360_n0sc0pe(
-    config: Settings, plt, image_format: Union[str, None] = None, attempts=0
-) -> str:
+def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -> str:
     """Quickscope the plot to a base64 encoded string.
 
     Args:

@@ -11,7 +11,7 @@ from pandas_profiling.report.presentation.frequency_table_utils import freq_tabl
 from pandas_profiling.report.structure.variables.render_common import render_common
 
 
-def render_url(config: Settings, summary):
+def render_url(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
     n_freq_table_max = config.n_freq_table_max
 

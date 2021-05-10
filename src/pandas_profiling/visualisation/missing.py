@@ -53,7 +53,7 @@ def missing_matrix(config: Settings, data: pd.DataFrame) -> str:
         labels=config.plot.missing.force_labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
@@ -78,7 +78,7 @@ def missing_bar(config: Settings, data: pd.DataFrame) -> str:
         ax0.grid(False)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.8, bottom=0.3)
 
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
@@ -115,7 +115,7 @@ def missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
     else:
         plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
 
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
@@ -132,4 +132,4 @@ def missing_dendrogram(config: Settings, data: pd.DataFrame) -> str:
     """
     missingno.dendrogram(data, fontsize=get_font_size(data) * 2.0)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
-    return plot_360_n0sc0pe(config, plt)
+    return plot_360_n0sc0pe(config)

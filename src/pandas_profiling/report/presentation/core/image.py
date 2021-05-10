@@ -11,11 +11,8 @@ class Image(ItemRenderer):
         image_format: ImageType,
         alt: str,
         caption: Optional[str] = None,
-        **kwargs,
+        **kwargs
     ):
-        if image is None:
-            raise ValueError(f"Image may not be None (alt={alt}, caption={caption})")
-
         super().__init__(
             "image",
             {

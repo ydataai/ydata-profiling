@@ -2,6 +2,9 @@ import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
+if TYPE_CHECKING:
+    from pandas_profiling.profile_report import ProfileReport
+
 from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.version import __version__
@@ -12,9 +15,13 @@ class SerializeReport:
 
     df = None
     config = None
-    _df_hash = None
+    _df_hash: Optional[str] = None
     _report = None
     _description_set = None
+
+    @property
+    def df_hash(self) -> Optional[str]:
+        return None
 
     def dumps(self) -> bytes:
         """
@@ -35,7 +42,7 @@ class SerializeReport:
             ]
         )
 
-    def loads(self, data: bytes):
+    def loads(self, data: bytes) -> Union["ProfileReport", "SerializeReport"]:
         """
         Deserialize the serialized report
 
@@ -119,7 +126,9 @@ class SerializeReport:
         output_file = output_file.with_suffix(".pp")
         output_file.write_bytes(self.dumps())
 
-    def load(self, load_file: Union[Path, str]):
+    def load(
+        self, load_file: Union[Path, str]
+    ) -> Union["ProfileReport", "SerializeReport"]:
         """
         Load ProfileReport from file
 

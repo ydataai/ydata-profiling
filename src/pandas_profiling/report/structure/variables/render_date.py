@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from pandas_profiling.config import Settings
 from pandas_profiling.report.formatters import fmt, fmt_bytesize, fmt_percent
 from pandas_profiling.report.presentation.core import (
@@ -9,7 +11,7 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.visualisation.plot import histogram, mini_histogram
 
 
-def render_date(config: Settings, summary):
+def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
     varid = summary["varid"]
     template_variables = {}
 

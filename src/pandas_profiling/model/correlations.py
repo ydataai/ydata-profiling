@@ -12,31 +12,41 @@ from pandas_profiling.config import Settings
 
 class Correlation:
     @staticmethod
-    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -> Optional[pd.DataFrame]:
         raise NotImplementedError()
 
 
 class Spearman(Correlation):
     @staticmethod
-    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -> Optional[pd.DataFrame]:
         return df.corr(method="spearman")
 
 
 class Pearson(Correlation):
     @staticmethod
-    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -> Optional[pd.DataFrame]:
         return df.corr(method="pearson")
 
 
 class Kendall(Correlation):
     @staticmethod
-    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -> Optional[pd.DataFrame]:
         return df.corr(method="kendall")
 
 
 class Cramers(Correlation):
     @staticmethod
-    def _cramers_corrected_stat(confusion_matrix, correction: bool) -> float:
+    def _cramers_corrected_stat(
+        confusion_matrix: pd.DataFrame, correction: bool
+    ) -> float:
         """Calculate the Cramer's V corrected stat for two variables.
 
         Args:
@@ -65,7 +75,9 @@ class Cramers(Correlation):
         return corr
 
     @staticmethod
-    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -> Optional[pd.DataFrame]:
         threshold = config.categorical_maximum_correlation_distinct
 
         categoricals = {
@@ -97,7 +109,9 @@ class Cramers(Correlation):
 
 class PhiK(Correlation):
     @staticmethod
-    def compute(config: Settings, df, summary) -> Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -> Optional[pd.DataFrame]:
         threshold = config.categorical_maximum_correlation_distinct
         intcols = {
             key
@@ -127,7 +141,7 @@ class PhiK(Correlation):
         return correlation
 
 
-def warn_correlation(correlation_name: str, error):
+def warn_correlation(correlation_name: str, error: str) -> None:
     warnings.warn(
         f"""There was an attempt to calculate the {correlation_name} correlation, but this failed.
 To hide this warning, disable the calculation

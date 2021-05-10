@@ -3,7 +3,7 @@ import re
 import unicodedata
 import warnings
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import joblib
 import pandas as pd

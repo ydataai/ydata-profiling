@@ -2,7 +2,7 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -106,7 +106,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         self.df = None
         self.config = report_config
-        self._df_hash = -1
+        self._df_hash = None
         self._sample = sample
         self._typeset = typeset
         self._summarizer = summarizer
@@ -119,7 +119,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             # Trigger building the report structure
             _ = self.report
 
-    def invalidate_cache(self, subset: Optional[str] = None):
+    def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.
 
         Args:
@@ -172,8 +172,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._description_set
 
     @property
-    def df_hash(self):
-        if self._df_hash == -1 and self.df is not None:
+    def df_hash(self) -> Optional[str]:
+        if self._df_hash is None and self.df is not None:
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 
@@ -449,7 +449,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return ""
 
     @staticmethod
-    def preprocess(df):
+    def preprocess(df: pd.DataFrame) -> pd.DataFrame:
         """Preprocess the dataframe
 
         - Appends the index to the dataframe when it contains information

@@ -6,6 +6,7 @@ import pandas as pd
 from pandas.api import types as pdt
 from visions.backends.pandas.series_utils import series_handle_nulls
 
+from pandas_profiling.config import Settings
 
 def is_nullable(series: pd.Series, state: dict) -> bool:
     return series.count() > 0
@@ -22,7 +23,7 @@ def try_func(fn: Callable) -> Callable:
     return inner
 
 
-def string_is_bool(series, state, k) -> bool:
+def string_is_bool(series: pd.Series, state: dict, k: Settings) -> bool:
     @series_handle_nulls
     @try_func
     def tester(s: pd.Series, state: dict) -> bool:
@@ -34,11 +35,11 @@ def string_is_bool(series, state, k) -> bool:
     return tester(series, state)
 
 
-def string_to_bool(series, state, k):
+def string_to_bool(series: pd.Series, state: dict, k: Settings) -> pd.Series:
     return series.str.lower().map(k)
 
 
-def numeric_is_category(series, state, k):
+def numeric_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
     n_unique = series.nunique()
     threshold = k.vars.num.low_categorical_threshold
     return 1 <= n_unique <= threshold
@@ -66,7 +67,7 @@ def series_is_string(series: pd.Series, state: dict) -> bool:
 
 
 @series_handle_nulls
-def category_is_numeric(series, state, k=None):
+def category_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
     if pdt.is_bool_dtype(series) or object_is_bool(series, state):
         return False
 
