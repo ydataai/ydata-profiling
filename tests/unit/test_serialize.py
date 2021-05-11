@@ -42,6 +42,7 @@ def test_load(get_data_file, test_output_dir):
         samples={"head": 5, "tail": 5},
         duplicates={"head": 10},
         minimal=True,
+        progress_bar=False,
     )
 
     test_output_path = test_output_dir / "NASA-Meteorites.pp"
@@ -51,7 +52,7 @@ def test_load(get_data_file, test_output_dir):
 
     assert test_output_path.exists(), "Output file does not exist"
 
-    profile2 = ProfileReport(df).load(test_output_path)
+    profile2 = ProfileReport(df, progress_bar=False).load(test_output_path)
     # json1 are compute before dumps, so _description_set should be the same
     assert isinstance(profile2._description_set, dict)
 
@@ -72,15 +73,17 @@ def test_load_error():
     df = pd.DataFrame(
         {"a": [1, 2, 3, 1, 1, 1], "b": [1, 2, 3, 4, 5, 6], "c": [1, 2, 3, 4, 5, 6]}
     )
-    profile1 = ProfileReport(df, minimal=True)
+    profile1 = ProfileReport(df, minimal=True, progress_bar=False)
 
     data = profile1.dumps()
 
     # config not match but ignore_config
-    ProfileReport(df, minimal=False).loads(data)
+    ProfileReport(df, minimal=False, progress_bar=False).loads(data)
 
     # df not match
     with pytest.raises(ValueError) as e:
-        ProfileReport(df=df[["a", "b"]][:], minimal=True).loads(data)
+        ProfileReport(df=df[["a", "b"]][:], minimal=True, progress_bar=False).loads(
+            data
+        )
 
     assert str(e.value) == "DataFrame does not match with the current ProfileReport."
