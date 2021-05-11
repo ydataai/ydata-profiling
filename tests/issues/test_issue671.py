@@ -13,6 +13,9 @@ def test_issue671():
 
     for i in range(0, 10):
         profile = ProfileReport(
-            test, vars={"num": {"low_categorical_threshold": i}}, progress_bar=False
+            test,
+            vars={"num": {"low_categorical_threshold": i}},
+            progress_bar=False,
+            pool_size=1,
         )
         assert len(profile.to_html()) > 0

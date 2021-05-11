@@ -69,9 +69,10 @@ def histogram(
     """Plot an histogram of the data.
 
     Args:
-      config: Settings
-      series: The data to plot.
-      bins: number of bins (int for equal size, ndarray for variable size)
+        config: Settings
+        series: The data to plot.
+        bins: number of bins (int for equal size, ndarray for variable size)
+        date: is histogram of date(time)?
 
     Returns:
       The resulting histogram encoded as a string.
@@ -288,11 +289,12 @@ def scatter_pairwise(
 
     color = config.html.style.primary_color
 
+    indices = (series1.notna()) & (series2.notna())
     if len(series1) > config.plot.scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
-        plt.hexbin(series1, series2, gridsize=15, cmap=cmap)
+        plt.hexbin(series1[indices], series2[indices], gridsize=15, cmap=cmap)
     else:
-        plt.scatter(series1, series2, color=color)
+        plt.scatter(series1[indices], series2[indices], color=color)
     return plot_360_n0sc0pe(config)
 
 

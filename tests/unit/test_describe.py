@@ -579,5 +579,5 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
 def test_describe_list(summarizer, typeset):
     config = Settings()
 
-    with pytest.raises(AttributeError), pytest.warns(UserWarning):
+    with pytest.raises(NotImplementedError):
         describe(config, "", [1, 2, 3], summarizer, typeset)

@@ -135,8 +135,6 @@ def check_table_messages(table: dict) -> List[Message]:
 def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
     messages = []
 
-    chi_squared_threshold_num = config.vars.num.chi_squared_threshold
-
     # Skewness
     if warning_skewness(summary["skewness"], config.vars.num.skewness_threshold):
         messages.append(
@@ -166,7 +164,7 @@ def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
 
     if (
         "chi_squared" in summary
-        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_num
+        and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
     ):
         messages.append(Message(message_type=MessageType.UNIFORM))
 
@@ -176,11 +174,8 @@ def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
 def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
     messages = []
 
-    cardinality_threshold_cat = config.vars.cat.cardinality_threshold
-    chi_squared_threshold_cat = config.vars.cat.chi_squared_threshold
-
     # High cardinality
-    if summary.get("n_distinct", np.nan) > cardinality_threshold_cat:
+    if summary.get("n_distinct", np.nan) > config.vars.cat.cardinality_threshold:
         messages.append(
             Message(
                 message_type=MessageType.HIGH_CARDINALITY,
@@ -190,7 +185,7 @@ def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
 
     if (
         "chi_squared" in summary
-        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_cat
+        and summary["chi_squared"]["pvalue"] > config.vars.cat.chi_squared_threshold
     ):
         messages.append(Message(message_type=MessageType.UNIFORM))
 

@@ -1,46 +1,37 @@
 from typing import List, Optional, TypeVar
 
-import pandas as pd
+from multimethod import multimethod
 from pydantic.main import BaseModel
 
 from pandas_profiling.config import Settings
 
-PandasDataFrame = TypeVar("pandas.core.frame.DataFrame")  # type: ignore
+T = TypeVar("T")  # type: ignore
 
 
 class Sample(BaseModel):
     id: str
-    data: PandasDataFrame  # type: ignore
+    data: T  # type: ignore
     name: str
     caption: Optional[str] = None
 
 
-def get_sample(config: Settings, df: pd.DataFrame) -> List[Sample]:
-    """Obtains a sample from head and tail of the DataFrame
+@multimethod
+def get_sample(config: Settings, df: T) -> List[Sample]:
+    raise NotImplementedError()
 
-    Args:
-        config: Settings object
-        df: the pandas DataFrame
 
-    Returns:
-        a list of Sample objects
-    """
-    samples: List[Sample] = []
-    if len(df) == 0:
-        return samples
+def get_custom_sample(sample: dict) -> List[Sample]:
+    if "name" not in sample:
+        sample["name"] = None
+    if "caption" not in sample:
+        sample["caption"] = None
 
-    n_head = config.samples.head
-    if n_head > 0:
-        samples.append(Sample(id="head", data=df.head(n=n_head), name="First rows"))
-
-    n_tail = config.samples.tail
-    if n_tail > 0:
-        samples.append(Sample(id="tail", data=df.tail(n=n_tail), name="Last rows"))
-
-    n_random = config.samples.random
-    if n_random > 0:
-        samples.append(
-            Sample(id="random", data=df.sample(n=n_random), name="Random sample")
+    samples = [
+        Sample(
+            id="custom",
+            data=sample["data"],
+            name=sample["name"],
+            caption=sample["caption"],
         )
-
+    ]
     return samples

@@ -188,6 +188,7 @@ def get_scatter_matrix(config: Settings, scatter_matrix: dict) -> list:
     """Returns the interaction components for the report
 
     Args:
+        config: report Settings object
         scatter_matrix: a nested dict containing the scatter plots
 
     Returns:
