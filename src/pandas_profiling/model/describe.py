@@ -7,13 +7,13 @@ from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.alerts import get_alerts
 from pandas_profiling.model.correlations import (
     calculate_correlation,
     get_active_correlations,
 )
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.model.duplicates import get_duplicates
-from pandas_profiling.model.messages import get_messages
 from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
 from pandas_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
 from pandas_profiling.model.sample import get_custom_sample, get_sample
@@ -46,7 +46,7 @@ def describe(
             - variables: descriptions per series.
             - correlations: correlation matrices.
             - missing: missing value diagrams.
-            - messages: direct special attention to these patterns in your data.
+            - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
 
@@ -94,7 +94,7 @@ def describe(
 
         correlations = {
             correlation_name: progress(
-                calculate_correlation, pbar, f"Compute correlation: {correlation_name}"
+                calculate_correlation, pbar, f"Calculate {correlation_name} correlation"
             )(config, df, correlation_name, series_description)
             for correlation_name in correlation_names
         }
@@ -105,7 +105,7 @@ def describe(
         }
 
         # Scatter matrix
-        pbar.set_postfix_str("Get pairwise plots")
+        pbar.set_postfix_str("Get scatter matrix")
         scatter_tasks = get_scatter_tasks(config, interval_columns)
         pbar.total += len(scatter_tasks)
         scatter_matrix: Dict[Any, Dict[Any, Any]] = {
@@ -113,7 +113,7 @@ def describe(
         }
         for x, y in scatter_tasks:
             scatter_matrix[x][y] = progress(
-                get_scatter_plot, pbar, f"Pairwise plot: {x} x {y}"
+                get_scatter_plot, pbar, f"scatter {x}, {y}"
             )(config, df, x, y, interval_columns)
 
         # Table statistics
@@ -125,7 +125,7 @@ def describe(
         missing_map = get_missing_active(config, table_stats)
         pbar.total += len(missing_map)
         missing = {
-            name: progress(get_missing_diagram, pbar, f"Missing diagram: {name}")(
+            name: progress(get_missing_diagram, pbar, f"Missing diagram {name}")(
                 config, df, settings
             )
             for name, settings in missing_map.items()
@@ -146,7 +146,7 @@ def describe(
         )
         table_stats.update(metrics)
 
-        messages = progress(get_messages, pbar, "Get messages/warnings")(
+        alerts = progress(get_alerts, pbar, "Get alerts")(
             config, table_stats, series_description, correlations
         )
 
@@ -181,8 +181,8 @@ def describe(
         "correlations": correlations,
         # Missing values
         "missing": missing,
-        # Warnings
-        "messages": messages,
+        # Alerts
+        "alerts": alerts,
         # Package
         "package": package,
         # Sample

@@ -19,7 +19,7 @@ def test_json(data):
         "analysis",
         "correlations",
         "duplicates",
-        "messages",
+        "alerts",
         "missing",
         "package",
         "sample",

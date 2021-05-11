@@ -1,3 +1,4 @@
+from pandas_profiling.report.presentation.flavours.html.alerts import HTMLAlerts
 from pandas_profiling.report.presentation.flavours.html.collapse import HTMLCollapse
 from pandas_profiling.report.presentation.flavours.html.container import HTMLContainer
 from pandas_profiling.report.presentation.flavours.html.duplicate import HTMLDuplicate
@@ -19,7 +20,6 @@ from pandas_profiling.report.presentation.flavours.html.variable import HTMLVari
 from pandas_profiling.report.presentation.flavours.html.variable_info import (
     HTMLVariableInfo,
 )
-from pandas_profiling.report.presentation.flavours.html.warnings import HTMLWarnings
 
 __all__ = [
     "HTMLCollapse",
@@ -35,5 +35,5 @@ __all__ = [
     "HTMLToggleButton",
     "HTMLVariable",
     "HTMLVariableInfo",
-    "HTMLWarnings",
+    "HTMLAlerts",
 ]

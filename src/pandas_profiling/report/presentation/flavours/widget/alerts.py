@@ -2,7 +2,7 @@ from typing import List
 
 from ipywidgets import HTML, Button, widgets
 
-from pandas_profiling.report.presentation.core import Warnings
+from pandas_profiling.report.presentation.core import Alerts
 from pandas_profiling.report.presentation.flavours.html import templates
 
 
@@ -11,7 +11,7 @@ def get_row(items: List[widgets.Widget]) -> widgets.GridBox:
     return widgets.GridBox(items, layout=layout)
 
 
-class WidgetWarnings(Warnings):
+class WidgetAlerts(Alerts):
     def render(self) -> widgets.GridBox:
         styles = {
             "constant": "warning",
@@ -31,15 +31,15 @@ class WidgetWarnings(Warnings):
         }
 
         items = []
-        for message in self.content["warnings"]:
-            type_name = message.message_type.name.lower()
+        for alert in self.content["alerts"]:
+            type_name = alert.alert_type.name.lower()
             if type_name == "rejected":
                 continue
 
             items.append(
                 HTML(
-                    templates.template(f"warnings/warning_{type_name}.html").render(
-                        message=message
+                    templates.template(f"alerts/alert_{type_name}.html").render(
+                        alert=alert
                     )
                 )
             )

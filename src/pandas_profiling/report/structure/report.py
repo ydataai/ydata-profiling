@@ -5,8 +5,8 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.handler import get_render_map
-from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -68,31 +68,31 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
 
     for idx, summary in dataframe_summary["variables"].items():
         # Common template variables
-        warnings = [
-            warning.fmt()
-            for warning in dataframe_summary["messages"]
-            if warning.column_name == idx
+        alerts = [
+            alert.fmt()
+            for alert in dataframe_summary["alerts"]
+            if alert.column_name == idx
         ]
 
-        warning_fields = {
+        alert_fields = {
             field
-            for warning in dataframe_summary["messages"]
-            if warning.column_name == idx
-            for field in warning.fields
+            for alert in dataframe_summary["alerts"]
+            if alert.column_name == idx
+            for field in alert.fields
         }
 
-        warning_types = {
-            warning.message_type
-            for warning in dataframe_summary["messages"]
-            if warning.column_name == idx
+        alert_types = {
+            alert.alert_type
+            for alert in dataframe_summary["alerts"]
+            if alert.column_name == idx
         }
 
         template_variables = {
             "varname": idx,
             "varid": hash(idx),
-            "warnings": warnings,
+            "alerts": alerts,
             "description": descriptions.get(idx, "") if show_description else "",
-            "warn_fields": warning_fields,
+            "alert_fields": alert_fields,
         }
 
         template_variables.update(summary)
@@ -104,7 +104,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
 
         # Ignore these
         if reject_variables:
-            ignore = MessageType.REJECTED in warning_types
+            ignore = AlertType.REJECTED in alert_types
         else:
             ignore = False
 
@@ -234,11 +234,11 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
     with tqdm(
         total=1, desc="Generate report structure", disable=disable_progress_bar
     ) as pbar:
-        warnings = summary["messages"]
+        alerts = summary["alerts"]
 
         section_items: List[Renderable] = [
             Container(
-                get_dataset_items(config, summary, warnings),
+                get_dataset_items(config, summary, alerts),
                 sequence_type="tabs",
                 name="Overview",
                 anchor_id="overview",

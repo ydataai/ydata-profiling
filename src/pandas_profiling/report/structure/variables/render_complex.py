@@ -25,7 +25,7 @@ def render_complex(config: Settings, summary: dict) -> dict:
         summary["varid"],
         summary["varname"],
         "Complex number (&Copf;)",
-        summary["warnings"],
+        summary["alerts"],
         summary["description"],
     )
 

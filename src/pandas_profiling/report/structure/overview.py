@@ -2,7 +2,7 @@ from typing import List
 from urllib.parse import quote
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.messages import MessageType
+from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.report.formatters import (
     fmt,
     fmt_bytesize,
@@ -11,7 +11,7 @@ from pandas_profiling.report.formatters import (
     fmt_percent,
     fmt_timespan,
 )
-from pandas_profiling.report.presentation.core import Container, Table, Warnings
+from pandas_profiling.report.presentation.core import Alerts, Container, Table
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
@@ -189,26 +189,20 @@ def get_dataset_column_definitions(definitions: dict) -> Container:
     )
 
 
-def get_dataset_warnings(warnings: list) -> Warnings:
-    count = len(
-        [
-            warning
-            for warning in warnings
-            if warning.message_type != MessageType.REJECTED
-        ]
-    )
-    return Warnings(warnings=warnings, name=f"Warnings ({count})", anchor_id="warnings")
+def get_dataset_alerts(alerts: list) -> Alerts:
+    count = len([alert for alert in alerts if alert.alert_type != AlertType.REJECTED])
+    return Alerts(alerts=alerts, name=f"Alerts ({count})", anchor_id="alerts")
 
 
-def get_dataset_items(config: Settings, summary: dict, warnings: list) -> list:
+def get_dataset_items(config: Settings, summary: dict, alerts: list) -> list:
     """Returns the dataset overview (at the top of the report)
 
     Args:
         summary: the calculated summary
-        warnings: the warnings
+        alerts: the alerts
 
     Returns:
-        A list with components for the dataset overview (overview, reproduction, warnings)
+        A list with components for the dataset overview (overview, reproduction, alerts)
     """
 
     items: List[Renderable] = [get_dataset_overview(config, summary)]
@@ -226,8 +220,8 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -> list:
     if len(column_details) > 0:
         items.append(get_dataset_column_definitions(column_details))
 
-    if warnings:
-        items.append(get_dataset_warnings(warnings))
+    if alerts:
+        items.append(get_dataset_alerts(alerts))
 
     items.append(get_dataset_reproduction(summary))
 

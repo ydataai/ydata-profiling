@@ -12,8 +12,8 @@ from visions import VisionsTypeset
 
 from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
+from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.model.messages import MessageType
 from pandas_profiling.model.sample import Sample
 from pandas_profiling.model.summarizer import (
     BaseSummarizer,
@@ -228,9 +228,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             a set of column names that are unsupported
         """
         return {
-            message.column_name
-            for message in self.description_set["messages"]
-            if message.message_type == MessageType.REJECTED
+            alert.column_name
+            for alert in self.description_set["alerts"]
+            if alert.alert_type == AlertType.REJECTED
         }
 
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -> None:

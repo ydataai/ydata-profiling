@@ -2,8 +2,8 @@
         href="#pp_var_{{ anchor_id }}">{{ var_name }}</a><br/>
     <small>{{ var_type }}</small>
 </p>
-{% for warning in warnings %}
-    <code>{{ warning }}</code><br />
+{% for alert in alerts %}
+    <code>{{ alert }}</code><br />
 {% endfor %}
 <p class="variable-description">
     {{ description }}
