@@ -26,7 +26,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any, Union
+<pre><code class="python">from typing import Any, Callable, Union
 
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.core.renderable import Renderable
@@ -60,7 +60,7 @@ class Variable(ItemRenderer):
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;top&#34; in obj.content and obj.content[&#34;top&#34;] is not None:
             flv(obj.content[&#34;top&#34;])
@@ -116,7 +116,7 @@ inheritance.</p></div>
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;top&#34; in obj.content and obj.content[&#34;top&#34;] is not None:
             flv(obj.content[&#34;top&#34;])
@@ -137,7 +137,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.variable.Variable.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv)</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -146,7 +146,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv):
+def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
     obj.__class__ = cls
     if &#34;top&#34; in obj.content and obj.content[&#34;top&#34;] is not None:
         flv(obj.content[&#34;top&#34;])

@@ -155,7 +155,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetCollapse(Collapse):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         if self.content[&#34;button&#34;].anchor_id == &#34;toggle-correlation-description&#34;:
             collapse = &#34;correlation&#34;
         else:
@@ -166,7 +166,7 @@ inheritance.</p></div>
 
         if collapse == &#34;correlation&#34;:
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -&gt; None:
                 if widg[&#34;new&#34;]:
                     display = &#34;&#34;
                     grid = &#34;50% 50%&#34;
@@ -181,7 +181,7 @@ inheritance.</p></div>
 
         else:
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -&gt; None:
                 if widg[&#34;new&#34;]:
                     display = &#34;&#34;
                 else:
@@ -203,7 +203,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetCollapse.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -211,7 +211,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     if self.content[&#34;button&#34;].anchor_id == &#34;toggle-correlation-description&#34;:
         collapse = &#34;correlation&#34;
     else:
@@ -222,7 +222,7 @@ inheritance.</p></div>
 
     if collapse == &#34;correlation&#34;:
 
-        def toggle_func(widg):
+        def toggle_func(widg: dict) -&gt; None:
             if widg[&#34;new&#34;]:
                 display = &#34;&#34;
                 grid = &#34;50% 50%&#34;
@@ -237,7 +237,7 @@ inheritance.</p></div>
 
     else:
 
-        def toggle_func(widg):
+        def toggle_func(widg: dict) -&gt; None:
             if widg[&#34;new&#34;]:
                 display = &#34;&#34;
             else:
@@ -254,7 +254,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetContainer"><code class="flex name class">
 <span>class <span class="ident">WidgetContainer</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, name=None, anchor_id=None, classes=None, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -264,7 +264,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetContainer(Container):
-    def render(self):
+    def render(self) -&gt; widgets.Widget:
         if self.sequence_type == &#34;list&#34;:
             widget = get_list(self.content[&#34;items&#34;])
         elif self.sequence_type == &#34;named_list&#34;:
@@ -280,6 +280,7 @@ inheritance.</p></div>
                 self.content[&#34;items&#34;],
                 self.content[&#34;batch_size&#34;],
                 self.content.get(&#34;titles&#34;, True),
+                self.content.get(&#34;subtitles&#34;, False),
             )
         else:
             raise ValueError(&#34;widget type not understood&#34;, self.sequence_type)
@@ -295,7 +296,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetContainer.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget.Widget</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -303,7 +304,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.Widget:
     if self.sequence_type == &#34;list&#34;:
         widget = get_list(self.content[&#34;items&#34;])
     elif self.sequence_type == &#34;named_list&#34;:
@@ -319,6 +320,7 @@ inheritance.</p></div>
             self.content[&#34;items&#34;],
             self.content[&#34;batch_size&#34;],
             self.content.get(&#34;titles&#34;, True),
+            self.content.get(&#34;subtitles&#34;, False),
         )
     else:
         raise ValueError(&#34;widget type not understood&#34;, self.sequence_type)
@@ -330,7 +332,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetDuplicate"><code class="flex name class">
 <span>class <span class="ident">WidgetDuplicate</span></span>
-<span>(</span><span>name, duplicate, **kwargs)</span>
+<span>(</span><span>name: str, duplicate: pandas.core.frame.DataFrame, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -340,12 +342,13 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetDuplicate(Duplicate):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         out = Output()
         with out:
             display(self.content[&#34;duplicate&#34;])
 
-        return widgets.VBox([out])</code></pre>
+        name = widgets.HTML(f&#34;&lt;h4&gt;{self.content[&#39;name&#39;]}&lt;/h4&gt;&#34;)
+        return widgets.VBox([name, out])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -357,7 +360,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetDuplicate.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -365,19 +368,20 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     out = Output()
     with out:
         display(self.content[&#34;duplicate&#34;])
 
-    return widgets.VBox([out])</code></pre>
+    name = widgets.HTML(f&#34;&lt;h4&gt;{self.content[&#39;name&#39;]}&lt;/h4&gt;&#34;)
+    return widgets.VBox([name, out])</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetFrequencyTable"><code class="flex name class">
 <span>class <span class="ident">WidgetFrequencyTable</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: list, redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -387,7 +391,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetFrequencyTable(FrequencyTable):
-    def render(self):
+    def render(self) -&gt; VBox:
         items = []
 
         for row in self.content[&#34;rows&#34;]:
@@ -434,7 +438,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetFrequencyTable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -442,7 +446,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; VBox:
     items = []
 
     for row in self.content[&#34;rows&#34;]:
@@ -484,7 +488,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetFrequencyTableSmall"><code class="flex name class">
 <span>class <span class="ident">WidgetFrequencyTableSmall</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: List[Any], redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -494,7 +498,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetFrequencyTableSmall(FrequencyTableSmall):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         return frequency_table_nb(self.content[&#34;rows&#34;])</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -507,7 +511,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetFrequencyTableSmall.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -515,7 +519,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     return frequency_table_nb(self.content[&#34;rows&#34;])</code></pre>
 </details>
 </dd>
@@ -523,7 +527,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetHTML"><code class="flex name class">
 <span>class <span class="ident">WidgetHTML</span></span>
-<span>(</span><span>content, **kwargs)</span>
+<span>(</span><span>content: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -533,7 +537,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetHTML(HTML):
-    def render(self):
+    def render(self) -&gt; widgets.HTML:
         if type(self.content[&#34;html&#34;]) != str:
             return self.content[&#34;html&#34;]
         else:
@@ -549,7 +553,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetHTML.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_string.HTML</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -557,7 +561,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.HTML:
     if type(self.content[&#34;html&#34;]) != str:
         return self.content[&#34;html&#34;]
     else:
@@ -568,7 +572,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetImage"><code class="flex name class">
 <span>class <span class="ident">WidgetImage</span></span>
-<span>(</span><span>image, image_format, alt, caption=None, **kwargs)</span>
+<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -578,9 +582,9 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetImage(Image):
-    def render(self):
+    def render(self) -&gt; widgets.Widget:
         image = self.content[&#34;image&#34;]
-        if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+        if self.content[&#34;image_format&#34;] == ImageType.svg:
             image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
 
             image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)
@@ -606,7 +610,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetImage.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget.Widget</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -614,9 +618,9 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.Widget:
     image = self.content[&#34;image&#34;]
-    if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+    if self.content[&#34;image_format&#34;] == ImageType.svg:
         image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
 
         image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)
@@ -646,7 +650,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetRoot(Root):
-    def render(self):
+    def render(self, **kwargs) -&gt; widgets.VBox:
         return widgets.VBox(
             [self.content[&#34;body&#34;].render(), self.content[&#34;footer&#34;].render()]
         )</code></pre>
@@ -661,7 +665,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetRoot.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self, **kwargs) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -669,7 +673,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self, **kwargs) -&gt; widgets.VBox:
     return widgets.VBox(
         [self.content[&#34;body&#34;].render(), self.content[&#34;footer&#34;].render()]
     )</code></pre>
@@ -679,7 +683,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetSample"><code class="flex name class">
 <span>class <span class="ident">WidgetSample</span></span>
-<span>(</span><span>name, sample, caption=None, **kwargs)</span>
+<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -689,12 +693,13 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetSample(Sample):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         out = Output()
         with out:
             display(self.content[&#34;sample&#34;])
 
-        return widgets.VBox([out])</code></pre>
+        name = widgets.HTML(f&#34;&lt;h4&gt;{self.content[&#39;name&#39;]}&lt;/h4&gt;&#34;)
+        return widgets.VBox([name, out])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -706,7 +711,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetSample.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -714,19 +719,20 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     out = Output()
     with out:
         display(self.content[&#34;sample&#34;])
 
-    return widgets.VBox([out])</code></pre>
+    name = widgets.HTML(f&#34;&lt;h4&gt;{self.content[&#39;name&#39;]}&lt;/h4&gt;&#34;)
+    return widgets.VBox([name, out])</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetTable"><code class="flex name class">
 <span>class <span class="ident">WidgetTable</span></span>
-<span>(</span><span>rows, name=None, caption=None, **kwargs)</span>
+<span>(</span><span>rows: Sequence, name: Union[str, NoneType] = None, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -736,7 +742,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetTable(Table):
-    def render(self):
+    def render(self) -&gt; VBox:
         items = [get_table(self.content[&#34;rows&#34;])]
         if self.content[&#34;caption&#34;] is not None:
             items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))
@@ -753,7 +759,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetTable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -761,7 +767,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; VBox:
     items = [get_table(self.content[&#34;rows&#34;])]
     if self.content[&#34;caption&#34;] is not None:
         items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))
@@ -773,7 +779,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetToggleButton"><code class="flex name class">
 <span>class <span class="ident">WidgetToggleButton</span></span>
-<span>(</span><span>text, **kwargs)</span>
+<span>(</span><span>text: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -783,7 +789,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetToggleButton(ToggleButton):
-    def render(self):
+    def render(self) -&gt; widgets.HBox:
         toggle = widgets.ToggleButton(description=self.content[&#34;text&#34;])
         toggle.layout.width = &#34;fit-content&#34;
 
@@ -805,7 +811,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetToggleButton.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.HBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -813,7 +819,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.HBox:
     toggle = widgets.ToggleButton(description=self.content[&#34;text&#34;])
     toggle.layout.width = &#34;fit-content&#34;
 
@@ -840,8 +846,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetVariable(Variable):
-    def render(self):
-        # TODO: use `ignore` param
+    def render(self) -&gt; widgets.VBox:
         items = [self.content[&#34;top&#34;].render()]
         if self.content[&#34;bottom&#34;] is not None:
             items.append(self.content[&#34;bottom&#34;].render())
@@ -858,7 +863,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetVariable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -866,8 +871,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
-    # TODO: use `ignore` param
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     items = [self.content[&#34;top&#34;].render()]
     if self.content[&#34;bottom&#34;] is not None:
         items.append(self.content[&#34;bottom&#34;].render())
@@ -879,7 +883,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetVariableInfo"><code class="flex name class">
 <span>class <span class="ident">WidgetVariableInfo</span></span>
-<span>(</span><span>anchor_id, var_name, var_type, warnings, description, **kwargs)</span>
+<span>(</span><span>anchor_id: str, var_name: str, var_type: str, warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], description: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -889,7 +893,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetVariableInfo(VariableInfo):
-    def render(self):
+    def render(self) -&gt; widgets.HTML:
         return widgets.HTML(
             templates.template(&#34;variable_info.html&#34;).render(**self.content)
         )</code></pre>
@@ -904,7 +908,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetVariableInfo.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_string.HTML</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -912,7 +916,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.HTML:
     return widgets.HTML(
         templates.template(&#34;variable_info.html&#34;).render(**self.content)
     )</code></pre>
@@ -922,7 +926,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetWarnings"><code class="flex name class">
 <span>class <span class="ident">WidgetWarnings</span></span>
-<span>(</span><span>warnings, **kwargs)</span>
+<span>(</span><span>warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -932,7 +936,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetWarnings(Warnings):
-    def render(self):
+    def render(self) -&gt; widgets.GridBox:
         styles = {
             &#34;constant&#34;: &#34;warning&#34;,
             &#34;unsupported&#34;: &#34;warning&#34;,
@@ -983,7 +987,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.WidgetWarnings.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.GridBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -991,7 +995,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.GridBox:
     styles = {
         &#34;constant&#34;: &#34;warning&#34;,
         &#34;unsupported&#34;: &#34;warning&#34;,

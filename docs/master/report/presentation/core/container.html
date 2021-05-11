@@ -26,7 +26,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any, Sequence
+<pre><code class="python">from typing import Any, Callable, Optional, Sequence
 
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
@@ -36,10 +36,10 @@ class Container(Renderable):
         self,
         items: Sequence[Renderable],
         sequence_type: str,
-        nested=False,
-        name=None,
-        anchor_id=None,
-        classes=None,
+        nested: bool = False,
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
         **kwargs,
     ):
         args = {&#34;items&#34;: items, &#34;nested&#34;: nested}
@@ -66,7 +66,7 @@ class Container(Renderable):
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -&gt; None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;items&#34; in obj.content:
             for item in obj.content[&#34;items&#34;]:
@@ -84,7 +84,7 @@ class Container(Renderable):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.container.Container"><code class="flex name class">
 <span>class <span class="ident">Container</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, name=None, anchor_id=None, classes=None, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -98,10 +98,10 @@ inheritance.</p></div>
         self,
         items: Sequence[Renderable],
         sequence_type: str,
-        nested=False,
-        name=None,
-        anchor_id=None,
-        classes=None,
+        nested: bool = False,
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
         **kwargs,
     ):
         args = {&#34;items&#34;: items, &#34;nested&#34;: nested}
@@ -128,7 +128,7 @@ inheritance.</p></div>
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -&gt; None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;items&#34; in obj.content:
             for item in obj.content[&#34;items&#34;]:
@@ -147,7 +147,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.container.Container.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -156,7 +156,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv) -&gt; None:
+def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
     obj.__class__ = cls
     if &#34;items&#34; in obj.content:
         for item in obj.content[&#34;items&#34;]:

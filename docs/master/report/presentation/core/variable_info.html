@@ -26,13 +26,22 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
+<pre><code class="python">from typing import Any, List
 
+from pandas_profiling.model.messages import Message
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class VariableInfo(ItemRenderer):
-    def __init__(self, anchor_id, var_name, var_type, warnings, description, **kwargs):
+    def __init__(
+        self,
+        anchor_id: str,
+        var_name: str,
+        var_type: str,
+        warnings: List[Message],
+        description: str,
+        **kwargs
+    ):
         super().__init__(
             &#34;variable_info&#34;,
             {
@@ -45,7 +54,7 @@ class VariableInfo(ItemRenderer):
             **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;VariableInfo&#34;
 
     def render(self) -&gt; Any:
@@ -63,7 +72,7 @@ class VariableInfo(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.variable_info.VariableInfo"><code class="flex name class">
 <span>class <span class="ident">VariableInfo</span></span>
-<span>(</span><span>anchor_id, var_name, var_type, warnings, description, **kwargs)</span>
+<span>(</span><span>anchor_id: str, var_name: str, var_type: str, warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], description: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -73,7 +82,15 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class VariableInfo(ItemRenderer):
-    def __init__(self, anchor_id, var_name, var_type, warnings, description, **kwargs):
+    def __init__(
+        self,
+        anchor_id: str,
+        var_name: str,
+        var_type: str,
+        warnings: List[Message],
+        description: str,
+        **kwargs
+    ):
         super().__init__(
             &#34;variable_info&#34;,
             {
@@ -86,7 +103,7 @@ inheritance.</p></div>
             **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;VariableInfo&#34;
 
     def render(self) -&gt; Any:

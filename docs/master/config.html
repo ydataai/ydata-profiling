@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>pandas_profiling.config API documentation</title>
-<meta name="description" content="Configuration for the package is handled in this wrapper for confuse." />
+<meta name="description" content="Configuration for the package." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,47 +22,310 @@
 <h1 class="title">Module <code>pandas_profiling.config</code></h1>
 </header>
 <section id="section-intro">
-<p>Configuration for the package is handled in this wrapper for confuse.</p>
+<p>Configuration for the package.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;Configuration for the package is handled in this wrapper for confuse.&#34;&#34;&#34;
-import argparse
-from pathlib import Path
-from typing import Union
+<pre><code class="python">&#34;&#34;&#34;Configuration for the package.&#34;&#34;&#34;
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
-import confuse
+from pydantic import BaseModel, BaseSettings, Field
 
-from pandas_profiling.utils.paths import get_config_default
+
+def _merge_dictionaries(dict1: dict, dict2: dict) -&gt; dict:
+    &#34;&#34;&#34;
+    Recursive merge dictionaries.
+
+    :param dict1: Base dictionary to merge.
+    :param dict2: Dictionary to merge on top of base dictionary.
+    :return: Merged dictionary
+    &#34;&#34;&#34;
+    for key, val in dict1.items():
+        if isinstance(val, dict):
+            dict2_node = dict2.setdefault(key, {})
+            _merge_dictionaries(val, dict2_node)
+        else:
+            if key not in dict2:
+                dict2[key] = val
+
+    return dict2
+
+
+class Dataset(BaseModel):
+    &#34;&#34;&#34;Metadata of the dataset&#34;&#34;&#34;
+
+    description: str = &#34;&#34;
+    creator: str = &#34;&#34;
+    author: str = &#34;&#34;
+    copyright_holder: str = &#34;&#34;
+    copyright_year: str = &#34;&#34;
+    url: str = &#34;&#34;
+
+
+class NumVars(BaseModel):
+    quantiles: List[float] = [0.05, 0.25, 0.5, 0.75, 0.95]
+    skewness_threshold: int = 20
+    low_categorical_threshold: int = 5
+    # Set to zero to disable
+    chi_squared_threshold: float = 0.999
+
+
+class CatVars(BaseModel):
+    length: bool = True
+    characters: bool = True
+    words: bool = True
+    cardinality_threshold: int = 50
+    n_obs: int = 5
+    # Set to zero to disable
+    chi_squared_threshold: float = 0.999
+    coerce_str_to_date: bool = False
+    redact: bool = False
+    histogram_largest: int = 50
+
+
+class BoolVars(BaseModel):
+    n_obs: int = 3
+
+    # string to boolean mapping dict
+    mappings: Dict[str, bool] = {
+        &#34;t&#34;: True,
+        &#34;f&#34;: False,
+        &#34;yes&#34;: True,
+        &#34;no&#34;: False,
+        &#34;y&#34;: True,
+        &#34;n&#34;: False,
+        &#34;true&#34;: True,
+        &#34;false&#34;: False,
+    }
+
+
+class FileVars(BaseModel):
+    active: bool = False
+
+
+class PathVars(BaseModel):
+    active: bool = False
+
+
+class ImageVars(BaseModel):
+    active: bool = False
+    exif: bool = True
+    hash: bool = True
+
+
+class UrlVars(BaseModel):
+    active: bool = False
+
+
+class Univariate(BaseModel):
+    num: NumVars = NumVars()
+    cat: CatVars = CatVars()
+    image: ImageVars = ImageVars()
+    bool: BoolVars = BoolVars()
+    path: PathVars = PathVars()
+    file: FileVars = FileVars()
+    url: UrlVars = UrlVars()
+
+
+class MissingPlot(BaseModel):
+    # Force labels when there are &gt; 50 variables
+    # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+    force_labels: bool = True
+    cmap: str = &#34;RdBu&#34;
+
+
+class ImageType(Enum):
+    svg = &#34;svg&#34;
+    png = &#34;png&#34;
+
+
+class CorrelationPlot(BaseModel):
+    cmap: str = &#34;RdBu&#34;
+    bad: str = &#34;#000000&#34;
+
+
+class Histogram(BaseModel):
+    # Number of bins (set to 0 to automatically detect the bin size)
+    bins: int = 50
+    # Maximum number of bins (when bins=0)
+    max_bins: int = 250
+    x_axis_labels: bool = True
+
+
+class Pie(BaseModel):
+    # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+    max_unique: int = 10
+
+
+class Plot(BaseModel):
+    missing: MissingPlot = MissingPlot()
+    image_format: ImageType = ImageType.svg
+    correlation: CorrelationPlot = CorrelationPlot()
+    # PNG dpi
+    dpi: int = 800
+    histogram: Histogram = Histogram()
+    scatter_threshold: int = 1000
+    pie: Pie = Pie()
+
+
+class Theme(Enum):
+    united = &#34;united&#34;
+    flatly = &#34;flatly&#34;
+
+
+class Style(BaseModel):
+    primary_color: str = &#34;#337ab7&#34;
+    logo: str = &#34;&#34;
+    theme: Optional[Theme] = None
+
+
+class Html(BaseModel):
+    # Styling options for the HTML report
+    style: Style = Style()
+
+    # Show navbar
+    navbar_show: bool = True
+
+    # Minify the html
+    minify_html: bool = True
+
+    # Offline support
+    use_local_assets: bool = True
+
+    # If True, single file, else directory with assets
+    inline: bool = True
+
+    # Assets prefix if inline = True
+    assets_prefix: Optional[str] = None
+
+    # Internal usage
+    assets_path: Optional[str] = None
+
+    full_width: bool = False
+
+
+class Duplicates(BaseModel):
+    head: int = 10
+    key: str = &#34;# duplicates&#34;
+
+
+class Correlation(BaseModel):
+    key: str = &#34;&#34;
+    calculate: bool = Field(default=True)
+    warn_high_correlations: int = Field(default=10)
+    threshold: float = Field(default=0.5)
+
+
+class Correlations(BaseModel):
+    pearson: Correlation = Correlation(key=&#34;pearson&#34;)
+    spearman: Correlation = Correlation(key=&#34;spearman&#34;)
+
+
+class Interactions(BaseModel):
+    continuous: bool = True
+    # FIXME: validate with column names
+    targets: List[str] = []
+
+
+class Samples(BaseModel):
+    head: int = 10
+    tail: int = 10
+    random: int = 0
+
+
+class Variables(BaseModel):
+    descriptions: dict = {}
+
+
+class IframeAttribute(Enum):
+    src = &#34;src&#34;
+    srcdoc = &#34;srcdoc&#34;
+
+
+class Iframe(BaseModel):
+    height: str = &#34;800px&#34;
+    width: str = &#34;100%&#34;
+    attribute: IframeAttribute = IframeAttribute.srcdoc
+
+
+class Notebook(BaseModel):
+    &#34;&#34;&#34;When in a Jupyter notebook&#34;&#34;&#34;
+
+    iframe: Iframe = Iframe()
+
+
+class Report(BaseModel):
+    precision: int = 10
+
+
+class Settings(BaseSettings):
+    # Title of the document
+    title: str = &#34;Pandas Profiling Report&#34;
+
+    dataset: Dataset = Dataset()
+    variables: Variables = Variables()
+    infer_dtypes: bool = True
+
+    # Show the description at each variable (in addition to the overview tab)
+    show_variable_description: bool = True
+
+    # Number of workers (0=multiprocessing.cpu_count())
+    pool_size: int = 0
+
+    # Show the progress bar
+    progress_bar: bool = True
+
+    # Per variable type description settings
+    vars: Univariate = Univariate()
+
+    # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
+    sort: Optional[str] = None
+
+    missing_diagrams: Dict[str, bool] = {
+        &#34;bar&#34;: True,
+        &#34;matrix&#34;: True,
+        &#34;dendrogram&#34;: True,
+        &#34;heatmap&#34;: True,
+    }
+
+    correlations: Dict[str, Correlation] = {
+        &#34;spearman&#34;: Correlation(key=&#34;spearman&#34;),
+        &#34;pearson&#34;: Correlation(key=&#34;pearson&#34;),
+        &#34;kendall&#34;: Correlation(key=&#34;kendall&#34;),
+        &#34;cramers&#34;: Correlation(key=&#34;cramers&#34;),
+        &#34;phi_k&#34;: Correlation(key=&#34;phi_k&#34;),
+    }
+
+    interactions: Interactions = Interactions()
+
+    categorical_maximum_correlation_distinct: int = 100
+    # Use `deep` flag for memory_usage
+    memory_deep: bool = False
+    plot: Plot = Plot()
+    duplicates: Duplicates = Duplicates()
+    samples: Samples = Samples()
+
+    reject_variables: bool = True
+
+    # The number of observations to show
+    n_obs_unique: int = 10
+    n_freq_table_max: int = 10
+    n_extreme_obs: int = 10
+
+    # Report rendering
+    report: Report = Report()
+    html: Html = Html()
+    notebook = Notebook()
+
+    def update(self, updates: dict) -&gt; &#34;Settings&#34;:
+        update = _merge_dictionaries(self.dict(), updates)
+        return self.parse_obj(self.copy(update=update))
 
 
 class Config:
-    &#34;&#34;&#34;This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-    various ways (notably via argparse and kwargs).
-    &#34;&#34;&#34;
-
-    config = None
-    &#34;&#34;&#34;The confuse.Configuration object.&#34;&#34;&#34;
-
-    def __init__(self):
-        &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
-        if self.config is None:
-            self.clear()
-        else:
-            self.set_file(str(get_config_default()))
-
-    def set_file(self, file_name: Union[str, Path]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the config from a file
-
-        Args:
-            file_name: file name
-        &#34;&#34;&#34;
-        if self.config is not None:
-            self.config.set_file(str(file_name))
-
-    _arg_groups = {
+    arg_groups: Dict[str, Any] = {
         &#34;sensitive&#34;: {
             &#34;samples&#34;: None,
             &#34;duplicates&#34;: None,
@@ -71,7 +334,7 @@ class Config:
         &#34;dark_mode&#34;: {
             &#34;html&#34;: {
                 &#34;style&#34;: {
-                    &#34;theme&#34;: &#34;flatly&#34;,
+                    &#34;theme&#34;: Theme.flatly,
                     &#34;primary_color&#34;: &#34;#2c3e50&#34;,
                 }
             }
@@ -79,7 +342,7 @@ class Config:
         &#34;orange_mode&#34;: {
             &#34;html&#34;: {
                 &#34;style&#34;: {
-                    &#34;theme&#34;: &#34;united&#34;,
+                    &#34;theme&#34;: Theme.united,
                     &#34;primary_color&#34;: &#34;#d34615&#34;,
                 }
             }
@@ -98,32 +361,6 @@ class Config:
             &#34;memory_deep&#34;: True,
         },
     }
-
-    def set_arg_group(self, name):
-        for key, value in self._arg_groups[name].items():
-            self.set_kwargs({key: value})
-
-    def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
-        &#34;&#34;&#34;
-        Set config variables based on the argparse Namespace object.
-
-        Args:
-            namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
-            dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
-        &#34;&#34;&#34;
-        if self.config is not None:
-            self.config.set_args(namespace, dots)
-
-    def _set_kwargs(self, reference, values: dict):
-        &#34;&#34;&#34;Helper function to set config variables based on kwargs.&#34;&#34;&#34;
-        for key, value in values.items():
-            if key in reference:
-                if type(value) == dict:
-                    self._set_kwargs(reference[key], value)
-                else:
-                    reference[key].set(value)
-            else:
-                raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
     _shorthands = {
         &#34;dataset&#34;: {
@@ -152,59 +389,17 @@ class Config:
         },
     }
 
-    def _handle_shorthands(self, kwargs):
-        for key, value in self._shorthands.items():
-            if key in kwargs and kwargs[key] is None:
-                kwargs[key] = value
-        return kwargs
+    @staticmethod
+    def get_arg_groups(key: str) -&gt; dict:
+        kwargs = Config.arg_groups[key]
+        return Config.shorthands(kwargs)
 
-    def _handle_shorthand(self, key, value):
-        if key in self._shorthands and value is None:
-            return self._shorthands[key]
-        else:
-            return value
-
-    def set_kwargs(self, kwargs) -&gt; None:
-        &#34;&#34;&#34;
-        Helper function to set config variables based on kwargs.
-
-        Args:
-            kwargs: the arguments passed to the .profile_report() function
-
-        &#34;&#34;&#34;
-        kwargs = self._handle_shorthands(kwargs)
-
-        self._set_kwargs(self.config, kwargs)
-
-    def __getitem__(self, item):
-        return self.config[item]
-
-    def __setitem__(self, key, value):
-        value = self._handle_shorthand(key, value)
-        self.config[key].set(value)
-
-    def dump(self):
-        return self.config.dump()
-
-    def update(self, other):
-        if not isinstance(other, Config):
-            raise ValueError(&#34;Can only update config from a config object&#34;)
-        self.config = other.config
-
-    def clear(self):
-        self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
-        self.set_file(str(get_config_default()))
-
-    @property
-    def is_default(self):
-        default_config = Config()
-        return self == default_config
-
-    def __eq__(self, other):
-        return isinstance(other, Config) and self.dump() == other.dump()
-
-
-config = Config()</code></pre>
+    @staticmethod
+    def shorthands(kwargs: dict) -&gt; dict:
+        for key, value in list(kwargs.items()):
+            if value is None and key in Config._shorthands:
+                kwargs[key] = Config._shorthands[key]
+        return kwargs</code></pre>
 </details>
 </section>
 <section>
@@ -216,43 +411,128 @@ config = Config()</code></pre>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pandas_profiling.config.BoolVars"><code class="flex name class">
+<span>class <span class="ident">BoolVars</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BoolVars(BaseModel):
+    n_obs: int = 3
+
+    # string to boolean mapping dict
+    mappings: Dict[str, bool] = {
+        &#34;t&#34;: True,
+        &#34;f&#34;: False,
+        &#34;yes&#34;: True,
+        &#34;no&#34;: False,
+        &#34;y&#34;: True,
+        &#34;n&#34;: False,
+        &#34;true&#34;: True,
+        &#34;false&#34;: False,
+    }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.BoolVars.mappings"><code class="name">var <span class="ident">mappings</span> : Dict[str, bool]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.BoolVars.n_obs"><code class="name">var <span class="ident">n_obs</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.CatVars"><code class="flex name class">
+<span>class <span class="ident">CatVars</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CatVars(BaseModel):
+    length: bool = True
+    characters: bool = True
+    words: bool = True
+    cardinality_threshold: int = 50
+    n_obs: int = 5
+    # Set to zero to disable
+    chi_squared_threshold: float = 0.999
+    coerce_str_to_date: bool = False
+    redact: bool = False
+    histogram_largest: int = 50</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.CatVars.cardinality_threshold"><code class="name">var <span class="ident">cardinality_threshold</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.characters"><code class="name">var <span class="ident">characters</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.chi_squared_threshold"><code class="name">var <span class="ident">chi_squared_threshold</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.coerce_str_to_date"><code class="name">var <span class="ident">coerce_str_to_date</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.histogram_largest"><code class="name">var <span class="ident">histogram_largest</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.length"><code class="name">var <span class="ident">length</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.n_obs"><code class="name">var <span class="ident">n_obs</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.redact"><code class="name">var <span class="ident">redact</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.words"><code class="name">var <span class="ident">words</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="pandas_profiling.config.Config"><code class="flex name class">
 <span>class <span class="ident">Config</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-various ways (notably via argparse and kwargs).</p>
-<p>The config constructor should be called only once.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Config:
-    &#34;&#34;&#34;This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-    various ways (notably via argparse and kwargs).
-    &#34;&#34;&#34;
-
-    config = None
-    &#34;&#34;&#34;The confuse.Configuration object.&#34;&#34;&#34;
-
-    def __init__(self):
-        &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
-        if self.config is None:
-            self.clear()
-        else:
-            self.set_file(str(get_config_default()))
-
-    def set_file(self, file_name: Union[str, Path]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the config from a file
-
-        Args:
-            file_name: file name
-        &#34;&#34;&#34;
-        if self.config is not None:
-            self.config.set_file(str(file_name))
-
-    _arg_groups = {
+    arg_groups: Dict[str, Any] = {
         &#34;sensitive&#34;: {
             &#34;samples&#34;: None,
             &#34;duplicates&#34;: None,
@@ -261,7 +541,7 @@ various ways (notably via argparse and kwargs).</p>
         &#34;dark_mode&#34;: {
             &#34;html&#34;: {
                 &#34;style&#34;: {
-                    &#34;theme&#34;: &#34;flatly&#34;,
+                    &#34;theme&#34;: Theme.flatly,
                     &#34;primary_color&#34;: &#34;#2c3e50&#34;,
                 }
             }
@@ -269,7 +549,7 @@ various ways (notably via argparse and kwargs).</p>
         &#34;orange_mode&#34;: {
             &#34;html&#34;: {
                 &#34;style&#34;: {
-                    &#34;theme&#34;: &#34;united&#34;,
+                    &#34;theme&#34;: Theme.united,
                     &#34;primary_color&#34;: &#34;#d34615&#34;,
                 }
             }
@@ -288,32 +568,6 @@ various ways (notably via argparse and kwargs).</p>
             &#34;memory_deep&#34;: True,
         },
     }
-
-    def set_arg_group(self, name):
-        for key, value in self._arg_groups[name].items():
-            self.set_kwargs({key: value})
-
-    def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
-        &#34;&#34;&#34;
-        Set config variables based on the argparse Namespace object.
-
-        Args:
-            namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
-            dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
-        &#34;&#34;&#34;
-        if self.config is not None:
-            self.config.set_args(namespace, dots)
-
-    def _set_kwargs(self, reference, values: dict):
-        &#34;&#34;&#34;Helper function to set config variables based on kwargs.&#34;&#34;&#34;
-        for key, value in values.items():
-            if key in reference:
-                if type(value) == dict:
-                    self._set_kwargs(reference[key], value)
-                else:
-                    reference[key].set(value)
-            else:
-                raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
 
     _shorthands = {
         &#34;dataset&#34;: {
@@ -342,84 +596,1027 @@ various ways (notably via argparse and kwargs).</p>
         },
     }
 
-    def _handle_shorthands(self, kwargs):
-        for key, value in self._shorthands.items():
-            if key in kwargs and kwargs[key] is None:
-                kwargs[key] = value
-        return kwargs
+    @staticmethod
+    def get_arg_groups(key: str) -&gt; dict:
+        kwargs = Config.arg_groups[key]
+        return Config.shorthands(kwargs)
 
-    def _handle_shorthand(self, key, value):
-        if key in self._shorthands and value is None:
-            return self._shorthands[key]
-        else:
-            return value
-
-    def set_kwargs(self, kwargs) -&gt; None:
-        &#34;&#34;&#34;
-        Helper function to set config variables based on kwargs.
-
-        Args:
-            kwargs: the arguments passed to the .profile_report() function
-
-        &#34;&#34;&#34;
-        kwargs = self._handle_shorthands(kwargs)
-
-        self._set_kwargs(self.config, kwargs)
-
-    def __getitem__(self, item):
-        return self.config[item]
-
-    def __setitem__(self, key, value):
-        value = self._handle_shorthand(key, value)
-        self.config[key].set(value)
-
-    def dump(self):
-        return self.config.dump()
-
-    def update(self, other):
-        if not isinstance(other, Config):
-            raise ValueError(&#34;Can only update config from a config object&#34;)
-        self.config = other.config
-
-    def clear(self):
-        self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
-        self.set_file(str(get_config_default()))
-
-    @property
-    def is_default(self):
-        default_config = Config()
-        return self == default_config
-
-    def __eq__(self, other):
-        return isinstance(other, Config) and self.dump() == other.dump()</code></pre>
+    @staticmethod
+    def shorthands(kwargs: dict) -&gt; dict:
+        for key, value in list(kwargs.items()):
+            if value is None and key in Config._shorthands:
+                kwargs[key] = Config._shorthands[key]
+        return kwargs</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
-<dt id="pandas_profiling.config.Config.config"><code class="name">var <span class="ident">config</span></code></dt>
+<dt id="pandas_profiling.config.Config.arg_groups"><code class="name">var <span class="ident">arg_groups</span> : Dict[str, Any]</code></dt>
 <dd>
-<div class="desc"><p>The confuse.Configuration object.</p></div>
+<div class="desc"></div>
 </dd>
 </dl>
-<h3>Instance variables</h3>
+<h3>Static methods</h3>
 <dl>
-<dt id="pandas_profiling.config.Config.is_default"><code class="name">var <span class="ident">is_default</span></code></dt>
+<dt id="pandas_profiling.config.Config.get_arg_groups"><code class="name flex">
+<span>def <span class="ident">get_arg_groups</span></span>(<span>key: str) ‑> dict</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@property
-def is_default(self):
-    default_config = Config()
-    return self == default_config</code></pre>
+<pre><code class="python">@staticmethod
+def get_arg_groups(key: str) -&gt; dict:
+    kwargs = Config.arg_groups[key]
+    return Config.shorthands(kwargs)</code></pre>
 </details>
+</dd>
+<dt id="pandas_profiling.config.Config.shorthands"><code class="name flex">
+<span>def <span class="ident">shorthands</span></span>(<span>kwargs: dict) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def shorthands(kwargs: dict) -&gt; dict:
+    for key, value in list(kwargs.items()):
+        if value is None and key in Config._shorthands:
+            kwargs[key] = Config._shorthands[key]
+    return kwargs</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Correlation"><code class="flex name class">
+<span>class <span class="ident">Correlation</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Correlation(BaseModel):
+    key: str = &#34;&#34;
+    calculate: bool = Field(default=True)
+    warn_high_correlations: int = Field(default=10)
+    threshold: float = Field(default=0.5)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Correlation.calculate"><code class="name">var <span class="ident">calculate</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Correlation.key"><code class="name">var <span class="ident">key</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Correlation.threshold"><code class="name">var <span class="ident">threshold</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Correlation.warn_high_correlations"><code class="name">var <span class="ident">warn_high_correlations</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.CorrelationPlot"><code class="flex name class">
+<span>class <span class="ident">CorrelationPlot</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CorrelationPlot(BaseModel):
+    cmap: str = &#34;RdBu&#34;
+    bad: str = &#34;#000000&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.CorrelationPlot.bad"><code class="name">var <span class="ident">bad</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CorrelationPlot.cmap"><code class="name">var <span class="ident">cmap</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Correlations"><code class="flex name class">
+<span>class <span class="ident">Correlations</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Correlations(BaseModel):
+    pearson: Correlation = Correlation(key=&#34;pearson&#34;)
+    spearman: Correlation = Correlation(key=&#34;spearman&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Correlations.pearson"><code class="name">var <span class="ident">pearson</span> : <a title="pandas_profiling.config.Correlation" href="#pandas_profiling.config.Correlation">Correlation</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Correlations.spearman"><code class="name">var <span class="ident">spearman</span> : <a title="pandas_profiling.config.Correlation" href="#pandas_profiling.config.Correlation">Correlation</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Dataset"><code class="flex name class">
+<span>class <span class="ident">Dataset</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Metadata of the dataset</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Dataset(BaseModel):
+    &#34;&#34;&#34;Metadata of the dataset&#34;&#34;&#34;
+
+    description: str = &#34;&#34;
+    creator: str = &#34;&#34;
+    author: str = &#34;&#34;
+    copyright_holder: str = &#34;&#34;
+    copyright_year: str = &#34;&#34;
+    url: str = &#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Dataset.author"><code class="name">var <span class="ident">author</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Dataset.copyright_holder"><code class="name">var <span class="ident">copyright_holder</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Dataset.copyright_year"><code class="name">var <span class="ident">copyright_year</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Dataset.creator"><code class="name">var <span class="ident">creator</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Dataset.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Dataset.url"><code class="name">var <span class="ident">url</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Duplicates"><code class="flex name class">
+<span>class <span class="ident">Duplicates</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Duplicates(BaseModel):
+    head: int = 10
+    key: str = &#34;# duplicates&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Duplicates.head"><code class="name">var <span class="ident">head</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Duplicates.key"><code class="name">var <span class="ident">key</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.FileVars"><code class="flex name class">
+<span>class <span class="ident">FileVars</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FileVars(BaseModel):
+    active: bool = False</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.FileVars.active"><code class="name">var <span class="ident">active</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Histogram"><code class="flex name class">
+<span>class <span class="ident">Histogram</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Histogram(BaseModel):
+    # Number of bins (set to 0 to automatically detect the bin size)
+    bins: int = 50
+    # Maximum number of bins (when bins=0)
+    max_bins: int = 250
+    x_axis_labels: bool = True</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Histogram.bins"><code class="name">var <span class="ident">bins</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Histogram.max_bins"><code class="name">var <span class="ident">max_bins</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Histogram.x_axis_labels"><code class="name">var <span class="ident">x_axis_labels</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Html"><code class="flex name class">
+<span>class <span class="ident">Html</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Html(BaseModel):
+    # Styling options for the HTML report
+    style: Style = Style()
+
+    # Show navbar
+    navbar_show: bool = True
+
+    # Minify the html
+    minify_html: bool = True
+
+    # Offline support
+    use_local_assets: bool = True
+
+    # If True, single file, else directory with assets
+    inline: bool = True
+
+    # Assets prefix if inline = True
+    assets_prefix: Optional[str] = None
+
+    # Internal usage
+    assets_path: Optional[str] = None
+
+    full_width: bool = False</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Html.assets_path"><code class="name">var <span class="ident">assets_path</span> : Union[str, NoneType]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Html.assets_prefix"><code class="name">var <span class="ident">assets_prefix</span> : Union[str, NoneType]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Html.full_width"><code class="name">var <span class="ident">full_width</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Html.inline"><code class="name">var <span class="ident">inline</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Html.minify_html"><code class="name">var <span class="ident">minify_html</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Html.navbar_show"><code class="name">var <span class="ident">navbar_show</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Html.style"><code class="name">var <span class="ident">style</span> : <a title="pandas_profiling.config.Style" href="#pandas_profiling.config.Style">Style</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Html.use_local_assets"><code class="name">var <span class="ident">use_local_assets</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Iframe"><code class="flex name class">
+<span>class <span class="ident">Iframe</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Iframe(BaseModel):
+    height: str = &#34;800px&#34;
+    width: str = &#34;100%&#34;
+    attribute: IframeAttribute = IframeAttribute.srcdoc</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Iframe.attribute"><code class="name">var <span class="ident">attribute</span> : <a title="pandas_profiling.config.IframeAttribute" href="#pandas_profiling.config.IframeAttribute">IframeAttribute</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Iframe.height"><code class="name">var <span class="ident">height</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Iframe.width"><code class="name">var <span class="ident">width</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.IframeAttribute"><code class="flex name class">
+<span>class <span class="ident">IframeAttribute</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IframeAttribute(Enum):
+    src = &#34;src&#34;
+    srcdoc = &#34;srcdoc&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.IframeAttribute.src"><code class="name">var <span class="ident">src</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.IframeAttribute.srcdoc"><code class="name">var <span class="ident">srcdoc</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.ImageType"><code class="flex name class">
+<span>class <span class="ident">ImageType</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ImageType(Enum):
+    svg = &#34;svg&#34;
+    png = &#34;png&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.ImageType.png"><code class="name">var <span class="ident">png</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.ImageType.svg"><code class="name">var <span class="ident">svg</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.ImageVars"><code class="flex name class">
+<span>class <span class="ident">ImageVars</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ImageVars(BaseModel):
+    active: bool = False
+    exif: bool = True
+    hash: bool = True</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.ImageVars.active"><code class="name">var <span class="ident">active</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.ImageVars.exif"><code class="name">var <span class="ident">exif</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.ImageVars.hash"><code class="name">var <span class="ident">hash</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Interactions"><code class="flex name class">
+<span>class <span class="ident">Interactions</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Interactions(BaseModel):
+    continuous: bool = True
+    # FIXME: validate with column names
+    targets: List[str] = []</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Interactions.continuous"><code class="name">var <span class="ident">continuous</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Interactions.targets"><code class="name">var <span class="ident">targets</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.MissingPlot"><code class="flex name class">
+<span>class <span class="ident">MissingPlot</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MissingPlot(BaseModel):
+    # Force labels when there are &gt; 50 variables
+    # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+    force_labels: bool = True
+    cmap: str = &#34;RdBu&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.MissingPlot.cmap"><code class="name">var <span class="ident">cmap</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.MissingPlot.force_labels"><code class="name">var <span class="ident">force_labels</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Notebook"><code class="flex name class">
+<span>class <span class="ident">Notebook</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>When in a Jupyter notebook</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Notebook(BaseModel):
+    &#34;&#34;&#34;When in a Jupyter notebook&#34;&#34;&#34;
+
+    iframe: Iframe = Iframe()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Notebook.iframe"><code class="name">var <span class="ident">iframe</span> : <a title="pandas_profiling.config.Iframe" href="#pandas_profiling.config.Iframe">Iframe</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.NumVars"><code class="flex name class">
+<span>class <span class="ident">NumVars</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NumVars(BaseModel):
+    quantiles: List[float] = [0.05, 0.25, 0.5, 0.75, 0.95]
+    skewness_threshold: int = 20
+    low_categorical_threshold: int = 5
+    # Set to zero to disable
+    chi_squared_threshold: float = 0.999</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.NumVars.chi_squared_threshold"><code class="name">var <span class="ident">chi_squared_threshold</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.NumVars.low_categorical_threshold"><code class="name">var <span class="ident">low_categorical_threshold</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.NumVars.quantiles"><code class="name">var <span class="ident">quantiles</span> : List[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.NumVars.skewness_threshold"><code class="name">var <span class="ident">skewness_threshold</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.PathVars"><code class="flex name class">
+<span>class <span class="ident">PathVars</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PathVars(BaseModel):
+    active: bool = False</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.PathVars.active"><code class="name">var <span class="ident">active</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Pie"><code class="flex name class">
+<span>class <span class="ident">Pie</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pie(BaseModel):
+    # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+    max_unique: int = 10</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Pie.max_unique"><code class="name">var <span class="ident">max_unique</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Plot"><code class="flex name class">
+<span>class <span class="ident">Plot</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Plot(BaseModel):
+    missing: MissingPlot = MissingPlot()
+    image_format: ImageType = ImageType.svg
+    correlation: CorrelationPlot = CorrelationPlot()
+    # PNG dpi
+    dpi: int = 800
+    histogram: Histogram = Histogram()
+    scatter_threshold: int = 1000
+    pie: Pie = Pie()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Plot.correlation"><code class="name">var <span class="ident">correlation</span> : <a title="pandas_profiling.config.CorrelationPlot" href="#pandas_profiling.config.CorrelationPlot">CorrelationPlot</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Plot.dpi"><code class="name">var <span class="ident">dpi</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Plot.histogram"><code class="name">var <span class="ident">histogram</span> : <a title="pandas_profiling.config.Histogram" href="#pandas_profiling.config.Histogram">Histogram</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Plot.image_format"><code class="name">var <span class="ident">image_format</span> : <a title="pandas_profiling.config.ImageType" href="#pandas_profiling.config.ImageType">ImageType</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Plot.missing"><code class="name">var <span class="ident">missing</span> : <a title="pandas_profiling.config.MissingPlot" href="#pandas_profiling.config.MissingPlot">MissingPlot</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Plot.pie"><code class="name">var <span class="ident">pie</span> : <a title="pandas_profiling.config.Pie" href="#pandas_profiling.config.Pie">Pie</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Plot.scatter_threshold"><code class="name">var <span class="ident">scatter_threshold</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Report"><code class="flex name class">
+<span>class <span class="ident">Report</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Report(BaseModel):
+    precision: int = 10</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Report.precision"><code class="name">var <span class="ident">precision</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Samples"><code class="flex name class">
+<span>class <span class="ident">Samples</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Samples(BaseModel):
+    head: int = 10
+    tail: int = 10
+    random: int = 0</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Samples.head"><code class="name">var <span class="ident">head</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Samples.random"><code class="name">var <span class="ident">random</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Samples.tail"><code class="name">var <span class="ident">tail</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Settings"><code class="flex name class">
+<span>class <span class="ident">Settings</span></span>
+<span>(</span><span>**values: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for settings, allowing values to be overridden by environment variables.</p>
+<p>This is useful in production for secrets you do not wish to save in code, it plays nicely with docker(-compose),
+Heroku and any 12 factor app design.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Settings(BaseSettings):
+    # Title of the document
+    title: str = &#34;Pandas Profiling Report&#34;
+
+    dataset: Dataset = Dataset()
+    variables: Variables = Variables()
+    infer_dtypes: bool = True
+
+    # Show the description at each variable (in addition to the overview tab)
+    show_variable_description: bool = True
+
+    # Number of workers (0=multiprocessing.cpu_count())
+    pool_size: int = 0
+
+    # Show the progress bar
+    progress_bar: bool = True
+
+    # Per variable type description settings
+    vars: Univariate = Univariate()
+
+    # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
+    sort: Optional[str] = None
+
+    missing_diagrams: Dict[str, bool] = {
+        &#34;bar&#34;: True,
+        &#34;matrix&#34;: True,
+        &#34;dendrogram&#34;: True,
+        &#34;heatmap&#34;: True,
+    }
+
+    correlations: Dict[str, Correlation] = {
+        &#34;spearman&#34;: Correlation(key=&#34;spearman&#34;),
+        &#34;pearson&#34;: Correlation(key=&#34;pearson&#34;),
+        &#34;kendall&#34;: Correlation(key=&#34;kendall&#34;),
+        &#34;cramers&#34;: Correlation(key=&#34;cramers&#34;),
+        &#34;phi_k&#34;: Correlation(key=&#34;phi_k&#34;),
+    }
+
+    interactions: Interactions = Interactions()
+
+    categorical_maximum_correlation_distinct: int = 100
+    # Use `deep` flag for memory_usage
+    memory_deep: bool = False
+    plot: Plot = Plot()
+    duplicates: Duplicates = Duplicates()
+    samples: Samples = Samples()
+
+    reject_variables: bool = True
+
+    # The number of observations to show
+    n_obs_unique: int = 10
+    n_freq_table_max: int = 10
+    n_extreme_obs: int = 10
+
+    # Report rendering
+    report: Report = Report()
+    html: Html = Html()
+    notebook = Notebook()
+
+    def update(self, updates: dict) -&gt; &#34;Settings&#34;:
+        update = _merge_dictionaries(self.dict(), updates)
+        return self.parse_obj(self.copy(update=update))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.env_settings.BaseSettings</li>
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Settings.categorical_maximum_correlation_distinct"><code class="name">var <span class="ident">categorical_maximum_correlation_distinct</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.correlations"><code class="name">var <span class="ident">correlations</span> : Dict[str, <a title="pandas_profiling.config.Correlation" href="#pandas_profiling.config.Correlation">Correlation</a>]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.dataset"><code class="name">var <span class="ident">dataset</span> : <a title="pandas_profiling.config.Dataset" href="#pandas_profiling.config.Dataset">Dataset</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.duplicates"><code class="name">var <span class="ident">duplicates</span> : <a title="pandas_profiling.config.Duplicates" href="#pandas_profiling.config.Duplicates">Duplicates</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.html"><code class="name">var <span class="ident">html</span> : <a title="pandas_profiling.config.Html" href="#pandas_profiling.config.Html">Html</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.infer_dtypes"><code class="name">var <span class="ident">infer_dtypes</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.interactions"><code class="name">var <span class="ident">interactions</span> : <a title="pandas_profiling.config.Interactions" href="#pandas_profiling.config.Interactions">Interactions</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.memory_deep"><code class="name">var <span class="ident">memory_deep</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.missing_diagrams"><code class="name">var <span class="ident">missing_diagrams</span> : Dict[str, bool]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.n_extreme_obs"><code class="name">var <span class="ident">n_extreme_obs</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.n_freq_table_max"><code class="name">var <span class="ident">n_freq_table_max</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.n_obs_unique"><code class="name">var <span class="ident">n_obs_unique</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.plot"><code class="name">var <span class="ident">plot</span> : <a title="pandas_profiling.config.Plot" href="#pandas_profiling.config.Plot">Plot</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.pool_size"><code class="name">var <span class="ident">pool_size</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.progress_bar"><code class="name">var <span class="ident">progress_bar</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.reject_variables"><code class="name">var <span class="ident">reject_variables</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.report"><code class="name">var <span class="ident">report</span> : <a title="pandas_profiling.config.Report" href="#pandas_profiling.config.Report">Report</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.samples"><code class="name">var <span class="ident">samples</span> : <a title="pandas_profiling.config.Samples" href="#pandas_profiling.config.Samples">Samples</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.show_variable_description"><code class="name">var <span class="ident">show_variable_description</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.sort"><code class="name">var <span class="ident">sort</span> : Union[str, NoneType]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.title"><code class="name">var <span class="ident">title</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.variables"><code class="name">var <span class="ident">variables</span> : <a title="pandas_profiling.config.Variables" href="#pandas_profiling.config.Variables">Variables</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Settings.vars"><code class="name">var <span class="ident">vars</span> : <a title="pandas_profiling.config.Univariate" href="#pandas_profiling.config.Univariate">Univariate</a></code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="pandas_profiling.config.Config.clear"><code class="name flex">
-<span>def <span class="ident">clear</span></span>(<span>self)</span>
+<dt id="pandas_profiling.config.Settings.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, updates: dict) ‑> <a title="pandas_profiling.config.Settings" href="#pandas_profiling.config.Settings">Settings</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -427,132 +1624,188 @@ def is_default(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def clear(self):
-    self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
-    self.set_file(str(get_config_default()))</code></pre>
+<pre><code class="python">def update(self, updates: dict) -&gt; &#34;Settings&#34;:
+    update = _merge_dictionaries(self.dict(), updates)
+    return self.parse_obj(self.copy(update=update))</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.config.Config.dump"><code class="name flex">
-<span>def <span class="ident">dump</span></span>(<span>self)</span>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Style"><code class="flex name class">
+<span>class <span class="ident">Style</span></span>
+<span>(</span><span>**data: Any)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def dump(self):
-    return self.config.dump()</code></pre>
+<pre><code class="python">class Style(BaseModel):
+    primary_color: str = &#34;#337ab7&#34;
+    logo: str = &#34;&#34;
+    theme: Optional[Theme] = None</code></pre>
 </details>
-</dd>
-<dt id="pandas_profiling.config.Config.set_arg_group"><code class="name flex">
-<span>def <span class="ident">set_arg_group</span></span>(<span>self, name)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_arg_group(self, name):
-    for key, value in self._arg_groups[name].items():
-        self.set_kwargs({key: value})</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.config.Config.set_args"><code class="name flex">
-<span>def <span class="ident">set_args</span></span>(<span>self, namespace: argparse.Namespace, dots: bool) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Set config variables based on the argparse Namespace object.</p>
-<h2 id="args">Args</h2>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
 <dl>
-<dt><strong><code>namespace</code></strong></dt>
-<dd>Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.</dd>
-<dt><strong><code>dots</code></strong></dt>
-<dd>If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
-    &#34;&#34;&#34;
-    Set config variables based on the argparse Namespace object.
-
-    Args:
-        namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
-        dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
-    &#34;&#34;&#34;
-    if self.config is not None:
-        self.config.set_args(namespace, dots)</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.config.Config.set_file"><code class="name flex">
-<span>def <span class="ident">set_file</span></span>(<span>self, file_name: Union[str, pathlib.Path]) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Set the config from a file</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>file_name</code></strong></dt>
-<dd>file name</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_file(self, file_name: Union[str, Path]) -&gt; None:
-    &#34;&#34;&#34;
-    Set the config from a file
-
-    Args:
-        file_name: file name
-    &#34;&#34;&#34;
-    if self.config is not None:
-        self.config.set_file(str(file_name))</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.config.Config.set_kwargs"><code class="name flex">
-<span>def <span class="ident">set_kwargs</span></span>(<span>self, kwargs) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Helper function to set config variables based on kwargs.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>kwargs</code></strong></dt>
-<dd>the arguments passed to the .profile_report() function</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_kwargs(self, kwargs) -&gt; None:
-    &#34;&#34;&#34;
-    Helper function to set config variables based on kwargs.
-
-    Args:
-        kwargs: the arguments passed to the .profile_report() function
-
-    &#34;&#34;&#34;
-    kwargs = self._handle_shorthands(kwargs)
-
-    self._set_kwargs(self.config, kwargs)</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.config.Config.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, other)</span>
-</code></dt>
+<dt id="pandas_profiling.config.Style.logo"><code class="name">var <span class="ident">logo</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Style.primary_color"><code class="name">var <span class="ident">primary_color</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Style.theme"><code class="name">var <span class="ident">theme</span> : Union[<a title="pandas_profiling.config.Theme" href="#pandas_profiling.config.Theme">Theme</a>, NoneType]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Theme"><code class="flex name class">
+<span>class <span class="ident">Theme</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def update(self, other):
-    if not isinstance(other, Config):
-        raise ValueError(&#34;Can only update config from a config object&#34;)
-    self.config = other.config</code></pre>
+<pre><code class="python">class Theme(Enum):
+    united = &#34;united&#34;
+    flatly = &#34;flatly&#34;</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Theme.flatly"><code class="name">var <span class="ident">flatly</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Theme.united"><code class="name">var <span class="ident">united</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Univariate"><code class="flex name class">
+<span>class <span class="ident">Univariate</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Univariate(BaseModel):
+    num: NumVars = NumVars()
+    cat: CatVars = CatVars()
+    image: ImageVars = ImageVars()
+    bool: BoolVars = BoolVars()
+    path: PathVars = PathVars()
+    file: FileVars = FileVars()
+    url: UrlVars = UrlVars()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Univariate.bool"><code class="name">var <span class="ident">bool</span> : <a title="pandas_profiling.config.BoolVars" href="#pandas_profiling.config.BoolVars">BoolVars</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Univariate.cat"><code class="name">var <span class="ident">cat</span> : <a title="pandas_profiling.config.CatVars" href="#pandas_profiling.config.CatVars">CatVars</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Univariate.file"><code class="name">var <span class="ident">file</span> : <a title="pandas_profiling.config.FileVars" href="#pandas_profiling.config.FileVars">FileVars</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Univariate.image"><code class="name">var <span class="ident">image</span> : <a title="pandas_profiling.config.ImageVars" href="#pandas_profiling.config.ImageVars">ImageVars</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Univariate.num"><code class="name">var <span class="ident">num</span> : <a title="pandas_profiling.config.NumVars" href="#pandas_profiling.config.NumVars">NumVars</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Univariate.path"><code class="name">var <span class="ident">path</span> : <a title="pandas_profiling.config.PathVars" href="#pandas_profiling.config.PathVars">PathVars</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.Univariate.url"><code class="name">var <span class="ident">url</span> : <a title="pandas_profiling.config.UrlVars" href="#pandas_profiling.config.UrlVars">UrlVars</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.UrlVars"><code class="flex name class">
+<span>class <span class="ident">UrlVars</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UrlVars(BaseModel):
+    active: bool = False</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.UrlVars.active"><code class="name">var <span class="ident">active</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.config.Variables"><code class="flex name class">
+<span>class <span class="ident">Variables</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Variables(BaseModel):
+    descriptions: dict = {}</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.Variables.descriptions"><code class="name">var <span class="ident">descriptions</span> : dict</code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
@@ -573,17 +1826,265 @@ def is_default(self):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="pandas_profiling.config.BoolVars" href="#pandas_profiling.config.BoolVars">BoolVars</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.BoolVars.mappings" href="#pandas_profiling.config.BoolVars.mappings">mappings</a></code></li>
+<li><code><a title="pandas_profiling.config.BoolVars.n_obs" href="#pandas_profiling.config.BoolVars.n_obs">n_obs</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.CatVars" href="#pandas_profiling.config.CatVars">CatVars</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.CatVars.cardinality_threshold" href="#pandas_profiling.config.CatVars.cardinality_threshold">cardinality_threshold</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.characters" href="#pandas_profiling.config.CatVars.characters">characters</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.chi_squared_threshold" href="#pandas_profiling.config.CatVars.chi_squared_threshold">chi_squared_threshold</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.coerce_str_to_date" href="#pandas_profiling.config.CatVars.coerce_str_to_date">coerce_str_to_date</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.histogram_largest" href="#pandas_profiling.config.CatVars.histogram_largest">histogram_largest</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.length" href="#pandas_profiling.config.CatVars.length">length</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.n_obs" href="#pandas_profiling.config.CatVars.n_obs">n_obs</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.redact" href="#pandas_profiling.config.CatVars.redact">redact</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.words" href="#pandas_profiling.config.CatVars.words">words</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="pandas_profiling.config.Config" href="#pandas_profiling.config.Config">Config</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Config.arg_groups" href="#pandas_profiling.config.Config.arg_groups">arg_groups</a></code></li>
+<li><code><a title="pandas_profiling.config.Config.get_arg_groups" href="#pandas_profiling.config.Config.get_arg_groups">get_arg_groups</a></code></li>
+<li><code><a title="pandas_profiling.config.Config.shorthands" href="#pandas_profiling.config.Config.shorthands">shorthands</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Correlation" href="#pandas_profiling.config.Correlation">Correlation</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Correlation.calculate" href="#pandas_profiling.config.Correlation.calculate">calculate</a></code></li>
+<li><code><a title="pandas_profiling.config.Correlation.key" href="#pandas_profiling.config.Correlation.key">key</a></code></li>
+<li><code><a title="pandas_profiling.config.Correlation.threshold" href="#pandas_profiling.config.Correlation.threshold">threshold</a></code></li>
+<li><code><a title="pandas_profiling.config.Correlation.warn_high_correlations" href="#pandas_profiling.config.Correlation.warn_high_correlations">warn_high_correlations</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.CorrelationPlot" href="#pandas_profiling.config.CorrelationPlot">CorrelationPlot</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.CorrelationPlot.bad" href="#pandas_profiling.config.CorrelationPlot.bad">bad</a></code></li>
+<li><code><a title="pandas_profiling.config.CorrelationPlot.cmap" href="#pandas_profiling.config.CorrelationPlot.cmap">cmap</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Correlations" href="#pandas_profiling.config.Correlations">Correlations</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Correlations.pearson" href="#pandas_profiling.config.Correlations.pearson">pearson</a></code></li>
+<li><code><a title="pandas_profiling.config.Correlations.spearman" href="#pandas_profiling.config.Correlations.spearman">spearman</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Dataset" href="#pandas_profiling.config.Dataset">Dataset</a></code></h4>
 <ul class="two-column">
-<li><code><a title="pandas_profiling.config.Config.clear" href="#pandas_profiling.config.Config.clear">clear</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.config" href="#pandas_profiling.config.Config.config">config</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.dump" href="#pandas_profiling.config.Config.dump">dump</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.is_default" href="#pandas_profiling.config.Config.is_default">is_default</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.set_arg_group" href="#pandas_profiling.config.Config.set_arg_group">set_arg_group</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.set_args" href="#pandas_profiling.config.Config.set_args">set_args</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.set_file" href="#pandas_profiling.config.Config.set_file">set_file</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.set_kwargs" href="#pandas_profiling.config.Config.set_kwargs">set_kwargs</a></code></li>
-<li><code><a title="pandas_profiling.config.Config.update" href="#pandas_profiling.config.Config.update">update</a></code></li>
+<li><code><a title="pandas_profiling.config.Dataset.author" href="#pandas_profiling.config.Dataset.author">author</a></code></li>
+<li><code><a title="pandas_profiling.config.Dataset.copyright_holder" href="#pandas_profiling.config.Dataset.copyright_holder">copyright_holder</a></code></li>
+<li><code><a title="pandas_profiling.config.Dataset.copyright_year" href="#pandas_profiling.config.Dataset.copyright_year">copyright_year</a></code></li>
+<li><code><a title="pandas_profiling.config.Dataset.creator" href="#pandas_profiling.config.Dataset.creator">creator</a></code></li>
+<li><code><a title="pandas_profiling.config.Dataset.description" href="#pandas_profiling.config.Dataset.description">description</a></code></li>
+<li><code><a title="pandas_profiling.config.Dataset.url" href="#pandas_profiling.config.Dataset.url">url</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Duplicates" href="#pandas_profiling.config.Duplicates">Duplicates</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Duplicates.head" href="#pandas_profiling.config.Duplicates.head">head</a></code></li>
+<li><code><a title="pandas_profiling.config.Duplicates.key" href="#pandas_profiling.config.Duplicates.key">key</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.FileVars" href="#pandas_profiling.config.FileVars">FileVars</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.FileVars.active" href="#pandas_profiling.config.FileVars.active">active</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Histogram" href="#pandas_profiling.config.Histogram">Histogram</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Histogram.bins" href="#pandas_profiling.config.Histogram.bins">bins</a></code></li>
+<li><code><a title="pandas_profiling.config.Histogram.max_bins" href="#pandas_profiling.config.Histogram.max_bins">max_bins</a></code></li>
+<li><code><a title="pandas_profiling.config.Histogram.x_axis_labels" href="#pandas_profiling.config.Histogram.x_axis_labels">x_axis_labels</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Html" href="#pandas_profiling.config.Html">Html</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pandas_profiling.config.Html.assets_path" href="#pandas_profiling.config.Html.assets_path">assets_path</a></code></li>
+<li><code><a title="pandas_profiling.config.Html.assets_prefix" href="#pandas_profiling.config.Html.assets_prefix">assets_prefix</a></code></li>
+<li><code><a title="pandas_profiling.config.Html.full_width" href="#pandas_profiling.config.Html.full_width">full_width</a></code></li>
+<li><code><a title="pandas_profiling.config.Html.inline" href="#pandas_profiling.config.Html.inline">inline</a></code></li>
+<li><code><a title="pandas_profiling.config.Html.minify_html" href="#pandas_profiling.config.Html.minify_html">minify_html</a></code></li>
+<li><code><a title="pandas_profiling.config.Html.navbar_show" href="#pandas_profiling.config.Html.navbar_show">navbar_show</a></code></li>
+<li><code><a title="pandas_profiling.config.Html.style" href="#pandas_profiling.config.Html.style">style</a></code></li>
+<li><code><a title="pandas_profiling.config.Html.use_local_assets" href="#pandas_profiling.config.Html.use_local_assets">use_local_assets</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Iframe" href="#pandas_profiling.config.Iframe">Iframe</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Iframe.attribute" href="#pandas_profiling.config.Iframe.attribute">attribute</a></code></li>
+<li><code><a title="pandas_profiling.config.Iframe.height" href="#pandas_profiling.config.Iframe.height">height</a></code></li>
+<li><code><a title="pandas_profiling.config.Iframe.width" href="#pandas_profiling.config.Iframe.width">width</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.IframeAttribute" href="#pandas_profiling.config.IframeAttribute">IframeAttribute</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.IframeAttribute.src" href="#pandas_profiling.config.IframeAttribute.src">src</a></code></li>
+<li><code><a title="pandas_profiling.config.IframeAttribute.srcdoc" href="#pandas_profiling.config.IframeAttribute.srcdoc">srcdoc</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.ImageType" href="#pandas_profiling.config.ImageType">ImageType</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.ImageType.png" href="#pandas_profiling.config.ImageType.png">png</a></code></li>
+<li><code><a title="pandas_profiling.config.ImageType.svg" href="#pandas_profiling.config.ImageType.svg">svg</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.ImageVars" href="#pandas_profiling.config.ImageVars">ImageVars</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.ImageVars.active" href="#pandas_profiling.config.ImageVars.active">active</a></code></li>
+<li><code><a title="pandas_profiling.config.ImageVars.exif" href="#pandas_profiling.config.ImageVars.exif">exif</a></code></li>
+<li><code><a title="pandas_profiling.config.ImageVars.hash" href="#pandas_profiling.config.ImageVars.hash">hash</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Interactions" href="#pandas_profiling.config.Interactions">Interactions</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Interactions.continuous" href="#pandas_profiling.config.Interactions.continuous">continuous</a></code></li>
+<li><code><a title="pandas_profiling.config.Interactions.targets" href="#pandas_profiling.config.Interactions.targets">targets</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.MissingPlot" href="#pandas_profiling.config.MissingPlot">MissingPlot</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.MissingPlot.cmap" href="#pandas_profiling.config.MissingPlot.cmap">cmap</a></code></li>
+<li><code><a title="pandas_profiling.config.MissingPlot.force_labels" href="#pandas_profiling.config.MissingPlot.force_labels">force_labels</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Notebook" href="#pandas_profiling.config.Notebook">Notebook</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Notebook.iframe" href="#pandas_profiling.config.Notebook.iframe">iframe</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.NumVars" href="#pandas_profiling.config.NumVars">NumVars</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.NumVars.chi_squared_threshold" href="#pandas_profiling.config.NumVars.chi_squared_threshold">chi_squared_threshold</a></code></li>
+<li><code><a title="pandas_profiling.config.NumVars.low_categorical_threshold" href="#pandas_profiling.config.NumVars.low_categorical_threshold">low_categorical_threshold</a></code></li>
+<li><code><a title="pandas_profiling.config.NumVars.quantiles" href="#pandas_profiling.config.NumVars.quantiles">quantiles</a></code></li>
+<li><code><a title="pandas_profiling.config.NumVars.skewness_threshold" href="#pandas_profiling.config.NumVars.skewness_threshold">skewness_threshold</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.PathVars" href="#pandas_profiling.config.PathVars">PathVars</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.PathVars.active" href="#pandas_profiling.config.PathVars.active">active</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Pie" href="#pandas_profiling.config.Pie">Pie</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Pie.max_unique" href="#pandas_profiling.config.Pie.max_unique">max_unique</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Plot" href="#pandas_profiling.config.Plot">Plot</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pandas_profiling.config.Plot.correlation" href="#pandas_profiling.config.Plot.correlation">correlation</a></code></li>
+<li><code><a title="pandas_profiling.config.Plot.dpi" href="#pandas_profiling.config.Plot.dpi">dpi</a></code></li>
+<li><code><a title="pandas_profiling.config.Plot.histogram" href="#pandas_profiling.config.Plot.histogram">histogram</a></code></li>
+<li><code><a title="pandas_profiling.config.Plot.image_format" href="#pandas_profiling.config.Plot.image_format">image_format</a></code></li>
+<li><code><a title="pandas_profiling.config.Plot.missing" href="#pandas_profiling.config.Plot.missing">missing</a></code></li>
+<li><code><a title="pandas_profiling.config.Plot.pie" href="#pandas_profiling.config.Plot.pie">pie</a></code></li>
+<li><code><a title="pandas_profiling.config.Plot.scatter_threshold" href="#pandas_profiling.config.Plot.scatter_threshold">scatter_threshold</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Report" href="#pandas_profiling.config.Report">Report</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Report.precision" href="#pandas_profiling.config.Report.precision">precision</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Samples" href="#pandas_profiling.config.Samples">Samples</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Samples.head" href="#pandas_profiling.config.Samples.head">head</a></code></li>
+<li><code><a title="pandas_profiling.config.Samples.random" href="#pandas_profiling.config.Samples.random">random</a></code></li>
+<li><code><a title="pandas_profiling.config.Samples.tail" href="#pandas_profiling.config.Samples.tail">tail</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Settings" href="#pandas_profiling.config.Settings">Settings</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Settings.categorical_maximum_correlation_distinct" href="#pandas_profiling.config.Settings.categorical_maximum_correlation_distinct">categorical_maximum_correlation_distinct</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.correlations" href="#pandas_profiling.config.Settings.correlations">correlations</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.dataset" href="#pandas_profiling.config.Settings.dataset">dataset</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.duplicates" href="#pandas_profiling.config.Settings.duplicates">duplicates</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.html" href="#pandas_profiling.config.Settings.html">html</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.infer_dtypes" href="#pandas_profiling.config.Settings.infer_dtypes">infer_dtypes</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.interactions" href="#pandas_profiling.config.Settings.interactions">interactions</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.memory_deep" href="#pandas_profiling.config.Settings.memory_deep">memory_deep</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.missing_diagrams" href="#pandas_profiling.config.Settings.missing_diagrams">missing_diagrams</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.n_extreme_obs" href="#pandas_profiling.config.Settings.n_extreme_obs">n_extreme_obs</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.n_freq_table_max" href="#pandas_profiling.config.Settings.n_freq_table_max">n_freq_table_max</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.n_obs_unique" href="#pandas_profiling.config.Settings.n_obs_unique">n_obs_unique</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.plot" href="#pandas_profiling.config.Settings.plot">plot</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.pool_size" href="#pandas_profiling.config.Settings.pool_size">pool_size</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.progress_bar" href="#pandas_profiling.config.Settings.progress_bar">progress_bar</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.reject_variables" href="#pandas_profiling.config.Settings.reject_variables">reject_variables</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.report" href="#pandas_profiling.config.Settings.report">report</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.samples" href="#pandas_profiling.config.Settings.samples">samples</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.show_variable_description" href="#pandas_profiling.config.Settings.show_variable_description">show_variable_description</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.sort" href="#pandas_profiling.config.Settings.sort">sort</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.title" href="#pandas_profiling.config.Settings.title">title</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.update" href="#pandas_profiling.config.Settings.update">update</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.variables" href="#pandas_profiling.config.Settings.variables">variables</a></code></li>
+<li><code><a title="pandas_profiling.config.Settings.vars" href="#pandas_profiling.config.Settings.vars">vars</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Style" href="#pandas_profiling.config.Style">Style</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Style.logo" href="#pandas_profiling.config.Style.logo">logo</a></code></li>
+<li><code><a title="pandas_profiling.config.Style.primary_color" href="#pandas_profiling.config.Style.primary_color">primary_color</a></code></li>
+<li><code><a title="pandas_profiling.config.Style.theme" href="#pandas_profiling.config.Style.theme">theme</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Theme" href="#pandas_profiling.config.Theme">Theme</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Theme.flatly" href="#pandas_profiling.config.Theme.flatly">flatly</a></code></li>
+<li><code><a title="pandas_profiling.config.Theme.united" href="#pandas_profiling.config.Theme.united">united</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Univariate" href="#pandas_profiling.config.Univariate">Univariate</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pandas_profiling.config.Univariate.bool" href="#pandas_profiling.config.Univariate.bool">bool</a></code></li>
+<li><code><a title="pandas_profiling.config.Univariate.cat" href="#pandas_profiling.config.Univariate.cat">cat</a></code></li>
+<li><code><a title="pandas_profiling.config.Univariate.file" href="#pandas_profiling.config.Univariate.file">file</a></code></li>
+<li><code><a title="pandas_profiling.config.Univariate.image" href="#pandas_profiling.config.Univariate.image">image</a></code></li>
+<li><code><a title="pandas_profiling.config.Univariate.num" href="#pandas_profiling.config.Univariate.num">num</a></code></li>
+<li><code><a title="pandas_profiling.config.Univariate.path" href="#pandas_profiling.config.Univariate.path">path</a></code></li>
+<li><code><a title="pandas_profiling.config.Univariate.url" href="#pandas_profiling.config.Univariate.url">url</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.UrlVars" href="#pandas_profiling.config.UrlVars">UrlVars</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.UrlVars.active" href="#pandas_profiling.config.UrlVars.active">active</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.config.Variables" href="#pandas_profiling.config.Variables">Variables</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.Variables.descriptions" href="#pandas_profiling.config.Variables.descriptions">descriptions</a></code></li>
 </ul>
 </li>
 </ul>

@@ -31,7 +31,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLRoot(Root):
-    def render(self, **kwargs):
+    def render(self, **kwargs) -&gt; str:
         nav_items = [
             (section.name, section.anchor_id)
             for section in self.content[&#34;body&#34;].content[&#34;items&#34;]
@@ -62,7 +62,7 @@ class HTMLRoot(Root):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLRoot(Root):
-    def render(self, **kwargs):
+    def render(self, **kwargs) -&gt; str:
         nav_items = [
             (section.name, section.anchor_id)
             for section in self.content[&#34;body&#34;].content[&#34;items&#34;]
@@ -82,7 +82,7 @@ class HTMLRoot(Root):
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.root.HTMLRoot.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self, **kwargs)</span>
+<span>def <span class="ident">render</span></span>(<span>self, **kwargs) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -90,7 +90,7 @@ class HTMLRoot(Root):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self, **kwargs):
+<pre><code class="python">def render(self, **kwargs) -&gt; str:
     nav_items = [
         (section.name, section.anchor_id)
         for section in self.content[&#34;body&#34;].content[&#34;items&#34;]

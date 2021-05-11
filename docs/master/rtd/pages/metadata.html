@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Metadata &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>Metadata &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -219,12 +223,12 @@
 You can find these properties in the “Overview” section under the “About” tab.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Masked data&quot;</span><span class="p">,</span>
-    <span class="n">dataset</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This profiling report was generated using a sample of 5</span><span class="si">% o</span><span class="s2">f the original dataset.&quot;</span><span class="p">,</span>
-        <span class="n">copyright_holder</span><span class="o">=</span><span class="s2">&quot;StataCorp LLC&quot;</span><span class="p">,</span>
-        <span class="n">copyright_year</span><span class="o">=</span><span class="s2">&quot;2020&quot;</span><span class="p">,</span>
-        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://www.stata-press.com/data/r15/auto2.dta&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;This profiling report was generated using a sample of 5</span><span class="si">% o</span><span class="s2">f the original dataset.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;copyright_holder&quot;</span><span class="p">:</span> <span class="s2">&quot;StataCorp LLC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;copyright_year&quot;</span><span class="p">:</span> <span class="s2">&quot;2020&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://www.stata-press.com/data/r15/auto2.dta&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
 <span class="p">)</span>
 <span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;stata_auto_report.html&quot;</span><span class="p">))</span>
 </pre></div>
@@ -236,14 +240,13 @@ You can find these properties in the “Overview” section under the “About�
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Generate a report with descriptions per variable</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
-        <span class="n">variables</span><span class="o">=</span><span class="p">{</span>
-                <span class="s1">&#39;descriptions&#39;</span><span class="p">:</span>
-                <span class="p">{</span>
-                      <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;Files in the filesystem&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;datec&#39;</span><span class="p">:</span> <span class="s1">&#39;Creation date&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;datem&#39;</span><span class="p">:</span> <span class="s1">&#39;Modification date&#39;</span><span class="p">,</span>
-                <span class="p">}</span>
-        <span class="p">)</span>
+    <span class="n">variables</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;descriptions&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;files&quot;</span><span class="p">:</span> <span class="s2">&quot;Files in the filesystem&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;datec&quot;</span><span class="p">:</span> <span class="s2">&quot;Creation date&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;datem&quot;</span><span class="p">:</span> <span class="s2">&quot;Modification date&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 <span class="p">)</span>
 
 <span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">)</span>
@@ -267,19 +270,18 @@ By default, the descriptions are presented in the overview tab and next to each 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pandas_profiling</span>
 
-<span class="n">definition_file</span> <span class="o">=</span> <span class="s1">&#39;dataset_column_definition.json&#39;</span>
+<span class="n">definition_file</span> <span class="o">=</span> <span class="s2">&quot;dataset_column_definition.json&quot;</span>
 
 <span class="c1"># Read the variable descriptions</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">definition_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">definition_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">definitions</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="c1"># By default, the descriptions are presented in the overview tab and next to each variable</span>
-<span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">descriptions</span><span class="o">=</span><span class="n">definitions</span><span class="p">))</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;descriptions&quot;</span><span class="p">:</span> <span class="n">definitions</span><span class="p">})</span>
 
 <span class="c1"># We can disable showing the descriptions next to each variable</span>
 <span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
-        <span class="n">variable</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">descriptions</span><span class="o">=</span><span class="n">definitions</span><span class="p">),</span>
-        <span class="n">show_variable_description</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">variable</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;descriptions&quot;</span><span class="p">:</span> <span class="n">definitions</span><span class="p">},</span> <span class="n">show_variable_description</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
 <span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;report.html&#39;</span><span class="p">)</span>

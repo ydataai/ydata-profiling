@@ -28,12 +28,12 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Generate the report.&#34;&#34;&#34;
-from typing import List
+from typing import List, Sequence
 
 import pandas as pd
 from tqdm.auto import tqdm
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.handler import get_render_map
 from pandas_profiling.model.messages import MessageType
 from pandas_profiling.report.presentation.core import (
@@ -51,37 +51,36 @@ from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.utils.dataframe import slugify
 
 
-def get_missing_items(summary) -&gt; list:
+def get_missing_items(config: Settings, summary: dict) -&gt; list:
     &#34;&#34;&#34;Return the missing diagrams
 
     Args:
+        config: report Settings object
         summary: the dataframe summary
 
     Returns:
         A list with the missing diagrams
     &#34;&#34;&#34;
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-    items = []
-    for key, item in summary[&#34;missing&#34;].items():
-        items.append(
-            ImageWidget(
-                item[&#34;matrix&#34;],
-                image_format=image_format,
-                alt=item[&#34;name&#34;],
-                name=item[&#34;name&#34;],
-                anchor_id=key,
-                caption=item[&#34;caption&#34;],
-            )
+    items = [
+        ImageWidget(
+            item[&#34;matrix&#34;],
+            image_format=config.plot.image_format,
+            alt=item[&#34;name&#34;],
+            name=item[&#34;name&#34;],
+            anchor_id=key,
+            caption=item[&#34;caption&#34;],
         )
+        for key, item in summary[&#34;missing&#34;].items()
+    ]
 
     return items
 
 
-# TODO: split in per variable function
-def render_variables_section(dataframe_summary: dict) -&gt; list:
+def render_variables_section(config: Settings, dataframe_summary: dict) -&gt; list:
     &#34;&#34;&#34;Render the HTML for each of the variables in the DataFrame.
 
     Args:
+        config: report Settings object
         dataframe_summary: The statistics for each variable.
 
     Returns:
@@ -90,9 +89,9 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
 
     templs = []
 
-    descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
-    show_description = config[&#34;show_variable_description&#34;].get(bool)
-    reject_variables = config[&#34;reject_variables&#34;].get(bool)
+    descriptions = config.variables.descriptions
+    show_description = config.show_variable_description
+    reject_variables = config.reject_variables
 
     render_map = get_render_map()
 
@@ -128,7 +127,9 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(render_map[summary[&#34;type&#34;]](template_variables))
+        template_variables.update(
+            render_map[summary[&#34;type&#34;]](config, template_variables)
+        )
 
         # Ignore these
         if reject_variables:
@@ -154,7 +155,7 @@ def render_variables_section(dataframe_summary: dict) -&gt; list:
     return templs
 
 
-def get_duplicates_items(duplicates: pd.DataFrame):
+def get_duplicates_items(duplicates: pd.DataFrame) -&gt; Sequence[Renderable]:
     &#34;&#34;&#34;Create the list of duplicates items
 
     Args:
@@ -168,14 +169,14 @@ def get_duplicates_items(duplicates: pd.DataFrame):
         items.append(
             Duplicate(
                 duplicate=duplicates,
-                name=&#34;Most frequent&#34;,
+                name=&#34;Most frequently occurring&#34;,
                 anchor_id=&#34;duplicates&#34;,
             )
         )
     return items
 
 
-def get_definition_items(definitions: pd.DataFrame):
+def get_definition_items(definitions: pd.DataFrame) -&gt; Sequence[Renderable]:
     &#34;&#34;&#34;Create the list of duplicates items
 
     Args:
@@ -196,7 +197,7 @@ def get_definition_items(definitions: pd.DataFrame):
     return items
 
 
-def get_sample_items(sample: dict):
+def get_sample_items(sample: dict) -&gt; List[Sample]:
     &#34;&#34;&#34;Create the list of sample items
 
     Args:
@@ -212,7 +213,7 @@ def get_sample_items(sample: dict):
     return items
 
 
-def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
+def get_scatter_matrix(config: Settings, scatter_matrix: dict) -&gt; list:
     &#34;&#34;&#34;Returns the interaction components for the report
 
     Args:
@@ -221,22 +222,19 @@ def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
     Returns:
         A list of components for the interaction section of the report
     &#34;&#34;&#34;
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-
     titems = []
 
     for x_col, y_cols in scatter_matrix.items():
-        items = []
-        for y_col, splot in y_cols.items():
-            items.append(
-                ImageWidget(
-                    splot,
-                    image_format=image_format,
-                    alt=f&#34;{x_col} x {y_col}&#34;,
-                    anchor_id=f&#34;interactions_{slugify(x_col)}_{slugify(y_col)}&#34;,
-                    name=y_col,
-                )
+        items = [
+            ImageWidget(
+                splot,
+                image_format=config.plot.image_format,
+                alt=f&#34;{x_col} x {y_col}&#34;,
+                anchor_id=f&#34;interactions_{slugify(x_col)}_{slugify(y_col)}&#34;,
+                name=y_col,
             )
+            for y_col, splot in y_cols.items()
+        ]
 
         titems.append(
             Container(
@@ -250,16 +248,17 @@ def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
     return titems
 
 
-def get_report_structure(summary: dict) -&gt; Renderable:
+def get_report_structure(config: Settings, summary: dict) -&gt; Root:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
     Args:
+      config: report Settings object
       summary: Statistics to use for the overview, variables, correlations and missing values.
 
     Returns:
       The profile report in HTML format
     &#34;&#34;&#34;
-    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    disable_progress_bar = not config.progress_bar
     with tqdm(
         total=1, desc=&#34;Generate report structure&#34;, disable=disable_progress_bar
     ) as pbar:
@@ -267,20 +266,20 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 
         section_items: List[Renderable] = [
             Container(
-                get_dataset_items(summary, warnings),
+                get_dataset_items(config, summary, warnings),
                 sequence_type=&#34;tabs&#34;,
                 name=&#34;Overview&#34;,
                 anchor_id=&#34;overview&#34;,
             ),
             Container(
-                render_variables_section(summary),
+                render_variables_section(config, summary),
                 sequence_type=&#34;accordion&#34;,
                 name=&#34;Variables&#34;,
                 anchor_id=&#34;variables&#34;,
             ),
         ]
 
-        scatter_items = get_scatter_matrix(summary[&#34;scatter&#34;])
+        scatter_items = get_scatter_matrix(config, summary[&#34;scatter&#34;])
         if len(scatter_items) &gt; 0:
             section_items.append(
                 Container(
@@ -291,11 +290,11 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                 ),
             )
 
-        corr = get_correlation_items(summary)
+        corr = get_correlation_items(config, summary)
         if corr is not None:
             section_items.append(corr)
 
-        missing_items = get_missing_items(summary)
+        missing_items = get_missing_items(config, summary)
         if len(missing_items) &gt; 0:
             section_items.append(
                 Container(
@@ -328,7 +327,12 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                 )
             )
 
-        sections = Container(section_items, name=&#34;Root&#34;, sequence_type=&#34;sections&#34;)
+        sections = Container(
+            section_items,
+            name=&#34;Root&#34;,
+            sequence_type=&#34;sections&#34;,
+            full_width=config.html.full_width,
+        )
         pbar.update()
 
     footer = HTML(
@@ -346,7 +350,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.structure.report.get_definition_items"><code class="name flex">
-<span>def <span class="ident">get_definition_items</span></span>(<span>definitions: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">get_definition_items</span></span>(<span>definitions: pandas.core.frame.DataFrame) ‑> Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the list of duplicates items</p>
@@ -361,7 +365,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_definition_items(definitions: pd.DataFrame):
+<pre><code class="python">def get_definition_items(definitions: pd.DataFrame) -&gt; Sequence[Renderable]:
     &#34;&#34;&#34;Create the list of duplicates items
 
     Args:
@@ -383,7 +387,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_duplicates_items"><code class="name flex">
-<span>def <span class="ident">get_duplicates_items</span></span>(<span>duplicates: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">get_duplicates_items</span></span>(<span>duplicates: pandas.core.frame.DataFrame) ‑> Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the list of duplicates items</p>
@@ -398,7 +402,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_duplicates_items(duplicates: pd.DataFrame):
+<pre><code class="python">def get_duplicates_items(duplicates: pd.DataFrame) -&gt; Sequence[Renderable]:
     &#34;&#34;&#34;Create the list of duplicates items
 
     Args:
@@ -412,7 +416,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
         items.append(
             Duplicate(
                 duplicate=duplicates,
-                name=&#34;Most frequent&#34;,
+                name=&#34;Most frequently occurring&#34;,
                 anchor_id=&#34;duplicates&#34;,
             )
         )
@@ -420,12 +424,14 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_missing_items"><code class="name flex">
-<span>def <span class="ident">get_missing_items</span></span>(<span>summary) ‑> list</span>
+<span>def <span class="ident">get_missing_items</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> list</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the missing diagrams</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>summary</code></strong></dt>
 <dd>the dataframe summary</dd>
 </dl>
@@ -435,39 +441,40 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_missing_items(summary) -&gt; list:
+<pre><code class="python">def get_missing_items(config: Settings, summary: dict) -&gt; list:
     &#34;&#34;&#34;Return the missing diagrams
 
     Args:
+        config: report Settings object
         summary: the dataframe summary
 
     Returns:
         A list with the missing diagrams
     &#34;&#34;&#34;
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-    items = []
-    for key, item in summary[&#34;missing&#34;].items():
-        items.append(
-            ImageWidget(
-                item[&#34;matrix&#34;],
-                image_format=image_format,
-                alt=item[&#34;name&#34;],
-                name=item[&#34;name&#34;],
-                anchor_id=key,
-                caption=item[&#34;caption&#34;],
-            )
+    items = [
+        ImageWidget(
+            item[&#34;matrix&#34;],
+            image_format=config.plot.image_format,
+            alt=item[&#34;name&#34;],
+            name=item[&#34;name&#34;],
+            anchor_id=key,
+            caption=item[&#34;caption&#34;],
         )
+        for key, item in summary[&#34;missing&#34;].items()
+    ]
 
     return items</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_report_structure"><code class="name flex">
-<span>def <span class="ident">get_report_structure</span></span>(<span>summary: dict) ‑> <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></span>
+<span>def <span class="ident">get_report_structure</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> <a title="pandas_profiling.report.presentation.core.root.Root" href="../presentation/core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a HTML report from summary statistics and a given sample.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>summary</code></strong></dt>
 <dd>Statistics to use for the overview, variables, correlations and missing values.</dd>
 </dl>
@@ -477,16 +484,17 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_report_structure(summary: dict) -&gt; Renderable:
+<pre><code class="python">def get_report_structure(config: Settings, summary: dict) -&gt; Root:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
     Args:
+      config: report Settings object
       summary: Statistics to use for the overview, variables, correlations and missing values.
 
     Returns:
       The profile report in HTML format
     &#34;&#34;&#34;
-    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    disable_progress_bar = not config.progress_bar
     with tqdm(
         total=1, desc=&#34;Generate report structure&#34;, disable=disable_progress_bar
     ) as pbar:
@@ -494,20 +502,20 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 
         section_items: List[Renderable] = [
             Container(
-                get_dataset_items(summary, warnings),
+                get_dataset_items(config, summary, warnings),
                 sequence_type=&#34;tabs&#34;,
                 name=&#34;Overview&#34;,
                 anchor_id=&#34;overview&#34;,
             ),
             Container(
-                render_variables_section(summary),
+                render_variables_section(config, summary),
                 sequence_type=&#34;accordion&#34;,
                 name=&#34;Variables&#34;,
                 anchor_id=&#34;variables&#34;,
             ),
         ]
 
-        scatter_items = get_scatter_matrix(summary[&#34;scatter&#34;])
+        scatter_items = get_scatter_matrix(config, summary[&#34;scatter&#34;])
         if len(scatter_items) &gt; 0:
             section_items.append(
                 Container(
@@ -518,11 +526,11 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                 ),
             )
 
-        corr = get_correlation_items(summary)
+        corr = get_correlation_items(config, summary)
         if corr is not None:
             section_items.append(corr)
 
-        missing_items = get_missing_items(summary)
+        missing_items = get_missing_items(config, summary)
         if len(missing_items) &gt; 0:
             section_items.append(
                 Container(
@@ -555,7 +563,12 @@ def get_report_structure(summary: dict) -&gt; Renderable:
                 )
             )
 
-        sections = Container(section_items, name=&#34;Root&#34;, sequence_type=&#34;sections&#34;)
+        sections = Container(
+            section_items,
+            name=&#34;Root&#34;,
+            sequence_type=&#34;sections&#34;,
+            full_width=config.html.full_width,
+        )
         pbar.update()
 
     footer = HTML(
@@ -566,7 +579,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_sample_items"><code class="name flex">
-<span>def <span class="ident">get_sample_items</span></span>(<span>sample: dict)</span>
+<span>def <span class="ident">get_sample_items</span></span>(<span>sample: dict) ‑> List[<a title="pandas_profiling.report.presentation.core.sample.Sample" href="../presentation/core/sample.html#pandas_profiling.report.presentation.core.sample.Sample">Sample</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the list of sample items</p>
@@ -581,7 +594,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_sample_items(sample: dict):
+<pre><code class="python">def get_sample_items(sample: dict) -&gt; List[Sample]:
     &#34;&#34;&#34;Create the list of sample items
 
     Args:
@@ -598,7 +611,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.get_scatter_matrix"><code class="name flex">
-<span>def <span class="ident">get_scatter_matrix</span></span>(<span>scatter_matrix: dict) ‑> list</span>
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, scatter_matrix: dict) ‑> list</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the interaction components for the report</p>
@@ -613,7 +626,7 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_scatter_matrix(scatter_matrix: dict) -&gt; list:
+<pre><code class="python">def get_scatter_matrix(config: Settings, scatter_matrix: dict) -&gt; list:
     &#34;&#34;&#34;Returns the interaction components for the report
 
     Args:
@@ -622,22 +635,19 @@ def get_report_structure(summary: dict) -&gt; Renderable:
     Returns:
         A list of components for the interaction section of the report
     &#34;&#34;&#34;
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-
     titems = []
 
     for x_col, y_cols in scatter_matrix.items():
-        items = []
-        for y_col, splot in y_cols.items():
-            items.append(
-                ImageWidget(
-                    splot,
-                    image_format=image_format,
-                    alt=f&#34;{x_col} x {y_col}&#34;,
-                    anchor_id=f&#34;interactions_{slugify(x_col)}_{slugify(y_col)}&#34;,
-                    name=y_col,
-                )
+        items = [
+            ImageWidget(
+                splot,
+                image_format=config.plot.image_format,
+                alt=f&#34;{x_col} x {y_col}&#34;,
+                anchor_id=f&#34;interactions_{slugify(x_col)}_{slugify(y_col)}&#34;,
+                name=y_col,
             )
+            for y_col, splot in y_cols.items()
+        ]
 
         titems.append(
             Container(
@@ -652,12 +662,14 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.report.render_variables_section"><code class="name flex">
-<span>def <span class="ident">render_variables_section</span></span>(<span>dataframe_summary: dict) ‑> list</span>
+<span>def <span class="ident">render_variables_section</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, dataframe_summary: dict) ‑> list</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Render the HTML for each of the variables in the DataFrame.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>dataframe_summary</code></strong></dt>
 <dd>The statistics for each variable.</dd>
 </dl>
@@ -667,10 +679,11 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_variables_section(dataframe_summary: dict) -&gt; list:
+<pre><code class="python">def render_variables_section(config: Settings, dataframe_summary: dict) -&gt; list:
     &#34;&#34;&#34;Render the HTML for each of the variables in the DataFrame.
 
     Args:
+        config: report Settings object
         dataframe_summary: The statistics for each variable.
 
     Returns:
@@ -679,9 +692,9 @@ def get_report_structure(summary: dict) -&gt; Renderable:
 
     templs = []
 
-    descriptions = config[&#34;variables&#34;][&#34;descriptions&#34;].get(dict)
-    show_description = config[&#34;show_variable_description&#34;].get(bool)
-    reject_variables = config[&#34;reject_variables&#34;].get(bool)
+    descriptions = config.variables.descriptions
+    show_description = config.show_variable_description
+    reject_variables = config.reject_variables
 
     render_map = get_render_map()
 
@@ -717,7 +730,9 @@ def get_report_structure(summary: dict) -&gt; Renderable:
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(render_map[summary[&#34;type&#34;]](template_variables))
+        template_variables.update(
+            render_map[summary[&#34;type&#34;]](config, template_variables)
+        )
 
         # Ignore these
         if reject_variables:

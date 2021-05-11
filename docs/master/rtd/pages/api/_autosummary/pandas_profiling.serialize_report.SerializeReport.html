@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.serialize_report.SerializeReport &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>pandas_profiling.serialize_report.SerializeReport &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -119,6 +123,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../settings.html">Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../controller.html">Controller</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../model.html">Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../report.html">Report</a></li>
@@ -229,12 +234,12 @@
   <div class="section" id="pandas-profiling-serialize-report-serializereport">
 <h1>pandas_profiling.serialize_report.SerializeReport<a class="headerlink" href="#pandas-profiling-serialize-report-serializereport" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="pandas_profiling.serialize_report.SerializeReport">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pandas_profiling.serialize_report.</span></code><code class="sig-name descname"><span class="pre">SerializeReport</span></code><a class="reference internal" href="../../../_modules/pandas_profiling/serialize_report.html#SerializeReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.serialize_report.SerializeReport" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pandas_profiling.serialize_report.SerializeReport">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pandas_profiling.serialize_report.</span></span><span class="sig-name descname"><span class="pre">SerializeReport</span></span><a class="reference internal" href="../../../_modules/pandas_profiling/serialize_report.html#SerializeReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.serialize_report.SerializeReport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extend the report to be able to dump and load reports.</p>
 <dl class="py method">
-<dt id="pandas_profiling.serialize_report.SerializeReport.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pandas_profiling.serialize_report.SerializeReport.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pandas_profiling.serialize_report.SerializeReport.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pandas_profiling.serialize_report.SerializeReport.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -254,10 +259,10 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>()</p></td>
 <td><p>Serialize ProfileReport and return bytes for reproducing ProfileReport or Caching.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(load_file[, ignore_config])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(load_file)</p></td>
 <td><p>Load ProfileReport from file</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(data[, ignore_config])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(data)</p></td>
 <td><p>Deserialize the serialized report</p></td>
 </tr>
 </tbody>
@@ -269,11 +274,19 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">df</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">config</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_hash</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">df</span></code></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">df_hash</span></code></p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</p></td>
 </tr>
 </tbody>
 </table>

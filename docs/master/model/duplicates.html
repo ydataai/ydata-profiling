@@ -26,31 +26,32 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any, Dict, Optional, Tuple
+<pre><code class="python">from typing import Any, Dict, Optional, Sequence, Tuple
 
 import pandas as pd
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 
 
 def get_duplicates(
-    df: pd.DataFrame, supported_columns
+    config: Settings, df: pd.DataFrame, supported_columns: Sequence
 ) -&gt; Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
     &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
+        config: report Settings object
         df: the Pandas DataFrame.
         supported_columns: the columns to consider
 
     Returns:
         A subset of the DataFrame, ordered by occurrence.
     &#34;&#34;&#34;
-    n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
+    n_head = config.duplicates.head
 
     metrics: Dict[str, Any] = {}
     if n_head &gt; 0:
         if supported_columns and len(df) &gt; 0:
-            duplicates_key = config[&#34;duplicates&#34;][&#34;key&#34;].get(str)
+            duplicates_key = config.duplicates.key
             if duplicates_key in df.columns:
                 raise ValueError(
                     f&#34;Duplicates key ({duplicates_key}) may not be part of the DataFrame. Either change the &#34;
@@ -88,12 +89,14 @@ def get_duplicates(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.duplicates.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>df: pandas.core.frame.DataFrame, supported_columns) ‑> Tuple[Dict[str, Any], Union[pandas.core.frame.DataFrame, NoneType]]</span>
+<span>def <span class="ident">get_duplicates</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, supported_columns: Sequence) ‑> Tuple[Dict[str, Any], Union[pandas.core.frame.DataFrame, NoneType]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Obtain the most occurring duplicate rows in the DataFrame.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>df</code></strong></dt>
 <dd>the Pandas DataFrame.</dd>
 <dt><strong><code>supported_columns</code></strong></dt>
@@ -106,23 +109,24 @@ def get_duplicates(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_duplicates(
-    df: pd.DataFrame, supported_columns
+    config: Settings, df: pd.DataFrame, supported_columns: Sequence
 ) -&gt; Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
     &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
+        config: report Settings object
         df: the Pandas DataFrame.
         supported_columns: the columns to consider
 
     Returns:
         A subset of the DataFrame, ordered by occurrence.
     &#34;&#34;&#34;
-    n_head = config[&#34;duplicates&#34;][&#34;head&#34;].get(int)
+    n_head = config.duplicates.head
 
     metrics: Dict[str, Any] = {}
     if n_head &gt; 0:
         if supported_columns and len(df) &gt; 0:
-            duplicates_key = config[&#34;duplicates&#34;][&#34;key&#34;].get(str)
+            duplicates_key = config.duplicates.key
             if duplicates_key in df.columns:
                 raise ValueError(
                     f&#34;Duplicates key ({duplicates_key}) may not be part of the DataFrame. Either change the &#34;

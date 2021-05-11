@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python">from typing import List, Optional
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -40,10 +40,11 @@ from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
 
 
-def get_correlation_items(summary) -&gt; Optional[Renderable]:
+def get_correlation_items(config: Settings, summary: dict) -&gt; Optional[Renderable]:
     &#34;&#34;&#34;Create the list of correlation items
 
     Args:
+        config: report Settings object
         summary: dict of correlations
 
     Returns:
@@ -90,13 +91,13 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
         &#34;cramers&#34;: (0, &#34;Cramér&#39;s V (φc)&#34;, cramers_description),
     }
 
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    image_format = config.plot.image_format
 
     for key, item in summary[&#34;correlations&#34;].items():
         vmin, name, description = key_to_data[key]
 
         diagram = Image(
-            plot.correlation_matrix(item, vmin=vmin),
+            plot.correlation_matrix(config, item, vmin=vmin),
             image_format=image_format,
             alt=name,
             anchor_id=f&#34;{key}_diagram&#34;,
@@ -148,12 +149,14 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.structure.correlations.get_correlation_items"><code class="name flex">
-<span>def <span class="ident">get_correlation_items</span></span>(<span>summary) ‑> Union[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, NoneType]</span>
+<span>def <span class="ident">get_correlation_items</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> Union[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the list of correlation items</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>summary</code></strong></dt>
 <dd>dict of correlations</dd>
 </dl>
@@ -163,10 +166,11 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_correlation_items(summary) -&gt; Optional[Renderable]:
+<pre><code class="python">def get_correlation_items(config: Settings, summary: dict) -&gt; Optional[Renderable]:
     &#34;&#34;&#34;Create the list of correlation items
 
     Args:
+        config: report Settings object
         summary: dict of correlations
 
     Returns:
@@ -213,13 +217,13 @@ def get_correlation_items(summary) -&gt; Optional[Renderable]:
         &#34;cramers&#34;: (0, &#34;Cramér&#39;s V (φc)&#34;, cramers_description),
     }
 
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    image_format = config.plot.image_format
 
     for key, item in summary[&#34;correlations&#34;].items():
         vmin, name, description = key_to_data[key]
 
         diagram = Image(
-            plot.correlation_matrix(item, vmin=vmin),
+            plot.correlation_matrix(config, item, vmin=vmin),
             image_format=image_format,
             alt=name,
             anchor_id=f&#34;{key}_diagram&#34;,

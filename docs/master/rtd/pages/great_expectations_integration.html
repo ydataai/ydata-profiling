@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Integration with Great Expectations &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>Integration with Great Expectations &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -223,14 +227,14 @@
 </div></blockquote>
 <p>Great Expectations then uses this statement to validate whether the column <code class="docutils literal notranslate"><span class="pre">passenger_count</span></code> in a given table is indeed between 1 and 6, and returns a success or failure result. The library currently provides <a class="reference external" href="https://docs.greatexpectations.io/en/latest/reference/glossary_of_expectations.html">several dozen highly expressive built-in Expectations</a>, and allows you to write custom Expectations.</p>
 <p>Great Expectations renders Expectations to clean, human-readable documentation called <em>Data Docs</em>. These HTML docs contain both your Expectation Suites as well as your data validation results each time validation is run – think of it as a continuously updated data quality report.</p>
-<p>For more information about Great Expectations, check out the <a class="reference external" href="https://docs.greatexpectations.io/en/latest/">Great Expectations documentation</a> and join the <cite>Great Expectations Slack channel &lt;https://www.greatexpectations.io/slack&gt;</cite> for help.</p>
+<p>For more information about Great Expectations, check out the <a class="reference external" href="https://docs.greatexpectations.io/en/latest/">Great Expectations documentation</a> and join the <a class="reference external" href="https://www.greatexpectations.io/slack">Great Expectations Slack channel</a> for help.</p>
 </div>
 <div class="section" id="creating-expectation-suites-with-pandas-profiling">
 <h2>Creating Expectation Suites with Pandas Profiling<a class="headerlink" href="#creating-expectation-suites-with-pandas-profiling" title="Permalink to this headline">¶</a></h2>
 <p>An <em>Expectation Suite</em> is simply a set of Expectations. You can create Expectation Suites by writing out individual statements, such as the one above, or by automatically generating them based on profiler results.</p>
 <p>Pandas Profiling provides a simple <code class="docutils literal notranslate"><span class="pre">to_expectation_suite()</span></code> method that returns a Great Expectations <code class="docutils literal notranslate"><span class="pre">ExpectationSuite</span></code> object which contains a set of Expectations.</p>
 <p><strong>Pre-requisites</strong>: In order to run the <code class="docutils literal notranslate"><span class="pre">to_expectation_suite()</span></code> method, you will need to install Great Expectations:
-<cite>pip install great_expectations</cite></p>
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">great_expectations</span></code></p>
 <p>If you would like to use the additional features such as saving the Suite and building Data Docs, you will also need to configure a Great Expectations Data Context by running <code class="docutils literal notranslate"><span class="pre">great_expectations</span> <span class="pre">init</span></code> while in your project directory.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
@@ -247,7 +251,9 @@
 <p>This assumes that the <code class="docutils literal notranslate"><span class="pre">great_expectations</span></code> Data Context directory is in the <em>same path</em> where you run the script. In order to specify the location of your Data Context, pass it in as an argument:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">great_expectations</span> <span class="k">as</span> <span class="nn">ge</span>
 
-<span class="n">data_context</span> <span class="o">=</span> <span class="n">ge</span><span class="o">.</span><span class="n">data_context</span><span class="o">.</span><span class="n">DataContext</span><span class="p">(</span><span class="n">context_root_dir</span><span class="o">=</span><span class="s2">&quot;/Users/panda/code/my_ge_project/&quot;</span><span class="p">)</span>
+<span class="n">data_context</span> <span class="o">=</span> <span class="n">ge</span><span class="o">.</span><span class="n">data_context</span><span class="o">.</span><span class="n">DataContext</span><span class="p">(</span>
+    <span class="n">context_root_dir</span><span class="o">=</span><span class="s2">&quot;/Users/panda/code/my_ge_project/&quot;</span>
+<span class="p">)</span>
 <span class="n">suite</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">to_expectation_suite</span><span class="p">(</span><span class="n">data_context</span><span class="o">=</span><span class="n">data_context</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -258,7 +264,7 @@
     <span class="n">save_suite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">run_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">build_data_docs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">handler</span><span class="o">=</span><span class="n">handler</span>
+    <span class="n">handler</span><span class="o">=</span><span class="n">handler</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -315,7 +321,10 @@ Generating expectations takes place in two steps:</p>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typeset</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">Unsupported</span><span class="p">:</span> <span class="p">[</span><span class="n">expectation_algorithms</span><span class="o">.</span><span class="n">generic_expectations</span><span class="p">],</span>
-            <span class="n">Categorical</span><span class="p">:</span> <span class="p">[</span><span class="n">expectation_algorithms</span><span class="o">.</span><span class="n">categorical_expectations</span><span class="p">,</span> <span class="n">fixed_length</span><span class="p">],</span>
+            <span class="n">Categorical</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">expectation_algorithms</span><span class="o">.</span><span class="n">categorical_expectations</span><span class="p">,</span>
+                <span class="n">fixed_length</span><span class="p">,</span>
+            <span class="p">],</span>
             <span class="n">Boolean</span><span class="p">:</span> <span class="p">[</span><span class="n">expectation_algorithms</span><span class="o">.</span><span class="n">categorical_expectations</span><span class="p">],</span>
             <span class="n">Numeric</span><span class="p">:</span> <span class="p">[</span><span class="n">expectation_algorithms</span><span class="o">.</span><span class="n">numeric_expectations</span><span class="p">],</span>
             <span class="n">URL</span><span class="p">:</span> <span class="p">[</span><span class="n">expectation_algorithms</span><span class="o">.</span><span class="n">url_expectations</span><span class="p">],</span>
@@ -326,11 +335,10 @@ Generating expectations takes place in two steps:</p>
         <span class="p">}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">typeset</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+
 <span class="c1"># (initiate report)</span>
 
-<span class="n">suite</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">to_expectation_suite</span><span class="p">(</span>
-    <span class="n">handler</span><span class="o">=</span><span class="n">MyExpectationHandler</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">typeset</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="n">suite</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">to_expectation_suite</span><span class="p">(</span><span class="n">handler</span><span class="o">=</span><span class="n">MyExpectationHandler</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">typeset</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>You can automate even more by extending the typeset (by default the <code class="docutils literal notranslate"><span class="pre">ProfilingTypeSet</span></code>) with semantic data types specific to your company or use case (for instance disease classification in healthcare or currency and IBAN in finance).

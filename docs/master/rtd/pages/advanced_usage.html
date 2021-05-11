@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Advanced Usage &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>Advanced Usage &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -105,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#configuration-shorthands">Configuration shorthands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#customise-plots">Customise plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#customise-correlation-matrix">Customise correlation matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-runs">Multiple runs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="big_data.html">Big Datasets</a></li>
@@ -259,13 +264,13 @@
 <p>The configuration can be changed in the following ways:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Configuration example</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change the config when creating the report</span>
-<span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Change the config when creating the report</span>
+ <span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Change the config after</span>
-<span class="n">profile</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;html.minify_html&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+ <span class="c1"># Change the config after</span>
+ <span class="n">profile</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">minify_html</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
+ <span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -357,25 +362,23 @@
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Configuration example</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
-      <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;ascending&#39;</span><span class="p">,</span>
-      <span class="nb">vars</span><span class="o">=</span><span class="p">{</span>
-          <span class="s1">&#39;num&#39;</span><span class="p">:{</span><span class="s1">&#39;low_categorical_threshold&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-          <span class="s1">&#39;cat&#39;</span><span class="p">:{</span>
-            <span class="s1">&#39;length&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span>
-            <span class="s1">&#39;characters&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span>
-            <span class="s1">&#39;words&#39;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span>
-            <span class="s1">&#39;n_obs&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-          <span class="p">}</span>
-      <span class="p">}</span>
+    <span class="n">sort</span><span class="o">=</span><span class="s2">&quot;ascending&quot;</span><span class="p">,</span>
+    <span class="nb">vars</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;num&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;low_categorical_threshold&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+        <span class="s2">&quot;cat&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;characters&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;words&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;n_obs&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">)</span>
 
-<span class="n">profile</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s1">&#39;variables.descriptions&#39;</span><span class="p">,</span>
-    <span class="p">{</span>
-      <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;Files in the filesystem&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;datec&#39;</span><span class="p">:</span> <span class="s1">&#39;Creation date&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;datem&#39;</span><span class="p">:</span> <span class="s1">&#39;Modification date&#39;</span><span class="p">,</span>
-    <span class="p">}</span>
-<span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">descriptions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;files&quot;</span><span class="p">:</span> <span class="s2">&quot;Files in the filesystem&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;datec&quot;</span><span class="p">:</span> <span class="s2">&quot;Creation date&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;datem&quot;</span><span class="p">:</span> <span class="s2">&quot;Modification date&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">)</span>
 </pre></div>
@@ -424,10 +427,10 @@
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Configuration example: disable heatmap and dendrogram for large datasets</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
-      <span class="n">missing_diagrams</span><span class="o">=</span><span class="p">{</span>
-          <span class="s1">&#39;heatmap&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-          <span class="s1">&#39;dendrogram&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-      <span class="p">}</span>
+    <span class="n">missing_diagrams</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;heatmap&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;dendrogram&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">)</span>
 </pre></div>
@@ -531,21 +534,21 @@
 </table>
 <p>Disable all correlations:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
-     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Report without correlations&quot;</span><span class="p">,</span>
-     <span class="n">correlations</span><span class="o">=</span><span class="p">{</span>
-         <span class="s2">&quot;pearson&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-         <span class="s2">&quot;spearman&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-         <span class="s2">&quot;kendall&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-         <span class="s2">&quot;phi_k&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-         <span class="s2">&quot;cramers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-     <span class="p">},</span>
- <span class="p">)</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Report without correlations&quot;</span><span class="p">,</span>
+    <span class="n">correlations</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;pearson&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;spearman&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;kendall&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;phi_k&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;cramers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">)</span>
 
- <span class="c1"># or using a shorthand that is available for correlations</span>
-    <span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
-     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Report without correlations&quot;</span><span class="p">,</span>
-     <span class="n">correlations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
- <span class="p">)</span>
+<span class="c1"># or using a shorthand that is available for correlations</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Report without correlations&quot;</span><span class="p">,</span>
+    <span class="n">correlations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -663,68 +666,68 @@ The repository contains the following files:</p>
 <h2>Configuration shorthands<a class="headerlink" href="#configuration-shorthands" title="Permalink to this headline">¶</a></h2>
 <p>It’s possible to disable certain groups of features through configuration shorthands.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Disable samples, correlations, missing diagrams and duplicates at once</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">correlations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">missing_diagrams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duplicates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-
-<span class="c1"># Or use the .set_variable method</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">()</span>
-<span class="n">r</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;duplicates&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;correlations&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;missing_diagrams&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;interactions&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
+    <span class="n">samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">correlations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">missing_diagrams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">duplicates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">interactions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="customise-plots">
 <h2>Customise plots<a class="headerlink" href="#customise-plots" title="Permalink to this headline">¶</a></h2>
-<p>A way how to pass arguments to the underlying matplotlib is to use the <code class="docutils literal notranslate"><span class="pre">plot</span></code> argument. It is possible to change the default format of images to png (default svg) using the key-pair <code class="docutils literal notranslate"><span class="pre">image_format:</span> <span class="pre">&quot;png&quot;</span></code> and also the resolution of the image using <code class="docutils literal notranslate"><span class="pre">dpi:</span> <span class="pre">800</span></code>.</p>
-<p>An example would be:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">planets</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Pandas Profiling Report&#39;</span><span class="p">,</span> <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                       <span class="n">plot</span><span class="o">=</span><span class="p">{</span>
-                           <span class="s1">&#39;dpi&#39;</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span>
-                           <span class="s1">&#39;image_format&#39;</span><span class="p">:</span> <span class="s1">&#39;png&#39;</span>
-                       <span class="p">})</span>
+<p>A way how to pass arguments to the underlying matplotlib is to use the <code class="docutils literal notranslate"><span class="pre">plot</span></code> argument. It is possible to change the default format of images to png (default svg) using the key-pair <code class="docutils literal notranslate"><span class="pre">image_format:</span> <span class="pre">&quot;png&quot;</span></code> and also the resolution of the image using <code class="docutils literal notranslate"><span class="pre">dpi:</span> <span class="pre">800</span></code>.
+An example would be:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
+    <span class="n">planets</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span>
+    <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dpi&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s2">&quot;image_format&quot;</span><span class="p">:</span> <span class="s2">&quot;png&quot;</span><span class="p">},</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<p>Furthermore, it is possible to change the default values of histograms, the options for that are the following:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>histogram:</dt><dd><p>x_axis_labels: True</p>
-</dd>
-<dt># Number of bins (set to 0 to automatically detect the bin size)</dt><dd><p>bins: 50</p>
-</dd>
-<dt># Maximum number of bins (when bins=0)</dt><dd><p>max_bins: 250</p>
-</dd>
-</dl>
-</div></blockquote>
 </div>
 <div class="section" id="customise-correlation-matrix">
 <h2>Customise correlation matrix<a class="headerlink" href="#customise-correlation-matrix" title="Permalink to this headline">¶</a></h2>
-<p>It’s possible to directly access the correlation matrix as well. That is done with the <code class="docutils literal notranslate"><span class="pre">plot</span></code> argument and then with the <cite>correlation</cite> key. It is possible to customise the palett, one can use the following list used in seaborn or create [their own custom matplotlib palette](<a class="reference external" href="https://matplotlib.org/stable/gallery/color/custom_cmap.html">https://matplotlib.org/stable/gallery/color/custom_cmap.html</a>). Supported values are</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">'Accent',</span> <span class="pre">'Accent_r',</span> <span class="pre">'Blues',</span> <span class="pre">'Blues_r',</span> <span class="pre">'BrBG',</span> <span class="pre">'BrBG_r',</span> <span class="pre">'BuGn',</span> <span class="pre">'BuGn_r',</span> <span class="pre">'BuPu',</span> <span class="pre">'BuPu_r',</span> <span class="pre">'CMRmap',</span> <span class="pre">'CMRmap_r',</span> <span class="pre">'Dark2',</span> <span class="pre">'Dark2_r',</span> <span class="pre">'GnBu',</span> <span class="pre">'GnBu_r',</span> <span class="pre">'Greens',</span> <span class="pre">'Greens_r',</span> <span class="pre">'Greys',</span> <span class="pre">'Greys_r',</span> <span class="pre">'OrRd',</span> <span class="pre">'OrRd_r',</span> <span class="pre">'Oranges',</span> <span class="pre">'Oranges_r',</span> <span class="pre">'PRGn',</span> <span class="pre">'PRGn_r',</span> <span class="pre">'Paired',</span> <span class="pre">'Paired_r',</span> <span class="pre">'Pastel1',</span> <span class="pre">'Pastel1_r',</span> <span class="pre">'Pastel2',</span> <span class="pre">'Pastel2_r',</span> <span class="pre">'PiYG',</span> <span class="pre">'PiYG_r',</span> <span class="pre">'PuBu',</span> <span class="pre">'PuBuGn',</span> <span class="pre">'PuBuGn_r',</span> <span class="pre">'PuBu_r',</span> <span class="pre">'PuOr',</span> <span class="pre">'PuOr_r',</span> <span class="pre">'PuRd',</span> <span class="pre">'PuRd_r',</span> <span class="pre">'Purples',</span> <span class="pre">'Purples_r',</span> <span class="pre">'RdBu',</span> <span class="pre">'RdBu_r',</span> <span class="pre">'RdGy',</span> <span class="pre">'RdGy_r',</span> <span class="pre">'RdPu',</span> <span class="pre">'RdPu_r',</span> <span class="pre">'RdYlBu',</span> <span class="pre">'RdYlBu_r',</span> <span class="pre">'RdYlGn',</span> <span class="pre">'RdYlGn_r',</span> <span class="pre">'Reds',</span> <span class="pre">'Reds_r',</span> <span class="pre">'Set1',</span> <span class="pre">'Set1_r',</span> <span class="pre">'Set2',</span> <span class="pre">'Set2_r',</span> <span class="pre">'Set3',</span> <span class="pre">'Set3_r',</span> <span class="pre">'Spectral',</span> <span class="pre">'Spectral_r',</span> <span class="pre">'Wistia',</span> <span class="pre">'Wistia_r',</span> <span class="pre">'YlGn',</span> <span class="pre">'YlGnBu',</span> <span class="pre">'YlGnBu_r',</span> <span class="pre">'YlGn_r',</span> <span class="pre">'YlOrBr',</span> <span class="pre">'YlOrBr_r',</span> <span class="pre">'YlOrRd',</span> <span class="pre">'YlOrRd_r',</span> <span class="pre">'afmhot',</span> <span class="pre">'afmhot_r',</span> <span class="pre">'autumn',</span> <span class="pre">'autumn_r',</span> <span class="pre">'binary',</span> <span class="pre">'binary_r',</span> <span class="pre">'bone',</span> <span class="pre">'bone_r',</span> <span class="pre">'brg',</span> <span class="pre">'brg_r',</span> <span class="pre">'bwr',</span> <span class="pre">'bwr_r',</span> <span class="pre">'cividis',</span> <span class="pre">'cividis_r',</span> <span class="pre">'cool',</span> <span class="pre">'cool_r',</span> <span class="pre">'coolwarm',</span> <span class="pre">'coolwarm_r',</span> <span class="pre">'copper',</span> <span class="pre">'copper_r',</span> <span class="pre">'crest',</span> <span class="pre">'crest_r',</span> <span class="pre">'cubehelix',</span> <span class="pre">'cubehelix_r',</span> <span class="pre">'flag',</span> <span class="pre">'flag_r',</span> <span class="pre">'flare',</span> <span class="pre">'flare_r',</span> <span class="pre">'gist_earth',</span> <span class="pre">'gist_earth_r',</span> <span class="pre">'gist_gray',</span> <span class="pre">'gist_gray_r',</span> <span class="pre">'gist_heat',</span> <span class="pre">'gist_heat_r',</span> <span class="pre">'gist_ncar',</span> <span class="pre">'gist_ncar_r',</span> <span class="pre">'gist_rainbow',</span> <span class="pre">'gist_rainbow_r',</span> <span class="pre">'gist_stern',</span> <span class="pre">'gist_stern_r',</span> <span class="pre">'gist_yarg',</span> <span class="pre">'gist_yarg_r',</span> <span class="pre">'gnuplot',</span> <span class="pre">'gnuplot2',</span> <span class="pre">'gnuplot2_r',</span> <span class="pre">'gnuplot_r',</span> <span class="pre">'gray',</span> <span class="pre">'gray_r',</span> <span class="pre">'hot',</span> <span class="pre">'hot_r',</span> <span class="pre">'hsv',</span> <span class="pre">'hsv_r',</span> <span class="pre">'icefire',</span> <span class="pre">'icefire_r',</span> <span class="pre">'inferno',</span> <span class="pre">'inferno_r',</span> <span class="pre">'jet',</span> <span class="pre">'jet_r',</span> <span class="pre">'magma',</span> <span class="pre">'magma_r',</span> <span class="pre">'mako',</span> <span class="pre">'mako_r',</span> <span class="pre">'nipy_spectral',</span> <span class="pre">'nipy_spectral_r',</span> <span class="pre">'ocean',</span> <span class="pre">'ocean_r',</span> <span class="pre">'pink',</span> <span class="pre">'pink_r',</span> <span class="pre">'plasma',</span> <span class="pre">'plasma_r',</span> <span class="pre">'prism',</span> <span class="pre">'prism_r',</span> <span class="pre">'rainbow',</span> <span class="pre">'rainbow_r',</span> <span class="pre">'rocket',</span> <span class="pre">'rocket_r',</span> <span class="pre">'seismic',</span> <span class="pre">'seismic_r',</span> <span class="pre">'spring',</span> <span class="pre">'spring_r',</span> <span class="pre">'summer',</span> <span class="pre">'summer_r',</span> <span class="pre">'tab10',</span> <span class="pre">'tab10_r',</span> <span class="pre">'tab20',</span> <span class="pre">'tab20_r',</span> <span class="pre">'tab20b',</span> <span class="pre">'tab20b_r',</span> <span class="pre">'tab20c',</span> <span class="pre">'tab20c_r',</span> <span class="pre">'terrain',</span> <span class="pre">'terrain_r',</span> <span class="pre">'turbo',</span> <span class="pre">'turbo_r',</span> <span class="pre">'twilight',</span> <span class="pre">'twilight_r',</span> <span class="pre">'twilight_shifted',</span> <span class="pre">'twilight_shifted_r',</span> <span class="pre">'viridis',</span> <span class="pre">'viridis_r',</span> <span class="pre">'vlag',</span> <span class="pre">'vlag_r',</span> <span class="pre">'winter',</span> <span class="pre">'winter_r'</span>
-<span class="pre">`</span></code></p>
+<p>It’s possible to directly access the correlation matrix as well.
+That is done with the <code class="docutils literal notranslate"><span class="pre">plot</span></code> argument and then with the <code class="docutils literal notranslate"><span class="pre">correlation</span></code> key.
+It is possible to customise the palette, one can use the following list used in seaborn or create <a class="reference external" href="https://matplotlib.org/stable/gallery/color/custom_cmap.html">their own custom matplotlib palette</a>.
+Supported values are:</p>
+<p>‘Accent’, ‘Accent_r’, ‘Blues’, ‘Blues_r’, ‘BrBG’, ‘BrBG_r’, ‘BuGn’, ‘BuGn_r’, ‘BuPu’, ‘BuPu_r’, ‘CMRmap’, ‘CMRmap_r’, ‘Dark2’, ‘Dark2_r’, ‘GnBu’, ‘GnBu_r’, ‘Greens’, ‘Greens_r’, ‘Greys’, ‘Greys_r’, ‘OrRd’, ‘OrRd_r’, ‘Oranges’, ‘Oranges_r’, ‘PRGn’, ‘PRGn_r’, ‘Paired’, ‘Paired_r’, ‘Pastel1’, ‘Pastel1_r’, ‘Pastel2’, ‘Pastel2_r’, ‘PiYG’, ‘PiYG_r’, ‘PuBu’, ‘PuBuGn’, ‘PuBuGn_r’, ‘PuBu_r’, ‘PuOr’, ‘PuOr_r’, ‘PuRd’, ‘PuRd_r’, ‘Purples’, ‘Purples_r’, ‘RdBu’, ‘RdBu_r’, ‘RdGy’, ‘RdGy_r’, ‘RdPu’, ‘RdPu_r’, ‘RdYlBu’, ‘RdYlBu_r’, ‘RdYlGn’, ‘RdYlGn_r’, ‘Reds’, ‘Reds_r’, ‘Set1’, ‘Set1_r’, ‘Set2’, ‘Set2_r’, ‘Set3’, ‘Set3_r’, ‘Spectral’, ‘Spectral_r’, ‘Wistia’, ‘Wistia_r’, ‘YlGn’, ‘YlGnBu’, ‘YlGnBu_r’, ‘YlGn_r’, ‘YlOrBr’, ‘YlOrBr_r’, ‘YlOrRd’, ‘YlOrRd_r’, ‘afmhot’, ‘afmhot_r’, ‘autumn’, ‘autumn_r’, ‘binary’, ‘binary_r’, ‘bone’, ‘bone_r’, ‘brg’, ‘brg_r’, ‘bwr’, ‘bwr_r’, ‘cividis’, ‘cividis_r’, ‘cool’, ‘cool_r’, ‘coolwarm’, ‘coolwarm_r’, ‘copper’, ‘copper_r’, ‘crest’, ‘crest_r’, ‘cubehelix’, ‘cubehelix_r’, ‘flag’, ‘flag_r’, ‘flare’, ‘flare_r’, ‘gist_earth’, ‘gist_earth_r’, ‘gist_gray’, ‘gist_gray_r’, ‘gist_heat’, ‘gist_heat_r’, ‘gist_ncar’, ‘gist_ncar_r’, ‘gist_rainbow’, ‘gist_rainbow_r’, ‘gist_stern’, ‘gist_stern_r’, ‘gist_yarg’, ‘gist_yarg_r’, ‘gnuplot’, ‘gnuplot2’, ‘gnuplot2_r’, ‘gnuplot_r’, ‘gray’, ‘gray_r’, ‘hot’, ‘hot_r’, ‘hsv’, ‘hsv_r’, ‘icefire’, ‘icefire_r’, ‘inferno’, ‘inferno_r’, ‘jet’, ‘jet_r’, ‘magma’, ‘magma_r’, ‘mako’, ‘mako_r’, ‘nipy_spectral’, ‘nipy_spectral_r’, ‘ocean’, ‘ocean_r’, ‘pink’, ‘pink_r’, ‘plasma’, ‘plasma_r’, ‘prism’, ‘prism_r’, ‘rainbow’, ‘rainbow_r’, ‘rocket’, ‘rocket_r’, ‘seismic’, ‘seismic_r’, ‘spring’, ‘spring_r’, ‘summer’, ‘summer_r’, ‘tab10’, ‘tab10_r’, ‘tab20’, ‘tab20_r’, ‘tab20b’, ‘tab20b_r’, ‘tab20c’, ‘tab20c_r’, ‘terrain’, ‘terrain_r’, ‘turbo’, ‘turbo_r’, ‘twilight’, ‘twilight_r’, ‘twilight_shifted’, ‘twilight_shifted_r’, ‘viridis’, ‘viridis_r’, ‘vlag’, ‘vlag_r’, ‘winter’, ‘winter_r’</p>
 <p>An example can be:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
-<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Pandas Profiling Report&#39;</span><span class="p">,</span> <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">plot</span><span class="o">=</span><span class="p">{</span>
-                         <span class="s1">&#39;correlation&#39;</span><span class="p">:{</span>
-                             <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;bad&#39;</span><span class="p">:</span> <span class="s1">&#39;#000000&#39;</span><span class="p">}}</span>
-                     <span class="p">)</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span>
+    <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;correlation&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;RdBu_r&quot;</span><span class="p">,</span> <span class="s2">&quot;bad&quot;</span><span class="p">:</span> <span class="s2">&quot;#000000&quot;</span><span class="p">}},</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>Similarly, one can change the palette for <em>Missing values</em> using the <code class="docutils literal notranslate"><span class="pre">missing</span></code> argument, eg:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
-<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Pandas Profiling Report&#39;</span><span class="p">,</span> <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">plot</span><span class="o">=</span><span class="p">{</span>
-                         <span class="s1">&#39;missing&#39;</span><span class="p">:{</span>
-                             <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">}}</span>
-                     <span class="p">)</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span>
+    <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;missing&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;RdBu_r&quot;</span><span class="p">}},</span>
+<span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="multiple-runs">
+<h2>Multiple runs<a class="headerlink" href="#multiple-runs" title="Permalink to this headline">¶</a></h2>
+<p>The ProfileReport caches intermediary results for improved performance.
+For rendering both the HTMl report write the statistics as a JSON file will reuse the same computations.
+If you modify the configuration in between runs, you should either create a new <code class="docutils literal notranslate"><span class="pre">ProfileReport</span></code> object or invalidate the relevant cached values.
+If the config for only the HTML report is changed (for instance you would like to tune the theme), then you only need to reset the cached HTML report.
+You can use the <code class="docutils literal notranslate"><span class="pre">report.invalidate_cache()</span></code> method for this.
+Passing the values “rendering” only resets previously rendered reports (HTML, JSON or widgets).
+Alternatively “report” also resets the report structure.</p>
 </div>
 </div>
 

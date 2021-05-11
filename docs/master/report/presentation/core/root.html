@@ -26,7 +26,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
+<pre><code class="python">from typing import Any, Callable
 
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.core.renderable import Renderable
@@ -42,14 +42,14 @@ class Root(ItemRenderer):
             &#34;report&#34;, {&#34;body&#34;: body, &#34;footer&#34;: footer}, name=name, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Root&#34;
 
     def render(self, **kwargs) -&gt; Any:
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -&gt; None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;body&#34; in obj.content:
             flv(obj.content[&#34;body&#34;])
@@ -86,14 +86,14 @@ class Root(ItemRenderer):
             &#34;report&#34;, {&#34;body&#34;: body, &#34;footer&#34;: footer}, name=name, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Root&#34;
 
     def render(self, **kwargs) -&gt; Any:
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -&gt; None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;body&#34; in obj.content:
             flv(obj.content[&#34;body&#34;])
@@ -114,7 +114,7 @@ class Root(ItemRenderer):
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.root.Root.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -123,7 +123,7 @@ class Root(ItemRenderer):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv) -&gt; None:
+def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
     obj.__class__ = cls
     if &#34;body&#34; in obj.content:
         flv(obj.content[&#34;body&#34;])

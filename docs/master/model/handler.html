@@ -27,23 +27,21 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from functools import reduce
-from typing import Callable, Dict, List, Type
+from typing import Any, Callable, Dict, List, Sequence
 
 import networkx as nx
-from visions import VisionsBaseType, VisionsTypeset
-
-from pandas_profiling.model import typeset as ppt
+from visions import VisionsTypeset
 
 
-def compose(functions):
+def compose(functions: Sequence[Callable]) -&gt; Callable:
     &#34;&#34;&#34;
     Compose a sequence of functions
     :param functions: sequence of functions
     :return: combined functions, e.g. [f(x), g(x)] -&gt; g(f(x))
     &#34;&#34;&#34;
 
-    def func(f, g):
-        def func2(*x):
+    def func(f: Callable, g: Callable) -&gt; Callable:
+        def func2(*x) -&gt; Any:
             res = g(*x)
             if type(res) == bool:
                 return f(*x)
@@ -63,7 +61,7 @@ class Handler:
 
     def __init__(
         self,
-        mapping: Dict[Type[VisionsBaseType], List[Callable]],
+        mapping: Dict[str, List[Callable]],
         typeset: VisionsTypeset,
         *args,
         **kwargs
@@ -73,36 +71,39 @@ class Handler:
 
         self._complete_dag()
 
-    def _complete_dag(self):
+    def _complete_dag(self) -&gt; None:
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
-            self.mapping[to_type] = self.mapping[from_type] + self.mapping[to_type]
+            self.mapping[str(to_type)] = (
+                self.mapping[str(from_type)] + self.mapping[str(to_type)]
+            )
 
-    def handle(self, dtype: Type[VisionsBaseType], *args, **kwargs) -&gt; dict:
+    def handle(self, dtype: str, *args, **kwargs) -&gt; dict:
         &#34;&#34;&#34;
 
         Returns:
             object:
         &#34;&#34;&#34;
-        op = compose(self.mapping.get(dtype, []))
+        funcs = self.mapping.get(dtype, [])
+        op = compose(funcs)
         return op(*args)
 
 
-def get_render_map():
+def get_render_map() -&gt; Dict[str, Callable]:
     import pandas_profiling.report.structure.variables as render_algorithms
 
     render_map = {
-        ppt.Boolean: render_algorithms.render_boolean,
-        ppt.Numeric: render_algorithms.render_real,
-        ppt.Complex: render_algorithms.render_complex,
-        ppt.DateTime: render_algorithms.render_date,
-        ppt.Categorical: render_algorithms.render_categorical,
-        ppt.URL: render_algorithms.render_url,
-        ppt.Path: render_algorithms.render_path,
-        ppt.File: render_algorithms.render_file,
-        ppt.Image: render_algorithms.render_image,
-        ppt.Unsupported: render_algorithms.render_generic,
+        &#34;Boolean&#34;: render_algorithms.render_boolean,
+        &#34;Numeric&#34;: render_algorithms.render_real,
+        &#34;Complex&#34;: render_algorithms.render_complex,
+        &#34;DateTime&#34;: render_algorithms.render_date,
+        &#34;Categorical&#34;: render_algorithms.render_categorical,
+        &#34;URL&#34;: render_algorithms.render_url,
+        &#34;Path&#34;: render_algorithms.render_path,
+        &#34;File&#34;: render_algorithms.render_file,
+        &#34;Image&#34;: render_algorithms.render_image,
+        &#34;Unsupported&#34;: render_algorithms.render_generic,
     }
 
     return render_map</code></pre>
@@ -116,7 +117,7 @@ def get_render_map():
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.handler.compose"><code class="name flex">
-<span>def <span class="ident">compose</span></span>(<span>functions)</span>
+<span>def <span class="ident">compose</span></span>(<span>functions: Sequence[Callable]) ‑> Callable</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Compose a sequence of functions
@@ -126,15 +127,15 @@ def get_render_map():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def compose(functions):
+<pre><code class="python">def compose(functions: Sequence[Callable]) -&gt; Callable:
     &#34;&#34;&#34;
     Compose a sequence of functions
     :param functions: sequence of functions
     :return: combined functions, e.g. [f(x), g(x)] -&gt; g(f(x))
     &#34;&#34;&#34;
 
-    def func(f, g):
-        def func2(*x):
+    def func(f: Callable, g: Callable) -&gt; Callable:
+        def func2(*x) -&gt; Any:
             res = g(*x)
             if type(res) == bool:
                 return f(*x)
@@ -147,7 +148,7 @@ def get_render_map():
 </details>
 </dd>
 <dt id="pandas_profiling.model.handler.get_render_map"><code class="name flex">
-<span>def <span class="ident">get_render_map</span></span>(<span>)</span>
+<span>def <span class="ident">get_render_map</span></span>(<span>) ‑> Dict[str, Callable]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -155,20 +156,20 @@ def get_render_map():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_render_map():
+<pre><code class="python">def get_render_map() -&gt; Dict[str, Callable]:
     import pandas_profiling.report.structure.variables as render_algorithms
 
     render_map = {
-        ppt.Boolean: render_algorithms.render_boolean,
-        ppt.Numeric: render_algorithms.render_real,
-        ppt.Complex: render_algorithms.render_complex,
-        ppt.DateTime: render_algorithms.render_date,
-        ppt.Categorical: render_algorithms.render_categorical,
-        ppt.URL: render_algorithms.render_url,
-        ppt.Path: render_algorithms.render_path,
-        ppt.File: render_algorithms.render_file,
-        ppt.Image: render_algorithms.render_image,
-        ppt.Unsupported: render_algorithms.render_generic,
+        &#34;Boolean&#34;: render_algorithms.render_boolean,
+        &#34;Numeric&#34;: render_algorithms.render_real,
+        &#34;Complex&#34;: render_algorithms.render_complex,
+        &#34;DateTime&#34;: render_algorithms.render_date,
+        &#34;Categorical&#34;: render_algorithms.render_categorical,
+        &#34;URL&#34;: render_algorithms.render_url,
+        &#34;Path&#34;: render_algorithms.render_path,
+        &#34;File&#34;: render_algorithms.render_file,
+        &#34;Image&#34;: render_algorithms.render_image,
+        &#34;Unsupported&#34;: render_algorithms.render_generic,
     }
 
     return render_map</code></pre>
@@ -181,7 +182,7 @@ def get_render_map():
 <dl>
 <dt id="pandas_profiling.model.handler.Handler"><code class="flex name class">
 <span>class <span class="ident">Handler</span></span>
-<span>(</span><span>mapping: Dict[Type[visions.types.type.VisionsBaseType], List[Callable]], typeset: visions.typesets.typeset.VisionsTypeset, *args, **kwargs)</span>
+<span>(</span><span>mapping: Dict[str, List[Callable]], typeset: visions.typesets.typeset.VisionsTypeset, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A generic handler</p>
@@ -198,7 +199,7 @@ def get_render_map():
 
     def __init__(
         self,
-        mapping: Dict[Type[VisionsBaseType], List[Callable]],
+        mapping: Dict[str, List[Callable]],
         typeset: VisionsTypeset,
         *args,
         **kwargs
@@ -208,19 +209,22 @@ def get_render_map():
 
         self._complete_dag()
 
-    def _complete_dag(self):
+    def _complete_dag(self) -&gt; None:
         for from_type, to_type in nx.topological_sort(
             nx.line_graph(self.typeset.base_graph)
         ):
-            self.mapping[to_type] = self.mapping[from_type] + self.mapping[to_type]
+            self.mapping[str(to_type)] = (
+                self.mapping[str(from_type)] + self.mapping[str(to_type)]
+            )
 
-    def handle(self, dtype: Type[VisionsBaseType], *args, **kwargs) -&gt; dict:
+    def handle(self, dtype: str, *args, **kwargs) -&gt; dict:
         &#34;&#34;&#34;
 
         Returns:
             object:
         &#34;&#34;&#34;
-        op = compose(self.mapping.get(dtype, []))
+        funcs = self.mapping.get(dtype, [])
+        op = compose(funcs)
         return op(*args)</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -231,7 +235,7 @@ def get_render_map():
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.model.handler.Handler.handle"><code class="name flex">
-<span>def <span class="ident">handle</span></span>(<span>self, dtype: Type[visions.types.type.VisionsBaseType], *args, **kwargs) ‑> dict</span>
+<span>def <span class="ident">handle</span></span>(<span>self, dtype: str, *args, **kwargs) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><h2 id="returns">Returns</h2>
@@ -240,13 +244,14 @@ def get_render_map():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def handle(self, dtype: Type[VisionsBaseType], *args, **kwargs) -&gt; dict:
+<pre><code class="python">def handle(self, dtype: str, *args, **kwargs) -&gt; dict:
     &#34;&#34;&#34;
 
     Returns:
         object:
     &#34;&#34;&#34;
-    op = compose(self.mapping.get(dtype, []))
+    funcs = self.mapping.get(dtype, [])
+    op = compose(funcs)
     return op(*args)</code></pre>
 </details>
 </dd>

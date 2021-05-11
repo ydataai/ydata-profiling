@@ -26,12 +26,13 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Type
+<pre><code class="python">from typing import Any, Callable, Dict, List, Type
 
 import numpy as np
 import pandas as pd
-from visions import VisionsBaseType
+from visions import VisionsBaseType, VisionsTypeset
 
+from pandas_profiling.config import Settings
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -45,17 +46,6 @@ from pandas_profiling.model.summary_algorithms import (
     describe_supported,
     describe_url_1d,
 )
-from pandas_profiling.model.typeset import (
-    URL,
-    Boolean,
-    Categorical,
-    DateTime,
-    File,
-    Image,
-    Numeric,
-    Path,
-    Unsupported,
-)
 
 
 class BaseSummarizer(Handler):
@@ -64,54 +54,56 @@ class BaseSummarizer(Handler):
     Can be used to define custom summarizations
     &#34;&#34;&#34;
 
-    def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -&gt; dict:
+    def summarize(
+        self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
+    ) -&gt; dict:
         &#34;&#34;&#34;
 
         Returns:
             object:
         &#34;&#34;&#34;
-        _, summary = self.handle(dtype, series, {&#34;type&#34;: dtype})
+        _, _, summary = self.handle(str(dtype), config, series, {&#34;type&#34;: str(dtype)})
         return summary
 
 
 class PandasProfilingSummarizer(BaseSummarizer):
     &#34;&#34;&#34;The default Pandas Profiling summarizer&#34;&#34;&#34;
 
-    def __init__(self, typeset, *args, **kwargs):
-        summary_map = {
-            Unsupported: [
+    def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
+        summary_map: Dict[str, List[Callable]] = {
+            &#34;Unsupported&#34;: [
                 describe_counts,
                 describe_generic,
                 describe_supported,
             ],
-            Numeric: [
+            &#34;Numeric&#34;: [
                 describe_numeric_1d,
             ],
-            DateTime: [
+            &#34;DateTime&#34;: [
                 describe_date_1d,
             ],
-            Categorical: [
+            &#34;Categorical&#34;: [
                 describe_categorical_1d,
             ],
-            Boolean: [],
-            URL: [
+            &#34;Boolean&#34;: [],
+            &#34;URL&#34;: [
                 describe_url_1d,
             ],
-            Path: [
+            &#34;Path&#34;: [
                 describe_path_1d,
             ],
-            File: [
+            &#34;File&#34;: [
                 describe_file_1d,
             ],
-            Image: [
+            &#34;Image&#34;: [
                 describe_image_1d,
             ],
         }
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
-def format_summary(summary):
-    def fmt(v):
+def format_summary(summary: dict) -&gt; dict:
+    def fmt(v: Any) -&gt; Any:
         if isinstance(v, dict):
             return {k: fmt(va) for k, va in v.items()}
         else:
@@ -138,7 +130,7 @@ def format_summary(summary):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.summarizer.format_summary"><code class="name flex">
-<span>def <span class="ident">format_summary</span></span>(<span>summary)</span>
+<span>def <span class="ident">format_summary</span></span>(<span>summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -146,8 +138,8 @@ def format_summary(summary):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def format_summary(summary):
-    def fmt(v):
+<pre><code class="python">def format_summary(summary: dict) -&gt; dict:
+    def fmt(v: Any) -&gt; Any:
         if isinstance(v, dict):
             return {k: fmt(va) for k, va in v.items()}
         else:
@@ -173,7 +165,7 @@ def format_summary(summary):
 <dl>
 <dt id="pandas_profiling.model.summarizer.BaseSummarizer"><code class="flex name class">
 <span>class <span class="ident">BaseSummarizer</span></span>
-<span>(</span><span>mapping: Dict[Type[visions.types.type.VisionsBaseType], List[Callable]], typeset: visions.typesets.typeset.VisionsTypeset, *args, **kwargs)</span>
+<span>(</span><span>mapping: Dict[str, List[Callable]], typeset: visions.typesets.typeset.VisionsTypeset, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A base summarizer</p>
@@ -188,13 +180,15 @@ def format_summary(summary):
     Can be used to define custom summarizations
     &#34;&#34;&#34;
 
-    def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -&gt; dict:
+    def summarize(
+        self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
+    ) -&gt; dict:
         &#34;&#34;&#34;
 
         Returns:
             object:
         &#34;&#34;&#34;
-        _, summary = self.handle(dtype, series, {&#34;type&#34;: dtype})
+        _, _, summary = self.handle(str(dtype), config, series, {&#34;type&#34;: str(dtype)})
         return summary</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -208,7 +202,7 @@ def format_summary(summary):
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.model.summarizer.BaseSummarizer.summarize"><code class="name flex">
-<span>def <span class="ident">summarize</span></span>(<span>self, series: pandas.core.series.Series, dtype: Type[visions.types.type.VisionsBaseType]) ‑> dict</span>
+<span>def <span class="ident">summarize</span></span>(<span>self, config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, dtype: Type[visions.types.type.VisionsBaseType]) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><h2 id="returns">Returns</h2>
@@ -217,13 +211,15 @@ def format_summary(summary):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def summarize(self, series: pd.Series, dtype: Type[VisionsBaseType]) -&gt; dict:
+<pre><code class="python">def summarize(
+    self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
+) -&gt; dict:
     &#34;&#34;&#34;
 
     Returns:
         object:
     &#34;&#34;&#34;
-    _, summary = self.handle(dtype, series, {&#34;type&#34;: dtype})
+    _, _, summary = self.handle(str(dtype), config, series, {&#34;type&#34;: str(dtype)})
     return summary</code></pre>
 </details>
 </dd>
@@ -239,7 +235,7 @@ def format_summary(summary):
 </dd>
 <dt id="pandas_profiling.model.summarizer.PandasProfilingSummarizer"><code class="flex name class">
 <span>class <span class="ident">PandasProfilingSummarizer</span></span>
-<span>(</span><span>typeset, *args, **kwargs)</span>
+<span>(</span><span>typeset: visions.typesets.typeset.VisionsTypeset, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The default Pandas Profiling summarizer</p></div>
@@ -250,33 +246,33 @@ def format_summary(summary):
 <pre><code class="python">class PandasProfilingSummarizer(BaseSummarizer):
     &#34;&#34;&#34;The default Pandas Profiling summarizer&#34;&#34;&#34;
 
-    def __init__(self, typeset, *args, **kwargs):
-        summary_map = {
-            Unsupported: [
+    def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
+        summary_map: Dict[str, List[Callable]] = {
+            &#34;Unsupported&#34;: [
                 describe_counts,
                 describe_generic,
                 describe_supported,
             ],
-            Numeric: [
+            &#34;Numeric&#34;: [
                 describe_numeric_1d,
             ],
-            DateTime: [
+            &#34;DateTime&#34;: [
                 describe_date_1d,
             ],
-            Categorical: [
+            &#34;Categorical&#34;: [
                 describe_categorical_1d,
             ],
-            Boolean: [],
-            URL: [
+            &#34;Boolean&#34;: [],
+            &#34;URL&#34;: [
                 describe_url_1d,
             ],
-            Path: [
+            &#34;Path&#34;: [
                 describe_path_1d,
             ],
-            File: [
+            &#34;File&#34;: [
                 describe_file_1d,
             ],
-            Image: [
+            &#34;Image&#34;: [
                 describe_image_1d,
             ],
         }

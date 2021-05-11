@@ -32,8 +32,7 @@ from pandas_profiling.report.presentation.core import Variable
 
 
 class WidgetVariable(Variable):
-    def render(self):
-        # TODO: use `ignore` param
+    def render(self) -&gt; widgets.VBox:
         items = [self.content[&#34;top&#34;].render()]
         if self.content[&#34;bottom&#34;] is not None:
             items.append(self.content[&#34;bottom&#34;].render())
@@ -62,8 +61,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetVariable(Variable):
-    def render(self):
-        # TODO: use `ignore` param
+    def render(self) -&gt; widgets.VBox:
         items = [self.content[&#34;top&#34;].render()]
         if self.content[&#34;bottom&#34;] is not None:
             items.append(self.content[&#34;bottom&#34;].render())
@@ -80,7 +78,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.variable.WidgetVariable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -88,8 +86,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
-    # TODO: use `ignore` param
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     items = [self.content[&#34;top&#34;].render()]
     if self.content[&#34;bottom&#34;] is not None:
         items.append(self.content[&#34;bottom&#34;].render())

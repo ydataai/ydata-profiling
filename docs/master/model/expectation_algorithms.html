@@ -26,7 +26,12 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def generic_expectations(name, summary, batch, *args):
+<pre><code class="python">from typing import Any, Tuple
+
+
+def generic_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     batch.expect_column_to_exist(name)
 
     if summary[&#34;n_missing&#34;] == 0:
@@ -38,7 +43,9 @@
     return name, summary, batch
 
 
-def numeric_expectations(name, summary, batch, *args):
+def numeric_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     from great_expectations.profile.base import ProfilerTypeMapping
 
     numeric_type_names = (
@@ -76,7 +83,9 @@ def numeric_expectations(name, summary, batch, *args):
     return name, summary, batch
 
 
-def categorical_expectations(name, summary, batch, *args):
+def categorical_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     # Use for both categorical and special case (boolean)
     absolute_threshold = 10
     relative_threshold = 0.2
@@ -90,11 +99,15 @@ def categorical_expectations(name, summary, batch, *args):
     return name, summary, batch
 
 
-def path_expectations(name, summary, batch, *args):
+def path_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     return name, summary, batch
 
 
-def datetime_expectations(name, summary, batch, *args):
+def datetime_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     if any(k in summary for k in [&#34;min&#34;, &#34;max&#34;]):
         batch.expect_column_values_to_be_between(
             name,
@@ -106,15 +119,21 @@ def datetime_expectations(name, summary, batch, *args):
     return name, summary, batch
 
 
-def image_expectations(name, summary, batch, *args):
+def image_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     return name, summary, batch
 
 
-def url_expectations(name, summary, batch, *args):
+def url_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     return name, summary, batch
 
 
-def file_expectations(name, summary, batch, *args):
+def file_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     # By definition within our type logic, a file exists (as it&#39;s a path that also exists)
     batch.expect_file_to_exist(name)
 
@@ -129,7 +148,7 @@ def file_expectations(name, summary, batch, *args):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.expectation_algorithms.categorical_expectations"><code class="name flex">
-<span>def <span class="ident">categorical_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">categorical_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -137,7 +156,9 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def categorical_expectations(name, summary, batch, *args):
+<pre><code class="python">def categorical_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     # Use for both categorical and special case (boolean)
     absolute_threshold = 10
     relative_threshold = 0.2
@@ -152,7 +173,7 @@ def file_expectations(name, summary, batch, *args):
 </details>
 </dd>
 <dt id="pandas_profiling.model.expectation_algorithms.datetime_expectations"><code class="name flex">
-<span>def <span class="ident">datetime_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">datetime_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -160,7 +181,9 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def datetime_expectations(name, summary, batch, *args):
+<pre><code class="python">def datetime_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     if any(k in summary for k in [&#34;min&#34;, &#34;max&#34;]):
         batch.expect_column_values_to_be_between(
             name,
@@ -173,7 +196,7 @@ def file_expectations(name, summary, batch, *args):
 </details>
 </dd>
 <dt id="pandas_profiling.model.expectation_algorithms.file_expectations"><code class="name flex">
-<span>def <span class="ident">file_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">file_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -181,7 +204,9 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def file_expectations(name, summary, batch, *args):
+<pre><code class="python">def file_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     # By definition within our type logic, a file exists (as it&#39;s a path that also exists)
     batch.expect_file_to_exist(name)
 
@@ -189,7 +214,7 @@ def file_expectations(name, summary, batch, *args):
 </details>
 </dd>
 <dt id="pandas_profiling.model.expectation_algorithms.generic_expectations"><code class="name flex">
-<span>def <span class="ident">generic_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">generic_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -197,7 +222,9 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def generic_expectations(name, summary, batch, *args):
+<pre><code class="python">def generic_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     batch.expect_column_to_exist(name)
 
     if summary[&#34;n_missing&#34;] == 0:
@@ -210,7 +237,7 @@ def file_expectations(name, summary, batch, *args):
 </details>
 </dd>
 <dt id="pandas_profiling.model.expectation_algorithms.image_expectations"><code class="name flex">
-<span>def <span class="ident">image_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">image_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -218,12 +245,14 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def image_expectations(name, summary, batch, *args):
+<pre><code class="python">def image_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     return name, summary, batch</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.expectation_algorithms.numeric_expectations"><code class="name flex">
-<span>def <span class="ident">numeric_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">numeric_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -231,7 +260,9 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def numeric_expectations(name, summary, batch, *args):
+<pre><code class="python">def numeric_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     from great_expectations.profile.base import ProfilerTypeMapping
 
     numeric_type_names = (
@@ -270,7 +301,7 @@ def file_expectations(name, summary, batch, *args):
 </details>
 </dd>
 <dt id="pandas_profiling.model.expectation_algorithms.path_expectations"><code class="name flex">
-<span>def <span class="ident">path_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">path_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -278,12 +309,14 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def path_expectations(name, summary, batch, *args):
+<pre><code class="python">def path_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     return name, summary, batch</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.expectation_algorithms.url_expectations"><code class="name flex">
-<span>def <span class="ident">url_expectations</span></span>(<span>name, summary, batch, *args)</span>
+<span>def <span class="ident">url_expectations</span></span>(<span>name: str, summary: dict, batch: Any, *args) ‑> Tuple[str, dict, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -291,7 +324,9 @@ def file_expectations(name, summary, batch, *args):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def url_expectations(name, summary, batch, *args):
+<pre><code class="python">def url_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -&gt; Tuple[str, dict, Any]:
     return name, summary, batch</code></pre>
 </details>
 </dd>

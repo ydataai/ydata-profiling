@@ -27,6 +27,7 @@
 
    .. autosummary::
    
+      ~SerializeReport.config
       ~SerializeReport.df
       ~SerializeReport.df_hash
    

@@ -26,18 +26,22 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
+<pre><code class="python">from typing import Any, Optional
+
+import pandas as pd
 
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class Sample(ItemRenderer):
-    def __init__(self, name, sample, caption=None, **kwargs):
+    def __init__(
+        self, name: str, sample: pd.DataFrame, caption: Optional[str] = None, **kwargs
+    ):
         super().__init__(
             &#34;sample&#34;, {&#34;sample&#34;: sample, &#34;caption&#34;: caption}, name=name, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Sample&#34;
 
     def render(self) -&gt; Any:
@@ -55,7 +59,7 @@ class Sample(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.sample.Sample"><code class="flex name class">
 <span>class <span class="ident">Sample</span></span>
-<span>(</span><span>name, sample, caption=None, **kwargs)</span>
+<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -65,12 +69,14 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Sample(ItemRenderer):
-    def __init__(self, name, sample, caption=None, **kwargs):
+    def __init__(
+        self, name: str, sample: pd.DataFrame, caption: Optional[str] = None, **kwargs
+    ):
         super().__init__(
             &#34;sample&#34;, {&#34;sample&#34;: sample, &#34;caption&#34;: caption}, name=name, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Sample&#34;
 
     def render(self) -&gt; Any:

@@ -27,11 +27,17 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Callable, Dict, Optional
 
 
 class Renderable(ABC):
-    def __init__(self, content, name=None, anchor_id=None, classes=None):
+    def __init__(
+        self,
+        content: Dict[str, Any],
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
+    ):
         self.content = content
         if name is not None:
             self.content[&#34;name&#34;] = name
@@ -41,15 +47,15 @@ class Renderable(ABC):
             self.content[&#34;classes&#34;] = classes
 
     @property
-    def name(self):
+    def name(self) -&gt; str:
         return self.content[&#34;name&#34;]
 
     @property
-    def anchor_id(self):
+    def anchor_id(self) -&gt; str:
         return self.content[&#34;anchor_id&#34;]
 
     @property
-    def classes(self):
+    def classes(self) -&gt; str:
         return self.content[&#34;classes&#34;]
 
     @abstractmethod
@@ -60,7 +66,7 @@ class Renderable(ABC):
         return self.__class__.__name__
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: &#34;Renderable&#34;, flv: Callable) -&gt; None:
         obj.__class__ = cls</code></pre>
 </details>
 </section>
@@ -75,7 +81,7 @@ class Renderable(ABC):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.renderable.Renderable"><code class="flex name class">
 <span>class <span class="ident">Renderable</span></span>
-<span>(</span><span>content, name=None, anchor_id=None, classes=None)</span>
+<span>(</span><span>content: Dict[str, Any], name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -85,7 +91,13 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Renderable(ABC):
-    def __init__(self, content, name=None, anchor_id=None, classes=None):
+    def __init__(
+        self,
+        content: Dict[str, Any],
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
+    ):
         self.content = content
         if name is not None:
             self.content[&#34;name&#34;] = name
@@ -95,15 +107,15 @@ inheritance.</p></div>
             self.content[&#34;classes&#34;] = classes
 
     @property
-    def name(self):
+    def name(self) -&gt; str:
         return self.content[&#34;name&#34;]
 
     @property
-    def anchor_id(self):
+    def anchor_id(self) -&gt; str:
         return self.content[&#34;anchor_id&#34;]
 
     @property
-    def classes(self):
+    def classes(self) -&gt; str:
         return self.content[&#34;classes&#34;]
 
     @abstractmethod
@@ -114,7 +126,7 @@ inheritance.</p></div>
         return self.__class__.__name__
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: &#34;Renderable&#34;, flv: Callable) -&gt; None:
         obj.__class__ = cls</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -129,7 +141,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.renderable.Renderable.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv)</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -138,14 +150,14 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv):
+def convert_to_class(cls, obj: &#34;Renderable&#34;, flv: Callable) -&gt; None:
     obj.__class__ = cls</code></pre>
 </details>
 </dd>
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pandas_profiling.report.presentation.core.renderable.Renderable.anchor_id"><code class="name">var <span class="ident">anchor_id</span></code></dt>
+<dt id="pandas_profiling.report.presentation.core.renderable.Renderable.anchor_id"><code class="name">var <span class="ident">anchor_id</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -153,11 +165,11 @@ def convert_to_class(cls, obj, flv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def anchor_id(self):
+def anchor_id(self) -&gt; str:
     return self.content[&#34;anchor_id&#34;]</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.report.presentation.core.renderable.Renderable.classes"><code class="name">var <span class="ident">classes</span></code></dt>
+<dt id="pandas_profiling.report.presentation.core.renderable.Renderable.classes"><code class="name">var <span class="ident">classes</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -165,11 +177,11 @@ def anchor_id(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def classes(self):
+def classes(self) -&gt; str:
     return self.content[&#34;classes&#34;]</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.report.presentation.core.renderable.Renderable.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dt id="pandas_profiling.report.presentation.core.renderable.Renderable.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -177,7 +189,7 @@ def classes(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def name(self):
+def name(self) -&gt; str:
     return self.content[&#34;name&#34;]</code></pre>
 </details>
 </dd>

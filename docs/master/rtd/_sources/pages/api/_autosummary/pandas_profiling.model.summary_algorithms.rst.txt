@@ -24,6 +24,7 @@
       describe_path_1d
       describe_supported
       describe_url_1d
+      func_nullable_series_contains
       numeric_stats_numpy
       numeric_stats_pandas
       series_handle_nulls

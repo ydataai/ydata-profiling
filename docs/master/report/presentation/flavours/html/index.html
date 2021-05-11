@@ -151,7 +151,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLCollapse(Collapse):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;collapse.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -164,7 +164,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLCollapse.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -172,7 +172,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;collapse.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -180,7 +180,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLContainer"><code class="flex name class">
 <span>class <span class="ident">HTMLContainer</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, name=None, anchor_id=None, classes=None, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -190,7 +190,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLContainer(Container):
-    def render(self):
+    def render(self) -&gt; str:
         if self.sequence_type in [&#34;list&#34;, &#34;accordion&#34;]:
             return templates.template(&#34;sequence/list.html&#34;).render(
                 anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
@@ -214,7 +214,7 @@ inheritance.</p></div>
         elif self.sequence_type == &#34;sections&#34;:
             return templates.template(&#34;sequence/sections.html&#34;).render(
                 sections=self.content[&#34;items&#34;],
-                full_width=config[&#34;html&#34;][&#34;style&#34;][&#34;full_width&#34;].get(bool),
+                full_width=self.content[&#34;full_width&#34;],
             )
         elif self.sequence_type == &#34;grid&#34;:
             return templates.template(&#34;sequence/grid.html&#34;).render(
@@ -225,9 +225,10 @@ inheritance.</p></div>
                 items=self.content[&#34;items&#34;],
                 batch_size=self.content[&#34;batch_size&#34;],
                 titles=self.content.get(&#34;titles&#34;, True),
+                subtitles=self.content.get(&#34;subtitles&#34;, False),
             )
-
-        raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
+        else:
+            raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -238,7 +239,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLContainer.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -246,7 +247,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     if self.sequence_type in [&#34;list&#34;, &#34;accordion&#34;]:
         return templates.template(&#34;sequence/list.html&#34;).render(
             anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
@@ -270,7 +271,7 @@ inheritance.</p></div>
     elif self.sequence_type == &#34;sections&#34;:
         return templates.template(&#34;sequence/sections.html&#34;).render(
             sections=self.content[&#34;items&#34;],
-            full_width=config[&#34;html&#34;][&#34;style&#34;][&#34;full_width&#34;].get(bool),
+            full_width=self.content[&#34;full_width&#34;],
         )
     elif self.sequence_type == &#34;grid&#34;:
         return templates.template(&#34;sequence/grid.html&#34;).render(
@@ -281,16 +282,17 @@ inheritance.</p></div>
             items=self.content[&#34;items&#34;],
             batch_size=self.content[&#34;batch_size&#34;],
             titles=self.content.get(&#34;titles&#34;, True),
+            subtitles=self.content.get(&#34;subtitles&#34;, False),
         )
-
-    raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
+    else:
+        raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLDuplicate"><code class="flex name class">
 <span>class <span class="ident">HTMLDuplicate</span></span>
-<span>(</span><span>name, duplicate, **kwargs)</span>
+<span>(</span><span>name: str, duplicate: pandas.core.frame.DataFrame, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -300,7 +302,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLDuplicate(Duplicate):
-    def render(self):
+    def render(self) -&gt; str:
         duplicate_html = self.content[&#34;duplicate&#34;].to_html(
             classes=&#34;duplicate table table-striped&#34;
         )
@@ -318,7 +320,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLDuplicate.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -326,7 +328,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     duplicate_html = self.content[&#34;duplicate&#34;].to_html(
         classes=&#34;duplicate table table-striped&#34;
     )
@@ -339,7 +341,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable"><code class="flex name class">
 <span>class <span class="ident">HTMLFrequencyTable</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: list, redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -349,7 +351,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLFrequencyTable(FrequencyTable):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;frequency_table.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -362,7 +364,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -370,7 +372,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;frequency_table.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -378,7 +380,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall"><code class="flex name class">
 <span>class <span class="ident">HTMLFrequencyTableSmall</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: List[Any], redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -388,7 +390,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLFrequencyTableSmall(FrequencyTableSmall):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;frequency_table_small.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -401,7 +403,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -409,7 +411,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;frequency_table_small.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -417,7 +419,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLHTML"><code class="flex name class">
 <span>class <span class="ident">HTMLHTML</span></span>
-<span>(</span><span>content, **kwargs)</span>
+<span>(</span><span>content: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -427,7 +429,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLHTML(HTML):
-    def render(self):
+    def render(self) -&gt; str:
         return self.content[&#34;html&#34;]</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -440,7 +442,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLHTML.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -448,7 +450,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return self.content[&#34;html&#34;]</code></pre>
 </details>
 </dd>
@@ -456,7 +458,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLImage"><code class="flex name class">
 <span>class <span class="ident">HTMLImage</span></span>
-<span>(</span><span>image, image_format, alt, caption=None, **kwargs)</span>
+<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -466,7 +468,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLImage(Image):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;diagram.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -479,7 +481,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLImage.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -487,7 +489,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;diagram.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -504,7 +506,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLRoot(Root):
-    def render(self, **kwargs):
+    def render(self, **kwargs) -&gt; str:
         nav_items = [
             (section.name, section.anchor_id)
             for section in self.content[&#34;body&#34;].content[&#34;items&#34;]
@@ -524,7 +526,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLRoot.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self, **kwargs)</span>
+<span>def <span class="ident">render</span></span>(<span>self, **kwargs) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -532,7 +534,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self, **kwargs):
+<pre><code class="python">def render(self, **kwargs) -&gt; str:
     nav_items = [
         (section.name, section.anchor_id)
         for section in self.content[&#34;body&#34;].content[&#34;items&#34;]
@@ -547,7 +549,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLSample"><code class="flex name class">
 <span>class <span class="ident">HTMLSample</span></span>
-<span>(</span><span>name, sample, caption=None, **kwargs)</span>
+<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -557,7 +559,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLSample(Sample):
-    def render(self):
+    def render(self) -&gt; str:
         sample_html = self.content[&#34;sample&#34;].to_html(
             classes=&#34;sample table table-striped&#34;
         )
@@ -575,7 +577,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLSample.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -583,7 +585,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     sample_html = self.content[&#34;sample&#34;].to_html(
         classes=&#34;sample table table-striped&#34;
     )
@@ -596,7 +598,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLTable"><code class="flex name class">
 <span>class <span class="ident">HTMLTable</span></span>
-<span>(</span><span>rows, name=None, caption=None, **kwargs)</span>
+<span>(</span><span>rows: Sequence, name: Union[str, NoneType] = None, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -606,7 +608,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLTable(Table):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;table.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -619,7 +621,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLTable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -627,7 +629,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;table.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -635,7 +637,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLToggleButton"><code class="flex name class">
 <span>class <span class="ident">HTMLToggleButton</span></span>
-<span>(</span><span>text, **kwargs)</span>
+<span>(</span><span>text: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -645,7 +647,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLToggleButton(ToggleButton):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;toggle_button.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -658,7 +660,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLToggleButton.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -666,7 +668,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;toggle_button.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -684,7 +686,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLVariable(Variable):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;variable.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -697,7 +699,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLVariable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -705,7 +707,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;variable.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -713,7 +715,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo"><code class="flex name class">
 <span>class <span class="ident">HTMLVariableInfo</span></span>
-<span>(</span><span>anchor_id, var_name, var_type, warnings, description, **kwargs)</span>
+<span>(</span><span>anchor_id: str, var_name: str, var_type: str, warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], description: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -723,7 +725,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLVariableInfo(VariableInfo):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;variable_info.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -736,7 +738,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -744,7 +746,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;variable_info.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>
@@ -752,7 +754,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLWarnings"><code class="flex name class">
 <span>class <span class="ident">HTMLWarnings</span></span>
-<span>(</span><span>warnings, **kwargs)</span>
+<span>(</span><span>warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -762,7 +764,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLWarnings(Warnings):
-    def render(self):
+    def render(self) -&gt; str:
         styles = {
             &#34;constant&#34;: &#34;warning&#34;,
             &#34;unsupported&#34;: &#34;warning&#34;,
@@ -792,7 +794,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.HTMLWarnings.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -800,7 +802,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     styles = {
         &#34;constant&#34;: &#34;warning&#34;,
         &#34;unsupported&#34;: &#34;warning&#34;,

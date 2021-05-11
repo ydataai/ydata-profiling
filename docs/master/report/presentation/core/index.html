@@ -152,14 +152,14 @@ inheritance.</p></div>
     def __init__(self, button: ToggleButton, item: Renderable, **kwargs):
         super().__init__(&#34;collapse&#34;, {&#34;button&#34;: button, &#34;item&#34;: item}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Collapse&#34;
 
     def render(self) -&gt; Any:
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;button&#34; in obj.content:
             flv(obj.content[&#34;button&#34;])
@@ -180,7 +180,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Collapse.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv)</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -189,7 +189,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv):
+def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
     obj.__class__ = cls
     if &#34;button&#34; in obj.content:
         flv(obj.content[&#34;button&#34;])
@@ -217,7 +217,7 @@ def convert_to_class(cls, obj, flv):
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Container"><code class="flex name class">
 <span>class <span class="ident">Container</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, name=None, anchor_id=None, classes=None, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -231,10 +231,10 @@ inheritance.</p></div>
         self,
         items: Sequence[Renderable],
         sequence_type: str,
-        nested=False,
-        name=None,
-        anchor_id=None,
-        classes=None,
+        nested: bool = False,
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
         **kwargs,
     ):
         args = {&#34;items&#34;: items, &#34;nested&#34;: nested}
@@ -261,7 +261,7 @@ inheritance.</p></div>
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -&gt; None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;items&#34; in obj.content:
             for item in obj.content[&#34;items&#34;]:
@@ -280,7 +280,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Container.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -289,7 +289,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv) -&gt; None:
+def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
     obj.__class__ = cls
     if &#34;items&#34; in obj.content:
         for item in obj.content[&#34;items&#34;]:
@@ -316,7 +316,7 @@ def convert_to_class(cls, obj, flv) -&gt; None:
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Duplicate"><code class="flex name class">
 <span>class <span class="ident">Duplicate</span></span>
-<span>(</span><span>name, duplicate, **kwargs)</span>
+<span>(</span><span>name: str, duplicate: pandas.core.frame.DataFrame, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -326,10 +326,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Duplicate(ItemRenderer):
-    def __init__(self, name, duplicate, **kwargs):
+    def __init__(self, name: str, duplicate: pd.DataFrame, **kwargs):
         super().__init__(&#34;duplicate&#34;, {&#34;duplicate&#34;: duplicate}, name=name, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Duplicate&#34;
 
     def render(self) -&gt; Any:
@@ -365,7 +365,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.FrequencyTable"><code class="flex name class">
 <span>class <span class="ident">FrequencyTable</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: list, redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -375,10 +375,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FrequencyTable(ItemRenderer):
-    def __init__(self, rows, redact, **kwargs):
+    def __init__(self, rows: list, redact: bool, **kwargs):
         super().__init__(&#34;frequency_table&#34;, {&#34;rows&#34;: rows, &#34;redact&#34;: redact}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;FrequencyTable&#34;
 
     def render(self) -&gt; Any:
@@ -414,7 +414,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.FrequencyTableSmall"><code class="flex name class">
 <span>class <span class="ident">FrequencyTableSmall</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: List[Any], redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -424,12 +424,12 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FrequencyTableSmall(ItemRenderer):
-    def __init__(self, rows, redact, **kwargs):
+    def __init__(self, rows: List[Any], redact: bool, **kwargs):
         super().__init__(
             &#34;frequency_table_small&#34;, {&#34;rows&#34;: rows, &#34;redact&#34;: redact}, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;FrequencyTableSmall&#34;
 
     def render(self) -&gt; Any:
@@ -465,7 +465,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.HTML"><code class="flex name class">
 <span>class <span class="ident">HTML</span></span>
-<span>(</span><span>content, **kwargs)</span>
+<span>(</span><span>content: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -475,10 +475,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTML(ItemRenderer):
-    def __init__(self, content, **kwargs):
+    def __init__(self, content: str, **kwargs):
         super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;HTML&#34;
 
     def render(self) -&gt; Any:
@@ -514,7 +514,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Image"><code class="flex name class">
 <span>class <span class="ident">Image</span></span>
-<span>(</span><span>image, image_format, alt, caption=None, **kwargs)</span>
+<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -524,7 +524,14 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Image(ItemRenderer):
-    def __init__(self, image, image_format, alt, caption=None, **kwargs):
+    def __init__(
+        self,
+        image: str,
+        image_format: ImageType,
+        alt: str,
+        caption: Optional[str] = None,
+        **kwargs
+    ):
         super().__init__(
             &#34;image&#34;,
             {
@@ -536,7 +543,7 @@ inheritance.</p></div>
             **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Image&#34;
 
     def render(self) -&gt; Any:
@@ -590,14 +597,14 @@ inheritance.</p></div>
             &#34;report&#34;, {&#34;body&#34;: body, &#34;footer&#34;: footer}, name=name, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Root&#34;
 
     def render(self, **kwargs) -&gt; Any:
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -&gt; None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;body&#34; in obj.content:
             flv(obj.content[&#34;body&#34;])
@@ -618,7 +625,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Root.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -627,7 +634,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv) -&gt; None:
+def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
     obj.__class__ = cls
     if &#34;body&#34; in obj.content:
         flv(obj.content[&#34;body&#34;])
@@ -655,7 +662,7 @@ def convert_to_class(cls, obj, flv) -&gt; None:
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Sample"><code class="flex name class">
 <span>class <span class="ident">Sample</span></span>
-<span>(</span><span>name, sample, caption=None, **kwargs)</span>
+<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -665,12 +672,14 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Sample(ItemRenderer):
-    def __init__(self, name, sample, caption=None, **kwargs):
+    def __init__(
+        self, name: str, sample: pd.DataFrame, caption: Optional[str] = None, **kwargs
+    ):
         super().__init__(
             &#34;sample&#34;, {&#34;sample&#34;: sample, &#34;caption&#34;: caption}, name=name, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Sample&#34;
 
     def render(self) -&gt; Any:
@@ -706,7 +715,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Table"><code class="flex name class">
 <span>class <span class="ident">Table</span></span>
-<span>(</span><span>rows, name=None, caption=None, **kwargs)</span>
+<span>(</span><span>rows: Sequence, name: Union[str, NoneType] = None, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -716,12 +725,18 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Table(ItemRenderer):
-    def __init__(self, rows, name=None, caption=None, **kwargs):
+    def __init__(
+        self,
+        rows: Sequence,
+        name: Optional[str] = None,
+        caption: Optional[str] = None,
+        **kwargs
+    ):
         super().__init__(
             &#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name, &#34;caption&#34;: caption}, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Table&#34;
 
     def render(self) -&gt; Any:
@@ -757,7 +772,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.ToggleButton"><code class="flex name class">
 <span>class <span class="ident">ToggleButton</span></span>
-<span>(</span><span>text, **kwargs)</span>
+<span>(</span><span>text: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -767,10 +782,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ToggleButton(ItemRenderer):
-    def __init__(self, text, **kwargs):
+    def __init__(self, text: str, **kwargs):
         super().__init__(&#34;toggle_button&#34;, {&#34;text&#34;: text}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;ToggleButton&#34;
 
     def render(self) -&gt; Any:
@@ -843,7 +858,7 @@ inheritance.</p></div>
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
         obj.__class__ = cls
         if &#34;top&#34; in obj.content and obj.content[&#34;top&#34;] is not None:
             flv(obj.content[&#34;top&#34;])
@@ -864,7 +879,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Variable.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj, flv)</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -873,7 +888,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def convert_to_class(cls, obj, flv):
+def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
     obj.__class__ = cls
     if &#34;top&#34; in obj.content and obj.content[&#34;top&#34;] is not None:
         flv(obj.content[&#34;top&#34;])
@@ -901,7 +916,7 @@ def convert_to_class(cls, obj, flv):
 </dd>
 <dt id="pandas_profiling.report.presentation.core.VariableInfo"><code class="flex name class">
 <span>class <span class="ident">VariableInfo</span></span>
-<span>(</span><span>anchor_id, var_name, var_type, warnings, description, **kwargs)</span>
+<span>(</span><span>anchor_id: str, var_name: str, var_type: str, warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], description: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -911,7 +926,15 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class VariableInfo(ItemRenderer):
-    def __init__(self, anchor_id, var_name, var_type, warnings, description, **kwargs):
+    def __init__(
+        self,
+        anchor_id: str,
+        var_name: str,
+        var_type: str,
+        warnings: List[Message],
+        description: str,
+        **kwargs
+    ):
         super().__init__(
             &#34;variable_info&#34;,
             {
@@ -924,7 +947,7 @@ inheritance.</p></div>
             **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;VariableInfo&#34;
 
     def render(self) -&gt; Any:
@@ -960,7 +983,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Warnings"><code class="flex name class">
 <span>class <span class="ident">Warnings</span></span>
-<span>(</span><span>warnings, **kwargs)</span>
+<span>(</span><span>warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -970,7 +993,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Warnings(ItemRenderer):
-    def __init__(self, warnings, **kwargs):
+    def __init__(self, warnings: List[Message], **kwargs):
         super().__init__(&#34;warnings&#34;, {&#34;warnings&#34;: warnings}, **kwargs)
 
     def __repr__(self):

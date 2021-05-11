@@ -28,14 +28,13 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Contains all templates used for generating the HTML profile report&#34;&#34;&#34;
-import re
 import shutil
 from pathlib import Path
 
 import jinja2
 
-from pandas_profiling.config import config
-from pandas_profiling.report.formatters import get_fmt_mapping
+from pandas_profiling.config import Settings, Theme
+from pandas_profiling.report.formatters import fmt, fmt_badge, fmt_numeric, fmt_percent
 
 # Initializing Jinja
 package_loader = jinja2.PackageLoader(
@@ -44,14 +43,11 @@ package_loader = jinja2.PackageLoader(
 jinja2_env = jinja2.Environment(
     lstrip_blocks=True, trim_blocks=True, loader=package_loader
 )
-fmt_mapping = get_fmt_mapping()
-for key, value in fmt_mapping.items():
-    jinja2_env.filters[key] = value
-
-jinja2_env.filters[&#34;fmt_badge&#34;] = lambda x: re.sub(
-    r&#34;\((\d+)\)&#34;, r&#39;&lt;span class=&#34;badge&#34;&gt;\1&lt;/span&gt;&#39;, x
-)
-jinja2_env.filters[&#34;dynamic_filter&#34;] = lambda x, v: fmt_mapping[v](x)
+jinja2_env.filters[&#34;is_list&#34;] = lambda x: isinstance(x, list)
+jinja2_env.filters[&#34;fmt_badge&#34;] = fmt_badge
+jinja2_env.filters[&#34;fmt_percent&#34;] = fmt_percent
+jinja2_env.filters[&#34;fmt_numeric&#34;] = fmt_numeric
+jinja2_env.filters[&#34;fmt&#34;] = fmt
 
 
 def template(template_name: str) -&gt; jinja2.Template:
@@ -67,11 +63,10 @@ def template(template_name: str) -&gt; jinja2.Template:
     return jinja2_env.get_template(template_name)
 
 
-def create_html_assets(output_file):
-    theme = config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str)
-    offline = config[&#34;html&#34;][&#34;use_local_assets&#34;].get(bool)
+def create_html_assets(config: Settings, output_file: Path) -&gt; None:
+    theme = config.html.style.theme
 
-    path = output_file.with_name(output_file.stem + &#34;_assets&#34;)
+    path = output_file.with_name(str(config.html.assets_prefix))
     if path.is_dir():
         shutil.rmtree(path)
 
@@ -80,11 +75,11 @@ def create_html_assets(output_file):
     css = []
     js = []
 
-    if offline:
-        if theme != &#34;None&#34;:
-            if theme == &#34;flatly&#34;:
+    if config.html.use_local_assets:
+        if theme is not None:
+            if theme == Theme.flatly:
                 css.append(&#34;wrapper/assets/flatly.bootstrap.min.css&#34;)
-            if theme == &#34;united&#34;:
+            if theme == Theme.united:
                 css.append(&#34;wrapper/assets/united.bootstrap.min.css&#34;)
         else:
             css.append(&#34;wrapper/assets/bootstrap.min.css&#34;)
@@ -101,8 +96,8 @@ def create_html_assets(output_file):
         for css_file in css:
             (css_dir / Path(css_file).name).write_text(
                 template(css_file).render(
-                    primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
-                    nav=config[&#34;html&#34;][&#34;navbar_show&#34;].get(bool),
+                    primary_color=config.html.style.primary_color,
+                    nav=config.html.navbar_show,
                 )
             )
 
@@ -121,7 +116,7 @@ def create_html_assets(output_file):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.templates.create_html_assets"><code class="name flex">
-<span>def <span class="ident">create_html_assets</span></span>(<span>output_file)</span>
+<span>def <span class="ident">create_html_assets</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../../config.html#pandas_profiling.config.Settings">Settings</a>, output_file: pathlib.Path) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -129,11 +124,10 @@ def create_html_assets(output_file):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def create_html_assets(output_file):
-    theme = config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str)
-    offline = config[&#34;html&#34;][&#34;use_local_assets&#34;].get(bool)
+<pre><code class="python">def create_html_assets(config: Settings, output_file: Path) -&gt; None:
+    theme = config.html.style.theme
 
-    path = output_file.with_name(output_file.stem + &#34;_assets&#34;)
+    path = output_file.with_name(str(config.html.assets_prefix))
     if path.is_dir():
         shutil.rmtree(path)
 
@@ -142,11 +136,11 @@ def create_html_assets(output_file):
     css = []
     js = []
 
-    if offline:
-        if theme != &#34;None&#34;:
-            if theme == &#34;flatly&#34;:
+    if config.html.use_local_assets:
+        if theme is not None:
+            if theme == Theme.flatly:
                 css.append(&#34;wrapper/assets/flatly.bootstrap.min.css&#34;)
-            if theme == &#34;united&#34;:
+            if theme == Theme.united:
                 css.append(&#34;wrapper/assets/united.bootstrap.min.css&#34;)
         else:
             css.append(&#34;wrapper/assets/bootstrap.min.css&#34;)
@@ -163,8 +157,8 @@ def create_html_assets(output_file):
         for css_file in css:
             (css_dir / Path(css_file).name).write_text(
                 template(css_file).render(
-                    primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
-                    nav=config[&#34;html&#34;][&#34;navbar_show&#34;].get(bool),
+                    primary_color=config.html.style.primary_color,
+                    nav=config.html.navbar_show,
                 )
             )
 

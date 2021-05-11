@@ -27,20 +27,21 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import functools
+from typing import Callable
 
 import numpy as np
 import pandas as pd
 from pandas.api import types as pdt
 from visions.backends.pandas.series_utils import series_handle_nulls
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 
 
-def is_nullable(series, state) -&gt; bool:
+def is_nullable(series: pd.Series, state: dict) -&gt; bool:
     return series.count() &gt; 0
 
 
-def try_func(fn):
+def try_func(fn: Callable) -&gt; Callable:
     @functools.wraps(fn)
     def inner(series: pd.Series, *args, **kwargs) -&gt; bool:
         try:
@@ -51,22 +52,11 @@ def try_func(fn):
     return inner
 
 
-def get_boolean_map():
-    bool_map = {}
-    for true_value, false_value in config[&#34;vars&#34;][&#34;bool&#34;][&#34;mappings&#34;].get(list):
-        bool_map[true_value] = True
-        bool_map[false_value] = False
-    return bool_map
-
-
-PP_bool_map = get_boolean_map()
-
-
-def string_is_bool(series, state) -&gt; bool:
+def string_is_bool(series: pd.Series, state: dict, k: Settings) -&gt; bool:
     @series_handle_nulls
     @try_func
     def tester(s: pd.Series, state: dict) -&gt; bool:
-        return s.str.lower().isin(PP_bool_map.keys()).all()
+        return s.str.lower().isin(k.keys()).all()
 
     if pdt.is_categorical_dtype(series):
         return False
@@ -74,17 +64,17 @@ def string_is_bool(series, state) -&gt; bool:
     return tester(series, state)
 
 
-def string_to_bool(series, state):
-    return series.str.lower().map(PP_bool_map)
+def string_to_bool(series: pd.Series, state: dict, k: Settings) -&gt; pd.Series:
+    return series.str.lower().map(k)
 
 
-def numeric_is_category(series, state):
+def numeric_is_category(series: pd.Series, state: dict, k: Settings) -&gt; bool:
     n_unique = series.nunique()
-    threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;low_categorical_threshold&#34;].get(int)
+    threshold = k.vars.num.low_categorical_threshold
     return 1 &lt;= n_unique &lt;= threshold
 
 
-def to_category(series, state):
+def to_category(series: pd.Series, state: dict) -&gt; pd.Series:
     hasnans = series.hasnans
     val = series.astype(str)
     if hasnans:
@@ -106,7 +96,7 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 
 
 @series_handle_nulls
-def category_is_numeric(series, state):
+def category_is_numeric(series: pd.Series, state: dict, k: Settings) -&gt; bool:
     if pdt.is_bool_dtype(series) or object_is_bool(series, state):
         return False
 
@@ -118,10 +108,10 @@ def category_is_numeric(series, state):
     except:  # noqa: E722
         return False
 
-    return not numeric_is_category(series, state)
+    return not numeric_is_category(series, state, k)
 
 
-def category_to_numeric(series, state):
+def category_to_numeric(series: pd.Series, state: dict) -&gt; pd.Series:
     return pd.to_numeric(series, errors=&#34;coerce&#34;)
 
 
@@ -134,7 +124,7 @@ def to_bool(series: pd.Series) -&gt; pd.Series:
 
 
 @series_handle_nulls
-def object_is_bool(series: pd.Series, state) -&gt; bool:
+def object_is_bool(series: pd.Series, state: dict) -&gt; bool:
     if pdt.is_object_dtype(series):
         bool_set = {True, False}
         try:
@@ -154,7 +144,7 @@ def object_is_bool(series: pd.Series, state) -&gt; bool:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.typeset_relations.category_is_numeric"><code class="name flex">
-<span>def <span class="ident">category_is_numeric</span></span>(<span>series, state)</span>
+<span>def <span class="ident">category_is_numeric</span></span>(<span>series: pandas.core.series.Series, state: dict, k: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -163,7 +153,7 @@ def object_is_bool(series: pd.Series, state) -&gt; bool:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@series_handle_nulls
-def category_is_numeric(series, state):
+def category_is_numeric(series: pd.Series, state: dict, k: Settings) -&gt; bool:
     if pdt.is_bool_dtype(series) or object_is_bool(series, state):
         return False
 
@@ -175,11 +165,11 @@ def category_is_numeric(series, state):
     except:  # noqa: E722
         return False
 
-    return not numeric_is_category(series, state)</code></pre>
+    return not numeric_is_category(series, state, k)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.category_to_numeric"><code class="name flex">
-<span>def <span class="ident">category_to_numeric</span></span>(<span>series, state)</span>
+<span>def <span class="ident">category_to_numeric</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> pandas.core.series.Series</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -187,29 +177,12 @@ def category_is_numeric(series, state):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def category_to_numeric(series, state):
+<pre><code class="python">def category_to_numeric(series: pd.Series, state: dict) -&gt; pd.Series:
     return pd.to_numeric(series, errors=&#34;coerce&#34;)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.model.typeset_relations.get_boolean_map"><code class="name flex">
-<span>def <span class="ident">get_boolean_map</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_boolean_map():
-    bool_map = {}
-    for true_value, false_value in config[&#34;vars&#34;][&#34;bool&#34;][&#34;mappings&#34;].get(list):
-        bool_map[true_value] = True
-        bool_map[false_value] = False
-    return bool_map</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.model.typeset_relations.is_nullable"><code class="name flex">
-<span>def <span class="ident">is_nullable</span></span>(<span>series, state) ‑> bool</span>
+<span>def <span class="ident">is_nullable</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -217,12 +190,12 @@ def category_is_numeric(series, state):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def is_nullable(series, state) -&gt; bool:
+<pre><code class="python">def is_nullable(series: pd.Series, state: dict) -&gt; bool:
     return series.count() &gt; 0</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.numeric_is_category"><code class="name flex">
-<span>def <span class="ident">numeric_is_category</span></span>(<span>series, state)</span>
+<span>def <span class="ident">numeric_is_category</span></span>(<span>series: pandas.core.series.Series, state: dict, k: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -230,14 +203,14 @@ def category_is_numeric(series, state):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def numeric_is_category(series, state):
+<pre><code class="python">def numeric_is_category(series: pd.Series, state: dict, k: Settings) -&gt; bool:
     n_unique = series.nunique()
-    threshold = config[&#34;vars&#34;][&#34;num&#34;][&#34;low_categorical_threshold&#34;].get(int)
+    threshold = k.vars.num.low_categorical_threshold
     return 1 &lt;= n_unique &lt;= threshold</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.object_is_bool"><code class="name flex">
-<span>def <span class="ident">object_is_bool</span></span>(<span>series: pandas.core.series.Series, state) ‑> bool</span>
+<span>def <span class="ident">object_is_bool</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -246,7 +219,7 @@ def category_is_numeric(series, state):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@series_handle_nulls
-def object_is_bool(series: pd.Series, state) -&gt; bool:
+def object_is_bool(series: pd.Series, state: dict) -&gt; bool:
     if pdt.is_object_dtype(series):
         bool_set = {True, False}
         try:
@@ -278,7 +251,7 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.string_is_bool"><code class="name flex">
-<span>def <span class="ident">string_is_bool</span></span>(<span>series, state) ‑> bool</span>
+<span>def <span class="ident">string_is_bool</span></span>(<span>series: pandas.core.series.Series, state: dict, k: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -286,11 +259,11 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def string_is_bool(series, state) -&gt; bool:
+<pre><code class="python">def string_is_bool(series: pd.Series, state: dict, k: Settings) -&gt; bool:
     @series_handle_nulls
     @try_func
     def tester(s: pd.Series, state: dict) -&gt; bool:
-        return s.str.lower().isin(PP_bool_map.keys()).all()
+        return s.str.lower().isin(k.keys()).all()
 
     if pdt.is_categorical_dtype(series):
         return False
@@ -299,7 +272,7 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.string_to_bool"><code class="name flex">
-<span>def <span class="ident">string_to_bool</span></span>(<span>series, state)</span>
+<span>def <span class="ident">string_to_bool</span></span>(<span>series: pandas.core.series.Series, state: dict, k: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>) ‑> pandas.core.series.Series</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -307,8 +280,8 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def string_to_bool(series, state):
-    return series.str.lower().map(PP_bool_map)</code></pre>
+<pre><code class="python">def string_to_bool(series: pd.Series, state: dict, k: Settings) -&gt; pd.Series:
+    return series.str.lower().map(k)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.to_bool"><code class="name flex">
@@ -326,7 +299,7 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.to_category"><code class="name flex">
-<span>def <span class="ident">to_category</span></span>(<span>series, state)</span>
+<span>def <span class="ident">to_category</span></span>(<span>series: pandas.core.series.Series, state: dict) ‑> pandas.core.series.Series</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -334,7 +307,7 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_category(series, state):
+<pre><code class="python">def to_category(series: pd.Series, state: dict) -&gt; pd.Series:
     hasnans = series.hasnans
     val = series.astype(str)
     if hasnans:
@@ -346,7 +319,7 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 </details>
 </dd>
 <dt id="pandas_profiling.model.typeset_relations.try_func"><code class="name flex">
-<span>def <span class="ident">try_func</span></span>(<span>fn)</span>
+<span>def <span class="ident">try_func</span></span>(<span>fn: Callable) ‑> Callable</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -354,7 +327,7 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def try_func(fn):
+<pre><code class="python">def try_func(fn: Callable) -&gt; Callable:
     @functools.wraps(fn)
     def inner(series: pd.Series, *args, **kwargs) -&gt; bool:
         try:
@@ -385,7 +358,6 @@ def series_is_string(series: pd.Series, state: dict) -&gt; bool:
 <ul class="two-column">
 <li><code><a title="pandas_profiling.model.typeset_relations.category_is_numeric" href="#pandas_profiling.model.typeset_relations.category_is_numeric">category_is_numeric</a></code></li>
 <li><code><a title="pandas_profiling.model.typeset_relations.category_to_numeric" href="#pandas_profiling.model.typeset_relations.category_to_numeric">category_to_numeric</a></code></li>
-<li><code><a title="pandas_profiling.model.typeset_relations.get_boolean_map" href="#pandas_profiling.model.typeset_relations.get_boolean_map">get_boolean_map</a></code></li>
 <li><code><a title="pandas_profiling.model.typeset_relations.is_nullable" href="#pandas_profiling.model.typeset_relations.is_nullable">is_nullable</a></code></li>
 <li><code><a title="pandas_profiling.model.typeset_relations.numeric_is_category" href="#pandas_profiling.model.typeset_relations.numeric_is_category">numeric_is_category</a></code></li>
 <li><code><a title="pandas_profiling.model.typeset_relations.object_is_bool" href="#pandas_profiling.model.typeset_relations.object_is_bool">object_is_bool</a></code></li>

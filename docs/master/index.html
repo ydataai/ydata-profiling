@@ -54,9 +54,10 @@
 <li><strong>File and Image analysis</strong> extract file sizes, creation dates and dimensions and scan for truncated images or those containing EXIF information.</li>
 </ul>
 <h2 id="announcements">Announcements</h2>
-<p><strong>Version v2.13.0 released</strong> featuring an exciting integration with Great Expectations that many of you requested (see details below).</p>
+<p><strong>Version v3.0.0 released</strong> in which the report configuration was completely overhauled, providing a more intuitive API and fixing issues inherent to the previous global config. </p>
+<p>This is the first release to adhere to the <a href="https://semver.org/">Semver</a> and <a href="https://conventionalcommits.org/">Conventional Commits</a> specifications.</p>
 <p><strong>Spark backend in progress</strong>: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
-Stay tuned.</p>
+Beta testers wanted! The Spark backend will be released as a pre-release for this package.</p>
 <h3 id="support-pandas-profiling">Support <code>pandas-profiling</code></h3>
 <p>The development of <code>pandas-profiling</code> relies completely on contributions.
 If you find value in the package, we welcome you to support the project directly through <a href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
@@ -64,10 +65,10 @@ Please help me to continue to support this package.
 It's extra exciting that GitHub <strong>matches your contribution</strong> for the first year.</p>
 <p>Find more information here:</p>
 <ul>
-<li><a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog">Changelog v2.13.0</a></li>
+<li><a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog">Changelog v3.0.0</a></li>
 <li><a href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></li>
 </ul>
-<p><em>May 8, 2021 💘</em></p>
+<p><em>May 9, 2021 💘</em></p>
 <hr>
 <p><em>Contents:</em> <strong><a href="#examples">Examples</a></strong> |
 <strong><a href="#installation">Installation</a></strong> | <strong><a href="#documentation">Documentation</a></strong> |
@@ -131,17 +132,14 @@ It's extra exciting that GitHub <strong>matches your contribution</strong> for t
 import pandas as pd
 from pandas_profiling import ProfileReport
 
-df = pd.DataFrame(
-    np.random.rand(100, 5),
-    columns=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;]
-)
+df = pd.DataFrame(np.random.rand(100, 5), columns=[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;])
 </code></pre>
 <p>To generate the report, run:</p>
 <pre><code class="language-python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;)
 </code></pre>
 <h3 id="explore-deeper">Explore deeper</h3>
 <p>You can configure the profile report in any way you like. The example code below loads the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml">explorative configuration file</a>, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
-<pre><code class="language-python">profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
+<pre><code class="language-python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;, explorative=True)
 </code></pre>
 <p>Learn more about configuring <code>pandas-profiling</code> on the <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html">Advanced usage</a> page.</p>
 <h4 id="jupyter-notebook">Jupyter Notebook</h4>
@@ -191,7 +189,9 @@ profile.to_file(&quot;output.html&quot;)
 <p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a>.</p>
 <p>You find the configuration docs on the advanced usage page <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html">here</a></p>
 <p><strong>Example</strong></p>
-<pre><code class="language-python">profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
+<pre><code class="language-python">profile = df.profile_report(
+    title=&quot;Pandas Profiling Report&quot;, plot={&quot;histogram&quot;: {&quot;bins&quot;: 8}}
+)
 profile.to_file(&quot;output.html&quot;)
 </code></pre>
 <h2 id="integrations">Integrations</h2>
@@ -305,20 +305,14 @@ $ where pandas_profiling
 .. include:: ../../README.md
 &#34;&#34;&#34;
 
-from pandas_profiling.config import Config, config
 from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.profile_report import ProfileReport
 from pandas_profiling.version import __version__
 
-clear_config = ProfileReport.clear_config
-
 __all__ = [
-    &#34;Config&#34;,
-    &#34;config&#34;,
     &#34;pandas_decorator&#34;,
     &#34;ProfileReport&#34;,
     &#34;__version__&#34;,
-    &#34;clear_config&#34;,
 ]</code></pre>
 </details>
 </section>
@@ -327,7 +321,7 @@ __all__ = [
 <dl>
 <dt><code class="name"><a title="pandas_profiling.config" href="config.html">pandas_profiling.config</a></code></dt>
 <dd>
-<div class="desc"><p>Configuration for the package is handled in this wrapper for confuse.</p></div>
+<div class="desc"><p>Configuration for the package.</p></div>
 </dd>
 <dt><code class="name"><a title="pandas_profiling.controller" href="controller/index.html">pandas_profiling.controller</a></code></dt>
 <dd>
@@ -370,373 +364,13 @@ __all__ = [
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="pandas_profiling.clear_config"><code class="name flex">
-<span>def <span class="ident">clear_config</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Restore the configuration to default</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def clear_config():
-    &#34;&#34;&#34;
-    Restore the configuration to default
-    &#34;&#34;&#34;
-    config.clear()</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="pandas_profiling.Config"><code class="flex name class">
-<span>class <span class="ident">Config</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-various ways (notably via argparse and kwargs).</p>
-<p>The config constructor should be called only once.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Config:
-    &#34;&#34;&#34;This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-    various ways (notably via argparse and kwargs).
-    &#34;&#34;&#34;
-
-    config = None
-    &#34;&#34;&#34;The confuse.Configuration object.&#34;&#34;&#34;
-
-    def __init__(self):
-        &#34;&#34;&#34;The config constructor should be called only once.&#34;&#34;&#34;
-        if self.config is None:
-            self.clear()
-        else:
-            self.set_file(str(get_config_default()))
-
-    def set_file(self, file_name: Union[str, Path]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the config from a file
-
-        Args:
-            file_name: file name
-        &#34;&#34;&#34;
-        if self.config is not None:
-            self.config.set_file(str(file_name))
-
-    _arg_groups = {
-        &#34;sensitive&#34;: {
-            &#34;samples&#34;: None,
-            &#34;duplicates&#34;: None,
-            &#34;vars&#34;: {&#34;cat&#34;: {&#34;redact&#34;: True}},
-        },
-        &#34;dark_mode&#34;: {
-            &#34;html&#34;: {
-                &#34;style&#34;: {
-                    &#34;theme&#34;: &#34;flatly&#34;,
-                    &#34;primary_color&#34;: &#34;#2c3e50&#34;,
-                }
-            }
-        },
-        &#34;orange_mode&#34;: {
-            &#34;html&#34;: {
-                &#34;style&#34;: {
-                    &#34;theme&#34;: &#34;united&#34;,
-                    &#34;primary_color&#34;: &#34;#d34615&#34;,
-                }
-            }
-        },
-        &#34;explorative&#34;: {
-            &#34;vars&#34;: {
-                &#34;cat&#34;: {&#34;characters&#34;: True, &#34;words&#34;: True},
-                &#34;url&#34;: {&#34;active&#34;: True},
-                &#34;path&#34;: {&#34;active&#34;: True},
-                &#34;file&#34;: {&#34;active&#34;: True},
-                &#34;image&#34;: {&#34;active&#34;: True},
-            },
-            &#34;n_obs_unique&#34;: 10,
-            &#34;n_extreme_obs&#34;: 10,
-            &#34;n_freq_table_max&#34;: 10,
-            &#34;memory_deep&#34;: True,
-        },
-    }
-
-    def set_arg_group(self, name):
-        for key, value in self._arg_groups[name].items():
-            self.set_kwargs({key: value})
-
-    def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
-        &#34;&#34;&#34;
-        Set config variables based on the argparse Namespace object.
-
-        Args:
-            namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
-            dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
-        &#34;&#34;&#34;
-        if self.config is not None:
-            self.config.set_args(namespace, dots)
-
-    def _set_kwargs(self, reference, values: dict):
-        &#34;&#34;&#34;Helper function to set config variables based on kwargs.&#34;&#34;&#34;
-        for key, value in values.items():
-            if key in reference:
-                if type(value) == dict:
-                    self._set_kwargs(reference[key], value)
-                else:
-                    reference[key].set(value)
-            else:
-                raise ValueError(f&#39;Config parameter &#34;{key}&#34; does not exist.&#39;)
-
-    _shorthands = {
-        &#34;dataset&#34;: {
-            &#34;creator&#34;: &#34;&#34;,
-            &#34;author&#34;: &#34;&#34;,
-            &#34;description&#34;: &#34;&#34;,
-            &#34;copyright_holder&#34;: &#34;&#34;,
-            &#34;copyright_year&#34;: &#34;&#34;,
-            &#34;url&#34;: &#34;&#34;,
-        },
-        &#34;samples&#34;: {&#34;head&#34;: 0, &#34;tail&#34;: 0, &#34;random&#34;: 0},
-        &#34;duplicates&#34;: {&#34;head&#34;: 0},
-        &#34;interactions&#34;: {&#34;targets&#34;: [], &#34;continuous&#34;: False},
-        &#34;missing_diagrams&#34;: {
-            &#34;bar&#34;: False,
-            &#34;matrix&#34;: False,
-            &#34;heatmap&#34;: False,
-            &#34;dendrogram&#34;: False,
-        },
-        &#34;correlations&#34;: {
-            &#34;pearson&#34;: {&#34;calculate&#34;: False},
-            &#34;spearman&#34;: {&#34;calculate&#34;: False},
-            &#34;kendall&#34;: {&#34;calculate&#34;: False},
-            &#34;phi_k&#34;: {&#34;calculate&#34;: False},
-            &#34;cramers&#34;: {&#34;calculate&#34;: False},
-        },
-    }
-
-    def _handle_shorthands(self, kwargs):
-        for key, value in self._shorthands.items():
-            if key in kwargs and kwargs[key] is None:
-                kwargs[key] = value
-        return kwargs
-
-    def _handle_shorthand(self, key, value):
-        if key in self._shorthands and value is None:
-            return self._shorthands[key]
-        else:
-            return value
-
-    def set_kwargs(self, kwargs) -&gt; None:
-        &#34;&#34;&#34;
-        Helper function to set config variables based on kwargs.
-
-        Args:
-            kwargs: the arguments passed to the .profile_report() function
-
-        &#34;&#34;&#34;
-        kwargs = self._handle_shorthands(kwargs)
-
-        self._set_kwargs(self.config, kwargs)
-
-    def __getitem__(self, item):
-        return self.config[item]
-
-    def __setitem__(self, key, value):
-        value = self._handle_shorthand(key, value)
-        self.config[key].set(value)
-
-    def dump(self):
-        return self.config.dump()
-
-    def update(self, other):
-        if not isinstance(other, Config):
-            raise ValueError(&#34;Can only update config from a config object&#34;)
-        self.config = other.config
-
-    def clear(self):
-        self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
-        self.set_file(str(get_config_default()))
-
-    @property
-    def is_default(self):
-        default_config = Config()
-        return self == default_config
-
-    def __eq__(self, other):
-        return isinstance(other, Config) and self.dump() == other.dump()</code></pre>
-</details>
-<h3>Class variables</h3>
-<dl>
-<dt id="pandas_profiling.Config.config"><code class="name">var <span class="ident">config</span></code></dt>
-<dd>
-<div class="desc"><p>The confuse.Configuration object.</p></div>
-</dd>
-</dl>
-<h3>Instance variables</h3>
-<dl>
-<dt id="pandas_profiling.Config.is_default"><code class="name">var <span class="ident">is_default</span></code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def is_default(self):
-    default_config = Config()
-    return self == default_config</code></pre>
-</details>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="pandas_profiling.Config.clear"><code class="name flex">
-<span>def <span class="ident">clear</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def clear(self):
-    self.config = confuse.Configuration(&#34;PandasProfiling&#34;, __name__, read=False)
-    self.set_file(str(get_config_default()))</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.Config.dump"><code class="name flex">
-<span>def <span class="ident">dump</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def dump(self):
-    return self.config.dump()</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.Config.set_arg_group"><code class="name flex">
-<span>def <span class="ident">set_arg_group</span></span>(<span>self, name)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_arg_group(self, name):
-    for key, value in self._arg_groups[name].items():
-        self.set_kwargs({key: value})</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.Config.set_args"><code class="name flex">
-<span>def <span class="ident">set_args</span></span>(<span>self, namespace: argparse.Namespace, dots: bool) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Set config variables based on the argparse Namespace object.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>namespace</code></strong></dt>
-<dd>Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.</dd>
-<dt><strong><code>dots</code></strong></dt>
-<dd>If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_args(self, namespace: argparse.Namespace, dots: bool) -&gt; None:
-    &#34;&#34;&#34;
-    Set config variables based on the argparse Namespace object.
-
-    Args:
-        namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
-        dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
-    &#34;&#34;&#34;
-    if self.config is not None:
-        self.config.set_args(namespace, dots)</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.Config.set_file"><code class="name flex">
-<span>def <span class="ident">set_file</span></span>(<span>self, file_name: Union[str, pathlib.Path]) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Set the config from a file</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>file_name</code></strong></dt>
-<dd>file name</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_file(self, file_name: Union[str, Path]) -&gt; None:
-    &#34;&#34;&#34;
-    Set the config from a file
-
-    Args:
-        file_name: file name
-    &#34;&#34;&#34;
-    if self.config is not None:
-        self.config.set_file(str(file_name))</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.Config.set_kwargs"><code class="name flex">
-<span>def <span class="ident">set_kwargs</span></span>(<span>self, kwargs) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Helper function to set config variables based on kwargs.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>kwargs</code></strong></dt>
-<dd>the arguments passed to the .profile_report() function</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_kwargs(self, kwargs) -&gt; None:
-    &#34;&#34;&#34;
-    Helper function to set config variables based on kwargs.
-
-    Args:
-        kwargs: the arguments passed to the .profile_report() function
-
-    &#34;&#34;&#34;
-    kwargs = self._handle_shorthands(kwargs)
-
-    self._set_kwargs(self.config, kwargs)</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.Config.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, other)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update(self, other):
-    if not isinstance(other, Config):
-        raise ValueError(&#34;Can only update config from a config object&#34;)
-    self.config = other.config</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 <dt id="pandas_profiling.ProfileReport"><code class="flex name class">
 <span>class <span class="ident">ProfileReport</span></span>
-<span>(</span><span>df: Union[pandas.core.frame.DataFrame, NoneType] = None, minimal: bool = False, explorative: bool = False, sensitive: bool = False, dark_mode: bool = False, orange_mode: bool = False, sample: Union[dict, NoneType] = None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, typeset: Union[visions.typesets.typeset.VisionsTypeset, NoneType] = None, summarizer: Union[<a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, NoneType] = None, **kwargs)</span>
+<span>(</span><span>df: Union[pandas.core.frame.DataFrame, NoneType] = None, minimal: bool = False, explorative: bool = False, sensitive: bool = False, dark_mode: bool = False, orange_mode: bool = False, sample: Union[dict, NoneType] = None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, typeset: Union[visions.typesets.typeset.VisionsTypeset, NoneType] = None, summarizer: Union[<a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, NoneType] = None, config: Union[<a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a>, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a profile report from a Dataset stored as a pandas <code>DataFrame</code>.</p>
@@ -771,6 +405,13 @@ def is_default(self):
     Used as is, it will output its content as an HTML report in a Jupyter notebook.
     &#34;&#34;&#34;
 
+    _description_set = None
+    _report = None
+    _html = None
+    _widgets = None
+    _json = None
+    config: Settings
+
     def __init__(
         self,
         df: Optional[pd.DataFrame] = None,
@@ -784,6 +425,7 @@ def is_default(self):
         lazy: bool = True,
         typeset: Optional[VisionsTypeset] = None,
         summarizer: Optional[BaseSummarizer] = None,
+        config: Optional[Settings] = None,
         **kwargs,
     ):
         &#34;&#34;&#34;Generate a ProfileReport based on a pandas DataFrame
@@ -798,42 +440,41 @@ def is_default(self):
             summarizer: optional user summarizer to generate custom summary output
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         &#34;&#34;&#34;
-        config.clear()  # to reset (previous) config.
+
+        if df is None and not lazy:
+            raise ValueError(&#34;Can init a not-lazy ProfileReport with no DataFrame&#34;)
+
+        report_config: Settings = Settings() if config is None else config
+
         if config_file is not None and minimal:
             raise ValueError(
                 &#34;Arguments `config_file` and `minimal` are mutually exclusive.&#34;
             )
 
-        if df is None and not lazy:
-            raise ValueError(&#34;Can init a not-lazy ProfileReport with no DataFrame&#34;)
+        if config_file or minimal:
+            if not config_file:
+                config_file = get_config(&#34;config_minimal.yaml&#34;)
 
-        if config_file:
-            config.set_file(config_file)
-        elif minimal:
-            config.set_file(get_config(&#34;config_minimal.yaml&#34;))
-        elif not config.is_default:
-            pass
+            with open(config_file) as f:
+                data = yaml.safe_load(f)
+
+            report_config = report_config.parse_obj(data)
 
         if explorative:
-            config.set_arg_group(&#34;explorative&#34;)
+            report_config = report_config.update(Config.get_arg_groups(&#34;explorative&#34;))
         if sensitive:
-            config.set_arg_group(&#34;sensitive&#34;)
+            report_config = report_config.update(Config.get_arg_groups(&#34;sensitive&#34;))
         if dark_mode:
-            config.set_arg_group(&#34;dark_mode&#34;)
+            report_config = report_config.update(Config.get_arg_groups(&#34;dark_mode&#34;))
         if orange_mode:
-            config.set_arg_group(&#34;orange_mode&#34;)
-
-        config.set_kwargs(kwargs)
+            report_config = report_config.update(Config.get_arg_groups(&#34;orange_mode&#34;))
+        if len(kwargs) &gt; 0:
+            report_config = report_config.update(Config.shorthands(kwargs))
 
         self.df = None
-        self._df_hash = -1
-        self._description_set = None
+        self.config = report_config
+        self._df_hash = None
         self._sample = sample
-        self._title = None
-        self._report = None
-        self._html = None
-        self._widgets = None
-        self._json = None
         self._typeset = typeset
         self._summarizer = summarizer
 
@@ -845,134 +486,98 @@ def is_default(self):
             # Trigger building the report structure
             _ = self.report
 
-    def set_variable(self, key: str, value: Any):
-        &#34;&#34;&#34;Change a single configuration variable
+    def invalidate_cache(self, subset: Optional[str] = None) -&gt; None:
+        &#34;&#34;&#34;Invalidate report cache. Useful after changing setting.
 
         Args:
-            key: configuration parameter name. Accepts nested syntax, e.g. &#34;html.minify_html&#34;
-            value: the new value
+            subset:
+            - &#34;rendering&#34; to invalidate the html, json and widget report rendering
+            - &#34;report&#34; to remove the caching of the report structure
+            - None (default) to invalidate all caches
 
-        Examples:
-            &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;title&#34;, &#34;NewTitle&#34;)
-            &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html&#34;, {&#34;minify_html&#34;: False})
-            &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
-
+        Returns:
+            None
         &#34;&#34;&#34;
-        keys = key.split(&#34;.&#34;)
-        for e in reversed(keys[1:]):
-            value = {e: value}
+        if subset is not None and subset not in [&#34;rendering&#34;, &#34;report&#34;]:
+            raise ValueError(
+                &#34;&#39;subset&#39; parameter should be None, &#39;rendering&#39; or &#39;report&#39;&#34;
+            )
 
-        self.set_variables(**{keys[0]: value})
-
-    def set_variables(self, **vars):
-        &#34;&#34;&#34;Change configuration variables (invalidates caches where necessary)
-
-        Args:
-            **vars: configuration parameters to change
-
-        Examples:
-            &gt;&gt;&gt; ProfileReport(df).set_variables(title=&#34;NewTitle&#34;, html={&#34;minify_html&#34;: False})
-        &#34;&#34;&#34;
-        changed = set(vars.keys())
-        if len({&#34;progress_bar&#34;, &#34;pool_size&#34;} &amp; changed) &gt; 0:
-            # Cache can persist
-            pass
-
-        if len({&#34;notebook&#34;} &amp; changed) &gt; 0:
-            self._widgets = None
-
-        if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
-            self._html = None
-
-        if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;}.issuperset(
-            changed
-        ):
-            # In all other cases, empty cache
-            self._description_set = None
-            self._title = None
-            self._report = None
-            self._html = None
+        if subset is None or subset in [&#34;rendering&#34;, &#34;report&#34;]:
             self._widgets = None
             self._json = None
+            self._html = None
 
-        if len(vars) == 1:
-            config[list(vars.keys())[0]] = list(vars.values())[0]
-        else:
-            config.set_kwargs(vars)
+        if subset is None or subset == &#34;report&#34;:
+            self._report = None
+
+        if subset is None:
+            self._description_set = None
 
     @property
-    def typeset(self):
+    def typeset(self) -&gt; Optional[VisionsTypeset]:
         if self._typeset is None:
-            self._typeset = ProfilingTypeSet()
+            self._typeset = ProfilingTypeSet(self.config)
         return self._typeset
 
     @property
-    def summarizer(self):
+    def summarizer(self) -&gt; BaseSummarizer:
         if self._summarizer is None:
             self._summarizer = PandasProfilingSummarizer(self.typeset)
         return self._summarizer
 
     @property
-    def description_set(self):
+    def description_set(self) -&gt; Dict[str, Any]:
         if self._description_set is None:
             self._description_set = describe_df(
-                self.title, self.df, self.summarizer, self.typeset, self._sample
+                self.config,
+                self.df,
+                self.summarizer,
+                self.typeset,
+                self._sample,
             )
         return self._description_set
 
     @property
-    def title(self):
-        if self._title is None:
-            self._title = config[&#34;title&#34;].get(str)
-
-        return self._title
-
-    @property
-    def df_hash(self):
-        if self._df_hash == -1 and self.df is not None:
+    def df_hash(self) -&gt; Optional[str]:
+        if self._df_hash is None and self.df is not None:
             self._df_hash = hash_dataframe(self.df)
         return self._df_hash
 
     @property
-    def report(self):
+    def report(self) -&gt; Root:
         if self._report is None:
-            self._report = get_report_structure(self.description_set)
+            self._report = get_report_structure(self.config, self.description_set)
         return self._report
 
     @property
-    def html(self):
+    def html(self) -&gt; str:
         if self._html is None:
             self._html = self._render_html()
         return self._html
 
     @property
-    def json(self):
+    def json(self) -&gt; str:
         if self._json is None:
             self._json = self._render_json()
         return self._json
 
     @property
-    def widgets(self):
+    def widgets(self) -&gt; Renderable:
         if self._widgets is None:
             self._widgets = self._render_widgets()
         return self._widgets
 
-    def get_duplicates(self, df=None) -&gt; Optional[pd.DataFrame]:
+    def get_duplicates(self) -&gt; Optional[pd.DataFrame]:
         &#34;&#34;&#34;Get duplicate rows and counts based on the configuration
-
-        Args:
-            df: Deprecated, for compatibility
 
         Returns:
             A DataFrame with the duplicate rows and their counts.
         &#34;&#34;&#34;
         return self.description_set[&#34;duplicates&#34;]
 
-    def get_sample(self, df=None) -&gt; dict:
+    def get_sample(self) -&gt; dict:
         &#34;&#34;&#34;Get head/tail samples based on the configuration
-
-        Args:
-            df: Deprecated, for compatibility
 
         Returns:
             A dict with the head and tail samples.
@@ -1014,10 +619,11 @@ def is_default(self):
         if output_file.suffix == &#34;.json&#34;:
             data = self.to_json()
         else:
-            inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
-            if not inline:
-                config[&#34;html&#34;][&#34;file_name&#34;] = str(output_file)
-                create_html_assets(output_file)
+            if not self.config.html.inline:
+                self.config.html.assets_path = str(output_file.parent)
+                if self.config.html.assets_prefix is None:
+                    self.config.html.assets_prefix = str(output_file.stem) + &#34;_assets&#34;
+                create_html_assets(self.config, output_file)
 
             data = self.to_html()
 
@@ -1029,7 +635,7 @@ def is_default(self):
                     f&#34;To remove this warning, please use .html or .json.&#34;
                 )
 
-        disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+        disable_progress_bar = not self.config.progress_bar
         with tqdm(
             total=1, desc=&#34;Export report to file&#34;, disable=disable_progress_bar
         ) as pbar:
@@ -1038,7 +644,7 @@ def is_default(self):
 
         if not silent:
             try:
-                from google.colab import files
+                from google.colab import files  # noqa: F401
 
                 files.download(output_file.absolute().as_uri())
             except ModuleNotFoundError:
@@ -1046,49 +652,51 @@ def is_default(self):
 
                 webbrowser.open_new_tab(output_file.absolute().as_uri())
 
-    def _render_html(self):
+    def _render_html(self) -&gt; str:
         from pandas_profiling.report.presentation.flavours import HTMLReport
 
         report = self.report
 
-        disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
-        with tqdm(total=1, desc=&#34;Render HTML&#34;, disable=disable_progress_bar) as pbar:
-            html = HTMLReport(report).render(
-                nav=config[&#34;html&#34;][&#34;navbar_show&#34;].get(bool),
-                offline=config[&#34;html&#34;][&#34;use_local_assets&#34;].get(bool),
-                inline=config[&#34;html&#34;][&#34;inline&#34;].get(bool),
-                file_name=Path(config[&#34;html&#34;][&#34;file_name&#34;].get(str)).stem,
-                primary_color=config[&#34;html&#34;][&#34;style&#34;][&#34;primary_color&#34;].get(str),
-                logo=config[&#34;html&#34;][&#34;style&#34;][&#34;logo&#34;].get(str),
-                theme=config[&#34;html&#34;][&#34;style&#34;][&#34;theme&#34;].get(str),
+        with tqdm(
+            total=1, desc=&#34;Render HTML&#34;, disable=not self.config.progress_bar
+        ) as pbar:
+            html = HTMLReport(copy.deepcopy(report)).render(
+                nav=self.config.html.navbar_show,
+                offline=self.config.html.use_local_assets,
+                inline=self.config.html.inline,
+                assets_prefix=self.config.html.assets_prefix,
+                primary_color=self.config.html.style.primary_color,
+                logo=self.config.html.style.logo,
+                theme=self.config.html.style.theme,
                 title=self.description_set[&#34;analysis&#34;][&#34;title&#34;],
                 date=self.description_set[&#34;analysis&#34;][&#34;date_start&#34;],
                 version=self.description_set[&#34;package&#34;][&#34;pandas_profiling_version&#34;],
             )
 
-            minify_html = config[&#34;html&#34;][&#34;minify_html&#34;].get(bool)
-            if minify_html:
+            if self.config.html.minify_html:
                 from htmlmin.main import minify
 
                 html = minify(html, remove_all_empty_space=True, remove_comments=True)
             pbar.update()
         return html
 
-    def _render_widgets(self):
+    def _render_widgets(self) -&gt; Renderable:
         from pandas_profiling.report.presentation.flavours import WidgetReport
 
         report = self.report
 
-        disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
         with tqdm(
-            total=1, desc=&#34;Render widgets&#34;, disable=disable_progress_bar, leave=False
+            total=1,
+            desc=&#34;Render widgets&#34;,
+            disable=not self.config.progress_bar,
+            leave=False,
         ) as pbar:
-            widgets = WidgetReport(report).render()
+            widgets = WidgetReport(copy.deepcopy(report)).render()
             pbar.update()
         return widgets
 
-    def _render_json(self):
-        def encode_it(o):
+    def _render_json(self) -&gt; str:
+        def encode_it(o: Any) -&gt; Any:
             if isinstance(o, dict):
                 return {encode_it(k): encode_it(v) for k, v in o.items()}
             else:
@@ -1103,7 +711,7 @@ def is_default(self):
                 elif isinstance(o, np.ndarray):
                     return encode_it(o.tolist())
                 elif isinstance(o, Sample):
-                    return encode_it(attr.asdict(o))
+                    return encode_it(o.dict())
                 elif isinstance(o, np.generic):
                     return o.item()
                 else:
@@ -1111,8 +719,9 @@ def is_default(self):
 
         description = self.description_set
 
-        disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
-        with tqdm(total=1, desc=&#34;Render JSON&#34;, disable=disable_progress_bar) as pbar:
+        with tqdm(
+            total=1, desc=&#34;Render JSON&#34;, disable=not self.config.progress_bar
+        ) as pbar:
             description = format_summary(description)
             description = encode_it(description)
             data = json.dumps(description, indent=4)
@@ -1138,7 +747,7 @@ def is_default(self):
 
         return self.json
 
-    def to_notebook_iframe(self):
+    def to_notebook_iframe(self) -&gt; None:
         &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook.
         When config.notebook.iframe.attribute is &#34;src&#34;, this function creates a temporary HTML file
         in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
@@ -1157,9 +766,9 @@ def is_default(self):
         # Ignore warning: https://github.com/ipython/ipython/pull/11350/files
         with warnings.catch_warnings():
             warnings.simplefilter(&#34;ignore&#34;)
-            display(get_notebook_iframe(self))
+            display(get_notebook_iframe(self.config, self))
 
-    def to_widgets(self):
+    def to_widgets(self) -&gt; None:
         &#34;&#34;&#34;The ipython notebook widgets user interface.&#34;&#34;&#34;
         try:
             from google.colab import files  # noqa: F401
@@ -1175,16 +784,16 @@ def is_default(self):
 
         display(self.widgets)
 
-    def _repr_html_(self):
+    def _repr_html_(self) -&gt; None:
         &#34;&#34;&#34;The ipython notebook widgets user interface gets called by the jupyter notebook.&#34;&#34;&#34;
         self.to_notebook_iframe()
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
         return &#34;&#34;
 
     @staticmethod
-    def preprocess(df):
+    def preprocess(df: pd.DataFrame) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Preprocess the dataframe
 
         - Appends the index to the dataframe when it contains information
@@ -1209,41 +818,24 @@ def is_default(self):
 
         # Ensure that columns are strings
         df.columns = df.columns.astype(&#34;str&#34;)
-        return df
-
-    @staticmethod
-    def clear_config():
-        &#34;&#34;&#34;
-        Restore the configuration to default
-        &#34;&#34;&#34;
-        config.clear()</code></pre>
+        return df</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="pandas_profiling.serialize_report.SerializeReport" href="serialize_report.html#pandas_profiling.serialize_report.SerializeReport">SerializeReport</a></li>
 <li><a title="pandas_profiling.expectations_report.ExpectationsReport" href="expectations_report.html#pandas_profiling.expectations_report.ExpectationsReport">ExpectationsReport</a></li>
 </ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.ProfileReport.config"><code class="name">var <span class="ident">config</span> : <a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 <h3>Static methods</h3>
 <dl>
-<dt id="pandas_profiling.ProfileReport.clear_config"><code class="name flex">
-<span>def <span class="ident">clear_config</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Restore the configuration to default</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def clear_config():
-    &#34;&#34;&#34;
-    Restore the configuration to default
-    &#34;&#34;&#34;
-    config.clear()</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.ProfileReport.preprocess"><code class="name flex">
-<span>def <span class="ident">preprocess</span></span>(<span>df)</span>
+<span>def <span class="ident">preprocess</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Preprocess the dataframe</p>
@@ -1264,7 +856,7 @@ def clear_config():
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def preprocess(df):
+def preprocess(df: pd.DataFrame) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Preprocess the dataframe
 
     - Appends the index to the dataframe when it contains information
@@ -1295,7 +887,7 @@ def preprocess(df):
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pandas_profiling.ProfileReport.description_set"><code class="name">var <span class="ident">description_set</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.description_set"><code class="name">var <span class="ident">description_set</span> : Dict[str, Any]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1303,15 +895,19 @@ def preprocess(df):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def description_set(self):
+def description_set(self) -&gt; Dict[str, Any]:
     if self._description_set is None:
         self._description_set = describe_df(
-            self.title, self.df, self.summarizer, self.typeset, self._sample
+            self.config,
+            self.df,
+            self.summarizer,
+            self.typeset,
+            self._sample,
         )
     return self._description_set</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.df_hash"><code class="name">var <span class="ident">df_hash</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.df_hash"><code class="name">var <span class="ident">df_hash</span> : Union[str, NoneType]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1319,13 +915,13 @@ def description_set(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def df_hash(self):
-    if self._df_hash == -1 and self.df is not None:
+def df_hash(self) -&gt; Optional[str]:
+    if self._df_hash is None and self.df is not None:
         self._df_hash = hash_dataframe(self.df)
     return self._df_hash</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.html"><code class="name">var <span class="ident">html</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.html"><code class="name">var <span class="ident">html</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1333,13 +929,13 @@ def df_hash(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def html(self):
+def html(self) -&gt; str:
     if self._html is None:
         self._html = self._render_html()
     return self._html</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.json"><code class="name">var <span class="ident">json</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.json"><code class="name">var <span class="ident">json</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1347,13 +943,13 @@ def html(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def json(self):
+def json(self) -&gt; str:
     if self._json is None:
         self._json = self._render_json()
     return self._json</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.report"><code class="name">var <span class="ident">report</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.report"><code class="name">var <span class="ident">report</span> : <a title="pandas_profiling.report.presentation.core.root.Root" href="report/presentation/core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1361,13 +957,13 @@ def json(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def report(self):
+def report(self) -&gt; Root:
     if self._report is None:
-        self._report = get_report_structure(self.description_set)
+        self._report = get_report_structure(self.config, self.description_set)
     return self._report</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.summarizer"><code class="name">var <span class="ident">summarizer</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.summarizer"><code class="name">var <span class="ident">summarizer</span> : <a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1375,13 +971,13 @@ def report(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def summarizer(self):
+def summarizer(self) -&gt; BaseSummarizer:
     if self._summarizer is None:
         self._summarizer = PandasProfilingSummarizer(self.typeset)
     return self._summarizer</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.title"><code class="name">var <span class="ident">title</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.typeset"><code class="name">var <span class="ident">typeset</span> : Union[visions.typesets.typeset.VisionsTypeset, NoneType]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1389,28 +985,13 @@ def summarizer(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def title(self):
-    if self._title is None:
-        self._title = config[&#34;title&#34;].get(str)
-
-    return self._title</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.ProfileReport.typeset"><code class="name">var <span class="ident">typeset</span></code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def typeset(self):
+def typeset(self) -&gt; Optional[VisionsTypeset]:
     if self._typeset is None:
-        self._typeset = ProfilingTypeSet()
+        self._typeset = ProfilingTypeSet(self.config)
     return self._typeset</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.widgets"><code class="name">var <span class="ident">widgets</span></code></dt>
+<dt id="pandas_profiling.ProfileReport.widgets"><code class="name">var <span class="ident">widgets</span> : <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="report/presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1418,7 +999,7 @@ def typeset(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def widgets(self):
+def widgets(self) -&gt; Renderable:
     if self._widgets is None:
         self._widgets = self._render_widgets()
     return self._widgets</code></pre>
@@ -1448,26 +1029,18 @@ def widgets(self):
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>self, df=None) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">get_duplicates</span></span>(<span>self) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get duplicate rows and counts based on the configuration</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>df</code></strong></dt>
-<dd>Deprecated, for compatibility</dd>
-</dl>
 <h2 id="returns">Returns</h2>
 <p>A DataFrame with the duplicate rows and their counts.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_duplicates(self, df=None) -&gt; Optional[pd.DataFrame]:
+<pre><code class="python">def get_duplicates(self) -&gt; Optional[pd.DataFrame]:
     &#34;&#34;&#34;Get duplicate rows and counts based on the configuration
-
-    Args:
-        df: Deprecated, for compatibility
 
     Returns:
         A DataFrame with the duplicate rows and their counts.
@@ -1500,26 +1073,18 @@ def widgets(self):
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.get_sample"><code class="name flex">
-<span>def <span class="ident">get_sample</span></span>(<span>self, df=None) ‑> dict</span>
+<span>def <span class="ident">get_sample</span></span>(<span>self) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get head/tail samples based on the configuration</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>df</code></strong></dt>
-<dd>Deprecated, for compatibility</dd>
-</dl>
 <h2 id="returns">Returns</h2>
 <p>A dict with the head and tail samples.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_sample(self, df=None) -&gt; dict:
+<pre><code class="python">def get_sample(self) -&gt; dict:
     &#34;&#34;&#34;Get head/tail samples based on the configuration
-
-    Args:
-        df: Deprecated, for compatibility
 
     Returns:
         A dict with the head and tail samples.
@@ -1527,99 +1092,49 @@ def widgets(self):
     return self.description_set[&#34;sample&#34;]</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.set_variable"><code class="name flex">
-<span>def <span class="ident">set_variable</span></span>(<span>self, key: str, value: Any)</span>
+<dt id="pandas_profiling.ProfileReport.invalidate_cache"><code class="name flex">
+<span>def <span class="ident">invalidate_cache</span></span>(<span>self, subset: Union[str, NoneType] = None) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Change a single configuration variable</p>
+<div class="desc"><p>Invalidate report cache. Useful after changing setting.</p>
 <h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>key</code></strong></dt>
-<dd>configuration parameter name. Accepts nested syntax, e.g. "html.minify_html"</dd>
-<dt><strong><code>value</code></strong></dt>
-<dd>the new value</dd>
-</dl>
-<h2 id="examples">Examples</h2>
-<pre><code class="language-python-repl">&gt;&gt;&gt; ProfileReport(df).set_variables(&quot;title&quot;, &quot;NewTitle&quot;)
-&gt;&gt;&gt; ProfileReport(df).set_variables(&quot;html&quot;, {&quot;minify_html&quot;: False})
-&gt;&gt;&gt; ProfileReport(df).set_variables(&quot;html.minify_html&quot;, False)
-</code></pre></div>
+<p>subset:
+- "rendering" to invalidate the html, json and widget report rendering
+- "report" to remove the caching of the report structure
+- None (default) to invalidate all caches</p>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_variable(self, key: str, value: Any):
-    &#34;&#34;&#34;Change a single configuration variable
+<pre><code class="python">def invalidate_cache(self, subset: Optional[str] = None) -&gt; None:
+    &#34;&#34;&#34;Invalidate report cache. Useful after changing setting.
 
     Args:
-        key: configuration parameter name. Accepts nested syntax, e.g. &#34;html.minify_html&#34;
-        value: the new value
+        subset:
+        - &#34;rendering&#34; to invalidate the html, json and widget report rendering
+        - &#34;report&#34; to remove the caching of the report structure
+        - None (default) to invalidate all caches
 
-    Examples:
-        &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;title&#34;, &#34;NewTitle&#34;)
-        &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html&#34;, {&#34;minify_html&#34;: False})
-        &gt;&gt;&gt; ProfileReport(df).set_variables(&#34;html.minify_html&#34;, False)
-
+    Returns:
+        None
     &#34;&#34;&#34;
-    keys = key.split(&#34;.&#34;)
-    for e in reversed(keys[1:]):
-        value = {e: value}
+    if subset is not None and subset not in [&#34;rendering&#34;, &#34;report&#34;]:
+        raise ValueError(
+            &#34;&#39;subset&#39; parameter should be None, &#39;rendering&#39; or &#39;report&#39;&#34;
+        )
 
-    self.set_variables(**{keys[0]: value})</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.ProfileReport.set_variables"><code class="name flex">
-<span>def <span class="ident">set_variables</span></span>(<span>self, **vars)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Change configuration variables (invalidates caches where necessary)</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>**vars</code></strong></dt>
-<dd>configuration parameters to change</dd>
-</dl>
-<h2 id="examples">Examples</h2>
-<pre><code class="language-python-repl">&gt;&gt;&gt; ProfileReport(df).set_variables(title=&quot;NewTitle&quot;, html={&quot;minify_html&quot;: False})
-</code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_variables(self, **vars):
-    &#34;&#34;&#34;Change configuration variables (invalidates caches where necessary)
-
-    Args:
-        **vars: configuration parameters to change
-
-    Examples:
-        &gt;&gt;&gt; ProfileReport(df).set_variables(title=&#34;NewTitle&#34;, html={&#34;minify_html&#34;: False})
-    &#34;&#34;&#34;
-    changed = set(vars.keys())
-    if len({&#34;progress_bar&#34;, &#34;pool_size&#34;} &amp; changed) &gt; 0:
-        # Cache can persist
-        pass
-
-    if len({&#34;notebook&#34;} &amp; changed) &gt; 0:
-        self._widgets = None
-
-    if len({&#34;html&#34;, &#34;title&#34;} &amp; changed) &gt; 0:
-        self._html = None
-
-    if not {&#34;progress_bar&#34;, &#34;pool_size&#34;, &#34;notebook&#34;, &#34;html&#34;, &#34;title&#34;}.issuperset(
-        changed
-    ):
-        # In all other cases, empty cache
-        self._description_set = None
-        self._title = None
-        self._report = None
-        self._html = None
+    if subset is None or subset in [&#34;rendering&#34;, &#34;report&#34;]:
         self._widgets = None
         self._json = None
+        self._html = None
 
-    if len(vars) == 1:
-        config[list(vars.keys())[0]] = list(vars.values())[0]
-    else:
-        config.set_kwargs(vars)</code></pre>
+    if subset is None or subset == &#34;report&#34;:
+        self._report = None
+
+    if subset is None:
+        self._description_set = None</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_file"><code class="name flex">
@@ -1654,10 +1169,11 @@ def widgets(self):
     if output_file.suffix == &#34;.json&#34;:
         data = self.to_json()
     else:
-        inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
-        if not inline:
-            config[&#34;html&#34;][&#34;file_name&#34;] = str(output_file)
-            create_html_assets(output_file)
+        if not self.config.html.inline:
+            self.config.html.assets_path = str(output_file.parent)
+            if self.config.html.assets_prefix is None:
+                self.config.html.assets_prefix = str(output_file.stem) + &#34;_assets&#34;
+            create_html_assets(self.config, output_file)
 
         data = self.to_html()
 
@@ -1669,7 +1185,7 @@ def widgets(self):
                 f&#34;To remove this warning, please use .html or .json.&#34;
             )
 
-    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    disable_progress_bar = not self.config.progress_bar
     with tqdm(
         total=1, desc=&#34;Export report to file&#34;, disable=disable_progress_bar
     ) as pbar:
@@ -1678,7 +1194,7 @@ def widgets(self):
 
     if not silent:
         try:
-            from google.colab import files
+            from google.colab import files  # noqa: F401
 
             files.download(output_file.absolute().as_uri())
         except ModuleNotFoundError:
@@ -1732,7 +1248,7 @@ for using with frameworks.</p>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_notebook_iframe"><code class="name flex">
-<span>def <span class="ident">to_notebook_iframe</span></span>(<span>self)</span>
+<span>def <span class="ident">to_notebook_iframe</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Used to output the HTML representation to a Jupyter notebook.
@@ -1746,7 +1262,7 @@ the Iframe.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_notebook_iframe(self):
+<pre><code class="python">def to_notebook_iframe(self) -&gt; None:
     &#34;&#34;&#34;Used to output the HTML representation to a Jupyter notebook.
     When config.notebook.iframe.attribute is &#34;src&#34;, this function creates a temporary HTML file
     in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.
@@ -1765,11 +1281,11 @@ the Iframe.</p>
     # Ignore warning: https://github.com/ipython/ipython/pull/11350/files
     with warnings.catch_warnings():
         warnings.simplefilter(&#34;ignore&#34;)
-        display(get_notebook_iframe(self))</code></pre>
+        display(get_notebook_iframe(self.config, self))</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_widgets"><code class="name flex">
-<span>def <span class="ident">to_widgets</span></span>(<span>self)</span>
+<span>def <span class="ident">to_widgets</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The ipython notebook widgets user interface.</p></div>
@@ -1777,7 +1293,7 @@ the Iframe.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_widgets(self):
+<pre><code class="python">def to_widgets(self) -&gt; None:
     &#34;&#34;&#34;The ipython notebook widgets user interface.&#34;&#34;&#34;
     try:
         from google.colab import files  # noqa: F401
@@ -1875,31 +1391,12 @@ the Iframe.</p>
 <li><code><a title="pandas_profiling.visualisation" href="visualisation/index.html">pandas_profiling.visualisation</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="pandas_profiling.clear_config" href="#pandas_profiling.clear_config">clear_config</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="pandas_profiling.Config" href="#pandas_profiling.Config">Config</a></code></h4>
-<ul class="two-column">
-<li><code><a title="pandas_profiling.Config.clear" href="#pandas_profiling.Config.clear">clear</a></code></li>
-<li><code><a title="pandas_profiling.Config.config" href="#pandas_profiling.Config.config">config</a></code></li>
-<li><code><a title="pandas_profiling.Config.dump" href="#pandas_profiling.Config.dump">dump</a></code></li>
-<li><code><a title="pandas_profiling.Config.is_default" href="#pandas_profiling.Config.is_default">is_default</a></code></li>
-<li><code><a title="pandas_profiling.Config.set_arg_group" href="#pandas_profiling.Config.set_arg_group">set_arg_group</a></code></li>
-<li><code><a title="pandas_profiling.Config.set_args" href="#pandas_profiling.Config.set_args">set_args</a></code></li>
-<li><code><a title="pandas_profiling.Config.set_file" href="#pandas_profiling.Config.set_file">set_file</a></code></li>
-<li><code><a title="pandas_profiling.Config.set_kwargs" href="#pandas_profiling.Config.set_kwargs">set_kwargs</a></code></li>
-<li><code><a title="pandas_profiling.Config.update" href="#pandas_profiling.Config.update">update</a></code></li>
-</ul>
-</li>
-<li>
 <h4><code><a title="pandas_profiling.ProfileReport" href="#pandas_profiling.ProfileReport">ProfileReport</a></code></h4>
 <ul class="">
-<li><code><a title="pandas_profiling.ProfileReport.clear_config" href="#pandas_profiling.ProfileReport.clear_config">clear_config</a></code></li>
+<li><code><a title="pandas_profiling.ProfileReport.config" href="#pandas_profiling.ProfileReport.config">config</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.description_set" href="#pandas_profiling.ProfileReport.description_set">description_set</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.df_hash" href="#pandas_profiling.ProfileReport.df_hash">df_hash</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.get_description" href="#pandas_profiling.ProfileReport.get_description">get_description</a></code></li>
@@ -1907,13 +1404,11 @@ the Iframe.</p>
 <li><code><a title="pandas_profiling.ProfileReport.get_rejected_variables" href="#pandas_profiling.ProfileReport.get_rejected_variables">get_rejected_variables</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.get_sample" href="#pandas_profiling.ProfileReport.get_sample">get_sample</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.html" href="#pandas_profiling.ProfileReport.html">html</a></code></li>
+<li><code><a title="pandas_profiling.ProfileReport.invalidate_cache" href="#pandas_profiling.ProfileReport.invalidate_cache">invalidate_cache</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.json" href="#pandas_profiling.ProfileReport.json">json</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.preprocess" href="#pandas_profiling.ProfileReport.preprocess">preprocess</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.report" href="#pandas_profiling.ProfileReport.report">report</a></code></li>
-<li><code><a title="pandas_profiling.ProfileReport.set_variable" href="#pandas_profiling.ProfileReport.set_variable">set_variable</a></code></li>
-<li><code><a title="pandas_profiling.ProfileReport.set_variables" href="#pandas_profiling.ProfileReport.set_variables">set_variables</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.summarizer" href="#pandas_profiling.ProfileReport.summarizer">summarizer</a></code></li>
-<li><code><a title="pandas_profiling.ProfileReport.title" href="#pandas_profiling.ProfileReport.title">title</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_file" href="#pandas_profiling.ProfileReport.to_file">to_file</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_html" href="#pandas_profiling.ProfileReport.to_html">to_html</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_json" href="#pandas_profiling.ProfileReport.to_json">to_json</a></code></li>

@@ -32,10 +32,10 @@ from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class HTML(ItemRenderer):
-    def __init__(self, content, **kwargs):
+    def __init__(self, content: str, **kwargs):
         super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;HTML&#34;
 
     def render(self) -&gt; Any:
@@ -53,7 +53,7 @@ class HTML(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.html.HTML"><code class="flex name class">
 <span>class <span class="ident">HTML</span></span>
-<span>(</span><span>content, **kwargs)</span>
+<span>(</span><span>content: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -63,10 +63,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTML(ItemRenderer):
-    def __init__(self, content, **kwargs):
+    def __init__(self, content: str, **kwargs):
         super().__init__(&#34;html&#34;, {&#34;html&#34;: content}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;HTML&#34;
 
     def render(self) -&gt; Any:

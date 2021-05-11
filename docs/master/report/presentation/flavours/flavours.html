@@ -26,15 +26,18 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Dict, Type
+<pre><code class="python">from typing import Callable, Dict, Type
 
+from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
-def apply_renderable_mapping(mapping, structure, flavour):
-    for key, value in mapping.items():
-        if isinstance(structure, key):
-            value.convert_to_class(structure, flavour)
+def apply_renderable_mapping(
+    mapping: Dict[Type[Renderable], Type[Renderable]],
+    structure: Renderable,
+    flavour: Callable,
+) -&gt; None:
+    mapping[type(structure)].convert_to_class(structure, flavour)
 
 
 def get_html_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]:
@@ -94,7 +97,7 @@ def get_html_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]
     }
 
 
-def HTMLReport(structure: Renderable):
+def HTMLReport(structure: Root) -&gt; Root:
     &#34;&#34;&#34;Adds HTML flavour to Renderable
 
     Args:
@@ -160,7 +163,7 @@ def get_widget_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable
     }
 
 
-def WidgetReport(structure: Renderable):
+def WidgetReport(structure: Root) -&gt; Root:
     mapping = get_widget_renderable_mapping()
     apply_renderable_mapping(mapping, structure, flavour=WidgetReport)
     return structure</code></pre>
@@ -174,7 +177,7 @@ def WidgetReport(structure: Renderable):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.HTMLReport"><code class="name flex">
-<span>def <span class="ident">HTMLReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">HTMLReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a>) ‑> <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds HTML flavour to Renderable</p>
@@ -185,7 +188,7 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def HTMLReport(structure: Renderable):
+<pre><code class="python">def HTMLReport(structure: Root) -&gt; Root:
     &#34;&#34;&#34;Adds HTML flavour to Renderable
 
     Args:
@@ -200,7 +203,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.WidgetReport"><code class="name flex">
-<span>def <span class="ident">WidgetReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">WidgetReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a>) ‑> <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -208,14 +211,14 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def WidgetReport(structure: Renderable):
+<pre><code class="python">def WidgetReport(structure: Root) -&gt; Root:
     mapping = get_widget_renderable_mapping()
     apply_renderable_mapping(mapping, structure, flavour=WidgetReport)
     return structure</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.apply_renderable_mapping"><code class="name flex">
-<span>def <span class="ident">apply_renderable_mapping</span></span>(<span>mapping, structure, flavour)</span>
+<span>def <span class="ident">apply_renderable_mapping</span></span>(<span>mapping: Dict[Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]], structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flavour: Callable) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -223,10 +226,12 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def apply_renderable_mapping(mapping, structure, flavour):
-    for key, value in mapping.items():
-        if isinstance(structure, key):
-            value.convert_to_class(structure, flavour)</code></pre>
+<pre><code class="python">def apply_renderable_mapping(
+    mapping: Dict[Type[Renderable], Type[Renderable]],
+    structure: Renderable,
+    flavour: Callable,
+) -&gt; None:
+    mapping[type(structure)].convert_to_class(structure, flavour)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.get_html_renderable_mapping"><code class="name flex">

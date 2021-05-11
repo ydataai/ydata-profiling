@@ -34,11 +34,13 @@ from typing import Optional
 
 import pandas as pd
 from tqdm.auto import tqdm
+from visions import VisionsTypeset
 
-from pandas_profiling.config import config as config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import calculate_correlation
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.sample import Sample, get_sample
+from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.model.summary import (
     get_messages,
     get_missing_diagrams,
@@ -46,17 +48,20 @@ from pandas_profiling.model.summary import (
     get_series_descriptions,
     get_table_stats,
 )
-from pandas_profiling.model.typeset import Numeric, Unsupported
 from pandas_profiling.version import __version__
 
 
 def describe(
-    title: str, df: pd.DataFrame, summarizer, typeset, sample: Optional[dict] = None
+    config: Settings,
+    df: pd.DataFrame,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+    sample: Optional[dict] = None,
 ) -&gt; dict:
     &#34;&#34;&#34;Calculate the statistics for each series in this DataFrame.
 
     Args:
-        title: report title
+        config: report Settings object
         df: DataFrame.
         sample: optional, dict with custom sample
 
@@ -76,7 +81,7 @@ def describe(
     if not isinstance(df, pd.DataFrame):
         warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
-    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    disable_progress_bar = not config.progress_bar
 
     date_start = datetime.utcnow()
 
@@ -89,7 +94,7 @@ def describe(
             &#34;phi_k&#34;,
             &#34;cramers&#34;,
         ]
-        if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
+        if config.correlations[correlation_name].calculate
     ]
 
     number_of_tasks = 8 + len(df.columns) + len(correlation_names)
@@ -97,7 +102,9 @@ def describe(
     with tqdm(
         total=number_of_tasks, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
     ) as pbar:
-        series_description = get_series_descriptions(df, summarizer, typeset, pbar)
+        series_description = get_series_descriptions(
+            config, df, summarizer, typeset, pbar
+        )
 
         pbar.set_postfix_str(&#34;Get variable types&#34;)
         variables = {
@@ -107,10 +114,10 @@ def describe(
         supported_columns = [
             column
             for column, type_name in variables.items()
-            if type_name != Unsupported
+            if type_name != &#34;Unsupported&#34;
         ]
         interval_columns = [
-            column for column, type_name in variables.items() if type_name == Numeric
+            column for column, type_name in variables.items() if type_name == &#34;Numeric&#34;
         ]
         pbar.update()
 
@@ -119,7 +126,7 @@ def describe(
         for correlation_name in correlation_names:
             pbar.set_postfix_str(f&#34;Calculate {correlation_name} correlation&#34;)
             correlations[correlation_name] = calculate_correlation(
-                df, correlation_name, series_description
+                config, df, correlation_name, series_description
             )
             pbar.update()
 
@@ -130,23 +137,23 @@ def describe(
 
         # Scatter matrix
         pbar.set_postfix_str(&#34;Get scatter matrix&#34;)
-        scatter_matrix = get_scatter_matrix(df, interval_columns)
+        scatter_matrix = get_scatter_matrix(config, df, interval_columns)
         pbar.update()
 
         # Table statistics
         pbar.set_postfix_str(&#34;Get table statistics&#34;)
-        table_stats = get_table_stats(df, series_description)
+        table_stats = get_table_stats(config, df, series_description)
         pbar.update()
 
         # missing diagrams
         pbar.set_postfix_str(&#34;Get missing diagrams&#34;)
-        missing = get_missing_diagrams(df, table_stats)
+        missing = get_missing_diagrams(config, df, table_stats)
         pbar.update()
 
         # Sample
         pbar.set_postfix_str(&#34;Take sample&#34;)
         if sample is None:
-            samples = get_sample(df)
+            samples = get_sample(config, df)
         else:
             if &#34;name&#34; not in sample:
                 sample[&#34;name&#34;] = None
@@ -154,25 +161,30 @@ def describe(
                 sample[&#34;caption&#34;] = None
 
             samples = [
-                Sample(&#34;custom&#34;, sample[&#34;data&#34;], sample[&#34;name&#34;], sample[&#34;caption&#34;])
+                Sample(
+                    id=&#34;custom&#34;,
+                    data=sample[&#34;data&#34;],
+                    name=sample[&#34;name&#34;],
+                    caption=sample[&#34;caption&#34;],
+                )
             ]
         pbar.update()
 
         # Duplicates
         pbar.set_postfix_str(&#34;Locating duplicates&#34;)
-        metrics, duplicates = get_duplicates(df, supported_columns)
+        metrics, duplicates = get_duplicates(config, df, supported_columns)
         table_stats.update(metrics)
         pbar.update()
 
         # Messages
         pbar.set_postfix_str(&#34;Get messages/warnings&#34;)
-        messages = get_messages(table_stats, series_description, correlations)
+        messages = get_messages(config, table_stats, series_description, correlations)
         pbar.update()
 
         pbar.set_postfix_str(&#34;Get reproduction details&#34;)
         package = {
             &#34;pandas_profiling_version&#34;: __version__,
-            &#34;pandas_profiling_config&#34;: config.dump(),
+            &#34;pandas_profiling_config&#34;: config.json(),
         }
         pbar.update()
 
@@ -181,7 +193,7 @@ def describe(
     date_end = datetime.utcnow()
 
     analysis = {
-        &#34;title&#34;: title,
+        &#34;title&#34;: config.title,
         &#34;date_start&#34;: date_start,
         &#34;date_end&#34;: date_end,
         &#34;duration&#34;: date_end - date_start,
@@ -219,14 +231,14 @@ def describe(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.describe.describe"><code class="name flex">
-<span>def <span class="ident">describe</span></span>(<span>title: str, df: pandas.core.frame.DataFrame, summarizer, typeset, sample: Union[dict, NoneType] = None) ‑> dict</span>
+<span>def <span class="ident">describe</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summarizer: <a title="pandas_profiling.model.summarizer.BaseSummarizer" href="summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, typeset: visions.typesets.typeset.VisionsTypeset, sample: Union[dict, NoneType] = None) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the statistics for each series in this DataFrame.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>title</code></strong></dt>
-<dd>report title</dd>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>df</code></strong></dt>
 <dd>DataFrame.</dd>
 <dt><strong><code>sample</code></strong></dt>
@@ -245,12 +257,16 @@ def describe(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def describe(
-    title: str, df: pd.DataFrame, summarizer, typeset, sample: Optional[dict] = None
+    config: Settings,
+    df: pd.DataFrame,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+    sample: Optional[dict] = None,
 ) -&gt; dict:
     &#34;&#34;&#34;Calculate the statistics for each series in this DataFrame.
 
     Args:
-        title: report title
+        config: report Settings object
         df: DataFrame.
         sample: optional, dict with custom sample
 
@@ -270,7 +286,7 @@ def describe(
     if not isinstance(df, pd.DataFrame):
         warnings.warn(&#34;df is not of type pandas.DataFrame&#34;)
 
-    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    disable_progress_bar = not config.progress_bar
 
     date_start = datetime.utcnow()
 
@@ -283,7 +299,7 @@ def describe(
             &#34;phi_k&#34;,
             &#34;cramers&#34;,
         ]
-        if config[&#34;correlations&#34;][correlation_name][&#34;calculate&#34;].get(bool)
+        if config.correlations[correlation_name].calculate
     ]
 
     number_of_tasks = 8 + len(df.columns) + len(correlation_names)
@@ -291,7 +307,9 @@ def describe(
     with tqdm(
         total=number_of_tasks, desc=&#34;Summarize dataset&#34;, disable=disable_progress_bar
     ) as pbar:
-        series_description = get_series_descriptions(df, summarizer, typeset, pbar)
+        series_description = get_series_descriptions(
+            config, df, summarizer, typeset, pbar
+        )
 
         pbar.set_postfix_str(&#34;Get variable types&#34;)
         variables = {
@@ -301,10 +319,10 @@ def describe(
         supported_columns = [
             column
             for column, type_name in variables.items()
-            if type_name != Unsupported
+            if type_name != &#34;Unsupported&#34;
         ]
         interval_columns = [
-            column for column, type_name in variables.items() if type_name == Numeric
+            column for column, type_name in variables.items() if type_name == &#34;Numeric&#34;
         ]
         pbar.update()
 
@@ -313,7 +331,7 @@ def describe(
         for correlation_name in correlation_names:
             pbar.set_postfix_str(f&#34;Calculate {correlation_name} correlation&#34;)
             correlations[correlation_name] = calculate_correlation(
-                df, correlation_name, series_description
+                config, df, correlation_name, series_description
             )
             pbar.update()
 
@@ -324,23 +342,23 @@ def describe(
 
         # Scatter matrix
         pbar.set_postfix_str(&#34;Get scatter matrix&#34;)
-        scatter_matrix = get_scatter_matrix(df, interval_columns)
+        scatter_matrix = get_scatter_matrix(config, df, interval_columns)
         pbar.update()
 
         # Table statistics
         pbar.set_postfix_str(&#34;Get table statistics&#34;)
-        table_stats = get_table_stats(df, series_description)
+        table_stats = get_table_stats(config, df, series_description)
         pbar.update()
 
         # missing diagrams
         pbar.set_postfix_str(&#34;Get missing diagrams&#34;)
-        missing = get_missing_diagrams(df, table_stats)
+        missing = get_missing_diagrams(config, df, table_stats)
         pbar.update()
 
         # Sample
         pbar.set_postfix_str(&#34;Take sample&#34;)
         if sample is None:
-            samples = get_sample(df)
+            samples = get_sample(config, df)
         else:
             if &#34;name&#34; not in sample:
                 sample[&#34;name&#34;] = None
@@ -348,25 +366,30 @@ def describe(
                 sample[&#34;caption&#34;] = None
 
             samples = [
-                Sample(&#34;custom&#34;, sample[&#34;data&#34;], sample[&#34;name&#34;], sample[&#34;caption&#34;])
+                Sample(
+                    id=&#34;custom&#34;,
+                    data=sample[&#34;data&#34;],
+                    name=sample[&#34;name&#34;],
+                    caption=sample[&#34;caption&#34;],
+                )
             ]
         pbar.update()
 
         # Duplicates
         pbar.set_postfix_str(&#34;Locating duplicates&#34;)
-        metrics, duplicates = get_duplicates(df, supported_columns)
+        metrics, duplicates = get_duplicates(config, df, supported_columns)
         table_stats.update(metrics)
         pbar.update()
 
         # Messages
         pbar.set_postfix_str(&#34;Get messages/warnings&#34;)
-        messages = get_messages(table_stats, series_description, correlations)
+        messages = get_messages(config, table_stats, series_description, correlations)
         pbar.update()
 
         pbar.set_postfix_str(&#34;Get reproduction details&#34;)
         package = {
             &#34;pandas_profiling_version&#34;: __version__,
-            &#34;pandas_profiling_config&#34;: config.dump(),
+            &#34;pandas_profiling_config&#34;: config.json(),
         }
         pbar.update()
 
@@ -375,7 +398,7 @@ def describe(
     date_end = datetime.utcnow()
 
     analysis = {
-        &#34;title&#34;: title,
+        &#34;title&#34;: config.title,
         &#34;date_start&#34;: date_start,
         &#34;date_end&#34;: date_end,
         &#34;duration&#34;: date_end - date_start,

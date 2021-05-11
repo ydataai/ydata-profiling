@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">import contextlib
 import warnings
+from typing import Any
 
 import matplotlib
 import matplotlib.cbook
@@ -39,7 +40,7 @@ from pandas.plotting import (
 
 
 @contextlib.contextmanager
-def manage_matplotlib_context():
+def manage_matplotlib_context() -&gt; Any:
     &#34;&#34;&#34;Return a context manager for temporarily changing matplotlib unit registries and rcParams.&#34;&#34;&#34;
     originalRcParams = matplotlib.rcParams.copy()
 
@@ -120,7 +121,7 @@ def manage_matplotlib_context():
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.visualisation.context.manage_matplotlib_context"><code class="name flex">
-<span>def <span class="ident">manage_matplotlib_context</span></span>(<span>)</span>
+<span>def <span class="ident">manage_matplotlib_context</span></span>(<span>) ‑> Any</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return a context manager for temporarily changing matplotlib unit registries and rcParams.</p></div>
@@ -129,7 +130,7 @@ def manage_matplotlib_context():
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@contextlib.contextmanager
-def manage_matplotlib_context():
+def manage_matplotlib_context() -&gt; Any:
     &#34;&#34;&#34;Return a context manager for temporarily changing matplotlib unit registries and rcParams.&#34;&#34;&#34;
     originalRcParams = matplotlib.rcParams.copy()
 

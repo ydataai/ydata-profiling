@@ -56,12 +56,14 @@ __all__ = [&#34;get_report_structure&#34;]</code></pre>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.get_report_structure"><code class="name flex">
-<span>def <span class="ident">get_report_structure</span></span>(<span>summary: dict) ‑> <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="presentation/core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></span>
+<span>def <span class="ident">get_report_structure</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> <a title="pandas_profiling.report.presentation.core.root.Root" href="presentation/core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a HTML report from summary statistics and a given sample.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>summary</code></strong></dt>
 <dd>Statistics to use for the overview, variables, correlations and missing values.</dd>
 </dl>
@@ -71,16 +73,17 @@ __all__ = [&#34;get_report_structure&#34;]</code></pre>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_report_structure(summary: dict) -&gt; Renderable:
+<pre><code class="python">def get_report_structure(config: Settings, summary: dict) -&gt; Root:
     &#34;&#34;&#34;Generate a HTML report from summary statistics and a given sample.
 
     Args:
+      config: report Settings object
       summary: Statistics to use for the overview, variables, correlations and missing values.
 
     Returns:
       The profile report in HTML format
     &#34;&#34;&#34;
-    disable_progress_bar = not config[&#34;progress_bar&#34;].get(bool)
+    disable_progress_bar = not config.progress_bar
     with tqdm(
         total=1, desc=&#34;Generate report structure&#34;, disable=disable_progress_bar
     ) as pbar:
@@ -88,20 +91,20 @@ __all__ = [&#34;get_report_structure&#34;]</code></pre>
 
         section_items: List[Renderable] = [
             Container(
-                get_dataset_items(summary, warnings),
+                get_dataset_items(config, summary, warnings),
                 sequence_type=&#34;tabs&#34;,
                 name=&#34;Overview&#34;,
                 anchor_id=&#34;overview&#34;,
             ),
             Container(
-                render_variables_section(summary),
+                render_variables_section(config, summary),
                 sequence_type=&#34;accordion&#34;,
                 name=&#34;Variables&#34;,
                 anchor_id=&#34;variables&#34;,
             ),
         ]
 
-        scatter_items = get_scatter_matrix(summary[&#34;scatter&#34;])
+        scatter_items = get_scatter_matrix(config, summary[&#34;scatter&#34;])
         if len(scatter_items) &gt; 0:
             section_items.append(
                 Container(
@@ -112,11 +115,11 @@ __all__ = [&#34;get_report_structure&#34;]</code></pre>
                 ),
             )
 
-        corr = get_correlation_items(summary)
+        corr = get_correlation_items(config, summary)
         if corr is not None:
             section_items.append(corr)
 
-        missing_items = get_missing_items(summary)
+        missing_items = get_missing_items(config, summary)
         if len(missing_items) &gt; 0:
             section_items.append(
                 Container(
@@ -149,7 +152,12 @@ __all__ = [&#34;get_report_structure&#34;]</code></pre>
                 )
             )
 
-        sections = Container(section_items, name=&#34;Root&#34;, sequence_type=&#34;sections&#34;)
+        sections = Container(
+            section_items,
+            name=&#34;Root&#34;,
+            sequence_type=&#34;sections&#34;,
+            full_width=config.html.full_width,
+        )
         pbar.update()
 
     footer = HTML(

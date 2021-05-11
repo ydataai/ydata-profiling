@@ -30,13 +30,14 @@
 
 from ipywidgets import widgets
 
+from pandas_profiling.config import ImageType
 from pandas_profiling.report.presentation.core.image import Image
 
 
 class WidgetImage(Image):
-    def render(self):
+    def render(self) -&gt; widgets.Widget:
         image = self.content[&#34;image&#34;]
-        if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+        if self.content[&#34;image_format&#34;] == ImageType.svg:
             image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
 
             image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)
@@ -64,7 +65,7 @@ class WidgetImage(Image):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.image.WidgetImage"><code class="flex name class">
 <span>class <span class="ident">WidgetImage</span></span>
-<span>(</span><span>image, image_format, alt, caption=None, **kwargs)</span>
+<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -74,9 +75,9 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetImage(Image):
-    def render(self):
+    def render(self) -&gt; widgets.Widget:
         image = self.content[&#34;image&#34;]
-        if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+        if self.content[&#34;image_format&#34;] == ImageType.svg:
             image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
 
             image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)
@@ -102,7 +103,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.image.WidgetImage.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget.Widget</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -110,9 +111,9 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.Widget:
     image = self.content[&#34;image&#34;]
-    if self.content[&#34;image_format&#34;] == &#34;svg&#34;:
+    if self.content[&#34;image_format&#34;] == ImageType.svg:
         image = image.replace(&#34;svg &#34;, &#39;svg style=&#34;max-width: 100%&#34; &#39;)
 
         image = re.sub(&#39;height=&#34;[\\d]+pt&#34;&#39;, &#34;&#34;, image)

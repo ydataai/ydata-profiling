@@ -15,7 +15,6 @@
    
       category_is_numeric
       category_to_numeric
-      get_boolean_map
       is_nullable
       numeric_is_category
       object_is_bool

@@ -30,14 +30,13 @@
 <pre><code class="python">&#34;&#34;&#34;This file add the console interface to the package.&#34;&#34;&#34;
 import argparse
 from pathlib import Path
-from typing import Union
+from typing import Any, List, Optional
 
 from pandas_profiling.__init__ import ProfileReport, __version__
-from pandas_profiling.config import config
 from pandas_profiling.utils.dataframe import read_pandas
 
 
-def parse_args(args: Union[list, None] = None) -&gt; argparse.Namespace:
+def parse_args(args: Optional[List[Any]] = None) -&gt; argparse.Namespace:
     &#34;&#34;&#34;Parse the command line arguments for the `pandas_profiling` binary.
 
     Args:
@@ -126,7 +125,7 @@ def parse_args(args: Union[list, None] = None) -&gt; argparse.Namespace:
     return parser.parse_args(args)
 
 
-def main(args=None) -&gt; None:
+def main(args: Optional[List[Any]] = None) -&gt; None:
     &#34;&#34;&#34;Run the `pandas_profiling` package.
 
     Args:
@@ -134,22 +133,25 @@ def main(args=None) -&gt; None:
     &#34;&#34;&#34;
 
     # Parse the arguments
-    args = parse_args(args)
-    if args.output_file is None:
-        args.output_file = str(Path(args.input_file).with_suffix(&#34;.html&#34;))
-    config.set_args(args, dots=True)
+    parsed_args = parse_args(args)
+    kwargs = vars(parsed_args)
+
+    input_file = Path(kwargs.pop(&#34;input_file&#34;))
+    output_file = kwargs.pop(&#34;output_file&#34;)
+    if output_file is None:
+        output_file = str(input_file.with_suffix(&#34;.html&#34;))
+
+    silent = kwargs.pop(&#34;silent&#34;)
 
     # read the DataFrame
-    df = read_pandas(Path(args.input_file))
+    df = read_pandas(input_file)
 
     # Generate the profiling report
     p = ProfileReport(
         df,
-        minimal=args.minimal,
-        explorative=args.explorative,
-        config_file=args.config_file,
+        **kwargs,
     )
-    p.to_file(Path(args.output_file), silent=args.silent)</code></pre>
+    p.to_file(Path(output_file), silent=silent)</code></pre>
 </details>
 </section>
 <section>
@@ -160,7 +162,7 @@ def main(args=None) -&gt; None:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.controller.console.main"><code class="name flex">
-<span>def <span class="ident">main</span></span>(<span>args=None) ‑> NoneType</span>
+<span>def <span class="ident">main</span></span>(<span>args: Union[List[Any], NoneType] = None) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Run the <code><a title="pandas_profiling" href="../index.html">pandas_profiling</a></code> package.</p>
@@ -173,7 +175,7 @@ def main(args=None) -&gt; None:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def main(args=None) -&gt; None:
+<pre><code class="python">def main(args: Optional[List[Any]] = None) -&gt; None:
     &#34;&#34;&#34;Run the `pandas_profiling` package.
 
     Args:
@@ -181,26 +183,29 @@ def main(args=None) -&gt; None:
     &#34;&#34;&#34;
 
     # Parse the arguments
-    args = parse_args(args)
-    if args.output_file is None:
-        args.output_file = str(Path(args.input_file).with_suffix(&#34;.html&#34;))
-    config.set_args(args, dots=True)
+    parsed_args = parse_args(args)
+    kwargs = vars(parsed_args)
+
+    input_file = Path(kwargs.pop(&#34;input_file&#34;))
+    output_file = kwargs.pop(&#34;output_file&#34;)
+    if output_file is None:
+        output_file = str(input_file.with_suffix(&#34;.html&#34;))
+
+    silent = kwargs.pop(&#34;silent&#34;)
 
     # read the DataFrame
-    df = read_pandas(Path(args.input_file))
+    df = read_pandas(input_file)
 
     # Generate the profiling report
     p = ProfileReport(
         df,
-        minimal=args.minimal,
-        explorative=args.explorative,
-        config_file=args.config_file,
+        **kwargs,
     )
-    p.to_file(Path(args.output_file), silent=args.silent)</code></pre>
+    p.to_file(Path(output_file), silent=silent)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.controller.console.parse_args"><code class="name flex">
-<span>def <span class="ident">parse_args</span></span>(<span>args: Union[list, NoneType] = None) ‑> argparse.Namespace</span>
+<span>def <span class="ident">parse_args</span></span>(<span>args: Union[List[Any], NoneType] = None) ‑> argparse.Namespace</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Parse the command line arguments for the <code><a title="pandas_profiling" href="../index.html">pandas_profiling</a></code> binary.</p>
@@ -215,7 +220,7 @@ def main(args=None) -&gt; None:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def parse_args(args: Union[list, None] = None) -&gt; argparse.Namespace:
+<pre><code class="python">def parse_args(args: Optional[List[Any]] = None) -&gt; argparse.Namespace:
     &#34;&#34;&#34;Parse the command line arguments for the `pandas_profiling` binary.
 
     Args:

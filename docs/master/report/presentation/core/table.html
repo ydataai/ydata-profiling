@@ -26,18 +26,24 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
+<pre><code class="python">from typing import Any, Optional, Sequence
 
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class Table(ItemRenderer):
-    def __init__(self, rows, name=None, caption=None, **kwargs):
+    def __init__(
+        self,
+        rows: Sequence,
+        name: Optional[str] = None,
+        caption: Optional[str] = None,
+        **kwargs
+    ):
         super().__init__(
             &#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name, &#34;caption&#34;: caption}, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Table&#34;
 
     def render(self) -&gt; Any:
@@ -55,7 +61,7 @@ class Table(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.table.Table"><code class="flex name class">
 <span>class <span class="ident">Table</span></span>
-<span>(</span><span>rows, name=None, caption=None, **kwargs)</span>
+<span>(</span><span>rows: Sequence, name: Union[str, NoneType] = None, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -65,12 +71,18 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Table(ItemRenderer):
-    def __init__(self, rows, name=None, caption=None, **kwargs):
+    def __init__(
+        self,
+        rows: Sequence,
+        name: Optional[str] = None,
+        caption: Optional[str] = None,
+        **kwargs
+    ):
         super().__init__(
             &#34;table&#34;, {&#34;rows&#34;: rows, &#34;name&#34;: name, &#34;caption&#34;: caption}, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Table&#34;
 
     def render(self) -&gt; Any:

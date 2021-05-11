@@ -40,23 +40,21 @@ profile = ProfileReport(
 )
 
 # Give our variable a description
-profile.set_variable(
-    "variables.descriptions",
-    {
-        "files": "Paths linking to the cats and dogs found https://www.kaggle.com/tongpython/cat-and-dog."
-    },
-)
+profile.config.variables.descriptions = {
+    "files": "Paths linking to the cats and dogs found https://www.kaggle.com/tongpython/cat-and-dog."
+}
+
 # If the number of samples is above this threshold, the scatter plots are replaced with hexbin plots
 # We are just over the threshold of 10.000 samples, so let's increase the limit.
-profile.set_variable("plot.scatter_threshold", 25000)
+profile.config.plot.scatter_threshold = 25000
 
 # Enable files and images (off by default, as it uses relatively expensive computations when not interested)
-profile.set_variable("vars.path.active", True)
-profile.set_variable("vars.file.active", True)
-profile.set_variable("vars.image.active", True)
+profile.config.vars.path.active = True
+profile.config.vars.file.active = True
+profile.config.vars.image.active = True
 
 # No exif found, so turn off expensive computation
-profile.set_variable("vars.image.exif", False)
+profile.config.vars.image.exif = False
 
 # Save the report to a file
 profile.to_file("cats-and-dogs.html")

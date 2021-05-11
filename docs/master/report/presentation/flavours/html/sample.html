@@ -31,7 +31,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLSample(Sample):
-    def render(self):
+    def render(self) -&gt; str:
         sample_html = self.content[&#34;sample&#34;].to_html(
             classes=&#34;sample table table-striped&#34;
         )
@@ -51,7 +51,7 @@ class HTMLSample(Sample):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.sample.HTMLSample"><code class="flex name class">
 <span>class <span class="ident">HTMLSample</span></span>
-<span>(</span><span>name, sample, caption=None, **kwargs)</span>
+<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -61,7 +61,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLSample(Sample):
-    def render(self):
+    def render(self) -&gt; str:
         sample_html = self.content[&#34;sample&#34;].to_html(
             classes=&#34;sample table table-striped&#34;
         )
@@ -79,7 +79,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.sample.HTMLSample.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,7 +87,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     sample_html = self.content[&#34;sample&#34;].to_html(
         classes=&#34;sample table table-striped&#34;
     )

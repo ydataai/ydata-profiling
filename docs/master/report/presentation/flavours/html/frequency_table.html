@@ -31,7 +31,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLFrequencyTable(FrequencyTable):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;frequency_table.html&#34;).render(**self.content)</code></pre>
 </details>
 </section>
@@ -46,7 +46,7 @@ class HTMLFrequencyTable(FrequencyTable):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.frequency_table.HTMLFrequencyTable"><code class="flex name class">
 <span>class <span class="ident">HTMLFrequencyTable</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: list, redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -56,7 +56,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLFrequencyTable(FrequencyTable):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;frequency_table.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -69,7 +69,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.frequency_table.HTMLFrequencyTable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -77,7 +77,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;frequency_table.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>

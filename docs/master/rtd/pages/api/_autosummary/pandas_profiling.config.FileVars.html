@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>pandas_profiling.config.FileVars &mdash; pandas-profiling 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="pandas_profiling.config.UrlVars" href="pandas_profiling.config.UrlVars.html" />
+    <link rel="prev" title="pandas_profiling.config.PathVars" href="pandas_profiling.config.PathVars.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #174C4F" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> pandas-profiling
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Pandas Profiling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../announcements.html">Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../big_data.html">Big Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metadata.html">Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../great_expectations_integration.html">Integration with Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution_guidelines.html">Contribution Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../profile_report.html">Profile Report</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../settings.html">Settings</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Settings.html">pandas_profiling.config.Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Config.html">pandas_profiling.config.Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Correlation.html">pandas_profiling.config.Correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html">pandas_profiling.config.CorrelationPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.MissingPlot.html">pandas_profiling.config.MissingPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageType.html">pandas_profiling.config.ImageType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Pie.html">pandas_profiling.config.Pie</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Dataset.html">pandas_profiling.config.Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Duplicates.html">pandas_profiling.config.Duplicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Html.html">pandas_profiling.config.Html</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Interactions.html">pandas_profiling.config.Interactions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Plot.html">pandas_profiling.config.Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Theme.html">pandas_profiling.config.Theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Style.html">pandas_profiling.config.Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Samples.html">pandas_profiling.config.Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Report.html">pandas_profiling.config.Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Variables.html">pandas_profiling.config.Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Univariate.html">pandas_profiling.config.Univariate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.NumVars.html">pandas_profiling.config.NumVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CatVars.html">pandas_profiling.config.CatVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageVars.html">pandas_profiling.config.ImageVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.BoolVars.html">pandas_profiling.config.BoolVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.PathVars.html">pandas_profiling.config.PathVars</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.FileVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.UrlVars.html">pandas_profiling.config.UrlVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Histogram.html">pandas_profiling.config.Histogram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../report.html">Report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualisation.html">Visualisation</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+
+    <div style="padding-top: 20px">
+        <a href="https://github.com/sponsors/sbrugman">
+            <summary id="sponsor-button-repo" class="btn btn-sm" title="Sponsor pandas-profiling/pandas-profiling" data-ga-click="Repository, show sponsor modal, action:files#disambiguate; text:Sponsor" role="button">
+              <svg class="octicon octicon-heart text-pink v-align-text-bottom" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.727 3C7.091 3 6.001 4.65 6.001 4.65S4.909 3 3.273 3C1.636 3 0 4.1 0 6.3 0 9.6 6 14 6 14s6-4.4 6-7.7C12 4.1 10.364 3 8.727 3z"></path></svg>
+              Sponsor
+            </summary>
+        </a>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pandas-profiling</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../api.html">API</a> &raquo;</li>
+        
+          <li><a href="../settings.html">Settings</a> &raquo;</li>
+        
+      <li>pandas_profiling.config.FileVars</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/pages/api/_autosummary/pandas_profiling.config.FileVars.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pandas-profiling-config-filevars">
+<h1>pandas_profiling.config.FileVars<a class="headerlink" href="#pandas-profiling-config-filevars" title="Permalink to this headline">¶</a></h1>
+<dl class="py pydantic_model">
+<dt class="sig sig-object py" id="pandas_profiling.config.FileVars">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span> </em><span class="sig-prename descclassname"><span class="pre">pandas_profiling.config.</span></span><span class="sig-name descname"><span class="pre">FileVars</span></span><a class="reference internal" href="../../../_modules/pandas_profiling/config.html#FileVars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.FileVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Fields</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#pandas_profiling.config.FileVars.active" title="pandas_profiling.config.FileVars.active"><code class="xref py py-obj docutils literal notranslate"><span class="pre">active</span> <span class="pre">(bool)</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.FileVars.active">
+<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">active</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#pandas_profiling.config.FileVars.active" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="pandas_profiling.config.UrlVars.html" class="btn btn-neutral float-right" title="pandas_profiling.config.UrlVars" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pandas_profiling.config.PathVars.html" class="btn btn-neutral float-left" title="pandas_profiling.config.PathVars" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Simon Brugman.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -26,26 +26,28 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import List
+<pre><code class="python">from typing import List, Optional, TypeVar
 
-import attr
 import pandas as pd
+from pydantic.main import BaseModel
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 
-
-@attr.s
-class Sample:
-    id = attr.ib()
-    data = attr.ib()
-    name = attr.ib()
-    caption = attr.ib(default=None)
+PandasDataFrame = TypeVar(&#34;pandas.core.frame.DataFrame&#34;)  # type: ignore
 
 
-def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
+class Sample(BaseModel):
+    id: str
+    data: PandasDataFrame  # type: ignore
+    name: str
+    caption: Optional[str] = None
+
+
+def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
     &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
 
     Args:
+        config: Settings object
         df: the pandas DataFrame
 
     Returns:
@@ -55,17 +57,19 @@ def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
     if len(df) == 0:
         return samples
 
-    n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
+    n_head = config.samples.head
     if n_head &gt; 0:
-        samples.append(Sample(&#34;head&#34;, df.head(n=n_head), &#34;First rows&#34;))
+        samples.append(Sample(id=&#34;head&#34;, data=df.head(n=n_head), name=&#34;First rows&#34;))
 
-    n_tail = config[&#34;samples&#34;][&#34;tail&#34;].get(int)
+    n_tail = config.samples.tail
     if n_tail &gt; 0:
-        samples.append(Sample(&#34;tail&#34;, df.tail(n=n_tail), &#34;Last rows&#34;))
+        samples.append(Sample(id=&#34;tail&#34;, data=df.tail(n=n_tail), name=&#34;Last rows&#34;))
 
-    n_random = config[&#34;samples&#34;][&#34;random&#34;].get(int)
+    n_random = config.samples.random
     if n_random &gt; 0:
-        samples.append(Sample(&#34;random&#34;, df.sample(n=n_random), &#34;Random sample&#34;))
+        samples.append(
+            Sample(id=&#34;random&#34;, data=df.sample(n=n_random), name=&#34;Random sample&#34;)
+        )
 
     return samples</code></pre>
 </details>
@@ -78,12 +82,14 @@ def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.sample.get_sample"><code class="name flex">
-<span>def <span class="ident">get_sample</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> List[<a title="pandas_profiling.model.sample.Sample" href="#pandas_profiling.model.sample.Sample">Sample</a>]</span>
+<span>def <span class="ident">get_sample</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame) ‑> List[<a title="pandas_profiling.model.sample.Sample" href="#pandas_profiling.model.sample.Sample">Sample</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Obtains a sample from head and tail of the DataFrame</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>Settings object</dd>
 <dt><strong><code>df</code></strong></dt>
 <dd>the pandas DataFrame</dd>
 </dl>
@@ -93,10 +99,11 @@ def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
+<pre><code class="python">def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
     &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
 
     Args:
+        config: Settings object
         df: the pandas DataFrame
 
     Returns:
@@ -106,17 +113,19 @@ def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
     if len(df) == 0:
         return samples
 
-    n_head = config[&#34;samples&#34;][&#34;head&#34;].get(int)
+    n_head = config.samples.head
     if n_head &gt; 0:
-        samples.append(Sample(&#34;head&#34;, df.head(n=n_head), &#34;First rows&#34;))
+        samples.append(Sample(id=&#34;head&#34;, data=df.head(n=n_head), name=&#34;First rows&#34;))
 
-    n_tail = config[&#34;samples&#34;][&#34;tail&#34;].get(int)
+    n_tail = config.samples.tail
     if n_tail &gt; 0:
-        samples.append(Sample(&#34;tail&#34;, df.tail(n=n_tail), &#34;Last rows&#34;))
+        samples.append(Sample(id=&#34;tail&#34;, data=df.tail(n=n_tail), name=&#34;Last rows&#34;))
 
-    n_random = config[&#34;samples&#34;][&#34;random&#34;].get(int)
+    n_random = config.samples.random
     if n_random &gt; 0:
-        samples.append(Sample(&#34;random&#34;, df.sample(n=n_random), &#34;Random sample&#34;))
+        samples.append(
+            Sample(id=&#34;random&#34;, data=df.sample(n=n_random), name=&#34;Random sample&#34;)
+        )
 
     return samples</code></pre>
 </details>
@@ -128,20 +137,45 @@ def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
 <dl>
 <dt id="pandas_profiling.model.sample.Sample"><code class="flex name class">
 <span>class <span class="ident">Sample</span></span>
-<span>(</span><span>id, data, name, caption=None)</span>
+<span>(</span><span>**data: Any)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Method generated by attrs for class Sample.</p></div>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Sample:
-    id = attr.ib()
-    data = attr.ib()
-    name = attr.ib()
-    caption = attr.ib(default=None)</code></pre>
+<pre><code class="python">class Sample(BaseModel):
+    id: str
+    data: PandasDataFrame  # type: ignore
+    name: str
+    caption: Optional[str] = None</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.model.sample.Sample.caption"><code class="name">var <span class="ident">caption</span> : Union[str, NoneType]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.model.sample.Sample.data"><code class="name">var <span class="ident">data</span> : ~pandas.core.frame.DataFrame</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.model.sample.Sample.id"><code class="name">var <span class="ident">id</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.model.sample.Sample.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -166,6 +200,12 @@ def get_sample(df: pd.DataFrame) -&gt; List[Sample]:
 <ul>
 <li>
 <h4><code><a title="pandas_profiling.model.sample.Sample" href="#pandas_profiling.model.sample.Sample">Sample</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.model.sample.Sample.caption" href="#pandas_profiling.model.sample.Sample.caption">caption</a></code></li>
+<li><code><a title="pandas_profiling.model.sample.Sample.data" href="#pandas_profiling.model.sample.Sample.data">data</a></code></li>
+<li><code><a title="pandas_profiling.model.sample.Sample.id" href="#pandas_profiling.model.sample.Sample.id">id</a></code></li>
+<li><code><a title="pandas_profiling.model.sample.Sample.name" href="#pandas_profiling.model.sample.Sample.name">name</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

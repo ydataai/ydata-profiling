@@ -13,8 +13,8 @@
 
    .. autosummary::
    
-      is_date
-      to_date
+      series_handle_nulls
+      typeset_types
    
    
 
@@ -24,17 +24,7 @@
 
    .. autosummary::
    
-      Boolean
-      Categorical
-      Complex
-      DateTime
-      File
-      Image
-      Numeric
-      Path
       ProfilingTypeSet
-      URL
-      Unsupported
    
    
 

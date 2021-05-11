@@ -37,37 +37,46 @@ import pandas as pd
 from pandas.core.base import DataError
 from scipy import stats
 
-from pandas_profiling.config import config
-from pandas_profiling.model.typeset import Boolean, Categorical, Numeric, Unsupported
+from pandas_profiling.config import Settings
 
 
 class Correlation:
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-        return NotImplemented
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
+        raise NotImplementedError()
 
 
 class Spearman(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
         return df.corr(method=&#34;spearman&#34;)
 
 
 class Pearson(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
         return df.corr(method=&#34;pearson&#34;)
 
 
 class Kendall(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
         return df.corr(method=&#34;kendall&#34;)
 
 
 class Cramers(Correlation):
     @staticmethod
-    def _cramers_corrected_stat(confusion_matrix, correction: bool) -&gt; float:
+    def _cramers_corrected_stat(
+        confusion_matrix: pd.DataFrame, correction: bool
+    ) -&gt; float:
         &#34;&#34;&#34;Calculate the Cramer&#39;s V corrected stat for two variables.
 
         Args:
@@ -96,13 +105,15 @@ class Cramers(Correlation):
         return corr
 
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-        threshold = config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
+        threshold = config.categorical_maximum_correlation_distinct
 
         categoricals = {
             key
             for key, value in summary.items()
-            if value[&#34;type&#34;] in {Categorical, Boolean}
+            if value[&#34;type&#34;] in {&#34;Categorical&#34;, &#34;Boolean&#34;}
             and value[&#34;n_distinct&#34;] &lt;= threshold
         }
 
@@ -128,21 +139,23 @@ class Cramers(Correlation):
 
 class PhiK(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-        threshold = config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
+        threshold = config.categorical_maximum_correlation_distinct
         intcols = {
             key
             for key, value in summary.items()
             # DateTime currently excluded
             # In some use cases, it makes sense to convert it to interval
             # See https://github.com/KaveIO/PhiK/issues/7
-            if value[&#34;type&#34;] == Numeric and 1 &lt; value[&#34;n_distinct&#34;]
+            if value[&#34;type&#34;] == &#34;Numeric&#34; and 1 &lt; value[&#34;n_distinct&#34;]
         }
 
         selcols = {
             key
             for key, value in summary.items()
-            if value[&#34;type&#34;] != Unsupported and 1 &lt; value[&#34;n_distinct&#34;] &lt;= threshold
+            if value[&#34;type&#34;] != &#34;Unsupported&#34; and 1 &lt; value[&#34;n_distinct&#34;] &lt;= threshold
         }
         selcols = selcols.union(intcols)
 
@@ -158,7 +171,7 @@ class PhiK(Correlation):
         return correlation
 
 
-def warn_correlation(correlation_name: str, error):
+def warn_correlation(correlation_name: str, error: str) -&gt; None:
     warnings.warn(
         f&#34;&#34;&#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.
 To hide this warning, disable the calculation
@@ -170,7 +183,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 
 
 def calculate_correlation(
-    df: pd.DataFrame, correlation_name: str, summary: dict
+    config: Settings, df: pd.DataFrame, correlation_name: str, summary: dict
 ) -&gt; Optional[pd.DataFrame]:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, phi_k, cramers).
@@ -197,9 +210,11 @@ def calculate_correlation(
 
     correlation = None
     try:
-        correlation = correlation_measures[correlation_name].compute(df, summary)
+        correlation = correlation_measures[correlation_name].compute(
+            config, df, summary
+        )
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
-        warn_correlation(correlation_name, e)
+        warn_correlation(correlation_name, str(e))
 
     if correlation is not None and len(correlation) &lt;= 0:
         correlation = None
@@ -238,7 +253,7 @@ def perform_check_correlation(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.correlations.calculate_correlation"><code class="name flex">
-<span>def <span class="ident">calculate_correlation</span></span>(<span>df: pandas.core.frame.DataFrame, correlation_name: str, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">calculate_correlation</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, correlation_name: str, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate the correlation coefficients between variables for the correlation types selected in the config
@@ -258,7 +273,7 @@ def perform_check_correlation(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def calculate_correlation(
-    df: pd.DataFrame, correlation_name: str, summary: dict
+    config: Settings, df: pd.DataFrame, correlation_name: str, summary: dict
 ) -&gt; Optional[pd.DataFrame]:
     &#34;&#34;&#34;Calculate the correlation coefficients between variables for the correlation types selected in the config
     (pearson, spearman, kendall, phi_k, cramers).
@@ -285,9 +300,11 @@ def perform_check_correlation(
 
     correlation = None
     try:
-        correlation = correlation_measures[correlation_name].compute(df, summary)
+        correlation = correlation_measures[correlation_name].compute(
+            config, df, summary
+        )
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
-        warn_correlation(correlation_name, e)
+        warn_correlation(correlation_name, str(e))
 
     if correlation is not None and len(correlation) &lt;= 0:
         correlation = None
@@ -336,7 +353,7 @@ def perform_check_correlation(
 </details>
 </dd>
 <dt id="pandas_profiling.model.correlations.warn_correlation"><code class="name flex">
-<span>def <span class="ident">warn_correlation</span></span>(<span>correlation_name: str, error)</span>
+<span>def <span class="ident">warn_correlation</span></span>(<span>correlation_name: str, error: str) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -344,7 +361,7 @@ def perform_check_correlation(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def warn_correlation(correlation_name: str, error):
+<pre><code class="python">def warn_correlation(correlation_name: str, error: str) -&gt; None:
     warnings.warn(
         f&#34;&#34;&#34;There was an attempt to calculate the {correlation_name} correlation, but this failed.
 To hide this warning, disable the calculation
@@ -371,8 +388,10 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 </summary>
 <pre><code class="python">class Correlation:
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-        return NotImplemented</code></pre>
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
+        raise NotImplementedError()</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -385,7 +404,7 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.correlations.Correlation.compute"><code class="name flex">
-<span>def <span class="ident">compute</span></span>(<span>df, summary) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -394,8 +413,10 @@ https://github.com/pandas-profiling/pandas-profiling/issues
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-    return NotImplemented</code></pre>
+def compute(
+    config: Settings, df: pd.DataFrame, summary: dict
+) -&gt; Optional[pd.DataFrame]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 </dl>
@@ -411,7 +432,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 </summary>
 <pre><code class="python">class Cramers(Correlation):
     @staticmethod
-    def _cramers_corrected_stat(confusion_matrix, correction: bool) -&gt; float:
+    def _cramers_corrected_stat(
+        confusion_matrix: pd.DataFrame, correction: bool
+    ) -&gt; float:
         &#34;&#34;&#34;Calculate the Cramer&#39;s V corrected stat for two variables.
 
         Args:
@@ -440,13 +463,15 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
         return corr
 
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-        threshold = config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
+        threshold = config.categorical_maximum_correlation_distinct
 
         categoricals = {
             key
             for key, value in summary.items()
-            if value[&#34;type&#34;] in {Categorical, Boolean}
+            if value[&#34;type&#34;] in {&#34;Categorical&#34;, &#34;Boolean&#34;}
             and value[&#34;n_distinct&#34;] &lt;= threshold
         }
 
@@ -476,7 +501,7 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.correlations.Cramers.compute"><code class="name flex">
-<span>def <span class="ident">compute</span></span>(<span>df, summary) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -485,13 +510,15 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-    threshold = config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+def compute(
+    config: Settings, df: pd.DataFrame, summary: dict
+) -&gt; Optional[pd.DataFrame]:
+    threshold = config.categorical_maximum_correlation_distinct
 
     categoricals = {
         key
         for key, value in summary.items()
-        if value[&#34;type&#34;] in {Categorical, Boolean}
+        if value[&#34;type&#34;] in {&#34;Categorical&#34;, &#34;Boolean&#34;}
         and value[&#34;n_distinct&#34;] &lt;= threshold
     }
 
@@ -528,7 +555,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 </summary>
 <pre><code class="python">class Kendall(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
         return df.corr(method=&#34;kendall&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -538,7 +567,7 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.correlations.Kendall.compute"><code class="name flex">
-<span>def <span class="ident">compute</span></span>(<span>df, summary) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -547,7 +576,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+def compute(
+    config: Settings, df: pd.DataFrame, summary: dict
+) -&gt; Optional[pd.DataFrame]:
     return df.corr(method=&#34;kendall&#34;)</code></pre>
 </details>
 </dd>
@@ -564,7 +595,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 </summary>
 <pre><code class="python">class Pearson(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
         return df.corr(method=&#34;pearson&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -574,7 +607,7 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.correlations.Pearson.compute"><code class="name flex">
-<span>def <span class="ident">compute</span></span>(<span>df, summary) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -583,7 +616,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+def compute(
+    config: Settings, df: pd.DataFrame, summary: dict
+) -&gt; Optional[pd.DataFrame]:
     return df.corr(method=&#34;pearson&#34;)</code></pre>
 </details>
 </dd>
@@ -600,21 +635,23 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 </summary>
 <pre><code class="python">class PhiK(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-        threshold = config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
+        threshold = config.categorical_maximum_correlation_distinct
         intcols = {
             key
             for key, value in summary.items()
             # DateTime currently excluded
             # In some use cases, it makes sense to convert it to interval
             # See https://github.com/KaveIO/PhiK/issues/7
-            if value[&#34;type&#34;] == Numeric and 1 &lt; value[&#34;n_distinct&#34;]
+            if value[&#34;type&#34;] == &#34;Numeric&#34; and 1 &lt; value[&#34;n_distinct&#34;]
         }
 
         selcols = {
             key
             for key, value in summary.items()
-            if value[&#34;type&#34;] != Unsupported and 1 &lt; value[&#34;n_distinct&#34;] &lt;= threshold
+            if value[&#34;type&#34;] != &#34;Unsupported&#34; and 1 &lt; value[&#34;n_distinct&#34;] &lt;= threshold
         }
         selcols = selcols.union(intcols)
 
@@ -636,7 +673,7 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.correlations.PhiK.compute"><code class="name flex">
-<span>def <span class="ident">compute</span></span>(<span>df, summary) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -645,21 +682,23 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def compute(df, summary) -&gt; Optional[pd.DataFrame]:
-    threshold = config[&#34;categorical_maximum_correlation_distinct&#34;].get(int)
+def compute(
+    config: Settings, df: pd.DataFrame, summary: dict
+) -&gt; Optional[pd.DataFrame]:
+    threshold = config.categorical_maximum_correlation_distinct
     intcols = {
         key
         for key, value in summary.items()
         # DateTime currently excluded
         # In some use cases, it makes sense to convert it to interval
         # See https://github.com/KaveIO/PhiK/issues/7
-        if value[&#34;type&#34;] == Numeric and 1 &lt; value[&#34;n_distinct&#34;]
+        if value[&#34;type&#34;] == &#34;Numeric&#34; and 1 &lt; value[&#34;n_distinct&#34;]
     }
 
     selcols = {
         key
         for key, value in summary.items()
-        if value[&#34;type&#34;] != Unsupported and 1 &lt; value[&#34;n_distinct&#34;] &lt;= threshold
+        if value[&#34;type&#34;] != &#34;Unsupported&#34; and 1 &lt; value[&#34;n_distinct&#34;] &lt;= threshold
     }
     selcols = selcols.union(intcols)
 
@@ -688,7 +727,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 </summary>
 <pre><code class="python">class Spearman(Correlation):
     @staticmethod
-    def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+    def compute(
+        config: Settings, df: pd.DataFrame, summary: dict
+    ) -&gt; Optional[pd.DataFrame]:
         return df.corr(method=&#34;spearman&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -698,7 +739,7 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.model.correlations.Spearman.compute"><code class="name flex">
-<span>def <span class="ident">compute</span></span>(<span>df, summary) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summary: dict) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -707,7 +748,9 @@ def compute(df, summary) -&gt; Optional[pd.DataFrame]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def compute(df, summary) -&gt; Optional[pd.DataFrame]:
+def compute(
+    config: Settings, df: pd.DataFrame, summary: dict
+) -&gt; Optional[pd.DataFrame]:
     return df.corr(method=&#34;spearman&#34;)</code></pre>
 </details>
 </dd>

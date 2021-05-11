@@ -35,7 +35,9 @@ from pathlib import Path
 from typing import Tuple, Union
 from urllib.parse import quote
 
-from pandas_profiling.config import config
+import matplotlib.pyplot as plt
+
+from pandas_profiling.config import Settings
 
 
 def hex_to_rgb(hex: str) -&gt; Tuple[float, ...]:
@@ -54,7 +56,7 @@ def hex_to_rgb(hex: str) -&gt; Tuple[float, ...]:
     )
 
 
-def base64_image(image: bytes, mime_type: str):
+def base64_image(image: bytes, mime_type: str) -&gt; str:
     &#34;&#34;&#34;Encode the image for an URL using base64
 
     Args:
@@ -69,67 +71,53 @@ def base64_image(image: bytes, mime_type: str):
     return f&#34;data:{mime_type};base64,{image_data}&#34;
 
 
-def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&gt; str:
+def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&gt; str:
     &#34;&#34;&#34;Quickscope the plot to a base64 encoded string.
 
     Args:
+        config: Settings
         image_format: png or svg, overrides config.
-        plt: The pyplot module.
-        attempts: number to tries
 
     Returns:
         A base64 encoded version of the plot in the specified image format.
     &#34;&#34;&#34;
 
     if image_format is None:
-        image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-    if image_format not in [&#34;svg&#34;, &#34;png&#34;]:
-        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
-
-    inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
+        image_format = config.plot.image_format.value
 
     mime_types = {&#34;png&#34;: &#34;image/png&#34;, &#34;svg&#34;: &#34;image/svg+xml&#34;}
+    if image_format not in mime_types:
+        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
 
-    try:
-        if inline:
-            if image_format == &#34;svg&#34;:
-                image_str = StringIO()
-                plt.savefig(image_str, format=image_format)
-                image_str.seek(0)
-                result_string = image_str.getvalue()
-            else:
-                image_bytes = BytesIO()
-                plt.savefig(
-                    image_bytes, dpi=config[&#34;plot&#34;][&#34;dpi&#34;].get(int), format=image_format
-                )
-                image_bytes.seek(0)
-                result_string = base64_image(
-                    image_bytes.getvalue(), mime_types[image_format]
-                )
+    if config.html.inline:
+        if image_format == &#34;svg&#34;:
+            image_str = StringIO()
+            plt.savefig(image_str, format=image_format)
+            plt.close()
+            result_string = image_str.getvalue()
         else:
-            file_path = Path(config[&#34;html&#34;][&#34;file_name&#34;].get(str))
-            suffix = f&#34;_assets/images/{uuid.uuid4().hex}.{image_format}&#34;
-            args = {
-                &#34;fname&#34;: f&#34;{file_path.with_suffix(&#39;&#39;)}{suffix}&#34;,
-                &#34;format&#34;: image_format,
-            }
+            image_bytes = BytesIO()
+            plt.savefig(image_bytes, dpi=config.plot.dpi, format=image_format)
+            plt.close()
+            result_string = base64_image(
+                image_bytes.getvalue(), mime_types[image_format]
+            )
+    else:
+        if config.html.assets_path is None:
+            raise ValueError(&#34;config.html.assets_path may not be none&#34;)
 
-            if image_format == &#34;png&#34;:
-                args[&#34;dpi&#34;] = config[&#34;plot&#34;][&#34;dpi&#34;].get(int)
+        file_path = Path(config.html.assets_path)
+        suffix = f&#34;{config.html.assets_prefix}/images/{uuid.uuid4().hex}.{image_format}&#34;
+        args = {
+            &#34;fname&#34;: file_path / suffix,
+            &#34;format&#34;: image_format,
+        }
 
-            plt.savefig(**args)
-            result_string = f&#34;{file_path.stem}{suffix}&#34;
+        if image_format == &#34;png&#34;:
+            args[&#34;dpi&#34;] = config.plot.dpi
+        plt.savefig(**args)
         plt.close()
-    except RuntimeError:
-        plt.close()
-        # Hack https://stackoverflow.com/questions/44666207/matplotlib-error-when-running-plotting-in-multiprocess
-        # #comment79373127_44666207
-        if attempts &gt; 10:
-            return &#34;&#34;
-        else:
-            return plot_360_n0sc0pe(plt, image_format, attempts + 1)
-    finally:
-        plt.close(&#34;all&#34;)
+        result_string = suffix
 
     return result_string</code></pre>
 </details>
@@ -142,7 +130,7 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.visualisation.utils.base64_image"><code class="name flex">
-<span>def <span class="ident">base64_image</span></span>(<span>image: bytes, mime_type: str)</span>
+<span>def <span class="ident">base64_image</span></span>(<span>image: bytes, mime_type: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Encode the image for an URL using base64</p>
@@ -159,7 +147,7 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def base64_image(image: bytes, mime_type: str):
+<pre><code class="python">def base64_image(image: bytes, mime_type: str) -&gt; str:
     &#34;&#34;&#34;Encode the image for an URL using base64
 
     Args:
@@ -207,18 +195,16 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.utils.plot_360_n0sc0pe"><code class="name flex">
-<span>def <span class="ident">plot_360_n0sc0pe</span></span>(<span>plt, image_format: Union[str, NoneType] = None, attempts=0) ‑> str</span>
+<span>def <span class="ident">plot_360_n0sc0pe</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, image_format: Union[str, NoneType] = None) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Quickscope the plot to a base64 encoded string.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>Settings</dd>
 <dt><strong><code>image_format</code></strong></dt>
 <dd>png or svg, overrides config.</dd>
-<dt><strong><code>plt</code></strong></dt>
-<dd>The pyplot module.</dd>
-<dt><strong><code>attempts</code></strong></dt>
-<dd>number to tries</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A base64 encoded version of the plot in the specified image format.</p></div>
@@ -226,67 +212,53 @@ def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&g
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def plot_360_n0sc0pe(plt, image_format: Union[str, None] = None, attempts=0) -&gt; str:
+<pre><code class="python">def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&gt; str:
     &#34;&#34;&#34;Quickscope the plot to a base64 encoded string.
 
     Args:
+        config: Settings
         image_format: png or svg, overrides config.
-        plt: The pyplot module.
-        attempts: number to tries
 
     Returns:
         A base64 encoded version of the plot in the specified image format.
     &#34;&#34;&#34;
 
     if image_format is None:
-        image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-    if image_format not in [&#34;svg&#34;, &#34;png&#34;]:
-        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
-
-    inline = config[&#34;html&#34;][&#34;inline&#34;].get(bool)
+        image_format = config.plot.image_format.value
 
     mime_types = {&#34;png&#34;: &#34;image/png&#34;, &#34;svg&#34;: &#34;image/svg+xml&#34;}
+    if image_format not in mime_types:
+        raise ValueError(&#39;Can only 360 n0sc0pe &#34;png&#34; or &#34;svg&#34; format.&#39;)
 
-    try:
-        if inline:
-            if image_format == &#34;svg&#34;:
-                image_str = StringIO()
-                plt.savefig(image_str, format=image_format)
-                image_str.seek(0)
-                result_string = image_str.getvalue()
-            else:
-                image_bytes = BytesIO()
-                plt.savefig(
-                    image_bytes, dpi=config[&#34;plot&#34;][&#34;dpi&#34;].get(int), format=image_format
-                )
-                image_bytes.seek(0)
-                result_string = base64_image(
-                    image_bytes.getvalue(), mime_types[image_format]
-                )
+    if config.html.inline:
+        if image_format == &#34;svg&#34;:
+            image_str = StringIO()
+            plt.savefig(image_str, format=image_format)
+            plt.close()
+            result_string = image_str.getvalue()
         else:
-            file_path = Path(config[&#34;html&#34;][&#34;file_name&#34;].get(str))
-            suffix = f&#34;_assets/images/{uuid.uuid4().hex}.{image_format}&#34;
-            args = {
-                &#34;fname&#34;: f&#34;{file_path.with_suffix(&#39;&#39;)}{suffix}&#34;,
-                &#34;format&#34;: image_format,
-            }
+            image_bytes = BytesIO()
+            plt.savefig(image_bytes, dpi=config.plot.dpi, format=image_format)
+            plt.close()
+            result_string = base64_image(
+                image_bytes.getvalue(), mime_types[image_format]
+            )
+    else:
+        if config.html.assets_path is None:
+            raise ValueError(&#34;config.html.assets_path may not be none&#34;)
 
-            if image_format == &#34;png&#34;:
-                args[&#34;dpi&#34;] = config[&#34;plot&#34;][&#34;dpi&#34;].get(int)
+        file_path = Path(config.html.assets_path)
+        suffix = f&#34;{config.html.assets_prefix}/images/{uuid.uuid4().hex}.{image_format}&#34;
+        args = {
+            &#34;fname&#34;: file_path / suffix,
+            &#34;format&#34;: image_format,
+        }
 
-            plt.savefig(**args)
-            result_string = f&#34;{file_path.stem}{suffix}&#34;
+        if image_format == &#34;png&#34;:
+            args[&#34;dpi&#34;] = config.plot.dpi
+        plt.savefig(**args)
         plt.close()
-    except RuntimeError:
-        plt.close()
-        # Hack https://stackoverflow.com/questions/44666207/matplotlib-error-when-running-plotting-in-multiprocess
-        # #comment79373127_44666207
-        if attempts &gt; 10:
-            return &#34;&#34;
-        else:
-            return plot_360_n0sc0pe(plt, image_format, attempts + 1)
-    finally:
-        plt.close(&#34;all&#34;)
+        result_string = suffix
 
     return result_string</code></pre>
 </details>

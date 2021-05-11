@@ -26,20 +26,22 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ipywidgets import widgets
+<pre><code class="python">from typing import List
+
+from ipywidgets import widgets
 
 from pandas_profiling.report.presentation.core.container import Container
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
-def get_name(item: Renderable):
+def get_name(item: Renderable) -&gt; str:
     if hasattr(item, &#34;name&#34;):
         return item.name
     else:
         return item.anchor_id
 
 
-def get_tabs(items):
+def get_tabs(items: List[Renderable]) -&gt; widgets.Tab:
     children = []
     titles = []
     for item in items:
@@ -53,11 +55,11 @@ def get_tabs(items):
     return tab
 
 
-def get_list(items):
+def get_list(items: List[Renderable]) -&gt; widgets.VBox:
     return widgets.VBox([item.render() for item in items])
 
 
-def get_named_list(items):
+def get_named_list(items: List[Renderable]) -&gt; widgets.VBox:
     return widgets.VBox(
         [
             widgets.VBox(
@@ -68,7 +70,7 @@ def get_named_list(items):
     )
 
 
-def get_row(items):
+def get_row(items: List[Renderable]) -&gt; widgets.GridBox:
     if len(items) == 1:
         layout = widgets.Layout(width=&#34;100%&#34;, grid_template_columns=&#34;100%&#34;)
     elif len(items) == 2:
@@ -83,15 +85,32 @@ def get_row(items):
     return widgets.GridBox([item.render() for item in items], layout=layout)
 
 
-def get_batch_grid(items, batch_size, titles):
+def get_batch_grid(
+    items: List[Renderable], batch_size: int, titles: bool, subtitles: bool
+) -&gt; widgets.GridBox:
     layout = widgets.Layout(
         width=&#34;100%&#34;,
         grid_template_columns=&#34; &#34;.join([f&#34;{int(100 / batch_size)}%&#34;] * batch_size),
     )
-    return widgets.GridBox([item.render() for item in items], layout=layout)
+    out = []
+    for item in items:
+        if subtitles:
+            out.append(
+                widgets.VBox(
+                    [widgets.HTML(f&#34;&lt;h5&gt;&lt;em&gt;{ item.name }&lt;/em&gt;&lt;/h5&gt;&#34;), item.render()]
+                )
+            )
+        elif titles:
+            out.append(
+                widgets.VBox([widgets.HTML(f&#34;&lt;h4&gt;{ item.name }&lt;/h4&gt;&#34;), item.render()])
+            )
+        else:
+            out.append(item.render())
+
+    return widgets.GridBox(out, layout=layout)
 
 
-def get_accordion(items):
+def get_accordion(items: List[Renderable]) -&gt; widgets.Accordion:
     children = []
     titles = []
     for item in items:
@@ -106,7 +125,7 @@ def get_accordion(items):
 
 
 class WidgetContainer(Container):
-    def render(self):
+    def render(self) -&gt; widgets.Widget:
         if self.sequence_type == &#34;list&#34;:
             widget = get_list(self.content[&#34;items&#34;])
         elif self.sequence_type == &#34;named_list&#34;:
@@ -122,6 +141,7 @@ class WidgetContainer(Container):
                 self.content[&#34;items&#34;],
                 self.content[&#34;batch_size&#34;],
                 self.content.get(&#34;titles&#34;, True),
+                self.content.get(&#34;subtitles&#34;, False),
             )
         else:
             raise ValueError(&#34;widget type not understood&#34;, self.sequence_type)
@@ -137,7 +157,7 @@ class WidgetContainer(Container):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_accordion"><code class="name flex">
-<span>def <span class="ident">get_accordion</span></span>(<span>items)</span>
+<span>def <span class="ident">get_accordion</span></span>(<span>items: List[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]) ‑> ipywidgets.widgets.widget_selectioncontainer.Accordion</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -145,7 +165,7 @@ class WidgetContainer(Container):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_accordion(items):
+<pre><code class="python">def get_accordion(items: List[Renderable]) -&gt; widgets.Accordion:
     children = []
     titles = []
     for item in items:
@@ -160,7 +180,7 @@ class WidgetContainer(Container):
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_batch_grid"><code class="name flex">
-<span>def <span class="ident">get_batch_grid</span></span>(<span>items, batch_size, titles)</span>
+<span>def <span class="ident">get_batch_grid</span></span>(<span>items: List[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], batch_size: int, titles: bool, subtitles: bool) ‑> ipywidgets.widgets.widget_box.GridBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -168,16 +188,33 @@ class WidgetContainer(Container):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_batch_grid(items, batch_size, titles):
+<pre><code class="python">def get_batch_grid(
+    items: List[Renderable], batch_size: int, titles: bool, subtitles: bool
+) -&gt; widgets.GridBox:
     layout = widgets.Layout(
         width=&#34;100%&#34;,
         grid_template_columns=&#34; &#34;.join([f&#34;{int(100 / batch_size)}%&#34;] * batch_size),
     )
-    return widgets.GridBox([item.render() for item in items], layout=layout)</code></pre>
+    out = []
+    for item in items:
+        if subtitles:
+            out.append(
+                widgets.VBox(
+                    [widgets.HTML(f&#34;&lt;h5&gt;&lt;em&gt;{ item.name }&lt;/em&gt;&lt;/h5&gt;&#34;), item.render()]
+                )
+            )
+        elif titles:
+            out.append(
+                widgets.VBox([widgets.HTML(f&#34;&lt;h4&gt;{ item.name }&lt;/h4&gt;&#34;), item.render()])
+            )
+        else:
+            out.append(item.render())
+
+    return widgets.GridBox(out, layout=layout)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_list"><code class="name flex">
-<span>def <span class="ident">get_list</span></span>(<span>items)</span>
+<span>def <span class="ident">get_list</span></span>(<span>items: List[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -185,12 +222,12 @@ class WidgetContainer(Container):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_list(items):
+<pre><code class="python">def get_list(items: List[Renderable]) -&gt; widgets.VBox:
     return widgets.VBox([item.render() for item in items])</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_name"><code class="name flex">
-<span>def <span class="ident">get_name</span></span>(<span>item: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">get_name</span></span>(<span>item: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -198,7 +235,7 @@ class WidgetContainer(Container):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_name(item: Renderable):
+<pre><code class="python">def get_name(item: Renderable) -&gt; str:
     if hasattr(item, &#34;name&#34;):
         return item.name
     else:
@@ -206,7 +243,7 @@ class WidgetContainer(Container):
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_named_list"><code class="name flex">
-<span>def <span class="ident">get_named_list</span></span>(<span>items)</span>
+<span>def <span class="ident">get_named_list</span></span>(<span>items: List[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -214,7 +251,7 @@ class WidgetContainer(Container):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_named_list(items):
+<pre><code class="python">def get_named_list(items: List[Renderable]) -&gt; widgets.VBox:
     return widgets.VBox(
         [
             widgets.VBox(
@@ -226,7 +263,7 @@ class WidgetContainer(Container):
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_row"><code class="name flex">
-<span>def <span class="ident">get_row</span></span>(<span>items)</span>
+<span>def <span class="ident">get_row</span></span>(<span>items: List[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]) ‑> ipywidgets.widgets.widget_box.GridBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -234,7 +271,7 @@ class WidgetContainer(Container):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_row(items):
+<pre><code class="python">def get_row(items: List[Renderable]) -&gt; widgets.GridBox:
     if len(items) == 1:
         layout = widgets.Layout(width=&#34;100%&#34;, grid_template_columns=&#34;100%&#34;)
     elif len(items) == 2:
@@ -250,7 +287,7 @@ class WidgetContainer(Container):
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.get_tabs"><code class="name flex">
-<span>def <span class="ident">get_tabs</span></span>(<span>items)</span>
+<span>def <span class="ident">get_tabs</span></span>(<span>items: List[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]) ‑> ipywidgets.widgets.widget_selectioncontainer.Tab</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -258,7 +295,7 @@ class WidgetContainer(Container):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_tabs(items):
+<pre><code class="python">def get_tabs(items: List[Renderable]) -&gt; widgets.Tab:
     children = []
     titles = []
     for item in items:
@@ -279,7 +316,7 @@ class WidgetContainer(Container):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.WidgetContainer"><code class="flex name class">
 <span>class <span class="ident">WidgetContainer</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, name=None, anchor_id=None, classes=None, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -289,7 +326,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetContainer(Container):
-    def render(self):
+    def render(self) -&gt; widgets.Widget:
         if self.sequence_type == &#34;list&#34;:
             widget = get_list(self.content[&#34;items&#34;])
         elif self.sequence_type == &#34;named_list&#34;:
@@ -305,6 +342,7 @@ inheritance.</p></div>
                 self.content[&#34;items&#34;],
                 self.content[&#34;batch_size&#34;],
                 self.content.get(&#34;titles&#34;, True),
+                self.content.get(&#34;subtitles&#34;, False),
             )
         else:
             raise ValueError(&#34;widget type not understood&#34;, self.sequence_type)
@@ -320,7 +358,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.container.WidgetContainer.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget.Widget</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -328,7 +366,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.Widget:
     if self.sequence_type == &#34;list&#34;:
         widget = get_list(self.content[&#34;items&#34;])
     elif self.sequence_type == &#34;named_list&#34;:
@@ -344,6 +382,7 @@ inheritance.</p></div>
             self.content[&#34;items&#34;],
             self.content[&#34;batch_size&#34;],
             self.content.get(&#34;titles&#34;, True),
+            self.content.get(&#34;subtitles&#34;, False),
         )
     else:
         raise ValueError(&#34;widget type not understood&#34;, self.sequence_type)

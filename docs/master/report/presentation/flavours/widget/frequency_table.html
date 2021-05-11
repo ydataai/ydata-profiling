@@ -26,12 +26,16 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ipywidgets import GridspecLayout, VBox, widgets
+<pre><code class="python">from typing import List, Tuple
+
+from ipywidgets import GridspecLayout, VBox, widgets
 
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
 
 
-def get_table(items):
+def get_table(
+    items: List[Tuple[widgets.Label, widgets.FloatProgress, widgets.Label]]
+) -&gt; VBox:
     table = GridspecLayout(len(items), 3)
     for row_id, (label, progress, count) in enumerate(items):
         table[row_id, 0] = label
@@ -42,7 +46,7 @@ def get_table(items):
 
 
 class WidgetFrequencyTable(FrequencyTable):
-    def render(self):
+    def render(self) -&gt; VBox:
         items = []
 
         for row in self.content[&#34;rows&#34;]:
@@ -88,7 +92,7 @@ class WidgetFrequencyTable(FrequencyTable):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.frequency_table.get_table"><code class="name flex">
-<span>def <span class="ident">get_table</span></span>(<span>items)</span>
+<span>def <span class="ident">get_table</span></span>(<span>items: List[Tuple[ipywidgets.widgets.widget_string.Label, ipywidgets.widgets.widget_float.FloatProgress, ipywidgets.widgets.widget_string.Label]]) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -96,7 +100,9 @@ class WidgetFrequencyTable(FrequencyTable):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_table(items):
+<pre><code class="python">def get_table(
+    items: List[Tuple[widgets.Label, widgets.FloatProgress, widgets.Label]]
+) -&gt; VBox:
     table = GridspecLayout(len(items), 3)
     for row_id, (label, progress, count) in enumerate(items):
         table[row_id, 0] = label
@@ -113,7 +119,7 @@ class WidgetFrequencyTable(FrequencyTable):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.frequency_table.WidgetFrequencyTable"><code class="flex name class">
 <span>class <span class="ident">WidgetFrequencyTable</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: list, redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -123,7 +129,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetFrequencyTable(FrequencyTable):
-    def render(self):
+    def render(self) -&gt; VBox:
         items = []
 
         for row in self.content[&#34;rows&#34;]:
@@ -170,7 +176,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.frequency_table.WidgetFrequencyTable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -178,7 +184,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; VBox:
     items = []
 
     for row in self.content[&#34;rows&#34;]:

@@ -33,13 +33,16 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, Mapping, Tuple
+from typing import Callable, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
+from visions import VisionsTypeset
 
-from pandas_profiling.config import config as config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.messages import (
+    Message,
     check_correlation_messages,
     check_table_messages,
     check_variable_messages,
@@ -54,11 +57,19 @@ from pandas_profiling.visualisation.missing import (
 from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
-def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -&gt; dict:
+def describe_1d(
+    config: Settings,
+    series: pd.Series,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+) -&gt; dict:
     &#34;&#34;&#34;Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
+        config: report Settings object
         series: The Series to describe.
+        summarizer: Summarizer object
+        typeset: Typeset
 
     Returns:
         A Series containing calculated series description values.
@@ -68,31 +79,40 @@ def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -&gt; di
     series = series.fillna(np.nan)
 
     # get `infer_dtypes` (bool) from config
-    infer_dtypes = config[&#34;infer_dtypes&#34;].get(bool)
-    if infer_dtypes:
+    if config.infer_dtypes:
         # Infer variable types
         vtype = typeset.infer_type(series)
         series = typeset.cast_to_inferred(series)
     else:
-        # Detect variable types from pandas dataframe (df.dtypes). [new dtypes, changed using `astype` function are now considered]
+        # Detect variable types from pandas dataframe (df.dtypes).
+        # [new dtypes, changed using `astype` function are now considered]
         vtype = typeset.detect_type(series)
 
-    return summarizer.summarize(series, dtype=vtype)
+    return summarizer.summarize(config, series, dtype=vtype)
 
 
-def sort_column_names(dct: Mapping, sort: str):
+def sort_column_names(dct: dict, sort: Optional[str]) -&gt; dict:
+    if sort is None:
+        return dct
+
     sort = sort.lower()
     if sort.startswith(&#34;asc&#34;):
         dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
     elif sort.startswith(&#34;desc&#34;):
         dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold(), reverse=True))
-    elif sort != &#34;none&#34;:
-        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
+    else:
+        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
     return dct
 
 
-def get_series_descriptions(df, summarizer, typeset, pbar):
-    def multiprocess_1d(args) -&gt; Tuple[str, dict]:
+def get_series_descriptions(
+    config: Settings,
+    df: pd.DataFrame,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+    pbar: tqdm,
+) -&gt; dict:
+    def multiprocess_1d(args: tuple) -&gt; Tuple[str, dict]:
         &#34;&#34;&#34;Wrapper to process series in parallel.
 
         Args:
@@ -103,10 +123,9 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
             A tuple with column and the series description.
         &#34;&#34;&#34;
         column, series = args
-        return column, describe_1d(series, summarizer, typeset)
+        return column, describe_1d(config, series, summarizer, typeset)
 
-    pool_size = config[&#34;pool_size&#34;].get(int)
-    sort = config[&#34;sort&#34;].get(str)
+    pool_size = config.pool_size
 
     # Multiprocessing of Describe 1D for each column
     if pool_size &lt;= 0:
@@ -135,23 +154,24 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
         series_description = {k: series_description[k] for k in df.columns}
 
     # Mapping from column name to variable type
-    series_description = sort_column_names(series_description, sort)
+    series_description = sort_column_names(series_description, config.sort)
     return series_description
 
 
-def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
+def get_table_stats(config: Settings, df: pd.DataFrame, variable_stats: dict) -&gt; dict:
     &#34;&#34;&#34;General statistics for the DataFrame.
 
     Args:
-      df: The DataFrame to describe.
-      variable_stats: Previously calculated statistic on the DataFrame.
+        config: report Settings object
+        df: The DataFrame to describe.
+        variable_stats: Previously calculated statistic on the DataFrame.
 
     Returns:
         A dictionary that contains the table statistics.
     &#34;&#34;&#34;
     n = len(df)
 
-    memory_size = df.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)).sum()
+    memory_size = df.memory_usage(deep=config.memory_deep).sum()
     record_size = float(memory_size) / n if n &gt; 0 else 0
 
     table_stats = {
@@ -185,7 +205,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
     return table_stats
 
 
-def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
+def get_missing_diagrams(config: Settings, df: pd.DataFrame, table_stats: dict) -&gt; dict:
     &#34;&#34;&#34;Gets the rendered diagrams for missing values.
 
     Args:
@@ -199,7 +219,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     if len(df) == 0:
         return {}
 
-    def warn_missing(missing_name, error):
+    def warn_missing(missing_name: str, error: str) -&gt; None:
         warnings.warn(
             f&#34;&#34;&#34;There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
     To hide this warning, disable the calculation
@@ -209,7 +229,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     (include the error message: &#39;{error}&#39;)&#34;&#34;&#34;
         )
 
-    def missing_diagram(name) -&gt; Callable:
+    def missing_diagram(name: str) -&gt; Callable:
         return {
             &#34;bar&#34;: missing_bar,
             &#34;matrix&#34;: missing_matrix,
@@ -243,7 +263,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
     missing_map = {
         name: settings
         for name, settings in missing_map.items()
-        if config[&#34;missing_diagrams&#34;][name].get(bool)
+        if config.missing_diagrams[name]
         and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
     }
     missing = {}
@@ -259,44 +279,47 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
                     missing[name] = {
                         &#34;name&#34;: settings[&#34;name&#34;],
                         &#34;caption&#34;: settings[&#34;caption&#34;],
-                        &#34;matrix&#34;: missing_diagram(name)(df),
+                        &#34;matrix&#34;: missing_diagram(name)(config, df),
                     }
             except ValueError as e:
-                warn_missing(name, e)
+                warn_missing(name, str(e))
 
     return missing
 
 
-def get_scatter_matrix(df, continuous_variables):
-    if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
-        targets = config[&#34;interactions&#34;][&#34;targets&#34;].get(list)
-        if len(targets) == 0:
-            targets = continuous_variables
+def get_scatter_matrix(
+    config: Settings, df: pd.DataFrame, continuous_variables: list
+) -&gt; dict:
+    if not config.interactions.continuous:
+        return {}
 
-        scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
+    targets = config.interactions.targets
+    if len(targets) == 0:
+        targets = continuous_variables
 
-        for x in targets:
-            for y in continuous_variables:
-                if x in continuous_variables:
-                    if y == x:
-                        continue
+    scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
 
-                    # check if any na still exists, and remove it before computing scatter matrix
+    for x in targets:
+        for y in continuous_variables:
+            if x in continuous_variables:
+                if y == x:
+                    df_temp = df[[x]].dropna()
+                else:
                     df_temp = df[[x, y]].dropna()
-                    scatter_matrix[x][y] = scatter_pairwise(
-                        df_temp[x], df_temp[y], x, y
-                    )
-    else:
-        scatter_matrix = {}
+                scatter_matrix[x][y] = scatter_pairwise(
+                    config, df_temp[x], df_temp[y], x, y
+                )
 
     return scatter_matrix
 
 
-def get_messages(table_stats, series_description, correlations):
+def get_messages(
+    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+) -&gt; List[Message]:
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():
-        messages += check_variable_messages(col, description)
-    messages += check_correlation_messages(correlations)
+        messages += check_variable_messages(config, col, description)
+    messages += check_correlation_messages(config, correlations)
     messages.sort(key=lambda message: str(message.message_type))
     return messages</code></pre>
 </details>
@@ -309,14 +332,20 @@ def get_messages(table_stats, series_description, correlations):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.summary.describe_1d"><code class="name flex">
-<span>def <span class="ident">describe_1d</span></span>(<span>series: pandas.core.series.Series, summarizer: <a title="pandas_profiling.model.summarizer.BaseSummarizer" href="summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, typeset) ‑> dict</span>
+<span>def <span class="ident">describe_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summarizer: <a title="pandas_profiling.model.summarizer.BaseSummarizer" href="summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, typeset: visions.typesets.typeset.VisionsTypeset) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Describe a series (infer the variable type, then calculate type-specific values).</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>series</code></strong></dt>
 <dd>The Series to describe.</dd>
+<dt><strong><code>summarizer</code></strong></dt>
+<dd>Summarizer object</dd>
+<dt><strong><code>typeset</code></strong></dt>
+<dd>Typeset</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>A Series containing calculated series description values.</p></div>
@@ -324,11 +353,19 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -&gt; dict:
+<pre><code class="python">def describe_1d(
+    config: Settings,
+    series: pd.Series,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+) -&gt; dict:
     &#34;&#34;&#34;Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
+        config: report Settings object
         series: The Series to describe.
+        summarizer: Summarizer object
+        typeset: Typeset
 
     Returns:
         A Series containing calculated series description values.
@@ -338,20 +375,20 @@ def get_messages(table_stats, series_description, correlations):
     series = series.fillna(np.nan)
 
     # get `infer_dtypes` (bool) from config
-    infer_dtypes = config[&#34;infer_dtypes&#34;].get(bool)
-    if infer_dtypes:
+    if config.infer_dtypes:
         # Infer variable types
         vtype = typeset.infer_type(series)
         series = typeset.cast_to_inferred(series)
     else:
-        # Detect variable types from pandas dataframe (df.dtypes). [new dtypes, changed using `astype` function are now considered]
+        # Detect variable types from pandas dataframe (df.dtypes).
+        # [new dtypes, changed using `astype` function are now considered]
         vtype = typeset.detect_type(series)
 
-    return summarizer.summarize(series, dtype=vtype)</code></pre>
+    return summarizer.summarize(config, series, dtype=vtype)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_messages"><code class="name flex">
-<span>def <span class="ident">get_messages</span></span>(<span>table_stats, series_description, correlations)</span>
+<span>def <span class="ident">get_messages</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, table_stats: dict, series_description: dict, correlations: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="messages.html#pandas_profiling.model.messages.Message">Message</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -359,17 +396,19 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_messages(table_stats, series_description, correlations):
+<pre><code class="python">def get_messages(
+    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+) -&gt; List[Message]:
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():
-        messages += check_variable_messages(col, description)
-    messages += check_correlation_messages(correlations)
+        messages += check_variable_messages(config, col, description)
+    messages += check_correlation_messages(config, correlations)
     messages.sort(key=lambda message: str(message.message_type))
     return messages</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_missing_diagrams"><code class="name flex">
-<span>def <span class="ident">get_missing_diagrams</span></span>(<span>df: pandas.core.frame.DataFrame, table_stats: dict) ‑> dict</span>
+<span>def <span class="ident">get_missing_diagrams</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, table_stats: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Gets the rendered diagrams for missing values.</p>
@@ -386,7 +425,7 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -&gt; dict:
+<pre><code class="python">def get_missing_diagrams(config: Settings, df: pd.DataFrame, table_stats: dict) -&gt; dict:
     &#34;&#34;&#34;Gets the rendered diagrams for missing values.
 
     Args:
@@ -400,7 +439,7 @@ def get_messages(table_stats, series_description, correlations):
     if len(df) == 0:
         return {}
 
-    def warn_missing(missing_name, error):
+    def warn_missing(missing_name: str, error: str) -&gt; None:
         warnings.warn(
             f&#34;&#34;&#34;There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
     To hide this warning, disable the calculation
@@ -410,7 +449,7 @@ def get_messages(table_stats, series_description, correlations):
     (include the error message: &#39;{error}&#39;)&#34;&#34;&#34;
         )
 
-    def missing_diagram(name) -&gt; Callable:
+    def missing_diagram(name: str) -&gt; Callable:
         return {
             &#34;bar&#34;: missing_bar,
             &#34;matrix&#34;: missing_matrix,
@@ -444,7 +483,7 @@ def get_messages(table_stats, series_description, correlations):
     missing_map = {
         name: settings
         for name, settings in missing_map.items()
-        if config[&#34;missing_diagrams&#34;][name].get(bool)
+        if config.missing_diagrams[name]
         and table_stats[&#34;n_vars_with_missing&#34;] &gt;= settings[&#34;min_missing&#34;]
     }
     missing = {}
@@ -460,16 +499,16 @@ def get_messages(table_stats, series_description, correlations):
                     missing[name] = {
                         &#34;name&#34;: settings[&#34;name&#34;],
                         &#34;caption&#34;: settings[&#34;caption&#34;],
-                        &#34;matrix&#34;: missing_diagram(name)(df),
+                        &#34;matrix&#34;: missing_diagram(name)(config, df),
                     }
             except ValueError as e:
-                warn_missing(name, e)
+                warn_missing(name, str(e))
 
     return missing</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_scatter_matrix"><code class="name flex">
-<span>def <span class="ident">get_scatter_matrix</span></span>(<span>df, continuous_variables)</span>
+<span>def <span class="ident">get_scatter_matrix</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, continuous_variables: list) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -477,33 +516,34 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_scatter_matrix(df, continuous_variables):
-    if config[&#34;interactions&#34;][&#34;continuous&#34;].get(bool):
-        targets = config[&#34;interactions&#34;][&#34;targets&#34;].get(list)
-        if len(targets) == 0:
-            targets = continuous_variables
+<pre><code class="python">def get_scatter_matrix(
+    config: Settings, df: pd.DataFrame, continuous_variables: list
+) -&gt; dict:
+    if not config.interactions.continuous:
+        return {}
 
-        scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
+    targets = config.interactions.targets
+    if len(targets) == 0:
+        targets = continuous_variables
 
-        for x in targets:
-            for y in continuous_variables:
-                if x in continuous_variables:
-                    if y == x:
-                        continue
+    scatter_matrix = {x: {y: &#34;&#34; for y in continuous_variables} for x in targets}
 
-                    # check if any na still exists, and remove it before computing scatter matrix
+    for x in targets:
+        for y in continuous_variables:
+            if x in continuous_variables:
+                if y == x:
+                    df_temp = df[[x]].dropna()
+                else:
                     df_temp = df[[x, y]].dropna()
-                    scatter_matrix[x][y] = scatter_pairwise(
-                        df_temp[x], df_temp[y], x, y
-                    )
-    else:
-        scatter_matrix = {}
+                scatter_matrix[x][y] = scatter_pairwise(
+                    config, df_temp[x], df_temp[y], x, y
+                )
 
     return scatter_matrix</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_series_descriptions"><code class="name flex">
-<span>def <span class="ident">get_series_descriptions</span></span>(<span>df, summarizer, typeset, pbar)</span>
+<span>def <span class="ident">get_series_descriptions</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, summarizer: <a title="pandas_profiling.model.summarizer.BaseSummarizer" href="summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, typeset: visions.typesets.typeset.VisionsTypeset, pbar: tqdm.std.tqdm) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -511,8 +551,14 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_series_descriptions(df, summarizer, typeset, pbar):
-    def multiprocess_1d(args) -&gt; Tuple[str, dict]:
+<pre><code class="python">def get_series_descriptions(
+    config: Settings,
+    df: pd.DataFrame,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+    pbar: tqdm,
+) -&gt; dict:
+    def multiprocess_1d(args: tuple) -&gt; Tuple[str, dict]:
         &#34;&#34;&#34;Wrapper to process series in parallel.
 
         Args:
@@ -523,10 +569,9 @@ def get_messages(table_stats, series_description, correlations):
             A tuple with column and the series description.
         &#34;&#34;&#34;
         column, series = args
-        return column, describe_1d(series, summarizer, typeset)
+        return column, describe_1d(config, series, summarizer, typeset)
 
-    pool_size = config[&#34;pool_size&#34;].get(int)
-    sort = config[&#34;sort&#34;].get(str)
+    pool_size = config.pool_size
 
     # Multiprocessing of Describe 1D for each column
     if pool_size &lt;= 0:
@@ -555,17 +600,19 @@ def get_messages(table_stats, series_description, correlations):
         series_description = {k: series_description[k] for k in df.columns}
 
     # Mapping from column name to variable type
-    series_description = sort_column_names(series_description, sort)
+    series_description = sort_column_names(series_description, config.sort)
     return series_description</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.get_table_stats"><code class="name flex">
-<span>def <span class="ident">get_table_stats</span></span>(<span>df: pandas.core.frame.DataFrame, variable_stats: dict) ‑> dict</span>
+<span>def <span class="ident">get_table_stats</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, variable_stats: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>General statistics for the DataFrame.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
 <dt><strong><code>df</code></strong></dt>
 <dd>The DataFrame to describe.</dd>
 <dt><strong><code>variable_stats</code></strong></dt>
@@ -577,19 +624,20 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_table_stats(df: pd.DataFrame, variable_stats: dict) -&gt; dict:
+<pre><code class="python">def get_table_stats(config: Settings, df: pd.DataFrame, variable_stats: dict) -&gt; dict:
     &#34;&#34;&#34;General statistics for the DataFrame.
 
     Args:
-      df: The DataFrame to describe.
-      variable_stats: Previously calculated statistic on the DataFrame.
+        config: report Settings object
+        df: The DataFrame to describe.
+        variable_stats: Previously calculated statistic on the DataFrame.
 
     Returns:
         A dictionary that contains the table statistics.
     &#34;&#34;&#34;
     n = len(df)
 
-    memory_size = df.memory_usage(deep=config[&#34;memory_deep&#34;].get(bool)).sum()
+    memory_size = df.memory_usage(deep=config.memory_deep).sum()
     record_size = float(memory_size) / n if n &gt; 0 else 0
 
     table_stats = {
@@ -624,7 +672,7 @@ def get_messages(table_stats, series_description, correlations):
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary.sort_column_names"><code class="name flex">
-<span>def <span class="ident">sort_column_names</span></span>(<span>dct: Mapping, sort: str)</span>
+<span>def <span class="ident">sort_column_names</span></span>(<span>dct: dict, sort: Union[str, NoneType]) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -632,14 +680,17 @@ def get_messages(table_stats, series_description, correlations):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def sort_column_names(dct: Mapping, sort: str):
+<pre><code class="python">def sort_column_names(dct: dict, sort: Optional[str]) -&gt; dict:
+    if sort is None:
+        return dct
+
     sort = sort.lower()
     if sort.startswith(&#34;asc&#34;):
         dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
     elif sort.startswith(&#34;desc&#34;):
         dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold(), reverse=True))
-    elif sort != &#34;none&#34;:
-        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or &#34;None&#34;.&#39;)
+    else:
+        raise ValueError(&#39;&#34;sort&#34; should be &#34;ascending&#34;, &#34;descending&#34; or None.&#39;)
     return dct</code></pre>
 </details>
 </dd>

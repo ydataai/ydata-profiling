@@ -27,12 +27,20 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from abc import ABC
+from typing import Optional
 
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
 class ItemRenderer(Renderable, ABC):
-    def __init__(self, item_type, content, name=None, anchor_id=None, classes=None):
+    def __init__(
+        self,
+        item_type: str,
+        content: dict,
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
+    ):
         super().__init__(content, name, anchor_id, classes)
         self.item_type = item_type</code></pre>
 </details>
@@ -48,7 +56,7 @@ class ItemRenderer(Renderable, ABC):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer"><code class="flex name class">
 <span>class <span class="ident">ItemRenderer</span></span>
-<span>(</span><span>item_type, content, name=None, anchor_id=None, classes=None)</span>
+<span>(</span><span>item_type: str, content: dict, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -58,7 +66,14 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ItemRenderer(Renderable, ABC):
-    def __init__(self, item_type, content, name=None, anchor_id=None, classes=None):
+    def __init__(
+        self,
+        item_type: str,
+        content: dict,
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
+    ):
         super().__init__(content, name, anchor_id, classes)
         self.item_type = item_type</code></pre>
 </details>

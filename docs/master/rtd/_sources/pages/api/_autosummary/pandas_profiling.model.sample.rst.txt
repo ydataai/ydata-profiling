@@ -19,12 +19,6 @@
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      Sample
-   
    
 
    

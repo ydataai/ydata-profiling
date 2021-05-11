@@ -26,13 +26,21 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any
+<pre><code class="python">from typing import Any, Optional
 
+from pandas_profiling.config import ImageType
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class Image(ItemRenderer):
-    def __init__(self, image, image_format, alt, caption=None, **kwargs):
+    def __init__(
+        self,
+        image: str,
+        image_format: ImageType,
+        alt: str,
+        caption: Optional[str] = None,
+        **kwargs
+    ):
         super().__init__(
             &#34;image&#34;,
             {
@@ -44,7 +52,7 @@ class Image(ItemRenderer):
             **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Image&#34;
 
     def render(self) -&gt; Any:
@@ -62,7 +70,7 @@ class Image(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.image.Image"><code class="flex name class">
 <span>class <span class="ident">Image</span></span>
-<span>(</span><span>image, image_format, alt, caption=None, **kwargs)</span>
+<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -72,7 +80,14 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Image(ItemRenderer):
-    def __init__(self, image, image_format, alt, caption=None, **kwargs):
+    def __init__(
+        self,
+        image: str,
+        image_format: ImageType,
+        alt: str,
+        caption: Optional[str] = None,
+        **kwargs
+    ):
         super().__init__(
             &#34;image&#34;,
             {
@@ -84,7 +99,7 @@ inheritance.</p></div>
             **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Image&#34;
 
     def render(self) -&gt; Any:

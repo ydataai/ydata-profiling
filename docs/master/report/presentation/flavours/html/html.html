@@ -30,7 +30,7 @@
 
 
 class HTMLHTML(HTML):
-    def render(self):
+    def render(self) -&gt; str:
         return self.content[&#34;html&#34;]</code></pre>
 </details>
 </section>
@@ -45,7 +45,7 @@ class HTMLHTML(HTML):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.html.HTMLHTML"><code class="flex name class">
 <span>class <span class="ident">HTMLHTML</span></span>
-<span>(</span><span>content, **kwargs)</span>
+<span>(</span><span>content: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -55,7 +55,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLHTML(HTML):
-    def render(self):
+    def render(self) -&gt; str:
         return self.content[&#34;html&#34;]</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -68,7 +68,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.html.HTMLHTML.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -76,7 +76,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return self.content[&#34;html&#34;]</code></pre>
 </details>
 </dd>

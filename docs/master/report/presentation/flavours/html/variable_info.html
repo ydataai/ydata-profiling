@@ -31,7 +31,7 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLVariableInfo(VariableInfo):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;variable_info.html&#34;).render(**self.content)</code></pre>
 </details>
 </section>
@@ -46,7 +46,7 @@ class HTMLVariableInfo(VariableInfo):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.variable_info.HTMLVariableInfo"><code class="flex name class">
 <span>class <span class="ident">HTMLVariableInfo</span></span>
-<span>(</span><span>anchor_id, var_name, var_type, warnings, description, **kwargs)</span>
+<span>(</span><span>anchor_id: str, var_name: str, var_type: str, warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], description: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -56,7 +56,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLVariableInfo(VariableInfo):
-    def render(self):
+    def render(self) -&gt; str:
         return templates.template(&#34;variable_info.html&#34;).render(**self.content)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -69,7 +69,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.variable_info.HTMLVariableInfo.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -77,7 +77,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     return templates.template(&#34;variable_info.html&#34;).render(**self.content)</code></pre>
 </details>
 </dd>

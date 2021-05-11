@@ -30,11 +30,11 @@ Note that the "name" and "caption" keys are optional.
   sample_description = "Disclaimer: the following sample consists of synthetic data following the format of the underlying dataset."
 
   report = df.profile_report(
-        sample=dict(
-        	name="Mock data sample",
-        	data=sample_custom_data,
-        	caption=sample_description
-        )
+      sample={
+          "name": "Mock data sample",
+          "data": sample_custom_data,
+          "caption": sample_description,
+      }
   )
 
 .. warning::
@@ -46,6 +46,6 @@ Note that the "name" and "caption" keys are optional.
 
    .. code-block:: python
 
-        pd.read_csv('filename.csv', dtype={'phone': str})
+        pd.read_csv("filename.csv", dtype={"phone": str})
 
    Note that the type detection is hard. That's the reason why we developed `visions <https://github.com/dylan-profiler/visions>`_, a type system to help developers solve these cases.

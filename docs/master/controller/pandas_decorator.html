@@ -33,7 +33,7 @@ from pandas import DataFrame
 from pandas_profiling.profile_report import ProfileReport
 
 
-def profile_report(df, **kwargs) -&gt; ProfileReport:
+def profile_report(df: DataFrame, **kwargs) -&gt; ProfileReport:
     &#34;&#34;&#34;Profile a DataFrame.
 
     Args:
@@ -58,7 +58,7 @@ DataFrame.profile_report = profile_report</code></pre>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.controller.pandas_decorator.profile_report"><code class="name flex">
-<span>def <span class="ident">profile_report</span></span>(<span>df, **kwargs) ‑> <a title="pandas_profiling.profile_report.ProfileReport" href="../profile_report.html#pandas_profiling.profile_report.ProfileReport">ProfileReport</a></span>
+<span>def <span class="ident">profile_report</span></span>(<span>df: pandas.core.frame.DataFrame, **kwargs) ‑> <a title="pandas_profiling.profile_report.ProfileReport" href="../profile_report.html#pandas_profiling.profile_report.ProfileReport">ProfileReport</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Profile a DataFrame.</p>
@@ -75,7 +75,7 @@ DataFrame.profile_report = profile_report</code></pre>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def profile_report(df, **kwargs) -&gt; ProfileReport:
+<pre><code class="python">def profile_report(df: DataFrame, **kwargs) -&gt; ProfileReport:
     &#34;&#34;&#34;Profile a DataFrame.
 
     Args:

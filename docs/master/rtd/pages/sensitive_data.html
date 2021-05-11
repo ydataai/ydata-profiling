@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Sensitive data &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>Sensitive data &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -230,11 +234,11 @@ Note that the “name” and “caption” keys are optional.</p>
 <span class="n">sample_description</span> <span class="o">=</span> <span class="s2">&quot;Disclaimer: the following sample consists of synthetic data following the format of the underlying dataset.&quot;</span>
 
 <span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
-      <span class="n">sample</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
-              <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Mock data sample&quot;</span><span class="p">,</span>
-              <span class="n">data</span><span class="o">=</span><span class="n">sample_custom_data</span><span class="p">,</span>
-              <span class="n">caption</span><span class="o">=</span><span class="n">sample_description</span>
-      <span class="p">)</span>
+    <span class="n">sample</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Mock data sample&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">sample_custom_data</span><span class="p">,</span>
+        <span class="s2">&quot;caption&quot;</span><span class="p">:</span> <span class="n">sample_description</span><span class="p">,</span>
+    <span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -244,7 +248,7 @@ Note that the “name” and “caption” keys are optional.</p>
 Pandas’ type guessing will by default coerce phone numbers such as <code class="docutils literal notranslate"><span class="pre">0612345678</span></code> to numeric.
 This leads to information leakage through aggregates (min, max, quantiles).
 To prevent this from happening, keep the string representation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;filename.csv&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;phone&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;filename.csv&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
 </pre></div>
 </div>
 <p>Note that the type detection is hard. That’s the reason why we developed <a class="reference external" href="https://github.com/dylan-profiler/visions">visions</a>, a type system to help developers solve these cases.</p>

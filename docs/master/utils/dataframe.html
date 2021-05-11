@@ -32,12 +32,13 @@ import re
 import unicodedata
 import warnings
 from pathlib import Path
+from typing import Any
 
 import joblib
 import pandas as pd
 
 
-def warn_read(extension):
+def warn_read(extension: str) -&gt; None:
     &#34;&#34;&#34;Warn the user when an extension is not supported.
 
     Args:
@@ -151,7 +152,7 @@ def read_pandas(file_name: Path) -&gt; pd.DataFrame:
     return df
 
 
-def rename_index(df):
+def rename_index(df: pd.DataFrame) -&gt; pd.DataFrame:
     &#34;&#34;&#34;If the DataFrame contains a column or index named `index`, this will produce errors. We rename the {index,column}
     to be `df_index`.
 
@@ -168,7 +169,7 @@ def rename_index(df):
     return df
 
 
-def expand_mixed(df: pd.DataFrame, types=None) -&gt; pd.DataFrame:
+def expand_mixed(df: pd.DataFrame, types: Any = None) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Expand non-nested lists, dicts and tuples in a DataFrame into columns with a prefix.
 
     Args:
@@ -208,7 +209,7 @@ def expand_mixed(df: pd.DataFrame, types=None) -&gt; pd.DataFrame:
     return df
 
 
-def hash_dataframe(df):
+def hash_dataframe(df: pd.DataFrame) -&gt; str:
     &#34;&#34;&#34;Hash a DataFrame (wrapper around joblib.hash, might change in the future)
 
     Args:
@@ -220,7 +221,7 @@ def hash_dataframe(df):
     return joblib.hash(df)
 
 
-def slugify(value, allow_unicode=False):
+def slugify(value: str, allow_unicode: bool = False) -&gt; str:
     &#34;&#34;&#34;
     Taken from https://github.com/django/django/blob/master/django/utils/text.py
     Convert to ASCII if &#39;allow_unicode&#39; is False. Convert spaces or repeated
@@ -249,7 +250,7 @@ def slugify(value, allow_unicode=False):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.utils.dataframe.expand_mixed"><code class="name flex">
-<span>def <span class="ident">expand_mixed</span></span>(<span>df: pandas.core.frame.DataFrame, types=None) ‑> pandas.core.frame.DataFrame</span>
+<span>def <span class="ident">expand_mixed</span></span>(<span>df: pandas.core.frame.DataFrame, types: Any = None) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Expand non-nested lists, dicts and tuples in a DataFrame into columns with a prefix.</p>
@@ -269,7 +270,7 @@ TODO: allow for expansion of nested data structures.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def expand_mixed(df: pd.DataFrame, types=None) -&gt; pd.DataFrame:
+<pre><code class="python">def expand_mixed(df: pd.DataFrame, types: Any = None) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Expand non-nested lists, dicts and tuples in a DataFrame into columns with a prefix.
 
     Args:
@@ -310,7 +311,7 @@ TODO: allow for expansion of nested data structures.</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.dataframe.hash_dataframe"><code class="name flex">
-<span>def <span class="ident">hash_dataframe</span></span>(<span>df)</span>
+<span>def <span class="ident">hash_dataframe</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Hash a DataFrame (wrapper around joblib.hash, might change in the future)</p>
@@ -325,7 +326,7 @@ TODO: allow for expansion of nested data structures.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def hash_dataframe(df):
+<pre><code class="python">def hash_dataframe(df: pd.DataFrame) -&gt; str:
     &#34;&#34;&#34;Hash a DataFrame (wrapper around joblib.hash, might change in the future)
 
     Args:
@@ -489,7 +490,7 @@ the DataFrame in code.</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.dataframe.rename_index"><code class="name flex">
-<span>def <span class="ident">rename_index</span></span>(<span>df)</span>
+<span>def <span class="ident">rename_index</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>If the DataFrame contains a column or index named <code>index</code>, this will produce errors. We rename the {index,column}
@@ -505,7 +506,7 @@ to be <code>df_index</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def rename_index(df):
+<pre><code class="python">def rename_index(df: pd.DataFrame) -&gt; pd.DataFrame:
     &#34;&#34;&#34;If the DataFrame contains a column or index named `index`, this will produce errors. We rename the {index,column}
     to be `df_index`.
 
@@ -523,7 +524,7 @@ to be <code>df_index</code>.</p>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.dataframe.slugify"><code class="name flex">
-<span>def <span class="ident">slugify</span></span>(<span>value, allow_unicode=False)</span>
+<span>def <span class="ident">slugify</span></span>(<span>value: str, allow_unicode: bool = False) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Taken from <a href="https://github.com/django/django/blob/master/django/utils/text.py">https://github.com/django/django/blob/master/django/utils/text.py</a>
@@ -535,7 +536,7 @@ trailing whitespace, dashes, and underscores.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def slugify(value, allow_unicode=False):
+<pre><code class="python">def slugify(value: str, allow_unicode: bool = False) -&gt; str:
     &#34;&#34;&#34;
     Taken from https://github.com/django/django/blob/master/django/utils/text.py
     Convert to ASCII if &#39;allow_unicode&#39; is False. Convert spaces or repeated
@@ -593,7 +594,7 @@ trailing whitespace, dashes, and underscores.</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.dataframe.warn_read"><code class="name flex">
-<span>def <span class="ident">warn_read</span></span>(<span>extension)</span>
+<span>def <span class="ident">warn_read</span></span>(<span>extension: str) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Warn the user when an extension is not supported.</p>
@@ -606,7 +607,7 @@ trailing whitespace, dashes, and underscores.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def warn_read(extension):
+<pre><code class="python">def warn_read(extension: str) -&gt; None:
     &#34;&#34;&#34;Warn the user when an extension is not supported.
 
     Args:

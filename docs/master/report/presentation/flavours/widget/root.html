@@ -32,7 +32,7 @@ from pandas_profiling.report.presentation.core.root import Root
 
 
 class WidgetRoot(Root):
-    def render(self):
+    def render(self, **kwargs) -&gt; widgets.VBox:
         return widgets.VBox(
             [self.content[&#34;body&#34;].render(), self.content[&#34;footer&#34;].render()]
         )</code></pre>
@@ -58,7 +58,7 @@ class WidgetRoot(Root):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetRoot(Root):
-    def render(self):
+    def render(self, **kwargs) -&gt; widgets.VBox:
         return widgets.VBox(
             [self.content[&#34;body&#34;].render(), self.content[&#34;footer&#34;].render()]
         )</code></pre>
@@ -73,7 +73,7 @@ class WidgetRoot(Root):
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.root.WidgetRoot.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self, **kwargs) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -81,7 +81,7 @@ class WidgetRoot(Root):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self, **kwargs) -&gt; widgets.VBox:
     return widgets.VBox(
         [self.content[&#34;body&#34;].render(), self.content[&#34;footer&#34;].render()]
     )</code></pre>

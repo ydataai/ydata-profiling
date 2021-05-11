@@ -32,10 +32,10 @@ from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class FrequencyTable(ItemRenderer):
-    def __init__(self, rows, redact, **kwargs):
+    def __init__(self, rows: list, redact: bool, **kwargs):
         super().__init__(&#34;frequency_table&#34;, {&#34;rows&#34;: rows, &#34;redact&#34;: redact}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;FrequencyTable&#34;
 
     def render(self) -&gt; Any:
@@ -53,7 +53,7 @@ class FrequencyTable(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.frequency_table.FrequencyTable"><code class="flex name class">
 <span>class <span class="ident">FrequencyTable</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: list, redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -63,10 +63,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FrequencyTable(ItemRenderer):
-    def __init__(self, rows, redact, **kwargs):
+    def __init__(self, rows: list, redact: bool, **kwargs):
         super().__init__(&#34;frequency_table&#34;, {&#34;rows&#34;: rows, &#34;redact&#34;: redact}, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;FrequencyTable&#34;
 
     def render(self) -&gt; Any:

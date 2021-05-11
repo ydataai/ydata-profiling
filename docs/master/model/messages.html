@@ -32,13 +32,13 @@ values, high correlations).</p>
 <pre><code class="python">&#34;&#34;&#34;Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations).&#34;&#34;&#34;
 from enum import Enum, auto, unique
-from typing import Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
 import numpy as np
+import pandas as pd
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import perform_check_correlation
-from pandas_profiling.model.typeset import Categorical, Numeric, Unsupported
 
 
 @unique
@@ -94,6 +94,8 @@ class MessageType(Enum):
 class Message:
     &#34;&#34;&#34;A message object (type, values, column).&#34;&#34;&#34;
 
+    _anchor_id: Optional[str] = None
+
     def __init__(
         self,
         message_type: MessageType,
@@ -110,15 +112,14 @@ class Message:
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self._anchor_id = None
 
     @property
-    def anchor_id(self):
+    def anchor_id(self) -&gt; Optional[str]:
         if self._anchor_id is None:
-            self._anchor_id = hash(self.column_name)
+            self._anchor_id = str(hash(self.column_name))
         return self._anchor_id
 
-    def fmt(self):
+    def fmt(self) -&gt; str:
         # TODO: render in template
         name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
         if name == &#34;HIGH CORRELATION&#34;:
@@ -162,15 +163,13 @@ def check_table_messages(table: dict) -&gt; List[Message]:
     return messages
 
 
-def numeric_warnings(summary: dict) -&gt; List[Message]:
+def numeric_warnings(config: Settings, summary: dict) -&gt; List[Message]:
     messages = []
 
-    chi_squared_threshold_num = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-        float
-    )
+    chi_squared_threshold_num = config.vars.num.chi_squared_threshold
 
     # Skewness
-    if warning_skewness(summary[&#34;skewness&#34;]):
+    if warning_skewness(summary[&#34;skewness&#34;], config.vars.num.skewness_threshold):
         messages.append(
             Message(
                 message_type=MessageType.SKEWED,
@@ -205,13 +204,11 @@ def numeric_warnings(summary: dict) -&gt; List[Message]:
     return messages
 
 
-def categorical_warnings(summary: dict) -&gt; List[Message]:
+def categorical_warnings(config: Settings, summary: dict) -&gt; List[Message]:
     messages = []
 
-    cardinality_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;cardinality_threshold&#34;].get(int)
-    chi_squared_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
-        float
-    )
+    cardinality_threshold_cat = config.vars.cat.cardinality_threshold
+    chi_squared_threshold_cat = config.vars.cat.chi_squared_threshold
 
     # High cardinality
     if summary[&#34;n_distinct&#34;] &gt; cardinality_threshold_cat:
@@ -285,7 +282,7 @@ def supported_warnings(summary: dict) -&gt; List[Message]:
     return messages
 
 
-def unsupported_warnings(summary):
+def unsupported_warnings(summary: Dict[str, Any]) -&gt; List[Message]:
     messages = [
         Message(
             message_type=MessageType.UNSUPPORTED,
@@ -299,7 +296,9 @@ def unsupported_warnings(summary):
     return messages
 
 
-def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
+def check_variable_messages(
+    config: Settings, col: str, description: dict
+) -&gt; List[Message]:
     &#34;&#34;&#34;Checks individual variables for warnings.
 
     Args:
@@ -313,15 +312,15 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
 
     messages += generic_warnings(description)
 
-    if description[&#34;type&#34;] == Unsupported:
+    if description[&#34;type&#34;] == &#34;Unsupported&#34;:
         messages += unsupported_warnings(description)
     else:
         messages += supported_warnings(description)
 
-        if description[&#34;type&#34;] == Categorical:
-            messages += categorical_warnings(description)
-        if description[&#34;type&#34;] == Numeric:
-            messages += numeric_warnings(description)
+        if description[&#34;type&#34;] == &#34;Categorical&#34;:
+            messages += categorical_warnings(config, description)
+        if description[&#34;type&#34;] == &#34;Numeric&#34;:
+            messages += numeric_warnings(config, description)
 
     for idx in range(len(messages)):
         messages[idx].column_name = col
@@ -329,12 +328,12 @@ def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
     return messages
 
 
-def check_correlation_messages(correlations):
+def check_correlation_messages(config: Settings, correlations: dict) -&gt; List[Message]:
     messages = []
 
     for corr, matrix in correlations.items():
-        if config[&#34;correlations&#34;][corr][&#34;warn_high_correlations&#34;].get(bool):
-            threshold = config[&#34;correlations&#34;][corr][&#34;threshold&#34;].get(float)
+        if config.correlations[corr].warn_high_correlations:
+            threshold = config.correlations[corr].threshold
             correlated_mapping = perform_check_correlation(matrix, threshold)
             if len(correlated_mapping) &gt; 0:
                 for k, v in correlated_mapping.items():
@@ -352,14 +351,11 @@ def warning_value(value: float) -&gt; bool:
     return not np.isnan(value) and value &gt; 0.01
 
 
-def warning_skewness(v: float) -&gt; bool:
-    return not np.isnan(v) and (
-        v &lt; -config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
-        or v &gt; config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
-    )
+def warning_skewness(v: float, threshold: int) -&gt; bool:
+    return not np.isnan(v) and (v &lt; (-1 * threshold) or v &gt; threshold)
 
 
-def warning_type_date(series):
+def warning_type_date(series: pd.Series) -&gt; bool:
     from dateutil.parser import ParserError, parse
 
     try:
@@ -377,7 +373,7 @@ def warning_type_date(series):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.messages.categorical_warnings"><code class="name flex">
-<span>def <span class="ident">categorical_warnings</span></span>(<span>summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
+<span>def <span class="ident">categorical_warnings</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -385,13 +381,11 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def categorical_warnings(summary: dict) -&gt; List[Message]:
+<pre><code class="python">def categorical_warnings(config: Settings, summary: dict) -&gt; List[Message]:
     messages = []
 
-    cardinality_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;cardinality_threshold&#34;].get(int)
-    chi_squared_threshold_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;chi_squared_threshold&#34;].get(
-        float
-    )
+    cardinality_threshold_cat = config.vars.cat.cardinality_threshold
+    chi_squared_threshold_cat = config.vars.cat.chi_squared_threshold
 
     # High cardinality
     if summary[&#34;n_distinct&#34;] &gt; cardinality_threshold_cat:
@@ -424,7 +418,7 @@ def warning_type_date(series):
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.check_correlation_messages"><code class="name flex">
-<span>def <span class="ident">check_correlation_messages</span></span>(<span>correlations)</span>
+<span>def <span class="ident">check_correlation_messages</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, correlations: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -432,12 +426,12 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_correlation_messages(correlations):
+<pre><code class="python">def check_correlation_messages(config: Settings, correlations: dict) -&gt; List[Message]:
     messages = []
 
     for corr, matrix in correlations.items():
-        if config[&#34;correlations&#34;][corr][&#34;warn_high_correlations&#34;].get(bool):
-            threshold = config[&#34;correlations&#34;][corr][&#34;threshold&#34;].get(float)
+        if config.correlations[corr].warn_high_correlations:
+            threshold = config.correlations[corr].threshold
             correlated_mapping = perform_check_correlation(matrix, threshold)
             if len(correlated_mapping) &gt; 0:
                 for k, v in correlated_mapping.items():
@@ -497,7 +491,7 @@ def warning_type_date(series):
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.check_variable_messages"><code class="name flex">
-<span>def <span class="ident">check_variable_messages</span></span>(<span>col: str, description: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
+<span>def <span class="ident">check_variable_messages</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, col: str, description: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Checks individual variables for warnings.</p>
@@ -514,7 +508,9 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_variable_messages(col: str, description: dict) -&gt; List[Message]:
+<pre><code class="python">def check_variable_messages(
+    config: Settings, col: str, description: dict
+) -&gt; List[Message]:
     &#34;&#34;&#34;Checks individual variables for warnings.
 
     Args:
@@ -528,15 +524,15 @@ def warning_type_date(series):
 
     messages += generic_warnings(description)
 
-    if description[&#34;type&#34;] == Unsupported:
+    if description[&#34;type&#34;] == &#34;Unsupported&#34;:
         messages += unsupported_warnings(description)
     else:
         messages += supported_warnings(description)
 
-        if description[&#34;type&#34;] == Categorical:
-            messages += categorical_warnings(description)
-        if description[&#34;type&#34;] == Numeric:
-            messages += numeric_warnings(description)
+        if description[&#34;type&#34;] == &#34;Categorical&#34;:
+            messages += categorical_warnings(config, description)
+        if description[&#34;type&#34;] == &#34;Numeric&#34;:
+            messages += numeric_warnings(config, description)
 
     for idx in range(len(messages)):
         messages[idx].column_name = col
@@ -569,7 +565,7 @@ def warning_type_date(series):
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.numeric_warnings"><code class="name flex">
-<span>def <span class="ident">numeric_warnings</span></span>(<span>summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
+<span>def <span class="ident">numeric_warnings</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -577,15 +573,13 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def numeric_warnings(summary: dict) -&gt; List[Message]:
+<pre><code class="python">def numeric_warnings(config: Settings, summary: dict) -&gt; List[Message]:
     messages = []
 
-    chi_squared_threshold_num = config[&#34;vars&#34;][&#34;num&#34;][&#34;chi_squared_threshold&#34;].get(
-        float
-    )
+    chi_squared_threshold_num = config.vars.num.chi_squared_threshold
 
     # Skewness
-    if warning_skewness(summary[&#34;skewness&#34;]):
+    if warning_skewness(summary[&#34;skewness&#34;], config.vars.num.skewness_threshold):
         messages.append(
             Message(
                 message_type=MessageType.SKEWED,
@@ -657,7 +651,7 @@ def warning_type_date(series):
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.unsupported_warnings"><code class="name flex">
-<span>def <span class="ident">unsupported_warnings</span></span>(<span>summary)</span>
+<span>def <span class="ident">unsupported_warnings</span></span>(<span>summary: Dict[str, Any]) ‑> List[<a title="pandas_profiling.model.messages.Message" href="#pandas_profiling.model.messages.Message">Message</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -665,7 +659,7 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def unsupported_warnings(summary):
+<pre><code class="python">def unsupported_warnings(summary: Dict[str, Any]) -&gt; List[Message]:
     messages = [
         Message(
             message_type=MessageType.UNSUPPORTED,
@@ -680,7 +674,7 @@ def warning_type_date(series):
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.warning_skewness"><code class="name flex">
-<span>def <span class="ident">warning_skewness</span></span>(<span>v: float) ‑> bool</span>
+<span>def <span class="ident">warning_skewness</span></span>(<span>v: float, threshold: int) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -688,15 +682,12 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def warning_skewness(v: float) -&gt; bool:
-    return not np.isnan(v) and (
-        v &lt; -config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
-        or v &gt; config[&#34;vars&#34;][&#34;num&#34;][&#34;skewness_threshold&#34;].get(int)
-    )</code></pre>
+<pre><code class="python">def warning_skewness(v: float, threshold: int) -&gt; bool:
+    return not np.isnan(v) and (v &lt; (-1 * threshold) or v &gt; threshold)</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.messages.warning_type_date"><code class="name flex">
-<span>def <span class="ident">warning_type_date</span></span>(<span>series)</span>
+<span>def <span class="ident">warning_type_date</span></span>(<span>series: pandas.core.series.Series) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -704,7 +695,7 @@ def warning_type_date(series):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def warning_type_date(series):
+<pre><code class="python">def warning_type_date(series: pd.Series) -&gt; bool:
     from dateutil.parser import ParserError, parse
 
     try:
@@ -745,6 +736,8 @@ def warning_type_date(series):
 <pre><code class="python">class Message:
     &#34;&#34;&#34;A message object (type, values, column).&#34;&#34;&#34;
 
+    _anchor_id: Optional[str] = None
+
     def __init__(
         self,
         message_type: MessageType,
@@ -761,15 +754,14 @@ def warning_type_date(series):
         self.message_type = message_type
         self.values = values
         self.column_name = column_name
-        self._anchor_id = None
 
     @property
-    def anchor_id(self):
+    def anchor_id(self) -&gt; Optional[str]:
         if self._anchor_id is None:
-            self._anchor_id = hash(self.column_name)
+            self._anchor_id = str(hash(self.column_name))
         return self._anchor_id
 
-    def fmt(self):
+    def fmt(self) -&gt; str:
         # TODO: render in template
         name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
         if name == &#34;HIGH CORRELATION&#34;:
@@ -785,7 +777,7 @@ def warning_type_date(series):
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pandas_profiling.model.messages.Message.anchor_id"><code class="name">var <span class="ident">anchor_id</span></code></dt>
+<dt id="pandas_profiling.model.messages.Message.anchor_id"><code class="name">var <span class="ident">anchor_id</span> : Union[str, NoneType]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -793,9 +785,9 @@ def warning_type_date(series):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def anchor_id(self):
+def anchor_id(self) -&gt; Optional[str]:
     if self._anchor_id is None:
-        self._anchor_id = hash(self.column_name)
+        self._anchor_id = str(hash(self.column_name))
     return self._anchor_id</code></pre>
 </details>
 </dd>
@@ -803,7 +795,7 @@ def anchor_id(self):
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.model.messages.Message.fmt"><code class="name flex">
-<span>def <span class="ident">fmt</span></span>(<span>self)</span>
+<span>def <span class="ident">fmt</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -811,7 +803,7 @@ def anchor_id(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def fmt(self):
+<pre><code class="python">def fmt(self) -&gt; str:
     # TODO: render in template
     name = self.message_type.name.replace(&#34;_&#34;, &#34; &#34;)
     if name == &#34;HIGH CORRELATION&#34;:

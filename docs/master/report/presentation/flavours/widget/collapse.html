@@ -32,7 +32,7 @@ from pandas_profiling.report.presentation.core import Collapse
 
 
 class WidgetCollapse(Collapse):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         if self.content[&#34;button&#34;].anchor_id == &#34;toggle-correlation-description&#34;:
             collapse = &#34;correlation&#34;
         else:
@@ -43,7 +43,7 @@ class WidgetCollapse(Collapse):
 
         if collapse == &#34;correlation&#34;:
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -&gt; None:
                 if widg[&#34;new&#34;]:
                     display = &#34;&#34;
                     grid = &#34;50% 50%&#34;
@@ -58,7 +58,7 @@ class WidgetCollapse(Collapse):
 
         else:
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -&gt; None:
                 if widg[&#34;new&#34;]:
                     display = &#34;&#34;
                 else:
@@ -92,7 +92,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetCollapse(Collapse):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         if self.content[&#34;button&#34;].anchor_id == &#34;toggle-correlation-description&#34;:
             collapse = &#34;correlation&#34;
         else:
@@ -103,7 +103,7 @@ inheritance.</p></div>
 
         if collapse == &#34;correlation&#34;:
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -&gt; None:
                 if widg[&#34;new&#34;]:
                     display = &#34;&#34;
                     grid = &#34;50% 50%&#34;
@@ -118,7 +118,7 @@ inheritance.</p></div>
 
         else:
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -&gt; None:
                 if widg[&#34;new&#34;]:
                     display = &#34;&#34;
                 else:
@@ -140,7 +140,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.collapse.WidgetCollapse.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -148,7 +148,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     if self.content[&#34;button&#34;].anchor_id == &#34;toggle-correlation-description&#34;:
         collapse = &#34;correlation&#34;
     else:
@@ -159,7 +159,7 @@ inheritance.</p></div>
 
     if collapse == &#34;correlation&#34;:
 
-        def toggle_func(widg):
+        def toggle_func(widg: dict) -&gt; None:
             if widg[&#34;new&#34;]:
                 display = &#34;&#34;
                 grid = &#34;50% 50%&#34;
@@ -174,7 +174,7 @@ inheritance.</p></div>
 
     else:
 
-        def toggle_func(widg):
+        def toggle_func(widg: dict) -&gt; None:
             if widg[&#34;new&#34;]:
                 display = &#34;&#34;
             else:

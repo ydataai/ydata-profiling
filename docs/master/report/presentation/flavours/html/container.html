@@ -26,13 +26,12 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from pandas_profiling.config import config
-from pandas_profiling.report.presentation.core.container import Container
+<pre><code class="python">from pandas_profiling.report.presentation.core.container import Container
 from pandas_profiling.report.presentation.flavours.html import templates
 
 
 class HTMLContainer(Container):
-    def render(self):
+    def render(self) -&gt; str:
         if self.sequence_type in [&#34;list&#34;, &#34;accordion&#34;]:
             return templates.template(&#34;sequence/list.html&#34;).render(
                 anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
@@ -56,7 +55,7 @@ class HTMLContainer(Container):
         elif self.sequence_type == &#34;sections&#34;:
             return templates.template(&#34;sequence/sections.html&#34;).render(
                 sections=self.content[&#34;items&#34;],
-                full_width=config[&#34;html&#34;][&#34;style&#34;][&#34;full_width&#34;].get(bool),
+                full_width=self.content[&#34;full_width&#34;],
             )
         elif self.sequence_type == &#34;grid&#34;:
             return templates.template(&#34;sequence/grid.html&#34;).render(
@@ -67,9 +66,10 @@ class HTMLContainer(Container):
                 items=self.content[&#34;items&#34;],
                 batch_size=self.content[&#34;batch_size&#34;],
                 titles=self.content.get(&#34;titles&#34;, True),
+                subtitles=self.content.get(&#34;subtitles&#34;, False),
             )
-
-        raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
+        else:
+            raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
 </details>
 </section>
 <section>
@@ -83,7 +83,7 @@ class HTMLContainer(Container):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.container.HTMLContainer"><code class="flex name class">
 <span>class <span class="ident">HTMLContainer</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested=False, name=None, anchor_id=None, classes=None, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -93,7 +93,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class HTMLContainer(Container):
-    def render(self):
+    def render(self) -&gt; str:
         if self.sequence_type in [&#34;list&#34;, &#34;accordion&#34;]:
             return templates.template(&#34;sequence/list.html&#34;).render(
                 anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
@@ -117,7 +117,7 @@ inheritance.</p></div>
         elif self.sequence_type == &#34;sections&#34;:
             return templates.template(&#34;sequence/sections.html&#34;).render(
                 sections=self.content[&#34;items&#34;],
-                full_width=config[&#34;html&#34;][&#34;style&#34;][&#34;full_width&#34;].get(bool),
+                full_width=self.content[&#34;full_width&#34;],
             )
         elif self.sequence_type == &#34;grid&#34;:
             return templates.template(&#34;sequence/grid.html&#34;).render(
@@ -128,9 +128,10 @@ inheritance.</p></div>
                 items=self.content[&#34;items&#34;],
                 batch_size=self.content[&#34;batch_size&#34;],
                 titles=self.content.get(&#34;titles&#34;, True),
+                subtitles=self.content.get(&#34;subtitles&#34;, False),
             )
-
-        raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
+        else:
+            raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -141,7 +142,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.html.container.HTMLContainer.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -149,7 +150,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; str:
     if self.sequence_type in [&#34;list&#34;, &#34;accordion&#34;]:
         return templates.template(&#34;sequence/list.html&#34;).render(
             anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
@@ -173,7 +174,7 @@ inheritance.</p></div>
     elif self.sequence_type == &#34;sections&#34;:
         return templates.template(&#34;sequence/sections.html&#34;).render(
             sections=self.content[&#34;items&#34;],
-            full_width=config[&#34;html&#34;][&#34;style&#34;][&#34;full_width&#34;].get(bool),
+            full_width=self.content[&#34;full_width&#34;],
         )
     elif self.sequence_type == &#34;grid&#34;:
         return templates.template(&#34;sequence/grid.html&#34;).render(
@@ -184,9 +185,10 @@ inheritance.</p></div>
             items=self.content[&#34;items&#34;],
             batch_size=self.content[&#34;batch_size&#34;],
             titles=self.content.get(&#34;titles&#34;, True),
+            subtitles=self.content.get(&#34;subtitles&#34;, False),
         )
-
-    raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
+    else:
+        raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
 </details>
 </dd>
 </dl>

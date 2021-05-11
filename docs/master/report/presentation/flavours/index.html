@@ -60,7 +60,7 @@ __all__ = [
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.HTMLReport"><code class="name flex">
-<span>def <span class="ident">HTMLReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">HTMLReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a>) ‑> <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds HTML flavour to Renderable</p>
@@ -71,7 +71,7 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def HTMLReport(structure: Renderable):
+<pre><code class="python">def HTMLReport(structure: Root) -&gt; Root:
     &#34;&#34;&#34;Adds HTML flavour to Renderable
 
     Args:
@@ -86,7 +86,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.WidgetReport"><code class="name flex">
-<span>def <span class="ident">WidgetReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>)</span>
+<span>def <span class="ident">WidgetReport</span></span>(<span>structure: <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a>) ‑> <a title="pandas_profiling.report.presentation.core.root.Root" href="../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -94,7 +94,7 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def WidgetReport(structure: Renderable):
+<pre><code class="python">def WidgetReport(structure: Root) -&gt; Root:
     mapping = get_widget_renderable_mapping()
     apply_renderable_mapping(mapping, structure, flavour=WidgetReport)
     return structure</code></pre>

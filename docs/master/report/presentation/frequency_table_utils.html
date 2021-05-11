@@ -29,9 +29,10 @@
 <pre><code class="python">from typing import Any, Dict, List
 
 import numpy as np
+import pandas as pd
 
 
-def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; List[Dict]:
+def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -&gt; List[Dict]:
     &#34;&#34;&#34;Render the rows for a frequency table (value, count).
 
     Args:
@@ -109,7 +110,9 @@ def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; List[Dict]:
     return rows
 
 
-def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[str, Any]]:
+def extreme_obs_table(
+    freqtable: pd.Series, number_to_print: int, n: int
+) -&gt; List[Dict[str, Any]]:
     &#34;&#34;&#34;Similar to the frequency table, for extreme observations.
 
     Args:
@@ -147,7 +150,7 @@ def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[s
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.frequency_table_utils.extreme_obs_table"><code class="name flex">
-<span>def <span class="ident">extreme_obs_table</span></span>(<span>freqtable, number_to_print: int, n: int) ‑> List[Dict[str, Any]]</span>
+<span>def <span class="ident">extreme_obs_table</span></span>(<span>freqtable: pandas.core.series.Series, number_to_print: int, n: int) ‑> List[Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Similar to the frequency table, for extreme observations.</p>
@@ -166,7 +169,9 @@ def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[s
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[str, Any]]:
+<pre><code class="python">def extreme_obs_table(
+    freqtable: pd.Series, number_to_print: int, n: int
+) -&gt; List[Dict[str, Any]]:
     &#34;&#34;&#34;Similar to the frequency table, for extreme observations.
 
     Args:
@@ -197,7 +202,7 @@ def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[s
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.frequency_table_utils.freq_table"><code class="name flex">
-<span>def <span class="ident">freq_table</span></span>(<span>freqtable, n: int, max_number_to_print: int) ‑> List[Dict]</span>
+<span>def <span class="ident">freq_table</span></span>(<span>freqtable: pandas.core.series.Series, n: int, max_number_to_print: int) ‑> List[Dict]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Render the rows for a frequency table (value, count).</p>
@@ -216,7 +221,7 @@ def extreme_obs_table(freqtable, number_to_print: int, n: int) -&gt; List[Dict[s
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def freq_table(freqtable, n: int, max_number_to_print: int) -&gt; List[Dict]:
+<pre><code class="python">def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -&gt; List[Dict]:
     &#34;&#34;&#34;Render the rows for a frequency table (value, count).
 
     Args:

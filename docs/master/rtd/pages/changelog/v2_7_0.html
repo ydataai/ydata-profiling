@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Changelog v2.7.0 &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>Changelog v2.7.0 &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -232,7 +236,7 @@
 <div class="section" id="internal-improvements">
 <h2>👷‍♂️ Internal Improvements<a class="headerlink" href="#internal-improvements" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>The number of progress bars is reduced. The progress bars are now grouped by build phase (e.g. describing dataset, building report structure, rendering report, exporting to file, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/421">#421</a>).</p></li>
+<li><p>The number of progress bars is reduced. The progress bars are now grouped by build phase (e.g. describing dataset, building report structure, rendering report, exporting to file).</p></li>
 <li><p>The progress bars provide more information about the current step to the user <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/434">#434</a>).</p></li>
 <li><p>Invalid correlations coefficients do not cause it to drop the complete variable anymore, instead the plot now propagates the NaN (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/417">#417</a>).</p></li>
 <li><p><strong>Performance</strong>: type inference test now short-circuit, as <code class="docutils literal notranslate"><span class="pre">visions</span></code> does by default.</p></li>

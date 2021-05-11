@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.config.Config &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>pandas_profiling.config.Config &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -39,7 +43,7 @@
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Controller" href="../controller.html" />
+    <link rel="next" title="Settings" href="../settings.html" />
     <link rel="prev" title="pandas_profiling.serialize_report.SerializeReport" href="pandas_profiling.serialize_report.SerializeReport.html" /> 
 </head>
 
@@ -110,13 +114,34 @@
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../profile_report.html">Profile Report</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../profile_report.html#profilereport">ProfileReport</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="pandas_profiling.profile_report.ProfileReport.html">pandas_profiling.profile_report.ProfileReport</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pandas_profiling.serialize_report.SerializeReport.html">pandas_profiling.serialize_report.SerializeReport</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">pandas_profiling.config.Config</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile_report.html">Profile Report</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../settings.html">Settings</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Settings.html">pandas_profiling.config.Settings</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Correlation.html">pandas_profiling.config.Correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html">pandas_profiling.config.CorrelationPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.MissingPlot.html">pandas_profiling.config.MissingPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageType.html">pandas_profiling.config.ImageType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Pie.html">pandas_profiling.config.Pie</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Dataset.html">pandas_profiling.config.Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Duplicates.html">pandas_profiling.config.Duplicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Html.html">pandas_profiling.config.Html</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Interactions.html">pandas_profiling.config.Interactions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Plot.html">pandas_profiling.config.Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Theme.html">pandas_profiling.config.Theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Style.html">pandas_profiling.config.Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Samples.html">pandas_profiling.config.Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Report.html">pandas_profiling.config.Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Variables.html">pandas_profiling.config.Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Univariate.html">pandas_profiling.config.Univariate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.NumVars.html">pandas_profiling.config.NumVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CatVars.html">pandas_profiling.config.CatVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageVars.html">pandas_profiling.config.ImageVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.BoolVars.html">pandas_profiling.config.BoolVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.PathVars.html">pandas_profiling.config.PathVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.FileVars.html">pandas_profiling.config.FileVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.UrlVars.html">pandas_profiling.config.UrlVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Histogram.html">pandas_profiling.config.Histogram</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../controller.html">Controller</a></li>
@@ -229,15 +254,12 @@
   <div class="section" id="pandas-profiling-config-config">
 <h1>pandas_profiling.config.Config<a class="headerlink" href="#pandas-profiling-config-config" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="pandas_profiling.config.Config">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pandas_profiling.config.</span></code><code class="sig-name descname"><span class="pre">Config</span></code><a class="reference internal" href="../../../_modules/pandas_profiling/config.html#Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.Config" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-various ways (notably via argparse and kwargs).</p>
-<p>The config constructor should be called only once.</p>
-<dl class="py method">
-<dt id="pandas_profiling.config.Config.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pandas_profiling/config.html#Config.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.Config.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>The config constructor should be called only once.</p>
+<dt class="sig sig-object py" id="pandas_profiling.config.Config">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pandas_profiling.config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><a class="reference internal" href="../../../_modules/pandas_profiling/config.html#Config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.Config" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pandas_profiling.config.Config.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pandas_profiling.config.Config.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -248,28 +270,23 @@ various ways (notably via argparse and kwargs).</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pandas_profiling.config.Config.__init__" title="pandas_profiling.config.Config.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
-<td><p>The config constructor should be called only once.</p></td>
+<td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_arg_groups</span></code>(key)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_arg_group</span></code>(name)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_args</span></code>(namespace, dots)</p></td>
-<td><p>Set config variables based on the argparse Namespace object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_file</span></code>(file_name)</p></td>
-<td><p>Set the config from a file</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_kwargs</span></code>(kwargs)</p></td>
-<td><p>Helper function to set config variables based on kwargs.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>(other)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shorthands</span></code>(kwargs)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</p></td>
 </tr>
 </tbody>
 </table>
@@ -280,10 +297,7 @@ various ways (notably via argparse and kwargs).</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">config</span></code></p></td>
-<td><p>The confuse.Configuration object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_default</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">arg_groups</span></code></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -298,7 +312,7 @@ various ways (notably via argparse and kwargs).</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../controller.html" class="btn btn-neutral float-right" title="Controller" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../settings.html" class="btn btn-neutral float-right" title="Settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="pandas_profiling.serialize_report.SerializeReport.html" class="btn btn-neutral float-left" title="pandas_profiling.serialize_report.SerializeReport" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

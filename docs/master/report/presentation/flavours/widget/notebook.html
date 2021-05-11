@@ -29,17 +29,23 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Functionality related to displaying the profile report in Jupyter notebooks.&#34;&#34;&#34;
 import html
+import uuid
 from pathlib import Path
+from typing import TYPE_CHECKING, Union
 
-from ipywidgets import CoreWidget
+if TYPE_CHECKING:
+    from IPython.core.display import HTML
+    from IPython.lib.display import IFrame
 
-from pandas_profiling.config import config
+from pandas_profiling import ProfileReport
+from pandas_profiling.config import IframeAttribute, Settings
 
 
-def get_notebook_iframe_srcdoc(profile):
+def get_notebook_iframe_srcdoc(config: Settings, profile: ProfileReport) -&gt; &#34;HTML&#34;:
     &#34;&#34;&#34;Get the IPython HTML object with iframe with the srcdoc attribute
 
     Args:
+        config: Settings
         profile: The profile report object
 
     Returns:
@@ -47,8 +53,8 @@ def get_notebook_iframe_srcdoc(profile):
     &#34;&#34;&#34;
     from IPython.core.display import HTML
 
-    width = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str)
-    height = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str)
+    width = config.notebook.iframe.width
+    height = config.notebook.iframe.height
     src = html.escape(profile.to_html())
 
     iframe = f&#39;&lt;iframe width=&#34;{width}&#34; height=&#34;{height}&#34; srcdoc=&#34;{src}&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&#39;
@@ -56,42 +62,46 @@ def get_notebook_iframe_srcdoc(profile):
     return HTML(iframe)
 
 
-def get_notebook_iframe_src(profile):
+def get_notebook_iframe_src(config: Settings, profile: ProfileReport) -&gt; &#34;IFrame&#34;:
     &#34;&#34;&#34;Get the IPython IFrame object
 
     Args:
+        config: Settings
         profile: The profile report object
 
     Returns:
         IPython IFrame object.
     &#34;&#34;&#34;
-    tmp_file = Path(&#34;./ipynb_tmp&#34;) / profile.get_unique_file_name()
+    tmp_file = Path(&#34;./ipynb_tmp&#34;) / f&#34;{uuid.uuid4().hex}.html&#34;
     tmp_file.parent.mkdir(exist_ok=True)
     profile.to_file(tmp_file)
     from IPython.lib.display import IFrame
 
     return IFrame(
         str(tmp_file),
-        width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-        height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+        width=config.notebook.iframe.width,
+        height=config.notebook.iframe.height,
     )
 
 
-def get_notebook_iframe(profile) -&gt; CoreWidget:
+def get_notebook_iframe(
+    config: Settings, profile: ProfileReport
+) -&gt; Union[&#34;IFrame&#34;, &#34;HTML&#34;]:
     &#34;&#34;&#34;Display the profile report in an iframe in the Jupyter notebook
 
     Args:
+        config: Settings
         profile: The profile report object
 
     Returns:
         Displays the Iframe
     &#34;&#34;&#34;
 
-    attribute = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;attribute&#34;].get(str)
-    if attribute == &#34;src&#34;:
-        output = get_notebook_iframe_src(profile)
-    elif attribute == &#34;srcdoc&#34;:
-        output = get_notebook_iframe_srcdoc(profile)
+    attribute = config.notebook.iframe.attribute
+    if attribute == IframeAttribute.src:
+        output = get_notebook_iframe_src(config, profile)
+    elif attribute == IframeAttribute.srcdoc:
+        output = get_notebook_iframe_srcdoc(config, profile)
     else:
         raise ValueError(
             f&#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {attribute}).&#39;
@@ -108,12 +118,14 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.notebook.get_notebook_iframe"><code class="name flex">
-<span>def <span class="ident">get_notebook_iframe</span></span>(<span>profile) ‑> ipywidgets.widgets.widget_core.CoreWidget</span>
+<span>def <span class="ident">get_notebook_iframe</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../../config.html#pandas_profiling.config.Settings">Settings</a>, profile: <a title="pandas_profiling.profile_report.ProfileReport" href="../../../../profile_report.html#pandas_profiling.profile_report.ProfileReport">ProfileReport</a>) ‑> Union[IFrame, HTML]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Display the profile report in an iframe in the Jupyter notebook</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>Settings</dd>
 <dt><strong><code>profile</code></strong></dt>
 <dd>The profile report object</dd>
 </dl>
@@ -123,21 +135,24 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_notebook_iframe(profile) -&gt; CoreWidget:
+<pre><code class="python">def get_notebook_iframe(
+    config: Settings, profile: ProfileReport
+) -&gt; Union[&#34;IFrame&#34;, &#34;HTML&#34;]:
     &#34;&#34;&#34;Display the profile report in an iframe in the Jupyter notebook
 
     Args:
+        config: Settings
         profile: The profile report object
 
     Returns:
         Displays the Iframe
     &#34;&#34;&#34;
 
-    attribute = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;attribute&#34;].get(str)
-    if attribute == &#34;src&#34;:
-        output = get_notebook_iframe_src(profile)
-    elif attribute == &#34;srcdoc&#34;:
-        output = get_notebook_iframe_srcdoc(profile)
+    attribute = config.notebook.iframe.attribute
+    if attribute == IframeAttribute.src:
+        output = get_notebook_iframe_src(config, profile)
+    elif attribute == IframeAttribute.srcdoc:
+        output = get_notebook_iframe_srcdoc(config, profile)
     else:
         raise ValueError(
             f&#39;Iframe Attribute can be &#34;src&#34; or &#34;srcdoc&#34; (current: {attribute}).&#39;
@@ -147,12 +162,14 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.notebook.get_notebook_iframe_src"><code class="name flex">
-<span>def <span class="ident">get_notebook_iframe_src</span></span>(<span>profile)</span>
+<span>def <span class="ident">get_notebook_iframe_src</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../../config.html#pandas_profiling.config.Settings">Settings</a>, profile: <a title="pandas_profiling.profile_report.ProfileReport" href="../../../../profile_report.html#pandas_profiling.profile_report.ProfileReport">ProfileReport</a>) ‑> IFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the IPython IFrame object</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>Settings</dd>
 <dt><strong><code>profile</code></strong></dt>
 <dd>The profile report object</dd>
 </dl>
@@ -162,34 +179,37 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_notebook_iframe_src(profile):
+<pre><code class="python">def get_notebook_iframe_src(config: Settings, profile: ProfileReport) -&gt; &#34;IFrame&#34;:
     &#34;&#34;&#34;Get the IPython IFrame object
 
     Args:
+        config: Settings
         profile: The profile report object
 
     Returns:
         IPython IFrame object.
     &#34;&#34;&#34;
-    tmp_file = Path(&#34;./ipynb_tmp&#34;) / profile.get_unique_file_name()
+    tmp_file = Path(&#34;./ipynb_tmp&#34;) / f&#34;{uuid.uuid4().hex}.html&#34;
     tmp_file.parent.mkdir(exist_ok=True)
     profile.to_file(tmp_file)
     from IPython.lib.display import IFrame
 
     return IFrame(
         str(tmp_file),
-        width=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str),
-        height=config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str),
+        width=config.notebook.iframe.width,
+        height=config.notebook.iframe.height,
     )</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.widget.notebook.get_notebook_iframe_srcdoc"><code class="name flex">
-<span>def <span class="ident">get_notebook_iframe_srcdoc</span></span>(<span>profile)</span>
+<span>def <span class="ident">get_notebook_iframe_srcdoc</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../../config.html#pandas_profiling.config.Settings">Settings</a>, profile: <a title="pandas_profiling.profile_report.ProfileReport" href="../../../../profile_report.html#pandas_profiling.profile_report.ProfileReport">ProfileReport</a>) ‑> HTML</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the IPython HTML object with iframe with the srcdoc attribute</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>Settings</dd>
 <dt><strong><code>profile</code></strong></dt>
 <dd>The profile report object</dd>
 </dl>
@@ -199,10 +219,11 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_notebook_iframe_srcdoc(profile):
+<pre><code class="python">def get_notebook_iframe_srcdoc(config: Settings, profile: ProfileReport) -&gt; &#34;HTML&#34;:
     &#34;&#34;&#34;Get the IPython HTML object with iframe with the srcdoc attribute
 
     Args:
+        config: Settings
         profile: The profile report object
 
     Returns:
@@ -210,8 +231,8 @@ def get_notebook_iframe(profile) -&gt; CoreWidget:
     &#34;&#34;&#34;
     from IPython.core.display import HTML
 
-    width = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;width&#34;].get(str)
-    height = config[&#34;notebook&#34;][&#34;iframe&#34;][&#34;height&#34;].get(str)
+    width = config.notebook.iframe.width
+    height = config.notebook.iframe.height
     src = html.escape(profile.to_html())
 
     iframe = f&#39;&lt;iframe width=&#34;{width}&#34; height=&#34;{height}&#34; srcdoc=&#34;{src}&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&#39;

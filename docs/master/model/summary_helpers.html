@@ -32,13 +32,14 @@ from collections import Counter
 from datetime import datetime
 from functools import partial
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
 from scipy.stats.stats import chisquare
 from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.summary_helpers_image import (
     extract_exif,
     hash_image,
@@ -47,7 +48,7 @@ from pandas_profiling.model.summary_helpers_image import (
 )
 
 
-def mad(arr):
+def mad(arr: np.ndarray) -&gt; np.ndarray:
     &#34;&#34;&#34;Median Absolute Deviation: a &#34;Robust&#34; version of standard deviation.
     Indices variability of the sample.
     https://en.wikipedia.org/wiki/Median_absolute_deviation
@@ -55,7 +56,7 @@ def mad(arr):
     return np.median(np.abs(arr - np.median(arr)))
 
 
-def named_aggregate_summary(series: pd.Series, key: str):
+def named_aggregate_summary(series: pd.Series, key: str) -&gt; dict:
     summary = {
         f&#34;max_{key}&#34;: np.max(series),
         f&#34;mean_{key}&#34;: np.mean(series),
@@ -66,7 +67,7 @@ def named_aggregate_summary(series: pd.Series, key: str):
     return summary
 
 
-def length_summary(series: pd.Series, summary=None) -&gt; dict:
+def length_summary(series: pd.Series, summary: dict = None) -&gt; dict:
     if summary is None:
         summary = {}
 
@@ -91,7 +92,7 @@ def file_summary(series: pd.Series) -&gt; dict:
     # Transform
     stats = series.map(lambda x: os.stat(x))
 
-    def convert_datetime(x):
+    def convert_datetime(x: float) -&gt; str:
         return datetime.fromtimestamp(x).strftime(&#34;%Y-%m-%d %H:%M:%S&#34;)
 
     # Transform some more
@@ -364,20 +365,28 @@ def unicode_summary(series: pd.Series) -&gt; dict:
     return summary
 
 
-def histogram_compute(finite_values, n_unique, name=&#34;histogram&#34;, weights=None):
+def histogram_compute(
+    config: Settings,
+    finite_values: np.ndarray,
+    n_unique: int,
+    name: str = &#34;histogram&#34;,
+    weights: Optional[np.ndarray] = None,
+) -&gt; dict:
     stats = {}
-    bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
-    bins = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
-    stats[name] = np.histogram(finite_values, bins=bins, weights=weights)
+    bins = config.plot.histogram.bins
+    bins_arg = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
+    stats[name] = np.histogram(finite_values, bins=bins_arg, weights=weights)
 
-    max_bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;max_bins&#34;].get(int)
-    if bins == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
+    max_bins = config.plot.histogram.max_bins
+    if bins_arg == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
         stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
 
     return stats
 
 
-def chi_square(values=None, histogram=None):
+def chi_square(
+    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
+) -&gt; dict:
     if histogram is None:
         histogram, _ = np.histogram(values, bins=&#34;auto&#34;)
     return dict(chisquare(histogram)._asdict())
@@ -400,7 +409,7 @@ def word_summary(series: pd.Series) -&gt; dict:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.summary_helpers.chi_square"><code class="name flex">
-<span>def <span class="ident">chi_square</span></span>(<span>values=None, histogram=None)</span>
+<span>def <span class="ident">chi_square</span></span>(<span>values: Union[numpy.ndarray, NoneType] = None, histogram: Union[numpy.ndarray, NoneType] = None) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -408,7 +417,9 @@ def word_summary(series: pd.Series) -&gt; dict:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def chi_square(values=None, histogram=None):
+<pre><code class="python">def chi_square(
+    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
+) -&gt; dict:
     if histogram is None:
         histogram, _ = np.histogram(values, bins=&#34;auto&#34;)
     return dict(chisquare(histogram)._asdict())</code></pre>
@@ -575,7 +586,7 @@ Returns:</p></div>
     # Transform
     stats = series.map(lambda x: os.stat(x))
 
-    def convert_datetime(x):
+    def convert_datetime(x: float) -&gt; str:
         return datetime.fromtimestamp(x).strftime(&#34;%Y-%m-%d %H:%M:%S&#34;)
 
     # Transform some more
@@ -617,7 +628,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_helpers.histogram_compute"><code class="name flex">
-<span>def <span class="ident">histogram_compute</span></span>(<span>finite_values, n_unique, name='histogram', weights=None)</span>
+<span>def <span class="ident">histogram_compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, finite_values: numpy.ndarray, n_unique: int, name: str = 'histogram', weights: Union[numpy.ndarray, NoneType] = None) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -625,14 +636,20 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def histogram_compute(finite_values, n_unique, name=&#34;histogram&#34;, weights=None):
+<pre><code class="python">def histogram_compute(
+    config: Settings,
+    finite_values: np.ndarray,
+    n_unique: int,
+    name: str = &#34;histogram&#34;,
+    weights: Optional[np.ndarray] = None,
+) -&gt; dict:
     stats = {}
-    bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;bins&#34;].get(int)
-    bins = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
-    stats[name] = np.histogram(finite_values, bins=bins, weights=weights)
+    bins = config.plot.histogram.bins
+    bins_arg = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
+    stats[name] = np.histogram(finite_values, bins=bins_arg, weights=weights)
 
-    max_bins = config[&#34;plot&#34;][&#34;histogram&#34;][&#34;max_bins&#34;].get(int)
-    if bins == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
+    max_bins = config.plot.histogram.max_bins
+    if bins_arg == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
         stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
 
     return stats</code></pre>
@@ -702,7 +719,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_helpers.length_summary"><code class="name flex">
-<span>def <span class="ident">length_summary</span></span>(<span>series: pandas.core.series.Series, summary=None) ‑> dict</span>
+<span>def <span class="ident">length_summary</span></span>(<span>series: pandas.core.series.Series, summary: dict = None) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -710,7 +727,7 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def length_summary(series: pd.Series, summary=None) -&gt; dict:
+<pre><code class="python">def length_summary(series: pd.Series, summary: dict = None) -&gt; dict:
     if summary is None:
         summary = {}
 
@@ -723,7 +740,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_helpers.mad"><code class="name flex">
-<span>def <span class="ident">mad</span></span>(<span>arr)</span>
+<span>def <span class="ident">mad</span></span>(<span>arr: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Median Absolute Deviation: a "Robust" version of standard deviation.
@@ -733,7 +750,7 @@ Indices variability of the sample.
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def mad(arr):
+<pre><code class="python">def mad(arr: np.ndarray) -&gt; np.ndarray:
     &#34;&#34;&#34;Median Absolute Deviation: a &#34;Robust&#34; version of standard deviation.
     Indices variability of the sample.
     https://en.wikipedia.org/wiki/Median_absolute_deviation
@@ -742,7 +759,7 @@ Indices variability of the sample.
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_helpers.named_aggregate_summary"><code class="name flex">
-<span>def <span class="ident">named_aggregate_summary</span></span>(<span>series: pandas.core.series.Series, key: str)</span>
+<span>def <span class="ident">named_aggregate_summary</span></span>(<span>series: pandas.core.series.Series, key: str) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -750,7 +767,7 @@ Indices variability of the sample.
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def named_aggregate_summary(series: pd.Series, key: str):
+<pre><code class="python">def named_aggregate_summary(series: pd.Series, key: str) -&gt; dict:
     summary = {
         f&#34;max_{key}&#34;: np.max(series),
         f&#34;mean_{key}&#34;: np.mean(series),

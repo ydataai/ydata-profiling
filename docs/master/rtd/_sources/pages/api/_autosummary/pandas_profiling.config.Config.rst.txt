@@ -14,13 +14,8 @@
    .. autosummary::
    
       ~Config.__init__
-      ~Config.clear
-      ~Config.dump
-      ~Config.set_arg_group
-      ~Config.set_args
-      ~Config.set_file
-      ~Config.set_kwargs
-      ~Config.update
+      ~Config.get_arg_groups
+      ~Config.shorthands
    
    
 
@@ -30,7 +25,6 @@
 
    .. autosummary::
    
-      ~Config.config
-      ~Config.is_default
+      ~Config.arg_groups
    
    

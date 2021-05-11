@@ -15,4 +15,4 @@ Changelog v2.10.0
 
 🚨 Breaking changes
 ^^^^^^^^^^^^^^^^^^^
-- The configuration parameter `vars.cat.unicode` is replaced by `vars.cat.characters`.
+- The configuration parameter ``vars.cat.unicode`` is replaced by ``vars.cat.characters``.

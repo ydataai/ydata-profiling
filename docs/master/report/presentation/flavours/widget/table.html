@@ -26,19 +26,19 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ipywidgets import GridspecLayout, VBox, widgets
+<pre><code class="python">from typing import Any, Dict, List
 
-from pandas_profiling.report.formatters import fmt_color, get_fmt_mapping
+from ipywidgets import GridspecLayout, VBox, widgets
+
+from pandas_profiling.report.formatters import fmt_color
 from pandas_profiling.report.presentation.core.table import Table
 
 
-def get_table(items):
+def get_table(items: List[Dict[str, Any]]) -&gt; GridspecLayout:
     table = GridspecLayout(len(items), 2)
-    fmt_mapping = get_fmt_mapping()
     for row_id, item in enumerate(items):
         name = item[&#34;name&#34;]
-        formatter = fmt_mapping[item[&#34;fmt&#34;]]
-        value = formatter(item[&#34;value&#34;])
+        value = item[&#34;value&#34;]
         if &#34;alert&#34; in item and item[&#34;alert&#34;]:
             name = fmt_color(name, &#34;var(--jp-error-color1)&#34;)
             value = fmt_color(value, &#34;var(--jp-error-color1)&#34;)
@@ -50,7 +50,7 @@ def get_table(items):
 
 
 class WidgetTable(Table):
-    def render(self):
+    def render(self) -&gt; VBox:
         items = [get_table(self.content[&#34;rows&#34;])]
         if self.content[&#34;caption&#34;] is not None:
             items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))
@@ -66,7 +66,7 @@ class WidgetTable(Table):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.table.get_table"><code class="name flex">
-<span>def <span class="ident">get_table</span></span>(<span>items)</span>
+<span>def <span class="ident">get_table</span></span>(<span>items: List[Dict[str, Any]]) ‑> ipywidgets.widgets.widget_templates.GridspecLayout</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -74,13 +74,11 @@ class WidgetTable(Table):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_table(items):
+<pre><code class="python">def get_table(items: List[Dict[str, Any]]) -&gt; GridspecLayout:
     table = GridspecLayout(len(items), 2)
-    fmt_mapping = get_fmt_mapping()
     for row_id, item in enumerate(items):
         name = item[&#34;name&#34;]
-        formatter = fmt_mapping[item[&#34;fmt&#34;]]
-        value = formatter(item[&#34;value&#34;])
+        value = item[&#34;value&#34;]
         if &#34;alert&#34; in item and item[&#34;alert&#34;]:
             name = fmt_color(name, &#34;var(--jp-error-color1)&#34;)
             value = fmt_color(value, &#34;var(--jp-error-color1)&#34;)
@@ -98,7 +96,7 @@ class WidgetTable(Table):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.table.WidgetTable"><code class="flex name class">
 <span>class <span class="ident">WidgetTable</span></span>
-<span>(</span><span>rows, name=None, caption=None, **kwargs)</span>
+<span>(</span><span>rows: Sequence, name: Union[str, NoneType] = None, caption: Union[str, NoneType] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -108,7 +106,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetTable(Table):
-    def render(self):
+    def render(self) -&gt; VBox:
         items = [get_table(self.content[&#34;rows&#34;])]
         if self.content[&#34;caption&#34;] is not None:
             items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))
@@ -125,7 +123,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.table.WidgetTable.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -133,7 +131,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; VBox:
     items = [get_table(self.content[&#34;rows&#34;])]
     if self.content[&#34;caption&#34;] is not None:
         items.append(widgets.HTML(f&#39;&lt;em&gt;{self.content[&#34;caption&#34;]}&lt;/em&gt;&#39;))

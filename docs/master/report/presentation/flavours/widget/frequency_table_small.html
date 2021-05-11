@@ -26,7 +26,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ipywidgets import widgets
+<pre><code class="python">from typing import List
+
+from ipywidgets import widgets
 
 from pandas_profiling.report.presentation.core.frequency_table_small import (
     FrequencyTableSmall,
@@ -34,11 +36,11 @@ from pandas_profiling.report.presentation.core.frequency_table_small import (
 
 
 class WidgetFrequencyTableSmall(FrequencyTableSmall):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         return frequency_table_nb(self.content[&#34;rows&#34;])
 
 
-def frequency_table_nb(rows):
+def frequency_table_nb(rows: List[dict]) -&gt; widgets.VBox:
     items = []
 
     for row in rows:
@@ -99,7 +101,7 @@ def frequency_table_nb(rows):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.frequency_table_small.frequency_table_nb"><code class="name flex">
-<span>def <span class="ident">frequency_table_nb</span></span>(<span>rows)</span>
+<span>def <span class="ident">frequency_table_nb</span></span>(<span>rows: List[dict]) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -107,7 +109,7 @@ def frequency_table_nb(rows):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def frequency_table_nb(rows):
+<pre><code class="python">def frequency_table_nb(rows: List[dict]) -&gt; widgets.VBox:
     items = []
 
     for row in rows:
@@ -167,7 +169,7 @@ def frequency_table_nb(rows):
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.frequency_table_small.WidgetFrequencyTableSmall"><code class="flex name class">
 <span>class <span class="ident">WidgetFrequencyTableSmall</span></span>
-<span>(</span><span>rows, redact, **kwargs)</span>
+<span>(</span><span>rows: List[Any], redact: bool, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -177,7 +179,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WidgetFrequencyTableSmall(FrequencyTableSmall):
-    def render(self):
+    def render(self) -&gt; widgets.VBox:
         return frequency_table_nb(self.content[&#34;rows&#34;])</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -190,7 +192,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.flavours.widget.frequency_table_small.WidgetFrequencyTableSmall.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self)</span>
+<span>def <span class="ident">render</span></span>(<span>self) ‑> ipywidgets.widgets.widget_box.VBox</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -198,7 +200,7 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render(self):
+<pre><code class="python">def render(self) -&gt; widgets.VBox:
     return frequency_table_nb(self.content[&#34;rows&#34;])</code></pre>
 </details>
 </dd>

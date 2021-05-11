@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pandas_profiling.serialize_report &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>pandas_profiling.serialize_report &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -205,9 +209,12 @@
   <h1>Source code for pandas_profiling.serialize_report</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">pandas_profiling.config</span> <span class="kn">import</span> <span class="n">Config</span><span class="p">,</span> <span class="n">config</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pandas_profiling.profile_report</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+
+<span class="kn">from</span> <span class="nn">pandas_profiling.config</span> <span class="kn">import</span> <span class="n">Settings</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.core</span> <span class="kn">import</span> <span class="n">Root</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.version</span> <span class="kn">import</span> <span class="n">__version__</span>
 
@@ -215,12 +222,15 @@
 <div class="viewcode-block" id="SerializeReport"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.serialize_report.SerializeReport.html#pandas_profiling.serialize_report.SerializeReport">[docs]</a><span class="k">class</span> <span class="nc">SerializeReport</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Extend the report to be able to dump and load reports.&quot;&quot;&quot;</span>
 
-    <span class="n">df_hash</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">df</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">_df_hash</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_df_hash</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_report</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_description_set</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">_title</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">df_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -233,17 +243,20 @@
 
         <span class="c1"># Note: _description_set and _report may are None if they haven&#39;t been computed</span>
         <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_hash</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">]</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_hash</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_report</span><span class="p">,</span>
+            <span class="p">]</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">ignore_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="s2">&quot;SerializeReport&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deserialize the serialized report</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The bytes of a serialize ProfileReport object.</span>
-<span class="sd">            ignore_config: If set to True, the ProfileReport config will be overwritten with the current global Config.</span>
-<span class="sd">                           If set to False, the function checks if the configs match</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: if ignore_config is set to False and the configs do not match.</span>
@@ -259,7 +272,6 @@
                 <span class="n">loaded_config</span><span class="p">,</span>
                 <span class="n">loaded_description_set</span><span class="p">,</span>
                 <span class="n">loaded_report</span><span class="p">,</span>
-                <span class="n">loaded_title</span><span class="p">,</span>
             <span class="p">)</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load data: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -267,8 +279,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
             <span class="p">(</span>
                 <span class="n">df_hash</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df_hash</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
-                <span class="n">loaded_title</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded_title</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded_config</span><span class="p">,</span> <span class="n">Config</span><span class="p">),</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded_config</span><span class="p">,</span> <span class="n">Settings</span><span class="p">),</span>
                 <span class="n">loaded_description_set</span> <span class="ow">is</span> <span class="kc">None</span>
                 <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded_description_set</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span>
                 <span class="n">loaded_report</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded_report</span><span class="p">,</span> <span class="n">Root</span><span class="p">),</span>
@@ -277,9 +288,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Failed to load data: file may be damaged or from an incompatible version&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">df_hash</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_hash</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="n">config</span><span class="o">.</span><span class="n">is_default</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span>
-        <span class="p">):</span>  <span class="c1"># load to an empty ProfileReport</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">df_hash</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_hash</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="c1"># load to an empty ProfileReport</span>
             <span class="c1"># Set description_set, report, sample if they are None，or raise an warning.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="o">=</span> <span class="n">loaded_description_set</span>
@@ -295,7 +305,7 @@
                 <span class="p">)</span>
 
             <span class="c1"># overwrite config</span>
-            <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">loaded_config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">loaded_config</span>
 
             <span class="c1"># warn if version not equal</span>
             <span class="k">if</span> <span class="p">(</span>
@@ -308,15 +318,14 @@
                     <span class="sa">f</span><span class="s2">&quot;Currently running on pandas-profiling </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2"> , while loaded data is generated by pandas_profiling, </span><span class="si">{</span><span class="n">loaded_description_set</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">][</span><span class="s1">&#39;pandas_profiling_version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
 
-            <span class="c1"># set df_hash and title</span>
+            <span class="c1"># set df_hash</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_df_hash</span> <span class="o">=</span> <span class="n">df_hash</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">loaded_title</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;DataFrame does not match with the current ProfileReport.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump ProfileReport to file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -326,7 +335,9 @@
         <span class="n">output_file</span> <span class="o">=</span> <span class="n">output_file</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.pp&quot;</span><span class="p">)</span>
         <span class="n">output_file</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dumps</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">ignore_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">load_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="s2">&quot;SerializeReport&quot;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load ProfileReport from file</span>
 
@@ -336,7 +347,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">load_file</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
             <span class="n">load_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">load_file</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">load_file</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(),</span> <span class="n">ignore_config</span><span class="o">=</span><span class="n">ignore_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">load_file</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 </pre></div>
 

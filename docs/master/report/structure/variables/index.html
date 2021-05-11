@@ -65,7 +65,7 @@ __all__ = [
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.report.structure.variables.render_boolean"><code class="name flex">
-<span>def <span class="ident">render_boolean</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_boolean</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -73,13 +73,13 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_boolean(summary):
+<pre><code class="python">def render_boolean(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
-    n_obs_bool = config[&#34;vars&#34;][&#34;bool&#34;][&#34;n_obs&#34;].get(int)
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    n_obs_bool = config.vars.bool.n_obs
+    image_format = config.plot.image_format
 
     # Prepare variables
-    template_variables = render_common(summary)
+    template_variables = render_common(config, summary)
 
     # Element composition
     info = VariableInfo(
@@ -94,32 +94,27 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Distinct&#34;,
-                &#34;value&#34;: summary[&#34;n_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_distinct&#34;]),
                 &#34;alert&#34;: &#34;n_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Distinct (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_distinct&#34;]),
                 &#34;alert&#34;: &#34;p_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
-                &#34;value&#34;: summary[&#34;n_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_missing&#34;]),
                 &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
                 &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
                 &#34;alert&#34;: False,
             },
         ]
@@ -136,7 +131,7 @@ __all__ = [
 
     template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
 
-    items = [
+    items: List[Renderable] = [
         FrequencyTable(
             template_variables[&#34;freq_table_rows&#34;],
             name=&#34;Common Values&#34;,
@@ -145,11 +140,12 @@ __all__ = [
         )
     ]
 
-    max_unique = config[&#34;plot&#34;][&#34;pie&#34;][&#34;max_unique&#34;].get(int)
+    max_unique = config.plot.pie.max_unique
     if max_unique &gt; 0:
         items.append(
             Image(
                 pie_plot(
+                    config,
                     summary[&#34;value_counts_without_nan&#34;],
                     legend_kws={&#34;loc&#34;: &#34;upper right&#34;},
                 ),
@@ -168,7 +164,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_categorical"><code class="name flex">
-<span>def <span class="ident">render_categorical</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_categorical</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -176,16 +172,15 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_categorical(summary):
+<pre><code class="python">def render_categorical(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
-    n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
-    redact = config[&#34;vars&#34;][&#34;cat&#34;][&#34;redact&#34;].get(bool)
-    words = config[&#34;vars&#34;][&#34;cat&#34;][&#34;words&#34;].get(bool)
-    characters = config[&#34;vars&#34;][&#34;cat&#34;][&#34;characters&#34;].get(bool)
-    length = config[&#34;vars&#34;][&#34;cat&#34;][&#34;length&#34;].get(bool)
+    n_obs_cat = config.vars.cat.n_obs
+    image_format = config.plot.image_format
+    words = config.vars.cat.words
+    characters = config.vars.cat.characters
+    length = config.vars.cat.length
 
-    template_variables = render_common(summary)
+    template_variables = render_common(config, summary)
 
     info = VariableInfo(
         summary[&#34;varid&#34;],
@@ -199,32 +194,27 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Distinct&#34;,
-                &#34;value&#34;: summary[&#34;n_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_distinct&#34;]),
                 &#34;alert&#34;: &#34;n_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Distinct (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_distinct&#34;]),
                 &#34;alert&#34;: &#34;p_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
-                &#34;value&#34;: summary[&#34;n_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_missing&#34;]),
                 &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
                 &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
                 &#34;alert&#34;: False,
             },
         ]
@@ -236,7 +226,7 @@ __all__ = [
             n=summary[&#34;count&#34;],
             max_number_to_print=n_obs_cat,
         ),
-        redact=redact,
+        redact=config.vars.cat.redact,
     )
 
     template_variables[&#34;top&#34;] = Container([info, table, fqm], sequence_type=&#34;grid&#34;)
@@ -247,36 +237,31 @@ __all__ = [
         template_variables[&#34;freq_table_rows&#34;],
         name=&#34;Common Values&#34;,
         anchor_id=f&#34;{varid}common_values&#34;,
-        redact=redact,
+        redact=config.vars.cat.redact,
     )
 
-    unique_stats, value_counts = render_categorical_frequency(
-        summary, varid, image_format
-    )
+    unique_stats, value_counts = render_categorical_frequency(config, summary, varid)
 
     overview_items = []
 
     if length:
-        length_table, length_histo = render_categorical_length(
-            summary, varid, image_format
-        )
+        length_table, length_histo = render_categorical_length(config, summary, varid)
         overview_items.append(length_table)
 
     if characters:
-        overview_table_char, unitab = render_categorical_unicode(summary, varid, redact)
+        overview_table_char, unitab = render_categorical_unicode(config, summary, varid)
         overview_items.append(overview_table_char)
 
     overview_items.append(unique_stats)
 
-    if not redact:
+    if not config.vars.cat.redact:
         rows = (&#34;1st row&#34;, &#34;2nd row&#34;, &#34;3rd row&#34;, &#34;4th row&#34;, &#34;5th row&#34;)
 
         sample = Table(
             [
                 {
                     &#34;name&#34;: name,
-                    &#34;value&#34;: value,
-                    &#34;fmt&#34;: &#34;fmt&#34;,
+                    &#34;value&#34;: fmt(value),
                     &#34;alert&#34;: False,
                 }
                 for name, value in zip(rows, summary[&#34;first_rows&#34;])
@@ -285,15 +270,16 @@ __all__ = [
         )
         overview_items.append(sample)
 
-    string_items = [frequency_table]
+    string_items: List[Renderable] = [frequency_table]
     if length:
         string_items.append(length_histo)
 
-    max_unique = config[&#34;plot&#34;][&#34;pie&#34;][&#34;max_unique&#34;].get(int)
+    max_unique = config.plot.pie.max_unique
     if max_unique &gt; 0 and summary[&#34;n_distinct&#34;] &lt;= max_unique:
         string_items.append(
             Image(
                 pie_plot(
+                    config,
                     summary[&#34;value_counts_without_nan&#34;],
                     legend_kws={&#34;loc&#34;: &#34;upper right&#34;},
                 ),
@@ -333,7 +319,7 @@ __all__ = [
             woc,
             name=&#34;Common words&#34;,
             anchor_id=f&#34;{varid}cwo&#34;,
-            redact=redact,
+            redact=config.vars.cat.redact,
         )
 
         bottom_items.append(
@@ -364,7 +350,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_common"><code class="name flex">
-<span>def <span class="ident">render_common</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_common</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -372,11 +358,9 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_common(summary):
-    n_extreme_obs = config[&#34;n_extreme_obs&#34;].get(int)
-    n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
-
-    sorted_freqtable = summary[&#34;value_counts_without_nan&#34;].sort_index(ascending=True)
+<pre><code class="python">def render_common(config: Settings, summary: dict) -&gt; dict:
+    n_extreme_obs = config.n_extreme_obs
+    n_freq_table_max = config.n_freq_table_max
 
     template_variables = {
         # TODO: with nan
@@ -386,12 +370,12 @@ __all__ = [
             max_number_to_print=n_freq_table_max,
         ),
         &#34;firstn_expanded&#34;: extreme_obs_table(
-            freqtable=sorted_freqtable,
+            freqtable=summary[&#34;value_counts_index_sorted&#34;],
             number_to_print=n_extreme_obs,
             n=summary[&#34;n&#34;],
         ),
         &#34;lastn_expanded&#34;: extreme_obs_table(
-            freqtable=sorted_freqtable[::-1],
+            freqtable=summary[&#34;value_counts_index_sorted&#34;][::-1],
             number_to_print=n_extreme_obs,
             n=summary[&#34;n&#34;],
         ),
@@ -401,7 +385,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_complex"><code class="name flex">
-<span>def <span class="ident">render_complex</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_complex</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -409,10 +393,10 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_complex(summary):
+<pre><code class="python">def render_complex(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
     template_variables = {}
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    image_format = config.plot.image_format
 
     # Top
     info = VariableInfo(
@@ -425,33 +409,46 @@ __all__ = [
 
     table1 = Table(
         [
-            {&#34;name&#34;: &#34;Distinct&#34;, &#34;value&#34;: summary[&#34;n_distinct&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {&#34;name&#34;: &#34;Distinct&#34;, &#34;value&#34;: fmt(summary[&#34;n_distinct&#34;])},
             {
                 &#34;name&#34;: &#34;Distinct (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_distinct&#34;]),
             },
-            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: summary[&#34;n_missing&#34;], &#34;fmt&#34;: &#34;fmt&#34;},
+            {&#34;name&#34;: &#34;Missing&#34;, &#34;value&#34;: fmt(summary[&#34;n_missing&#34;])},
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
             },
         ]
     )
 
     table2 = Table(
         [
-            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Zeros&#34;, &#34;value&#34;: summary[&#34;n_zeros&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Zeros (%)&#34;, &#34;value&#34;: summary[&#34;p_zeros&#34;], &#34;fmt&#34;: &#34;fmt_percent&#34;},
+            {
+                &#34;name&#34;: &#34;Mean&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;mean&#34;], precision=config.report.precision
+                ),
+            },
+            {
+                &#34;name&#34;: &#34;Minimum&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;min&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;Maximum&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;max&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;Zeros&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;n_zeros&#34;], precision=config.report.precision
+                ),
+            },
+            {&#34;name&#34;: &#34;Zeros (%)&#34;, &#34;value&#34;: fmt_percent(summary[&#34;p_zeros&#34;])},
         ]
     )
 
@@ -464,7 +461,7 @@ __all__ = [
     # Bottom
     items = [
         Image(
-            scatter_complex(summary[&#34;scatter_data&#34;]),
+            scatter_complex(config, summary[&#34;scatter_data&#34;]),
             image_format=image_format,
             alt=&#34;Scatterplot&#34;,
             caption=&#34;Scatterplot in the complex plane&#34;,
@@ -481,7 +478,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_count"><code class="name flex">
-<span>def <span class="ident">render_count</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_count</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -489,9 +486,9 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_count(summary):
-    template_variables = render_common(summary)
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+<pre><code class="python">def render_count(config: Settings, summary: dict) -&gt; dict:
+    template_variables = render_common(config, summary)
+    image_format = config.plot.image_format
 
     # Top
     info = VariableInfo(
@@ -506,26 +503,22 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Distinct&#34;,
-                &#34;value&#34;: summary[&#34;n_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_distinct&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Distinct (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_distinct&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
-                &#34;value&#34;: summary[&#34;n_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_missing&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
                 &#34;alert&#34;: False,
             },
         ]
@@ -535,45 +528,41 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Mean&#34;,
-                &#34;value&#34;: summary[&#34;mean&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;mean&#34;], precision=config.report.precision
+                ),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Minimum&#34;,
-                &#34;value&#34;: summary[&#34;min&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;min&#34;], precision=config.report.precision),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Maximum&#34;,
-                &#34;value&#34;: summary[&#34;max&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;max&#34;], precision=config.report.precision),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Zeros&#34;,
-                &#34;value&#34;: summary[&#34;n_zeros&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_zeros&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Zeros (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_zeros&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_zeros&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
                 &#34;alert&#34;: False,
             },
         ]
     )
 
     mini_histo = Image(
-        mini_histogram(*summary[&#34;histogram&#34;]),
+        mini_histogram(config, *summary[&#34;histogram&#34;]),
         image_format=image_format,
         alt=&#34;Mini histogram&#34;,
     )
@@ -584,7 +573,7 @@ __all__ = [
 
     seqs = [
         Image(
-            histogram(*summary[&#34;histogram&#34;]),
+            histogram(config, *summary[&#34;histogram&#34;]),
             image_format=image_format,
             alt=&#34;Histogram&#34;,
             caption=f&#34;&lt;strong&gt;Histogram with fixed size bins&lt;/strong&gt; (bins={len(summary[&#39;histogram&#39;][1]) - 1})&#34;,
@@ -636,7 +625,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_date"><code class="name flex">
-<span>def <span class="ident">render_date</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_date</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: Dict[str, Any]) ‑> Dict[str, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -644,11 +633,11 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_date(summary):
+<pre><code class="python">def render_date(config: Settings, summary: Dict[str, Any]) -&gt; Dict[str, Any]:
     varid = summary[&#34;varid&#34;]
     template_variables = {}
 
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    image_format = config.plot.image_format
 
     # Top
     info = VariableInfo(
@@ -663,32 +652,27 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Distinct&#34;,
-                &#34;value&#34;: summary[&#34;n_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_distinct&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Distinct (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_distinct&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
-                &#34;value&#34;: summary[&#34;n_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_missing&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
                 &#34;alert&#34;: False,
             },
         ]
@@ -696,13 +680,15 @@ __all__ = [
 
     table2 = Table(
         [
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt&#34;, &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: fmt(summary[&#34;min&#34;]), &#34;alert&#34;: False},
+            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: fmt(summary[&#34;max&#34;]), &#34;alert&#34;: False},
         ]
     )
 
     mini_histo = Image(
-        mini_histogram(*summary[&#34;histogram&#34;], date=True),
+        mini_histogram(
+            config, summary[&#34;histogram&#34;][0], summary[&#34;histogram&#34;][1], date=True
+        ),
         image_format=image_format,
         alt=&#34;Mini histogram&#34;,
     )
@@ -715,7 +701,9 @@ __all__ = [
     bottom = Container(
         [
             Image(
-                histogram(*summary[&#34;histogram&#34;], date=True),
+                histogram(
+                    config, summary[&#34;histogram&#34;][0], summary[&#34;histogram&#34;][1], date=True
+                ),
                 image_format=image_format,
                 alt=&#34;Histogram&#34;,
                 caption=f&#34;&lt;strong&gt;Histogram with fixed size bins&lt;/strong&gt; (bins={len(summary[&#39;histogram&#39;][1]) - 1})&#34;,
@@ -733,7 +721,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_file"><code class="name flex">
-<span>def <span class="ident">render_file</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_file</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -741,22 +729,22 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_file(summary):
+<pre><code class="python">def render_file(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
 
-    template_variables = render_path(summary)
+    template_variables = render_path(config, summary)
 
     # Top
     template_variables[&#34;top&#34;].content[&#34;items&#34;][0].content[&#34;var_type&#34;] = &#34;File&#34;
 
-    n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    n_freq_table_max = config.n_freq_table_max
+    image_format = config.plot.image_format
 
-    file_tabs = []
+    file_tabs: List[Renderable] = []
     if &#34;file_size&#34; in summary:
         file_tabs.append(
             Image(
-                histogram(*summary[&#34;histogram_file_size&#34;]),
+                histogram(config, *summary[&#34;histogram_file_size&#34;]),
                 image_format=image_format,
                 alt=&#34;Size&#34;,
                 caption=f&#34;&lt;strong&gt;Histogram with fixed size bins of file sizes (in bytes)&lt;/strong&gt; (bins={len(summary[&#39;histogram_file_size&#39;][1]) - 1})&#34;,
@@ -799,7 +787,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_generic"><code class="name flex">
-<span>def <span class="ident">render_generic</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_generic</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -807,7 +795,7 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_generic(summary):
+<pre><code class="python">def render_generic(config: Settings, summary: dict) -&gt; dict:
     info = VariableInfo(
         anchor_id=summary[&#34;varid&#34;],
         warnings=summary[&#34;warnings&#34;],
@@ -820,20 +808,17 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Missing&#34;,
-                &#34;value&#34;: summary[&#34;n_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_missing&#34;]),
                 &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
                 &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
                 &#34;alert&#34;: False,
             },
         ]
@@ -846,7 +831,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_image"><code class="name flex">
-<span>def <span class="ident">render_image</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_image</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -854,12 +839,12 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_image(summary):
+<pre><code class="python">def render_image(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
-    n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
-    redact = config[&#34;vars&#34;][&#34;cat&#34;][&#34;redact&#34;].get(bool)
+    n_freq_table_max = config.n_freq_table_max
+    redact = config.vars.cat.redact
 
-    template_variables = render_file(summary)
+    template_variables = render_file(config, summary)
 
     # Top
     template_variables[&#34;top&#34;].content[&#34;items&#34;][0].content[&#34;var_type&#34;] = &#34;Image&#34;
@@ -883,20 +868,24 @@ __all__ = [
                     [
                         {
                             &#34;name&#34;: &#34;Min width&#34;,
-                            &#34;value&#34;: summary[&#34;min_width&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;min_width&#34;], precision=config.report.precision
+                            ),
                             &#34;alert&#34;: False,
                         },
                         {
                             &#34;name&#34;: &#34;Median width&#34;,
-                            &#34;value&#34;: summary[&#34;median_width&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;median_width&#34;],
+                                precision=config.report.precision,
+                            ),
                             &#34;alert&#34;: False,
                         },
                         {
                             &#34;name&#34;: &#34;Max width&#34;,
-                            &#34;value&#34;: summary[&#34;max_width&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;max_width&#34;], precision=config.report.precision
+                            ),
                             &#34;alert&#34;: False,
                         },
                     ]
@@ -905,20 +894,24 @@ __all__ = [
                     [
                         {
                             &#34;name&#34;: &#34;Min height&#34;,
-                            &#34;value&#34;: summary[&#34;min_height&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;min_height&#34;], precision=config.report.precision
+                            ),
                             &#34;alert&#34;: False,
                         },
                         {
                             &#34;name&#34;: &#34;Median height&#34;,
-                            &#34;value&#34;: summary[&#34;median_height&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;median_height&#34;],
+                                precision=config.report.precision,
+                            ),
                             &#34;alert&#34;: False,
                         },
                         {
                             &#34;name&#34;: &#34;Max height&#34;,
-                            &#34;value&#34;: summary[&#34;max_height&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;max_height&#34;], precision=config.report.precision
+                            ),
                             &#34;alert&#34;: False,
                         },
                     ]
@@ -927,20 +920,24 @@ __all__ = [
                     [
                         {
                             &#34;name&#34;: &#34;Min area&#34;,
-                            &#34;value&#34;: summary[&#34;min_area&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;min_area&#34;], precision=config.report.precision
+                            ),
                             &#34;alert&#34;: False,
                         },
                         {
                             &#34;name&#34;: &#34;Median area&#34;,
-                            &#34;value&#34;: summary[&#34;median_area&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;median_area&#34;],
+                                precision=config.report.precision,
+                            ),
                             &#34;alert&#34;: False,
                         },
                         {
                             &#34;name&#34;: &#34;Max area&#34;,
-                            &#34;value&#34;: summary[&#34;max_area&#34;],
-                            &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                            &#34;value&#34;: fmt_numeric(
+                                summary[&#34;max_area&#34;], precision=config.report.precision
+                            ),
                             &#34;alert&#34;: False,
                         },
                     ]
@@ -951,8 +948,8 @@ __all__ = [
             sequence_type=&#34;grid&#34;,
         ),
         Image(
-            scatter_series(summary[&#34;image_dimensions&#34;]),
-            image_format=config[&#34;plot&#34;][&#34;image_format&#34;].get(str),
+            scatter_series(config, summary[&#34;image_dimensions&#34;]),
+            image_format=config.plot.image_format,
             alt=&#34;Scatter plot of image sizes&#34;,
             caption=&#34;Scatter plot of image sizes&#34;,
             name=&#34;Scatter plot&#34;,
@@ -1031,7 +1028,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_path"><code class="name flex">
-<span>def <span class="ident">render_path</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_path</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1039,12 +1036,12 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_path(summary):
+<pre><code class="python">def render_path(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
-    n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
-    redact = config[&#34;vars&#34;][&#34;cat&#34;][&#34;redact&#34;].get(bool)
+    n_freq_table_max = config.n_freq_table_max
+    redact = config.vars.cat.redact
 
-    template_variables = render_categorical(summary)
+    template_variables = render_categorical(config, summary)
 
     keys = [&#34;name&#34;, &#34;parent&#34;, &#34;suffix&#34;, &#34;stem&#34;, &#34;anchor&#34;]
     for path_part in keys:
@@ -1064,38 +1061,45 @@ __all__ = [
                 [
                     {
                         &#34;name&#34;: &#34;Common prefix&#34;,
-                        &#34;value&#34;: summary[&#34;common_prefix&#34;],
-                        &#34;fmt&#34;: &#34;fmt&#34;,
+                        &#34;value&#34;: fmt(summary[&#34;common_prefix&#34;]),
                         &#34;alert&#34;: False,
                     },
                     {
                         &#34;name&#34;: &#34;Unique stems&#34;,
-                        &#34;value&#34;: summary[&#34;n_stem_unique&#34;],
-                        &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                        &#34;value&#34;: fmt_numeric(
+                            summary[&#34;n_stem_unique&#34;], precision=config.report.precision
+                        ),
                         &#34;alert&#34;: False,
                     },
                     {
                         &#34;name&#34;: &#34;Unique names&#34;,
-                        &#34;value&#34;: summary[&#34;n_name_unique&#34;],
-                        &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                        &#34;value&#34;: fmt_numeric(
+                            summary[&#34;n_name_unique&#34;], precision=config.report.precision
+                        ),
                         &#34;alert&#34;: False,
                     },
                     {
                         &#34;name&#34;: &#34;Unique extensions&#34;,
-                        &#34;value&#34;: summary[&#34;n_suffix_unique&#34;],
-                        &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                        &#34;value&#34;: fmt_numeric(
+                            summary[&#34;n_suffix_unique&#34;],
+                            precision=config.report.precision,
+                        ),
                         &#34;alert&#34;: False,
                     },
                     {
                         &#34;name&#34;: &#34;Unique directories&#34;,
-                        &#34;value&#34;: summary[&#34;n_parent_unique&#34;],
-                        &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                        &#34;value&#34;: fmt_numeric(
+                            summary[&#34;n_parent_unique&#34;],
+                            precision=config.report.precision,
+                        ),
                         &#34;alert&#34;: False,
                     },
                     {
                         &#34;name&#34;: &#34;Unique anchors&#34;,
-                        &#34;value&#34;: summary[&#34;n_anchor_unique&#34;],
-                        &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                        &#34;value&#34;: fmt_numeric(
+                            summary[&#34;n_anchor_unique&#34;],
+                            precision=config.report.precision,
+                        ),
                         &#34;alert&#34;: False,
                     },
                 ]
@@ -1159,7 +1163,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_real"><code class="name flex">
-<span>def <span class="ident">render_real</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_real</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1167,10 +1171,10 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_real(summary):
+<pre><code class="python">def render_real(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
-    template_variables = render_common(summary)
-    image_format = config[&#34;plot&#34;][&#34;image_format&#34;].get(str)
+    template_variables = render_common(config, summary)
+    image_format = config.plot.image_format
 
     if summary[&#34;min&#34;] &gt;= 0:
         name = &#34;Real number (&amp;Ropf;&lt;sub&gt;&amp;ge;0&lt;/sub&gt;)&#34;
@@ -1190,44 +1194,39 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Distinct&#34;,
-                &#34;value&#34;: summary[&#34;n_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_distinct&#34;]),
                 &#34;alert&#34;: &#34;n_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Distinct (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_distinct&#34;]),
                 &#34;alert&#34;: &#34;p_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
-                &#34;value&#34;: summary[&#34;n_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_missing&#34;]),
                 &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
                 &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Infinite&#34;,
-                &#34;value&#34;: summary[&#34;n_infinite&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_infinite&#34;]),
                 &#34;alert&#34;: &#34;n_infinite&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Infinite (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_infinite&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_infinite&#34;]),
                 &#34;alert&#34;: &#34;p_infinite&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Mean&#34;,
-                &#34;value&#34;: summary[&#34;mean&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;mean&#34;], precision=config.report.precision
+                ),
                 &#34;alert&#34;: False,
             },
         ]
@@ -1237,51 +1236,44 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Minimum&#34;,
-                &#34;value&#34;: summary[&#34;min&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;min&#34;], precision=config.report.precision),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Maximum&#34;,
-                &#34;value&#34;: summary[&#34;max&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;max&#34;], precision=config.report.precision),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Zeros&#34;,
-                &#34;value&#34;: summary[&#34;n_zeros&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_zeros&#34;]),
                 &#34;alert&#34;: &#34;n_zeros&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Zeros (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_zeros&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_zeros&#34;]),
                 &#34;alert&#34;: &#34;p_zeros&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Negative&#34;,
-                &#34;value&#34;: summary[&#34;n_negative&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_negative&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Negative (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_negative&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_negative&#34;]),
                 &#34;alert&#34;: False,
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
                 &#34;alert&#34;: False,
             },
         ]
     )
 
     mini_histo = Image(
-        mini_histogram(*summary[&#34;histogram&#34;]),
+        mini_histogram(config, *summary[&#34;histogram&#34;]),
         image_format=image_format,
         alt=&#34;Mini histogram&#34;,
     )
@@ -1292,18 +1284,43 @@ __all__ = [
 
     quantile_statistics = Table(
         [
-            {&#34;name&#34;: &#34;Minimum&#34;, &#34;value&#34;: summary[&#34;min&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;5-th percentile&#34;, &#34;value&#34;: summary[&#34;5%&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Q1&#34;, &#34;value&#34;: summary[&#34;25%&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;median&#34;, &#34;value&#34;: summary[&#34;50%&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Q3&#34;, &#34;value&#34;: summary[&#34;75%&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;95-th percentile&#34;, &#34;value&#34;: summary[&#34;95%&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Maximum&#34;, &#34;value&#34;: summary[&#34;max&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Range&#34;, &#34;value&#34;: summary[&#34;range&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Minimum&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;min&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;5-th percentile&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;5%&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;Q1&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;25%&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;median&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;50%&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;Q3&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;75%&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;95-th percentile&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;95%&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;Maximum&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;max&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;Range&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;range&#34;], precision=config.report.precision
+                ),
+            },
             {
                 &#34;name&#34;: &#34;Interquartile range (IQR)&#34;,
-                &#34;value&#34;: summary[&#34;iqr&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;iqr&#34;], precision=config.report.precision),
             },
         ],
         name=&#34;Quantile statistics&#34;,
@@ -1313,33 +1330,48 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Standard deviation&#34;,
-                &#34;value&#34;: summary[&#34;std&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;std&#34;], precision=config.report.precision),
             },
             {
                 &#34;name&#34;: &#34;Coefficient of variation (CV)&#34;,
-                &#34;value&#34;: summary[&#34;cv&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;cv&#34;], precision=config.report.precision),
             },
-            {&#34;name&#34;: &#34;Kurtosis&#34;, &#34;value&#34;: summary[&#34;kurtosis&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Mean&#34;, &#34;value&#34;: summary[&#34;mean&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Kurtosis&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;kurtosis&#34;], precision=config.report.precision
+                ),
+            },
+            {
+                &#34;name&#34;: &#34;Mean&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;mean&#34;], precision=config.report.precision
+                ),
+            },
             {
                 &#34;name&#34;: &#34;Median Absolute Deviation (MAD)&#34;,
-                &#34;value&#34;: summary[&#34;mad&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;mad&#34;], precision=config.report.precision),
             },
             {
                 &#34;name&#34;: &#34;Skewness&#34;,
-                &#34;value&#34;: summary[&#34;skewness&#34;],
-                &#34;fmt&#34;: &#34;fmt_numeric&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;skewness&#34;], precision=config.report.precision
+                ),
                 &#34;class&#34;: &#34;alert&#34; if &#34;skewness&#34; in summary[&#34;warn_fields&#34;] else &#34;&#34;,
             },
-            {&#34;name&#34;: &#34;Sum&#34;, &#34;value&#34;: summary[&#34;sum&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
-            {&#34;name&#34;: &#34;Variance&#34;, &#34;value&#34;: summary[&#34;variance&#34;], &#34;fmt&#34;: &#34;fmt_numeric&#34;},
+            {
+                &#34;name&#34;: &#34;Sum&#34;,
+                &#34;value&#34;: fmt_numeric(summary[&#34;sum&#34;], precision=config.report.precision),
+            },
+            {
+                &#34;name&#34;: &#34;Variance&#34;,
+                &#34;value&#34;: fmt_numeric(
+                    summary[&#34;variance&#34;], precision=config.report.precision
+                ),
+            },
             {
                 &#34;name&#34;: &#34;Monotonicity&#34;,
-                &#34;value&#34;: summary[&#34;monotonic&#34;],
-                &#34;fmt&#34;: &#34;fmt_monotonic&#34;,
+                &#34;value&#34;: fmt_monotonic(summary[&#34;monotonic&#34;]),
             },
         ],
         name=&#34;Descriptive statistics&#34;,
@@ -1353,7 +1385,7 @@ __all__ = [
     )
 
     hist = Image(
-        histogram(*summary[&#34;histogram&#34;]),
+        histogram(config, *summary[&#34;histogram&#34;]),
         image_format=image_format,
         alt=&#34;Histogram&#34;,
         caption=f&#34;&lt;strong&gt;Histogram with fixed size bins&lt;/strong&gt; (bins={len(summary[&#39;histogram&#39;][1]) - 1})&#34;,
@@ -1398,7 +1430,7 @@ __all__ = [
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.variables.render_url"><code class="name flex">
-<span>def <span class="ident">render_url</span></span>(<span>summary)</span>
+<span>def <span class="ident">render_url</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1406,14 +1438,14 @@ __all__ = [
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def render_url(summary):
+<pre><code class="python">def render_url(config: Settings, summary: dict) -&gt; dict:
     varid = summary[&#34;varid&#34;]
-    n_freq_table_max = config[&#34;n_freq_table_max&#34;].get(int)
+    n_freq_table_max = config.n_freq_table_max
 
-    n_obs_cat = config[&#34;vars&#34;][&#34;cat&#34;][&#34;n_obs&#34;].get(int)
-    redact = config[&#34;vars&#34;][&#34;cat&#34;][&#34;redact&#34;].get(bool)
+    n_obs_cat = config.vars.cat.n_obs
+    redact = config.vars.cat.redact
 
-    template_variables = render_common(summary)
+    template_variables = render_common(config, summary)
 
     keys = [&#34;scheme&#34;, &#34;netloc&#34;, &#34;path&#34;, &#34;query&#34;, &#34;fragment&#34;]
     for url_part in keys:
@@ -1485,32 +1517,27 @@ __all__ = [
         [
             {
                 &#34;name&#34;: &#34;Distinct&#34;,
-                &#34;value&#34;: summary[&#34;n_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_distinct&#34;]),
                 &#34;alert&#34;: &#34;n_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Distinct (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_distinct&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_distinct&#34;]),
                 &#34;alert&#34;: &#34;p_distinct&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing&#34;,
-                &#34;value&#34;: summary[&#34;n_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt&#34;,
+                &#34;value&#34;: fmt(summary[&#34;n_missing&#34;]),
                 &#34;alert&#34;: &#34;n_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Missing (%)&#34;,
-                &#34;value&#34;: summary[&#34;p_missing&#34;],
-                &#34;fmt&#34;: &#34;fmt_percent&#34;,
+                &#34;value&#34;: fmt_percent(summary[&#34;p_missing&#34;]),
                 &#34;alert&#34;: &#34;p_missing&#34; in summary[&#34;warn_fields&#34;],
             },
             {
                 &#34;name&#34;: &#34;Memory size&#34;,
-                &#34;value&#34;: summary[&#34;memory_size&#34;],
-                &#34;fmt&#34;: &#34;fmt_bytesize&#34;,
+                &#34;value&#34;: fmt_bytesize(summary[&#34;memory_size&#34;]),
                 &#34;alert&#34;: False,
             },
         ]

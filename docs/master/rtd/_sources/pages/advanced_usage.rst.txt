@@ -15,15 +15,15 @@ General settings
 The configuration can be changed in the following ways:
 
 .. code-block:: python
-  :caption: Configuration example
+   :caption: Configuration example
 
-  # Change the config when creating the report
-  profile = df.profile_report(title="Pandas Profiling Report", pool_size=1)
+    # Change the config when creating the report
+    profile = df.profile_report(title="Pandas Profiling Report", pool_size=1)
 
-  # Change the config after
-  profile.set_variable("html.minify_html", False)
+    # Change the config after
+    profile.config.html.minify_html = False
 
-  profile.to_file("output.html")
+    profile.to_file("output.html")
 
 Variable summary settings
 -------------------------
@@ -38,25 +38,23 @@ Variable summary settings
   :caption: Configuration example
 
   profile = df.profile_report(
-  	sort='ascending',
-  	vars={
-	    'num':{'low_categorical_threshold': 0},
-	    'cat':{
-	      'length':True,
-	      'characters':False,
-	      'words':False,
-	      'n_obs': 5,
-	    }
-  	}
+      sort="ascending",
+      vars={
+          "num": {"low_categorical_threshold": 0},
+          "cat": {
+              "length": True,
+              "characters": False,
+              "words": False,
+              "n_obs": 5,
+          },
+      },
   )
 
-  profile.set_variable('variables.descriptions',
-      {
-        'files': 'Files in the filesystem',
-        'datec': 'Creation date',
-        'datem': 'Modification date',
-      }
-  )
+  profile.config.variables.descriptions = {
+      "files": "Files in the filesystem",
+      "datec": "Creation date",
+      "datem": "Modification date",
+  }
 
   profile.to_file("report.html")
 
@@ -73,10 +71,10 @@ Missing data overview plots
   :caption: Configuration example: disable heatmap and dendrogram for large datasets
 
   profile = df.profile_report(
-  	missing_diagrams={
-	    'heatmap': False,
-	    'dendrogram': False,
-  	}
+      missing_diagrams={
+          "heatmap": False,
+          "dendrogram": False,
+      }
   )
   profile.to_file("report.html")
 
@@ -94,7 +92,7 @@ Disable all correlations:
 
 .. code-block:: python
 
-   profile = df.profile_report(
+    profile = df.profile_report(
         title="Report without correlations",
         correlations={
             "pearson": {"calculate": False},
@@ -106,7 +104,7 @@ Disable all correlations:
     )
 
     # or using a shorthand that is available for correlations
-       profile = df.profile_report(
+    profile = df.profile_report(
         title="Report without correlations",
         correlations=None,
     )
@@ -156,58 +154,38 @@ It's possible to disable certain groups of features through configuration shorth
 .. code-block:: python
 
     # Disable samples, correlations, missing diagrams and duplicates at once
-    r = ProfileReport(samples=None, correlations=None, missing_diagrams=None, duplicates=None, interactions=None)
-
-    # Or use the .set_variable method
-    r = ProfileReport()
-    r.set_variable("samples", None)
-    r.set_variable("duplicates", None)
-    r.set_variable("correlations", None)
-    r.set_variable("missing_diagrams", None)
-    r.set_variable("interactions", None)
-
-
+    r = ProfileReport(
+        samples=None,
+        correlations=None,
+        missing_diagrams=None,
+        duplicates=None,
+        interactions=None,
+    )
 
 
 Customise plots
 ---------------
-
-A way how to pass arguments to the underlying matplotlib is to use the ``plot`` argument. It is possible to change the default format of images to png (default svg) using the key-pair ``image_format: "png"`` and also the resolution of the image using ``dpi: 800``. 
-
+A way how to pass arguments to the underlying matplotlib is to use the ``plot`` argument. It is possible to change the default format of images to png (default svg) using the key-pair ``image_format: "png"`` and also the resolution of the image using ``dpi: 800``.
 An example would be:
 
 .. code-block:: python
 
-	profile = ProfileReport(planets, title='Pandas Profiling Report', explorative=True,
-			       plot={
-				   'dpi':200,
-				   'image_format': 'png'
-			       })
-
-
-Furthermore, it is possible to change the default values of histograms, the options for that are the following:
-
-    histogram:
-            x_axis_labels: True
-
-    # Number of bins (set to 0 to automatically detect the bin size)
-            bins: 50
-
-    # Maximum number of bins (when bins=0)
-            max_bins: 250
-
-
-
-
+    profile = ProfileReport(
+        planets,
+        title="Pandas Profiling Report",
+        explorative=True,
+        plot={"dpi": 200, "image_format": "png"},
+    )
 
 Customise correlation matrix
 -----------------------------
+It's possible to directly access the correlation matrix as well.
+That is done with the ``plot`` argument and then with the ``correlation`` key.
+It is possible to customise the palette, one can use the following list used in seaborn or create `their own custom matplotlib palette <https://matplotlib.org/stable/gallery/color/custom_cmap.html>`_.
+Supported values are:
 
-It's possible to directly access the correlation matrix as well. That is done with the ``plot`` argument and then with the `correlation` key. It is possible to customise the palett, one can use the following list used in seaborn or create [their own custom matplotlib palette](https://matplotlib.org/stable/gallery/color/custom_cmap.html). Supported values are 
-
-```
 'Accent', 'Accent_r', 'Blues', 'Blues_r', 'BrBG', 'BrBG_r', 'BuGn', 'BuGn_r', 'BuPu', 'BuPu_r', 'CMRmap', 'CMRmap_r', 'Dark2', 'Dark2_r', 'GnBu', 'GnBu_r', 'Greens', 'Greens_r', 'Greys', 'Greys_r', 'OrRd', 'OrRd_r', 'Oranges', 'Oranges_r', 'PRGn', 'PRGn_r', 'Paired', 'Paired_r', 'Pastel1', 'Pastel1_r', 'Pastel2', 'Pastel2_r', 'PiYG', 'PiYG_r', 'PuBu', 'PuBuGn', 'PuBuGn_r', 'PuBu_r', 'PuOr', 'PuOr_r', 'PuRd', 'PuRd_r', 'Purples', 'Purples_r', 'RdBu', 'RdBu_r', 'RdGy', 'RdGy_r', 'RdPu', 'RdPu_r', 'RdYlBu', 'RdYlBu_r', 'RdYlGn', 'RdYlGn_r', 'Reds', 'Reds_r', 'Set1', 'Set1_r', 'Set2', 'Set2_r', 'Set3', 'Set3_r', 'Spectral', 'Spectral_r', 'Wistia', 'Wistia_r', 'YlGn', 'YlGnBu', 'YlGnBu_r', 'YlGn_r', 'YlOrBr', 'YlOrBr_r', 'YlOrRd', 'YlOrRd_r', 'afmhot', 'afmhot_r', 'autumn', 'autumn_r', 'binary', 'binary_r', 'bone', 'bone_r', 'brg', 'brg_r', 'bwr', 'bwr_r', 'cividis', 'cividis_r', 'cool', 'cool_r', 'coolwarm', 'coolwarm_r', 'copper', 'copper_r', 'crest', 'crest_r', 'cubehelix', 'cubehelix_r', 'flag', 'flag_r', 'flare', 'flare_r', 'gist_earth', 'gist_earth_r', 'gist_gray', 'gist_gray_r', 'gist_heat', 'gist_heat_r', 'gist_ncar', 'gist_ncar_r', 'gist_rainbow', 'gist_rainbow_r', 'gist_stern', 'gist_stern_r', 'gist_yarg', 'gist_yarg_r', 'gnuplot', 'gnuplot2', 'gnuplot2_r', 'gnuplot_r', 'gray', 'gray_r', 'hot', 'hot_r', 'hsv', 'hsv_r', 'icefire', 'icefire_r', 'inferno', 'inferno_r', 'jet', 'jet_r', 'magma', 'magma_r', 'mako', 'mako_r', 'nipy_spectral', 'nipy_spectral_r', 'ocean', 'ocean_r', 'pink', 'pink_r', 'plasma', 'plasma_r', 'prism', 'prism_r', 'rainbow', 'rainbow_r', 'rocket', 'rocket_r', 'seismic', 'seismic_r', 'spring', 'spring_r', 'summer', 'summer_r', 'tab10', 'tab10_r', 'tab20', 'tab20_r', 'tab20b', 'tab20b_r', 'tab20c', 'tab20c_r', 'terrain', 'terrain_r', 'turbo', 'turbo_r', 'twilight', 'twilight_r', 'twilight_shifted', 'twilight_shifted_r', 'viridis', 'viridis_r', 'vlag', 'vlag_r', 'winter', 'winter_r'
-```
+
 
 An example can be:
 
@@ -215,13 +193,12 @@ An example can be:
 
   from pandas_profiling import ProfileReport
 
-  profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True,
-                       plot={
-                           'correlation':{
-                               'cmap': 'RdBu_r',
-                               'bad': '#000000'}}
-                       )
-
+  profile = ProfileReport(
+      df,
+      title="Pandas Profiling Report",
+      explorative=True,
+      plot={"correlation": {"cmap": "RdBu_r", "bad": "#000000"}},
+  )
 
 Similarly, one can change the palette for *Missing values* using the ``missing`` argument, eg:
 
@@ -229,11 +206,19 @@ Similarly, one can change the palette for *Missing values* using the ``missing``
 
   from pandas_profiling import ProfileReport
 
-  profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True,
-                       plot={
-                           'missing':{
-                               'cmap': 'RdBu_r'}}
-                       )
+  profile = ProfileReport(
+      df,
+      title="Pandas Profiling Report",
+      explorative=True,
+      plot={"missing": {"cmap": "RdBu_r"}},
+  )
 
-
-
+Multiple runs
+-------------
+The ProfileReport caches intermediary results for improved performance.
+For rendering both the HTMl report write the statistics as a JSON file will reuse the same computations.
+If you modify the configuration in between runs, you should either create a new ``ProfileReport`` object or invalidate the relevant cached values.
+If the config for only the HTML report is changed (for instance you would like to tune the theme), then you only need to reset the cached HTML report.
+You can use the ``report.invalidate_cache()`` method for this.
+Passing the values "rendering" only resets previously rendered reports (HTML, JSON or widgets).
+Alternatively "report" also resets the report structure.

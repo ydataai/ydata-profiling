@@ -28,14 +28,16 @@
 </summary>
 <pre><code class="python">from typing import Any
 
+import pandas as pd
+
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class Duplicate(ItemRenderer):
-    def __init__(self, name, duplicate, **kwargs):
+    def __init__(self, name: str, duplicate: pd.DataFrame, **kwargs):
         super().__init__(&#34;duplicate&#34;, {&#34;duplicate&#34;: duplicate}, name=name, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Duplicate&#34;
 
     def render(self) -&gt; Any:
@@ -53,7 +55,7 @@ class Duplicate(ItemRenderer):
 <dl>
 <dt id="pandas_profiling.report.presentation.core.duplicate.Duplicate"><code class="flex name class">
 <span>class <span class="ident">Duplicate</span></span>
-<span>(</span><span>name, duplicate, **kwargs)</span>
+<span>(</span><span>name: str, duplicate: pandas.core.frame.DataFrame, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -63,10 +65,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Duplicate(ItemRenderer):
-    def __init__(self, name, duplicate, **kwargs):
+    def __init__(self, name: str, duplicate: pd.DataFrame, **kwargs):
         super().__init__(&#34;duplicate&#34;, {&#34;duplicate&#34;: duplicate}, name=name, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -&gt; str:
         return &#34;Duplicate&#34;
 
     def render(self) -&gt; Any:

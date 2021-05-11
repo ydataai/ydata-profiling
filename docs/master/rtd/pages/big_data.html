@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Big Datasets &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>Big Datasets &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -220,12 +224,13 @@ Whether a computation scales to big data not only depends on it’s complexity, 
 <p>You may try the options described in the following sections if calculation time is a bottleneck.</p>
 <div class="section" id="minimal-mode">
 <h2>Minimal mode<a class="headerlink" href="#minimal-mode" title="Permalink to this headline">¶</a></h2>
-<p><cite>pandas-profiling</cite> includes a minimal configuration file, with more expensive computations turned off by default. This is a great starting point for larger datasets.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> includes a minimal configuration file, with more expensive computations turned off by default.
+This is a great starting point for larger datasets.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">large_dataset</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><em>(Minimal mode was introduced in `pandas-profiling` v2.4.0)</em></p>
+<p><em>(Minimal mode was introduced in ``pandas-profiling`` v2.4.0)</em></p>
 <p>The configuration file can be found here: <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">config_minimal.yaml</a>.</p>
 </div>
 <div class="section" id="sample">
@@ -250,7 +255,9 @@ An example of how to do this:</p>
 </div>
 <div class="section" id="concurrency">
 <h2>Concurrency<a class="headerlink" href="#concurrency" title="Permalink to this headline">¶</a></h2>
-<p><cite>pandas-profiling</cite> is under active development. One highly desired feature is to add a scalable backend such as <a class="reference external" href="https://github.com/modin-project/modin">modin</a>, <a class="reference external" href="https://spark.apache.org/">spark</a> or <a class="reference external" href="https://dask.org/">dask</a>. Keep an eye on the <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues">GitHub</a> page to follow the updates on concurrent implementation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is under active development.
+One highly desired feature is to add a scalable backend such as <a class="reference external" href="https://github.com/modin-project/modin">modin</a>, <a class="reference external" href="https://spark.apache.org/">spark</a> or <a class="reference external" href="https://dask.org/">dask</a>.
+Keep an eye on the <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues">GitHub</a> page to follow the updates on concurrent implementation.</p>
 </div>
 </div>
 

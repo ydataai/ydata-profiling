@@ -14,18 +14,16 @@
    .. autosummary::
    
       ~ProfileReport.__init__
-      ~ProfileReport.clear_config
       ~ProfileReport.dump
       ~ProfileReport.dumps
       ~ProfileReport.get_description
       ~ProfileReport.get_duplicates
       ~ProfileReport.get_rejected_variables
       ~ProfileReport.get_sample
+      ~ProfileReport.invalidate_cache
       ~ProfileReport.load
       ~ProfileReport.loads
       ~ProfileReport.preprocess
-      ~ProfileReport.set_variable
-      ~ProfileReport.set_variables
       ~ProfileReport.to_expectation_suite
       ~ProfileReport.to_file
       ~ProfileReport.to_html
@@ -41,6 +39,7 @@
 
    .. autosummary::
    
+      ~ProfileReport.config
       ~ProfileReport.description_set
       ~ProfileReport.df
       ~ProfileReport.df_hash
@@ -48,7 +47,6 @@
       ~ProfileReport.json
       ~ProfileReport.report
       ~ProfileReport.summarizer
-      ~ProfileReport.title
       ~ProfileReport.typeset
       ~ProfileReport.widgets
    

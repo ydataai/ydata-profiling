@@ -7,12 +7,15 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Integrations &mdash; pandas-profiling 2.13.0 documentation</title>
+  <title>Integrations &mdash; pandas-profiling 3.0.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -30,6 +33,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -237,36 +241,36 @@
 <h1>Integrations<a class="headerlink" href="#integrations" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="pandas">
 <h2>Pandas<a class="headerlink" href="#pandas" title="Permalink to this headline">¶</a></h2>
-<p><cite>pandas-profiling</cite> is built on <cite>pandas</cite> and <cite>numpy</cite>.
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is built on <code class="docutils literal notranslate"><span class="pre">pandas</span></code> and <code class="docutils literal notranslate"><span class="pre">numpy</span></code>.
 Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata.
 Read more on <a class="reference external" href="https://pandas.pydata.org/docs/user_guide/io.html">supported formats by Pandas</a>.</p>
 </div>
 <div class="section" id="other-frameworks">
 <h2>Other frameworks<a class="headerlink" href="#other-frameworks" title="Permalink to this headline">¶</a></h2>
 <p>If you have data in another Python framework, you can use pandas-profiling by converting to a pandas DataFrame. For large datasets you might need to sample. Direct integrations are not yet supported.</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">PySpark to Pandas</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert spark RDD to a pandas DataFrame</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">PySpark to Pandas</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Convert spark RDD to a pandas DataFrame</span>
+ <span class="n">df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Dask to Pandas</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Dask to Pandas</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Convert dask DataFrame to a pandas DataFrame</span>
  <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Vaex to Pandas</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Vaex to Pandas</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Convert vaex DataFrame to a pandas DataFrame</span>
  <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_pandas_df</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Modin to Pandas</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Modin to Pandas</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert modin DataFrame to pandas DataFrame</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">_to_pandas</span><span class="p">()</span>
 
@@ -304,14 +308,16 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 </div>
 <div class="section" id="streamlit">
 <h3>Streamlit<a class="headerlink" href="#streamlit" title="Permalink to this headline">¶</a></h3>
-<p><cite>Streamlit &lt;https://www.streamlit.io&gt;</cite> is an open-source Python library made to build web-apps for machine learning and data science.</p>
+<p><a class="reference external" href="https://www.streamlit.io">Streamlit</a> is an open-source Python library made to build web-apps for machine learning and data science.</p>
 <img alt="../_images/streamlit-integration.gif" src="../_images/streamlit-integration.gif" />
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pandas_profiling</span>
 <span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
 <span class="kn">from</span> <span class="nn">streamlit_pandas_profiling</span> <span class="kn">import</span> <span class="n">st_profile_report</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv&quot;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv&quot;</span>
+<span class="p">)</span>
 <span class="n">pr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">()</span>
 
 <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Pandas Profiling in Streamlit&quot;</span><span class="p">)</span>
@@ -319,7 +325,7 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 <span class="n">st_profile_report</span><span class="p">(</span><span class="n">pr</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can install this <cite>Pandas Profiling component &lt;https://github.com/Ghasel/streamlit-pandas-profiling&gt;</cite> for Streamlit with pip:</p>
+<p>You can install this <a class="reference external" href="https://github.com/Ghasel/streamlit-pandas-profiling">Pandas Profiling component</a> for Streamlit with pip:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install streamlit-pandas-profiling</span>
 </pre></div>
 </div>
@@ -348,35 +354,36 @@ For standard formatted CSV files that can be read immediately by pandas, you can
 </div>
 <div class="section" id="pipeline-integrations">
 <h2>Pipeline Integrations<a class="headerlink" href="#pipeline-integrations" title="Permalink to this headline">¶</a></h2>
-<p>With Python, command-line and Jupyter interfaces, <cite>pandas-profiling</cite> integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect.</p>
+<p>With Python, command-line and Jupyter interfaces, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect.</p>
 <p>Integration with <a class="reference external" href="https://github.com/dagster-io/dagster">Dagster</a> or <a class="reference external" href="https://github.com/prefecthq/prefect">Prefect</a> can be achieved in a similar way as with Airflow.</p>
 <div class="section" id="airflow">
 <h3>Airflow<a class="headerlink" href="#airflow" title="Permalink to this headline">¶</a></h3>
 <p>Integration with Airflow can be easily achieved through the <a class="reference external" href="https://airflow.apache.org/docs/stable/_api/airflow/operators/bash_operator/index.html">BashOperator</a> or the <a class="reference external" href="https://airflow.apache.org/docs/stable/_api/airflow/operators/python_operator/index.html#airflow.operators.python_operator.PythonOperator">PythonOperator</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the command line interface</span>
 <span class="n">profiling_task</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
-  <span class="n">task_id</span><span class="o">=</span><span class="s1">&#39;Profile Data&#39;</span><span class="p">,</span>
-  <span class="n">bash_command</span><span class="o">=</span><span class="s1">&#39;pandas_profiling dataset.csv report.html&#39;</span><span class="p">,</span>
-  <span class="n">dag</span><span class="o">=</span><span class="n">dag</span><span class="p">,</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;Profile Data&quot;</span><span class="p">,</span>
+    <span class="n">bash_command</span><span class="o">=</span><span class="s2">&quot;pandas_profiling dataset.csv report.html&quot;</span><span class="p">,</span>
+    <span class="n">dag</span><span class="o">=</span><span class="n">dag</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the Python inferface</span>
 <span class="kn">import</span> <span class="nn">pandas_profiling</span>
 
-<span class="k">def</span> <span class="nf">profile_data</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">report_file</span><span class="p">):</span>
-  <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-  <span class="n">report</span> <span class="o">=</span> <span class="n">pandas_profiling</span><span class="o">.</span><span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Profiling Report in Airflow&#39;</span><span class="p">)</span>
-  <span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">report_file</span><span class="p">)</span>
 
-  <span class="k">return</span> <span class="s1">&#39;Report generated at </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">report_file</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">profile_data</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">report_file</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">pandas_profiling</span><span class="o">.</span><span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Profiling Report in Airflow&quot;</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">report_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s2">&quot;Report generated at </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">report_file</span><span class="p">)</span>
 
 
 <span class="n">profiling_task2</span> <span class="o">=</span> <span class="n">PythonOperator</span><span class="p">(</span>
-      <span class="n">task_id</span><span class="o">=</span><span class="s1">&#39;Profile Data&#39;</span><span class="p">,</span>
-      <span class="n">op_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;file_name&#39;</span><span class="p">:</span> <span class="s1">&#39;dataset.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;report_file&#39;</span><span class="p">:</span> <span class="s1">&#39;report.html&#39;</span><span class="p">},</span>
-      <span class="n">python_callable</span><span class="o">=</span><span class="n">profile_data</span><span class="p">,</span>
-      <span class="n">dag</span><span class="o">=</span><span class="n">dag</span><span class="p">,</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s2">&quot;Profile Data&quot;</span><span class="p">,</span>
+    <span class="n">op_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file_name&quot;</span><span class="p">:</span> <span class="s2">&quot;dataset.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;report_file&quot;</span><span class="p">:</span> <span class="s2">&quot;report.html&quot;</span><span class="p">},</span>
+    <span class="n">python_callable</span><span class="o">=</span><span class="n">profile_data</span><span class="p">,</span>
+    <span class="n">dag</span><span class="o">=</span><span class="n">dag</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
