@@ -7,7 +7,7 @@ Changelog v2.10.1
 - Fixed error for empty dataframe `[664] <https://github.com/pandas-profiling/pandas-profiling/issues/664>`_
 - Fixed Jupyter notebook widget string rendering issue `[668] <https://github.com/pandas-profiling/pandas-profiling/issues/668>`_
 - Fixed histogram of string length with NaNs `[642] <https://github.com/pandas-profiling/pandas-profiling/issues/642>`_ and `[613] <https://github.com/pandas-profiling/pandas-profiling/issues/613>`_
-- Fixed slugify logic for interaction columns `[663] <https://github.com/pandas-profiling/pandas-profiling/issues/663>`
+- Fixed slugify logic for interaction columns `[663] <https://github.com/pandas-profiling/pandas-profiling/issues/663>`_
 
 📖 Documentation
 ^^^^^^^^^^^^^^^^

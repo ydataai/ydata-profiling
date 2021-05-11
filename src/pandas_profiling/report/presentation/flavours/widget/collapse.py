@@ -4,7 +4,7 @@ from pandas_profiling.report.presentation.core import Collapse
 
 
 class WidgetCollapse(Collapse):
-    def render(self):
+    def render(self) -> widgets.VBox:
         if self.content["button"].anchor_id == "toggle-correlation-description":
             collapse = "correlation"
         else:
@@ -15,7 +15,7 @@ class WidgetCollapse(Collapse):
 
         if collapse == "correlation":
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -> None:
                 if widg["new"]:
                     display = ""
                     grid = "50% 50%"
@@ -30,7 +30,7 @@ class WidgetCollapse(Collapse):
 
         else:
 
-            def toggle_func(widg):
+            def toggle_func(widg: dict) -> None:
                 if widg["new"]:
                     display = ""
                 else:

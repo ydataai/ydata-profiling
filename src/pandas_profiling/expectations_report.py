@@ -1,46 +1,49 @@
+from typing import Any, Optional
+
+import pandas as pd
+from visions import VisionsTypeset
+
+from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
 from pandas_profiling.model.handler import Handler
-from pandas_profiling.model.typeset import (
-    URL,
-    Boolean,
-    Categorical,
-    DateTime,
-    File,
-    Image,
-    Numeric,
-    Path,
-    Unsupported,
-)
 from pandas_profiling.utils.dataframe import slugify
 
 
-# Default handler
 class ExpectationHandler(Handler):
-    def __init__(self, typeset, *args, **kwargs):
+    """Default handler"""
+
+    def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
         mapping = {
-            Unsupported: [expectation_algorithms.generic_expectations],
-            Categorical: [expectation_algorithms.categorical_expectations],
-            Boolean: [expectation_algorithms.categorical_expectations],
-            Numeric: [expectation_algorithms.numeric_expectations],
-            URL: [expectation_algorithms.url_expectations],
-            File: [expectation_algorithms.file_expectations],
-            Path: [expectation_algorithms.path_expectations],
-            DateTime: [expectation_algorithms.datetime_expectations],
-            Image: [expectation_algorithms.image_expectations],
+            "Unsupported": [expectation_algorithms.generic_expectations],
+            "Categorical": [expectation_algorithms.categorical_expectations],
+            "Boolean": [expectation_algorithms.categorical_expectations],
+            "Numeric": [expectation_algorithms.numeric_expectations],
+            "URL": [expectation_algorithms.url_expectations],
+            "File": [expectation_algorithms.file_expectations],
+            "Path": [expectation_algorithms.path_expectations],
+            "DateTime": [expectation_algorithms.datetime_expectations],
+            "Image": [expectation_algorithms.image_expectations],
         }
         super().__init__(mapping, typeset, *args, **kwargs)
 
 
 class ExpectationsReport:
+    config: Settings
+    df: Optional[pd.DataFrame] = None
+
+    @property
+    def typeset(self) -> Optional[VisionsTypeset]:
+        return None
+
     def to_expectation_suite(
         self,
-        suite_name=None,
-        data_context=None,
-        save_suite=True,
-        run_validation=True,
-        build_data_docs=True,
-        handler=None,
-    ):
+        suite_name: Optional[str] = None,
+        data_context: Optional[Any] = None,
+        save_suite: bool = True,
+        run_validation: bool = True,
+        build_data_docs: bool = True,
+        handler: Optional[Handler] = None,
+    ) -> Any:
         """
         All parameters default to True to make it easier to access the full functionality of Great Expectations out of
         the box.
@@ -65,7 +68,7 @@ class ExpectationsReport:
 
         # Use report title if suite is empty
         if suite_name is None:
-            suite_name = slugify(self.title)
+            suite_name = slugify(self.config.title)
 
         # Use the default handler if none
         if handler is None:
@@ -83,7 +86,7 @@ class ExpectationsReport:
         batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
 
         # Obtain the profiling summary
-        summary = self.get_description()
+        summary = self.get_description()  # type: ignore
 
         # Dispatch to expectations per semantic variable type
         for name, variable_summary in summary["variables"].items():

@@ -1,39 +1,302 @@
-"""Configuration for the package is handled in this wrapper for confuse."""
-import argparse
-from pathlib import Path
-from typing import Union
+"""Configuration for the package."""
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
-import confuse
+from pydantic import BaseModel, BaseSettings, Field
 
-from pandas_profiling.utils.paths import get_config_default
+
+def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
+    """
+    Recursive merge dictionaries.
+
+    :param dict1: Base dictionary to merge.
+    :param dict2: Dictionary to merge on top of base dictionary.
+    :return: Merged dictionary
+    """
+    for key, val in dict1.items():
+        if isinstance(val, dict):
+            dict2_node = dict2.setdefault(key, {})
+            _merge_dictionaries(val, dict2_node)
+        else:
+            if key not in dict2:
+                dict2[key] = val
+
+    return dict2
+
+
+class Dataset(BaseModel):
+    """Metadata of the dataset"""
+
+    description: str = ""
+    creator: str = ""
+    author: str = ""
+    copyright_holder: str = ""
+    copyright_year: str = ""
+    url: str = ""
+
+
+class NumVars(BaseModel):
+    quantiles: List[float] = [0.05, 0.25, 0.5, 0.75, 0.95]
+    skewness_threshold: int = 20
+    low_categorical_threshold: int = 5
+    # Set to zero to disable
+    chi_squared_threshold: float = 0.999
+
+
+class CatVars(BaseModel):
+    length: bool = True
+    characters: bool = True
+    words: bool = True
+    cardinality_threshold: int = 50
+    n_obs: int = 5
+    # Set to zero to disable
+    chi_squared_threshold: float = 0.999
+    coerce_str_to_date: bool = False
+    redact: bool = False
+    histogram_largest: int = 50
+
+
+class BoolVars(BaseModel):
+    n_obs: int = 3
+
+    # string to boolean mapping dict
+    mappings: Dict[str, bool] = {
+        "t": True,
+        "f": False,
+        "yes": True,
+        "no": False,
+        "y": True,
+        "n": False,
+        "true": True,
+        "false": False,
+    }
+
+
+class FileVars(BaseModel):
+    active: bool = False
+
+
+class PathVars(BaseModel):
+    active: bool = False
+
+
+class ImageVars(BaseModel):
+    active: bool = False
+    exif: bool = True
+    hash: bool = True
+
+
+class UrlVars(BaseModel):
+    active: bool = False
+
+
+class Univariate(BaseModel):
+    num: NumVars = NumVars()
+    cat: CatVars = CatVars()
+    image: ImageVars = ImageVars()
+    bool: BoolVars = BoolVars()
+    path: PathVars = PathVars()
+    file: FileVars = FileVars()
+    url: UrlVars = UrlVars()
+
+
+class MissingPlot(BaseModel):
+    # Force labels when there are > 50 variables
+    # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+    force_labels: bool = True
+    cmap: str = "RdBu"
+
+
+class ImageType(Enum):
+    svg = "svg"
+    png = "png"
+
+
+class CorrelationPlot(BaseModel):
+    cmap: str = "RdBu"
+    bad: str = "#000000"
+
+
+class Histogram(BaseModel):
+    # Number of bins (set to 0 to automatically detect the bin size)
+    bins: int = 50
+    # Maximum number of bins (when bins=0)
+    max_bins: int = 250
+    x_axis_labels: bool = True
+
+
+class Pie(BaseModel):
+    # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+    max_unique: int = 10
+
+
+class Plot(BaseModel):
+    missing: MissingPlot = MissingPlot()
+    image_format: ImageType = ImageType.svg
+    correlation: CorrelationPlot = CorrelationPlot()
+    # PNG dpi
+    dpi: int = 800
+    histogram: Histogram = Histogram()
+    scatter_threshold: int = 1000
+    pie: Pie = Pie()
+
+
+class Theme(Enum):
+    united = "united"
+    flatly = "flatly"
+
+
+class Style(BaseModel):
+    primary_color: str = "#337ab7"
+    logo: str = ""
+    theme: Optional[Theme] = None
+
+
+class Html(BaseModel):
+    # Styling options for the HTML report
+    style: Style = Style()
+
+    # Show navbar
+    navbar_show: bool = True
+
+    # Minify the html
+    minify_html: bool = True
+
+    # Offline support
+    use_local_assets: bool = True
+
+    # If True, single file, else directory with assets
+    inline: bool = True
+
+    # Assets prefix if inline = True
+    assets_prefix: Optional[str] = None
+
+    # Internal usage
+    assets_path: Optional[str] = None
+
+    full_width: bool = False
+
+
+class Duplicates(BaseModel):
+    head: int = 10
+    key: str = "# duplicates"
+
+
+class Correlation(BaseModel):
+    key: str = ""
+    calculate: bool = Field(default=True)
+    warn_high_correlations: int = Field(default=10)
+    threshold: float = Field(default=0.5)
+
+
+class Correlations(BaseModel):
+    pearson: Correlation = Correlation(key="pearson")
+    spearman: Correlation = Correlation(key="spearman")
+
+
+class Interactions(BaseModel):
+    continuous: bool = True
+    # FIXME: validate with column names
+    targets: List[str] = []
+
+
+class Samples(BaseModel):
+    head: int = 10
+    tail: int = 10
+    random: int = 0
+
+
+class Variables(BaseModel):
+    descriptions: dict = {}
+
+
+class IframeAttribute(Enum):
+    src = "src"
+    srcdoc = "srcdoc"
+
+
+class Iframe(BaseModel):
+    height: str = "800px"
+    width: str = "100%"
+    attribute: IframeAttribute = IframeAttribute.srcdoc
+
+
+class Notebook(BaseModel):
+    """When in a Jupyter notebook"""
+
+    iframe: Iframe = Iframe()
+
+
+class Report(BaseModel):
+    precision: int = 10
+
+
+class Settings(BaseSettings):
+    # Title of the document
+    title: str = "Pandas Profiling Report"
+
+    dataset: Dataset = Dataset()
+    variables: Variables = Variables()
+    infer_dtypes: bool = True
+
+    # Show the description at each variable (in addition to the overview tab)
+    show_variable_description: bool = True
+
+    # Number of workers (0=multiprocessing.cpu_count())
+    pool_size: int = 0
+
+    # Show the progress bar
+    progress_bar: bool = True
+
+    # Per variable type description settings
+    vars: Univariate = Univariate()
+
+    # Sort the variables. Possible values: ascending, descending or None (leaves original sorting)
+    sort: Optional[str] = None
+
+    missing_diagrams: Dict[str, bool] = {
+        "bar": True,
+        "matrix": True,
+        "dendrogram": True,
+        "heatmap": True,
+    }
+
+    correlations: Dict[str, Correlation] = {
+        "spearman": Correlation(key="spearman"),
+        "pearson": Correlation(key="pearson"),
+        "kendall": Correlation(key="kendall"),
+        "cramers": Correlation(key="cramers"),
+        "phi_k": Correlation(key="phi_k"),
+    }
+
+    interactions: Interactions = Interactions()
+
+    categorical_maximum_correlation_distinct: int = 100
+    # Use `deep` flag for memory_usage
+    memory_deep: bool = False
+    plot: Plot = Plot()
+    duplicates: Duplicates = Duplicates()
+    samples: Samples = Samples()
+
+    reject_variables: bool = True
+
+    # The number of observations to show
+    n_obs_unique: int = 10
+    n_freq_table_max: int = 10
+    n_extreme_obs: int = 10
+
+    # Report rendering
+    report: Report = Report()
+    html: Html = Html()
+    notebook = Notebook()
+
+    def update(self, updates: dict) -> "Settings":
+        update = _merge_dictionaries(self.dict(), updates)
+        return self.parse_obj(self.copy(update=update))
 
 
 class Config:
-    """This is a wrapper for the python confuse package, which handles setting and getting configuration variables via
-    various ways (notably via argparse and kwargs).
-    """
-
-    config = None
-    """The confuse.Configuration object."""
-
-    def __init__(self):
-        """The config constructor should be called only once."""
-        if self.config is None:
-            self.clear()
-        else:
-            self.set_file(str(get_config_default()))
-
-    def set_file(self, file_name: Union[str, Path]) -> None:
-        """
-        Set the config from a file
-
-        Args:
-            file_name: file name
-        """
-        if self.config is not None:
-            self.config.set_file(str(file_name))
-
-    _arg_groups = {
+    arg_groups: Dict[str, Any] = {
         "sensitive": {
             "samples": None,
             "duplicates": None,
@@ -42,7 +305,7 @@ class Config:
         "dark_mode": {
             "html": {
                 "style": {
-                    "theme": "flatly",
+                    "theme": Theme.flatly,
                     "primary_color": "#2c3e50",
                 }
             }
@@ -50,7 +313,7 @@ class Config:
         "orange_mode": {
             "html": {
                 "style": {
-                    "theme": "united",
+                    "theme": Theme.united,
                     "primary_color": "#d34615",
                 }
             }
@@ -69,32 +332,6 @@ class Config:
             "memory_deep": True,
         },
     }
-
-    def set_arg_group(self, name):
-        for key, value in self._arg_groups[name].items():
-            self.set_kwargs({key: value})
-
-    def set_args(self, namespace: argparse.Namespace, dots: bool) -> None:
-        """
-        Set config variables based on the argparse Namespace object.
-
-        Args:
-            namespace: Dictionary or Namespace to overlay this config with. Supports nested Dictionaries and Namespaces.
-            dots: If True, any properties on namespace that contain dots (.) will be broken down into child dictionaries.
-        """
-        if self.config is not None:
-            self.config.set_args(namespace, dots)
-
-    def _set_kwargs(self, reference, values: dict):
-        """Helper function to set config variables based on kwargs."""
-        for key, value in values.items():
-            if key in reference:
-                if type(value) == dict:
-                    self._set_kwargs(reference[key], value)
-                else:
-                    reference[key].set(value)
-            else:
-                raise ValueError(f'Config parameter "{key}" does not exist.')
 
     _shorthands = {
         "dataset": {
@@ -123,56 +360,14 @@ class Config:
         },
     }
 
-    def _handle_shorthands(self, kwargs):
-        for key, value in self._shorthands.items():
-            if key in kwargs and kwargs[key] is None:
-                kwargs[key] = value
+    @staticmethod
+    def get_arg_groups(key: str) -> dict:
+        kwargs = Config.arg_groups[key]
+        return Config.shorthands(kwargs)
+
+    @staticmethod
+    def shorthands(kwargs: dict) -> dict:
+        for key, value in list(kwargs.items()):
+            if value is None and key in Config._shorthands:
+                kwargs[key] = Config._shorthands[key]
         return kwargs
-
-    def _handle_shorthand(self, key, value):
-        if key in self._shorthands and value is None:
-            return self._shorthands[key]
-        else:
-            return value
-
-    def set_kwargs(self, kwargs) -> None:
-        """
-        Helper function to set config variables based on kwargs.
-
-        Args:
-            kwargs: the arguments passed to the .profile_report() function
-
-        """
-        kwargs = self._handle_shorthands(kwargs)
-
-        self._set_kwargs(self.config, kwargs)
-
-    def __getitem__(self, item):
-        return self.config[item]
-
-    def __setitem__(self, key, value):
-        value = self._handle_shorthand(key, value)
-        self.config[key].set(value)
-
-    def dump(self):
-        return self.config.dump()
-
-    def update(self, other):
-        if not isinstance(other, Config):
-            raise ValueError("Can only update config from a config object")
-        self.config = other.config
-
-    def clear(self):
-        self.config = confuse.Configuration("PandasProfiling", __name__, read=False)
-        self.set_file(str(get_config_default()))
-
-    @property
-    def is_default(self):
-        default_config = Config()
-        return self == default_config
-
-    def __eq__(self, other):
-        return isinstance(other, Config) and self.dump() == other.dump()
-
-
-config = Config()

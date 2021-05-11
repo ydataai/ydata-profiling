@@ -17,7 +17,6 @@ IF "%1" == "test" (
     pytest tests/unit/
     pytest tests/issues/
     pytest --nbval tests/notebooks/
-    flake8 . --select=E9,F63,F7,F82 --show-source --statistics
     ECHO "Tests completed!"
     GOTO end
 )
@@ -37,16 +36,6 @@ IF "%1" == "examples" (
     GOTO end
 )
 
-IF "%1" == "pypi_package" (
-    make install
-    check-manifest
-    python setup.py sdist bdist_wheel
-    twine check dist/*
-    twine upload --skip-existing dist/*
-    ECHO "PyPi package completed"
-    GOTO end
-)
-
 IF "%1" == "lint" (
     pre-commit run --all-files
     GOTO end
@@ -54,11 +43,6 @@ IF "%1" == "lint" (
 
 IF "%1" == "install" (
 	pip install -e .[notebook]
-	GOTO end
-)
-
-if "%1" == "typing" (
-	pytest --mypy -m mypy .
 	GOTO end
 )
 
@@ -73,7 +57,6 @@ IF "%1%" == "all" (
     make examples
     make docs
     make test
-    make typing
     GOTO end
 )
 

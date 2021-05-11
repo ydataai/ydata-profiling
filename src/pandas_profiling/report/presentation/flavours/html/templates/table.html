@@ -6,7 +6,7 @@
         {% for row in rows %}
         <tr{% if 'alert' in row and row['alert'] %} class="alert"{% endif %}>
             <th>{{ row['name'] }}</th>
-            <td>{{ row['value'] | dynamic_filter(row['fmt']) }}</td>
+            <td>{{ row['value'] }}</td>
         </tr>
         {% endfor %}
     </tbody>

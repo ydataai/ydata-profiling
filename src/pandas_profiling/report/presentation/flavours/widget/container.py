@@ -1,17 +1,19 @@
+from typing import List
+
 from ipywidgets import widgets
 
 from pandas_profiling.report.presentation.core.container import Container
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
-def get_name(item: Renderable):
+def get_name(item: Renderable) -> str:
     if hasattr(item, "name"):
         return item.name
     else:
         return item.anchor_id
 
 
-def get_tabs(items):
+def get_tabs(items: List[Renderable]) -> widgets.Tab:
     children = []
     titles = []
     for item in items:
@@ -25,11 +27,11 @@ def get_tabs(items):
     return tab
 
 
-def get_list(items):
+def get_list(items: List[Renderable]) -> widgets.VBox:
     return widgets.VBox([item.render() for item in items])
 
 
-def get_named_list(items):
+def get_named_list(items: List[Renderable]) -> widgets.VBox:
     return widgets.VBox(
         [
             widgets.VBox(
@@ -40,7 +42,7 @@ def get_named_list(items):
     )
 
 
-def get_row(items):
+def get_row(items: List[Renderable]) -> widgets.GridBox:
     if len(items) == 1:
         layout = widgets.Layout(width="100%", grid_template_columns="100%")
     elif len(items) == 2:
@@ -55,15 +57,32 @@ def get_row(items):
     return widgets.GridBox([item.render() for item in items], layout=layout)
 
 
-def get_batch_grid(items, batch_size, titles):
+def get_batch_grid(
+    items: List[Renderable], batch_size: int, titles: bool, subtitles: bool
+) -> widgets.GridBox:
     layout = widgets.Layout(
         width="100%",
         grid_template_columns=" ".join([f"{int(100 / batch_size)}%"] * batch_size),
     )
-    return widgets.GridBox([item.render() for item in items], layout=layout)
+    out = []
+    for item in items:
+        if subtitles:
+            out.append(
+                widgets.VBox(
+                    [widgets.HTML(f"<h5><em>{ item.name }</em></h5>"), item.render()]
+                )
+            )
+        elif titles:
+            out.append(
+                widgets.VBox([widgets.HTML(f"<h4>{ item.name }</h4>"), item.render()])
+            )
+        else:
+            out.append(item.render())
+
+    return widgets.GridBox(out, layout=layout)
 
 
-def get_accordion(items):
+def get_accordion(items: List[Renderable]) -> widgets.Accordion:
     children = []
     titles = []
     for item in items:
@@ -78,7 +97,7 @@ def get_accordion(items):
 
 
 class WidgetContainer(Container):
-    def render(self):
+    def render(self) -> widgets.Widget:
         if self.sequence_type == "list":
             widget = get_list(self.content["items"])
         elif self.sequence_type == "named_list":
@@ -94,6 +113,7 @@ class WidgetContainer(Container):
                 self.content["items"],
                 self.content["batch_size"],
                 self.content.get("titles", True),
+                self.content.get("subtitles", False),
             )
         else:
             raise ValueError("widget type not understood", self.sequence_type)

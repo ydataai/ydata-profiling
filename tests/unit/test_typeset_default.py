@@ -12,15 +12,9 @@ from visions.test.utils import (
     infers,
 )
 
-from pandas_profiling.config import config
-from pandas_profiling.model.typeset import (
-    Boolean,
-    Categorical,
-    DateTime,
-    Numeric,
-    ProfilingTypeSet,
-    Unsupported,
-)
+from pandas_profiling.config import Settings
+from pandas_profiling.model.typeset import ProfilingTypeSet
+from tests.unit.test_utils import patch_arg
 
 if int(pd.__version__.split(".")[0]) < 1:
     from visions.dtypes.boolean import BoolDtype  # noqa: F401
@@ -33,7 +27,16 @@ base_path = os.path.abspath(os.path.dirname(__file__))
 
 series = get_series()
 
-typeset = ProfilingTypeSet()
+my_config = Settings()
+my_config.vars.num.low_categorical_threshold = 0
+my_typeset_default = ProfilingTypeSet(my_config)
+
+type_map = {str(k): k for k in my_typeset_default.types}
+Numeric = type_map["Numeric"]
+Categorical = type_map["Categorical"]
+Boolean = type_map["Boolean"]
+DateTime = type_map["DateTime"]
+Unsupported = type_map["Unsupported"]
 
 contains_map = {
     Numeric: {
@@ -163,17 +166,20 @@ contains_map[Unsupported] = {
 }
 
 
-@pytest.mark.parametrize(**get_contains_cases(series, contains_map, typeset))
-def test_contains(name, series, type, member):
+@pytest.mark.parametrize(
+    **patch_arg(
+        get_contains_cases(series, contains_map, my_typeset_default), "contains_type"
+    )
+)
+def test_contains(name, series, contains_type, member):
     """Test the generated combinations for "series in type"
 
     Args:
         series: the series to test
-        type: the type to test against
+        contains_type: the type to test against
         member: the result
     """
-    config["vars"]["num"]["low_categorical_threshold"].set(0)
-    result, message = contains(name, series, type, member)
+    result, message = contains(name, series, contains_type, member)
     assert result, message
 
 
@@ -293,16 +299,19 @@ if int(pd.__version__[0]) >= 1:
     inference_map["string_dtype_series"] = Categorical
 
 
-@pytest.mark.parametrize(**get_inference_cases(series, inference_map, typeset))
-def test_inference(name, series, type, typeset, difference):
+@pytest.mark.parametrize(
+    **patch_arg(
+        get_inference_cases(series, inference_map, my_typeset_default), "inference_type"
+    )
+)
+def test_inference(name, series, inference_type, typeset, difference):
     """Test the generated combinations for "inference(series) == type"
 
     Args:
         series: the series to test
-        type: the type to test against
+        inference_type: the type to test against
     """
-    config["vars"]["num"]["low_categorical_threshold"].set(0)
-    result, message = infers(name, series, type, typeset, difference)
+    result, message = infers(name, series, inference_type, typeset, difference)
     assert result, message
 
 
@@ -342,14 +351,15 @@ convert_map = [
 ]
 
 
-@pytest.mark.parametrize(**get_convert_cases(series, convert_map, typeset))
+@pytest.mark.parametrize(**get_convert_cases(series, convert_map, my_typeset_default))
 def test_conversion(name, source_type, relation_type, series, member):
     """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type"
 
     Args:
+        name: the test name
+        source_type: the type to test against
+        relation_type: the type to test against
         series: the series to test
-        type: the type to test against
     """
-    config["vars"]["num"]["low_categorical_threshold"].set(0)
     result, message = convert(name, source_type, relation_type, series, member)
     assert result, message

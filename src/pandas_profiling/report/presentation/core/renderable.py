@@ -1,9 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Callable, Dict, Optional
 
 
 class Renderable(ABC):
-    def __init__(self, content, name=None, anchor_id=None, classes=None):
+    def __init__(
+        self,
+        content: Dict[str, Any],
+        name: Optional[str] = None,
+        anchor_id: Optional[str] = None,
+        classes: Optional[str] = None,
+    ):
         self.content = content
         if name is not None:
             self.content["name"] = name
@@ -13,15 +19,15 @@ class Renderable(ABC):
             self.content["classes"] = classes
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.content["name"]
 
     @property
-    def anchor_id(self):
+    def anchor_id(self) -> str:
         return self.content["anchor_id"]
 
     @property
-    def classes(self):
+    def classes(self) -> str:
         return self.content["classes"]
 
     @abstractmethod
@@ -32,5 +38,5 @@ class Renderable(ABC):
         return self.__class__.__name__
 
     @classmethod
-    def convert_to_class(cls, obj, flv):
+    def convert_to_class(cls, obj: "Renderable", flv: Callable) -> None:
         obj.__class__ = cls

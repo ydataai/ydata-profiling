@@ -5,7 +5,6 @@ https://github.com/pandas-profiling/pandas-profiling/issues/416
 import pandas as pd
 
 import pandas_profiling
-from pandas_profiling.model.typeset import URL, Categorical, Path
 from pandas_profiling.utils.cache import cache_file
 
 
@@ -16,7 +15,7 @@ def test_issue416():
     )
 
     df = pd.read_csv(file_name, sep="\t")
-    df["path"] = df["url"].str.replace("http://www.acme.com", "")
+    df["path"] = df["url"].str.replace("http://www.acme.com", "", regex=False)
 
     profile = pandas_profiling.ProfileReport(
         df,
@@ -26,7 +25,7 @@ def test_issue416():
     )
     data = profile.get_description()
 
-    assert data["table"]["types"][Categorical] == 1
-    assert data["table"]["types"][Path] == 1
-    assert data["table"]["types"][URL] == 1
+    assert data["table"]["types"]["Categorical"] == 1
+    assert data["table"]["types"]["Path"] == 1
+    assert data["table"]["types"]["URL"] == 1
     assert data["variables"]["path"]["common_prefix"] == "/"

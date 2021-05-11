@@ -4,13 +4,16 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, Mapping, Tuple
+from typing import Callable, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
+from visions import VisionsTypeset
 
-from pandas_profiling.config import config as config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.messages import (
+    Message,
     check_correlation_messages,
     check_table_messages,
     check_variable_messages,
@@ -25,11 +28,19 @@ from pandas_profiling.visualisation.missing import (
 from pandas_profiling.visualisation.plot import scatter_pairwise
 
 
-def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
+def describe_1d(
+    config: Settings,
+    series: pd.Series,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
+        config: report Settings object
         series: The Series to describe.
+        summarizer: Summarizer object
+        typeset: Typeset
 
     Returns:
         A Series containing calculated series description values.
@@ -39,31 +50,40 @@ def describe_1d(series: pd.Series, summarizer: BaseSummarizer, typeset) -> dict:
     series = series.fillna(np.nan)
 
     # get `infer_dtypes` (bool) from config
-    infer_dtypes = config["infer_dtypes"].get(bool)
-    if infer_dtypes:
+    if config.infer_dtypes:
         # Infer variable types
         vtype = typeset.infer_type(series)
         series = typeset.cast_to_inferred(series)
     else:
-        # Detect variable types from pandas dataframe (df.dtypes). [new dtypes, changed using `astype` function are now considered]
+        # Detect variable types from pandas dataframe (df.dtypes).
+        # [new dtypes, changed using `astype` function are now considered]
         vtype = typeset.detect_type(series)
 
-    return summarizer.summarize(series, dtype=vtype)
+    return summarizer.summarize(config, series, dtype=vtype)
 
 
-def sort_column_names(dct: Mapping, sort: str):
+def sort_column_names(dct: dict, sort: Optional[str]) -> dict:
+    if sort is None:
+        return dct
+
     sort = sort.lower()
     if sort.startswith("asc"):
         dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
     elif sort.startswith("desc"):
         dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold(), reverse=True))
-    elif sort != "none":
-        raise ValueError('"sort" should be "ascending", "descending" or "None".')
+    else:
+        raise ValueError('"sort" should be "ascending", "descending" or None.')
     return dct
 
 
-def get_series_descriptions(df, summarizer, typeset, pbar):
-    def multiprocess_1d(args) -> Tuple[str, dict]:
+def get_series_descriptions(
+    config: Settings,
+    df: pd.DataFrame,
+    summarizer: BaseSummarizer,
+    typeset: VisionsTypeset,
+    pbar: tqdm,
+) -> dict:
+    def multiprocess_1d(args: tuple) -> Tuple[str, dict]:
         """Wrapper to process series in parallel.
 
         Args:
@@ -74,10 +94,9 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
             A tuple with column and the series description.
         """
         column, series = args
-        return column, describe_1d(series, summarizer, typeset)
+        return column, describe_1d(config, series, summarizer, typeset)
 
-    pool_size = config["pool_size"].get(int)
-    sort = config["sort"].get(str)
+    pool_size = config.pool_size
 
     # Multiprocessing of Describe 1D for each column
     if pool_size <= 0:
@@ -106,23 +125,24 @@ def get_series_descriptions(df, summarizer, typeset, pbar):
         series_description = {k: series_description[k] for k in df.columns}
 
     # Mapping from column name to variable type
-    series_description = sort_column_names(series_description, sort)
+    series_description = sort_column_names(series_description, config.sort)
     return series_description
 
 
-def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
+def get_table_stats(config: Settings, df: pd.DataFrame, variable_stats: dict) -> dict:
     """General statistics for the DataFrame.
 
     Args:
-      df: The DataFrame to describe.
-      variable_stats: Previously calculated statistic on the DataFrame.
+        config: report Settings object
+        df: The DataFrame to describe.
+        variable_stats: Previously calculated statistic on the DataFrame.
 
     Returns:
         A dictionary that contains the table statistics.
     """
     n = len(df)
 
-    memory_size = df.memory_usage(deep=config["memory_deep"].get(bool)).sum()
+    memory_size = df.memory_usage(deep=config.memory_deep).sum()
     record_size = float(memory_size) / n if n > 0 else 0
 
     table_stats = {
@@ -156,7 +176,7 @@ def get_table_stats(df: pd.DataFrame, variable_stats: dict) -> dict:
     return table_stats
 
 
-def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
+def get_missing_diagrams(config: Settings, df: pd.DataFrame, table_stats: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
     Args:
@@ -170,7 +190,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     if len(df) == 0:
         return {}
 
-    def warn_missing(missing_name, error):
+    def warn_missing(missing_name: str, error: str) -> None:
         warnings.warn(
             f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
     To hide this warning, disable the calculation
@@ -180,7 +200,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     (include the error message: '{error}')"""
         )
 
-    def missing_diagram(name) -> Callable:
+    def missing_diagram(name: str) -> Callable:
         return {
             "bar": missing_bar,
             "matrix": missing_matrix,
@@ -214,7 +234,7 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
     missing_map = {
         name: settings
         for name, settings in missing_map.items()
-        if config["missing_diagrams"][name].get(bool)
+        if config.missing_diagrams[name]
         and table_stats["n_vars_with_missing"] >= settings["min_missing"]
     }
     missing = {}
@@ -230,43 +250,46 @@ def get_missing_diagrams(df: pd.DataFrame, table_stats: dict) -> dict:
                     missing[name] = {
                         "name": settings["name"],
                         "caption": settings["caption"],
-                        "matrix": missing_diagram(name)(df),
+                        "matrix": missing_diagram(name)(config, df),
                     }
             except ValueError as e:
-                warn_missing(name, e)
+                warn_missing(name, str(e))
 
     return missing
 
 
-def get_scatter_matrix(df, continuous_variables):
-    if config["interactions"]["continuous"].get(bool):
-        targets = config["interactions"]["targets"].get(list)
-        if len(targets) == 0:
-            targets = continuous_variables
+def get_scatter_matrix(
+    config: Settings, df: pd.DataFrame, continuous_variables: list
+) -> dict:
+    if not config.interactions.continuous:
+        return {}
 
-        scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
+    targets = config.interactions.targets
+    if len(targets) == 0:
+        targets = continuous_variables
 
-        for x in targets:
-            for y in continuous_variables:
-                if x in continuous_variables:
-                    if y == x:
-                        continue
+    scatter_matrix = {x: {y: "" for y in continuous_variables} for x in targets}
 
-                    # check if any na still exists, and remove it before computing scatter matrix
+    for x in targets:
+        for y in continuous_variables:
+            if x in continuous_variables:
+                if y == x:
+                    df_temp = df[[x]].dropna()
+                else:
                     df_temp = df[[x, y]].dropna()
-                    scatter_matrix[x][y] = scatter_pairwise(
-                        df_temp[x], df_temp[y], x, y
-                    )
-    else:
-        scatter_matrix = {}
+                scatter_matrix[x][y] = scatter_pairwise(
+                    config, df_temp[x], df_temp[y], x, y
+                )
 
     return scatter_matrix
 
 
-def get_messages(table_stats, series_description, correlations):
+def get_messages(
+    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+) -> List[Message]:
     messages = check_table_messages(table_stats)
     for col, description in series_description.items():
-        messages += check_variable_messages(col, description)
-    messages += check_correlation_messages(correlations)
+        messages += check_variable_messages(config, col, description)
+    messages += check_correlation_messages(config, correlations)
     messages.sort(key=lambda message: str(message.message_type))
     return messages

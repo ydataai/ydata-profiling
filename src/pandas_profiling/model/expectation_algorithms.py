@@ -1,4 +1,9 @@
-def generic_expectations(name, summary, batch, *args):
+from typing import Any, Tuple
+
+
+def generic_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     batch.expect_column_to_exist(name)
 
     if summary["n_missing"] == 0:
@@ -10,7 +15,9 @@ def generic_expectations(name, summary, batch, *args):
     return name, summary, batch
 
 
-def numeric_expectations(name, summary, batch, *args):
+def numeric_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     from great_expectations.profile.base import ProfilerTypeMapping
 
     numeric_type_names = (
@@ -48,7 +55,9 @@ def numeric_expectations(name, summary, batch, *args):
     return name, summary, batch
 
 
-def categorical_expectations(name, summary, batch, *args):
+def categorical_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     # Use for both categorical and special case (boolean)
     absolute_threshold = 10
     relative_threshold = 0.2
@@ -62,11 +71,15 @@ def categorical_expectations(name, summary, batch, *args):
     return name, summary, batch
 
 
-def path_expectations(name, summary, batch, *args):
+def path_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     return name, summary, batch
 
 
-def datetime_expectations(name, summary, batch, *args):
+def datetime_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     if any(k in summary for k in ["min", "max"]):
         batch.expect_column_values_to_be_between(
             name,
@@ -78,15 +91,21 @@ def datetime_expectations(name, summary, batch, *args):
     return name, summary, batch
 
 
-def image_expectations(name, summary, batch, *args):
+def image_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     return name, summary, batch
 
 
-def url_expectations(name, summary, batch, *args):
+def url_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     return name, summary, batch
 
 
-def file_expectations(name, summary, batch, *args):
+def file_expectations(
+    name: str, summary: dict, batch: Any, *args
+) -> Tuple[str, dict, Any]:
     # By definition within our type logic, a file exists (as it's a path that also exists)
     batch.expect_file_to_exist(name)
 

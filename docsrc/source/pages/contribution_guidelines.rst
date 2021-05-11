@@ -21,15 +21,14 @@ There are tools available to ease the development cycle. These can be called fro
 
 The following commands are supported:
 
-.. code-block::
+.. code-block:: console
 
-        make lint
-        make install
-        make examples
-        make docs
-        make test
-        make clean
-        make typing
+    make lint
+    make install
+    make examples
+    make docs
+    make test
+    make clean
 
 
 Git workflow

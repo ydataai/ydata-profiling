@@ -44,13 +44,13 @@ release = _GetApiWrapperVersion()
 # ones.
 extensions = [
     "recommonmark",
-    # "sphinx_multiversion",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "sphinx.ext.viewcode",
+    "sphinxcontrib.autodoc_pydantic",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -82,3 +82,5 @@ html_css_files = [
 autodoc_mock_imports = [""]
 autoclass_content = "both"
 autosummary_generate = True
+
+autodoc_pydantic_model_show_json = False

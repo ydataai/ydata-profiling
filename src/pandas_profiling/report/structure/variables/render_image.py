@@ -1,6 +1,7 @@
 import pandas as pd
 
-from pandas_profiling.config import config
+from pandas_profiling.config import Settings
+from pandas_profiling.report.formatters import fmt_numeric
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
@@ -12,12 +13,12 @@ from pandas_profiling.report.structure.variables.render_file import render_file
 from pandas_profiling.visualisation.plot import scatter_series
 
 
-def render_image(summary):
+def render_image(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
-    n_freq_table_max = config["n_freq_table_max"].get(int)
-    redact = config["vars"]["cat"]["redact"].get(bool)
+    n_freq_table_max = config.n_freq_table_max
+    redact = config.vars.cat.redact
 
-    template_variables = render_file(summary)
+    template_variables = render_file(config, summary)
 
     # Top
     template_variables["top"].content["items"][0].content["var_type"] = "Image"
@@ -41,20 +42,24 @@ def render_image(summary):
                     [
                         {
                             "name": "Min width",
-                            "value": summary["min_width"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["min_width"], precision=config.report.precision
+                            ),
                             "alert": False,
                         },
                         {
                             "name": "Median width",
-                            "value": summary["median_width"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["median_width"],
+                                precision=config.report.precision,
+                            ),
                             "alert": False,
                         },
                         {
                             "name": "Max width",
-                            "value": summary["max_width"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["max_width"], precision=config.report.precision
+                            ),
                             "alert": False,
                         },
                     ]
@@ -63,20 +68,24 @@ def render_image(summary):
                     [
                         {
                             "name": "Min height",
-                            "value": summary["min_height"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["min_height"], precision=config.report.precision
+                            ),
                             "alert": False,
                         },
                         {
                             "name": "Median height",
-                            "value": summary["median_height"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["median_height"],
+                                precision=config.report.precision,
+                            ),
                             "alert": False,
                         },
                         {
                             "name": "Max height",
-                            "value": summary["max_height"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["max_height"], precision=config.report.precision
+                            ),
                             "alert": False,
                         },
                     ]
@@ -85,20 +94,24 @@ def render_image(summary):
                     [
                         {
                             "name": "Min area",
-                            "value": summary["min_area"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["min_area"], precision=config.report.precision
+                            ),
                             "alert": False,
                         },
                         {
                             "name": "Median area",
-                            "value": summary["median_area"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["median_area"],
+                                precision=config.report.precision,
+                            ),
                             "alert": False,
                         },
                         {
                             "name": "Max area",
-                            "value": summary["max_area"],
-                            "fmt": "fmt_numeric",
+                            "value": fmt_numeric(
+                                summary["max_area"], precision=config.report.precision
+                            ),
                             "alert": False,
                         },
                     ]
@@ -109,8 +122,8 @@ def render_image(summary):
             sequence_type="grid",
         ),
         Image(
-            scatter_series(summary["image_dimensions"]),
-            image_format=config["plot"]["image_format"].get(str),
+            scatter_series(config, summary["image_dimensions"]),
+            image_format=config.plot.image_format,
             alt="Scatter plot of image sizes",
             caption="Scatter plot of image sizes",
             name="Scatter plot",

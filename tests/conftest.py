@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from pandas_profiling import config
+from pandas_profiling.config import Settings
 from pandas_profiling.model.summarizer import PandasProfilingSummarizer
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.utils.cache import cache_file
@@ -14,9 +14,6 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "linux: Test with linux")
     config.addinivalue_line("markers", "win32: Test with windows")
     config.addinivalue_line("markers", "darwin: Test with darwin")
-
-    plugin = config.pluginmanager.getplugin("mypy")
-    plugin.mypy_argv.append("--ignore-missing-imports")
 
 
 @pytest.fixture(scope="function")
@@ -38,14 +35,19 @@ def test_output_dir(tmpdir_factory):
     shutil.rmtree(str(test_path))
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def summarizer(typeset):
     return PandasProfilingSummarizer(typeset)
 
 
-@pytest.fixture(scope="module")
-def typeset():
-    return ProfilingTypeSet()
+@pytest.fixture(scope="function")
+def config():
+    return Settings()
+
+
+@pytest.fixture(scope="function")
+def typeset(config):
+    return ProfilingTypeSet(config)
 
 
 def pytest_runtest_setup(item):
@@ -56,7 +58,3 @@ def pytest_runtest_setup(item):
     plat = sys.platform
     if supported_platforms and plat not in supported_platforms:
         pytest.skip(f"cannot run on platform {plat}")
-
-
-def pytest_runtest_teardown():
-    config.clear()

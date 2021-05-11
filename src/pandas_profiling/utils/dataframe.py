@@ -3,12 +3,13 @@ import re
 import unicodedata
 import warnings
 from pathlib import Path
+from typing import Any
 
 import joblib
 import pandas as pd
 
 
-def warn_read(extension):
+def warn_read(extension: str) -> None:
     """Warn the user when an extension is not supported.
 
     Args:
@@ -122,7 +123,7 @@ def read_pandas(file_name: Path) -> pd.DataFrame:
     return df
 
 
-def rename_index(df):
+def rename_index(df: pd.DataFrame) -> pd.DataFrame:
     """If the DataFrame contains a column or index named `index`, this will produce errors. We rename the {index,column}
     to be `df_index`.
 
@@ -139,7 +140,7 @@ def rename_index(df):
     return df
 
 
-def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
+def expand_mixed(df: pd.DataFrame, types: Any = None) -> pd.DataFrame:
     """Expand non-nested lists, dicts and tuples in a DataFrame into columns with a prefix.
 
     Args:
@@ -179,7 +180,7 @@ def expand_mixed(df: pd.DataFrame, types=None) -> pd.DataFrame:
     return df
 
 
-def hash_dataframe(df):
+def hash_dataframe(df: pd.DataFrame) -> str:
     """Hash a DataFrame (wrapper around joblib.hash, might change in the future)
 
     Args:
@@ -191,7 +192,7 @@ def hash_dataframe(df):
     return joblib.hash(df)
 
 
-def slugify(value, allow_unicode=False):
+def slugify(value: str, allow_unicode: bool = False) -> str:
     """
     Taken from https://github.com/django/django/blob/master/django/utils/text.py
     Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.core.renderable import Renderable
@@ -14,14 +14,14 @@ class Root(ItemRenderer):
             "report", {"body": body, "footer": footer}, name=name, **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Root"
 
     def render(self, **kwargs) -> Any:
         raise NotImplementedError()
 
     @classmethod
-    def convert_to_class(cls, obj, flv) -> None:
+    def convert_to_class(cls, obj: Renderable, flv: Callable) -> None:
         obj.__class__ = cls
         if "body" in obj.content:
             flv(obj.content["body"])

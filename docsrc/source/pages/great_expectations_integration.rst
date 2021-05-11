@@ -16,7 +16,7 @@ Great Expectations then uses this statement to validate whether the column ``pas
 
 Great Expectations renders Expectations to clean, human-readable documentation called *Data Docs*. These HTML docs contain both your Expectation Suites as well as your data validation results each time validation is run – think of it as a continuously updated data quality report.
 
-For more information about Great Expectations, check out the `Great Expectations documentation <https://docs.greatexpectations.io/en/latest/>`_ and join the `Great Expectations Slack channel <https://www.greatexpectations.io/slack>` for help.
+For more information about Great Expectations, check out the `Great Expectations documentation <https://docs.greatexpectations.io/en/latest/>`_ and join the `Great Expectations Slack channel <https://www.greatexpectations.io/slack>`_ for help.
 
 
 Creating Expectation Suites with Pandas Profiling
@@ -27,7 +27,7 @@ An *Expectation Suite* is simply a set of Expectations. You can create Expectati
 Pandas Profiling provides a simple ``to_expectation_suite()`` method that returns a Great Expectations ``ExpectationSuite`` object which contains a set of Expectations.
 
 **Pre-requisites**: In order to run the ``to_expectation_suite()`` method, you will need to install Great Expectations:
-`pip install great_expectations`
+``pip install great_expectations``
 
 If you would like to use the additional features such as saving the Suite and building Data Docs, you will also need to configure a Great Expectations Data Context by running ``great_expectations init`` while in your project directory.
 
@@ -51,7 +51,9 @@ This assumes that the ``great_expectations`` Data Context directory is in the *s
 
     import great_expectations as ge
 
-    data_context = ge.data_context.DataContext(context_root_dir="/Users/panda/code/my_ge_project/")
+    data_context = ge.data_context.DataContext(
+        context_root_dir="/Users/panda/code/my_ge_project/"
+    )
     suite = profile.to_expectation_suite(data_context=data_context)
 
 
@@ -65,7 +67,7 @@ You can also configure each feature individually in the function call:
         save_suite=False,
         run_validation=False,
         build_data_docs=False,
-        handler=handler
+        handler=handler,
     )
 
 See `the Great Expectations Examples <https://pandas-profiling.github.io/pandas-profiling/examples/master/features/great_expectations_example.html>`_ for complete examples.
@@ -129,7 +131,10 @@ Adding an expectation to columns with constant length can be achieved for instan
         def __init__(self, typeset, *args, **kwargs):
             mapping = {
                 Unsupported: [expectation_algorithms.generic_expectations],
-                Categorical: [expectation_algorithms.categorical_expectations, fixed_length],
+                Categorical: [
+                    expectation_algorithms.categorical_expectations,
+                    fixed_length,
+                ],
                 Boolean: [expectation_algorithms.categorical_expectations],
                 Numeric: [expectation_algorithms.numeric_expectations],
                 URL: [expectation_algorithms.url_expectations],
@@ -140,11 +145,10 @@ Adding an expectation to columns with constant length can be achieved for instan
             }
             super().__init__(mapping, typeset, *args, **kwargs)
 
+
     # (initiate report)
 
-    suite = report.to_expectation_suite(
-        handler=MyExpectationHandler(report.typeset)
-    )
+    suite = report.to_expectation_suite(handler=MyExpectationHandler(report.typeset))
 
 You can automate even more by extending the typeset (by default the ``ProfilingTypeSet``) with semantic data types specific to your company or use case (for instance disease classification in healthcare or currency and IBAN in finance).
 For that, you can find details in the `visions <https://github.com/dylan-profiler/visions>`_ documentation.

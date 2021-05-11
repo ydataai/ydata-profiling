@@ -1,11 +1,12 @@
 """Formatters are mappings from object(s) to a string."""
-from functools import partial
-from typing import Callable, Dict
+import decimal
+import math
+import re
+from datetime import timedelta
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 from jinja2.utils import escape
-
-from pandas_profiling.config import config
 
 
 def fmt_color(text: str, color: str) -> str:
@@ -71,19 +72,13 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
     return f"{value*100:2.1f}%"
 
 
-def fmt_timespan(num_seconds, detailed=False, max_units=3):
+def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -> str:
     # From the `humanfriendly` module (without additional dependency)
     # https://github.com/xolox/python-humanfriendly/
     # Author: Peter Odding <peter@peterodding.com>
     # URL: https://humanfriendly.readthedocs.io
 
-    import decimal
-    import math
-    import numbers
-    import re
-    from datetime import timedelta
-
-    time_units = [
+    time_units: List[Dict[str, Any]] = [
         {
             "divider": 1e-9,
             "singular": "nanosecond",
@@ -140,21 +135,19 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
         },
     ]
 
-    def round_number(count, keep_width=False):
+    def round_number(count: Any, keep_width: bool = False) -> str:
         text = f"{float(count):.2f}"
         if not keep_width:
             text = re.sub("0+$", "", text)
             text = re.sub(r"\.$", "", text)
         return text
 
-    def coerce_seconds(value):
+    def coerce_seconds(value: Union[timedelta, int, float]) -> float:
         if isinstance(value, timedelta):
             return value.total_seconds()
-        if not isinstance(value, numbers.Number):
-            raise ValueError(f"Failed to coerce value to number of seconds! ({value})")
-        return value
+        return float(value)
 
-    def concatenate(items):
+    def concatenate(items: List[str]) -> str:
         items = list(items)
         if len(items) > 1:
             return ", ".join(items[:-1]) + " and " + items[-1]
@@ -163,7 +156,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
         else:
             return ""
 
-    def pluralize(count, singular, plural=None):
+    def pluralize(count: Any, singular: str, plural: Optional[str] = None) -> str:
         if not plural:
             plural = singular + "s"
         return f"{count} {singular if math.floor(float(count)) == 1 else plural}"
@@ -203,7 +196,7 @@ def fmt_timespan(num_seconds, detailed=False, max_units=3):
             return concatenate(result)
 
 
-def fmt_numeric(value: float, precision=10) -> str:
+def fmt_numeric(value: float, precision: int = 10) -> str:
     """Format any numeric value.
 
     Args:
@@ -236,7 +229,7 @@ def fmt_number(value: int) -> str:
     return f"{value:n}"
 
 
-def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
+def fmt_array(value: np.ndarray, threshold: Any = np.nan) -> str:
     """Format numpy arrays.
 
     Args:
@@ -252,7 +245,7 @@ def fmt_array(value: np.ndarray, threshold=np.nan) -> str:
     return return_value
 
 
-def fmt(value) -> str:
+def fmt(value: Any) -> str:
     """Format any value.
 
     Args:
@@ -282,7 +275,7 @@ def fmt_monotonic(value: int) -> str:
         raise ValueError("Value should be integer ranging from -2 to 2.")
 
 
-def help(title, url=None) -> str:
+def help(title: str, url: Optional[str] = None) -> str:
     """Creat help badge
 
     Args:
@@ -298,21 +291,5 @@ def help(title, url=None) -> str:
         return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
 
 
-def get_fmt_mapping() -> Dict[str, Callable]:
-    """Get a mapping from formatter name to the function
-
-    Returns: formatter mapping
-    """
-    return {
-        "fmt_percent": fmt_percent,
-        "fmt_bytesize": fmt_bytesize,
-        "fmt_timespan": fmt_timespan,
-        "fmt_monotonic": fmt_monotonic,
-        "fmt_numeric": partial(
-            fmt_numeric, precision=config["report"]["precision"].get(int)
-        ),
-        "fmt_number": fmt_number,
-        "fmt_array": fmt_array,
-        "fmt": fmt,
-        "raw": lambda x: x,
-    }
+def fmt_badge(value: str) -> str:
+    return re.sub(r"\((\d+)\)", r'<span class="badge">\1</span>', value)

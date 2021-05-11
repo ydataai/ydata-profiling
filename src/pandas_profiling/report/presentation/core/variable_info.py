@@ -1,10 +1,19 @@
-from typing import Any
+from typing import Any, List
 
+from pandas_profiling.model.messages import Message
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
 class VariableInfo(ItemRenderer):
-    def __init__(self, anchor_id, var_name, var_type, warnings, description, **kwargs):
+    def __init__(
+        self,
+        anchor_id: str,
+        var_name: str,
+        var_type: str,
+        warnings: List[Message],
+        description: str,
+        **kwargs
+    ):
         super().__init__(
             "variable_info",
             {
@@ -17,7 +26,7 @@ class VariableInfo(ItemRenderer):
             **kwargs
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "VariableInfo"
 
     def render(self) -> Any:

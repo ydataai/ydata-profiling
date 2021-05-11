@@ -1,16 +1,16 @@
+from typing import Any, Dict, List
+
 from ipywidgets import GridspecLayout, VBox, widgets
 
-from pandas_profiling.report.formatters import fmt_color, get_fmt_mapping
+from pandas_profiling.report.formatters import fmt_color
 from pandas_profiling.report.presentation.core.table import Table
 
 
-def get_table(items):
+def get_table(items: List[Dict[str, Any]]) -> GridspecLayout:
     table = GridspecLayout(len(items), 2)
-    fmt_mapping = get_fmt_mapping()
     for row_id, item in enumerate(items):
         name = item["name"]
-        formatter = fmt_mapping[item["fmt"]]
-        value = formatter(item["value"])
+        value = item["value"]
         if "alert" in item and item["alert"]:
             name = fmt_color(name, "var(--jp-error-color1)")
             value = fmt_color(value, "var(--jp-error-color1)")
@@ -22,7 +22,7 @@ def get_table(items):
 
 
 class WidgetTable(Table):
-    def render(self):
+    def render(self) -> VBox:
         items = [get_table(self.content["rows"])]
         if self.content["caption"] is not None:
             items.append(widgets.HTML(f'<em>{self.content["caption"]}</em>'))

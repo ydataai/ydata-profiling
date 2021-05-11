@@ -30,7 +30,7 @@ import requests
 from pandas_profiling.model.summary import describe_1d
 
 
-def mock_multiprocess_1d(args, summarizer, typeset) -> Tuple[str, dict]:
+def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:
     """Wrapper to process series in parallel.
         copy of multiprocess_1d function in get_series_descriptions, summary.py
 
@@ -42,10 +42,10 @@ def mock_multiprocess_1d(args, summarizer, typeset) -> Tuple[str, dict]:
         A tuple with column and the series description.
     """
     column, series = args
-    return column, describe_1d(series, summarizer, typeset)
+    return column, describe_1d(config, series, summarizer, typeset)
 
 
-def test_multiprocessing_describe1d(summarizer, typeset):
+def test_multiprocessing_describe1d(config, summarizer, typeset):
     """
     this test serves to get a large dataset, and ensure that even across parallelised describe1d operations,
     there is no ValueError raised. Previously, series.fillna(np.nan,inplace=True) was used instead of
@@ -112,11 +112,17 @@ def test_multiprocessing_describe1d(summarizer, typeset):
         df = pd.DataFrame(split_text)
         return df
 
-    def run_multiprocess(df):
+    def run_multiprocess(config, df):
         pool = multiprocessing.pool.ThreadPool(10)
         args = [(column, series) for column, series in df.iteritems()]
         results = pool.imap_unordered(
-            partial(mock_multiprocess_1d, summarizer=summarizer, typeset=typeset), args
+            partial(
+                mock_multiprocess_1d,
+                config=config,
+                summarizer=summarizer,
+                typeset=typeset,
+            ),
+            args,
         )
         pool.close()
         pool.join()
@@ -124,6 +130,6 @@ def test_multiprocessing_describe1d(summarizer, typeset):
 
     try:
         df = download_and_process_data()
-        run_multiprocess(df)
+        run_multiprocess(config, df)
     except ValueError:
         raise Exception("myFunc() raised ValueError unexpectedly!")

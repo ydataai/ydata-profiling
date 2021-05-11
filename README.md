@@ -37,10 +37,12 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-**Version v2.13.0 released** featuring an exciting integration with Great Expectations that many of you requested (see details below).
+**Version v3.0.0 released** in which the report configuration was completely overhauled, providing a more intuitive API and fixing issues inherent to the previous global config. 
+
+This is the first release to adhere to the [Semver](https://semver.org/) and [Conventional Commits](https://conventionalcommits.org/) specifications.
 
 **Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
-Stay tuned.
+Beta testers wanted! The Spark backend will be released as a pre-release for this package.
 
 ### Support `pandas-profiling`
 
@@ -51,10 +53,10 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 
 Find more information here:
 
- - [Changelog v2.13.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog)
+ - [Changelog v3.0.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog)
  - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
-_May 8, 2021 💘_
+_May 9, 2021 💘_
 
 ---
 
@@ -149,10 +151,7 @@ import numpy as np
 import pandas as pd
 from pandas_profiling import ProfileReport
 
-df = pd.DataFrame(
-    np.random.rand(100, 5),
-    columns=["a", "b", "c", "d", "e"]
-)
+df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 ```
 To generate the report, run:
 ```python
@@ -164,7 +163,7 @@ profile = ProfileReport(df, title="Pandas Profiling Report")
 You can configure the profile report in any way you like. The example code below loads the [explorative configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml), that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml).
 
 ```python
-profile = ProfileReport(df, title='Pandas Profiling Report', explorative=True)
+profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 ```
 
 Learn more about configuring `pandas-profiling` on the [Advanced usage](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html) page.
@@ -248,7 +247,9 @@ You find the configuration docs on the advanced usage page [here](https://pandas
 
 **Example**
 ```python
-profile = df.profile_report(title='Pandas Profiling Report', plot={'histogram': {'bins': 8}})
+profile = df.profile_report(
+    title="Pandas Profiling Report", plot={"histogram": {"bins": 8}}
+)
 profile.to_file("output.html")
 ```
 
