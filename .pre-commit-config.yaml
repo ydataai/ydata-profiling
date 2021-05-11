@@ -47,14 +47,12 @@ repos:
         args: [ "--select=ANN001,ANN201,ANN202,ANN205,ANN206,ANN301" ]
         additional_dependencies:
           - flake8-annotations
-#          - flake8-annotations-complexity
-#          - flake8-type-checking
         exclude: |
           (?x)(
             ^tests/|
             ^docsrc/|
             ^src/pandas_profiling/utils/common.py|
-            ^src/pandas_profiling/model/imghdr_patch.py
+            ^src/pandas_profiling/utils/imghdr_patch.py
           )
 
 -   repo: https://github.com/asottile/blacken-docs

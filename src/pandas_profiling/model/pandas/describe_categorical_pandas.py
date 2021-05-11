@@ -3,31 +3,17 @@ import string
 from collections import Counter
 from typing import Tuple
 
-import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.pandas.utils_pandas import weighted_median
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
     describe_categorical_1d,
     histogram_compute,
+    named_aggregate_summary,
     series_handle_nulls,
     series_hashable,
 )
-
-
-def get_character_counts_vc(vc: pd.Series) -> pd.Series:
-    series = pd.Series(vc.index, index=vc)
-    characters = series.str.split(r".?")
-    characters = characters.explode()
-
-    counts = pd.Series(characters.index, index=characters)
-    counts = counts.groupby(level=0, sort=False).sum()
-    counts = counts.sort_values(ascending=False)
-    # FIXME: correct in split, below should be zero: print(counts.loc[''])
-    counts = counts[counts.index.str.len() > 0]
-    return counts
 
 
 def get_character_counts(series: pd.Series) -> Counter:
@@ -51,35 +37,28 @@ def counter_to_series(counter: Counter) -> pd.Series:
     return pd.Series(counts, index=items)
 
 
-def unicode_summary_vc(vc: pd.Series) -> dict:
+def unicode_summary(series: pd.Series) -> dict:
     from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
     # Unicode Character Summaries (category and script name)
-    character_counts = get_character_counts_vc(vc)
+    character_counts = get_character_counts(series)
 
-    character_counts_series = character_counts
-    summary = {
-        "n_characters_distinct": len(character_counts_series),
-        "n_characters": np.sum(character_counts_series.values),
-        "character_counts": character_counts_series,
-    }
+    character_counts_series = counter_to_series(character_counts)
 
     char_to_block = {key: block(key) for key in character_counts.keys()}
     char_to_category_short = {key: category(key) for key in character_counts.keys()}
     char_to_script = {key: script(key) for key in character_counts.keys()}
 
-    summary.update(
-        {
-            "category_alias_values": {
-                key: category_long(value)
-                for key, value in char_to_category_short.items()
-            },
-            "block_alias_values": {
-                key: block_abbr(value) for key, value in char_to_block.items()
-            },
-        }
-    )
-
+    summary = {
+        "n_characters": len(character_counts_series),
+        "character_counts": character_counts_series,
+        "category_alias_values": {
+            key: category_long(value) for key, value in char_to_category_short.items()
+        },
+        "block_alias_values": {
+            key: block_abbr(value) for key, value in char_to_block.items()
+        },
+    }
     # Retrieve original distribution
     block_alias_counts: Counter = Counter()
     per_block_char_counts: dict = {
@@ -90,7 +69,6 @@ def unicode_summary_vc(vc: pd.Series) -> dict:
         block_alias_counts[block_name] += n_char
         per_block_char_counts[block_name][char] = n_char
     summary["block_alias_counts"] = counter_to_series(block_alias_counts)
-    summary["n_block_alias"] = len(summary["block_alias_counts"])
     summary["block_alias_char_counts"] = {
         k: counter_to_series(v) for k, v in per_block_char_counts.items()
     }
@@ -102,7 +80,6 @@ def unicode_summary_vc(vc: pd.Series) -> dict:
         script_counts[script_name] += n_char
         per_script_char_counts[script_name][char] = n_char
     summary["script_counts"] = counter_to_series(script_counts)
-    summary["n_scripts"] = len(summary["script_counts"])
     summary["script_char_counts"] = {
         k: counter_to_series(v) for k, v in per_script_char_counts.items()
     }
@@ -116,16 +93,15 @@ def unicode_summary_vc(vc: pd.Series) -> dict:
         category_alias_counts[category_alias_name] += n_char
         per_category_alias_char_counts[category_alias_name][char] += n_char
     summary["category_alias_counts"] = counter_to_series(category_alias_counts)
-    if len(summary["category_alias_counts"]) > 0:
-        summary["category_alias_counts"].index = summary[
-            "category_alias_counts"
-        ].index.str.replace("_", " ")
-    summary["n_category"] = len(summary["category_alias_counts"])
     summary["category_alias_char_counts"] = {
         k: counter_to_series(v) for k, v in per_category_alias_char_counts.items()
     }
 
-    with contextlib.suppress(AttributeError):
+    # Unique counts
+    summary["n_category"] = len(summary["category_alias_counts"])
+    summary["n_scripts"] = len(summary["script_counts"])
+    summary["n_block_alias"] = len(summary["block_alias_counts"])
+    if len(summary["category_alias_counts"]) > 0:
         summary["category_alias_counts"].index = summary[
             "category_alias_counts"
         ].index.str.replace("_", " ")
@@ -133,38 +109,23 @@ def unicode_summary_vc(vc: pd.Series) -> dict:
     return summary
 
 
-def word_summary_vc(vc: pd.Series) -> dict:
+def word_summary(series: pd.Series) -> dict:
     # TODO: preprocess (stopwords)
     # TODO: configurable lowercase/punctuation etc.
-    # TODO: remove punctuation in words
-
-    series = pd.Series(vc.index, index=vc)
     word_lists = series.str.lower().str.split()
-    words = word_lists.explode().str.strip(string.punctuation + string.whitespace)
-    word_counts = pd.Series(words.index, index=words)
-    # fix for pandas 1.0.5
-    word_counts = word_counts[word_counts.index.notnull()]
-    word_counts = word_counts.groupby(level=0, sort=False).sum()
-    word_counts = word_counts.sort_values(ascending=False)
-    return {"word_counts": word_counts}
+    words = word_lists.explode()
+    words = words.str.strip(string.punctuation)
+    return {"word_counts": words.value_counts()}
 
 
-def length_summary_vc(vc: pd.Series) -> dict:
-    series = pd.Series(vc.index, index=vc)
+def length_summary(series: pd.Series, summary: dict = None) -> dict:
+    if summary is None:
+        summary = {}
+
     length = series.str.len()
-    length_counts = pd.Series(length.index, index=length)
-    length_counts = length_counts.groupby(level=0, sort=False).sum()
-    length_counts = length_counts.sort_values(ascending=False)
 
-    summary = {
-        "max_length": np.max(length_counts.index),
-        "mean_length": np.average(length_counts.index, weights=length_counts.values),
-        "median_length": weighted_median(
-            length_counts.index.values, weights=length_counts.values
-        ),
-        "min_length": np.min(length_counts.index),
-        "length_histogram": length_counts,
-    }
+    summary.update({"length": length})
+    summary.update(named_aggregate_summary(length, "length"))
 
     return summary
 
@@ -191,7 +152,19 @@ def pandas_describe_categorical_1d(
 
     # Only run if at least 1 non-missing value
     value_counts = summary["value_counts_without_nan"]
-    value_counts.index = value_counts.index.astype(str)
+    histogram_largest = config.vars.cat.histogram_largest
+    histogram_data = value_counts
+    if histogram_largest > 0:
+        histogram_data = histogram_data.nlargest(histogram_largest)
+
+    summary.update(
+        histogram_compute(
+            config,
+            histogram_data,
+            summary["n_distinct"],
+            name="histogram_frequencies",
+        )
+    )
 
     redact = config.vars.cat.redact
     if not redact:
@@ -202,21 +175,27 @@ def pandas_describe_categorical_1d(
         summary["chi_squared"] = chi_square(histogram=value_counts.values)
 
     if config.vars.cat.length:
-        summary.update(length_summary_vc(value_counts))
+        summary.update(length_summary(series))
         summary.update(
             histogram_compute(
                 config,
-                summary["length_histogram"].index.values,
-                len(summary["length_histogram"]),
+                summary["length"],
+                summary["length"].nunique(),
                 name="histogram_length",
-                weights=summary["length_histogram"].values,
             )
         )
 
     if config.vars.cat.characters:
-        summary.update(unicode_summary_vc(value_counts))
+        summary.update(unicode_summary(series))
+        summary["n_characters_distinct"] = summary["n_characters"]
+        summary["n_characters"] = summary["character_counts"].values.sum()
+
+        with contextlib.suppress(AttributeError):
+            summary["category_alias_counts"].index = summary[
+                "category_alias_counts"
+            ].index.str.replace("_", " ")
 
     if config.vars.cat.words:
-        summary.update(word_summary_vc(value_counts))
+        summary.update(word_summary(series))
 
     return config, series, summary

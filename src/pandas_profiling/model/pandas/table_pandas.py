@@ -7,9 +7,7 @@ from pandas_profiling.model.table import get_table_stats
 
 
 @get_table_stats.register
-def pandas_get_table_stats(
-    config: Settings, df: pd.DataFrame, variable_stats: dict
-) -> dict:
+def _(config: Settings, df: pd.DataFrame, variable_stats: dict) -> dict:
     """General statistics for the DataFrame.
 
     Args:

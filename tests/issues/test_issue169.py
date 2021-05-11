@@ -24,7 +24,12 @@ def issue_169_data() -> StringIO:
 
 def test_issue_169_column(issue_169_data):
     df = pd.read_csv(issue_169_data, sep=",")
-    report = ProfileReport(df, missing_diagrams={"dendrogram": True, "heatmap": True})
+    report = ProfileReport(
+        df,
+        missing_diagrams={"dendrogram": True, "heatmap": True},
+        progress_bar=False,
+        pool_size=1,
+    )
     html = report.to_html()
     assert type(html) == str
     assert "<p class=h4>Dataset statistics</p>" in html
@@ -32,7 +37,12 @@ def test_issue_169_column(issue_169_data):
 
 def test_issue_169_index(issue_169_data):
     df = pd.read_csv(issue_169_data, sep=",", index_col=0)
-    report = ProfileReport(df, missing_diagrams={"dendrogram": True, "heatmap": True})
+    report = ProfileReport(
+        df,
+        missing_diagrams={"dendrogram": True, "heatmap": True},
+        progress_bar=False,
+        pool_size=1,
+    )
     html = report.to_html()
     assert type(html) == str
     assert "<p class=h4>Dataset statistics</p>" in html

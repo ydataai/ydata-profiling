@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict
 
 import pandas as pd
 from multimethod import multimethod
@@ -103,31 +103,33 @@ https://github.com/pandas-profiling/pandas-profiling/issues
     return inner
 
 
-def get_missing_diagram(
-    config: Settings, df: pd.DataFrame, settings: Dict[str, Any]
-) -> Optional[Dict[str, Any]]:
+def get_missing_diagrams(config: Settings, df: pd.DataFrame, missing_map: dict) -> dict:
     """Gets the rendered diagrams for missing values.
 
     Args:
         config: report Settings object
         df: The DataFrame on which to calculate the missing values.
-        settings: missing diagram name, caption and function
 
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
 
     if len(df) == 0:
-        return None
-
-    result = handle_missing(settings["name"], settings["function"])(config, df)
-    if result is None:
-        return None
+        return {}
 
     missing = {
-        "name": settings["name"],
-        "caption": settings["caption"],
-        "matrix": result,
+        name: {
+            "name": settings["name"],
+            "caption": settings["caption"],
+            "matrix": handle_missing(settings["name"], settings["function"])(
+                config, df
+            ),
+        }
+        for name, settings in missing_map.items()
+    }
+
+    missing = {
+        name: value for name, value in missing.items() if value["matrix"] is not None
     }
 
     return missing

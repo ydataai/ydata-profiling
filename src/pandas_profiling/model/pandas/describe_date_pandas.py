@@ -29,6 +29,8 @@ def pandas_describe_date_1d(
     Returns:
         A dict containing calculated series description values.
     """
+    chi_squared_threshold = config.vars.num.chi_squared_threshold
+
     summary.update(
         {
             "min": pd.Timestamp.to_pydatetime(series.min()),
@@ -40,7 +42,7 @@ def pandas_describe_date_1d(
 
     values = series.values.astype(np.int64) // 10 ** 9
 
-    if config.vars.num.chi_squared_threshold > 0.0:
+    if chi_squared_threshold > 0.0:
         summary["chi_squared"] = chi_square(values)
 
     summary.update(histogram_compute(config, values, summary["n_distinct"]))

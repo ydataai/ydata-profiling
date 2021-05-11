@@ -42,11 +42,8 @@ def numeric_stats_numpy(
 ) -> Dict[str, Any]:
     vc = series_description["value_counts_without_nan"]
     index_values = vc.index.values
-
-    # FIXME: can be performance optimized by using weights in std, var, kurt and skew...
-
     return {
-        "mean": np.average(index_values, weights=vc.values),
+        "mean": np.mean(present_values),
         "std": np.std(present_values, ddof=1),
         "variance": np.var(present_values, ddof=1),
         "min": np.min(index_values),
@@ -55,7 +52,7 @@ def numeric_stats_numpy(
         "kurtosis": series.kurt(),
         # Unbiased skew normalized by N-1
         "skewness": series.skew(),
-        "sum": np.dot(index_values, vc.values),
+        "sum": np.sum(present_values),
     }
 
 
@@ -81,6 +78,7 @@ def pandas_describe_numeric_1d(
 
     value_counts = summary["value_counts_without_nan"]
 
+    summary["n_zeros"] = 0
     negative_index = value_counts.index < 0
     summary["n_negative"] = value_counts.loc[negative_index].sum()
     summary["p_negative"] = summary["n_negative"] / summary["n"]
@@ -91,8 +89,6 @@ def pandas_describe_numeric_1d(
 
     if 0 in value_counts.index:
         summary["n_zeros"] = value_counts.loc[0]
-    else:
-        summary["n_zeros"] = 0
 
     stats = summary
 

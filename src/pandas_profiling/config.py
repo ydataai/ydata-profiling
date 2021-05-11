@@ -196,6 +196,7 @@ class Correlations(BaseModel):
 
 class Interactions(BaseModel):
     continuous: bool = True
+    """Set to False to disable scatterplots"""
     # FIXME: validate with column names
     targets: List[str] = []
 
