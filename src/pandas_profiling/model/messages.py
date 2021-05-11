@@ -113,7 +113,7 @@ def check_table_messages(table: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
-    if "n_duplicates" in table and warning_value(table["n_duplicates"]):
+    if warning_value(table.get("n_duplicates", np.nan)):
         messages.append(
             Message(
                 message_type=MessageType.DUPLICATES,
@@ -180,7 +180,7 @@ def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
     chi_squared_threshold_cat = config.vars.cat.chi_squared_threshold
 
     # High cardinality
-    if summary["n_distinct"] > cardinality_threshold_cat:
+    if summary.get("n_distinct", np.nan) > cardinality_threshold_cat:
         messages.append(
             Message(
                 message_type=MessageType.HIGH_CARDINALITY,
@@ -194,7 +194,7 @@ def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
     ):
         messages.append(Message(message_type=MessageType.UNIFORM))
 
-    if "date_warning" in summary and summary["date_warning"]:
+    if summary.get("date_warning"):
         messages.append(Message(message_type=MessageType.TYPE_DATE))
 
     # Constant length
@@ -227,14 +227,14 @@ def generic_warnings(summary: dict) -> List[Message]:
 def supported_warnings(summary: dict) -> List[Message]:
     messages = []
 
-    if summary["n_distinct"] == summary["n"]:
+    if summary.get("n_distinct", np.nan) == summary["n"]:
         messages.append(
             Message(
                 message_type=MessageType.UNIQUE,
                 fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
             )
         )
-    if summary["n_distinct"] == 1:
+    if summary.get("n_distinct", np.nan) == 1:
         summary["mode"] = summary["value_counts_without_nan"].index[0]
         messages.append(
             Message(
