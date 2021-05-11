@@ -11,8 +11,8 @@ from pandas_profiling.model.correlations import perform_check_correlation
 
 
 @unique
-class MessageType(Enum):
-    """Message Types"""
+class AlertType(Enum):
+    """Alert types"""
 
     CONSTANT = auto()
     """This variable has a constant value."""
@@ -60,14 +60,14 @@ class MessageType(Enum):
     """The DataFrame is empty"""
 
 
-class Message:
-    """A message object (type, values, column)."""
+class Alert:
+    """An alert object (type, values, column)."""
 
     _anchor_id: Optional[str] = None
 
     def __init__(
         self,
-        message_type: MessageType,
+        alert_type: AlertType,
         values: Optional[Dict] = None,
         column_name: Union[str, None] = None,
         fields: Optional[Set] = None,
@@ -78,7 +78,7 @@ class Message:
             fields = set()
 
         self.fields = fields
-        self.message_type = message_type
+        self.alert_type = alert_type
         self.values = values
         self.column_name = column_name
 
@@ -90,7 +90,7 @@ class Message:
 
     def fmt(self) -> str:
         # TODO: render in template
-        name = self.message_type.name.replace("_", " ")
+        name = self.alert_type.name.replace("_", " ")
         if name == "HIGH CORRELATION":
             num = len(self.values["fields"])
             title = ", ".join(self.values["fields"])
@@ -98,66 +98,66 @@ class Message:
         return name
 
     def __repr__(self):
-        message_type = self.message_type.name
+        alert_type = self.alert_type.name
         column = self.column_name
-        return f"[{message_type}] warning on column {column}"
+        return f"[{alert_type}] alert on column {column}"
 
 
-def check_table_messages(table: dict) -> List[Message]:
-    """Checks the overall dataset for warnings.
+def check_table_alerts(table: dict) -> List[Alert]:
+    """Checks the overall dataset for alerts.
 
     Args:
         table: Overall dataset statistics.
 
     Returns:
-        A list of messages.
+        A list of alerts.
     """
-    messages = []
-    if warning_value(table.get("n_duplicates", np.nan)):
-        messages.append(
-            Message(
-                message_type=MessageType.DUPLICATES,
+    alerts = []
+    if alert_value(table.get("n_duplicates", np.nan)):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.DUPLICATES,
                 values=table,
                 fields={"n_duplicates"},
             )
         )
     if table["n"] == 0:
-        messages.append(
-            Message(
-                message_type=MessageType.EMPTY,
+        alerts.append(
+            Alert(
+                alert_type=AlertType.EMPTY,
                 values=table,
                 fields={"n"},
             )
         )
-    return messages
+    return alerts
 
 
-def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
-    messages = []
+def numeric_alerts(config: Settings, summary: dict) -> List[Alert]:
+    alerts = []
 
     # Skewness
-    if warning_skewness(summary["skewness"], config.vars.num.skewness_threshold):
-        messages.append(
-            Message(
-                message_type=MessageType.SKEWED,
+    if skewness_alert(summary["skewness"], config.vars.num.skewness_threshold):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.SKEWED,
                 fields={"skewness"},
             )
         )
 
     # Infinite values
-    if warning_value(summary["p_infinite"]):
-        messages.append(
-            Message(
-                message_type=MessageType.INFINITE,
+    if alert_value(summary["p_infinite"]):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.INFINITE,
                 fields={"p_infinite", "n_infinite"},
             )
         )
 
     # Zeros
-    if warning_value(summary["p_zeros"]):
-        messages.append(
-            Message(
-                message_type=MessageType.ZEROS,
+    if alert_value(summary["p_zeros"]):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.ZEROS,
                 fields={"n_zeros", "p_zeros"},
             )
         )
@@ -166,19 +166,19 @@ def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
         "chi_squared" in summary
         and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
     ):
-        messages.append(Message(message_type=MessageType.UNIFORM))
+        alerts.append(Alert(alert_type=AlertType.UNIFORM))
 
-    return messages
+    return alerts
 
 
-def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
-    messages = []
+def categorical_alerts(config: Settings, summary: dict) -> List[Alert]:
+    alerts = []
 
     # High cardinality
     if summary.get("n_distinct", np.nan) > config.vars.cat.cardinality_threshold:
-        messages.append(
-            Message(
-                message_type=MessageType.HIGH_CARDINALITY,
+        alerts.append(
+            Alert(
+                alert_type=AlertType.HIGH_CARDINALITY,
                 fields={"n_distinct"},
             )
         )
@@ -187,113 +187,111 @@ def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
         "chi_squared" in summary
         and summary["chi_squared"]["pvalue"] > config.vars.cat.chi_squared_threshold
     ):
-        messages.append(Message(message_type=MessageType.UNIFORM))
+        alerts.append(Alert(alert_type=AlertType.UNIFORM))
 
     if summary.get("date_warning"):
-        messages.append(Message(message_type=MessageType.TYPE_DATE))
+        alerts.append(Alert(alert_type=AlertType.TYPE_DATE))
 
     # Constant length
     if "composition" in summary and summary["min_length"] == summary["max_length"]:
-        messages.append(
-            Message(
-                message_type=MessageType.CONSTANT_LENGTH,
+        alerts.append(
+            Alert(
+                alert_type=AlertType.CONSTANT_LENGTH,
                 fields={"composition_min_length", "composition_max_length"},
             )
         )
 
-    return messages
+    return alerts
 
 
-def generic_warnings(summary: dict) -> List[Message]:
-    messages = []
+def generic_alerts(summary: dict) -> List[Alert]:
+    alerts = []
 
     # Missing
-    if warning_value(summary["p_missing"]):
-        messages.append(
-            Message(
-                message_type=MessageType.MISSING,
+    if alert_value(summary["p_missing"]):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.MISSING,
                 fields={"p_missing", "n_missing"},
             )
         )
 
-    return messages
+    return alerts
 
 
-def supported_warnings(summary: dict) -> List[Message]:
-    messages = []
+def supported_alerts(summary: dict) -> List[Alert]:
+    alerts = []
 
     if summary.get("n_distinct", np.nan) == summary["n"]:
-        messages.append(
-            Message(
-                message_type=MessageType.UNIQUE,
+        alerts.append(
+            Alert(
+                alert_type=AlertType.UNIQUE,
                 fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
             )
         )
     if summary.get("n_distinct", np.nan) == 1:
         summary["mode"] = summary["value_counts_without_nan"].index[0]
-        messages.append(
-            Message(
-                message_type=MessageType.CONSTANT,
+        alerts.append(
+            Alert(
+                alert_type=AlertType.CONSTANT,
                 fields={"n_distinct"},
             )
         )
-        messages.append(
-            Message(
-                message_type=MessageType.REJECTED,
+        alerts.append(
+            Alert(
+                alert_type=AlertType.REJECTED,
                 fields=set(),
             )
         )
-    return messages
+    return alerts
 
 
-def unsupported_warnings(summary: Dict[str, Any]) -> List[Message]:
-    messages = [
-        Message(
-            message_type=MessageType.UNSUPPORTED,
+def unsupported_alerts(summary: Dict[str, Any]) -> List[Alert]:
+    alerts = [
+        Alert(
+            alert_type=AlertType.UNSUPPORTED,
             fields=set(),
         ),
-        Message(
-            message_type=MessageType.REJECTED,
+        Alert(
+            alert_type=AlertType.REJECTED,
             fields=set(),
         ),
     ]
-    return messages
+    return alerts
 
 
-def check_variable_messages(
-    config: Settings, col: str, description: dict
-) -> List[Message]:
-    """Checks individual variables for warnings.
+def check_variable_alerts(config: Settings, col: str, description: dict) -> List[Alert]:
+    """Checks individual variables for alerts.
 
     Args:
         col: The column name that is checked.
         description: The series description.
 
     Returns:
-        A list of messages.
+        A list of alerts.
     """
-    messages = []
+    alerts = []
 
-    messages += generic_warnings(description)
+    alerts += generic_alerts(description)
 
     if description["type"] == "Unsupported":
-        messages += unsupported_warnings(description)
+        alerts += unsupported_alerts(description)
     else:
-        messages += supported_warnings(description)
+        alerts += supported_alerts(description)
 
         if description["type"] == "Categorical":
-            messages += categorical_warnings(config, description)
+            alerts += categorical_alerts(config, description)
         if description["type"] == "Numeric":
-            messages += numeric_warnings(config, description)
+            alerts += numeric_alerts(config, description)
 
-    for idx in range(len(messages)):
-        messages[idx].column_name = col
-        messages[idx].values = description
-    return messages
+    for idx in range(len(alerts)):
+        alerts[idx].column_name = col
+        alerts[idx].values = description
+    return alerts
 
 
-def check_correlation_messages(config: Settings, correlations: dict) -> List[Message]:
-    messages = []
+def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert]:
+    alerts = []
 
     for corr, matrix in correlations.items():
         if config.correlations[corr].warn_high_correlations:
@@ -301,36 +299,36 @@ def check_correlation_messages(config: Settings, correlations: dict) -> List[Mes
             correlated_mapping = perform_check_correlation(matrix, threshold)
             if len(correlated_mapping) > 0:
                 for k, v in correlated_mapping.items():
-                    messages.append(
-                        Message(
+                    alerts.append(
+                        Alert(
                             column_name=k,
-                            message_type=MessageType.HIGH_CORRELATION,
+                            alert_type=AlertType.HIGH_CORRELATION,
                             values={"corr": corr, "fields": v},
                         )
                     )
-    return messages
+    return alerts
 
 
-def get_messages(
+def get_alerts(
     config: Settings, table_stats: dict, series_description: dict, correlations: dict
-) -> List[Message]:
-    messages = check_table_messages(table_stats)
+) -> List[Alert]:
+    alerts = check_table_alerts(table_stats)
     for col, description in series_description.items():
-        messages += check_variable_messages(config, col, description)
-    messages += check_correlation_messages(config, correlations)
-    messages.sort(key=lambda message: str(message.message_type))
-    return messages
+        alerts += check_variable_alerts(config, col, description)
+    alerts += check_correlation_alerts(config, correlations)
+    alerts.sort(key=lambda alert: str(alert.alert_type))
+    return alerts
 
 
-def warning_value(value: float) -> bool:
+def alert_value(value: float) -> bool:
     return not np.isnan(value) and value > 0.01
 
 
-def warning_skewness(v: float, threshold: int) -> bool:
+def skewness_alert(v: float, threshold: int) -> bool:
     return not np.isnan(v) and (v < (-1 * threshold) or v > threshold)
 
 
-def warning_type_date(series: pd.Series) -> bool:
+def type_date_alert(series: pd.Series) -> bool:
     from dateutil.parser import ParserError, parse
 
     try:

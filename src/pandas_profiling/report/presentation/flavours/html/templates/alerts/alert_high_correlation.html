@@ -1,0 +1,4 @@
+<a class="anchor" href="#pp_var_{{ alert.anchor_id }}">
+        <code>{{ alert.column_name }}</code>
+    </a> is highly correlated with <code>{{ alert.values['fields'][0] }}</code>{% if alert.values['fields'] | length > 1 %} and <abbr title="{{ alert.values['fields'] | join(', ') }}">{{ alert.values['fields'] | length - 1 }} other fields</abbr>{% endif %}
+{# (ρ = {{ alert.values['correlation'] | fmt_numeric }}) #}

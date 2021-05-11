@@ -31,12 +31,12 @@ def render_categorical_frequency(
             {
                 "name": "Unique",
                 "value": f"{summary['n_unique']} {help('The number of unique values (all values that occur exactly once in the dataset).')}",
-                "alert": "n_unique" in summary["warn_fields"],
+                "alert": "n_unique" in summary["alert_fields"],
             },
             {
                 "name": "Unique (%)",
                 "value": fmt_percent(summary["p_unique"]),
-                "alert": "p_unique" in summary["warn_fields"],
+                "alert": "p_unique" in summary["alert_fields"],
             },
         ],
         name="Unique",
@@ -313,7 +313,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         summary["varid"],
         summary["varname"],
         "Categorical",
-        summary["warnings"],
+        summary["alerts"],
         summary["description"],
     )
 
@@ -322,22 +322,22 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             {
                 "name": "Distinct",
                 "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["warn_fields"],
+                "alert": "n_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Distinct (%)",
                 "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["warn_fields"],
+                "alert": "p_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Missing",
                 "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["warn_fields"],
+                "alert": "n_missing" in summary["alert_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["warn_fields"],
+                "alert": "p_missing" in summary["alert_fields"],
             },
             {
                 "name": "Memory size",

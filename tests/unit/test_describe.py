@@ -551,7 +551,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
         "scatter",
         "correlations",
         "missing",
-        "messages",
+        "alerts",
         "package",
         "sample",
         "duplicates",

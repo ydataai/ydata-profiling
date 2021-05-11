@@ -11,7 +11,7 @@ from pandas_profiling.report.presentation.core import (
 def render_generic(config: Settings, summary: dict) -> dict:
     info = VariableInfo(
         anchor_id=summary["varid"],
-        warnings=summary["warnings"],
+        alerts=summary["alerts"],
         var_type="Unsupported",
         var_name=summary["varname"],
         description=summary["description"],
@@ -22,12 +22,12 @@ def render_generic(config: Settings, summary: dict) -> dict:
             {
                 "name": "Missing",
                 "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["warn_fields"],
+                "alert": "n_missing" in summary["alert_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["warn_fields"],
+                "alert": "p_missing" in summary["alert_fields"],
             },
             {
                 "name": "Memory size",

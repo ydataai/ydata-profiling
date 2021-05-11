@@ -39,4 +39,4 @@ Components
    toggle_button
    variable
    variable_info
-   warnings
+   alerts

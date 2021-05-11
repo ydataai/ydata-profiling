@@ -32,7 +32,7 @@ def render_real(config: Settings, summary: dict) -> dict:
         summary["varid"],
         summary["varname"],
         name,
-        summary["warnings"],
+        summary["alerts"],
         summary["description"],
     )
 
@@ -41,32 +41,32 @@ def render_real(config: Settings, summary: dict) -> dict:
             {
                 "name": "Distinct",
                 "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["warn_fields"],
+                "alert": "n_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Distinct (%)",
                 "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["warn_fields"],
+                "alert": "p_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Missing",
                 "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["warn_fields"],
+                "alert": "n_missing" in summary["alert_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["warn_fields"],
+                "alert": "p_missing" in summary["alert_fields"],
             },
             {
                 "name": "Infinite",
                 "value": fmt(summary["n_infinite"]),
-                "alert": "n_infinite" in summary["warn_fields"],
+                "alert": "n_infinite" in summary["alert_fields"],
             },
             {
                 "name": "Infinite (%)",
                 "value": fmt_percent(summary["p_infinite"]),
-                "alert": "p_infinite" in summary["warn_fields"],
+                "alert": "p_infinite" in summary["alert_fields"],
             },
             {
                 "name": "Mean",
@@ -93,12 +93,12 @@ def render_real(config: Settings, summary: dict) -> dict:
             {
                 "name": "Zeros",
                 "value": fmt(summary["n_zeros"]),
-                "alert": "n_zeros" in summary["warn_fields"],
+                "alert": "n_zeros" in summary["alert_fields"],
             },
             {
                 "name": "Zeros (%)",
                 "value": fmt_percent(summary["p_zeros"]),
-                "alert": "p_zeros" in summary["warn_fields"],
+                "alert": "p_zeros" in summary["alert_fields"],
             },
             {
                 "name": "Negative",
@@ -203,7 +203,7 @@ def render_real(config: Settings, summary: dict) -> dict:
                 "value": fmt_numeric(
                     summary["skewness"], precision=config.report.precision
                 ),
-                "class": "alert" if "skewness" in summary["warn_fields"] else "",
+                "class": "alert" if "skewness" in summary["alert_fields"] else "",
             },
             {
                 "name": "Sum",

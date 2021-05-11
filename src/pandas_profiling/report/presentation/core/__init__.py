@@ -1,3 +1,4 @@
+from pandas_profiling.report.presentation.core.alerts import Alerts
 from pandas_profiling.report.presentation.core.collapse import Collapse
 from pandas_profiling.report.presentation.core.container import Container
 from pandas_profiling.report.presentation.core.duplicate import Duplicate
@@ -13,7 +14,6 @@ from pandas_profiling.report.presentation.core.table import Table
 from pandas_profiling.report.presentation.core.toggle_button import ToggleButton
 from pandas_profiling.report.presentation.core.variable import Variable
 from pandas_profiling.report.presentation.core.variable_info import VariableInfo
-from pandas_profiling.report.presentation.core.warnings import Warnings
 
 __all__ = [
     "Collapse",
@@ -29,5 +29,5 @@ __all__ = [
     "ToggleButton",
     "Variable",
     "VariableInfo",
-    "Warnings",
+    "Alerts",
 ]
