@@ -25,7 +25,7 @@ def render_count(config: Settings, summary: dict) -> dict:
         summary["varid"],
         summary["varname"],
         "Real number (&Ropf; / &Ropf;<sub>&ge;0</sub>)",
-        summary["warnings"],
+        summary["alerts"],
         summary["description"],
     )
 

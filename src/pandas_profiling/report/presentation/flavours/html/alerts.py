@@ -1,8 +1,8 @@
-from pandas_profiling.report.presentation.core.warnings import Warnings
+from pandas_profiling.report.presentation.core.alerts import Alerts
 from pandas_profiling.report.presentation.flavours.html import templates
 
 
-class HTMLWarnings(Warnings):
+class HTMLAlerts(Alerts):
     def render(self) -> str:
         styles = {
             "constant": "warning",
@@ -21,4 +21,4 @@ class HTMLWarnings(Warnings):
             "duplicates": "default",
         }
 
-        return templates.template("warnings.html").render(**self.content, styles=styles)
+        return templates.template("alerts.html").render(**self.content, styles=styles)

@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from pandas_profiling.model.messages import Message
+from pandas_profiling.model.alerts import Alert
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
@@ -10,7 +10,7 @@ class VariableInfo(ItemRenderer):
         anchor_id: str,
         var_name: str,
         var_type: str,
-        warnings: List[Message],
+        alerts: List[Alert],
         description: str,
         **kwargs
     ):
@@ -21,7 +21,7 @@ class VariableInfo(ItemRenderer):
                 "var_name": var_name,
                 "description": description,
                 "var_type": var_type,
-                "warnings": warnings,
+                "alerts": alerts,
             },
             **kwargs
         )

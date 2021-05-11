@@ -1,4 +1,0 @@
-<a class="anchor" href="#pp_var_{{ message.anchor_id }}">
-        <code>{{ message.column_name }}</code>
-    </a> is highly correlated with <code>{{ message.values['fields'][0] }}</code>{% if message.values['fields'] | length > 1 %} and <abbr title="{{ message.values['fields'] | join(', ') }}">{{ message.values['fields'] | length - 1 }} other fields</abbr>{% endif %}
-{# (ρ = {{ message.values['correlation'] | fmt_numeric }}) #}

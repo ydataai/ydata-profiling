@@ -20,6 +20,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     """
     from pandas_profiling.report.presentation.core import (
         HTML,
+        Alerts,
         Collapse,
         Container,
         Duplicate,
@@ -32,10 +33,10 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         ToggleButton,
         Variable,
         VariableInfo,
-        Warnings,
     )
     from pandas_profiling.report.presentation.flavours.html import (
         HTMLHTML,
+        HTMLAlerts,
         HTMLCollapse,
         HTMLContainer,
         HTMLDuplicate,
@@ -48,7 +49,6 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         HTMLToggleButton,
         HTMLVariable,
         HTMLVariableInfo,
-        HTMLWarnings,
     )
 
     return {
@@ -61,7 +61,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Image: HTMLImage,
         FrequencyTable: HTMLFrequencyTable,
         FrequencyTableSmall: HTMLFrequencyTableSmall,
-        Warnings: HTMLWarnings,
+        Alerts: HTMLAlerts,
         Duplicate: HTMLDuplicate,
         Sample: HTMLSample,
         ToggleButton: HTMLToggleButton,
@@ -86,6 +86,7 @@ def HTMLReport(structure: Root) -> Root:
 def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.core import (
         HTML,
+        Alerts,
         Collapse,
         Container,
         Duplicate,
@@ -98,9 +99,9 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         ToggleButton,
         Variable,
         VariableInfo,
-        Warnings,
     )
     from pandas_profiling.report.presentation.flavours.widget import (
+        WidgetAlerts,
         WidgetCollapse,
         WidgetContainer,
         WidgetDuplicate,
@@ -114,7 +115,6 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         WidgetToggleButton,
         WidgetVariable,
         WidgetVariableInfo,
-        WidgetWarnings,
     )
 
     return {
@@ -127,7 +127,7 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Image: WidgetImage,
         FrequencyTable: WidgetFrequencyTable,
         FrequencyTableSmall: WidgetFrequencyTableSmall,
-        Warnings: WidgetWarnings,
+        Alerts: WidgetAlerts,
         Duplicate: WidgetDuplicate,
         Sample: WidgetSample,
         ToggleButton: WidgetToggleButton,

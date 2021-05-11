@@ -82,7 +82,7 @@ def render_url(config: Settings, summary: dict) -> dict:
         summary["varid"],
         summary["varname"],
         "URL",
-        summary["warnings"],
+        summary["alerts"],
         summary["description"],
     )
 
@@ -91,22 +91,22 @@ def render_url(config: Settings, summary: dict) -> dict:
             {
                 "name": "Distinct",
                 "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["warn_fields"],
+                "alert": "n_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Distinct (%)",
                 "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["warn_fields"],
+                "alert": "p_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Missing",
                 "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["warn_fields"],
+                "alert": "n_missing" in summary["alert_fields"],
             },
             {
                 "name": "Missing (%)",
                 "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["warn_fields"],
+                "alert": "p_missing" in summary["alert_fields"],
             },
             {
                 "name": "Memory size",
