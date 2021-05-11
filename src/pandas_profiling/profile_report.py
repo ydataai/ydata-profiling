@@ -444,31 +444,3 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
-
-    @staticmethod
-    def preprocess(df: pd.DataFrame) -> pd.DataFrame:
-        """Preprocess the dataframe
-
-        - Appends the index to the dataframe when it contains information
-        - Rename the "index" column to "df_index", if exists
-        - Convert the DataFrame's columns to str
-
-        Args:
-            df: the pandas DataFrame
-
-        Returns:
-            The preprocessed DataFrame
-        """
-        # Treat index as any other column
-        if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
-
-        # Rename reserved column names
-        df = rename_index(df)
-
-        # Ensure that columns are strings
-        df.columns = df.columns.astype("str")
-        return df
