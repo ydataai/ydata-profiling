@@ -316,6 +316,17 @@ def check_correlation_messages(config: Settings, correlations: dict) -> List[Mes
     return messages
 
 
+def get_messages(
+    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+) -> List[Message]:
+    messages = check_table_messages(table_stats)
+    for col, description in series_description.items():
+        messages += check_variable_messages(config, col, description)
+    messages += check_correlation_messages(config, correlations)
+    messages.sort(key=lambda message: str(message.message_type))
+    return messages
+
+
 def warning_value(value: float) -> bool:
     return not np.isnan(value) and value > 0.01
 

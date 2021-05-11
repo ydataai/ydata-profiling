@@ -4,7 +4,7 @@ import multiprocessing
 import multiprocessing.pool
 import warnings
 from collections import Counter
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -12,12 +12,6 @@ from tqdm import tqdm
 from visions import VisionsTypeset
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.messages import (
-    Message,
-    check_correlation_messages,
-    check_table_messages,
-    check_variable_messages,
-)
 from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.visualisation.missing import (
     missing_bar,
@@ -282,14 +276,3 @@ def get_scatter_matrix(
                 )
 
     return scatter_matrix
-
-
-def get_messages(
-    config: Settings, table_stats: dict, series_description: dict, correlations: dict
-) -> List[Message]:
-    messages = check_table_messages(table_stats)
-    for col, description in series_description.items():
-        messages += check_variable_messages(config, col, description)
-    messages += check_correlation_messages(config, correlations)
-    messages.sort(key=lambda message: str(message.message_type))
-    return messages
