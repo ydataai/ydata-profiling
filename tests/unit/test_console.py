@@ -3,7 +3,7 @@ import os
 import pytest
 
 from pandas_profiling.controller import console
-from pandas_profiling.utils.paths import get_config_default
+from pandas_profiling.utils.paths import get_config
 
 
 @pytest.fixture
@@ -48,7 +48,7 @@ def test_double_config(console_data, test_output_dir):
             [
                 "-s",
                 "--config_file",
-                str(get_config_default()),
+                str(get_config("config_default.yaml")),
                 "--minimal",
                 str(console_data),
                 str(report),
