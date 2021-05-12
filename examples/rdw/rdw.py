@@ -6,9 +6,11 @@ from pandas_profiling.utils.cache import cache_file
 if __name__ == "__main__":
     file_name = cache_file(
         "rdw.parquet",
-        "https://raw.githubusercontent.com/pandas-profiling/pandas-profiling-data/master/data/rdw.parquet",
+        "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/rdw.parquet",
     )
     data = pd.read_parquet(file_name)
 
-    profile = ProfileReport(data, title="RDW Dataset", minimal=True)
+    profile = ProfileReport(
+        data, title="RDW Dataset", minimal=True, vars={"url": {"active": True}}
+    )
     profile.to_file("rdw.html")
