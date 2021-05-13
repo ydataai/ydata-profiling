@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, BaseSettings, Field
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
@@ -231,7 +231,7 @@ class Report(BaseModel):
     precision: int = 10
 
 
-class Settings(BaseModel):
+class Settings(BaseSettings):
     # Title of the document
     title: str = "Pandas Profiling Report"
 
@@ -296,6 +296,7 @@ class Settings(BaseModel):
 
 
 class Config:
+    env_prefix = "profile_"
     arg_groups: Dict[str, Any] = {
         "sensitive": {
             "samples": None,
