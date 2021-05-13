@@ -231,7 +231,7 @@ class Report(BaseModel):
     precision: int = 10
 
 
-class Settings(BaseSettings):
+class Settings(BaseModel):
     # Title of the document
     title: str = "Pandas Profiling Report"
 
