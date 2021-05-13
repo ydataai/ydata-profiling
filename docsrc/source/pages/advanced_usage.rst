@@ -233,10 +233,7 @@ For example:
 
     from pandas_profiling import ProfileReport
 
-    profile = ProfileReport(
-      df,
-      title="My Custome Pandas Profiling Report"
-    )
+    profile = ProfileReport(df, title="My Custome Pandas Profiling Report")
 
 is equivalent to setting the title as an enviroment variable
 
@@ -250,6 +247,4 @@ and running
 
     from pandas_profiling import ProfileReport
 
-    profile = ProfileReport(
-      df
-    )
+    profile = ProfileReport(df)
