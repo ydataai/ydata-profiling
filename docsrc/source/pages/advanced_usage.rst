@@ -222,3 +222,34 @@ If the config for only the HTML report is changed (for instance you would like t
 You can use the ``report.invalidate_cache()`` method for this.
 Passing the values "rendering" only resets previously rendered reports (HTML, JSON or widgets).
 Alternatively "report" also resets the report structure.
+
+Read config from envrionment
+-----------------------------
+Any profile report config setting can also be read in from environment variables.
+
+For example:
+
+.. code-block:: python
+
+    from pandas_profiling import ProfileReport
+
+    profile = ProfileReport(
+      df,
+      title="My Custome Pandas Profiling Report"
+    )
+
+is equivalent to setting the title as an enviroment variable
+
+.. code-block::
+
+    $ export title="My Custome Pandas Profiling Report"
+
+and running
+
+.. code-block:: python
+
+    from pandas_profiling import ProfileReport
+
+    profile = ProfileReport(
+      df
+    )
