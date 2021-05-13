@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, BaseSettings, Field
+from pydantic import BaseModel, Field
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
