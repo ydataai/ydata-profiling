@@ -78,7 +78,6 @@ def pandas_describe_numeric_1d(
 
     value_counts = summary["value_counts_without_nan"]
 
-    summary["n_zeros"] = 0
     negative_index = value_counts.index < 0
     summary["n_negative"] = value_counts.loc[negative_index].sum()
     summary["p_negative"] = summary["n_negative"] / summary["n"]
@@ -89,6 +88,8 @@ def pandas_describe_numeric_1d(
 
     if 0 in value_counts.index:
         summary["n_zeros"] = value_counts.loc[0]
+    else:
+        summary["n_zeros"] = 0
 
     stats = summary
 

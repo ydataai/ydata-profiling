@@ -1,15 +1,13 @@
-from typing import List, TypeVar
+from typing import List
 
 import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.sample import Sample, get_sample
 
-PandasDataFrame = TypeVar("pandas.core.frame.DataFrame")  # type: ignore
-
 
 @get_sample.register(Settings, pd.DataFrame)
-def _(config: Settings, df: pd.DataFrame) -> List[Sample]:
+def pandas_get_sample(config: Settings, df: pd.DataFrame) -> List[Sample]:
     """Obtains a sample from head and tail of the DataFrame
 
     Args:
