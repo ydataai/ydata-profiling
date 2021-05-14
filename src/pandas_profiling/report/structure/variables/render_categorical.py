@@ -25,7 +25,7 @@ from pandas_profiling.visualisation.plot import histogram, pie_plot
 
 def render_categorical_frequency(
     config: Settings, summary: dict, varid: str
-) -> Tuple[Renderable, Renderable]:
+) -> Renderable:
     frequency_table = Table(
         [
             {
@@ -43,16 +43,7 @@ def render_categorical_frequency(
         anchor_id=f"{varid}_unique_stats",
     )
 
-    frequencies = Image(
-        histogram(config, *summary["histogram_frequencies"]),
-        image_format=config.plot.image_format,
-        alt="frequencies histogram",
-        name="Frequencies histogram",
-        caption="Frequencies of value counts",
-        anchor_id=f"{varid}frequencies",
-    )
-
-    return frequency_table, frequencies
+    return frequency_table
 
 
 def render_categorical_length(
@@ -259,7 +250,7 @@ def render_categorical_unicode(
                 FrequencyTable(
                     freq_table(
                         freqtable=summary["character_counts"],
-                        n=summary["character_counts"].sum(),
+                        n=summary["n_characters"],
                         max_number_to_print=n_freq_table_max,
                     ),
                     name="Most occurring characters",
@@ -367,7 +358,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         redact=config.vars.cat.redact,
     )
 
-    unique_stats, value_counts = render_categorical_frequency(config, summary, varid)
+    unique_stats = render_categorical_frequency(config, summary, varid)
 
     overview_items = []
 
