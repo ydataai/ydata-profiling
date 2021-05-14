@@ -14,6 +14,9 @@ def test_issue353():
     df["a"] = df["a"].multiply(5).astype("int").astype("category")
 
     profile = ProfileReport(
-        df, title="Pandas Profiling Report", html={"style": {"full_width": True}}
+        df,
+        title="Pandas Profiling Report",
+        html={"style": {"full_width": True}},
+        progress_bar=False,
     )
     assert len(profile.to_html()) > 0

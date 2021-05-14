@@ -3,7 +3,7 @@ import re
 import unicodedata
 import warnings
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import joblib
 import pandas as pd
@@ -211,3 +211,17 @@ def slugify(value: str, allow_unicode: bool = False) -> str:
         )
     value = re.sub(r"[^\w\s-]", "", value.lower())
     return re.sub(r"[-\s]+", "-", value).strip("-_")
+
+
+def sort_column_names(dct: dict, sort: Optional[str]) -> dict:
+    if sort is None:
+        return dct
+
+    sort = sort.lower()
+    if sort.startswith("asc"):
+        dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold()))
+    elif sort.startswith("desc"):
+        dct = dict(sorted(dct.items(), key=lambda x: x[0].casefold(), reverse=True))
+    else:
+        raise ValueError('"sort" should be "ascending", "descending" or None.')
+    return dct

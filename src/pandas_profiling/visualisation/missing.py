@@ -33,15 +33,15 @@ def get_font_size(data: pd.DataFrame) -> float:
 
 
 @manage_matplotlib_context()
-def missing_matrix(config: Settings, data: pd.DataFrame) -> str:
+def plot_missing_matrix(config: Settings, data: pd.DataFrame) -> str:
     """Generate missing values matrix plot
 
     Args:
-      config: Settings
-      data: Pandas DataFrame to generate missing values matrix from.
+        config: report Settings object
+        data: Pandas DataFrame to generate missing values matrix from.
 
     Returns:
-      The resulting missing values matrix encoded as a string.
+        The resulting missing values matrix encoded as a string.
     """
 
     missingno.matrix(
@@ -57,15 +57,15 @@ def missing_matrix(config: Settings, data: pd.DataFrame) -> str:
 
 
 @manage_matplotlib_context()
-def missing_bar(config: Settings, data: pd.DataFrame) -> str:
+def plot_missing_bar(config: Settings, data: pd.DataFrame) -> str:
     """Generate missing values bar plot.
 
     Args:
-      config: Settings
-      data: Pandas DataFrame to generate missing values bar plot from.
+        config: report Settings object
+        data: Pandas DataFrame to generate missing values bar plot from.
 
     Returns:
-      The resulting missing values bar plot encoded as a string.
+        The resulting missing values bar plot encoded as a string.
     """
     missingno.bar(
         data,
@@ -82,15 +82,15 @@ def missing_bar(config: Settings, data: pd.DataFrame) -> str:
 
 
 @manage_matplotlib_context()
-def missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
+def plot_missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
     """Generate missing values heatmap plot.
 
     Args:
-      config: Settings
-      data: Pandas DataFrame to generate missing values heatmap plot from.
+        config: report Settings object
+        data: Pandas DataFrame to generate missing values heatmap plot from.
 
     Returns:
-      The resulting missing values heatmap plot encoded as a string.
+        The resulting missing values heatmap plot encoded as a string.
     """
 
     height = 4
@@ -119,11 +119,12 @@ def missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
 
 
 @manage_matplotlib_context()
-def missing_dendrogram(config: Settings, data: pd.DataFrame) -> str:
+def plot_missing_dendrogram(config: Settings, data: pd.DataFrame) -> str:
     """Generate a dendrogram plot for missing values.
 
     Args:
-      data: Pandas DataFrame to generate missing values dendrogram plot from.
+        config: report Settings object
+        data: Pandas DataFrame to generate missing values dendrogram plot from.
 
     Returns:
       The resulting missing values dendrogram plot encoded as a string.

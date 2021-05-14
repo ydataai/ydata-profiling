@@ -108,6 +108,6 @@ def test_issue282():
         index=index,
         data={"column_1": ["value"] * len(index), "column_2": [1.0] * len(index)},
     )
-    report = ProfileReport(df)
+    report = ProfileReport(df, progress_bar=False)
     description = report.get_description()
     assert type(description) == dict

@@ -113,7 +113,7 @@ def check_table_messages(table: dict) -> List[Message]:
         A list of messages.
     """
     messages = []
-    if "n_duplicates" in table and warning_value(table["n_duplicates"]):
+    if warning_value(table.get("n_duplicates", np.nan)):
         messages.append(
             Message(
                 message_type=MessageType.DUPLICATES,
@@ -134,8 +134,6 @@ def check_table_messages(table: dict) -> List[Message]:
 
 def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
     messages = []
-
-    chi_squared_threshold_num = config.vars.num.chi_squared_threshold
 
     # Skewness
     if warning_skewness(summary["skewness"], config.vars.num.skewness_threshold):
@@ -166,7 +164,7 @@ def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
 
     if (
         "chi_squared" in summary
-        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_num
+        and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
     ):
         messages.append(Message(message_type=MessageType.UNIFORM))
 
@@ -176,11 +174,8 @@ def numeric_warnings(config: Settings, summary: dict) -> List[Message]:
 def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
     messages = []
 
-    cardinality_threshold_cat = config.vars.cat.cardinality_threshold
-    chi_squared_threshold_cat = config.vars.cat.chi_squared_threshold
-
     # High cardinality
-    if summary["n_distinct"] > cardinality_threshold_cat:
+    if summary.get("n_distinct", np.nan) > config.vars.cat.cardinality_threshold:
         messages.append(
             Message(
                 message_type=MessageType.HIGH_CARDINALITY,
@@ -190,11 +185,11 @@ def categorical_warnings(config: Settings, summary: dict) -> List[Message]:
 
     if (
         "chi_squared" in summary
-        and summary["chi_squared"]["pvalue"] > chi_squared_threshold_cat
+        and summary["chi_squared"]["pvalue"] > config.vars.cat.chi_squared_threshold
     ):
         messages.append(Message(message_type=MessageType.UNIFORM))
 
-    if "date_warning" in summary and summary["date_warning"]:
+    if summary.get("date_warning"):
         messages.append(Message(message_type=MessageType.TYPE_DATE))
 
     # Constant length
@@ -227,14 +222,14 @@ def generic_warnings(summary: dict) -> List[Message]:
 def supported_warnings(summary: dict) -> List[Message]:
     messages = []
 
-    if summary["n_distinct"] == summary["n"]:
+    if summary.get("n_distinct", np.nan) == summary["n"]:
         messages.append(
             Message(
                 message_type=MessageType.UNIQUE,
                 fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
             )
         )
-    if summary["n_distinct"] == 1:
+    if summary.get("n_distinct", np.nan) == 1:
         summary["mode"] = summary["value_counts_without_nan"].index[0]
         messages.append(
             Message(
@@ -313,6 +308,17 @@ def check_correlation_messages(config: Settings, correlations: dict) -> List[Mes
                             values={"corr": corr, "fields": v},
                         )
                     )
+    return messages
+
+
+def get_messages(
+    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+) -> List[Message]:
+    messages = check_table_messages(table_stats)
+    for col, description in series_description.items():
+        messages += check_variable_messages(config, col, description)
+    messages += check_correlation_messages(config, correlations)
+    messages.sort(key=lambda message: str(message.message_type))
     return messages
 
 
