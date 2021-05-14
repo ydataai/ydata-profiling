@@ -42,8 +42,11 @@ def numeric_stats_numpy(
 ) -> Dict[str, Any]:
     vc = series_description["value_counts_without_nan"]
     index_values = vc.index.values
+
+    # FIXME: can be performance optimized by using weights in std, var, kurt and skew...
+
     return {
-        "mean": np.mean(present_values),
+        "mean": np.average(index_values, weights=vc.values),
         "std": np.std(present_values, ddof=1),
         "variance": np.var(present_values, ddof=1),
         "min": np.min(index_values),
@@ -52,7 +55,7 @@ def numeric_stats_numpy(
         "kurtosis": series.kurt(),
         # Unbiased skew normalized by N-1
         "skewness": series.skew(),
-        "sum": np.sum(present_values),
+        "sum": np.dot(index_values, vc.values),
     }
 
 
