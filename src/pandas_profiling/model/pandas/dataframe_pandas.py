@@ -3,6 +3,7 @@ import warnings
 import numpy as np
 import pandas as pd
 
+from pandas_profiling.config import Settings
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.utils.dataframe import rename_index
 
@@ -14,7 +15,7 @@ def pandas_check_dataframe(df: pd.DataFrame) -> None:
 
 
 @preprocess.register
-def pandas_preprocess(df: pd.DataFrame) -> pd.DataFrame:
+def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     """Preprocess the dataframe
 
     - Appends the index to the dataframe when it contains information
@@ -22,6 +23,7 @@ def pandas_preprocess(df: pd.DataFrame) -> pd.DataFrame:
     - Convert the DataFrame's columns to str
 
     Args:
+        config: report Settings object
         df: the pandas DataFrame
 
     Returns:
