@@ -54,7 +54,7 @@ def describe(
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
     check_dataframe(df)
-    df = preprocess(df)
+    df = preprocess(config, df)
 
     number_of_tasks = 5
 
