@@ -233,6 +233,10 @@ class Report(BaseModel):
 
 
 class Settings(BaseSettings):
+    # Default prefix to avoid collisions with environment variables
+    class Config:
+        env_prefix = "profile_"
+
     # Title of the document
     title: str = "Pandas Profiling Report"
 
