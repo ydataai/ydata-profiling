@@ -1,6 +1,5 @@
-from collections import Callable
 from functools import wraps
-from typing import Any
+from typing import Any, Callable
 
 from tqdm import tqdm
 
