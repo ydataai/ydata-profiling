@@ -142,6 +142,8 @@ def word_summary_vc(vc: pd.Series) -> dict:
     word_lists = series.str.lower().str.split()
     words = word_lists.explode().str.strip(string.punctuation + string.whitespace)
     word_counts = pd.Series(words.index, index=words)
+    # fix for pandas 1.0.5
+    word_counts = word_counts[word_counts.index.notnull()]
     word_counts = word_counts.groupby(level=0, sort=False).sum()
     word_counts = word_counts.sort_values(ascending=False)
     return {"word_counts": word_counts}
