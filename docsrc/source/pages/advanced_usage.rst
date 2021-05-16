@@ -223,8 +223,8 @@ You can use the ``report.invalidate_cache()`` method for this.
 Passing the values "rendering" only resets previously rendered reports (HTML, JSON or widgets).
 Alternatively "report" also resets the report structure.
 
-Read config from envrionment
------------------------------
+Read config from environment
+----------------------------
 Any profile report config setting can also be read in from environment variables.
 
 For example:
@@ -233,13 +233,13 @@ For example:
 
     from pandas_profiling import ProfileReport
 
-    profile = ProfileReport(df, title="My Custome Pandas Profiling Report")
+    profile = ProfileReport(df, title="My Custom Pandas Profiling Report")
 
-is equivalent to setting the title as an enviroment variable
+is equivalent to setting the title as an environment variable
 
-.. code-block::
+.. code-block:: console
 
-    $ export title="My Custome Pandas Profiling Report"
+    export PROFILE_TITLE="My Custom Pandas Profiling Report"
 
 and running
 
