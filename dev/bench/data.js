@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1621188421655,
+  "lastUpdate": 1621191012420,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -2059,6 +2059,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.2533678518291119",
             "extra": "mean: 15.433127738400003 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "46691715+briangrahamww@users.noreply.github.com",
+            "name": "Brian Graham",
+            "username": "briangrahamww"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "17523d8e81f5841ebda9f80e1977b7fc26e8afef",
+          "message": "fix: config accept environment variables (#786)\n\nfix: config accept environment variables\r\n\r\nCo-authored-by: Simon Brugman <sbrugman@users.noreply.github.com>",
+          "timestamp": "2021-05-16T20:36:27+02:00",
+          "tree_id": "991468760f87dd216405e554cf052dbe57bbdc42",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/17523d8e81f5841ebda9f80e1977b7fc26e8afef"
+        },
+        "date": 1621191007486,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.11790073423750443,
+            "unit": "iter/sec",
+            "range": "stddev: 0.10774760533358824",
+            "extra": "mean: 8.48171138599999 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.11654289294994981,
+            "unit": "iter/sec",
+            "range": "stddev: 0.13957853546072413",
+            "extra": "mean: 8.580531808399996 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.505361860177102,
+            "unit": "iter/sec",
+            "range": "stddev: 0.09368476249944888",
+            "extra": "mean: 1.9787801153999909 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.08062324967842537,
+            "unit": "iter/sec",
+            "range": "stddev: 0.5176087011370724",
+            "extra": "mean: 12.403370045100008 sec\nrounds: 10"
           }
         ]
       }
