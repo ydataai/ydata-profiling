@@ -25,4 +25,4 @@ seaborn>=0.10.1
 # Related PDF report
 weasyprint
 
-multimethod~=1.5
+multimethod>=1.4
