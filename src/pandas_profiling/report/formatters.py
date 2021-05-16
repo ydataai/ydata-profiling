@@ -6,7 +6,7 @@ from datetime import timedelta
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from jinja2.utils import escape
+from markupsafe import escape
 
 
 def fmt_color(text: str, color: str) -> str:
