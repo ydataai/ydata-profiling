@@ -14,6 +14,7 @@ Notebooks
 
 Articles
 --------
+- `Generate Reports Using Pandas Profiling, Deploy Using Streamlit <https://www.analyticsvidhya.com/blog/2021/06/generate-reports-using-pandas-profiling-deploy-using-streamlit/>`_ (Kaustubh Gupta, June 25, 2021)
 - `Bringing Customization to Pandas Profiling <https://medium.com/@ianeaves/customizing-pandas-profiling-summaries-b16714d0dac9>`_ (Ian Eaves, March 5, 2021)
 - `Beginner Friendly Data Science Projects Accepting Contributions <https://towardsdatascience.com/beginner-friendly-data-science-projects-accepting-contributions-3b8e26f7e88e>`_ (Adam Ross Nelson, January 18, 2021)
 - `Pandas profiling and exploratory data analysis with line one of code! <https://towardsdatascience.com/pandas-profiling-and-exploratory-data-analysis-with-line-one-of-code-423111991e58>`_ (Magdalena Konkiewicz, Jun 10, 2020)
