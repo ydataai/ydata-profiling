@@ -11,6 +11,7 @@ from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
 from pandas_profiling.config import Config, Settings
+
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
@@ -24,6 +25,7 @@ from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.core import Root
 from pandas_profiling.report.presentation.core.renderable import Renderable
+from pandas_profiling.report.presentation.core import html
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
