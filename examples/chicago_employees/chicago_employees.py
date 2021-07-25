@@ -15,3 +15,4 @@ if __name__ == "__main__":
 
     profile = ProfileReport(df, title="Chicago Employees", explorative=True)
     profile.to_file(Path("./chicago_employees_report.html"))
+    profile.to_file(Path("./chicago_employees_report.pdf"))

@@ -9,6 +9,7 @@ import pandas as pd
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
+
 from pandas_profiling.config import config
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.describe import describe as describe_df
@@ -21,6 +22,7 @@ from pandas_profiling.model.summarizer import (
 )
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
+from pandas_profiling.report.presentation.core import html
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
@@ -277,28 +279,33 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             output_file = Path(str(output_file))
 
         if output_file.suffix == ".json":
-            data = self.to_json()
+            data: Union[str, bytes] = self.to_json()
         else:
             inline = config["html"]["inline"].get(bool)
             if not inline:
                 config["html"]["file_name"] = str(output_file)
                 create_html_assets(output_file)
 
-            data = self.to_html()
-
-            if output_file.suffix != ".html":
+            if output_file.suffix not in (".html", ".pdf"):
                 suffix = output_file.suffix
                 output_file = output_file.with_suffix(".html")
                 warnings.warn(
                     f"Extension {suffix} not supported. For now we assume .html was intended. "
-                    f"To remove this warning, please use .html or .json."
+                    f"To remove this warning, please use .html, .pdf or .json."
                 )
+            elif output_file.suffix == ".html":
+                data: Union[str, bytes] = self.to_html()
+            elif output_file.suffix == ".pdf":
+                data: Union[str, bytes] = self.to_pdf()
 
         disable_progress_bar = not config["progress_bar"].get(bool)
         with tqdm(
             total=1, desc="Export report to file", disable=disable_progress_bar
         ) as pbar:
-            output_file.write_text(data, encoding="utf-8")
+            if output_file.suffix == ".pdf":
+                output_file.write_bytes(data)
+            else:
+                output_file.write_text(data, encoding="utf-8")
             pbar.update()
 
         if not silent:
@@ -338,6 +345,14 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 html = minify(html, remove_all_empty_space=True, remove_comments=True)
             pbar.update()
         return html
+
+    def _render_pdf(self) -> bytes:
+        from weasyprint import CSS, HTML
+
+        css = CSS(string="@page{size: A4 landscape")  # self.config.html.style
+        html_report = HTML(string=self.to_html(), css=css)
+        pdf_bytes_report = html_report.to_pdf()
+        return pdf_bytes_report
 
     def _render_widgets(self):
         from pandas_profiling.report.presentation.flavours import WidgetReport
@@ -383,6 +398,16 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             data = json.dumps(description, indent=4)
             pbar.update()
         return data
+
+    def to_pdf(self) -> bytes:
+        """Generate and return complete PDF as weazyprint.HTML report
+            for using with frameworks.
+
+        Returns:
+            Html profiling report wrapped in weazyprint HTML.
+
+        """
+        return self._render_pdf()
 
     def to_html(self) -> str:
         """Generate and return complete template as lengthy string

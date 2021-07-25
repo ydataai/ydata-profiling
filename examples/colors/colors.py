@@ -14,3 +14,4 @@ if __name__ == "__main__":
     df = pd.read_csv(file_name, names=["Code", "Name", "Hex", "R", "G", "B"])
     report = ProfileReport(df, title="Colors", explorative=True)
     report.to_file(Path("colors_report.html"))
+    report.to_file(Path("colors_report.pdf"))

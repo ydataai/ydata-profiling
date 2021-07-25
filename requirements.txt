@@ -21,3 +21,5 @@ requests>=2.24.0
 # Progress bar
 tqdm>=4.48.2
 seaborn>=0.10.1
+# Related PDF report
+weasyprint
