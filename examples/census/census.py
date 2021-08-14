@@ -41,7 +41,7 @@ if __name__ == "__main__":
     df = df.replace("\\?", np.nan, regex=True)
 
     # Initialize the report
-    profile = ProfileReport(df, title="Census Dataset", explorative=True)
+    profile = ProfileReport(df, title="Census Dataset", explorative=True, lazy=False)
 
     # show column definition
     with open("census_column_definition.json") as f:
@@ -60,3 +60,4 @@ if __name__ == "__main__":
     profile.config.show_variable_description = False
 
     profile.to_file(Path("./census_report.html"))
+    profile.to_file(Path("./census_report.pdf"))

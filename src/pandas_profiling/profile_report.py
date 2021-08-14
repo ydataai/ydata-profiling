@@ -254,21 +254,26 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                     self.config.html.assets_prefix = str(output_file.stem) + "_assets"
                 create_html_assets(self.config, output_file)
 
-            data = self.to_html()
-
-            if output_file.suffix != ".html":
+            if output_file.suffix not in (".html", ".pdf"):
                 suffix = output_file.suffix
                 output_file = output_file.with_suffix(".html")
                 warnings.warn(
                     f"Extension {suffix} not supported. For now we assume .html was intended. "
-                    f"To remove this warning, please use .html or .json."
+                    f"To remove this warning, please use .html, .pdf or .json."
                 )
+            elif output_file.suffix == ".html":
+                data: Union[str, bytes] = self.to_html()
+            elif output_file.suffix == ".pdf":
+                data: Union[str, bytes] = self.to_pdf()
 
         disable_progress_bar = not self.config.progress_bar
         with tqdm(
             total=1, desc="Export report to file", disable=disable_progress_bar
         ) as pbar:
-            output_file.write_text(data, encoding="utf-8")
+            if output_file.suffix == ".pdf":
+                output_file.write_bytes(data)
+            else:
+                output_file.write_text(data, encoding="utf-8")
             pbar.update()
 
         if not silent:
@@ -280,6 +285,14 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 import webbrowser
 
                 webbrowser.open_new_tab(output_file.absolute().as_uri())
+
+    def _render_pdf(self) -> bytes:
+        from weasyprint import CSS, HTML
+
+        css = CSS(string="@page{size: A4 portrait")
+        html_report: HTML = HTML(string=self.to_html())
+        pdf_bytes_report: bytes = html_report.write_pdf(target=None, stylesheets=[css])
+        return pdf_bytes_report
 
     def _render_html(self) -> str:
         from pandas_profiling.report.presentation.flavours import HTMLReport
@@ -356,6 +369,14 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             data = json.dumps(description, indent=4)
             pbar.update()
         return data
+
+    def to_pdf(self) -> bytes:
+        """Generate and return complete PDF as weazyprint.HTML report
+            for using with frameworks.
+        Returns:
+            Html profiling report wrapped in weazyprint HTML.
+        """
+        return self._render_pdf()
 
     def to_html(self) -> str:
         """Generate and return complete template as lengthy string
