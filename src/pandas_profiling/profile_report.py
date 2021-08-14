@@ -11,7 +11,6 @@ from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
 from pandas_profiling.config import Config, Settings
-
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
@@ -318,9 +317,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def _render_pdf(self) -> bytes:
         from weasyprint import CSS, HTML
 
-        css = CSS(string="@page{size: A4 landscape")  # self.config.html.style
-        html_report = HTML(string=self.to_html(), css=css)
-        pdf_bytes_report = html_report.to_pdf()
+        css = CSS(string="@page{size: A4 portrait")
+        html_report: HTML = HTML(string=self.to_html())
+        pdf_bytes_report: bytes = html_report.write_pdf(target=None, stylesheets=[css])
         return pdf_bytes_report
 
     def _render_widgets(self) -> Renderable:

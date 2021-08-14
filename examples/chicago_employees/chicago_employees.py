@@ -13,6 +13,6 @@ if __name__ == "__main__":
 
     df = pd.read_csv(file_name)
 
-    profile = ProfileReport(df, title="Chicago Employees", explorative=True)
+    profile = ProfileReport(df, title="Chicago Employees", explorative=True, lazy=False)
     profile.to_file(Path("./chicago_employees_report.html"))
     profile.to_file(Path("./chicago_employees_report.pdf"))

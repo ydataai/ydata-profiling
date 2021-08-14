@@ -41,7 +41,7 @@ if __name__ == "__main__":
     df = df.replace("\\?", np.nan, regex=True)
 
     # Initialize the report
-    profile = ProfileReport(df, title="Census Dataset", explorative=True,lazy=False)
+    profile = ProfileReport(df, title="Census Dataset", explorative=True, lazy=False)
 
     # show column definition
     with open("census_column_definition.json") as f:
