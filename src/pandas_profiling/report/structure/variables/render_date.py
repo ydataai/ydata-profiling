@@ -63,10 +63,14 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
         ]
     )
 
-    mini_histo = Image(
-        mini_histogram(
+    img = ""
+    if summary["histogram"] is not None:
+        img = mini_histogram(
             config, summary["histogram"][0], summary["histogram"][1], date=True
-        ),
+        )
+
+    mini_histo = Image(
+        img,
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -75,16 +79,21 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
         [info, table1, table2, mini_histo], sequence_type="grid"
     )
 
+    img = ""
+    if summary["histogram"] is not None:
+        img = histogram(
+            config, summary["histogram"][0], summary["histogram"][1], date=True
+        )
+        # (bins={len(summary['histogram'][1]) - 1})
+
     # Bottom
     bottom = Container(
         [
             Image(
-                histogram(
-                    config, summary["histogram"][0], summary["histogram"][1], date=True
-                ),
+                img,
                 image_format=image_format,
                 alt="Histogram",
-                caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
+                caption=f"<strong>Histogram with fixed size bins</strong>",
                 name="Histogram",
                 anchor_id=f"{varid}histogram",
             )

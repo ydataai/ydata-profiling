@@ -1,6 +1,7 @@
 """Organize the calculation of statistics for each series in this DataFrame."""
+import multiprocessing
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 import pandas as pd
 from tqdm.auto import tqdm
@@ -89,20 +90,39 @@ def describe(
         pbar.update()
 
         # Get correlations
-        correlation_names = get_active_correlations(config)
-        pbar.total += len(correlation_names)
+        if (isinstance(df, pd.DataFrame) and len(df) == 0) or (
+            not isinstance(df, pd.DataFrame) and len(df.head(1)) == 0
+        ):
+            correlations: Dict[str, Any] = {}
+        else:
+            correlation_names = get_active_correlations(config)
+            pbar.total += len(correlation_names)
 
-        correlations = {
-            correlation_name: progress(
-                calculate_correlation, pbar, f"Calculate {correlation_name} correlation"
-            )(config, df, correlation_name, series_description)
-            for correlation_name in correlation_names
-        }
+            def multiprocess_1d(args: tuple) -> Tuple[str, Optional[pd.DataFrame]]:
+                """Wrapper to process series in parallel.
 
-        # make sure correlations is not None
-        correlations = {
-            key: value for key, value in correlations.items() if value is not None
-        }
+                Args:
+                    column: The name of the column.
+                    series: The series values.
+
+                Returns:
+                    A tuple with column and the series description.
+                """
+                df, correlation_name, summary = args
+                return correlation_name, calculate_correlation(config, df, correlation_name, summary)
+
+            args = [(df, name, series_description) for name in correlation_names.keys()]
+            correlations = {}
+            with multiprocessing.pool.ThreadPool(12) as executor:
+                for i, (correlation_name, result) in enumerate(
+                        executor.imap_unordered(multiprocess_1d, args)
+                ):
+                    correlations[correlation_name] = result
+
+            # make sure correlations is not None
+            correlations = {
+                key: value for key, value in correlations.items() if value is not None
+            }
 
         # Scatter matrix
         pbar.set_postfix_str("Get scatter matrix")
@@ -122,15 +142,22 @@ def describe(
         )
 
         # missing diagrams
-        missing_map = get_missing_active(config, table_stats)
-        pbar.total += len(missing_map)
-        missing = {
-            name: progress(get_missing_diagram, pbar, f"Missing diagram {name}")(
-                config, df, settings
-            )
-            for name, settings in missing_map.items()
-        }
-        missing = {name: value for name, value in missing.items() if value is not None}
+        if (isinstance(df, pd.DataFrame) and len(df) == 0) or (
+            not isinstance(df, pd.DataFrame) and len(df.head(1)) == 0
+        ):
+            missing: Dict[str, Any] = {}
+        else:
+            missing_map = get_missing_active(config, table_stats)
+            pbar.total += len(missing_map)
+            missing = {
+                name: progress(get_missing_diagram, pbar, f"Missing diagram {name}")(
+                    config, df, settings
+                )
+                for name, settings in missing_map.items()
+            }
+            missing = {
+                name: value for name, value in missing.items() if value is not None
+            }
 
         # Sample
         pbar.set_postfix_str("Take sample")
@@ -144,7 +171,8 @@ def describe(
         metrics, duplicates = progress(get_duplicates, pbar, "Detecting duplicates")(
             config, df, supported_columns
         )
-        table_stats.update(metrics)
+        table_stats.duplicates = metrics
+        table_stats = table_stats.dict()
 
         alerts = progress(get_alerts, pbar, "Get alerts")(
             config, table_stats, series_description, correlations

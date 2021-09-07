@@ -34,8 +34,7 @@ class BaseSummarizer(Handler):
         Returns:
             object:
         """
-        _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
-        return summary
+        return self.handle(str(dtype), config, series)
 
 
 class PandasProfilingSummarizer(BaseSummarizer):

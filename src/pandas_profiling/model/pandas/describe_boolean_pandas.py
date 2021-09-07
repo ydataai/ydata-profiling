@@ -3,6 +3,7 @@ from typing import Tuple
 import pandas as pd
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import BooleanColumnResult
 from pandas_profiling.model.summary_algorithms import (
     describe_boolean_1d,
     series_hashable,
@@ -13,7 +14,7 @@ from pandas_profiling.model.summary_algorithms import (
 @series_hashable
 def pandas_describe_boolean_1d(
     config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+) -> Tuple[Settings, pd.Series, BooleanColumnResult]:
     """Describe a boolean series.
 
     Args:
@@ -25,7 +26,10 @@ def pandas_describe_boolean_1d(
         A dict containing calculated series description values.
     """
 
-    value_counts = summary["value_counts_without_nan"]
-    summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
+    result = BooleanColumnResult()
 
-    return config, series, summary
+    value_counts = summary["describe_counts"].value_counts
+    result.top = value_counts.index[0]
+    result.freq = value_counts.iloc[0]
+
+    return config, series, result

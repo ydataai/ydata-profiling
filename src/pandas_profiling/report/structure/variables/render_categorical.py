@@ -1,5 +1,7 @@
 from typing import List, Tuple
 
+import pandas as pd
+
 from pandas_profiling.config import Settings
 from pandas_profiling.report.formatters import (
     fmt,
@@ -49,28 +51,29 @@ def render_categorical_frequency(
 def render_categorical_length(
     config: Settings, summary: dict, varid: str
 ) -> Tuple[Renderable, Renderable]:
+    print(summary["length"])
     length_table = Table(
         [
             {
                 "name": "Max length",
-                "value": fmt_number(summary["max_length"]),
+                "value": fmt_number(summary["length"]["max_length"]),
                 "alert": False,
             },
             {
                 "name": "Median length",
-                "value": fmt_number(summary["median_length"]),
+                "value": fmt_number(summary["length"]["median_length"]),
                 "alert": False,
             },
             {
                 "name": "Mean length",
                 "value": fmt_numeric(
-                    summary["mean_length"], precision=config.report.precision
+                    summary["length"]["mean_length"], precision=config.report.precision
                 ),
                 "alert": False,
             },
             {
                 "name": "Min length",
-                "value": fmt_number(summary["min_length"]),
+                "value": fmt_number(summary["length"]["min_length"]),
                 "alert": False,
             },
         ],
@@ -97,8 +100,8 @@ def render_categorical_unicode(
 
     category_overview = FrequencyTable(
         freq_table(
-            freqtable=summary["category_alias_counts"],
-            n=summary["category_alias_counts"].sum(),
+            freqtable=summary["characters"]["category_alias_counts"],
+            n=summary["characters"]["category_alias_counts"].sum(),
             max_number_to_print=n_freq_table_max,
         ),
         name="Most occurring categories",
@@ -108,7 +111,8 @@ def render_categorical_unicode(
 
     cats = []
     for category_alias_name, category_alias_counts in sorted(
-        summary["category_alias_char_counts"].items(), key=lambda x: -len(x[1])
+        summary["characters"]["category_alias_char_counts"].items(),
+        key=lambda x: -len(x[1]),
     ):
         category_alias_name = category_alias_name.replace("_", " ")
         cats.append(
@@ -138,8 +142,8 @@ def render_categorical_unicode(
 
     script_overview = FrequencyTable(
         freq_table(
-            freqtable=summary["script_counts"],
-            n=summary["script_counts"].sum(),
+            freqtable=summary["characters"]["script_counts"],
+            n=summary["characters"]["script_counts"].sum(),
             max_number_to_print=n_freq_table_max,
         ),
         name="Most occurring scripts",
@@ -159,7 +163,8 @@ def render_categorical_unicode(
             redact=config.vars.cat.redact,
         )
         for script_name, script_counts in sorted(
-            summary["script_char_counts"].items(), key=lambda x: -len(x[1])
+            summary["characters"]["script_char_counts"].items(),
+            key=lambda x: -len(x[1]),
         )
     ]
 
@@ -177,8 +182,8 @@ def render_categorical_unicode(
 
     block_overview = FrequencyTable(
         freq_table(
-            freqtable=summary["block_alias_counts"],
-            n=summary["block_alias_counts"].sum(),
+            freqtable=summary["characters"]["block_alias_counts"],
+            n=summary["characters"]["block_alias_counts"].sum(),
             max_number_to_print=n_freq_table_max,
         ),
         name="Most occurring blocks",
@@ -197,7 +202,9 @@ def render_categorical_unicode(
             anchor_id=f"{varid}block_alias_values_{block_name}",
             redact=config.vars.cat.redact,
         )
-        for block_name, block_counts in summary["block_alias_char_counts"].items()
+        for block_name, block_counts in summary["characters"][
+            "block_alias_char_counts"
+        ].items()
     ]
 
     block_items = [
@@ -216,27 +223,27 @@ def render_categorical_unicode(
         [
             {
                 "name": "Total characters",
-                "value": fmt_number(summary["n_characters"]),
+                "value": fmt_number(summary["characters"]["n_characters"]),
                 "alert": False,
             },
             {
                 "name": "Distinct characters",
-                "value": fmt_number(summary["n_characters_distinct"]),
+                "value": fmt_number(summary["characters"]["n_characters_distinct"]),
                 "alert": False,
             },
             {
                 "name": "Distinct categories",
-                "value": f"{fmt_number(summary['n_category'])} {help(title='Unicode categories (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_character_property#General_Category')}",
+                "value": f"{fmt_number(summary['characters']['n_category'])} {help(title='Unicode categories (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_character_property#General_Category')}",
                 "alert": False,
             },
             {
                 "name": "Distinct scripts",
-                "value": f"{fmt_number(summary['n_scripts'])} {help(title='Unicode scripts (click for more information)', url='https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode')}",
+                "value": f"{fmt_number(summary['characters']['n_scripts'])} {help(title='Unicode scripts (click for more information)', url='https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode')}",
                 "alert": False,
             },
             {
                 "name": "Distinct blocks",
-                "value": f"{fmt_number(summary['n_block_alias'])} {help(title='Unicode blocks (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_block')}",
+                "value": f"{fmt_number(summary['characters']['n_block_alias'])} {help(title='Unicode blocks (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_block')}",
                 "alert": False,
             },
         ],
@@ -249,8 +256,8 @@ def render_categorical_unicode(
             [
                 FrequencyTable(
                     freq_table(
-                        freqtable=summary["character_counts"],
-                        n=summary["n_characters"],
+                        freqtable=summary["characters"]["character_counts"],
+                        n=summary["characters"]["n_characters"],
                         max_number_to_print=n_freq_table_max,
                     ),
                     name="Most occurring characters",
@@ -308,39 +315,42 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         summary["description"],
     )
 
+    items = [
+        {
+            "name": "Distinct",
+            "value": fmt(summary["n_distinct"]),
+            "alert": "n_distinct" in summary["alert_fields"],
+        },
+        {
+            "name": "Distinct (%)",
+            "value": fmt_percent(summary["p_distinct"]),
+            "alert": "p_distinct" in summary["alert_fields"],
+        },
+        {
+            "name": "Missing",
+            "value": fmt(summary["n_missing"]),
+            "alert": "n_missing" in summary["alert_fields"],
+        },
+        {
+            "name": "Missing (%)",
+            "value": fmt_percent(summary["p_missing"]),
+            "alert": "p_missing" in summary["alert_fields"],
+        },
+    ]
+    if summary["memory_size"] is not None:
+        items.append({
+            "name": "Memory size",
+            "value": fmt_bytesize(summary["memory_size"]),
+            "alert": False,
+        })
+
     table = Table(
-        [
-            {
-                "name": "Distinct",
-                "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["alert_fields"],
-            },
-            {
-                "name": "Distinct (%)",
-                "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["alert_fields"],
-            },
-            {
-                "name": "Missing",
-                "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["alert_fields"],
-            },
-            {
-                "name": "Missing (%)",
-                "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["alert_fields"],
-            },
-            {
-                "name": "Memory size",
-                "value": fmt_bytesize(summary["memory_size"]),
-                "alert": False,
-            },
-        ]
+        items
     )
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts_without_nan"],
+            freqtable=summary["value_counts"],
             n=summary["count"],
             max_number_to_print=n_obs_cat,
         ),
@@ -362,17 +372,17 @@ def render_categorical(config: Settings, summary: dict) -> dict:
 
     overview_items = []
 
-    if length:
+    if length and summary["length"] is not None:
         length_table, length_histo = render_categorical_length(config, summary, varid)
         overview_items.append(length_table)
 
-    if characters:
+    if characters and summary["characters"] is not None:
         overview_table_char, unitab = render_categorical_unicode(config, summary, varid)
         overview_items.append(overview_table_char)
 
     overview_items.append(unique_stats)
 
-    if not config.vars.cat.redact:
+    if not config.vars.cat.redact and summary["first_rows"] is not None:
         rows = ("1st row", "2nd row", "3rd row", "4th row", "5th row")
 
         sample = Table(
@@ -389,16 +399,16 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         overview_items.append(sample)
 
     string_items: List[Renderable] = [frequency_table]
-    if length:
+    if length and summary["length"] is not None:
         string_items.append(length_histo)
 
     max_unique = config.plot.pie.max_unique
-    if max_unique > 0 and summary["n_distinct"] <= max_unique:
+    if max_unique > 0 and summary["n_distinct"] <= max_unique and summary["value_counts"] is not None and isinstance(summary["value_counts"], pd.Series):
         string_items.append(
             Image(
                 pie_plot(
                     config,
-                    summary["value_counts_without_nan"],
+                    summary["value_counts"],
                     legend_kws={"loc": "upper right"},
                 ),
                 image_format=image_format,
@@ -426,10 +436,10 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         ),
     ]
 
-    if words:
+    if words and summary["words"] is not None:
         woc = freq_table(
-            freqtable=summary["word_counts"],
-            n=summary["word_counts"].sum(),
+            freqtable=summary["words"]["word_counts"],
+            n=summary["words"]["word_counts"].sum(),
             max_number_to_print=10,
         )
 
@@ -449,7 +459,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             )
         )
 
-    if characters:
+    if characters and summary["characters"] is not None:
         bottom_items.append(
             Container(
                 [unitab],

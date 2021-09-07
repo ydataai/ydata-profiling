@@ -118,7 +118,7 @@ def render_url(config: Settings, summary: dict) -> dict:
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts_without_nan"],
+            freqtable=summary["value_counts"],
             n=summary["n"],
             max_number_to_print=n_obs_cat,
         ),

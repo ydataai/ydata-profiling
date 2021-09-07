@@ -8,6 +8,7 @@ import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import perform_check_correlation
+from pandas_profiling.model.schema import TableResult
 
 
 @unique
@@ -113,11 +114,11 @@ def check_table_alerts(table: dict) -> List[Alert]:
         A list of alerts.
     """
     alerts = []
-    if alert_value(table.get("n_duplicates", np.nan)):
+    if alert_value(table["duplicates"]["n_duplicates"]):
         alerts.append(
             Alert(
                 alert_type=AlertType.DUPLICATES,
-                values=table,
+                values=table["duplicates"],
                 fields={"n_duplicates"},
             )
         )
@@ -163,7 +164,7 @@ def numeric_alerts(config: Settings, summary: dict) -> List[Alert]:
         )
 
     if (
-        "chi_squared" in summary
+        summary["chi_squared"] is not None
         and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
     ):
         alerts.append(Alert(alert_type=AlertType.UNIFORM))
@@ -184,7 +185,7 @@ def categorical_alerts(config: Settings, summary: dict) -> List[Alert]:
         )
 
     if (
-        "chi_squared" in summary
+        summary["chi_squared"] is not None
         and summary["chi_squared"]["pvalue"] > config.vars.cat.chi_squared_threshold
     ):
         alerts.append(Alert(alert_type=AlertType.UNIFORM))
@@ -230,7 +231,11 @@ def supported_alerts(summary: dict) -> List[Alert]:
             )
         )
     if summary.get("n_distinct", np.nan) == 1:
-        summary["mode"] = summary["value_counts_without_nan"].index[0]
+        if isinstance(summary["value_counts"], pd.DataFrame):
+            summary["mode"] = summary["value_counts"].index[0]
+        else:
+            summary["mode"] = summary["value_counts"].first()[0]
+
         alerts.append(
             Alert(
                 alert_type=AlertType.CONSTANT,
@@ -321,7 +326,7 @@ def get_alerts(
 
 
 def alert_value(value: float) -> bool:
-    return not np.isnan(value) and value > 0.01
+    return value is not None and not np.isnan(value) and value > 0.01
 
 
 def skewness_alert(v: float, threshold: int) -> bool:

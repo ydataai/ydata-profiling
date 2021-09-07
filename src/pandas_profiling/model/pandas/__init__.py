@@ -1,5 +1,7 @@
 from pandas_profiling.model.pandas import (
+    correlations_cramers_pandas,
     correlations_pandas,
+    correlations_phi_k_pandas,
     dataframe_pandas,
     describe_boolean_pandas,
     describe_categorical_pandas,
@@ -21,6 +23,8 @@ from pandas_profiling.model.pandas import (
 
 __all__ = [
     "correlations_pandas",
+    "correlations_cramers_pandas",
+    "correlations_phi_k_pandas",
     "dataframe_pandas",
     "describe_boolean_pandas",
     "describe_categorical_pandas",

@@ -8,6 +8,8 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 from markupsafe import escape
 
+from pandas_profiling.model.schema import Monotonicity
+
 
 def fmt_color(text: str, color: str) -> str:
     """Format a string in a certain color (`<span>`).
@@ -45,6 +47,9 @@ def fmt_bytesize(num: float, suffix: str = "B") -> str:
     Returns:
       The value formatted in human readable format (e.g. KiB).
     """
+    if num is None:
+        return "?"
+
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
             return f"{num:3.1f} {unit}{suffix}"
@@ -62,6 +67,10 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
     Returns:
         The percentage with 1 point precision.
     """
+    if value is None:
+        return "?"
+    if np.isnan(value):
+        return "NaN"
     if not (1.0 >= value >= 0.0):
         raise ValueError(f"Value '{value}' should be a ratio between 1 and 0.")
     if edge_cases and round(value, 3) == 0 and value > 0:
@@ -260,19 +269,19 @@ def fmt(value: Any) -> str:
         return str(escape(value))
 
 
-def fmt_monotonic(value: int) -> str:
-    if value == 2:
+def fmt_monotonic(value: Monotonicity) -> str:
+    if value == Monotonicity.INCREASING_STRICT:
         return "Strictly increasing"
-    elif value == 1:
+    elif value == Monotonicity.INCREASING:
         return "Increasing"
-    elif value == 0:
+    elif value == Monotonicity.NOT_MONOTONIC:
         return "Not monotonic"
-    elif value == -1:
+    elif value == Monotonicity.DECREASING:
         return "Decreasing"
-    elif value == -2:
+    elif value == Monotonicity.DECREASING_STRICT:
         return "Strictly decreasing"
     else:
-        raise ValueError("Value should be integer ranging from -2 to 2.")
+        raise ValueError("Value should be of type 'Monotonicity'")
 
 
 def help(title: str, url: Optional[str] = None) -> str:

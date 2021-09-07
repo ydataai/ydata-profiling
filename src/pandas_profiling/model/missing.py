@@ -5,6 +5,7 @@ import pandas as pd
 from multimethod import multimethod
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import TableResult
 
 
 @multimethod
@@ -27,7 +28,7 @@ def missing_dendrogram(config: Settings, df: Any) -> str:
     raise NotImplementedError()
 
 
-def get_missing_active(config: Settings, table_stats: dict) -> Dict[Any, Any]:
+def get_missing_active(config: Settings, table_stats: TableResult) -> Dict[Any, Any]:
     """
 
     Args:
@@ -69,12 +70,12 @@ def get_missing_active(config: Settings, table_stats: dict) -> Dict[Any, Any]:
         for name, settings in missing_map.items()
         if (
             config.missing_diagrams[name]
-            and table_stats["n_vars_with_missing"] >= settings["min_missing"]
+            and table_stats.n_vars_with_missing >= settings["min_missing"]
         )
         and (
             name != "heatmap"
             or (
-                table_stats["n_vars_with_missing"] - table_stats["n_vars_all_missing"]
+                table_stats.n_vars_with_missing - table_stats.n_vars_all_missing
                 >= settings["min_missing"]
             )
         )
@@ -116,9 +117,6 @@ def get_missing_diagram(
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
     """
-
-    if len(df) == 0:
-        return None
 
     result = handle_missing(settings["name"], settings["function"])(config, df)
     if result is None:

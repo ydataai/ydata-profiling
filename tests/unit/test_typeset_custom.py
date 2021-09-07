@@ -150,18 +150,6 @@ Categorical2 = type_map2["Categorical"]
 Boolean2 = type_map2["Boolean"]
 
 
-class DataTest:
-    def __init__(self, name, contains_type, infer_type, cast_result=None):
-        self.name = name
-        self.contains_type = contains_type
-        self.infer_type = infer_type
-        self.cast_result = cast_result
-
-
-cases = [
-    DataTest("x", Numeric, Numeric),
-]
-
 contains_map = {
     Numeric: {
         "x",

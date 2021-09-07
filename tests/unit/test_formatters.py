@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+from pandas_profiling.model.schema import Monotonicity
 from pandas_profiling.report.formatters import (
     fmt_array,
     fmt_bytesize,
@@ -92,11 +93,11 @@ def test_fmt_numeric(value, precision, expected):
 @pytest.mark.parametrize(
     "value, expected",
     [
-        (-2, "Strictly decreasing"),
-        (-1, "Decreasing"),
-        (0, "Not monotonic"),
-        (1, "Increasing"),
-        (2, "Strictly increasing"),
+        (Monotonicity.DECREASING_STRICT, "Strictly decreasing"),
+        (Monotonicity.DECREASING, "Decreasing"),
+        (Monotonicity.NOT_MONOTONIC, "Not monotonic"),
+        (Monotonicity.INCREASING, "Increasing"),
+        (Monotonicity.INCREASING_STRICT, "Strictly increasing"),
     ],
 )
 def test_fmt_monotonic(value, expected):

@@ -12,14 +12,14 @@ from pandas_profiling.model.summary_algorithms import (
 def test_count_summary_sorted(config):
     s = pd.Series([1] + [2] * 1000)
     _, sn, r = describe_counts(config, s, {})
-    assert r["value_counts_without_nan"].index[0] == 2
-    assert r["value_counts_without_nan"].index[1] == 1
+    assert r.value_counts.index[0] == 2
+    assert r.value_counts.index[1] == 1
 
 
 def test_count_summary_nat(config):
     s = pd.to_datetime(pd.Series([1, 2] + [np.nan, pd.NaT]))
     _, sn, r = describe_counts(config, s, {})
-    assert len(r["value_counts_without_nan"].index) == 2
+    assert len(r.value_counts.index) == 2
 
 
 def test_count_summary_category(config):
@@ -30,7 +30,7 @@ def test_count_summary_category(config):
         )
     )
     _, sn, r = describe_counts(config, s, {})
-    assert len(r["value_counts_without_nan"].index) == 2
+    assert len(r.value_counts.index) == 2
 
 
 @pytest.fixture(scope="class")
@@ -39,17 +39,21 @@ def empty_data() -> pd.DataFrame:
 
 
 def test_summary_supported_empty_df(config, empty_data):
-    _, series, summary = describe_counts(config, empty_data["A"], {})
-    assert summary["n_missing"] == 0
-    assert "p_missing" not in summary
+    _, series, summary_count = describe_counts(config, empty_data["A"], {})
+    assert summary_count.n_missing == 0
 
-    _, series, summary = describe_generic(config, series, summary)
-    assert summary["n_missing"] == 0
-    assert summary["p_missing"] == 0
-    assert summary["count"] == 0
+    _, series, summary_generic = describe_generic(
+        config, series, {"describe_counts": summary_count}
+    )
+    assert summary_generic.p_missing == 0
+    assert summary_generic.count == 0
 
-    _, _, summary = describe_supported(config, series, summary)
-    assert summary["n_distinct"] == 0
-    assert summary["p_distinct"] == 0
-    assert summary["n_unique"] == 0
-    assert not summary["is_unique"]
+    _, _, summary = describe_supported(
+        config,
+        series,
+        {"describe_generic": summary_generic, "describe_counts": summary_count},
+    )
+    assert summary.n_distinct == 0
+    assert summary.p_distinct == 0
+    assert summary.n_unique == 0
+    assert not summary.is_unique

@@ -1,28 +1,9 @@
-from functools import reduce
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Callable, Dict, List
 
 import networkx as nx
 from visions import VisionsTypeset
 
-
-def compose(functions: Sequence[Callable]) -> Callable:
-    """
-    Compose a sequence of functions
-    :param functions: sequence of functions
-    :return: combined functions, e.g. [f(x), g(x)] -> g(f(x))
-    """
-
-    def func(f: Callable, g: Callable) -> Callable:
-        def func2(*x) -> Any:
-            res = g(*x)
-            if type(res) == bool:
-                return f(*x)
-            else:
-                return f(*res)
-
-        return func2
-
-    return reduce(func, reversed(functions), lambda *x: x)
+from pandas_profiling.model.schema import ColumnResult
 
 
 class Handler:
@@ -58,8 +39,23 @@ class Handler:
             object:
         """
         funcs = self.mapping.get(dtype, [])
-        op = compose(funcs)
-        return op(*args)
+        results = {"type": dtype}
+        for i, fnx in enumerate(funcs):
+            cfg, series, res = fnx(*args, results)
+            results[fnx.__name__] = res
+            if type(res) != bool:
+                args = (cfg, series)
+
+        complete = [
+            res.dict() if isinstance(res, ColumnResult) else {k: res}
+            for k, res in results.items()
+        ]
+
+        resz = {}
+        for v in complete:
+            resz.update(v)
+
+        return resz
 
 
 def get_render_map() -> Dict[str, Callable]:

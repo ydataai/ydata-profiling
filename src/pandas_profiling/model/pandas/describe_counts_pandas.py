@@ -3,6 +3,7 @@ from typing import Tuple
 import pandas as pd
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import CountColumnResult
 from pandas_profiling.model.summary_algorithms import describe_counts
 
 
@@ -20,43 +21,39 @@ def pandas_describe_counts(
     Returns:
         A dictionary with the count values (with and without NaN, distinct).
     """
+
+    result = CountColumnResult()
     try:
         value_counts_with_nan = series.value_counts(dropna=False)
         _ = set(value_counts_with_nan.index)
-        hashable = True
+        result.hashable = True
     except:  # noqa: E722
-        hashable = False
+        result.hashable = False
 
-    summary["hashable"] = hashable
-
-    if hashable:
+    if result.hashable:
         value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
 
         null_index = value_counts_with_nan.index.isnull()
         if null_index.any():
-            n_missing = value_counts_with_nan[null_index].sum()
+            result.n_missing = value_counts_with_nan[null_index].sum()
             value_counts_without_nan = value_counts_with_nan[~null_index]
         else:
-            n_missing = 0
+            result.n_missing = 0
             value_counts_without_nan = value_counts_with_nan
 
-        summary.update(
-            {
-                "value_counts_without_nan": value_counts_without_nan,
-            }
-        )
+        result.value_counts = value_counts_without_nan
+
         try:
-            summary["value_counts_index_sorted"] = summary[
-                "value_counts_without_nan"
-            ].sort_index(ascending=True)
-            ordering = True
+            res = result.value_counts.sort_index(ascending=True)
+            # ordering = True
+            n_extreme_obs = config.n_extreme_obs
+
+            result.values = res
         except TypeError:
-            ordering = False
+            pass
+            # ordering = False
     else:
-        n_missing = series.isna().sum()
-        ordering = False
+        result.n_missing = series.isna().sum()
+        # ordering = False
 
-    summary["ordering"] = ordering
-    summary["n_missing"] = n_missing
-
-    return config, series, summary
+    return config, series, result

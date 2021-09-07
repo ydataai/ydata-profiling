@@ -1,5 +1,7 @@
 from typing import List
 
+import pandas as pd
+
 from pandas_profiling.config import Settings
 from pandas_profiling.report.formatters import fmt, fmt_bytesize, fmt_percent
 from pandas_profiling.report.presentation.core import (
@@ -33,8 +35,7 @@ def render_boolean(config: Settings, summary: dict) -> dict:
         description=summary["description"],
     )
 
-    table = Table(
-        [
+    table_rows =   [
             {
                 "name": "Distinct",
                 "value": fmt(summary["n_distinct"]),
@@ -55,17 +56,20 @@ def render_boolean(config: Settings, summary: dict) -> dict:
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
-            {
-                "name": "Memory size",
-                "value": fmt_bytesize(summary["memory_size"]),
-                "alert": False,
-            },
         ]
-    )
+
+    if summary["memory_size"] is not None:
+        table_rows.append({
+            "name": "Memory size",
+            "value": fmt_bytesize(summary["memory_size"]),
+            "alert": False,
+        })
+
+    table = Table(table_rows)
 
     fqm = FrequencyTableSmall(
         freq_table(
-            freqtable=summary["value_counts_without_nan"],
+            freqtable=summary["value_counts"],
             n=summary["n"],
             max_number_to_print=n_obs_bool,
         ),
@@ -84,12 +88,12 @@ def render_boolean(config: Settings, summary: dict) -> dict:
     ]
 
     max_unique = config.plot.pie.max_unique
-    if max_unique > 0:
+    if max_unique > 0 and isinstance(summary["value_counts"], pd.Series):
         items.append(
             Image(
                 pie_plot(
                     config,
-                    summary["value_counts_without_nan"],
+                    summary["value_counts"],
                     legend_kws={"loc": "upper right"},
                 ),
                 image_format=image_format,

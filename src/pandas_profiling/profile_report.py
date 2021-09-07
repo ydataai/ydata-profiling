@@ -289,7 +289,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         with tqdm(
             total=1, desc="Render HTML", disable=not self.config.progress_bar
         ) as pbar:
-            html = HTMLReport(copy.deepcopy(report)).render(
+
+            html = HTMLReport(
+                report
+                # copy.deepcopy(report)
+            ).render(
                 nav=self.config.html.navbar_show,
                 offline=self.config.html.use_local_assets,
                 inline=self.config.html.inline,

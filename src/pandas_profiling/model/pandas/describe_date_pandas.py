@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import DateColumnResult
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
     describe_date_1d,
@@ -18,7 +19,7 @@ from pandas_profiling.model.summary_algorithms import (
 @series_handle_nulls
 def pandas_describe_date_1d(
     config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+) -> Tuple[Settings, pd.Series, DateColumnResult]:
     """Describe a date series.
 
     Args:
@@ -29,19 +30,18 @@ def pandas_describe_date_1d(
     Returns:
         A dict containing calculated series description values.
     """
-    summary.update(
-        {
-            "min": pd.Timestamp.to_pydatetime(series.min()),
-            "max": pd.Timestamp.to_pydatetime(series.max()),
-        }
-    )
 
-    summary["range"] = summary["max"] - summary["min"]
+    result = DateColumnResult()
+    result.min = pd.Timestamp.to_pydatetime(series.min())
+    result.max = pd.Timestamp.to_pydatetime(series.max())
+    result.range = result.max - result.min
 
     values = series.values.astype(np.int64) // 10 ** 9
 
     if config.vars.num.chi_squared_threshold > 0.0:
-        summary["chi_squared"] = chi_square(values)
+        result.chi_squared = chi_square(values)
 
-    summary.update(histogram_compute(config, values, summary["n_distinct"]))
-    return config, values, summary
+    # FIXME: use value counts
+    r = histogram_compute(config, values, summary["describe_supported"].n_distinct)
+    result.histogram = r["histogram"]
+    return config, values, result

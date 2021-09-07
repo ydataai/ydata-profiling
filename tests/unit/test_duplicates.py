@@ -19,8 +19,8 @@ def test_data():
 
 def test_issue725(config, test_data):
     metrics, duplicates = get_duplicates(config, test_data, list(test_data.columns))
-    assert metrics["n_duplicates"] == 100
-    assert metrics["p_duplicates"] == 0.5
+    assert metrics.n_duplicates == 100
+    assert metrics.p_duplicates == 0.5
     assert set(duplicates.columns) == set(test_data.columns).union({"# duplicates"})
 
 

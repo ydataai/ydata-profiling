@@ -1,22 +1,13 @@
-from typing import List, Optional, TypeVar
+from typing import Any, List, TypeVar
 
 from multimethod import multimethod
-from pydantic.main import BaseModel
 
 from pandas_profiling.config import Settings
-
-T = TypeVar("T")  # type: ignore
-
-
-class Sample(BaseModel):
-    id: str
-    data: T  # type: ignore
-    name: str
-    caption: Optional[str] = None
+from pandas_profiling.model.schema import Sample
 
 
 @multimethod
-def get_sample(config: Settings, df: T) -> List[Sample]:
+def get_sample(config: Settings, df: Any) -> List[Sample]:
     raise NotImplementedError()
 
 

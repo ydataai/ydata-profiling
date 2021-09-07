@@ -289,8 +289,10 @@ def scatter_pairwise(
 
     color = config.html.style.primary_color
 
-    indices = (series1.notna()) & (series2.notna())
-    if len(series1) > config.plot.scatter_threshold:
+    if isinstance(series1, pd.Series):
+        indices = (series1.notna()) & (series2.notna())
+
+    if series1.count() > config.plot.scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
         plt.hexbin(series1[indices], series2[indices], gridsize=15, cmap=cmap)
     else:

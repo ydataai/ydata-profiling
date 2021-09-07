@@ -78,48 +78,52 @@ def render_real(config: Settings, summary: dict) -> dict:
         ]
     )
 
-    table2 = Table(
-        [
-            {
-                "name": "Minimum",
-                "value": fmt_numeric(summary["min"], precision=config.report.precision),
-                "alert": False,
-            },
-            {
-                "name": "Maximum",
-                "value": fmt_numeric(summary["max"], precision=config.report.precision),
-                "alert": False,
-            },
-            {
-                "name": "Zeros",
-                "value": fmt(summary["n_zeros"]),
-                "alert": "n_zeros" in summary["alert_fields"],
-            },
-            {
-                "name": "Zeros (%)",
-                "value": fmt_percent(summary["p_zeros"]),
-                "alert": "p_zeros" in summary["alert_fields"],
-            },
-            {
-                "name": "Negative",
-                "value": fmt(summary["n_negative"]),
-                "alert": False,
-            },
-            {
-                "name": "Negative (%)",
-                "value": fmt_percent(summary["p_negative"]),
-                "alert": False,
-            },
+    res = [
+        {
+            "name": "Minimum",
+            "value": fmt_numeric(summary["min"], precision=config.report.precision),
+            "alert": False,
+        },
+        {
+            "name": "Maximum",
+            "value": fmt_numeric(summary["max"], precision=config.report.precision),
+            "alert": False,
+        },
+        {
+            "name": "Zeros",
+            "value": fmt(summary["n_zeros"]),
+            "alert": "n_zeros" in summary["alert_fields"],
+        },
+        {
+            "name": "Zeros (%)",
+            "value": fmt_percent(summary["p_zeros"]),
+            "alert": "p_zeros" in summary["alert_fields"],
+        },
+        {
+            "name": "Negative",
+            "value": fmt(summary["n_negative"]),
+            "alert": False,
+        },
+        {
+            "name": "Negative (%)",
+            "value": fmt_percent(summary["p_negative"]),
+            "alert": False,
+        },
+    ]
+
+    if summary["memory_size"] is not None:
+        res.append(
             {
                 "name": "Memory size",
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
-            },
-        ]
-    )
+            }
+        )
+
+    table2 = Table(res)
 
     mini_histo = Image(
-        mini_histogram(config, *summary["histogram"]),
+        "",  # mini_histogram(config, *summary["histogram"]),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -136,23 +140,33 @@ def render_real(config: Settings, summary: dict) -> dict:
             },
             {
                 "name": "5-th percentile",
-                "value": fmt_numeric(summary["5%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["5%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "Q1",
-                "value": fmt_numeric(summary["25%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["25%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "median",
-                "value": fmt_numeric(summary["50%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["50%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "Q3",
-                "value": fmt_numeric(summary["75%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["75%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "95-th percentile",
-                "value": fmt_numeric(summary["95%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["95%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "Maximum",
@@ -172,54 +186,58 @@ def render_real(config: Settings, summary: dict) -> dict:
         name="Quantile statistics",
     )
 
-    descriptive_statistics = Table(
-        [
-            {
-                "name": "Standard deviation",
-                "value": fmt_numeric(summary["std"], precision=config.report.precision),
-            },
-            {
-                "name": "Coefficient of variation (CV)",
-                "value": fmt_numeric(summary["cv"], precision=config.report.precision),
-            },
-            {
-                "name": "Kurtosis",
-                "value": fmt_numeric(
-                    summary["kurtosis"], precision=config.report.precision
-                ),
-            },
-            {
-                "name": "Mean",
-                "value": fmt_numeric(
-                    summary["mean"], precision=config.report.precision
-                ),
-            },
-            {
-                "name": "Median Absolute Deviation (MAD)",
-                "value": fmt_numeric(summary["mad"], precision=config.report.precision),
-            },
-            {
-                "name": "Skewness",
-                "value": fmt_numeric(
-                    summary["skewness"], precision=config.report.precision
-                ),
-                "class": "alert" if "skewness" in summary["alert_fields"] else "",
-            },
-            {
-                "name": "Sum",
-                "value": fmt_numeric(summary["sum"], precision=config.report.precision),
-            },
-            {
-                "name": "Variance",
-                "value": fmt_numeric(
-                    summary["variance"], precision=config.report.precision
-                ),
-            },
+    stats = [
+        {
+            "name": "Standard deviation",
+            "value": fmt_numeric(summary["std"], precision=config.report.precision),
+        },
+        {
+            "name": "Coefficient of variation (CV)",
+            "value": fmt_numeric(summary["cv"], precision=config.report.precision),
+        },
+        {
+            "name": "Kurtosis",
+            "value": fmt_numeric(
+                summary["kurtosis"], precision=config.report.precision
+            ),
+        },
+        {
+            "name": "Mean",
+            "value": fmt_numeric(summary["mean"], precision=config.report.precision),
+        },
+        {
+            "name": "Median Absolute Deviation (MAD)",
+            "value": fmt_numeric(summary["mad"], precision=config.report.precision),
+        },
+        {
+            "name": "Skewness",
+            "value": fmt_numeric(
+                summary["skewness"], precision=config.report.precision
+            ),
+            "class": "alert" if "skewness" in summary["alert_fields"] else "",
+        },
+        {
+            "name": "Sum",
+            "value": fmt_numeric(summary["sum"], precision=config.report.precision),
+        },
+        {
+            "name": "Variance",
+            "value": fmt_numeric(
+                summary["variance"], precision=config.report.precision
+            ),
+        },
+    ]
+
+    if "monotonicity" in summary:
+        stats.append(
             {
                 "name": "Monotonicity",
                 "value": fmt_monotonic(summary["monotonic"]),
-            },
-        ],
+            }
+        )
+
+    descriptive_statistics = Table(
+        stats,
         name="Descriptive statistics",
     )
 
@@ -231,10 +249,10 @@ def render_real(config: Settings, summary: dict) -> dict:
     )
 
     hist = Image(
-        histogram(config, *summary["histogram"]),
+        "",  # histogram(config, *summary["histogram"]),
         image_format=image_format,
         alt="Histogram",
-        caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
+        caption="",  # f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
         name="Histogram",
         anchor_id=f"{varid}histogram",
     )

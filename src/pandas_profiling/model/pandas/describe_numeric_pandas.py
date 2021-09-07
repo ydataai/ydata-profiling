@@ -5,6 +5,7 @@ import pandas as pd
 from pandas.core.arrays.integer import _IntegerDtype
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import Monotonicity, NumericColumnResult
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
     describe_numeric_1d,
@@ -40,7 +41,7 @@ def numeric_stats_pandas(series: pd.Series) -> Dict[str, Any]:
 def numeric_stats_numpy(
     present_values: np.ndarray, series: pd.Series, series_description: Dict[str, Any]
 ) -> Dict[str, Any]:
-    vc = series_description["value_counts_without_nan"]
+    vc = series_description["describe_counts"].value_counts
     index_values = vc.index.values
 
     # FIXME: can be performance optimized by using weights in std, var, kurt and skew...
@@ -64,7 +65,7 @@ def numeric_stats_numpy(
 @series_handle_nulls
 def pandas_describe_numeric_1d(
     config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+) -> Tuple[Settings, pd.Series, NumericColumnResult]:
     """Describe a numeric series.
 
     Args:
@@ -76,83 +77,78 @@ def pandas_describe_numeric_1d(
         A dict containing calculated series description values.
     """
 
+    result = NumericColumnResult()
+
     chi_squared_threshold = config.vars.num.chi_squared_threshold
     quantiles = config.vars.num.quantiles
 
-    value_counts = summary["value_counts_without_nan"]
+    value_counts = summary["describe_counts"].value_counts
 
     negative_index = value_counts.index < 0
-    summary["n_negative"] = value_counts.loc[negative_index].sum()
-    summary["p_negative"] = summary["n_negative"] / summary["n"]
+    result.n_negative = value_counts.loc[negative_index].sum()
+    result.p_negative = result.n_negative / summary["describe_generic"].n
 
     infinity_values = [np.inf, -np.inf]
     infinity_index = value_counts.index.isin(infinity_values)
-    summary["n_infinite"] = value_counts.loc[infinity_index].sum()
+    result.n_infinite = value_counts.loc[infinity_index].sum()
 
     if 0 in value_counts.index:
-        summary["n_zeros"] = value_counts.loc[0]
+        result.n_zeros = value_counts.loc[0]
     else:
-        summary["n_zeros"] = 0
-
-    stats = summary
+        result.n_zeros = 0
 
     if isinstance(series.dtype, _IntegerDtype):
-        stats.update(numeric_stats_pandas(series))
+        stats = numeric_stats_pandas(series)
         present_values = series.astype(str(series.dtype).lower())
         finite_values = present_values
     else:
         present_values = series.values
         finite_values = present_values[np.isfinite(present_values)]
-        stats.update(numeric_stats_numpy(present_values, series, summary))
+        stats = numeric_stats_numpy(present_values, series, summary)
+    result.min = stats["min"]
+    result.max = stats["max"]
+    result.mean = stats["mean"]
+    result.std = stats["std"]
+    result.variance = stats["variance"]
+    result.skewness = stats["skewness"]
+    result.kurtosis = stats["kurtosis"]
+    result.sum = stats["sum"]
 
-    stats.update(
-        {
-            "mad": mad(present_values),
-        }
-    )
+    result.mad = mad(present_values)
 
     if chi_squared_threshold > 0.0:
-        stats["chi_squared"] = chi_square(finite_values)
+        result.chi_squared = chi_square(finite_values)
 
-    stats["range"] = stats["max"] - stats["min"]
-    stats.update(
-        {
-            f"{percentile:.0%}": value
-            for percentile, value in series.quantile(quantiles).to_dict().items()
-        }
-    )
-    stats["iqr"] = stats["75%"] - stats["25%"]
-    stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
-    stats["p_zeros"] = stats["n_zeros"] / summary["n"]
-    stats["p_infinite"] = summary["n_infinite"] / summary["n"]
+    result.range = result.max - result.min
+    result.quantiles = {
+        f"{percentile:.0%}": value
+        for percentile, value in series.quantile(quantiles).to_dict().items()
+    }
 
-    stats["monotonic_increase"] = series.is_monotonic_increasing
-    stats["monotonic_decrease"] = series.is_monotonic_decreasing
+    result.iqr = result.quantiles["75%"] - result.quantiles["25%"]
+    result.cv = result.std / result.mean if result.mean else np.NaN
+    result.p_zeros = result.n_zeros / summary["describe_generic"].n
+    result.p_infinite = result.n_infinite / summary["describe_generic"].n
 
-    stats["monotonic_increase_strict"] = (
-        stats["monotonic_increase"] and series.is_unique
-    )
-    stats["monotonic_decrease_strict"] = (
-        stats["monotonic_decrease"] and series.is_unique
-    )
-    if summary["monotonic_increase_strict"]:
-        stats["monotonic"] = 2
-    elif summary["monotonic_decrease_strict"]:
-        stats["monotonic"] = -2
-    elif summary["monotonic_increase"]:
-        stats["monotonic"] = 1
-    elif summary["monotonic_decrease"]:
-        stats["monotonic"] = -1
+    if series.is_monotonic_increasing:
+        if series.is_unique:
+            result.monotonic = Monotonicity.INCREASING_STRICT
+        else:
+            result.monotonic = Monotonicity.INCREASING
+    elif series.is_monotonic_decreasing:
+        if series.is_unique:
+            result.monotonic = Monotonicity.DECREASING_STRICT
+        else:
+            result.monotonic = Monotonicity.DECREASING
     else:
-        stats["monotonic"] = 0
+        result.monotonic = Monotonicity.NOT_MONOTONIC
 
-    stats.update(
-        histogram_compute(
-            config,
-            value_counts[~infinity_index].index.values,
-            summary["n_distinct"],
-            weights=value_counts[~infinity_index].values,
-        )
+    r = histogram_compute(
+        config,
+        value_counts[~infinity_index].index.values,
+        summary["describe_supported"].n_distinct,
+        weights=value_counts[~infinity_index].values,
     )
+    result.histogram = r["histogram"]
 
-    return config, series, stats
+    return config, series, result

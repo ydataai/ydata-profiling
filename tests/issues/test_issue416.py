@@ -23,6 +23,7 @@ def test_issue416():
         html={"style": {"full_width": True}},
         explorative=True,
         progress_bar=False,
+        pool_size=1,
     )
     data = profile.get_description()
 

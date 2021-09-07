@@ -1,6 +1,6 @@
 """Correlations between variables."""
 import warnings
-from typing import Dict, List, Optional, Sized
+from typing import Any, Callable, Dict, List, Optional, Sized
 
 import numpy as np
 import pandas as pd
@@ -8,9 +8,26 @@ from multimethod import multimethod
 from pandas.core.base import DataError
 
 from pandas_profiling.config import Settings
+from pandas_profiling.utils.str import camel_to_snake
+
+
+class RegistryBase(type):
+    REGISTRY: Dict[str, Callable] = {}
+
+    @classmethod
+    def get_registry(mcs) -> dict:
+        return dict(mcs.REGISTRY)
+
+    @classmethod
+    def register(mcs, cls) -> None:
+        mcs.REGISTRY[cls.__name__] = cls
 
 
 class Correlation:
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        RegistryBase.register(cls)
+
     @staticmethod
     def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
         raise NotImplementedError()
@@ -62,11 +79,27 @@ https://github.com/pandas-profiling/pandas-profiling/issues
     )
 
 
+def get_correlations() -> dict:
+    correlation_measures = {
+        camel_to_snake(k): v for k, v in RegistryBase.get_registry().items()
+    }
+    return correlation_measures
+
+
+def get_active_correlations(config: Settings) -> Dict[str, Any]:
+    correlation_names = {
+        name: value
+        for name, value in get_correlations().items()
+        if config.correlations[name].calculate
+    }
+    return correlation_names
+
+
 def calculate_correlation(
     config: Settings, df: Sized, correlation_name: str, summary: dict
 ) -> Optional[Sized]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramers).
+    (pearson, spearman, kendall, phi_k, cramers, & custom).
 
     Args:
         config: report Settings object
@@ -78,16 +111,7 @@ def calculate_correlation(
         The correlation matrices for the given correlation measures. Return None if correlation is empty.
     """
 
-    if len(df) == 0:
-        return None
-
-    correlation_measures = {
-        "pearson": Pearson,
-        "spearman": Spearman,
-        "kendall": Kendall,
-        "cramers": Cramers,
-        "phi_k": PhiK,
-    }
+    correlation_measures = get_active_correlations(config)
 
     correlation = None
     try:
@@ -124,12 +148,3 @@ def perform_check_correlation(
         for i, col in enumerate(cols)
         if any(bool_index[i])
     }
-
-
-def get_active_correlations(config: Settings) -> List[str]:
-    correlation_names = [
-        correlation_name
-        for correlation_name in config.correlations.keys()
-        if config.correlations[correlation_name].calculate
-    ]
-    return correlation_names

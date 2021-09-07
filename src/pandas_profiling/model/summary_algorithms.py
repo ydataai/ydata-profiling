@@ -7,6 +7,19 @@ from multimethod import multimethod
 from scipy.stats.stats import chisquare
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import (
+    BooleanColumnResult,
+    CategoricalColumnResult,
+    CountColumnResult,
+    DateColumnResult,
+    FileColumnResult,
+    GenericColumnResult,
+    ImageColumnResult,
+    NumericColumnResult,
+    PathColumnResult,
+    SupportedColumnResult,
+    UrlColumnResult,
+)
 
 T = TypeVar("T")
 
@@ -60,7 +73,7 @@ def series_hashable(
     def inner(
         config: Settings, series: pd.Series, summary: dict
     ) -> Tuple[Settings, pd.Series, dict]:
-        if not summary["hashable"]:
+        if not summary["describe_counts"].hashable:
             return config, series, summary
         return fn(config, series, summary)
 
@@ -98,75 +111,75 @@ def named_aggregate_summary(series: pd.Series, key: str) -> dict:
 @multimethod
 def describe_counts(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, CountColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_supported(
-    config: Settings, series: Any, series_description: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, SupportedColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_generic(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, GenericColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_numeric_1d(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, NumericColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_date_1d(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, DateColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_categorical_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, CategoricalColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_url_1d(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, UrlColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_file_1d(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, FileColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_path_1d(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, PathColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_image_1d(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, ImageColumnResult]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_boolean_1d(
     config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+) -> Tuple[Settings, Any, BooleanColumnResult]:
     raise NotImplementedError()

@@ -4,10 +4,11 @@ from urllib.parse import urlsplit
 import pandas as pd
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import UrlColumnResult
 from pandas_profiling.model.summary_algorithms import describe_url_1d
 
 
-def url_summary(series: pd.Series) -> dict:
+def url_summary(series: pd.Series) -> UrlColumnResult:
     """
 
     Args:
@@ -16,21 +17,20 @@ def url_summary(series: pd.Series) -> dict:
     Returns:
 
     """
-    summary = {
-        "scheme_counts": series.map(lambda x: x.scheme).value_counts(),
-        "netloc_counts": series.map(lambda x: x.netloc).value_counts(),
-        "path_counts": series.map(lambda x: x.path).value_counts(),
-        "query_counts": series.map(lambda x: x.query).value_counts(),
-        "fragment_counts": series.map(lambda x: x.fragment).value_counts(),
-    }
+    result = UrlColumnResult()
+    result.scheme_counts = series.map(lambda x: x.scheme).value_counts()
+    result.netloc_counts = series.map(lambda x: x.netloc).value_counts()
+    result.path_counts = series.map(lambda x: x.path).value_counts()
+    result.query_counts = series.map(lambda x: x.query).value_counts()
+    result.fragment_counts = series.map(lambda x: x.fragment).value_counts()
 
-    return summary
+    return result
 
 
 @describe_url_1d.register
 def pandas_describe_url_1d(
     config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+) -> Tuple[Settings, pd.Series, UrlColumnResult]:
     """Describe a url series.
 
     Args:
@@ -52,6 +52,6 @@ def pandas_describe_url_1d(
     series = series.apply(urlsplit)
 
     # Update
-    summary.update(url_summary(series))
+    result = url_summary(series)
 
-    return config, series, summary
+    return config, series, result

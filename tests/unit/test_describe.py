@@ -6,6 +6,7 @@ import pytest
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.describe import describe
+from pandas_profiling.model.schema import Monotonicity
 from pandas_profiling.model.summary import describe_1d
 from pandas_profiling.model.typeset import ProfilingTypeSet
 
@@ -177,11 +178,7 @@ def describe_data():
 def expected_results():
     return {
         "id": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "quantiles": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 8,
@@ -205,11 +202,13 @@ def expected_results():
             "variance": check_is_NaN,
         },
         "x": {
-            "25%": -0.75,
-            "5%": -7.5499999999999989,
-            "50%": 2.5,
-            "75%": 23.75,
-            "95%": 50.0,
+            "quantiles": {
+                "25%": -0.75,
+                "5%": -7.5499999999999989,
+                "50%": 2.5,
+                "75%": 23.75,
+                "95%": 50.0,
+            },
             "count": 8,
             "n_infinite": 0,
             "p_infinite": 0,
@@ -237,11 +236,13 @@ def expected_results():
             "variance": 561.125,
         },
         "y": {
-            "25%": 10.125000249999999,
-            "5%": -2.0420348747749997,
-            "50%": 15.942256,
-            "75%": 246.78800000000001,
-            "95%": 2258.2531999999987,
+            "quantiles": {
+                "25%": 10.125000249999999,
+                "5%": -2.0420348747749997,
+                "50%": 15.942256,
+                "75%": 246.78800000000001,
+                "95%": 2258.2531999999987,
+            },
             "count": 8,
             "n_infinite": 0,
             "p_infinite": 0,
@@ -268,11 +269,7 @@ def expected_results():
             "variance": 1179686.0311895239,
         },
         "cat": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "quantiles": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
             "n_distinct": 6,
@@ -296,11 +293,7 @@ def expected_results():
             "variance": check_is_NaN,
         },
         "s1": {
-            "25%": 1.0,
-            "5%": 1.0,
-            "50%": 1.0,
-            "75%": 1.0,
-            "95%": 1.0,
+            "quantiles": {"5%": 1.0, "25%": 1.0, "50%": 1.0, "75%": 1.0, "95%": 1.0},
             "count": 9,
             "cv": 0,
             "iqr": 0,
@@ -324,15 +317,10 @@ def expected_results():
             "sum": 9,
             "variance": 0.0,
             "mode": 1.0,
-            "monotonic_increase": True,
-            "monotonic_increase_strict": False,
+            "monotonicity": Monotonicity.INCREASING,
         },
         "s2": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "quantiles": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 1,
@@ -356,11 +344,7 @@ def expected_results():
             "variance": check_is_NaN,
         },
         "somedate": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "quantiles": check_is_NaN,
             "count": 8,
             "cv": check_is_NaN,
             "n_distinct": 5,
@@ -381,11 +365,7 @@ def expected_results():
             "sum": check_is_NaN,
         },
         "bool_tf": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "quantiles": check_is_NaN,
             "count": 9,
             "cv": check_is_NaN,
             "n_distinct": 2,
@@ -408,11 +388,7 @@ def expected_results():
             "variance": check_is_NaN,
         },
         "bool_tf_with_nan": {
-            "25%": check_is_NaN,
-            "5%": check_is_NaN,
-            "50%": check_is_NaN,
-            "75%": check_is_NaN,
-            "95%": check_is_NaN,
+            "quantiles": check_is_NaN,
             "n": 9,
             "count": 8,
             "cv": check_is_NaN,
@@ -436,11 +412,13 @@ def expected_results():
             "variance": check_is_NaN,
         },
         "bool_01": {
-            "5%": 0,
-            "25%": 0,
-            "50%": 1.0,
-            "75%": 1,
-            "95%": 1,
+            "quantiles": {
+                "5%": 0,
+                "25%": 0,
+                "50%": 1.0,
+                "75%": 1,
+                "95%": 1,
+            },
             "n": 9,
             "count": 9,
             "cv": 0.9486832980505138,
@@ -457,11 +435,13 @@ def expected_results():
             "sum": 5,
         },
         "bool_01_with_nan": {
-            "5%": 0,
-            "25%": 0,
-            "50%": 0.5,
-            "75%": 1,
-            "95%": 1,
+            "quantiles": {
+                "5%": 0,
+                "25%": 0,
+                "50%": 0.5,
+                "75%": 1,
+                "95%": 1,
+            },
             "n": 9,
             "count": 8,
             "cv": 1.0690449676496976,

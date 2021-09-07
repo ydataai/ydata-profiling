@@ -8,6 +8,7 @@ import pandas as pd
 from PIL import ExifTags, Image
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import ImageColumnResult
 from pandas_profiling.model.summary_algorithms import (
     describe_image_1d,
     named_aggregate_summary,
@@ -195,7 +196,9 @@ def extract_image_information(
     return information
 
 
-def image_summary(series: pd.Series, exif: bool = False, hash: bool = False) -> dict:
+def image_summary(
+    series: pd.Series, exif: bool = False, hash: bool = False
+) -> ImageColumnResult:
     """
 
     Args:
@@ -207,48 +210,63 @@ def image_summary(series: pd.Series, exif: bool = False, hash: bool = False) -> 
 
     """
 
+    result = ImageColumnResult()
+
     image_information = series.apply(
         partial(extract_image_information, exif=exif, hash=hash)
     )
-    summary = {
-        "n_truncated": sum(
-            [1 for x in image_information if "truncated" in x and x["truncated"]]
-        ),
-        "image_dimensions": pd.Series(
-            [x["size"] for x in image_information if "size" in x],
-            name="image_dimensions",
-        ),
-    }
 
-    image_widths = summary["image_dimensions"].map(lambda x: x[0])
-    summary.update(named_aggregate_summary(image_widths, "width"))
-    image_heights = summary["image_dimensions"].map(lambda x: x[1])
-    summary.update(named_aggregate_summary(image_heights, "height"))
+    result.n_truncated = sum(
+        [1 for x in image_information if "truncated" in x and x["truncated"]]
+    )
+
+    result.image_dimensions = pd.Series(
+        [x["size"] for x in image_information if "size" in x], name="image_dimensions"
+    )
+
+    image_widths = result.image_dimensions.map(lambda x: x[0])
+    r = named_aggregate_summary(image_widths, "width")
+    result.max_width = r["max_width"]
+    result.min_width = r["min_width"]
+    result.mean_width = r["mean_width"]
+    result.median_width = r["median_width"]
+
+    image_heights = result.image_dimensions.map(lambda x: x[1])
+    r = named_aggregate_summary(image_heights, "height")
+    result.max_height = r["max_height"]
+    result.min_height = r["min_height"]
+    result.mean_height = r["mean_height"]
+    result.median_height = r["median_height"]
+
     image_areas = image_widths * image_heights
-    summary.update(named_aggregate_summary(image_areas, "area"))
+    r = named_aggregate_summary(image_areas, "area")
+    result.max_area = r["max_area"]
+    result.min_area = r["min_area"]
+    result.mean_area = r["mean_area"]
+    result.median_area = r["median_area"]
 
     if hash:
-        summary["n_duplicate_hash"] = count_duplicate_hashes(image_information)
+        result.n_duplicate_hash = count_duplicate_hashes(image_information)
 
     if exif:
         exif_series = extract_exif_series(
             [x["exif"] for x in image_information if "exif" in x]
         )
-        summary["exif_keys_counts"] = exif_series["exif_keys"]
-        summary["exif_data"] = exif_series
+        result.exif_keys_counts = exif_series["exif_keys"]
+        result.exif_data = exif_series
 
-    return summary
+    return result
 
 
 @describe_image_1d.register
 def pandas_describe_image_1d(
     config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+) -> Tuple[Settings, pd.Series, ImageColumnResult]:
     if series.hasnans:
         raise ValueError("May not contain NaNs")
     if not hasattr(series, "str"):
         raise ValueError("series should have .str accessor")
 
-    summary.update(image_summary(series, config.vars.image.exif))
+    result = image_summary(series, config.vars.image.exif)
 
-    return config, series, summary
+    return config, series, result

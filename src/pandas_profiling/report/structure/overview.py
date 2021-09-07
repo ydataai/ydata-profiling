@@ -34,32 +34,38 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
             "value": fmt_percent(summary["table"]["p_cells_missing"]),
         },
     ]
-    if "n_duplicates" in summary["table"]:
+    if summary["table"]["duplicates"]["n_duplicates"] is not None and summary["table"]["duplicates"]["p_duplicates"] is not None:
         table_metrics.extend(
             [
                 {
                     "name": "Duplicate rows",
-                    "value": fmt_number(summary["table"]["n_duplicates"]),
+                    "value": fmt_number(summary["table"]["duplicates"]["n_duplicates"]),
                 },
                 {
                     "name": "Duplicate rows (%)",
-                    "value": fmt_percent(summary["table"]["p_duplicates"]),
+                    "value": fmt_percent(
+                        summary["table"]["duplicates"]["p_duplicates"]
+                    ),
                 },
             ]
         )
 
-    table_metrics.extend(
-        [
-            {
-                "name": "Total size in memory",
-                "value": fmt_bytesize(summary["table"]["memory_size"]),
-            },
-            {
-                "name": "Average record size in memory",
-                "value": fmt_bytesize(summary["table"]["record_size"]),
-            },
-        ]
-    )
+    if (
+        summary["table"]["memory_size"] is not None
+        and summary["table"]["record_size"] is not None
+    ):
+        table_metrics.extend(
+            [
+                {
+                    "name": "Total size in memory",
+                    "value": fmt_bytesize(summary["table"]["memory_size"]),
+                },
+                {
+                    "name": "Average record size in memory",
+                    "value": fmt_bytesize(summary["table"]["record_size"]),
+                },
+            ]
+        )
 
     dataset_info = Table(
         table_metrics,
