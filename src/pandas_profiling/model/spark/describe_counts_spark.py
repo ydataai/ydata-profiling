@@ -51,7 +51,7 @@ def describe_counts_spark(
     )
 
     result.n_missing = n_missing
-    result.value_counts = value_counts.cache()
+    result.value_counts = value_counts.persist()
     result.values = value_counts_index_sorted
 
     return config, series, result
