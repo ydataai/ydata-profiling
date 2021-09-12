@@ -109,13 +109,15 @@ def describe(
                     A tuple with column and the series description.
                 """
                 df, correlation_name, summary = args
-                return correlation_name, calculate_correlation(config, df, correlation_name, summary)
+                return correlation_name, calculate_correlation(
+                    config, df, correlation_name, summary
+                )
 
             args = [(df, name, series_description) for name in correlation_names.keys()]
             correlations = {}
             with multiprocessing.pool.ThreadPool(12) as executor:
                 for i, (correlation_name, result) in enumerate(
-                        executor.imap_unordered(multiprocess_1d, args)
+                    executor.imap_unordered(multiprocess_1d, args)
                 ):
                     correlations[correlation_name] = result
 

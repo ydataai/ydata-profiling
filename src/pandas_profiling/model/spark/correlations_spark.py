@@ -29,7 +29,9 @@ def spark_spearman_compute(
     # convert to vector column first
     vector_col = "corr_features"
 
-    assembler = VectorAssembler(inputCols=df.columns, outputCol=vector_col, handleInvalid="skip")
+    assembler = VectorAssembler(
+        inputCols=df.columns, outputCol=vector_col, handleInvalid="skip"
+    )
     df_vector = assembler.transform(df).select(vector_col)
 
     # get correlation matrix
@@ -51,7 +53,9 @@ def spark_pearson_compute(
     df = df.select(*interval_columns)
 
     vector_col = "corr_features"
-    assembler = VectorAssembler(inputCols=df.columns, outputCol=vector_col, handleInvalid="skip")
+    assembler = VectorAssembler(
+        inputCols=df.columns, outputCol=vector_col, handleInvalid="skip"
+    )
     df_vector = assembler.transform(df).select(vector_col)
 
     # get correlation matrix

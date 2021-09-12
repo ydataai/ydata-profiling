@@ -82,7 +82,7 @@ def spark_get_series_descriptions(
     args = [(name, df) for name in df.columns]
     with multiprocessing.pool.ThreadPool(12) as executor:
         for i, (column, description) in enumerate(
-                executor.imap_unordered(multiprocess_1d, args)
+            executor.imap_unordered(multiprocess_1d, args)
         ):
             pbar.set_postfix_str(f"Describe variable:{column}")
             series_description[column] = description
