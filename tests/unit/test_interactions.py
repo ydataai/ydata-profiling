@@ -20,6 +20,6 @@ def test_interactions_target():
     )
 
     total = sum(
-        [len(v.keys()) for k, v in profile.get_description()["scatter"].items()]
+        len(v.keys()) for k, v in profile.get_description()["scatter"].items()
     )
     assert total == n_targets * n_columns
