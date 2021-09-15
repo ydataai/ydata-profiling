@@ -338,15 +338,15 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         },
     ]
     if summary["memory_size"] is not None:
-        items.append({
-            "name": "Memory size",
-            "value": fmt_bytesize(summary["memory_size"]),
-            "alert": False,
-        })
+        items.append(
+            {
+                "name": "Memory size",
+                "value": fmt_bytesize(summary["memory_size"]),
+                "alert": False,
+            }
+        )
 
-    table = Table(
-        items
-    )
+    table = Table(items)
 
     fqm = FrequencyTableSmall(
         freq_table(
@@ -403,7 +403,12 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         string_items.append(length_histo)
 
     max_unique = config.plot.pie.max_unique
-    if max_unique > 0 and summary["n_distinct"] <= max_unique and summary["value_counts"] is not None and isinstance(summary["value_counts"], pd.Series):
+    if (
+        max_unique > 0
+        and summary["n_distinct"] <= max_unique
+        and summary["value_counts"] is not None
+        and isinstance(summary["value_counts"], pd.Series)
+    ):
         string_items.append(
             Image(
                 pie_plot(

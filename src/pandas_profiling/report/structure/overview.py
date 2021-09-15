@@ -34,7 +34,10 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
             "value": fmt_percent(summary["table"]["p_cells_missing"]),
         },
     ]
-    if summary["table"]["duplicates"]["n_duplicates"] is not None and summary["table"]["duplicates"]["p_duplicates"] is not None:
+    if (
+        summary["table"]["duplicates"]["n_duplicates"] is not None
+        and summary["table"]["duplicates"]["p_duplicates"] is not None
+    ):
         table_metrics.extend(
             [
                 {

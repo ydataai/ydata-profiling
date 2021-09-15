@@ -35,35 +35,37 @@ def render_boolean(config: Settings, summary: dict) -> dict:
         description=summary["description"],
     )
 
-    table_rows =   [
-            {
-                "name": "Distinct",
-                "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["alert_fields"],
-            },
-            {
-                "name": "Distinct (%)",
-                "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["alert_fields"],
-            },
-            {
-                "name": "Missing",
-                "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["alert_fields"],
-            },
-            {
-                "name": "Missing (%)",
-                "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["alert_fields"],
-            },
-        ]
+    table_rows = [
+        {
+            "name": "Distinct",
+            "value": fmt(summary["n_distinct"]),
+            "alert": "n_distinct" in summary["alert_fields"],
+        },
+        {
+            "name": "Distinct (%)",
+            "value": fmt_percent(summary["p_distinct"]),
+            "alert": "p_distinct" in summary["alert_fields"],
+        },
+        {
+            "name": "Missing",
+            "value": fmt(summary["n_missing"]),
+            "alert": "n_missing" in summary["alert_fields"],
+        },
+        {
+            "name": "Missing (%)",
+            "value": fmt_percent(summary["p_missing"]),
+            "alert": "p_missing" in summary["alert_fields"],
+        },
+    ]
 
     if summary["memory_size"] is not None:
-        table_rows.append({
-            "name": "Memory size",
-            "value": fmt_bytesize(summary["memory_size"]),
-            "alert": False,
-        })
+        table_rows.append(
+            {
+                "name": "Memory size",
+                "value": fmt_bytesize(summary["memory_size"]),
+                "alert": False,
+            }
+        )
 
     table = Table(table_rows)
 
