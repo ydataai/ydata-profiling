@@ -122,15 +122,15 @@ def pandas_phik_compute(
         and 1 < value["n_distinct"] <= config.categorical_maximum_correlation_distinct
     }
     selcols = selcols.union(intcols)
-    selcols = sorted(selcols, key=lambda i: df_cols_dict[i])
+    selected_cols = sorted(selcols, key=lambda i: df_cols_dict[i])
 
-    if len(selcols) <= 1:
+    if len(selected_cols) <= 1:
         return None
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         from phik import phik_matrix
 
-        correlation = phik_matrix(df[selcols], interval_cols=list(intcols))
+        correlation = phik_matrix(df[selected_cols], interval_cols=list(intcols))
 
     return correlation
