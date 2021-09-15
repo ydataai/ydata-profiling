@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1624825816330,
+  "lastUpdate": 1631736406887,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -2215,6 +2215,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.1272195778621771",
             "extra": "mean: 12.0327803077 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f05376e93c8f700f3e2cc2301a58dceaf1e524af",
+          "message": "build(deps): update markupsafe requirement from ~=1.1.1 to ~=2.0.1 (#793)\n\nUpdates the requirements on [markupsafe](https://github.com/pallets/markupsafe) to permit the latest version.\r\n- [Release notes](https://github.com/pallets/markupsafe/releases)\r\n- [Changelog](https://github.com/pallets/markupsafe/blob/main/CHANGES.rst)\r\n- [Commits](https://github.com/pallets/markupsafe/compare/1.1.1...2.0.1)\r\n\r\nSigned-off-by: dependabot[bot] <support@github.com>\r\n\r\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2021-09-15T21:48:58+02:00",
+          "tree_id": "37a6037515f792701ee768f6517e873417c5859b",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/f05376e93c8f700f3e2cc2301a58dceaf1e524af"
+        },
+        "date": 1631736402733,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.09422409415521499,
+            "unit": "iter/sec",
+            "range": "stddev: 0.34386212909610253",
+            "extra": "mean: 10.612996696499982 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.09349647357296041,
+            "unit": "iter/sec",
+            "range": "stddev: 1.1758494104755712",
+            "extra": "mean: 10.695590558499998 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.40305368608046677,
+            "unit": "iter/sec",
+            "range": "stddev: 0.061738616635250126",
+            "extra": "mean: 2.481059061199994 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.06236135310587666,
+            "unit": "iter/sec",
+            "range": "stddev: 0.4239859937528345",
+            "extra": "mean: 16.035572517199988 sec\nrounds: 10"
           }
         ]
       }
