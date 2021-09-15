@@ -70,3 +70,5 @@ repos:
 
 ci:
   autoupdate_commit_msg: 'ci: pre-commit-config update'
+  autofix_prs: false
+  autofix_commit_msg: 'ci: pre-commit auto fixes'
