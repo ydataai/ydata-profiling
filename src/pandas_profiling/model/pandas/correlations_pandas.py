@@ -104,6 +104,8 @@ def pandas_cramers_compute(
 def pandas_phik_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
+    df_cols_dict = {i: list(df.columns).index(i) for i in df.columns}
+
     intcols = {
         key
         for key, value in summary.items()
@@ -120,6 +122,7 @@ def pandas_phik_compute(
         and 1 < value["n_distinct"] <= config.categorical_maximum_correlation_distinct
     }
     selcols = selcols.union(intcols)
+    selcols = sorted(selcols, key=lambda i: df_cols_dict[i])
 
     if len(selcols) <= 1:
         return None
