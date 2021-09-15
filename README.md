@@ -43,7 +43,7 @@ For each column the following statistics - if relevant for the column type - are
 **Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Beta testers wanted! The Spark backend will be released as a pre-release for this package.
 
-**Monitoring time series?**: I'd like to draw your attention to [popmon](https://github.com/pandas-profiling/pandas-profiling/edit/develop/README.md#integrations). Whereas pandas-profiling allows you to explore patterns in a single dataset, popmon allows you to uncover temporal patterns. It's worth checking out!
+**Monitoring time series?**: I'd like to draw your attention to [popmon](#popmon). Whereas pandas-profiling allows you to explore patterns in a single dataset, popmon allows you to uncover temporal patterns. It's worth checking out!
 
 **Support `pandas-profiling`** 
 The development of `pandas-profiling` relies completely on contributions.
