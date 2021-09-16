@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1631746643891,
+  "lastUpdate": 1631782124061,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -2579,6 +2579,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.1791584199659879",
             "extra": "mean: 14.565234349700017 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "81109309+abhicantdraw@users.noreply.github.com",
+            "name": "abhicantdraw",
+            "username": "abhicantdraw"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8a20b065bdfcdd48eb987dbb979b31d1db2d6ed1",
+          "message": "fix: Phi K correlation variable order (#829)\n\n* fix: Order of columns for phi-k now matches the rest of the correlation matrices (#825)",
+          "timestamp": "2021-09-16T10:31:52+02:00",
+          "tree_id": "80bde7a9d7ce07a78e37a995d8bb8730afde1898",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/8a20b065bdfcdd48eb987dbb979b31d1db2d6ed1"
+        },
+        "date": 1631782119801,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.09494522872458816,
+            "unit": "iter/sec",
+            "range": "stddev: 0.20315119538566345",
+            "extra": "mean: 10.532388129800017 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.08941497073040378,
+            "unit": "iter/sec",
+            "range": "stddev: 1.1113156026309132",
+            "extra": "mean: 11.183809510099968 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.40210204762731083,
+            "unit": "iter/sec",
+            "range": "stddev: 0.08238868695166993",
+            "extra": "mean: 2.486930882099989 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.06406037385985383,
+            "unit": "iter/sec",
+            "range": "stddev: 0.2806702164609386",
+            "extra": "mean: 15.610274179600015 sec\nrounds: 10"
           }
         ]
       }
