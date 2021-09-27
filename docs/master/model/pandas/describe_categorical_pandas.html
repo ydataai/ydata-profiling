@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pandas_profiling.model.pandas.describe_categorical_pandas API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pandas_profiling.model.pandas.describe_categorical_pandas</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import contextlib
+import string
+from collections import Counter
+from typing import Tuple
+
+import numpy as np
+import pandas as pd
+
+from pandas_profiling.config import Settings
+from pandas_profiling.model.pandas.utils_pandas import weighted_median
+from pandas_profiling.model.summary_algorithms import (
+    chi_square,
+    describe_categorical_1d,
+    histogram_compute,
+    series_handle_nulls,
+    series_hashable,
+)
+
+
+def get_character_counts_vc(vc: pd.Series) -&gt; pd.Series:
+    series = pd.Series(vc.index, index=vc)
+    characters = series.str.split(r&#34;.?&#34;)
+    characters = characters.explode()
+
+    counts = pd.Series(characters.index, index=characters)
+    counts = counts.groupby(level=0, sort=False).sum()
+    counts = counts.sort_values(ascending=False)
+    # FIXME: correct in split, below should be zero: print(counts.loc[&#39;&#39;])
+    counts = counts[counts.index.str.len() &gt; 0]
+    return counts
+
+
+def get_character_counts(series: pd.Series) -&gt; Counter:
+    &#34;&#34;&#34;Function to return the character counts
+
+    Args:
+        series: the Series to process
+
+    Returns:
+        A dict with character counts
+    &#34;&#34;&#34;
+    return Counter(series.str.cat())
+
+
+def counter_to_series(counter: Counter) -&gt; pd.Series:
+    if not counter:
+        return pd.Series([], dtype=object)
+
+    counter_as_tuples = counter.most_common()
+    items, counts = zip(*counter_as_tuples)
+    return pd.Series(counts, index=items)
+
+
+def unicode_summary_vc(vc: pd.Series) -&gt; dict:
+    from tangled_up_in_unicode import block, block_abbr, category, category_long, script
+
+    # Unicode Character Summaries (category and script name)
+    character_counts = get_character_counts_vc(vc)
+
+    character_counts_series = character_counts
+    summary = {
+        &#34;n_characters_distinct&#34;: len(character_counts_series),
+        &#34;n_characters&#34;: np.sum(character_counts_series.values),
+        &#34;character_counts&#34;: character_counts_series,
+    }
+
+    char_to_block = {key: block(key) for key in character_counts.keys()}
+    char_to_category_short = {key: category(key) for key in character_counts.keys()}
+    char_to_script = {key: script(key) for key in character_counts.keys()}
+
+    summary.update(
+        {
+            &#34;category_alias_values&#34;: {
+                key: category_long(value)
+                for key, value in char_to_category_short.items()
+            },
+            &#34;block_alias_values&#34;: {
+                key: block_abbr(value) for key, value in char_to_block.items()
+            },
+        }
+    )
+
+    # Retrieve original distribution
+    block_alias_counts: Counter = Counter()
+    per_block_char_counts: dict = {
+        k: Counter() for k in summary[&#34;block_alias_values&#34;].values()
+    }
+    for char, n_char in character_counts.items():
+        block_name = summary[&#34;block_alias_values&#34;][char]
+        block_alias_counts[block_name] += n_char
+        per_block_char_counts[block_name][char] = n_char
+    summary[&#34;block_alias_counts&#34;] = counter_to_series(block_alias_counts)
+    summary[&#34;n_block_alias&#34;] = len(summary[&#34;block_alias_counts&#34;])
+    summary[&#34;block_alias_char_counts&#34;] = {
+        k: counter_to_series(v) for k, v in per_block_char_counts.items()
+    }
+
+    script_counts: Counter = Counter()
+    per_script_char_counts: dict = {k: Counter() for k in char_to_script.values()}
+    for char, n_char in character_counts.items():
+        script_name = char_to_script[char]
+        script_counts[script_name] += n_char
+        per_script_char_counts[script_name][char] = n_char
+    summary[&#34;script_counts&#34;] = counter_to_series(script_counts)
+    summary[&#34;n_scripts&#34;] = len(summary[&#34;script_counts&#34;])
+    summary[&#34;script_char_counts&#34;] = {
+        k: counter_to_series(v) for k, v in per_script_char_counts.items()
+    }
+
+    category_alias_counts: Counter = Counter()
+    per_category_alias_char_counts: dict = {
+        k: Counter() for k in summary[&#34;category_alias_values&#34;].values()
+    }
+    for char, n_char in character_counts.items():
+        category_alias_name = summary[&#34;category_alias_values&#34;][char]
+        category_alias_counts[category_alias_name] += n_char
+        per_category_alias_char_counts[category_alias_name][char] += n_char
+    summary[&#34;category_alias_counts&#34;] = counter_to_series(category_alias_counts)
+    if len(summary[&#34;category_alias_counts&#34;]) &gt; 0:
+        summary[&#34;category_alias_counts&#34;].index = summary[
+            &#34;category_alias_counts&#34;
+        ].index.str.replace(&#34;_&#34;, &#34; &#34;)
+    summary[&#34;n_category&#34;] = len(summary[&#34;category_alias_counts&#34;])
+    summary[&#34;category_alias_char_counts&#34;] = {
+        k: counter_to_series(v) for k, v in per_category_alias_char_counts.items()
+    }
+
+    with contextlib.suppress(AttributeError):
+        summary[&#34;category_alias_counts&#34;].index = summary[
+            &#34;category_alias_counts&#34;
+        ].index.str.replace(&#34;_&#34;, &#34; &#34;)
+
+    return summary
+
+
+def word_summary_vc(vc: pd.Series) -&gt; dict:
+    # TODO: preprocess (stopwords)
+    # TODO: configurable lowercase/punctuation etc.
+    # TODO: remove punctuation in words
+
+    series = pd.Series(vc.index, index=vc)
+    word_lists = series.str.lower().str.split()
+    words = word_lists.explode().str.strip(string.punctuation + string.whitespace)
+    word_counts = pd.Series(words.index, index=words)
+    # fix for pandas 1.0.5
+    word_counts = word_counts[word_counts.index.notnull()]
+    word_counts = word_counts.groupby(level=0, sort=False).sum()
+    word_counts = word_counts.sort_values(ascending=False)
+    return {&#34;word_counts&#34;: word_counts}
+
+
+def length_summary_vc(vc: pd.Series) -&gt; dict:
+    series = pd.Series(vc.index, index=vc)
+    length = series.str.len()
+    length_counts = pd.Series(length.index, index=length)
+    length_counts = length_counts.groupby(level=0, sort=False).sum()
+    length_counts = length_counts.sort_values(ascending=False)
+
+    summary = {
+        &#34;max_length&#34;: np.max(length_counts.index),
+        &#34;mean_length&#34;: np.average(length_counts.index, weights=length_counts.values),
+        &#34;median_length&#34;: weighted_median(
+            length_counts.index.values, weights=length_counts.values
+        ),
+        &#34;min_length&#34;: np.min(length_counts.index),
+        &#34;length_histogram&#34;: length_counts,
+    }
+
+    return summary
+
+
+@describe_categorical_1d.register
+@series_hashable
+@series_handle_nulls
+def pandas_describe_categorical_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -&gt; Tuple[Settings, pd.Series, dict]:
+    &#34;&#34;&#34;Describe a categorical series.
+
+    Args:
+        config: report Settings object
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    &#34;&#34;&#34;
+
+    # Make sure we deal with strings (Issue #100)
+    series = series.astype(str)
+
+    # Only run if at least 1 non-missing value
+    value_counts = summary[&#34;value_counts_without_nan&#34;]
+    value_counts.index = value_counts.index.astype(str)
+
+    redact = config.vars.cat.redact
+    if not redact:
+        summary.update({&#34;first_rows&#34;: series.head(5)})
+
+    chi_squared_threshold = config.vars.num.chi_squared_threshold
+    if chi_squared_threshold &gt; 0.0:
+        summary[&#34;chi_squared&#34;] = chi_square(histogram=value_counts.values)
+
+    if config.vars.cat.length:
+        summary.update(length_summary_vc(value_counts))
+        summary.update(
+            histogram_compute(
+                config,
+                summary[&#34;length_histogram&#34;].index.values,
+                len(summary[&#34;length_histogram&#34;]),
+                name=&#34;histogram_length&#34;,
+                weights=summary[&#34;length_histogram&#34;].values,
+            )
+        )
+
+    if config.vars.cat.characters:
+        summary.update(unicode_summary_vc(value_counts))
+
+    if config.vars.cat.words:
+        summary.update(word_summary_vc(value_counts))
+
+    return config, series, summary</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pandas_profiling.model.pandas.describe_categorical_pandas.counter_to_series"><code class="name flex">
+<span>def <span class="ident">counter_to_series</span></span>(<span>counter: collections.Counter) ‑> pandas.core.series.Series</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def counter_to_series(counter: Counter) -&gt; pd.Series:
+    if not counter:
+        return pd.Series([], dtype=object)
+
+    counter_as_tuples = counter.most_common()
+    items, counts = zip(*counter_as_tuples)
+    return pd.Series(counts, index=items)</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.pandas.describe_categorical_pandas.get_character_counts"><code class="name flex">
+<span>def <span class="ident">get_character_counts</span></span>(<span>series: pandas.core.series.Series) ‑> collections.Counter</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to return the character counts</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series</code></strong></dt>
+<dd>the Series to process</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A dict with character counts</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_character_counts(series: pd.Series) -&gt; Counter:
+    &#34;&#34;&#34;Function to return the character counts
+
+    Args:
+        series: the Series to process
+
+    Returns:
+        A dict with character counts
+    &#34;&#34;&#34;
+    return Counter(series.str.cat())</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.pandas.describe_categorical_pandas.get_character_counts_vc"><code class="name flex">
+<span>def <span class="ident">get_character_counts_vc</span></span>(<span>vc: pandas.core.series.Series) ‑> pandas.core.series.Series</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_character_counts_vc(vc: pd.Series) -&gt; pd.Series:
+    series = pd.Series(vc.index, index=vc)
+    characters = series.str.split(r&#34;.?&#34;)
+    characters = characters.explode()
+
+    counts = pd.Series(characters.index, index=characters)
+    counts = counts.groupby(level=0, sort=False).sum()
+    counts = counts.sort_values(ascending=False)
+    # FIXME: correct in split, below should be zero: print(counts.loc[&#39;&#39;])
+    counts = counts[counts.index.str.len() &gt; 0]
+    return counts</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.pandas.describe_categorical_pandas.length_summary_vc"><code class="name flex">
+<span>def <span class="ident">length_summary_vc</span></span>(<span>vc: pandas.core.series.Series) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def length_summary_vc(vc: pd.Series) -&gt; dict:
+    series = pd.Series(vc.index, index=vc)
+    length = series.str.len()
+    length_counts = pd.Series(length.index, index=length)
+    length_counts = length_counts.groupby(level=0, sort=False).sum()
+    length_counts = length_counts.sort_values(ascending=False)
+
+    summary = {
+        &#34;max_length&#34;: np.max(length_counts.index),
+        &#34;mean_length&#34;: np.average(length_counts.index, weights=length_counts.values),
+        &#34;median_length&#34;: weighted_median(
+            length_counts.index.values, weights=length_counts.values
+        ),
+        &#34;min_length&#34;: np.min(length_counts.index),
+        &#34;length_histogram&#34;: length_counts,
+    }
+
+    return summary</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.pandas.describe_categorical_pandas.pandas_describe_categorical_1d"><code class="name flex">
+<span>def <span class="ident">pandas_describe_categorical_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Describe a categorical series.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>config</code></strong></dt>
+<dd>report Settings object</dd>
+<dt><strong><code>series</code></strong></dt>
+<dd>The Series to describe.</dd>
+<dt><strong><code>summary</code></strong></dt>
+<dd>The dict containing the series description so far.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A dict containing calculated series description values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@describe_categorical_1d.register
+@series_hashable
+@series_handle_nulls
+def pandas_describe_categorical_1d(
+    config: Settings, series: pd.Series, summary: dict
+) -&gt; Tuple[Settings, pd.Series, dict]:
+    &#34;&#34;&#34;Describe a categorical series.
+
+    Args:
+        config: report Settings object
+        series: The Series to describe.
+        summary: The dict containing the series description so far.
+
+    Returns:
+        A dict containing calculated series description values.
+    &#34;&#34;&#34;
+
+    # Make sure we deal with strings (Issue #100)
+    series = series.astype(str)
+
+    # Only run if at least 1 non-missing value
+    value_counts = summary[&#34;value_counts_without_nan&#34;]
+    value_counts.index = value_counts.index.astype(str)
+
+    redact = config.vars.cat.redact
+    if not redact:
+        summary.update({&#34;first_rows&#34;: series.head(5)})
+
+    chi_squared_threshold = config.vars.num.chi_squared_threshold
+    if chi_squared_threshold &gt; 0.0:
+        summary[&#34;chi_squared&#34;] = chi_square(histogram=value_counts.values)
+
+    if config.vars.cat.length:
+        summary.update(length_summary_vc(value_counts))
+        summary.update(
+            histogram_compute(
+                config,
+                summary[&#34;length_histogram&#34;].index.values,
+                len(summary[&#34;length_histogram&#34;]),
+                name=&#34;histogram_length&#34;,
+                weights=summary[&#34;length_histogram&#34;].values,
+            )
+        )
+
+    if config.vars.cat.characters:
+        summary.update(unicode_summary_vc(value_counts))
+
+    if config.vars.cat.words:
+        summary.update(word_summary_vc(value_counts))
+
+    return config, series, summary</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.pandas.describe_categorical_pandas.unicode_summary_vc"><code class="name flex">
+<span>def <span class="ident">unicode_summary_vc</span></span>(<span>vc: pandas.core.series.Series) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unicode_summary_vc(vc: pd.Series) -&gt; dict:
+    from tangled_up_in_unicode import block, block_abbr, category, category_long, script
+
+    # Unicode Character Summaries (category and script name)
+    character_counts = get_character_counts_vc(vc)
+
+    character_counts_series = character_counts
+    summary = {
+        &#34;n_characters_distinct&#34;: len(character_counts_series),
+        &#34;n_characters&#34;: np.sum(character_counts_series.values),
+        &#34;character_counts&#34;: character_counts_series,
+    }
+
+    char_to_block = {key: block(key) for key in character_counts.keys()}
+    char_to_category_short = {key: category(key) for key in character_counts.keys()}
+    char_to_script = {key: script(key) for key in character_counts.keys()}
+
+    summary.update(
+        {
+            &#34;category_alias_values&#34;: {
+                key: category_long(value)
+                for key, value in char_to_category_short.items()
+            },
+            &#34;block_alias_values&#34;: {
+                key: block_abbr(value) for key, value in char_to_block.items()
+            },
+        }
+    )
+
+    # Retrieve original distribution
+    block_alias_counts: Counter = Counter()
+    per_block_char_counts: dict = {
+        k: Counter() for k in summary[&#34;block_alias_values&#34;].values()
+    }
+    for char, n_char in character_counts.items():
+        block_name = summary[&#34;block_alias_values&#34;][char]
+        block_alias_counts[block_name] += n_char
+        per_block_char_counts[block_name][char] = n_char
+    summary[&#34;block_alias_counts&#34;] = counter_to_series(block_alias_counts)
+    summary[&#34;n_block_alias&#34;] = len(summary[&#34;block_alias_counts&#34;])
+    summary[&#34;block_alias_char_counts&#34;] = {
+        k: counter_to_series(v) for k, v in per_block_char_counts.items()
+    }
+
+    script_counts: Counter = Counter()
+    per_script_char_counts: dict = {k: Counter() for k in char_to_script.values()}
+    for char, n_char in character_counts.items():
+        script_name = char_to_script[char]
+        script_counts[script_name] += n_char
+        per_script_char_counts[script_name][char] = n_char
+    summary[&#34;script_counts&#34;] = counter_to_series(script_counts)
+    summary[&#34;n_scripts&#34;] = len(summary[&#34;script_counts&#34;])
+    summary[&#34;script_char_counts&#34;] = {
+        k: counter_to_series(v) for k, v in per_script_char_counts.items()
+    }
+
+    category_alias_counts: Counter = Counter()
+    per_category_alias_char_counts: dict = {
+        k: Counter() for k in summary[&#34;category_alias_values&#34;].values()
+    }
+    for char, n_char in character_counts.items():
+        category_alias_name = summary[&#34;category_alias_values&#34;][char]
+        category_alias_counts[category_alias_name] += n_char
+        per_category_alias_char_counts[category_alias_name][char] += n_char
+    summary[&#34;category_alias_counts&#34;] = counter_to_series(category_alias_counts)
+    if len(summary[&#34;category_alias_counts&#34;]) &gt; 0:
+        summary[&#34;category_alias_counts&#34;].index = summary[
+            &#34;category_alias_counts&#34;
+        ].index.str.replace(&#34;_&#34;, &#34; &#34;)
+    summary[&#34;n_category&#34;] = len(summary[&#34;category_alias_counts&#34;])
+    summary[&#34;category_alias_char_counts&#34;] = {
+        k: counter_to_series(v) for k, v in per_category_alias_char_counts.items()
+    }
+
+    with contextlib.suppress(AttributeError):
+        summary[&#34;category_alias_counts&#34;].index = summary[
+            &#34;category_alias_counts&#34;
+        ].index.str.replace(&#34;_&#34;, &#34; &#34;)
+
+    return summary</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.pandas.describe_categorical_pandas.word_summary_vc"><code class="name flex">
+<span>def <span class="ident">word_summary_vc</span></span>(<span>vc: pandas.core.series.Series) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def word_summary_vc(vc: pd.Series) -&gt; dict:
+    # TODO: preprocess (stopwords)
+    # TODO: configurable lowercase/punctuation etc.
+    # TODO: remove punctuation in words
+
+    series = pd.Series(vc.index, index=vc)
+    word_lists = series.str.lower().str.split()
+    words = word_lists.explode().str.strip(string.punctuation + string.whitespace)
+    word_counts = pd.Series(words.index, index=words)
+    # fix for pandas 1.0.5
+    word_counts = word_counts[word_counts.index.notnull()]
+    word_counts = word_counts.groupby(level=0, sort=False).sum()
+    word_counts = word_counts.sort_values(ascending=False)
+    return {&#34;word_counts&#34;: word_counts}</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pandas_profiling.model.pandas" href="index.html">pandas_profiling.model.pandas</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pandas_profiling.model.pandas.describe_categorical_pandas.counter_to_series" href="#pandas_profiling.model.pandas.describe_categorical_pandas.counter_to_series">counter_to_series</a></code></li>
+<li><code><a title="pandas_profiling.model.pandas.describe_categorical_pandas.get_character_counts" href="#pandas_profiling.model.pandas.describe_categorical_pandas.get_character_counts">get_character_counts</a></code></li>
+<li><code><a title="pandas_profiling.model.pandas.describe_categorical_pandas.get_character_counts_vc" href="#pandas_profiling.model.pandas.describe_categorical_pandas.get_character_counts_vc">get_character_counts_vc</a></code></li>
+<li><code><a title="pandas_profiling.model.pandas.describe_categorical_pandas.length_summary_vc" href="#pandas_profiling.model.pandas.describe_categorical_pandas.length_summary_vc">length_summary_vc</a></code></li>
+<li><code><a title="pandas_profiling.model.pandas.describe_categorical_pandas.pandas_describe_categorical_1d" href="#pandas_profiling.model.pandas.describe_categorical_pandas.pandas_describe_categorical_1d">pandas_describe_categorical_1d</a></code></li>
+<li><code><a title="pandas_profiling.model.pandas.describe_categorical_pandas.unicode_summary_vc" href="#pandas_profiling.model.pandas.describe_categorical_pandas.unicode_summary_vc">unicode_summary_vc</a></code></li>
+<li><code><a title="pandas_profiling.model.pandas.describe_categorical_pandas.word_summary_vc" href="#pandas_profiling.model.pandas.describe_categorical_pandas.word_summary_vc">word_summary_vc</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

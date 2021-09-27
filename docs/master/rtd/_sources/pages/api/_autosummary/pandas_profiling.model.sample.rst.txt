@@ -13,6 +13,7 @@
 
    .. autosummary::
    
+      get_custom_sample
       get_sample
    
    

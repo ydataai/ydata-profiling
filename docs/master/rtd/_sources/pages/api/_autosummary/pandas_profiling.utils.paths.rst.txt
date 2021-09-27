@@ -14,7 +14,6 @@
    .. autosummary::
    
       get_config
-      get_config_default
       get_data_path
       get_html_template_path
       get_project_root

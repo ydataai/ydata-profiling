@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.report.presentation.flavours.flavours API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -48,6 +48,7 @@ def get_html_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]
     &#34;&#34;&#34;
     from pandas_profiling.report.presentation.core import (
         HTML,
+        Alerts,
         Collapse,
         Container,
         Duplicate,
@@ -60,10 +61,10 @@ def get_html_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]
         ToggleButton,
         Variable,
         VariableInfo,
-        Warnings,
     )
     from pandas_profiling.report.presentation.flavours.html import (
         HTMLHTML,
+        HTMLAlerts,
         HTMLCollapse,
         HTMLContainer,
         HTMLDuplicate,
@@ -76,7 +77,6 @@ def get_html_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]
         HTMLToggleButton,
         HTMLVariable,
         HTMLVariableInfo,
-        HTMLWarnings,
     )
 
     return {
@@ -89,7 +89,7 @@ def get_html_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]
         Image: HTMLImage,
         FrequencyTable: HTMLFrequencyTable,
         FrequencyTableSmall: HTMLFrequencyTableSmall,
-        Warnings: HTMLWarnings,
+        Alerts: HTMLAlerts,
         Duplicate: HTMLDuplicate,
         Sample: HTMLSample,
         ToggleButton: HTMLToggleButton,
@@ -114,6 +114,7 @@ def HTMLReport(structure: Root) -&gt; Root:
 def get_widget_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.core import (
         HTML,
+        Alerts,
         Collapse,
         Container,
         Duplicate,
@@ -126,9 +127,9 @@ def get_widget_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable
         ToggleButton,
         Variable,
         VariableInfo,
-        Warnings,
     )
     from pandas_profiling.report.presentation.flavours.widget import (
+        WidgetAlerts,
         WidgetCollapse,
         WidgetContainer,
         WidgetDuplicate,
@@ -142,7 +143,6 @@ def get_widget_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable
         WidgetToggleButton,
         WidgetVariable,
         WidgetVariableInfo,
-        WidgetWarnings,
     )
 
     return {
@@ -155,7 +155,7 @@ def get_widget_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable
         Image: WidgetImage,
         FrequencyTable: WidgetFrequencyTable,
         FrequencyTableSmall: WidgetFrequencyTableSmall,
-        Warnings: WidgetWarnings,
+        Alerts: WidgetAlerts,
         Duplicate: WidgetDuplicate,
         Sample: WidgetSample,
         ToggleButton: WidgetToggleButton,
@@ -218,7 +218,7 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="pandas_profiling.report.presentation.flavours.flavours.apply_renderable_mapping"><code class="name flex">
-<span>def <span class="ident">apply_renderable_mapping</span></span>(<span>mapping: Dict[Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]], structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flavour: Callable) ‑> NoneType</span>
+<span>def <span class="ident">apply_renderable_mapping</span></span>(<span>mapping: Dict[Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], Type[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>]], structure: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flavour: Callable) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -253,6 +253,7 @@ Returns:</p></div>
     &#34;&#34;&#34;
     from pandas_profiling.report.presentation.core import (
         HTML,
+        Alerts,
         Collapse,
         Container,
         Duplicate,
@@ -265,10 +266,10 @@ Returns:</p></div>
         ToggleButton,
         Variable,
         VariableInfo,
-        Warnings,
     )
     from pandas_profiling.report.presentation.flavours.html import (
         HTMLHTML,
+        HTMLAlerts,
         HTMLCollapse,
         HTMLContainer,
         HTMLDuplicate,
@@ -281,7 +282,6 @@ Returns:</p></div>
         HTMLToggleButton,
         HTMLVariable,
         HTMLVariableInfo,
-        HTMLWarnings,
     )
 
     return {
@@ -294,7 +294,7 @@ Returns:</p></div>
         Image: HTMLImage,
         FrequencyTable: HTMLFrequencyTable,
         FrequencyTableSmall: HTMLFrequencyTableSmall,
-        Warnings: HTMLWarnings,
+        Alerts: HTMLAlerts,
         Duplicate: HTMLDuplicate,
         Sample: HTMLSample,
         ToggleButton: HTMLToggleButton,
@@ -314,6 +314,7 @@ Returns:</p></div>
 <pre><code class="python">def get_widget_renderable_mapping() -&gt; Dict[Type[Renderable], Type[Renderable]]:
     from pandas_profiling.report.presentation.core import (
         HTML,
+        Alerts,
         Collapse,
         Container,
         Duplicate,
@@ -326,9 +327,9 @@ Returns:</p></div>
         ToggleButton,
         Variable,
         VariableInfo,
-        Warnings,
     )
     from pandas_profiling.report.presentation.flavours.widget import (
+        WidgetAlerts,
         WidgetCollapse,
         WidgetContainer,
         WidgetDuplicate,
@@ -342,7 +343,6 @@ Returns:</p></div>
         WidgetToggleButton,
         WidgetVariable,
         WidgetVariableInfo,
-        WidgetWarnings,
     )
 
     return {
@@ -355,7 +355,7 @@ Returns:</p></div>
         Image: WidgetImage,
         FrequencyTable: WidgetFrequencyTable,
         FrequencyTableSmall: WidgetFrequencyTableSmall,
-        Warnings: WidgetWarnings,
+        Alerts: WidgetAlerts,
         Duplicate: WidgetDuplicate,
         Sample: WidgetSample,
         ToggleButton: WidgetToggleButton,
@@ -392,7 +392,7 @@ Returns:</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

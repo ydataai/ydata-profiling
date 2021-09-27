@@ -14,10 +14,10 @@
    .. autosummary::
    
       get_font_size
-      missing_bar
-      missing_dendrogram
-      missing_heatmap
-      missing_matrix
+      plot_missing_bar
+      plot_missing_dendrogram
+      plot_missing_heatmap
+      plot_missing_matrix
    
    
 

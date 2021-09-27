@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.profile_report API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -40,8 +40,8 @@ from visions import VisionsTypeset
 
 from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
+from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.model.messages import MessageType
 from pandas_profiling.model.sample import Sample
 from pandas_profiling.model.summarizer import (
     BaseSummarizer,
@@ -56,7 +56,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
-from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
+from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
 
@@ -132,16 +132,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len(kwargs) &gt; 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 
-        self.df = None
+        self.df = df
         self.config = report_config
         self._df_hash = None
         self._sample = sample
         self._typeset = typeset
         self._summarizer = summarizer
-
-        if df is not None:
-            # preprocess df
-            self.df = self.preprocess(df)
 
         if not lazy:
             # Trigger building the report structure
@@ -260,9 +256,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             a set of column names that are unsupported
         &#34;&#34;&#34;
         return {
-            message.column_name
-            for message in self.description_set[&#34;messages&#34;]
-            if message.message_type == MessageType.REJECTED
+            alert.column_name
+            for alert in self.description_set[&#34;alerts&#34;]
+            if alert.alert_type == AlertType.REJECTED
         }
 
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -&gt; None:
@@ -451,35 +447,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def __repr__(self) -&gt; str:
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
-        return &#34;&#34;
-
-    @staticmethod
-    def preprocess(df: pd.DataFrame) -&gt; pd.DataFrame:
-        &#34;&#34;&#34;Preprocess the dataframe
-
-        - Appends the index to the dataframe when it contains information
-        - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
-        - Convert the DataFrame&#39;s columns to str
-
-        Args:
-            df: the pandas DataFrame
-
-        Returns:
-            The preprocessed DataFrame
-        &#34;&#34;&#34;
-        # Treat index as any other column
-        if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
-
-        # Rename reserved column names
-        df = rename_index(df)
-
-        # Ensure that columns are strings
-        df.columns = df.columns.astype(&#34;str&#34;)
-        return df</code></pre>
+        return &#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -493,7 +461,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 <dl>
 <dt id="pandas_profiling.profile_report.ProfileReport"><code class="flex name class">
 <span>class <span class="ident">ProfileReport</span></span>
-<span>(</span><span>df: Union[pandas.core.frame.DataFrame, NoneType] = None, minimal: bool = False, explorative: bool = False, sensitive: bool = False, dark_mode: bool = False, orange_mode: bool = False, sample: Union[dict, NoneType] = None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, typeset: Union[visions.typesets.typeset.VisionsTypeset, NoneType] = None, summarizer: Union[<a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, NoneType] = None, config: Union[<a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a>, NoneType] = None, **kwargs)</span>
+<span>(</span><span>df: Optional[pandas.core.frame.DataFrame] = None, minimal: bool = False, explorative: bool = False, sensitive: bool = False, dark_mode: bool = False, orange_mode: bool = False, sample: Optional[dict] = None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, typeset: Optional[visions.typesets.typeset.VisionsTypeset] = None, summarizer: Optional[<a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>] = None, config: Optional[<a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a>] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a profile report from a Dataset stored as a pandas <code>DataFrame</code>.</p>
@@ -594,16 +562,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len(kwargs) &gt; 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 
-        self.df = None
+        self.df = df
         self.config = report_config
         self._df_hash = None
         self._sample = sample
         self._typeset = typeset
         self._summarizer = summarizer
-
-        if df is not None:
-            # preprocess df
-            self.df = self.preprocess(df)
 
         if not lazy:
             # Trigger building the report structure
@@ -722,9 +686,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             a set of column names that are unsupported
         &#34;&#34;&#34;
         return {
-            message.column_name
-            for message in self.description_set[&#34;messages&#34;]
-            if message.message_type == MessageType.REJECTED
+            alert.column_name
+            for alert in self.description_set[&#34;alerts&#34;]
+            if alert.alert_type == AlertType.REJECTED
         }
 
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -&gt; None:
@@ -913,35 +877,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def __repr__(self) -&gt; str:
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
-        return &#34;&#34;
-
-    @staticmethod
-    def preprocess(df: pd.DataFrame) -&gt; pd.DataFrame:
-        &#34;&#34;&#34;Preprocess the dataframe
-
-        - Appends the index to the dataframe when it contains information
-        - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
-        - Convert the DataFrame&#39;s columns to str
-
-        Args:
-            df: the pandas DataFrame
-
-        Returns:
-            The preprocessed DataFrame
-        &#34;&#34;&#34;
-        # Treat index as any other column
-        if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
-
-        # Rename reserved column names
-        df = rename_index(df)
-
-        # Ensure that columns are strings
-        df.columns = df.columns.astype(&#34;str&#34;)
-        return df</code></pre>
+        return &#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -953,59 +889,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 <dt id="pandas_profiling.profile_report.ProfileReport.config"><code class="name">var <span class="ident">config</span> : <a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a></code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-</dl>
-<h3>Static methods</h3>
-<dl>
-<dt id="pandas_profiling.profile_report.ProfileReport.preprocess"><code class="name flex">
-<span>def <span class="ident">preprocess</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Preprocess the dataframe</p>
-<ul>
-<li>Appends the index to the dataframe when it contains information</li>
-<li>Rename the "index" column to "df_index", if exists</li>
-<li>Convert the DataFrame's columns to str</li>
-</ul>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>df</code></strong></dt>
-<dd>the pandas DataFrame</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>The preprocessed DataFrame</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def preprocess(df: pd.DataFrame) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Preprocess the dataframe
-
-    - Appends the index to the dataframe when it contains information
-    - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
-    - Convert the DataFrame&#39;s columns to str
-
-    Args:
-        df: the pandas DataFrame
-
-    Returns:
-        The preprocessed DataFrame
-    &#34;&#34;&#34;
-    # Treat index as any other column
-    if (
-        not pd.Index(np.arange(0, len(df))).equals(df.index)
-        or df.index.dtype != np.int64
-    ):
-        df = df.reset_index()
-
-    # Rename reserved column names
-    df = rename_index(df)
-
-    # Ensure that columns are strings
-    df.columns = df.columns.astype(&#34;str&#34;)
-    return df</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Instance variables</h3>
@@ -1030,7 +913,7 @@ def description_set(self) -&gt; Dict[str, Any]:
     return self._description_set</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.profile_report.ProfileReport.df_hash"><code class="name">var <span class="ident">df_hash</span> : Union[str, NoneType]</code></dt>
+<dt id="pandas_profiling.profile_report.ProfileReport.df_hash"><code class="name">var <span class="ident">df_hash</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1100,7 +983,7 @@ def summarizer(self) -&gt; BaseSummarizer:
     return self._summarizer</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.profile_report.ProfileReport.typeset"><code class="name">var <span class="ident">typeset</span> : Union[visions.typesets.typeset.VisionsTypeset, NoneType]</code></dt>
+<dt id="pandas_profiling.profile_report.ProfileReport.typeset"><code class="name">var <span class="ident">typeset</span> : Optional[visions.typesets.typeset.VisionsTypeset]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1152,7 +1035,7 @@ def widgets(self) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>self) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">get_duplicates</span></span>(<span>self) ‑> Optional[pandas.core.frame.DataFrame]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get duplicate rows and counts based on the configuration</p>
@@ -1189,9 +1072,9 @@ def widgets(self) -&gt; Renderable:
         a set of column names that are unsupported
     &#34;&#34;&#34;
     return {
-        message.column_name
-        for message in self.description_set[&#34;messages&#34;]
-        if message.message_type == MessageType.REJECTED
+        alert.column_name
+        for alert in self.description_set[&#34;alerts&#34;]
+        if alert.alert_type == AlertType.REJECTED
     }</code></pre>
 </details>
 </dd>
@@ -1216,7 +1099,7 @@ def widgets(self) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.invalidate_cache"><code class="name flex">
-<span>def <span class="ident">invalidate_cache</span></span>(<span>self, subset: Union[str, NoneType] = None) ‑> NoneType</span>
+<span>def <span class="ident">invalidate_cache</span></span>(<span>self, subset: Optional[str] = None) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Invalidate report cache. Useful after changing setting.</p>
@@ -1261,7 +1144,7 @@ def widgets(self) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.to_file"><code class="name flex">
-<span>def <span class="ident">to_file</span></span>(<span>self, output_file: Union[str, pathlib.Path], silent: bool = True) ‑> NoneType</span>
+<span>def <span class="ident">to_file</span></span>(<span>self, output_file: Union[pathlib.Path, str], silent: bool = True) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Write the report to a file.</p>
@@ -1371,7 +1254,7 @@ for using with frameworks.</p>
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.to_notebook_iframe"><code class="name flex">
-<span>def <span class="ident">to_notebook_iframe</span></span>(<span>self) ‑> NoneType</span>
+<span>def <span class="ident">to_notebook_iframe</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Used to output the HTML representation to a Jupyter notebook.
@@ -1408,7 +1291,7 @@ the Iframe.</p>
 </details>
 </dd>
 <dt id="pandas_profiling.profile_report.ProfileReport.to_widgets"><code class="name flex">
-<span>def <span class="ident">to_widgets</span></span>(<span>self) ‑> NoneType</span>
+<span>def <span class="ident">to_widgets</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The ipython notebook widgets user interface.</p></div>
@@ -1480,7 +1363,6 @@ the Iframe.</p>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.html" href="#pandas_profiling.profile_report.ProfileReport.html">html</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.invalidate_cache" href="#pandas_profiling.profile_report.ProfileReport.invalidate_cache">invalidate_cache</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.json" href="#pandas_profiling.profile_report.ProfileReport.json">json</a></code></li>
-<li><code><a title="pandas_profiling.profile_report.ProfileReport.preprocess" href="#pandas_profiling.profile_report.ProfileReport.preprocess">preprocess</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.report" href="#pandas_profiling.profile_report.ProfileReport.report">report</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.summarizer" href="#pandas_profiling.profile_report.ProfileReport.summarizer">summarizer</a></code></li>
 <li><code><a title="pandas_profiling.profile_report.ProfileReport.to_file" href="#pandas_profiling.profile_report.ProfileReport.to_file">to_file</a></code></li>
@@ -1498,7 +1380,7 @@ the Iframe.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

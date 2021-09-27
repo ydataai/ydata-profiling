@@ -13,12 +13,12 @@
 
    .. autosummary::
    
+      get_dataset_alerts
       get_dataset_column_definitions
       get_dataset_items
       get_dataset_overview
       get_dataset_reproduction
       get_dataset_schema
-      get_dataset_warnings
    
    
 

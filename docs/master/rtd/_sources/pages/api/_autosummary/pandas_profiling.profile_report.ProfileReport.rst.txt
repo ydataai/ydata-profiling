@@ -23,7 +23,6 @@
       ~ProfileReport.invalidate_cache
       ~ProfileReport.load
       ~ProfileReport.loads
-      ~ProfileReport.preprocess
       ~ProfileReport.to_expectation_suite
       ~ProfileReport.to_file
       ~ProfileReport.to_html

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.model.sample API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -28,49 +28,40 @@
 </summary>
 <pre><code class="python">from typing import List, Optional, TypeVar
 
-import pandas as pd
+from multimethod import multimethod
 from pydantic.main import BaseModel
 
 from pandas_profiling.config import Settings
 
-PandasDataFrame = TypeVar(&#34;pandas.core.frame.DataFrame&#34;)  # type: ignore
+T = TypeVar(&#34;T&#34;)  # type: ignore
 
 
 class Sample(BaseModel):
     id: str
-    data: PandasDataFrame  # type: ignore
+    data: T  # type: ignore
     name: str
     caption: Optional[str] = None
 
 
-def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
-    &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
+@multimethod
+def get_sample(config: Settings, df: T) -&gt; List[Sample]:
+    raise NotImplementedError()
 
-    Args:
-        config: Settings object
-        df: the pandas DataFrame
 
-    Returns:
-        a list of Sample objects
-    &#34;&#34;&#34;
-    samples: List[Sample] = []
-    if len(df) == 0:
-        return samples
+def get_custom_sample(sample: dict) -&gt; List[Sample]:
+    if &#34;name&#34; not in sample:
+        sample[&#34;name&#34;] = None
+    if &#34;caption&#34; not in sample:
+        sample[&#34;caption&#34;] = None
 
-    n_head = config.samples.head
-    if n_head &gt; 0:
-        samples.append(Sample(id=&#34;head&#34;, data=df.head(n=n_head), name=&#34;First rows&#34;))
-
-    n_tail = config.samples.tail
-    if n_tail &gt; 0:
-        samples.append(Sample(id=&#34;tail&#34;, data=df.tail(n=n_tail), name=&#34;Last rows&#34;))
-
-    n_random = config.samples.random
-    if n_random &gt; 0:
-        samples.append(
-            Sample(id=&#34;random&#34;, data=df.sample(n=n_random), name=&#34;Random sample&#34;)
+    samples = [
+        Sample(
+            id=&#34;custom&#34;,
+            data=sample[&#34;data&#34;],
+            name=sample[&#34;name&#34;],
+            caption=sample[&#34;caption&#34;],
         )
-
+    ]
     return samples</code></pre>
 </details>
 </section>
@@ -81,53 +72,44 @@ def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.model.sample.get_sample"><code class="name flex">
-<span>def <span class="ident">get_sample</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame) ‑> List[<a title="pandas_profiling.model.sample.Sample" href="#pandas_profiling.model.sample.Sample">Sample</a>]</span>
+<dt id="pandas_profiling.model.sample.get_custom_sample"><code class="name flex">
+<span>def <span class="ident">get_custom_sample</span></span>(<span>sample: dict) ‑> List[<a title="pandas_profiling.model.sample.Sample" href="#pandas_profiling.model.sample.Sample">Sample</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Obtains a sample from head and tail of the DataFrame</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>config</code></strong></dt>
-<dd>Settings object</dd>
-<dt><strong><code>df</code></strong></dt>
-<dd>the pandas DataFrame</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>a list of Sample objects</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
-    &#34;&#34;&#34;Obtains a sample from head and tail of the DataFrame
+<pre><code class="python">def get_custom_sample(sample: dict) -&gt; List[Sample]:
+    if &#34;name&#34; not in sample:
+        sample[&#34;name&#34;] = None
+    if &#34;caption&#34; not in sample:
+        sample[&#34;caption&#34;] = None
 
-    Args:
-        config: Settings object
-        df: the pandas DataFrame
-
-    Returns:
-        a list of Sample objects
-    &#34;&#34;&#34;
-    samples: List[Sample] = []
-    if len(df) == 0:
-        return samples
-
-    n_head = config.samples.head
-    if n_head &gt; 0:
-        samples.append(Sample(id=&#34;head&#34;, data=df.head(n=n_head), name=&#34;First rows&#34;))
-
-    n_tail = config.samples.tail
-    if n_tail &gt; 0:
-        samples.append(Sample(id=&#34;tail&#34;, data=df.tail(n=n_tail), name=&#34;Last rows&#34;))
-
-    n_random = config.samples.random
-    if n_random &gt; 0:
-        samples.append(
-            Sample(id=&#34;random&#34;, data=df.sample(n=n_random), name=&#34;Random sample&#34;)
+    samples = [
+        Sample(
+            id=&#34;custom&#34;,
+            data=sample[&#34;data&#34;],
+            name=sample[&#34;name&#34;],
+            caption=sample[&#34;caption&#34;],
         )
-
+    ]
     return samples</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.sample.get_sample"><code class="name flex">
+<span>def <span class="ident">get_sample</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: ~T) ‑> List[<a title="pandas_profiling.model.sample.Sample" href="#pandas_profiling.model.sample.Sample">Sample</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@multimethod
+def get_sample(config: Settings, df: T) -&gt; List[Sample]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 </dl>
@@ -148,7 +130,7 @@ def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
 </summary>
 <pre><code class="python">class Sample(BaseModel):
     id: str
-    data: PandasDataFrame  # type: ignore
+    data: T  # type: ignore
     name: str
     caption: Optional[str] = None</code></pre>
 </details>
@@ -159,11 +141,11 @@ def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="pandas_profiling.model.sample.Sample.caption"><code class="name">var <span class="ident">caption</span> : Union[str, NoneType]</code></dt>
+<dt id="pandas_profiling.model.sample.Sample.caption"><code class="name">var <span class="ident">caption</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pandas_profiling.model.sample.Sample.data"><code class="name">var <span class="ident">data</span> : ~pandas.core.frame.DataFrame</code></dt>
+<dt id="pandas_profiling.model.sample.Sample.data"><code class="name">var <span class="ident">data</span> : ~T</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -193,6 +175,7 @@ def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.model.sample.get_custom_sample" href="#pandas_profiling.model.sample.get_custom_sample">get_custom_sample</a></code></li>
 <li><code><a title="pandas_profiling.model.sample.get_sample" href="#pandas_profiling.model.sample.get_sample">get_sample</a></code></li>
 </ul>
 </li>
@@ -213,7 +196,7 @@ def get_sample(config: Settings, df: pd.DataFrame) -&gt; List[Sample]:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

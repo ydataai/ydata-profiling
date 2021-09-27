@@ -17,7 +17,7 @@
 
    .. autosummary::
    
-      ~Theme.flatly
       ~Theme.united
+      ~Theme.flatly
    
    

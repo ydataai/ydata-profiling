@@ -13,6 +13,7 @@
 
    .. autosummary::
    
+      chi_square
       describe_boolean_1d
       describe_categorical_1d
       describe_counts
@@ -25,8 +26,8 @@
       describe_supported
       describe_url_1d
       func_nullable_series_contains
-      numeric_stats_numpy
-      numeric_stats_pandas
+      histogram_compute
+      named_aggregate_summary
       series_handle_nulls
       series_hashable
    

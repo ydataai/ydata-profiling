@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.report.presentation.core API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -26,7 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from pandas_profiling.report.presentation.core.collapse import Collapse
+<pre><code class="python">from pandas_profiling.report.presentation.core.alerts import Alerts
+from pandas_profiling.report.presentation.core.collapse import Collapse
 from pandas_profiling.report.presentation.core.container import Container
 from pandas_profiling.report.presentation.core.duplicate import Duplicate
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
@@ -41,7 +42,6 @@ from pandas_profiling.report.presentation.core.table import Table
 from pandas_profiling.report.presentation.core.toggle_button import ToggleButton
 from pandas_profiling.report.presentation.core.variable import Variable
 from pandas_profiling.report.presentation.core.variable_info import VariableInfo
-from pandas_profiling.report.presentation.core.warnings import Warnings
 
 __all__ = [
     &#34;Collapse&#34;,
@@ -57,13 +57,17 @@ __all__ = [
     &#34;ToggleButton&#34;,
     &#34;Variable&#34;,
     &#34;VariableInfo&#34;,
-    &#34;Warnings&#34;,
+    &#34;Alerts&#34;,
 ]</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.core.alerts" href="alerts.html">pandas_profiling.report.presentation.core.alerts</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt><code class="name"><a title="pandas_profiling.report.presentation.core.collapse" href="collapse.html">pandas_profiling.report.presentation.core.collapse</a></code></dt>
 <dd>
 <div class="desc"></div>
@@ -124,10 +128,6 @@ __all__ = [
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="pandas_profiling.report.presentation.core.warnings" href="warnings.html">pandas_profiling.report.presentation.core.warnings</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 </dl>
 </section>
 <section>
@@ -137,6 +137,55 @@ __all__ = [
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pandas_profiling.report.presentation.core.Alerts"><code class="flex name class">
+<span>class <span class="ident">Alerts</span></span>
+<span>(</span><span>alerts: List[<a title="pandas_profiling.model.alerts.Alert" href="../../../model/alerts.html#pandas_profiling.model.alerts.Alert">Alert</a>], **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Alerts(ItemRenderer):
+    def __init__(self, alerts: List[Alert], **kwargs):
+        super().__init__(&#34;alerts&#34;, {&#34;alerts&#34;: alerts}, **kwargs)
+
+    def __repr__(self):
+        return &#34;Alerts&#34;
+
+    def render(self) -&gt; Any:
+        raise NotImplementedError()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.flavours.html.alerts.HTMLAlerts" href="../flavours/html/alerts.html#pandas_profiling.report.presentation.flavours.html.alerts.HTMLAlerts">HTMLAlerts</a></li>
+<li><a title="pandas_profiling.report.presentation.flavours.widget.alerts.WidgetAlerts" href="../flavours/widget/alerts.html#pandas_profiling.report.presentation.flavours.widget.alerts.WidgetAlerts">WidgetAlerts</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.core.Alerts.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; Any:
+    raise NotImplementedError()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="pandas_profiling.report.presentation.core.Collapse"><code class="flex name class">
 <span>class <span class="ident">Collapse</span></span>
 <span>(</span><span>button: <a title="pandas_profiling.report.presentation.core.toggle_button.ToggleButton" href="toggle_button.html#pandas_profiling.report.presentation.core.toggle_button.ToggleButton">ToggleButton</a>, item: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, **kwargs)</span>
@@ -180,7 +229,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Collapse.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -217,7 +266,7 @@ def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Container"><code class="flex name class">
 <span>class <span class="ident">Container</span></span>
-<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Union[str, NoneType] = None, anchor_id: Union[str, NoneType] = None, classes: Union[str, NoneType] = None, **kwargs)</span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Optional[str] = None, anchor_id: Optional[str] = None, classes: Optional[str] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -280,7 +329,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Container.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -514,7 +563,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Image"><code class="flex name class">
 <span>class <span class="ident">Image</span></span>
-<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Union[str, NoneType] = None, **kwargs)</span>
+<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Optional[str] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -530,8 +579,11 @@ inheritance.</p></div>
         image_format: ImageType,
         alt: str,
         caption: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
+        if image is None:
+            raise ValueError(f&#34;Image may not be None (alt={alt}, caption={caption})&#34;)
+
         super().__init__(
             &#34;image&#34;,
             {
@@ -540,7 +592,7 @@ inheritance.</p></div>
                 &#34;alt&#34;: alt,
                 &#34;caption&#34;: caption,
             },
-            **kwargs
+            **kwargs,
         )
 
     def __repr__(self) -&gt; str:
@@ -625,7 +677,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Root.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -662,7 +714,7 @@ def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Sample"><code class="flex name class">
 <span>class <span class="ident">Sample</span></span>
-<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Union[str, NoneType] = None, **kwargs)</span>
+<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Optional[str] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -715,7 +767,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Table"><code class="flex name class">
 <span>class <span class="ident">Table</span></span>
-<span>(</span><span>rows: Sequence, name: Union[str, NoneType] = None, caption: Union[str, NoneType] = None, **kwargs)</span>
+<span>(</span><span>rows: Sequence[+T_co], name: Optional[str] = None, caption: Optional[str] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -821,7 +873,7 @@ inheritance.</p></div>
 </dd>
 <dt id="pandas_profiling.report.presentation.core.Variable"><code class="flex name class">
 <span>class <span class="ident">Variable</span></span>
-<span>(</span><span>top: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, bottom: Union[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, NoneType] = None, ignore: bool = False, **kwargs)</span>
+<span>(</span><span>top: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, bottom: Optional[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>] = None, ignore: bool = False, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -879,7 +931,7 @@ inheritance.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pandas_profiling.report.presentation.core.Variable.convert_to_class"><code class="name flex">
-<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> NoneType</span>
+<span>def <span class="ident">convert_to_class</span></span>(<span>obj: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, flv: Callable) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -916,7 +968,7 @@ def convert_to_class(cls, obj: Renderable, flv: Callable) -&gt; None:
 </dd>
 <dt id="pandas_profiling.report.presentation.core.VariableInfo"><code class="flex name class">
 <span>class <span class="ident">VariableInfo</span></span>
-<span>(</span><span>anchor_id: str, var_name: str, var_type: str, warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], description: str, **kwargs)</span>
+<span>(</span><span>anchor_id: str, var_name: str, var_type: str, alerts: List[<a title="pandas_profiling.model.alerts.Alert" href="../../../model/alerts.html#pandas_profiling.model.alerts.Alert">Alert</a>], description: str, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -931,7 +983,7 @@ inheritance.</p></div>
         anchor_id: str,
         var_name: str,
         var_type: str,
-        warnings: List[Message],
+        alerts: List[Alert],
         description: str,
         **kwargs
     ):
@@ -942,7 +994,7 @@ inheritance.</p></div>
                 &#34;var_name&#34;: var_name,
                 &#34;description&#34;: description,
                 &#34;var_type&#34;: var_type,
-                &#34;warnings&#34;: warnings,
+                &#34;alerts&#34;: alerts,
             },
             **kwargs
         )
@@ -981,55 +1033,6 @@ inheritance.</p></div>
 </dd>
 </dl>
 </dd>
-<dt id="pandas_profiling.report.presentation.core.Warnings"><code class="flex name class">
-<span>class <span class="ident">Warnings</span></span>
-<span>(</span><span>warnings: List[<a title="pandas_profiling.model.messages.Message" href="../../../model/messages.html#pandas_profiling.model.messages.Message">Message</a>], **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Warnings(ItemRenderer):
-    def __init__(self, warnings: List[Message], **kwargs):
-        super().__init__(&#34;warnings&#34;, {&#34;warnings&#34;: warnings}, **kwargs)
-
-    def __repr__(self):
-        return &#34;Warnings&#34;
-
-    def render(self) -&gt; Any:
-        raise NotImplementedError()</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
-<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="pandas_profiling.report.presentation.flavours.html.warnings.HTMLWarnings" href="../flavours/html/warnings.html#pandas_profiling.report.presentation.flavours.html.warnings.HTMLWarnings">HTMLWarnings</a></li>
-<li><a title="pandas_profiling.report.presentation.flavours.widget.warnings.WidgetWarnings" href="../flavours/widget/warnings.html#pandas_profiling.report.presentation.flavours.widget.warnings.WidgetWarnings">WidgetWarnings</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="pandas_profiling.report.presentation.core.Warnings.render"><code class="name flex">
-<span>def <span class="ident">render</span></span>(<span>self) ‑> Any</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def render(self) -&gt; Any:
-    raise NotImplementedError()</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 </dl>
 </section>
 </article>
@@ -1046,6 +1049,7 @@ inheritance.</p></div>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
+<li><code><a title="pandas_profiling.report.presentation.core.alerts" href="alerts.html">pandas_profiling.report.presentation.core.alerts</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.core.collapse" href="collapse.html">pandas_profiling.report.presentation.core.collapse</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.core.container" href="container.html">pandas_profiling.report.presentation.core.container</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.core.duplicate" href="duplicate.html">pandas_profiling.report.presentation.core.duplicate</a></code></li>
@@ -1061,11 +1065,16 @@ inheritance.</p></div>
 <li><code><a title="pandas_profiling.report.presentation.core.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.core.toggle_button</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.core.variable" href="variable.html">pandas_profiling.report.presentation.core.variable</a></code></li>
 <li><code><a title="pandas_profiling.report.presentation.core.variable_info" href="variable_info.html">pandas_profiling.report.presentation.core.variable_info</a></code></li>
-<li><code><a title="pandas_profiling.report.presentation.core.warnings" href="warnings.html">pandas_profiling.report.presentation.core.warnings</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.core.Alerts" href="#pandas_profiling.report.presentation.core.Alerts">Alerts</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.core.Alerts.render" href="#pandas_profiling.report.presentation.core.Alerts.render">render</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="pandas_profiling.report.presentation.core.Collapse" href="#pandas_profiling.report.presentation.core.Collapse">Collapse</a></code></h4>
 <ul class="">
@@ -1148,19 +1157,13 @@ inheritance.</p></div>
 <li><code><a title="pandas_profiling.report.presentation.core.VariableInfo.render" href="#pandas_profiling.report.presentation.core.VariableInfo.render">render</a></code></li>
 </ul>
 </li>
-<li>
-<h4><code><a title="pandas_profiling.report.presentation.core.Warnings" href="#pandas_profiling.report.presentation.core.Warnings">Warnings</a></code></h4>
-<ul class="">
-<li><code><a title="pandas_profiling.report.presentation.core.Warnings.render" href="#pandas_profiling.report.presentation.core.Warnings.render">render</a></code></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

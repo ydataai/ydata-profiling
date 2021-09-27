@@ -17,7 +17,7 @@
 
    .. autosummary::
    
-      ~ImageType.png
       ~ImageType.svg
+      ~ImageType.png
    
    

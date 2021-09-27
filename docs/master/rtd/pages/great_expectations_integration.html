@@ -1,75 +1,36 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Integration with Great Expectations &mdash; pandas-profiling 3.0.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Integration with Great Expectations &mdash; pandas-profiling 3.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Changelog" href="changelog.html" />
     <link rel="prev" title="Integrations" href="integrations.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #174C4F" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> pandas-profiling
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -77,20 +38,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Pandas Profiling</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Pandas Profiling</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="announcements.html">Announcements</a></li>
@@ -111,19 +61,17 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Support and contribution</span></p>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribution_guidelines.html">Contribution Guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
-            
-          
 
     <div style="padding-top: 20px">
         <a href="https://github.com/sponsors/sbrugman">
@@ -154,73 +102,34 @@
 
 
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #174C4F" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">pandas-profiling</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Integration with Great Expectations</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/pages/great_expectations_integration.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="integration-with-great-expectations">
-<h1>Integration with Great Expectations<a class="headerlink" href="#integration-with-great-expectations" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="integration-with-great-expectations">
+<h1>Integration with Great Expectations<a class="headerlink" href="#integration-with-great-expectations" title="Permalink to this headline"></a></h1>
 <p><a class="reference external" href="https://www.greatexpectations.io">Great Expectations</a> is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically <em>unit tests for your data</em>. Pandas Profiling features a method to create a suite of Expectations based on the results of your ProfileReport!</p>
-<div class="section" id="about-great-expectations">
-<h2>About Great Expectations<a class="headerlink" href="#about-great-expectations" title="Permalink to this headline">¶</a></h2>
+<section id="about-great-expectations">
+<h2>About Great Expectations<a class="headerlink" href="#about-great-expectations" title="Permalink to this headline"></a></h2>
 <p><em>Expectations</em> are assertions about your data. In Great Expectations, those assertions are expressed in a declarative language in the form of simple, human-readable Python methods. For example, in  order to assert that you want values in a column <code class="docutils literal notranslate"><span class="pre">passenger_count</span></code> in your dataset to be integers between 1 and 6, you can say:</p>
 <blockquote>
 <div><p><code class="docutils literal notranslate"><span class="pre">expect_column_values_to_be_between(column=&quot;passenger_count&quot;,</span> <span class="pre">min_value=1,</span> <span class="pre">max_value=6)</span></code></p>
@@ -228,9 +137,9 @@
 <p>Great Expectations then uses this statement to validate whether the column <code class="docutils literal notranslate"><span class="pre">passenger_count</span></code> in a given table is indeed between 1 and 6, and returns a success or failure result. The library currently provides <a class="reference external" href="https://docs.greatexpectations.io/en/latest/reference/glossary_of_expectations.html">several dozen highly expressive built-in Expectations</a>, and allows you to write custom Expectations.</p>
 <p>Great Expectations renders Expectations to clean, human-readable documentation called <em>Data Docs</em>. These HTML docs contain both your Expectation Suites as well as your data validation results each time validation is run – think of it as a continuously updated data quality report.</p>
 <p>For more information about Great Expectations, check out the <a class="reference external" href="https://docs.greatexpectations.io/en/latest/">Great Expectations documentation</a> and join the <a class="reference external" href="https://www.greatexpectations.io/slack">Great Expectations Slack channel</a> for help.</p>
-</div>
-<div class="section" id="creating-expectation-suites-with-pandas-profiling">
-<h2>Creating Expectation Suites with Pandas Profiling<a class="headerlink" href="#creating-expectation-suites-with-pandas-profiling" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="creating-expectation-suites-with-pandas-profiling">
+<h2>Creating Expectation Suites with Pandas Profiling<a class="headerlink" href="#creating-expectation-suites-with-pandas-profiling" title="Permalink to this headline"></a></h2>
 <p>An <em>Expectation Suite</em> is simply a set of Expectations. You can create Expectation Suites by writing out individual statements, such as the one above, or by automatically generating them based on profiler results.</p>
 <p>Pandas Profiling provides a simple <code class="docutils literal notranslate"><span class="pre">to_expectation_suite()</span></code> method that returns a Great Expectations <code class="docutils literal notranslate"><span class="pre">ExpectationSuite</span></code> object which contains a set of Expectations.</p>
 <p><strong>Pre-requisites</strong>: In order to run the <code class="docutils literal notranslate"><span class="pre">to_expectation_suite()</span></code> method, you will need to install Great Expectations:
@@ -269,9 +178,9 @@
 </pre></div>
 </div>
 <p>See <a class="reference external" href="https://pandas-profiling.github.io/pandas-profiling/examples/master/features/great_expectations_example.html">the Great Expectations Examples</a> for complete examples.</p>
-</div>
-<div class="section" id="included-expectation-types">
-<h2>Included Expectation types<a class="headerlink" href="#included-expectation-types" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="included-expectation-types">
+<h2>Included Expectation types<a class="headerlink" href="#included-expectation-types" title="Permalink to this headline"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">to_expectation_suite</span></code> method returns a default set of Expectations if Pandas Profiling determines that the assertion holds true for the profiled dataset.
 The Expectation types depend on the datatype of a column:</p>
 <p><strong>All columns</strong></p>
@@ -299,9 +208,9 @@ The Expectation types depend on the datatype of a column:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">expect_file_to_exist</span></code></p></li>
 </ul>
 <p>The default logic is straight forward and can be found here in <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/model/expectation_algorithms.py">expectation_algorithms.py</a>.</p>
-</div>
-<div class="section" id="rolling-your-own-expectation-generation-logic">
-<h2>Rolling your own Expectation Generation Logic<a class="headerlink" href="#rolling-your-own-expectation-generation-logic" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="rolling-your-own-expectation-generation-logic">
+<h2>Rolling your own Expectation Generation Logic<a class="headerlink" href="#rolling-your-own-expectation-generation-logic" title="Permalink to this headline"></a></h2>
 <p>If you would like to profile datasets at scale, your use case might require changing the default expectations logic.
 The <code class="docutils literal notranslate"><span class="pre">to_expectation_suite</span></code> takes the <code class="docutils literal notranslate"><span class="pre">handler</span></code> parameter, which allows you to take full control of the generation process.
 Generating expectations takes place in two steps:</p>
@@ -343,55 +252,38 @@ Generating expectations takes place in two steps:</p>
 </div>
 <p>You can automate even more by extending the typeset (by default the <code class="docutils literal notranslate"><span class="pre">ProfilingTypeSet</span></code>) with semantic data types specific to your company or use case (for instance disease classification in healthcare or currency and IBAN in finance).
 For that, you can find details in the <a class="reference external" href="https://github.com/dylan-profiler/visions">visions</a> documentation.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="integrations.html" class="btn btn-neutral float-left" title="Integrations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Simon Brugman.
-
-    </p>
+    <p>&#169; Copyright 2021, Simon Brugman.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -20,6 +20,7 @@
       remove_suffix
       rename_index
       slugify
+      sort_column_names
       uncompressed_extension
       warn_read
    

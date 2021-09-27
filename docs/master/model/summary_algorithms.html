@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.model.summary_algorithms API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -26,28 +26,15 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import contextlib
-import functools
-from typing import Any, Callable, Dict, Tuple, TypeVar
-from urllib.parse import urlsplit
+<pre><code class="python">import functools
+from typing import Any, Callable, Optional, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
-from pandas.core.arrays.integer import _IntegerDtype
+from multimethod import multimethod
+from scipy.stats.stats import chisquare
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.summary_helpers import (
-    chi_square,
-    file_summary,
-    histogram_compute,
-    image_summary,
-    length_summary,
-    mad,
-    path_summary,
-    unicode_summary,
-    url_summary,
-    word_summary,
-)
 
 T = TypeVar(&#34;T&#34;)
 
@@ -55,7 +42,7 @@ T = TypeVar(&#34;T&#34;)
 def func_nullable_series_contains(fn: Callable) -&gt; Callable:
     @functools.wraps(fn)
     def inner(
-        config: Settings, series: pd.Series, state: dict = {}, *args, **kwargs
+        config: Settings, series: pd.Series, state: dict, *args, **kwargs
     ) -&gt; bool:
         if series.hasnans:
             series = series.dropna()
@@ -67,58 +54,31 @@ def func_nullable_series_contains(fn: Callable) -&gt; Callable:
     return inner
 
 
-def describe_counts(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Counts the values in a series (with and without NaN, distinct).
+def histogram_compute(
+    config: Settings,
+    finite_values: np.ndarray,
+    n_unique: int,
+    name: str = &#34;histogram&#34;,
+    weights: Optional[np.ndarray] = None,
+) -&gt; dict:
+    stats = {}
+    bins = config.plot.histogram.bins
+    bins_arg = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
+    stats[name] = np.histogram(finite_values, bins=bins_arg, weights=weights)
 
-    Args:
-        series: Series for which we want to calculate the values.
-        summary: series&#39; summary
+    max_bins = config.plot.histogram.max_bins
+    if bins_arg == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
+        stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
 
-    Returns:
-        A dictionary with the count values (with and without NaN, distinct).
-    &#34;&#34;&#34;
-    try:
-        value_counts_with_nan = series.value_counts(dropna=False)
-        _ = set(value_counts_with_nan.index)
-        hashable = True
-    except:  # noqa: E722
-        hashable = False
+    return stats
 
-    summary[&#34;hashable&#34;] = hashable
 
-    if hashable:
-        value_counts_with_nan = value_counts_with_nan[value_counts_with_nan &gt; 0]
-
-        null_index = value_counts_with_nan.index.isnull()
-        if null_index.any():
-            n_missing = value_counts_with_nan[null_index].sum()
-            value_counts_without_nan = value_counts_with_nan[~null_index]
-        else:
-            n_missing = 0
-            value_counts_without_nan = value_counts_with_nan
-
-        summary.update(
-            {
-                &#34;value_counts_without_nan&#34;: value_counts_without_nan,
-            }
-        )
-        try:
-            summary[&#34;value_counts_index_sorted&#34;] = summary[
-                &#34;value_counts_without_nan&#34;
-            ].sort_index(ascending=True)
-            ordering = True
-        except TypeError:
-            ordering = False
-    else:
-        n_missing = series.isna().sum()
-        ordering = False
-
-    summary[&#34;ordering&#34;] = ordering
-    summary[&#34;n_missing&#34;] = n_missing
-
-    return config, series, summary
+def chi_square(
+    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
+) -&gt; dict:
+    if histogram is None:
+        histogram, _ = np.histogram(values, bins=&#34;auto&#34;)
+    return dict(chisquare(histogram)._asdict())
 
 
 def series_hashable(
@@ -152,392 +112,92 @@ def series_handle_nulls(
     return inner
 
 
-@series_hashable
+def named_aggregate_summary(series: pd.Series, key: str) -&gt; dict:
+    summary = {
+        f&#34;max_{key}&#34;: np.max(series),
+        f&#34;mean_{key}&#34;: np.mean(series),
+        f&#34;median_{key}&#34;: np.median(series),
+        f&#34;min_{key}&#34;: np.min(series),
+    }
+
+    return summary
+
+
+@multimethod
+def describe_counts(
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
+
+
+@multimethod
 def describe_supported(
-    config: Settings, series: pd.Series, series_description: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a supported series.
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # number of non-NaN observations in the Series
-    count = series_description[&#34;count&#34;]
-
-    value_counts = series_description[&#34;value_counts_without_nan&#34;]
-    distinct_count = len(value_counts)
-    unique_count = value_counts.where(value_counts == 1).count()
-
-    stats = {
-        &#34;n_distinct&#34;: distinct_count,
-        &#34;p_distinct&#34;: distinct_count / count if count &gt; 0 else 0,
-        &#34;is_unique&#34;: unique_count == count and count &gt; 0,
-        &#34;n_unique&#34;: unique_count,
-        &#34;p_unique&#34;: unique_count / count if count &gt; 0 else 0,
-    }
-    stats.update(series_description)
-
-    return config, series, stats
+    config: Settings, series: Any, series_description: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
+@multimethod
 def describe_generic(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe generic series.
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # number of observations in the Series
-    length = len(series)
-
-    summary.update(
-        {
-            &#34;n&#34;: length,
-            &#34;p_missing&#34;: summary[&#34;n_missing&#34;] / length if length &gt; 0 else 0,
-            &#34;count&#34;: length - summary[&#34;n_missing&#34;],
-            &#34;memory_size&#34;: series.memory_usage(deep=config.memory_deep),
-        }
-    )
-
-    return config, series, summary
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
-def numeric_stats_pandas(series: pd.Series) -&gt; Dict[str, Any]:
-    return {
-        &#34;mean&#34;: series.mean(),
-        &#34;std&#34;: series.std(),
-        &#34;variance&#34;: series.var(),
-        &#34;min&#34;: series.min(),
-        &#34;max&#34;: series.max(),
-        # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-        &#34;kurtosis&#34;: series.kurt(),
-        # Unbiased skew normalized by N-1
-        &#34;skewness&#34;: series.skew(),
-        &#34;sum&#34;: series.sum(),
-    }
-
-
-def numeric_stats_numpy(
-    present_values: np.ndarray, series: pd.Series, series_description: Dict[str, Any]
-) -&gt; Dict[str, Any]:
-    vc = series_description[&#34;value_counts_without_nan&#34;]
-    index_values = vc.index.values
-    return {
-        &#34;mean&#34;: np.mean(present_values),
-        &#34;std&#34;: np.std(present_values, ddof=1),
-        &#34;variance&#34;: np.var(present_values, ddof=1),
-        &#34;min&#34;: np.min(index_values),
-        &#34;max&#34;: np.max(index_values),
-        # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-        &#34;kurtosis&#34;: series.kurt(),
-        # Unbiased skew normalized by N-1
-        &#34;skewness&#34;: series.skew(),
-        &#34;sum&#34;: np.sum(present_values),
-    }
-
-
-@series_hashable
-@series_handle_nulls
+@multimethod
 def describe_numeric_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a numeric series.
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    chi_squared_threshold = config.vars.num.chi_squared_threshold
-    quantiles = config.vars.num.quantiles
-
-    value_counts = summary[&#34;value_counts_without_nan&#34;]
-
-    summary[&#34;n_zeros&#34;] = 0
-    negative_index = value_counts.index &lt; 0
-    summary[&#34;n_negative&#34;] = value_counts.loc[negative_index].sum()
-    summary[&#34;p_negative&#34;] = summary[&#34;n_negative&#34;] / summary[&#34;n&#34;]
-
-    infinity_values = [np.inf, -np.inf]
-    infinity_index = value_counts.index.isin(infinity_values)
-    summary[&#34;n_infinite&#34;] = value_counts.loc[infinity_index].sum()
-
-    if 0 in value_counts.index:
-        summary[&#34;n_zeros&#34;] = value_counts.loc[0]
-
-    stats = summary
-
-    if isinstance(series.dtype, _IntegerDtype):
-        stats.update(numeric_stats_pandas(series))
-        present_values = series.astype(str(series.dtype).lower())
-        finite_values = present_values
-    else:
-        present_values = series.values
-        finite_values = present_values[np.isfinite(present_values)]
-        stats.update(numeric_stats_numpy(present_values, series, summary))
-
-    stats.update(
-        {
-            &#34;mad&#34;: mad(present_values),
-        }
-    )
-
-    if chi_squared_threshold &gt; 0.0:
-        stats[&#34;chi_squared&#34;] = chi_square(finite_values)
-
-    stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
-    stats.update(
-        {
-            f&#34;{percentile:.0%}&#34;: value
-            for percentile, value in series.quantile(quantiles).to_dict().items()
-        }
-    )
-    stats[&#34;iqr&#34;] = stats[&#34;75%&#34;] - stats[&#34;25%&#34;]
-    stats[&#34;cv&#34;] = stats[&#34;std&#34;] / stats[&#34;mean&#34;] if stats[&#34;mean&#34;] else np.NaN
-    stats[&#34;p_zeros&#34;] = stats[&#34;n_zeros&#34;] / summary[&#34;n&#34;]
-    stats[&#34;p_infinite&#34;] = summary[&#34;n_infinite&#34;] / summary[&#34;n&#34;]
-
-    stats[&#34;monotonic_increase&#34;] = series.is_monotonic_increasing
-    stats[&#34;monotonic_decrease&#34;] = series.is_monotonic_decreasing
-
-    stats[&#34;monotonic_increase_strict&#34;] = (
-        stats[&#34;monotonic_increase&#34;] and series.is_unique
-    )
-    stats[&#34;monotonic_decrease_strict&#34;] = (
-        stats[&#34;monotonic_decrease&#34;] and series.is_unique
-    )
-    if summary[&#34;monotonic_increase_strict&#34;]:
-        stats[&#34;monotonic&#34;] = 2
-    elif summary[&#34;monotonic_decrease_strict&#34;]:
-        stats[&#34;monotonic&#34;] = -2
-    elif summary[&#34;monotonic_increase&#34;]:
-        stats[&#34;monotonic&#34;] = 1
-    elif summary[&#34;monotonic_decrease&#34;]:
-        stats[&#34;monotonic&#34;] = -1
-    else:
-        stats[&#34;monotonic&#34;] = 0
-
-    stats.update(
-        histogram_compute(
-            config,
-            value_counts[~infinity_index].index.values,
-            summary[&#34;n_distinct&#34;],
-            weights=value_counts[~infinity_index].values,
-        )
-    )
-
-    return config, series, stats
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
-@series_hashable
-@series_handle_nulls
+@multimethod
 def describe_date_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a date series.
-
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-    chi_squared_threshold = config.vars.num.chi_squared_threshold
-
-    summary.update(
-        {
-            &#34;min&#34;: pd.Timestamp.to_pydatetime(series.min()),
-            &#34;max&#34;: pd.Timestamp.to_pydatetime(series.max()),
-        }
-    )
-
-    summary[&#34;range&#34;] = summary[&#34;max&#34;] - summary[&#34;min&#34;]
-
-    values = series.values.astype(np.int64) // 10 ** 9
-
-    if chi_squared_threshold &gt; 0.0:
-        summary[&#34;chi_squared&#34;] = chi_square(values)
-
-    summary.update(histogram_compute(config, values, summary[&#34;n_distinct&#34;]))
-    return config, values, summary
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
-@series_hashable
-@series_handle_nulls
+@multimethod
 def describe_categorical_1d(
     config: Settings, series: pd.Series, summary: dict
 ) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a categorical series.
-
-    Args:
-        config: report Settings
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # Make sure we deal with strings (Issue #100)
-    series = series.astype(str)
-
-    # Only run if at least 1 non-missing value
-    value_counts = summary[&#34;value_counts_without_nan&#34;]
-    histogram_largest = config.vars.cat.histogram_largest
-    histogram_data = value_counts
-    if histogram_largest &gt; 0:
-        histogram_data = histogram_data.nlargest(histogram_largest)
-
-    summary.update(
-        histogram_compute(
-            config,
-            histogram_data,
-            summary[&#34;n_distinct&#34;],
-            name=&#34;histogram_frequencies&#34;,
-        )
-    )
-
-    redact = config.vars.cat.redact
-    if not redact:
-        summary.update({&#34;first_rows&#34;: series.head(5)})
-
-    chi_squared_threshold = config.vars.num.chi_squared_threshold
-    if chi_squared_threshold &gt; 0.0:
-        summary[&#34;chi_squared&#34;] = chi_square(histogram=value_counts.values)
-
-    if config.vars.cat.length:
-        summary.update(length_summary(series))
-        summary.update(
-            histogram_compute(
-                config,
-                summary[&#34;length&#34;],
-                summary[&#34;length&#34;].nunique(),
-                name=&#34;histogram_length&#34;,
-            )
-        )
-
-    if config.vars.cat.characters:
-        summary.update(unicode_summary(series))
-        summary[&#34;n_characters_distinct&#34;] = summary[&#34;n_characters&#34;]
-        summary[&#34;n_characters&#34;] = summary[&#34;character_counts&#34;].values.sum()
-
-        with contextlib.suppress(AttributeError):
-            summary[&#34;category_alias_counts&#34;].index = summary[
-                &#34;category_alias_counts&#34;
-            ].index.str.replace(&#34;_&#34;, &#34; &#34;)
-
-    if config.vars.cat.words:
-        summary.update(word_summary(series))
-
-    return config, series, summary
+    raise NotImplementedError()
 
 
+@multimethod
 def describe_url_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a url series.
-
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # Make sure we deal with strings (Issue #100)
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    # Transform
-    series = series.apply(urlsplit)
-
-    # Update
-    summary.update(url_summary(series))
-
-    return config, series, summary
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
+@multimethod
 def describe_file_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    summary.update(file_summary(series))
-    summary.update(
-        histogram_compute(
-            config,
-            summary[&#34;file_size&#34;],
-            summary[&#34;file_size&#34;].nunique(),
-            name=&#34;histogram_file_size&#34;,
-        )
-    )
-
-    return config, series, summary
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
+@multimethod
 def describe_path_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a path series.
-
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # Make sure we deal with strings (Issue #100)
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    summary.update(path_summary(series))
-
-    return config, series, summary
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
+@multimethod
 def describe_image_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    summary.update(image_summary(series, config.vars.image.exif))
-
-    return config, series, summary
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
 
 
-@series_hashable
+@multimethod
 def describe_boolean_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a boolean series.
-
-    Args:
-        config: report Settings object
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    value_counts = summary[&#34;value_counts_without_nan&#34;]
-    summary.update({&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]})
-
-    return config, series, summary</code></pre>
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </section>
 <section>
@@ -547,263 +207,89 @@ def describe_boolean_1d(
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pandas_profiling.model.summary_algorithms.describe_boolean_1d"><code class="name flex">
-<span>def <span class="ident">describe_boolean_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<dt id="pandas_profiling.model.summary_algorithms.chi_square"><code class="name flex">
+<span>def <span class="ident">chi_square</span></span>(<span>values: Optional[numpy.ndarray] = None, histogram: Optional[numpy.ndarray] = None) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Describe a boolean series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>config</code></strong></dt>
-<dd>report Settings object</dd>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@series_hashable
+<pre><code class="python">def chi_square(
+    values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
+) -&gt; dict:
+    if histogram is None:
+        histogram, _ = np.histogram(values, bins=&#34;auto&#34;)
+    return dict(chisquare(histogram)._asdict())</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.summary_algorithms.describe_boolean_1d"><code class="name flex">
+<span>def <span class="ident">describe_boolean_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@multimethod
 def describe_boolean_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a boolean series.
-
-    Args:
-        config: report Settings object
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    value_counts = summary[&#34;value_counts_without_nan&#34;]
-    summary.update({&#34;top&#34;: value_counts.index[0], &#34;freq&#34;: value_counts.iloc[0]})
-
-    return config, series, summary</code></pre>
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_categorical_1d"><code class="name flex">
 <span>def <span class="ident">describe_categorical_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Describe a categorical series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>config</code></strong></dt>
-<dd>report Settings</dd>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@series_hashable
-@series_handle_nulls
+<pre><code class="python">@multimethod
 def describe_categorical_1d(
     config: Settings, series: pd.Series, summary: dict
 ) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a categorical series.
-
-    Args:
-        config: report Settings
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # Make sure we deal with strings (Issue #100)
-    series = series.astype(str)
-
-    # Only run if at least 1 non-missing value
-    value_counts = summary[&#34;value_counts_without_nan&#34;]
-    histogram_largest = config.vars.cat.histogram_largest
-    histogram_data = value_counts
-    if histogram_largest &gt; 0:
-        histogram_data = histogram_data.nlargest(histogram_largest)
-
-    summary.update(
-        histogram_compute(
-            config,
-            histogram_data,
-            summary[&#34;n_distinct&#34;],
-            name=&#34;histogram_frequencies&#34;,
-        )
-    )
-
-    redact = config.vars.cat.redact
-    if not redact:
-        summary.update({&#34;first_rows&#34;: series.head(5)})
-
-    chi_squared_threshold = config.vars.num.chi_squared_threshold
-    if chi_squared_threshold &gt; 0.0:
-        summary[&#34;chi_squared&#34;] = chi_square(histogram=value_counts.values)
-
-    if config.vars.cat.length:
-        summary.update(length_summary(series))
-        summary.update(
-            histogram_compute(
-                config,
-                summary[&#34;length&#34;],
-                summary[&#34;length&#34;].nunique(),
-                name=&#34;histogram_length&#34;,
-            )
-        )
-
-    if config.vars.cat.characters:
-        summary.update(unicode_summary(series))
-        summary[&#34;n_characters_distinct&#34;] = summary[&#34;n_characters&#34;]
-        summary[&#34;n_characters&#34;] = summary[&#34;character_counts&#34;].values.sum()
-
-        with contextlib.suppress(AttributeError):
-            summary[&#34;category_alias_counts&#34;].index = summary[
-                &#34;category_alias_counts&#34;
-            ].index.str.replace(&#34;_&#34;, &#34; &#34;)
-
-    if config.vars.cat.words:
-        summary.update(word_summary(series))
-
-    return config, series, summary</code></pre>
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_counts"><code class="name flex">
-<span>def <span class="ident">describe_counts</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_counts</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Counts the values in a series (with and without NaN, distinct).</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>Series for which we want to calculate the values.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>series' summary</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dictionary with the count values (with and without NaN, distinct).</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe_counts(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Counts the values in a series (with and without NaN, distinct).
-
-    Args:
-        series: Series for which we want to calculate the values.
-        summary: series&#39; summary
-
-    Returns:
-        A dictionary with the count values (with and without NaN, distinct).
-    &#34;&#34;&#34;
-    try:
-        value_counts_with_nan = series.value_counts(dropna=False)
-        _ = set(value_counts_with_nan.index)
-        hashable = True
-    except:  # noqa: E722
-        hashable = False
-
-    summary[&#34;hashable&#34;] = hashable
-
-    if hashable:
-        value_counts_with_nan = value_counts_with_nan[value_counts_with_nan &gt; 0]
-
-        null_index = value_counts_with_nan.index.isnull()
-        if null_index.any():
-            n_missing = value_counts_with_nan[null_index].sum()
-            value_counts_without_nan = value_counts_with_nan[~null_index]
-        else:
-            n_missing = 0
-            value_counts_without_nan = value_counts_with_nan
-
-        summary.update(
-            {
-                &#34;value_counts_without_nan&#34;: value_counts_without_nan,
-            }
-        )
-        try:
-            summary[&#34;value_counts_index_sorted&#34;] = summary[
-                &#34;value_counts_without_nan&#34;
-            ].sort_index(ascending=True)
-            ordering = True
-        except TypeError:
-            ordering = False
-    else:
-        n_missing = series.isna().sum()
-        ordering = False
-
-    summary[&#34;ordering&#34;] = ordering
-    summary[&#34;n_missing&#34;] = n_missing
-
-    return config, series, summary</code></pre>
+<pre><code class="python">@multimethod
+def describe_counts(
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_date_1d"><code class="name flex">
-<span>def <span class="ident">describe_date_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_date_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Describe a date series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@series_hashable
-@series_handle_nulls
+<pre><code class="python">@multimethod
 def describe_date_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a date series.
-
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-    chi_squared_threshold = config.vars.num.chi_squared_threshold
-
-    summary.update(
-        {
-            &#34;min&#34;: pd.Timestamp.to_pydatetime(series.min()),
-            &#34;max&#34;: pd.Timestamp.to_pydatetime(series.max()),
-        }
-    )
-
-    summary[&#34;range&#34;] = summary[&#34;max&#34;] - summary[&#34;min&#34;]
-
-    values = series.values.astype(np.int64) // 10 ** 9
-
-    if chi_squared_threshold &gt; 0.0:
-        summary[&#34;chi_squared&#34;] = chi_square(values)
-
-    summary.update(histogram_compute(config, values, summary[&#34;n_distinct&#34;]))
-    return config, values, summary</code></pre>
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_file_1d"><code class="name flex">
-<span>def <span class="ident">describe_file_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_file_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -811,71 +297,15 @@ def describe_date_1d(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe_file_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    summary.update(file_summary(series))
-    summary.update(
-        histogram_compute(
-            config,
-            summary[&#34;file_size&#34;],
-            summary[&#34;file_size&#34;].nunique(),
-            name=&#34;histogram_file_size&#34;,
-        )
-    )
-
-    return config, series, summary</code></pre>
+<pre><code class="python">@multimethod
+def describe_file_1d(
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_generic"><code class="name flex">
-<span>def <span class="ident">describe_generic</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Describe generic series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def describe_generic(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe generic series.
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # number of observations in the Series
-    length = len(series)
-
-    summary.update(
-        {
-            &#34;n&#34;: length,
-            &#34;p_missing&#34;: summary[&#34;n_missing&#34;] / length if length &gt; 0 else 0,
-            &#34;count&#34;: length - summary[&#34;n_missing&#34;],
-            &#34;memory_size&#34;: series.memory_usage(deep=config.memory_deep),
-        }
-    )
-
-    return config, series, summary</code></pre>
-</details>
-</dd>
-<dt id="pandas_profiling.model.summary_algorithms.describe_image_1d"><code class="name flex">
-<span>def <span class="ident">describe_image_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_generic</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -883,260 +313,91 @@ def describe_date_1d(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe_image_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    summary.update(image_summary(series, config.vars.image.exif))
-
-    return config, series, summary</code></pre>
+<pre><code class="python">@multimethod
+def describe_generic(
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
+</details>
+</dd>
+<dt id="pandas_profiling.model.summary_algorithms.describe_image_1d"><code class="name flex">
+<span>def <span class="ident">describe_image_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@multimethod
+def describe_image_1d(
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_numeric_1d"><code class="name flex">
-<span>def <span class="ident">describe_numeric_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_numeric_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Describe a numeric series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@series_hashable
-@series_handle_nulls
+<pre><code class="python">@multimethod
 def describe_numeric_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a numeric series.
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    chi_squared_threshold = config.vars.num.chi_squared_threshold
-    quantiles = config.vars.num.quantiles
-
-    value_counts = summary[&#34;value_counts_without_nan&#34;]
-
-    summary[&#34;n_zeros&#34;] = 0
-    negative_index = value_counts.index &lt; 0
-    summary[&#34;n_negative&#34;] = value_counts.loc[negative_index].sum()
-    summary[&#34;p_negative&#34;] = summary[&#34;n_negative&#34;] / summary[&#34;n&#34;]
-
-    infinity_values = [np.inf, -np.inf]
-    infinity_index = value_counts.index.isin(infinity_values)
-    summary[&#34;n_infinite&#34;] = value_counts.loc[infinity_index].sum()
-
-    if 0 in value_counts.index:
-        summary[&#34;n_zeros&#34;] = value_counts.loc[0]
-
-    stats = summary
-
-    if isinstance(series.dtype, _IntegerDtype):
-        stats.update(numeric_stats_pandas(series))
-        present_values = series.astype(str(series.dtype).lower())
-        finite_values = present_values
-    else:
-        present_values = series.values
-        finite_values = present_values[np.isfinite(present_values)]
-        stats.update(numeric_stats_numpy(present_values, series, summary))
-
-    stats.update(
-        {
-            &#34;mad&#34;: mad(present_values),
-        }
-    )
-
-    if chi_squared_threshold &gt; 0.0:
-        stats[&#34;chi_squared&#34;] = chi_square(finite_values)
-
-    stats[&#34;range&#34;] = stats[&#34;max&#34;] - stats[&#34;min&#34;]
-    stats.update(
-        {
-            f&#34;{percentile:.0%}&#34;: value
-            for percentile, value in series.quantile(quantiles).to_dict().items()
-        }
-    )
-    stats[&#34;iqr&#34;] = stats[&#34;75%&#34;] - stats[&#34;25%&#34;]
-    stats[&#34;cv&#34;] = stats[&#34;std&#34;] / stats[&#34;mean&#34;] if stats[&#34;mean&#34;] else np.NaN
-    stats[&#34;p_zeros&#34;] = stats[&#34;n_zeros&#34;] / summary[&#34;n&#34;]
-    stats[&#34;p_infinite&#34;] = summary[&#34;n_infinite&#34;] / summary[&#34;n&#34;]
-
-    stats[&#34;monotonic_increase&#34;] = series.is_monotonic_increasing
-    stats[&#34;monotonic_decrease&#34;] = series.is_monotonic_decreasing
-
-    stats[&#34;monotonic_increase_strict&#34;] = (
-        stats[&#34;monotonic_increase&#34;] and series.is_unique
-    )
-    stats[&#34;monotonic_decrease_strict&#34;] = (
-        stats[&#34;monotonic_decrease&#34;] and series.is_unique
-    )
-    if summary[&#34;monotonic_increase_strict&#34;]:
-        stats[&#34;monotonic&#34;] = 2
-    elif summary[&#34;monotonic_decrease_strict&#34;]:
-        stats[&#34;monotonic&#34;] = -2
-    elif summary[&#34;monotonic_increase&#34;]:
-        stats[&#34;monotonic&#34;] = 1
-    elif summary[&#34;monotonic_decrease&#34;]:
-        stats[&#34;monotonic&#34;] = -1
-    else:
-        stats[&#34;monotonic&#34;] = 0
-
-    stats.update(
-        histogram_compute(
-            config,
-            value_counts[~infinity_index].index.values,
-            summary[&#34;n_distinct&#34;],
-            weights=value_counts[~infinity_index].values,
-        )
-    )
-
-    return config, series, stats</code></pre>
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_path_1d"><code class="name flex">
-<span>def <span class="ident">describe_path_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_path_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Describe a path series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe_path_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a path series.
-
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # Make sure we deal with strings (Issue #100)
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    summary.update(path_summary(series))
-
-    return config, series, summary</code></pre>
+<pre><code class="python">@multimethod
+def describe_path_1d(
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_supported"><code class="name flex">
-<span>def <span class="ident">describe_supported</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, series_description: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_supported</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, series_description: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Describe a supported series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>series_description</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@series_hashable
+<pre><code class="python">@multimethod
 def describe_supported(
-    config: Settings, series: pd.Series, series_description: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a supported series.
-    Args:
-        series: The Series to describe.
-        series_description: The dict containing the series description so far.
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # number of non-NaN observations in the Series
-    count = series_description[&#34;count&#34;]
-
-    value_counts = series_description[&#34;value_counts_without_nan&#34;]
-    distinct_count = len(value_counts)
-    unique_count = value_counts.where(value_counts == 1).count()
-
-    stats = {
-        &#34;n_distinct&#34;: distinct_count,
-        &#34;p_distinct&#34;: distinct_count / count if count &gt; 0 else 0,
-        &#34;is_unique&#34;: unique_count == count and count &gt; 0,
-        &#34;n_unique&#34;: unique_count,
-        &#34;p_unique&#34;: unique_count / count if count &gt; 0 else 0,
-    }
-    stats.update(series_description)
-
-    return config, series, stats</code></pre>
+    config: Settings, series: Any, series_description: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.describe_url_1d"><code class="name flex">
-<span>def <span class="ident">describe_url_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, pandas.core.series.Series, dict]</span>
+<span>def <span class="ident">describe_url_1d</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: Any, summary: dict) ‑> Tuple[<a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, Any, dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Describe a url series.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>series</code></strong></dt>
-<dd>The Series to describe.</dd>
-<dt><strong><code>summary</code></strong></dt>
-<dd>The dict containing the series description so far.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A dict containing calculated series description values.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe_url_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -&gt; Tuple[Settings, pd.Series, dict]:
-    &#34;&#34;&#34;Describe a url series.
-
-    Args:
-        series: The Series to describe.
-        summary: The dict containing the series description so far.
-
-    Returns:
-        A dict containing calculated series description values.
-    &#34;&#34;&#34;
-
-    # Make sure we deal with strings (Issue #100)
-    assert not series.hasnans
-    assert hasattr(series, &#34;str&#34;)
-
-    # Transform
-    series = series.apply(urlsplit)
-
-    # Update
-    summary.update(url_summary(series))
-
-    return config, series, summary</code></pre>
+<pre><code class="python">@multimethod
+def describe_url_1d(
+    config: Settings, series: Any, summary: dict
+) -&gt; Tuple[Settings, Any, dict]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.func_nullable_series_contains"><code class="name flex">
@@ -1151,7 +412,7 @@ def describe_supported(
 <pre><code class="python">def func_nullable_series_contains(fn: Callable) -&gt; Callable:
     @functools.wraps(fn)
     def inner(
-        config: Settings, series: pd.Series, state: dict = {}, *args, **kwargs
+        config: Settings, series: pd.Series, state: dict, *args, **kwargs
     ) -&gt; bool:
         if series.hasnans:
             series = series.dropna()
@@ -1163,8 +424,8 @@ def describe_supported(
     return inner</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.model.summary_algorithms.numeric_stats_numpy"><code class="name flex">
-<span>def <span class="ident">numeric_stats_numpy</span></span>(<span>present_values: numpy.ndarray, series: pandas.core.series.Series, series_description: Dict[str, Any]) ‑> Dict[str, Any]</span>
+<dt id="pandas_profiling.model.summary_algorithms.histogram_compute"><code class="name flex">
+<span>def <span class="ident">histogram_compute</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, finite_values: numpy.ndarray, n_unique: int, name: str = 'histogram', weights: Optional[numpy.ndarray] = None) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1172,27 +433,27 @@ def describe_supported(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def numeric_stats_numpy(
-    present_values: np.ndarray, series: pd.Series, series_description: Dict[str, Any]
-) -&gt; Dict[str, Any]:
-    vc = series_description[&#34;value_counts_without_nan&#34;]
-    index_values = vc.index.values
-    return {
-        &#34;mean&#34;: np.mean(present_values),
-        &#34;std&#34;: np.std(present_values, ddof=1),
-        &#34;variance&#34;: np.var(present_values, ddof=1),
-        &#34;min&#34;: np.min(index_values),
-        &#34;max&#34;: np.max(index_values),
-        # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-        &#34;kurtosis&#34;: series.kurt(),
-        # Unbiased skew normalized by N-1
-        &#34;skewness&#34;: series.skew(),
-        &#34;sum&#34;: np.sum(present_values),
-    }</code></pre>
+<pre><code class="python">def histogram_compute(
+    config: Settings,
+    finite_values: np.ndarray,
+    n_unique: int,
+    name: str = &#34;histogram&#34;,
+    weights: Optional[np.ndarray] = None,
+) -&gt; dict:
+    stats = {}
+    bins = config.plot.histogram.bins
+    bins_arg = &#34;auto&#34; if bins == 0 else min(bins, n_unique)
+    stats[name] = np.histogram(finite_values, bins=bins_arg, weights=weights)
+
+    max_bins = config.plot.histogram.max_bins
+    if bins_arg == &#34;auto&#34; and len(stats[name][1]) &gt; max_bins:
+        stats[name] = np.histogram(finite_values, bins=max_bins, weights=None)
+
+    return stats</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.model.summary_algorithms.numeric_stats_pandas"><code class="name flex">
-<span>def <span class="ident">numeric_stats_pandas</span></span>(<span>series: pandas.core.series.Series) ‑> Dict[str, Any]</span>
+<dt id="pandas_profiling.model.summary_algorithms.named_aggregate_summary"><code class="name flex">
+<span>def <span class="ident">named_aggregate_summary</span></span>(<span>series: pandas.core.series.Series, key: str) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1200,19 +461,15 @@ def describe_supported(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def numeric_stats_pandas(series: pd.Series) -&gt; Dict[str, Any]:
-    return {
-        &#34;mean&#34;: series.mean(),
-        &#34;std&#34;: series.std(),
-        &#34;variance&#34;: series.var(),
-        &#34;min&#34;: series.min(),
-        &#34;max&#34;: series.max(),
-        # Unbiased kurtosis obtained using Fisher&#39;s definition (kurtosis of normal == 0.0). Normalized by N-1.
-        &#34;kurtosis&#34;: series.kurt(),
-        # Unbiased skew normalized by N-1
-        &#34;skewness&#34;: series.skew(),
-        &#34;sum&#34;: series.sum(),
-    }</code></pre>
+<pre><code class="python">def named_aggregate_summary(series: pd.Series, key: str) -&gt; dict:
+    summary = {
+        f&#34;max_{key}&#34;: np.max(series),
+        f&#34;mean_{key}&#34;: np.mean(series),
+        f&#34;median_{key}&#34;: np.median(series),
+        f&#34;min_{key}&#34;: np.min(series),
+    }
+
+    return summary</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.summary_algorithms.series_handle_nulls"><code class="name flex">
@@ -1282,6 +539,7 @@ def describe_supported(
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.model.summary_algorithms.chi_square" href="#pandas_profiling.model.summary_algorithms.chi_square">chi_square</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.describe_boolean_1d" href="#pandas_profiling.model.summary_algorithms.describe_boolean_1d">describe_boolean_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.describe_categorical_1d" href="#pandas_profiling.model.summary_algorithms.describe_categorical_1d">describe_categorical_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.describe_counts" href="#pandas_profiling.model.summary_algorithms.describe_counts">describe_counts</a></code></li>
@@ -1294,8 +552,8 @@ def describe_supported(
 <li><code><a title="pandas_profiling.model.summary_algorithms.describe_supported" href="#pandas_profiling.model.summary_algorithms.describe_supported">describe_supported</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.describe_url_1d" href="#pandas_profiling.model.summary_algorithms.describe_url_1d">describe_url_1d</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.func_nullable_series_contains" href="#pandas_profiling.model.summary_algorithms.func_nullable_series_contains">func_nullable_series_contains</a></code></li>
-<li><code><a title="pandas_profiling.model.summary_algorithms.numeric_stats_numpy" href="#pandas_profiling.model.summary_algorithms.numeric_stats_numpy">numeric_stats_numpy</a></code></li>
-<li><code><a title="pandas_profiling.model.summary_algorithms.numeric_stats_pandas" href="#pandas_profiling.model.summary_algorithms.numeric_stats_pandas">numeric_stats_pandas</a></code></li>
+<li><code><a title="pandas_profiling.model.summary_algorithms.histogram_compute" href="#pandas_profiling.model.summary_algorithms.histogram_compute">histogram_compute</a></code></li>
+<li><code><a title="pandas_profiling.model.summary_algorithms.named_aggregate_summary" href="#pandas_profiling.model.summary_algorithms.named_aggregate_summary">named_aggregate_summary</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.series_handle_nulls" href="#pandas_profiling.model.summary_algorithms.series_handle_nulls">series_handle_nulls</a></code></li>
 <li><code><a title="pandas_profiling.model.summary_algorithms.series_hashable" href="#pandas_profiling.model.summary_algorithms.series_hashable">series_hashable</a></code></li>
 </ul>
@@ -1304,7 +562,7 @@ def describe_supported(
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

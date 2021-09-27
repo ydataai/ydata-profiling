@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.report.structure.overview API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -30,7 +30,7 @@
 from urllib.parse import quote
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.messages import MessageType
+from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.report.formatters import (
     fmt,
     fmt_bytesize,
@@ -39,7 +39,7 @@ from pandas_profiling.report.formatters import (
     fmt_percent,
     fmt_timespan,
 )
-from pandas_profiling.report.presentation.core import Container, Table, Warnings
+from pandas_profiling.report.presentation.core import Alerts, Container, Table
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
 
@@ -217,26 +217,20 @@ def get_dataset_column_definitions(definitions: dict) -&gt; Container:
     )
 
 
-def get_dataset_warnings(warnings: list) -&gt; Warnings:
-    count = len(
-        [
-            warning
-            for warning in warnings
-            if warning.message_type != MessageType.REJECTED
-        ]
-    )
-    return Warnings(warnings=warnings, name=f&#34;Warnings ({count})&#34;, anchor_id=&#34;warnings&#34;)
+def get_dataset_alerts(alerts: list) -&gt; Alerts:
+    count = len([alert for alert in alerts if alert.alert_type != AlertType.REJECTED])
+    return Alerts(alerts=alerts, name=f&#34;Alerts ({count})&#34;, anchor_id=&#34;alerts&#34;)
 
 
-def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; list:
+def get_dataset_items(config: Settings, summary: dict, alerts: list) -&gt; list:
     &#34;&#34;&#34;Returns the dataset overview (at the top of the report)
 
     Args:
         summary: the calculated summary
-        warnings: the warnings
+        alerts: the alerts
 
     Returns:
-        A list with components for the dataset overview (overview, reproduction, warnings)
+        A list with components for the dataset overview (overview, reproduction, alerts)
     &#34;&#34;&#34;
 
     items: List[Renderable] = [get_dataset_overview(config, summary)]
@@ -254,8 +248,8 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; lis
     if len(column_details) &gt; 0:
         items.append(get_dataset_column_definitions(column_details))
 
-    if warnings:
-        items.append(get_dataset_warnings(warnings))
+    if alerts:
+        items.append(get_dataset_alerts(alerts))
 
     items.append(get_dataset_reproduction(summary))
 
@@ -269,6 +263,20 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; lis
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.report.structure.overview.get_dataset_alerts"><code class="name flex">
+<span>def <span class="ident">get_dataset_alerts</span></span>(<span>alerts: list) ‑> <a title="pandas_profiling.report.presentation.core.alerts.Alerts" href="../presentation/core/alerts.html#pandas_profiling.report.presentation.core.alerts.Alerts">Alerts</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_dataset_alerts(alerts: list) -&gt; Alerts:
+    count = len([alert for alert in alerts if alert.alert_type != AlertType.REJECTED])
+    return Alerts(alerts=alerts, name=f&#34;Alerts ({count})&#34;, anchor_id=&#34;alerts&#34;)</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.report.structure.overview.get_dataset_column_definitions"><code class="name flex">
 <span>def <span class="ident">get_dataset_column_definitions</span></span>(<span>definitions: dict) ‑> <a title="pandas_profiling.report.presentation.core.container.Container" href="../presentation/core/container.html#pandas_profiling.report.presentation.core.container.Container">Container</a></span>
 </code></dt>
@@ -315,7 +323,7 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; lis
 </details>
 </dd>
 <dt id="pandas_profiling.report.structure.overview.get_dataset_items"><code class="name flex">
-<span>def <span class="ident">get_dataset_items</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict, warnings: list) ‑> list</span>
+<span>def <span class="ident">get_dataset_items</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../../config.html#pandas_profiling.config.Settings">Settings</a>, summary: dict, alerts: list) ‑> list</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the dataset overview (at the top of the report)</p>
@@ -323,24 +331,24 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; lis
 <dl>
 <dt><strong><code>summary</code></strong></dt>
 <dd>the calculated summary</dd>
-<dt><strong><code>warnings</code></strong></dt>
-<dd>the warnings</dd>
+<dt><strong><code>alerts</code></strong></dt>
+<dd>the alerts</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>A list with components for the dataset overview (overview, reproduction, warnings)</p></div>
+<p>A list with components for the dataset overview (overview, reproduction, alerts)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; list:
+<pre><code class="python">def get_dataset_items(config: Settings, summary: dict, alerts: list) -&gt; list:
     &#34;&#34;&#34;Returns the dataset overview (at the top of the report)
 
     Args:
         summary: the calculated summary
-        warnings: the warnings
+        alerts: the alerts
 
     Returns:
-        A list with components for the dataset overview (overview, reproduction, warnings)
+        A list with components for the dataset overview (overview, reproduction, alerts)
     &#34;&#34;&#34;
 
     items: List[Renderable] = [get_dataset_overview(config, summary)]
@@ -358,8 +366,8 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; lis
     if len(column_details) &gt; 0:
         items.append(get_dataset_column_definitions(column_details))
 
-    if warnings:
-        items.append(get_dataset_warnings(warnings))
+    if alerts:
+        items.append(get_dataset_alerts(alerts))
 
     items.append(get_dataset_reproduction(summary))
 
@@ -538,26 +546,6 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; lis
     )</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.report.structure.overview.get_dataset_warnings"><code class="name flex">
-<span>def <span class="ident">get_dataset_warnings</span></span>(<span>warnings: list) ‑> <a title="pandas_profiling.report.presentation.core.warnings.Warnings" href="../presentation/core/warnings.html#pandas_profiling.report.presentation.core.warnings.Warnings">Warnings</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_dataset_warnings(warnings: list) -&gt; Warnings:
-    count = len(
-        [
-            warning
-            for warning in warnings
-            if warning.message_type != MessageType.REJECTED
-        ]
-    )
-    return Warnings(warnings=warnings, name=f&#34;Warnings ({count})&#34;, anchor_id=&#34;warnings&#34;)</code></pre>
-</details>
-</dd>
 </dl>
 </section>
 <section>
@@ -576,19 +564,19 @@ def get_dataset_items(config: Settings, summary: dict, warnings: list) -&gt; lis
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.report.structure.overview.get_dataset_alerts" href="#pandas_profiling.report.structure.overview.get_dataset_alerts">get_dataset_alerts</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_column_definitions" href="#pandas_profiling.report.structure.overview.get_dataset_column_definitions">get_dataset_column_definitions</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_items" href="#pandas_profiling.report.structure.overview.get_dataset_items">get_dataset_items</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_overview" href="#pandas_profiling.report.structure.overview.get_dataset_overview">get_dataset_overview</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_reproduction" href="#pandas_profiling.report.structure.overview.get_dataset_reproduction">get_dataset_reproduction</a></code></li>
 <li><code><a title="pandas_profiling.report.structure.overview.get_dataset_schema" href="#pandas_profiling.report.structure.overview.get_dataset_schema">get_dataset_schema</a></code></li>
-<li><code><a title="pandas_profiling.report.structure.overview.get_dataset_warnings" href="#pandas_profiling.report.structure.overview.get_dataset_warnings">get_dataset_warnings</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

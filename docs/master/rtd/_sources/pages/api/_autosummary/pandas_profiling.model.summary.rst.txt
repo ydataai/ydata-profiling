@@ -14,12 +14,7 @@
    .. autosummary::
    
       describe_1d
-      get_messages
-      get_missing_diagrams
-      get_scatter_matrix
       get_series_descriptions
-      get_table_stats
-      sort_column_names
    
    
 

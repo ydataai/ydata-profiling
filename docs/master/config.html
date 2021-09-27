@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.config API documentation</title>
 <meta name="description" content="Configuration for the package." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -31,7 +31,10 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+import matplotlib
 from pydantic import BaseModel, BaseSettings, Field
+
+matplotlib.use(&#34;Agg&#34;)
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -&gt; dict:
@@ -224,8 +227,9 @@ class Correlations(BaseModel):
 
 
 class Interactions(BaseModel):
+    # Set to False to disable scatter plots
     continuous: bool = True
-    # FIXME: validate with column names
+
     targets: List[str] = []
 
 
@@ -261,6 +265,10 @@ class Report(BaseModel):
 
 
 class Settings(BaseSettings):
+    # Default prefix to avoid collisions with environment variables
+    class Config:
+        env_prefix = &#34;profile_&#34;
+
     # Title of the document
     title: str = &#34;Pandas Profiling Report&#34;
 
@@ -952,11 +960,11 @@ def shorthands(kwargs: dict) -&gt; dict:
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="pandas_profiling.config.Html.assets_path"><code class="name">var <span class="ident">assets_path</span> : Union[str, NoneType]</code></dt>
+<dt id="pandas_profiling.config.Html.assets_path"><code class="name">var <span class="ident">assets_path</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pandas_profiling.config.Html.assets_prefix"><code class="name">var <span class="ident">assets_prefix</span> : Union[str, NoneType]</code></dt>
+<dt id="pandas_profiling.config.Html.assets_prefix"><code class="name">var <span class="ident">assets_prefix</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1132,8 +1140,9 @@ def shorthands(kwargs: dict) -&gt; dict:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Interactions(BaseModel):
+    # Set to False to disable scatter plots
     continuous: bool = True
-    # FIXME: validate with column names
+
     targets: List[str] = []</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -1450,6 +1459,10 @@ Heroku and any 12 factor app design.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Settings(BaseSettings):
+    # Default prefix to avoid collisions with environment variables
+    class Config:
+        env_prefix = &#34;profile_&#34;
+
     # Title of the document
     title: str = &#34;Pandas Profiling Report&#34;
 
@@ -1520,6 +1533,10 @@ Heroku and any 12 factor app design.</p></div>
 </ul>
 <h3>Class variables</h3>
 <dl>
+<dt id="pandas_profiling.config.Settings.Config"><code class="name">var <span class="ident">Config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="pandas_profiling.config.Settings.categorical_maximum_correlation_distinct"><code class="name">var <span class="ident">categorical_maximum_correlation_distinct</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
@@ -1596,7 +1613,7 @@ Heroku and any 12 factor app design.</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pandas_profiling.config.Settings.sort"><code class="name">var <span class="ident">sort</span> : Union[str, NoneType]</code></dt>
+<dt id="pandas_profiling.config.Settings.sort"><code class="name">var <span class="ident">sort</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1662,7 +1679,7 @@ Heroku and any 12 factor app design.</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pandas_profiling.config.Style.theme"><code class="name">var <span class="ident">theme</span> : Union[<a title="pandas_profiling.config.Theme" href="#pandas_profiling.config.Theme">Theme</a>, NoneType]</code></dt>
+<dt id="pandas_profiling.config.Style.theme"><code class="name">var <span class="ident">theme</span> : Optional[<a title="pandas_profiling.config.Theme" href="#pandas_profiling.config.Theme">Theme</a>]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -2022,6 +2039,7 @@ Heroku and any 12 factor app design.</p></div>
 <li>
 <h4><code><a title="pandas_profiling.config.Settings" href="#pandas_profiling.config.Settings">Settings</a></code></h4>
 <ul class="">
+<li><code><a title="pandas_profiling.config.Settings.Config" href="#pandas_profiling.config.Settings.Config">Config</a></code></li>
 <li><code><a title="pandas_profiling.config.Settings.categorical_maximum_correlation_distinct" href="#pandas_profiling.config.Settings.categorical_maximum_correlation_distinct">categorical_maximum_correlation_distinct</a></code></li>
 <li><code><a title="pandas_profiling.config.Settings.correlations" href="#pandas_profiling.config.Settings.correlations">correlations</a></code></li>
 <li><code><a title="pandas_profiling.config.Settings.dataset" href="#pandas_profiling.config.Settings.dataset">dataset</a></code></li>
@@ -2093,7 +2111,7 @@ Heroku and any 12 factor app design.</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

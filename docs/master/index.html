@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling API documentation</title>
 <meta name="description" content="Main module of pandas-profiling …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -36,6 +36,8 @@
 <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>
 |
 <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
+|
+<a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog">Latest changelog</a>
 </p>
 <p>Generates profile reports from a pandas <code>DataFrame</code>. </p>
 <p>The pandas <code>df.describe()</code> function is great but a little basic for serious exploratory data analysis.
@@ -54,27 +56,20 @@
 <li><strong>File and Image analysis</strong> extract file sizes, creation dates and dimensions and scan for truncated images or those containing EXIF information.</li>
 </ul>
 <h2 id="announcements">Announcements</h2>
-<p><strong>Version v3.0.0 released</strong> in which the report configuration was completely overhauled, providing a more intuitive API and fixing issues inherent to the previous global config. </p>
-<p>This is the first release to adhere to the <a href="https://semver.org/">Semver</a> and <a href="https://conventionalcommits.org/">Conventional Commits</a> specifications.</p>
 <p><strong>Spark backend in progress</strong>: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Beta testers wanted! The Spark backend will be released as a pre-release for this package.</p>
-<h3 id="support-pandas-profiling">Support <code>pandas-profiling</code></h3>
-<p>The development of <code>pandas-profiling</code> relies completely on contributions.
+<p><strong>Monitoring time series?</strong>: I'd like to draw your attention to <a href="#popmon">popmon</a>. Whereas pandas-profiling allows you to explore patterns in a single dataset, popmon allows you to uncover temporal patterns. It's worth checking out!</p>
+<p><strong>Support <code>pandas-profiling</code></strong>
+The development of <code>pandas-profiling</code> relies completely on contributions.
 If you find value in the package, we welcome you to support the project directly through <a href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
 Please help me to continue to support this package.
-It's extra exciting that GitHub <strong>matches your contribution</strong> for the first year.</p>
-<p>Find more information here:</p>
-<ul>
-<li><a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog">Changelog v3.0.0</a></li>
-<li><a href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></li>
-</ul>
-<p><em>May 9, 2021 💘</em></p>
+Find more information: <a href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></p>
 <hr>
 <p><em>Contents:</em> <strong><a href="#examples">Examples</a></strong> |
 <strong><a href="#installation">Installation</a></strong> | <strong><a href="#documentation">Documentation</a></strong> |
 <strong><a href="#large-datasets">Large datasets</a></strong> | <strong><a href="#command-line-usage">Command line usage</a></strong> |
-<strong><a href="#advanced-usage">Advanced usage</a></strong> | <strong><a href="#integrations">integrations</a></strong> |
-<strong><a href="#supporting-open-source">Support</a></strong> | <strong><a href="#types">Types</a></strong> | <strong><a href="#contributing">How to contribute</a></strong> |
+<strong><a href="#advanced-usage">Advanced usage</a></strong> | <strong><a href="#support">Support</a></strong> | <strong><a href="#go-beyond">Go beyond</a></strong> |
+<strong><a href="#supporting-open-source">Support the project</a></strong> | <strong><a href="#types">Types</a></strong> | <strong><a href="#contributing">How to contribute</a></strong> |
 <strong><a href="#editor-integration">Editor Integration</a></strong> | <strong><a href="#dependencies">Dependencies</a></strong></p>
 <hr>
 <h2 id="examples">Examples</h2>
@@ -87,7 +82,7 @@ It's extra exciting that GitHub <strong>matches your contribution</strong> for t
 <li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/stata_auto/stata_auto_report.html">Stata Auto</a> (1978 Automobile data)</li>
 <li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html">Vektis</a> (Vektis Dutch Healthcare data)</li>
 <li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html">Colors</a> (a simple colors dataset)</li>
-<li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/cbank_marketing_data/uci_bank_marketing_report.html">UCI Bank Dataset</a> (banking marketing dataset)</li>
+<li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/bank_marketing_data/uci_bank_marketing_report.html">UCI Bank Dataset</a> (banking marketing dataset)</li>
 <li><a href="https://pandas-profiling.github.io/pandas-profiling/examples/master/rdw/rdw.html">RDW</a> (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)</li>
 </ul>
 <p>Specific features:</p>
@@ -138,7 +133,7 @@ df = pd.DataFrame(np.random.rand(100, 5), columns=[&quot;a&quot;, &quot;b&quot;,
 <pre><code class="language-python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;)
 </code></pre>
 <h3 id="explore-deeper">Explore deeper</h3>
-<p>You can configure the profile report in any way you like. The example code below loads the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml">explorative configuration file</a>, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
+<p>You can configure the profile report in any way you like. The example code below loads the explorative configuration, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
 <pre><code class="language-python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;, explorative=True)
 </code></pre>
 <p>Learn more about configuring <code>pandas-profiling</code> on the <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html">Advanced usage</a> page.</p>
@@ -194,12 +189,41 @@ profile.to_file(&quot;output.html&quot;)
 )
 profile.to_file(&quot;output.html&quot;)
 </code></pre>
-<h2 id="integrations">Integrations</h2>
+<h2 id="support">Support</h2>
+<p>Need help? Want to share a perspective? Want to report a bug? Ideas for collaboration?
+You can reach out via the following channels:</p>
+<ul>
+<li><a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>: ideal for asking questions on how to use the package</li>
+<li><a href="https://github.com/pandas-profiling/pandas-profiling/issues">Github Issues</a>: bugs, proposals for change, feature requests</li>
+<li><a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>: general chat, questions, collaboration</li>
+<li><a href="mailto:pandasprofiling@gmail.com">Email</a>: project collaboration or sponsoring</li>
+</ul>
+<h2 id="go-beyond">Go beyond</h2>
+<h3 id="popmon">Popmon</h3>
+<table>
+<tr>
+<td>
+<a href="https://github.com/ing-bank/popmon">
+<img alt="Popmon" src="https://raw.githubusercontent.com/ing-bank/popmon/master/docs/source/assets/popmon-logo.png" width="900" />
+</a>
+</td>
+<td>
+For many real-world problems we are interested how the data changes over time.
+The excellent pacakge <code>popmon</code> allows you to profile and monitor data trends over time and generates reports in a similar fashion as you're used to using pandas-profiling.
+Inspecting the report often shows patterns that are going by undetected during standard data exploration.
+Moreover, popmon can be used to monitor the stability of input and output of machine learning models.
+The package is fully open-source and you can find it [here](https://github.com/ing-bank/popmon)!
+To learn more on Popmon, have a look at these resources [here](https://github.com/ing-bank/popmon#resources)
+</td>
+</tr>
+</table>
 <h3 id="great-expectations">Great Expectations</h3>
 <table>
 <tr>
 <td>
+<a href="https://www.greatexpectations.io">
 <img alt="Great Expectations" src="https://github.com/great-expectations/great_expectations/raw/develop/generic_dickens_protagonist.png" width="900" />
+</a>
 </td>
 <td>
 Profiling your data is closely related to data validation: often validation rules are defined in terms of well-known statistics.
@@ -224,7 +248,7 @@ You can find more details on the Great Expectations integration [here](https://p
 </tr>
 </table>
 <p>We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: </p>
-<pre><code>Martin Sotir, Brian Lee, Stephanie Rivera, abdulAziz, gramster
+<pre><code>Martin Sotir, Stephanie Rivera, abdulAziz
 </code></pre>
 <p>More info if you would like to appear here: <a href="https://github.com/sponsors/sbrugman">Github Sponsor page</a></p>
 <h2 id="types">Types</h2>
@@ -309,6 +333,10 @@ from pandas_profiling.controller import pandas_decorator
 from pandas_profiling.profile_report import ProfileReport
 from pandas_profiling.version import __version__
 
+# backend
+import pandas_profiling.model.pandas  # isort:skip  # noqa
+
+
 __all__ = [
     &#34;pandas_decorator&#34;,
     &#34;ProfileReport&#34;,
@@ -370,7 +398,7 @@ __all__ = [
 <dl>
 <dt id="pandas_profiling.ProfileReport"><code class="flex name class">
 <span>class <span class="ident">ProfileReport</span></span>
-<span>(</span><span>df: Union[pandas.core.frame.DataFrame, NoneType] = None, minimal: bool = False, explorative: bool = False, sensitive: bool = False, dark_mode: bool = False, orange_mode: bool = False, sample: Union[dict, NoneType] = None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, typeset: Union[visions.typesets.typeset.VisionsTypeset, NoneType] = None, summarizer: Union[<a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>, NoneType] = None, config: Union[<a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a>, NoneType] = None, **kwargs)</span>
+<span>(</span><span>df: Optional[pandas.core.frame.DataFrame] = None, minimal: bool = False, explorative: bool = False, sensitive: bool = False, dark_mode: bool = False, orange_mode: bool = False, sample: Optional[dict] = None, config_file: Union[pathlib.Path, str] = None, lazy: bool = True, typeset: Optional[visions.typesets.typeset.VisionsTypeset] = None, summarizer: Optional[<a title="pandas_profiling.model.summarizer.BaseSummarizer" href="model/summarizer.html#pandas_profiling.model.summarizer.BaseSummarizer">BaseSummarizer</a>] = None, config: Optional[<a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a>] = None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate a profile report from a Dataset stored as a pandas <code>DataFrame</code>.</p>
@@ -471,16 +499,12 @@ __all__ = [
         if len(kwargs) &gt; 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 
-        self.df = None
+        self.df = df
         self.config = report_config
         self._df_hash = None
         self._sample = sample
         self._typeset = typeset
         self._summarizer = summarizer
-
-        if df is not None:
-            # preprocess df
-            self.df = self.preprocess(df)
 
         if not lazy:
             # Trigger building the report structure
@@ -599,9 +623,9 @@ __all__ = [
             a set of column names that are unsupported
         &#34;&#34;&#34;
         return {
-            message.column_name
-            for message in self.description_set[&#34;messages&#34;]
-            if message.message_type == MessageType.REJECTED
+            alert.column_name
+            for alert in self.description_set[&#34;alerts&#34;]
+            if alert.alert_type == AlertType.REJECTED
         }
 
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -&gt; None:
@@ -790,35 +814,7 @@ __all__ = [
 
     def __repr__(self) -&gt; str:
         &#34;&#34;&#34;Override so that Jupyter Notebook does not print the object.&#34;&#34;&#34;
-        return &#34;&#34;
-
-    @staticmethod
-    def preprocess(df: pd.DataFrame) -&gt; pd.DataFrame:
-        &#34;&#34;&#34;Preprocess the dataframe
-
-        - Appends the index to the dataframe when it contains information
-        - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
-        - Convert the DataFrame&#39;s columns to str
-
-        Args:
-            df: the pandas DataFrame
-
-        Returns:
-            The preprocessed DataFrame
-        &#34;&#34;&#34;
-        # Treat index as any other column
-        if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
-
-        # Rename reserved column names
-        df = rename_index(df)
-
-        # Ensure that columns are strings
-        df.columns = df.columns.astype(&#34;str&#34;)
-        return df</code></pre>
+        return &#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -830,59 +826,6 @@ __all__ = [
 <dt id="pandas_profiling.ProfileReport.config"><code class="name">var <span class="ident">config</span> : <a title="pandas_profiling.config.Settings" href="config.html#pandas_profiling.config.Settings">Settings</a></code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-</dl>
-<h3>Static methods</h3>
-<dl>
-<dt id="pandas_profiling.ProfileReport.preprocess"><code class="name flex">
-<span>def <span class="ident">preprocess</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Preprocess the dataframe</p>
-<ul>
-<li>Appends the index to the dataframe when it contains information</li>
-<li>Rename the "index" column to "df_index", if exists</li>
-<li>Convert the DataFrame's columns to str</li>
-</ul>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>df</code></strong></dt>
-<dd>the pandas DataFrame</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>The preprocessed DataFrame</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def preprocess(df: pd.DataFrame) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Preprocess the dataframe
-
-    - Appends the index to the dataframe when it contains information
-    - Rename the &#34;index&#34; column to &#34;df_index&#34;, if exists
-    - Convert the DataFrame&#39;s columns to str
-
-    Args:
-        df: the pandas DataFrame
-
-    Returns:
-        The preprocessed DataFrame
-    &#34;&#34;&#34;
-    # Treat index as any other column
-    if (
-        not pd.Index(np.arange(0, len(df))).equals(df.index)
-        or df.index.dtype != np.int64
-    ):
-        df = df.reset_index()
-
-    # Rename reserved column names
-    df = rename_index(df)
-
-    # Ensure that columns are strings
-    df.columns = df.columns.astype(&#34;str&#34;)
-    return df</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Instance variables</h3>
@@ -907,7 +850,7 @@ def description_set(self) -&gt; Dict[str, Any]:
     return self._description_set</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.df_hash"><code class="name">var <span class="ident">df_hash</span> : Union[str, NoneType]</code></dt>
+<dt id="pandas_profiling.ProfileReport.df_hash"><code class="name">var <span class="ident">df_hash</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -977,7 +920,7 @@ def summarizer(self) -&gt; BaseSummarizer:
     return self._summarizer</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.ProfileReport.typeset"><code class="name">var <span class="ident">typeset</span> : Union[visions.typesets.typeset.VisionsTypeset, NoneType]</code></dt>
+<dt id="pandas_profiling.ProfileReport.typeset"><code class="name">var <span class="ident">typeset</span> : Optional[visions.typesets.typeset.VisionsTypeset]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1029,7 +972,7 @@ def widgets(self) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>self) ‑> Union[pandas.core.frame.DataFrame, NoneType]</span>
+<span>def <span class="ident">get_duplicates</span></span>(<span>self) ‑> Optional[pandas.core.frame.DataFrame]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get duplicate rows and counts based on the configuration</p>
@@ -1066,9 +1009,9 @@ def widgets(self) -&gt; Renderable:
         a set of column names that are unsupported
     &#34;&#34;&#34;
     return {
-        message.column_name
-        for message in self.description_set[&#34;messages&#34;]
-        if message.message_type == MessageType.REJECTED
+        alert.column_name
+        for alert in self.description_set[&#34;alerts&#34;]
+        if alert.alert_type == AlertType.REJECTED
     }</code></pre>
 </details>
 </dd>
@@ -1093,7 +1036,7 @@ def widgets(self) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.invalidate_cache"><code class="name flex">
-<span>def <span class="ident">invalidate_cache</span></span>(<span>self, subset: Union[str, NoneType] = None) ‑> NoneType</span>
+<span>def <span class="ident">invalidate_cache</span></span>(<span>self, subset: Optional[str] = None) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Invalidate report cache. Useful after changing setting.</p>
@@ -1138,7 +1081,7 @@ def widgets(self) -&gt; Renderable:
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_file"><code class="name flex">
-<span>def <span class="ident">to_file</span></span>(<span>self, output_file: Union[str, pathlib.Path], silent: bool = True) ‑> NoneType</span>
+<span>def <span class="ident">to_file</span></span>(<span>self, output_file: Union[pathlib.Path, str], silent: bool = True) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Write the report to a file.</p>
@@ -1248,7 +1191,7 @@ for using with frameworks.</p>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_notebook_iframe"><code class="name flex">
-<span>def <span class="ident">to_notebook_iframe</span></span>(<span>self) ‑> NoneType</span>
+<span>def <span class="ident">to_notebook_iframe</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Used to output the HTML representation to a Jupyter notebook.
@@ -1285,7 +1228,7 @@ the Iframe.</p>
 </details>
 </dd>
 <dt id="pandas_profiling.ProfileReport.to_widgets"><code class="name flex">
-<span>def <span class="ident">to_widgets</span></span>(<span>self) ‑> NoneType</span>
+<span>def <span class="ident">to_widgets</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The ipython notebook widgets user interface.</p></div>
@@ -1336,10 +1279,7 @@ the Iframe.</p>
 <div class="toc">
 <ul>
 <li><a href="#pandas-profiling">Pandas Profiling</a><ul>
-<li><a href="#announcements">Announcements</a><ul>
-<li><a href="#support-pandas-profiling">Support pandas-profiling</a></li>
-</ul>
-</li>
+<li><a href="#announcements">Announcements</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#installation">Installation</a><ul>
 <li><a href="#using-pip">Using pip</a></li>
@@ -1359,7 +1299,9 @@ the Iframe.</p>
 <li><a href="#advanced-usage">Advanced usage</a></li>
 </ul>
 </li>
-<li><a href="#integrations">Integrations</a><ul>
+<li><a href="#support">Support</a></li>
+<li><a href="#go-beyond">Go beyond</a><ul>
+<li><a href="#popmon">Popmon</a></li>
 <li><a href="#great-expectations">Great Expectations</a></li>
 </ul>
 </li>
@@ -1406,7 +1348,6 @@ the Iframe.</p>
 <li><code><a title="pandas_profiling.ProfileReport.html" href="#pandas_profiling.ProfileReport.html">html</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.invalidate_cache" href="#pandas_profiling.ProfileReport.invalidate_cache">invalidate_cache</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.json" href="#pandas_profiling.ProfileReport.json">json</a></code></li>
-<li><code><a title="pandas_profiling.ProfileReport.preprocess" href="#pandas_profiling.ProfileReport.preprocess">preprocess</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.report" href="#pandas_profiling.ProfileReport.report">report</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.summarizer" href="#pandas_profiling.ProfileReport.summarizer">summarizer</a></code></li>
 <li><code><a title="pandas_profiling.ProfileReport.to_file" href="#pandas_profiling.ProfileReport.to_file">to_file</a></code></li>
@@ -1424,7 +1365,7 @@ the Iframe.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

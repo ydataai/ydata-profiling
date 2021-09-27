@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pandas_profiling.model.duplicates API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -26,59 +26,20 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any, Dict, Optional, Sequence, Tuple
+<pre><code class="python">from typing import Any, Dict, Optional, Sequence, Tuple, TypeVar
 
-import pandas as pd
+from multimethod import multimethod
 
 from pandas_profiling.config import Settings
 
+T = TypeVar(&#34;T&#34;)
 
+
+@multimethod
 def get_duplicates(
-    config: Settings, df: pd.DataFrame, supported_columns: Sequence
-) -&gt; Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
-    &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
-
-    Args:
-        config: report Settings object
-        df: the Pandas DataFrame.
-        supported_columns: the columns to consider
-
-    Returns:
-        A subset of the DataFrame, ordered by occurrence.
-    &#34;&#34;&#34;
-    n_head = config.duplicates.head
-
-    metrics: Dict[str, Any] = {}
-    if n_head &gt; 0:
-        if supported_columns and len(df) &gt; 0:
-            duplicates_key = config.duplicates.key
-            if duplicates_key in df.columns:
-                raise ValueError(
-                    f&#34;Duplicates key ({duplicates_key}) may not be part of the DataFrame. Either change the &#34;
-                    f&#34; column name in the DataFrame or change the &#39;duplicates.key&#39; parameter.&#34;
-                )
-
-            duplicated_rows = df.duplicated(subset=supported_columns, keep=False)
-            duplicated_rows = (
-                df[duplicated_rows]
-                .groupby(supported_columns)
-                .size()
-                .reset_index(name=duplicates_key)
-            )
-
-            metrics[&#34;n_duplicates&#34;] = len(duplicated_rows[duplicates_key])
-            metrics[&#34;p_duplicates&#34;] = metrics[&#34;n_duplicates&#34;] / len(df)
-
-            return (
-                metrics,
-                duplicated_rows.nlargest(n_head, duplicates_key),
-            )
-        else:
-            metrics[&#34;n_duplicates&#34;] = 0
-            metrics[&#34;p_duplicates&#34;] = 0.0
-            return metrics, None
-    else:
-        return metrics, None</code></pre>
+    config: Settings, df: T, supported_columns: Sequence
+) -&gt; Tuple[Dict[str, Any], Optional[T]]:
+    raise NotImplementedError()</code></pre>
 </details>
 </section>
 <section>
@@ -89,71 +50,19 @@ def get_duplicates(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pandas_profiling.model.duplicates.get_duplicates"><code class="name flex">
-<span>def <span class="ident">get_duplicates</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: pandas.core.frame.DataFrame, supported_columns: Sequence) ‑> Tuple[Dict[str, Any], Union[pandas.core.frame.DataFrame, NoneType]]</span>
+<span>def <span class="ident">get_duplicates</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, df: ~T, supported_columns: Sequence[+T_co]) ‑> Tuple[Dict[str, Any], Optional[~T]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Obtain the most occurring duplicate rows in the DataFrame.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>config</code></strong></dt>
-<dd>report Settings object</dd>
-<dt><strong><code>df</code></strong></dt>
-<dd>the Pandas DataFrame.</dd>
-<dt><strong><code>supported_columns</code></strong></dt>
-<dd>the columns to consider</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A subset of the DataFrame, ordered by occurrence.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_duplicates(
-    config: Settings, df: pd.DataFrame, supported_columns: Sequence
-) -&gt; Tuple[Dict[str, Any], Optional[pd.DataFrame]]:
-    &#34;&#34;&#34;Obtain the most occurring duplicate rows in the DataFrame.
-
-    Args:
-        config: report Settings object
-        df: the Pandas DataFrame.
-        supported_columns: the columns to consider
-
-    Returns:
-        A subset of the DataFrame, ordered by occurrence.
-    &#34;&#34;&#34;
-    n_head = config.duplicates.head
-
-    metrics: Dict[str, Any] = {}
-    if n_head &gt; 0:
-        if supported_columns and len(df) &gt; 0:
-            duplicates_key = config.duplicates.key
-            if duplicates_key in df.columns:
-                raise ValueError(
-                    f&#34;Duplicates key ({duplicates_key}) may not be part of the DataFrame. Either change the &#34;
-                    f&#34; column name in the DataFrame or change the &#39;duplicates.key&#39; parameter.&#34;
-                )
-
-            duplicated_rows = df.duplicated(subset=supported_columns, keep=False)
-            duplicated_rows = (
-                df[duplicated_rows]
-                .groupby(supported_columns)
-                .size()
-                .reset_index(name=duplicates_key)
-            )
-
-            metrics[&#34;n_duplicates&#34;] = len(duplicated_rows[duplicates_key])
-            metrics[&#34;p_duplicates&#34;] = metrics[&#34;n_duplicates&#34;] / len(df)
-
-            return (
-                metrics,
-                duplicated_rows.nlargest(n_head, duplicates_key),
-            )
-        else:
-            metrics[&#34;n_duplicates&#34;] = 0
-            metrics[&#34;p_duplicates&#34;] = 0.0
-            return metrics, None
-    else:
-        return metrics, None</code></pre>
+<pre><code class="python">@multimethod
+def get_duplicates(
+    config: Settings, df: T, supported_columns: Sequence
+) -&gt; Tuple[Dict[str, Any], Optional[T]]:
+    raise NotImplementedError()</code></pre>
 </details>
 </dd>
 </dl>
@@ -181,7 +90,7 @@ def get_duplicates(
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>
