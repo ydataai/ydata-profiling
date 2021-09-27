@@ -22,7 +22,7 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
         summary["varid"],
         summary["varname"],
         "Date",
-        summary["warnings"],
+        summary["alerts"],
         summary["description"],
     )
 

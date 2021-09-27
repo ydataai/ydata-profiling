@@ -12,8 +12,8 @@ from visions import VisionsTypeset
 
 from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
+from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.model.messages import MessageType
 from pandas_profiling.model.sample import Sample
 from pandas_profiling.model.summarizer import (
     BaseSummarizer,
@@ -28,7 +28,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
-from pandas_profiling.utils.dataframe import hash_dataframe, rename_index
+from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
 
@@ -104,16 +104,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len(kwargs) > 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 
-        self.df = None
+        self.df = df
         self.config = report_config
         self._df_hash = None
         self._sample = sample
         self._typeset = typeset
         self._summarizer = summarizer
-
-        if df is not None:
-            # preprocess df
-            self.df = self.preprocess(df)
 
         if not lazy:
             # Trigger building the report structure
@@ -232,9 +228,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             a set of column names that are unsupported
         """
         return {
-            message.column_name
-            for message in self.description_set["messages"]
-            if message.message_type == MessageType.REJECTED
+            alert.column_name
+            for alert in self.description_set["alerts"]
+            if alert.alert_type == AlertType.REJECTED
         }
 
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -> None:
@@ -424,31 +420,3 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
-
-    @staticmethod
-    def preprocess(df: pd.DataFrame) -> pd.DataFrame:
-        """Preprocess the dataframe
-
-        - Appends the index to the dataframe when it contains information
-        - Rename the "index" column to "df_index", if exists
-        - Convert the DataFrame's columns to str
-
-        Args:
-            df: the pandas DataFrame
-
-        Returns:
-            The preprocessed DataFrame
-        """
-        # Treat index as any other column
-        if (
-            not pd.Index(np.arange(0, len(df))).equals(df.index)
-            or df.index.dtype != np.int64
-        ):
-            df = df.reset_index()
-
-        # Rename reserved column names
-        df = rename_index(df)
-
-        # Ensure that columns are strings
-        df.columns = df.columns.astype("str")
-        return df

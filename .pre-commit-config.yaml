@@ -1,11 +1,11 @@
 repos:
 -   repo: https://github.com/psf/black
-    rev: 21.5b0
+    rev: 21.9b0
     hooks:
     - id: black
       language_version: python3.8
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 0.8.0
+    rev: 1.1.1
     hooks:
     - id: nbqa-black
       args: [--nbqa-mutate ]
@@ -14,18 +14,18 @@ repos:
     - id: nbqa-pyupgrade
       args: [ --nbqa-mutate, --py36-plus ]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.15.0
+    rev: v2.28.1
     hooks:
     -   id: pyupgrade
         args: ['--py36-plus','--exit-zero-even-if-changed']
 -   repo: https://github.com/pycqa/isort
-    rev: 5.8.0
+    rev: 5.9.3
     hooks:
       - id: isort
         files: '.*'
         args: [ --profile=black, --project=pandas_profiling ]
 -   repo: https://github.com/mgedmin/check-manifest
-    rev: "0.46"
+    rev: "0.47"
     hooks:
     -   id: check-manifest
 -   repo: https://github.com/PyCQA/flake8
@@ -47,28 +47,33 @@ repos:
         args: [ "--select=ANN001,ANN201,ANN202,ANN205,ANN206,ANN301" ]
         additional_dependencies:
           - flake8-annotations
-#          - flake8-annotations-complexity
-#          - flake8-type-checking
         exclude: |
           (?x)(
             ^tests/|
             ^docsrc/|
             ^src/pandas_profiling/utils/common.py|
-            ^src/pandas_profiling/model/imghdr_patch.py
+            ^src/pandas_profiling/utils/imghdr_patch.py
           )
 
 -   repo: https://github.com/asottile/blacken-docs
-    rev: v1.10.0
+    rev: v1.11.0
     hooks:
     -   id: blacken-docs
 -   repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.8.0
+    rev: v1.9.0
     hooks:
     -   id: rst-backticks
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v0.812'
+    rev: 'v0.910'
     hooks:
     -   id: mypy
+        additional_dependencies:
+          - types-requests
+          - types-python-dateutil
+          - types-PyYAML
+          - types-setuptools
 
 ci:
   autoupdate_commit_msg: 'ci: pre-commit-config update'
+  autofix_prs: false
+  autofix_commit_msg: 'ci: pre-commit auto fixes'

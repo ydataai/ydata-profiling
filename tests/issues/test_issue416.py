@@ -22,6 +22,7 @@ def test_issue416():
         title="Pandas Profiling Report",
         html={"style": {"full_width": True}},
         explorative=True,
+        progress_bar=False,
     )
     data = profile.get_description()
 

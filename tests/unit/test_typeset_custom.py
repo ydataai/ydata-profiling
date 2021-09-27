@@ -1,4 +1,5 @@
 import datetime
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -150,6 +151,7 @@ Categorical2 = type_map2["Categorical"]
 Boolean2 = type_map2["Boolean"]
 
 
+@dataclass
 class DataTest:
     def __init__(self, name, contains_type, infer_type, cast_result=None):
         self.name = name

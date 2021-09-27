@@ -2,7 +2,10 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+import matplotlib
 from pydantic import BaseModel, BaseSettings, Field
+
+matplotlib.use("Agg")
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
@@ -195,8 +198,9 @@ class Correlations(BaseModel):
 
 
 class Interactions(BaseModel):
+    # Set to False to disable scatter plots
     continuous: bool = True
-    # FIXME: validate with column names
+
     targets: List[str] = []
 
 
@@ -232,6 +236,10 @@ class Report(BaseModel):
 
 
 class Settings(BaseSettings):
+    # Default prefix to avoid collisions with environment variables
+    class Config:
+        env_prefix = "profile_"
+
     # Title of the document
     title: str = "Pandas Profiling Report"
 

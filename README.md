@@ -15,6 +15,9 @@
   <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
+  |
+  <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog">Latest changelog</a>
+
 </p>
 
 Generates profile reports from a pandas `DataFrame`. 
@@ -37,34 +40,24 @@ For each column the following statistics - if relevant for the column type - are
 
 ## Announcements
 
-**Version v3.0.0 released** in which the report configuration was completely overhauled, providing a more intuitive API and fixing issues inherent to the previous global config. 
-
-This is the first release to adhere to the [Semver](https://semver.org/) and [Conventional Commits](https://conventionalcommits.org/) specifications.
-
 **Spark backend in progress**: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Beta testers wanted! The Spark backend will be released as a pre-release for this package.
 
-### Support `pandas-profiling`
+**Monitoring time series?**: I'd like to draw your attention to [popmon](#popmon). Whereas pandas-profiling allows you to explore patterns in a single dataset, popmon allows you to uncover temporal patterns. It's worth checking out!
 
+**Support `pandas-profiling`** 
 The development of `pandas-profiling` relies completely on contributions.
 If you find value in the package, we welcome you to support the project directly through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
 Please help me to continue to support this package.
-It's extra exciting that GitHub **matches your contribution** for the first year.
-
-Find more information here:
-
- - [Changelog v3.0.0](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog)
- - [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
-
-_May 9, 2021 💘_
+Find more information: [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
 
 ---
 
 _Contents:_ **[Examples](#examples)** |
 **[Installation](#installation)** | **[Documentation](#documentation)** |
 **[Large datasets](#large-datasets)** | **[Command line usage](#command-line-usage)** |
-**[Advanced usage](#advanced-usage)** | **[integrations](#integrations)** |
-**[Support](#supporting-open-source)** | **[Types](#types)** | **[How to contribute](#contributing)** |
+**[Advanced usage](#advanced-usage)** | **[Support](#support)** | **[Go beyond](#go-beyond)** |
+**[Support the project](#supporting-open-source)** | **[Types](#types)** | **[How to contribute](#contributing)** |
 **[Editor Integration](#editor-integration)** | **[Dependencies](#dependencies)**
 
 ---
@@ -80,7 +73,7 @@ The following examples can give you an impression of what the package can do:
 * [Stata Auto](https://pandas-profiling.github.io/pandas-profiling/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
 * [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html) (a simple colors dataset)
-* [UCI Bank Dataset](https://pandas-profiling.github.io/pandas-profiling/examples/master/cbank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
+* [UCI Bank Dataset](https://pandas-profiling.github.io/pandas-profiling/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
 * [RDW](https://pandas-profiling.github.io/pandas-profiling/examples/master/rdw/rdw.html) (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)
 
 
@@ -160,7 +153,7 @@ profile = ProfileReport(df, title="Pandas Profiling Report")
 
 ### Explore deeper
 
-You can configure the profile report in any way you like. The example code below loads the [explorative configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml), that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml).
+You can configure the profile report in any way you like. The example code below loads the explorative configuration, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml).
 
 ```python
 profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
@@ -253,7 +246,42 @@ profile = df.profile_report(
 profile.to_file("output.html")
 ```
 
-## Integrations
+## Support
+Need help? Want to share a perspective? Want to report a bug? Ideas for collaboration? 
+You can reach out via the following channels:
+
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
+- [Github Issues](https://github.com/pandas-profiling/pandas-profiling/issues): bugs, proposals for change, feature requests
+- [Slack](https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA): general chat, questions, collaboration
+- [Email](mailto:pandasprofiling@gmail.com): project collaboration or sponsoring
+
+## Go beyond
+
+### Popmon
+
+<table>
+<tr>
+<td>
+
+<a href="https://github.com/ing-bank/popmon">
+	<img alt="Popmon" src="https://raw.githubusercontent.com/ing-bank/popmon/master/docs/source/assets/popmon-logo.png" width="900" />
+</a>
+	
+</td>
+<td>
+
+For many real-world problems we are interested how the data changes over time. 
+The excellent pacakge `popmon` allows you to profile and monitor data trends over time and generates reports in a similar fashion as you're used to using pandas-profiling.
+Inspecting the report often shows patterns that are going by undetected during standard data exploration.
+Moreover, popmon can be used to monitor the stability of input and output of machine learning models.
+The package is fully open-source and you can find it [here](https://github.com/ing-bank/popmon)! 
+
+To learn more on Popmon, have a look at these resources [here](https://github.com/ing-bank/popmon#resources)
+
+</td>
+</tr>
+</table>
+
 
 ### Great Expectations
 
@@ -261,8 +289,10 @@ profile.to_file("output.html")
 <tr>
 <td>
 
+<a href="https://www.greatexpectations.io">
 <img alt="Great Expectations" src="https://github.com/great-expectations/great_expectations/raw/develop/generic_dickens_protagonist.png" width="900" />
-
+</a>
+	
 </td>
 <td>
 
@@ -299,7 +329,7 @@ Maintaining and developing the open-source code for pandas-profiling, with milli
 
 We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: 
 
-    Martin Sotir, Brian Lee, Stephanie Rivera, abdulAziz, gramster
+    Martin Sotir, Stephanie Rivera, abdulAziz
 
 More info if you would like to appear here: [Github Sponsor page](https://github.com/sponsors/sbrugman)
 

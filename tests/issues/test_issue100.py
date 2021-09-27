@@ -17,5 +17,6 @@ def test_issue100():
         pool_size=1,
         title="Dataset with <em>Numeric</em> Categories",
         samples={"head": 20},
+        progress_bar=False,
     )
     assert report.description_set is not None

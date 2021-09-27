@@ -17,7 +17,7 @@ Model
    summarizer
    typeset
    typeset_relations
-   messages
+   alerts
    correlations
    duplicates
    sample

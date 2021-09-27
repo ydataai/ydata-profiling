@@ -26,6 +26,7 @@ else:
 base_path = os.path.abspath(os.path.dirname(__file__))
 
 series = get_series()
+del series["categorical_complex_series"]
 
 my_config = Settings()
 my_config.vars.num.low_categorical_threshold = 0
@@ -69,7 +70,6 @@ contains_map = {
         "categorical_float_series",
         "categorical_int_series",
         "categorical_string_series",
-        "categorical_complex_series",
         "categorical_char",
         "ordinal",
         "timestamp_string_series",
@@ -231,7 +231,6 @@ inference_map = {
     "complex_series_nan_2": Numeric,
     "complex_series_py_nan": Numeric,
     "complex_series_py": Numeric,
-    "categorical_complex_series": Numeric,
     "timestamp_series": DateTime,
     "timestamp_series_nat": DateTime,
     "timestamp_aware_series": DateTime,
@@ -334,7 +333,6 @@ convert_map = [
             "str_int_zeros",
             "str_int_leading_zeros",
             "mixed",
-            "categorical_complex_series",
             "int_series",
             "categorical_int_series",
             "categorical_float_series",

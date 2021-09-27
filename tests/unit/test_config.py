@@ -22,3 +22,12 @@ def test_config_shorthands():
     assert r.config.duplicates.head == 0
     assert not r.config.correlations["spearman"].calculate
     assert not r.config.missing_diagrams["bar"]
+
+
+def test_config_env(monkeypatch):
+    monkeypatch.setenv("PROFILE_TITLE", "Testing Title")
+    monkeypatch.setenv("PROFILE_PLOT", '{"dpi": 1000}')
+
+    r = ProfileReport()
+    assert r.config.title == "Testing Title"
+    assert r.config.plot.dpi == 1000
