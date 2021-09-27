@@ -6,7 +6,7 @@ pydantic>=1.8.1
 PyYAML>=5.0.0
 jinja2>=2.11.1
 markupsafe~=2.0.1
-visions[type_image_path]==0.7.1
+visions[type_image_path]==0.7.2
 numpy>=1.16.0
 # Could be optional
 # Related to HTML report
