@@ -16,7 +16,7 @@ missingno>=0.4.2
 # Correlations
 phik>=0.11.1
 # Text analysis
-tangled-up-in-unicode==0.1.0
+tangled-up-in-unicode==0.2.0
 # Examples
 requests>=2.24.0
 # Progress bar
