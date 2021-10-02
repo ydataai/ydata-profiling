@@ -8,7 +8,6 @@ repos:
     rev: 1.1.1
     hooks:
     - id: nbqa-black
-      args: [--nbqa-mutate ]
     - id: nbqa-isort
       args: [ --nbqa-mutate, --profile=black, --project=pandas_profiling ]
     - id: nbqa-pyupgrade
