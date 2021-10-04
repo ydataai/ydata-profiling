@@ -19,7 +19,7 @@ from pandas_profiling.model.summary_algorithms import (
 
 def get_character_counts_vc(vc: pd.Series) -> pd.Series:
     series = pd.Series(vc.index, index=vc)
-    characters = series.str.split(r".?")
+    characters = series.apply(list)
     characters = characters.explode()
 
     counts = pd.Series(characters.index, index=characters)
