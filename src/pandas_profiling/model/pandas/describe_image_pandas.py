@@ -41,9 +41,10 @@ def is_image_truncated(image: Image) -> bool:
     """
     try:
         image.load()
-        return False
     except (OSError, AttributeError):
         return True
+    else:
+        return False
 
 
 def get_image_shape(image: Image) -> Optional[Tuple[int, int]]:

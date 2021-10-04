@@ -157,7 +157,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
             # TODO: use coercion utils
             try:
                 url_gen = (urlparse(x) for x in series)
-                return all(x.netloc and x.scheme for x in url_gen)
+                return all(x.netloc and x.scheme for x in url_gen)  # noqa: TC300
             except AttributeError:
                 return False
 

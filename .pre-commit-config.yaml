@@ -53,7 +53,6 @@ repos:
             ^src/pandas_profiling/utils/common.py|
             ^src/pandas_profiling/utils/imghdr_patch.py
           )
-
 -   repo: https://github.com/asottile/blacken-docs
     rev: v1.11.0
     hooks:
@@ -71,6 +70,11 @@ repos:
           - types-python-dateutil
           - types-PyYAML
           - types-setuptools
+-   repo: https://github.com/sbrugman/tryceratops
+    rev: v0.6.0
+    hooks:
+      - id: tryceratops
+        args: ["-i", "TC003","--autofix"]
 
 ci:
   autoupdate_commit_msg: 'ci: pre-commit-config update'

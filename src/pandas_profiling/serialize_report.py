@@ -65,7 +65,7 @@ class SerializeReport:
                 loaded_report,
             ) = pickle.loads(data)
         except Exception as e:
-            raise ValueError(f"Failed to load data: {e}")
+            raise ValueError("Failed to load data") from e
 
         if not all(
             (

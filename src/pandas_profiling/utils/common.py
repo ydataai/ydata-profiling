@@ -51,7 +51,7 @@ def extract_zip(outfile, effective_path):
         with zipfile.ZipFile(outfile) as z:
             z.extractall(effective_path)
     except zipfile.BadZipFile as e:
-        raise ValueError("Bad zip file", e)
+        raise ValueError("Bad zip file") from e
 
 
 def test_jpeg1(h, f):
