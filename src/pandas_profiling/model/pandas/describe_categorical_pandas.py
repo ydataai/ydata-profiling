@@ -23,10 +23,10 @@ def get_character_counts_vc(vc: pd.Series) -> pd.Series:
     characters = characters.explode()
 
     counts = pd.Series(characters.index, index=characters)
-    counts = counts.groupby(level=0, sort=False).sum()
-    counts = counts.sort_values(ascending=False)
-    # FIXME: correct in split, below should be zero: print(counts.loc[''])
     if len(counts) > 0:
+        counts = counts.groupby(level=0, sort=False).sum()
+        counts = counts.sort_values(ascending=False)
+        # FIXME: correct in split, below should be zero: print(counts.loc[''])
         counts = counts[counts.index.str.len() > 0]
     return counts
 
