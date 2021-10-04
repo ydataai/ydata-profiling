@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1633175720748,
+  "lastUpdate": 1633345137327,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -3255,6 +3255,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.27506911743268847",
             "extra": "mean: 14.136417789999985 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "bb53fe3de7c30620534a49e92b100f2bf05ece81",
+          "message": "Merge pull request #840 from pandas-profiling/dependabot/pip/coverage-approx-eq-6.0\n\nbuild(deps): update coverage requirement from ~=5.5 to ~=6.0",
+          "timestamp": "2021-10-04T12:41:30+02:00",
+          "tree_id": "1cf4d4bc467de0568fc88733ceacec9e31959683",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/bb53fe3de7c30620534a49e92b100f2bf05ece81"
+        },
+        "date": 1633345132709,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.08985391989349957,
+            "unit": "iter/sec",
+            "range": "stddev: 0.14128293527405178",
+            "extra": "mean: 11.129175011900003 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.08948149650603184,
+            "unit": "iter/sec",
+            "range": "stddev: 0.14918095333534453",
+            "extra": "mean: 11.175494812300007 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.3770077354583639,
+            "unit": "iter/sec",
+            "range": "stddev: 0.05766681801541526",
+            "extra": "mean: 2.652465469399999 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.06023056200543383,
+            "unit": "iter/sec",
+            "range": "stddev: 0.19738065577168523",
+            "extra": "mean: 16.602866828800018 sec\nrounds: 10"
           }
         ]
       }
