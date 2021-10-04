@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1633345284024,
+  "lastUpdate": 1633362899300,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -3359,6 +3359,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.29060565713722103",
             "extra": "mean: 19.318018933500014 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "adcf6d7ad61595be36e5f9127bcf7ba55fab94af",
+          "message": "Merge pull request #834 from pandas-profiling/dependabot/pip/tangled-up-in-unicode-0.2.0\n\nbuild(deps): bump tangled-up-in-unicode from 0.1.0 to 0.2.0",
+          "timestamp": "2021-10-04T17:36:18+02:00",
+          "tree_id": "911774b11a01d6402f34d56ced3331daa8194030",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/adcf6d7ad61595be36e5f9127bcf7ba55fab94af"
+        },
+        "date": 1633362894286,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.08357153178949335,
+            "unit": "iter/sec",
+            "range": "stddev: 0.12437749427725668",
+            "extra": "mean: 11.965797186999993 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.08383085872857975,
+            "unit": "iter/sec",
+            "range": "stddev: 0.12013628231182212",
+            "extra": "mean: 11.92878153900001 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.3610524352051472,
+            "unit": "iter/sec",
+            "range": "stddev: 0.08906522352042098",
+            "extra": "mean: 2.7696808067000234 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.05737591666292802,
+            "unit": "iter/sec",
+            "range": "stddev: 0.20661778170790232",
+            "extra": "mean: 17.428915443300003 sec\nrounds: 10"
           }
         ]
       }
