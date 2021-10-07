@@ -89,10 +89,10 @@ class ExpectationsReport:
         &#34;&#34;&#34;
         try:
             import great_expectations as ge
-        except ImportError:
+        except ImportError as ex:
             raise ImportError(
                 &#34;Please install great expectations before using the expectation functionality&#34;
-            )
+            ) from ex
 
         # Use report title if suite is empty
         if suite_name is None:
@@ -238,10 +238,10 @@ class ExpectationsReport:
         &#34;&#34;&#34;
         try:
             import great_expectations as ge
-        except ImportError:
+        except ImportError as ex:
             raise ImportError(
                 &#34;Please install great expectations before using the expectation functionality&#34;
-            )
+            ) from ex
 
         # Use report title if suite is empty
         if suite_name is None:
@@ -380,10 +380,10 @@ your browser</dd>
     &#34;&#34;&#34;
     try:
         import great_expectations as ge
-    except ImportError:
+    except ImportError as ex:
         raise ImportError(
             &#34;Please install great expectations before using the expectation functionality&#34;
-        )
+        ) from ex
 
     # Use report title if suite is empty
     if suite_name is None:

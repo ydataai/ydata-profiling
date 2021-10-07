@@ -47,14 +47,15 @@ from pandas_profiling.model.summary_algorithms import (
 
 def get_character_counts_vc(vc: pd.Series) -&gt; pd.Series:
     series = pd.Series(vc.index, index=vc)
-    characters = series.str.split(r&#34;.?&#34;)
+    characters = series[series != &#34;&#34;].apply(list)
     characters = characters.explode()
 
-    counts = pd.Series(characters.index, index=characters)
-    counts = counts.groupby(level=0, sort=False).sum()
-    counts = counts.sort_values(ascending=False)
-    # FIXME: correct in split, below should be zero: print(counts.loc[&#39;&#39;])
-    counts = counts[counts.index.str.len() &gt; 0]
+    counts = pd.Series(characters.index, index=characters).dropna()
+    if len(counts) &gt; 0:
+        counts = counts.groupby(level=0, sort=False).sum()
+        counts = counts.sort_values(ascending=False)
+        # FIXME: correct in split, below should be zero: print(counts.loc[&#39;&#39;])
+        counts = counts[counts.index.str.len() &gt; 0]
     return counts
 
 
@@ -314,14 +315,15 @@ def pandas_describe_categorical_1d(
 </summary>
 <pre><code class="python">def get_character_counts_vc(vc: pd.Series) -&gt; pd.Series:
     series = pd.Series(vc.index, index=vc)
-    characters = series.str.split(r&#34;.?&#34;)
+    characters = series[series != &#34;&#34;].apply(list)
     characters = characters.explode()
 
-    counts = pd.Series(characters.index, index=characters)
-    counts = counts.groupby(level=0, sort=False).sum()
-    counts = counts.sort_values(ascending=False)
-    # FIXME: correct in split, below should be zero: print(counts.loc[&#39;&#39;])
-    counts = counts[counts.index.str.len() &gt; 0]
+    counts = pd.Series(characters.index, index=characters).dropna()
+    if len(counts) &gt; 0:
+        counts = counts.groupby(level=0, sort=False).sum()
+        counts = counts.sort_values(ascending=False)
+        # FIXME: correct in split, below should be zero: print(counts.loc[&#39;&#39;])
+        counts = counts[counts.index.str.len() &gt; 0]
     return counts</code></pre>
 </details>
 </dd>

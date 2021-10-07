@@ -69,9 +69,10 @@ def is_image_truncated(image: Image) -&gt; bool:
     &#34;&#34;&#34;
     try:
         image.load()
-        return False
     except (OSError, AttributeError):
         return True
+    else:
+        return False
 
 
 def get_image_shape(image: Image) -&gt; Optional[Tuple[int, int]]:
@@ -608,9 +609,10 @@ Returns:</p></div>
     &#34;&#34;&#34;
     try:
         image.load()
-        return False
     except (OSError, AttributeError):
-        return True</code></pre>
+        return True
+    else:
+        return False</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.pandas.describe_image_pandas.open_image"><code class="name flex">

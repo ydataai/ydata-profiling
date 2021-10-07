@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; pandas-profiling 3.1.0 documentation</title>
+  <title>Changelog &mdash; pandas-profiling 3.1.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/autodoc_pydantic.css" type="text/css" />
@@ -54,91 +54,97 @@
 <li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#changelog-v3-1-0">Changelog v3.1.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#features">🎉 Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog-v3-1-1">Changelog v3.1.1</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#bug-fixes">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#documentation">📖 Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#internal-improvements">👷‍♂️ Internal Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies">⬆️ Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#changelog-v3-0-0">Changelog v3.0.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">🎉 Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog-v3-1-0">Changelog v3.1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#features">🎉 Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id2">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id9">📖 Documentation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id10">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">⬆️ Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog-v3-0-0">Changelog v3.0.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">👷‍♂️ Internal Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#breaking-changes">🚨 Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id11">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-13-0">Changelog v2.13.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id12">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id13">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id14">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-12-0">Changelog v2.12.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id15">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id18">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id21">📖 Documentation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id22">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id23">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-11-0">Changelog v2.11.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id24">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id27">🚨 Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id28">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-10-1">Changelog v2.10.1</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id29">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id37">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">📖 Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-10-0">Changelog v2.10.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id39">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id40">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id41">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id45">🚨 Breaking changes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-9-0">Changelog v2.9.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id42">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id43">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id44">📖 Documentation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id45">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id47">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id49">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-9-0rc1">Changelog v2.9.0rc1</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id46">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id49">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id53">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id55">📖 Documentation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id58">🚨 Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id59">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id50">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id53">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id57">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id62">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id63">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-8-0">Changelog v2.8.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id60">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id65">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id67">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id68">📖 Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id64">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id69">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id71">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id72">📖 Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deprecated">⚠️  Deprecated</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id69">🚨 Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id70">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id73">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id74">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-7-1">Changelog v2.7.1</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id71">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id75">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v2-7-0">Changelog v2.7.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id72">🎉 Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id77">🐛 Bug fixes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id82">👷‍♂️ Internal Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id87">⚠️  Deprecated</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id88">🚨 Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id89">⬆️ Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id76">🎉 Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id81">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id86">👷‍♂️ Internal Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id91">⚠️  Deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id92">🚨 Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id93">⬆️ Dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#prior-to-v2-7-0">Prior to v2.7.0</a></li>
@@ -211,6 +217,27 @@
              
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline"></a></h1>
+<section id="changelog-v3-1-1">
+<h2>Changelog v3.1.1<a class="headerlink" href="#changelog-v3-1-1" title="Permalink to this headline"></a></h2>
+<section id="bug-fixes">
+<h3>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Character counts bugfix <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/842">[#842]</a></p></li>
+</ul>
+</section>
+<section id="internal-improvements">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#internal-improvements" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>tryceratops for CI: improved exception handling</p></li>
+</ul>
+</section>
+<section id="dependencies">
+<h3>⬆️ Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>tangled-up-in-unicode 0.2.0 (unicode 14)</p></li>
+</ul>
+</section>
+</section>
 <section id="changelog-v3-1-0">
 <h2>Changelog v3.1.0<a class="headerlink" href="#changelog-v3-1-0" title="Permalink to this headline"></a></h2>
 <section id="features">
@@ -219,8 +246,8 @@
 <li><p>Fine-grained progress bar</p></li>
 </ul>
 </section>
-<section id="bug-fixes">
-<h3>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline"></a></h3>
+<section id="id2">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Python 3.9 and 3.10 compatibility</p></li>
 <li><p>Phik correlation order</p></li>
@@ -232,14 +259,14 @@
 <li><p>Several link fixes, readme updates</p></li>
 </ul>
 </section>
-<section id="internal-improvements">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#internal-improvements" title="Permalink to this headline"></a></h3>
+<section id="id3">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Matplotlib backend</p></li>
 </ul>
 </section>
-<section id="dependencies">
-<h3>⬆️ Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h3>
+<section id="id4">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>pre-commit</p></li>
 <li><p>visions to 0.7.4</p></li>
@@ -249,29 +276,29 @@
 <section id="changelog-v3-0-0">
 <h2>Changelog v3.0.0<a class="headerlink" href="#changelog-v3-0-0" title="Permalink to this headline"></a></h2>
 <p>This is the first release to adhere to the <a class="reference external" href="https://semver.org/">SemVer</a> and <a class="reference external" href="https://conventionalcommits.org/">Conventional Commits</a> specifications.</p>
-<section id="id1">
-<h3>🎉 Features<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<section id="id5">
+<h3>🎉 Features<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>The report configuration was completely overhauled, providing a more intuitive API and fixing issues inherent to the previous global config.</p></li>
 </ul>
 </section>
-<section id="id2">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<section id="id6">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Various issues could not be (easily) solved in the previous configuration architecture, are fixed in this release (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/584">[584]</a>, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/644">[644]</a>, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/698">[698]</a>, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/720">[720]</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/724">[724]</a>)</p></li>
 <li><p>Fix crash with exotic characters (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/707">[707]</a>)</p></li>
 <li><p>Fixed the way (sub)titles were shown in the report grids.</p></li>
 </ul>
 </section>
-<section id="id9">
-<h3>📖 Documentation<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h3>
+<section id="id13">
+<h3>📖 Documentation<a class="headerlink" href="#id13" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Enforce QA using flake8 for documentation, for instance checking for backticks and enforcing black code style on examples.</p></li>
 <li><p>Automated configuration documentation <a class="reference external" href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/api/_autosummary/pandas_profiling.config.Settings.html">API</a>.</p></li>
 </ul>
 </section>
-<section id="id10">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h3>
+<section id="id14">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id14" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>CI: mypy type checking was moved to the pre-commit hooks.</p></li>
 </ul>
@@ -285,8 +312,8 @@ The previously used configuration library could not handle comments with indenta
 For example, you can now set the title in the following way <code class="docutils literal notranslate"><span class="pre">report.config.title</span> <span class="pre">=</span> <span class="pre">&quot;My</span> <span class="pre">title&quot;</span></code>.</p>
 <p>The docs provide additional examples.</p>
 </section>
-<section id="id11">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id11" title="Permalink to this headline"></a></h3>
+<section id="id15">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id15" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pydantic</span></code> and <code class="docutils literal notranslate"><span class="pre">PyYaml</span></code> are dependencies for the new configuration.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">confuse</span></code> and <code class="docutils literal notranslate"><span class="pre">attrs</span></code> are no longer (explicit) dependencies.</p></li>
@@ -296,21 +323,21 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-13-0">
 <h2>Changelog v2.13.0<a class="headerlink" href="#changelog-v2-13-0" title="Permalink to this headline"></a></h2>
-<section id="id12">
-<h3>🎉 Features<a class="headerlink" href="#id12" title="Permalink to this headline"></a></h3>
+<section id="id16">
+<h3>🎉 Features<a class="headerlink" href="#id16" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>configurable numeric precision</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id13" title="Permalink to this headline"></a></h3>
+<section id="id17">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id17" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>string type detection performance optimization</p></li>
 <li><p>various improvements to software quality (flake8, commitlint)</p></li>
 </ul>
 </section>
-<section id="id14">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id14" title="Permalink to this headline"></a></h3>
+<section id="id18">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id18" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>upgrade from <code class="docutils literal notranslate"><span class="pre">visions</span></code> 0.6.0 to 0.7.1</p></li>
 <li><p>upgrade from <code class="docutils literal notranslate"><span class="pre">coverage</span></code> &lt;5 to ~=5.5</p></li>
@@ -319,37 +346,37 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-12-0">
 <h2>Changelog v2.12.0<a class="headerlink" href="#changelog-v2-12-0" title="Permalink to this headline"></a></h2>
-<section id="id15">
-<h3>🎉 Features<a class="headerlink" href="#id15" title="Permalink to this headline"></a></h3>
+<section id="id19">
+<h3>🎉 Features<a class="headerlink" href="#id19" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Add the number and the percentage of negative values for numerical variables <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/695">[695]</a> (contributed by &#64;gverbock)</p></li>
 <li><p>Enable setting of typeset/summarizer (contributed by &#64;ieaves)</p></li>
 <li><p>Allow empty data frames <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/678">[678]</a> (contributed by &#64;spbail, &#64;fwd2020-c)</p></li>
 </ul>
 </section>
-<section id="id18">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id18" title="Permalink to this headline"></a></h3>
+<section id="id22">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id22" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Patch args for great_expectations datetime profiler <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/727">[727]</a> (contributed by &#64;jstammers)</p></li>
 <li><p>Negative exponent formatting <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/723">[723]</a> (reported by &#64;rdpapworth)</p></li>
 </ul>
 </section>
-<section id="id21">
-<h3>📖 Documentation<a class="headerlink" href="#id21" title="Permalink to this headline"></a></h3>
+<section id="id25">
+<h3>📖 Documentation<a class="headerlink" href="#id25" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Fix link syntax (contributed by &#64;ChrisCarini)</p></li>
 </ul>
 </section>
-<section id="id22">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id22" title="Permalink to this headline"></a></h3>
+<section id="id26">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id26" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Several performance improvements (minimal mode, duplicates, frequency table sorting)</p></li>
 <li><p>Introduce <code class="docutils literal notranslate"><span class="pre">pytest-benchmark</span></code> in CI to monitor commit performance impact</p></li>
 <li><p>Introduce <code class="docutils literal notranslate"><span class="pre">commitlint</span></code> in CI to start automating the changelog generation</p></li>
 </ul>
 </section>
-<section id="id23">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id23" title="Permalink to this headline"></a></h3>
+<section id="id27">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id27" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ipywidgets</span></code> dependency was moved to the <code class="docutils literal notranslate"><span class="pre">[notebook]</span></code> extra, so most of Jupyter will not be installed alongside this package by default (contributed by &#64;akx)</p></li>
 <li><p>Replaced the (testing only) <code class="docutils literal notranslate"><span class="pre">fastparquet</span></code> dependency with <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> (default pandas parquet engine, contributed by &#64;kurosch)</p></li>
@@ -359,22 +386,22 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-11-0">
 <h2>Changelog v2.11.0<a class="headerlink" href="#changelog-v2-11-0" title="Permalink to this headline"></a></h2>
-<section id="id24">
-<h3>🎉 Features<a class="headerlink" href="#id24" title="Permalink to this headline"></a></h3>
+<section id="id28">
+<h3>🎉 Features<a class="headerlink" href="#id28" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Great Expectations integration <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/430">[430]</a> <a class="reference external" href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/great_expectations_integration.html">docs</a> (thanks &#64;spbail, &#64;talagluck and the Great Expectations team).</p></li>
 <li><p>Introduced the <code class="docutils literal notranslate"><span class="pre">infer_dtypes</span></code> parameter to control automatic inference of data types <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/676">[676]</a> (thanks &#64;mohith7548 and &#64;ieaves).</p></li>
 <li><p>Improved JSON representation for pd.Series, pd.DataFrame, numpy data and Samples.</p></li>
 </ul>
 </section>
-<section id="id27">
-<h3>🚨 Breaking changes<a class="headerlink" href="#id27" title="Permalink to this headline"></a></h3>
+<section id="id31">
+<h3>🚨 Breaking changes<a class="headerlink" href="#id31" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Global config setting removed; config resets on report initialization.</p></li>
 </ul>
 </section>
-<section id="id28">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id28" title="Permalink to this headline"></a></h3>
+<section id="id32">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id32" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Update <code class="docutils literal notranslate"><span class="pre">pyupgrade</span></code> to <code class="docutils literal notranslate"><span class="pre">2.10.0</span></code>.</p></li>
 </ul>
@@ -382,8 +409,8 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-10-1">
 <h2>Changelog v2.10.1<a class="headerlink" href="#changelog-v2-10-1" title="Permalink to this headline"></a></h2>
-<section id="id29">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id29" title="Permalink to this headline"></a></h3>
+<section id="id33">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id33" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Fixed recursion error for NaN values <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/683">[683]</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/671">[671]</a></p></li>
 <li><p>Fixed error for empty dataframe <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/664">[664]</a></p></li>
@@ -392,8 +419,8 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>Fixed slugify logic for interaction columns <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/663">[663]</a></p></li>
 </ul>
 </section>
-<section id="id37">
-<h3>📖 Documentation<a class="headerlink" href="#id37" title="Permalink to this headline"></a></h3>
+<section id="id41">
+<h3>📖 Documentation<a class="headerlink" href="#id41" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Update Slack community link on readme <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/673">[673]</a></p></li>
 <li><p>Include recent contributions to the “Resources” page.</p></li>
@@ -402,8 +429,8 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-10-0">
 <h2>Changelog v2.10.0<a class="headerlink" href="#changelog-v2-10-0" title="Permalink to this headline"></a></h2>
-<section id="id39">
-<h3>🎉 Features<a class="headerlink" href="#id39" title="Permalink to this headline"></a></h3>
+<section id="id43">
+<h3>🎉 Features<a class="headerlink" href="#id43" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Restructured the overview for categorical variables.</p></li>
 <li><p>Handling of compressed files</p></li>
@@ -411,15 +438,15 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>Restructure categorical variable overview</p></li>
 </ul>
 </section>
-<section id="id40">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id40" title="Permalink to this headline"></a></h3>
+<section id="id44">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id44" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Full visions integration for type system: read more <a class="reference external" href="https://github.com/dylan-profiler/visions">here</a>.</p></li>
 <li><p>Migrate from Travis CI to Github Actions…</p></li>
 </ul>
 </section>
-<section id="id41">
-<h3>🚨 Breaking changes<a class="headerlink" href="#id41" title="Permalink to this headline"></a></h3>
+<section id="id45">
+<h3>🚨 Breaking changes<a class="headerlink" href="#id45" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>The configuration parameter <code class="docutils literal notranslate"><span class="pre">vars.cat.unicode</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">vars.cat.characters</span></code>.</p></li>
 </ul>
@@ -427,14 +454,14 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-9-0">
 <h2>Changelog v2.9.0<a class="headerlink" href="#changelog-v2-9-0" title="Permalink to this headline"></a></h2>
-<section id="id42">
-<h3>🎉 Features<a class="headerlink" href="#id42" title="Permalink to this headline"></a></h3>
+<section id="id46">
+<h3>🎉 Features<a class="headerlink" href="#id46" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Description per variable now possible (see the metadata page) or the Census example.</p></li>
 </ul>
 </section>
-<section id="id43">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id43" title="Permalink to this headline"></a></h3>
+<section id="id47">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id47" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Fixed bug for small DataFrames with unused categories.</p></li>
 <li><p>Fixed bug where parallelization would have side effects.</p></li>
@@ -442,16 +469,16 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>Distinguish between unique and distinct correctly.</p></li>
 </ul>
 </section>
-<section id="id44">
-<h3>📖 Documentation<a class="headerlink" href="#id44" title="Permalink to this headline"></a></h3>
+<section id="id48">
+<h3>📖 Documentation<a class="headerlink" href="#id48" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Extend documentation for frequent issues.</p></li>
 <li><p>Extended documentation for Streamlit and Panel.</p></li>
 <li><p>Provide visibility to our supporters.</p></li>
 </ul>
 </section>
-<section id="id45">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id45" title="Permalink to this headline"></a></h3>
+<section id="id49">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id49" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Pandas 1.1.0 contains bugs that make it incompatible. Please up- or downgrade.</p></li>
 <li><p>Upgraded visions to 0.5.0.</p></li>
@@ -460,8 +487,8 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-9-0rc1">
 <h2>Changelog v2.9.0rc1<a class="headerlink" href="#changelog-v2-9-0rc1" title="Permalink to this headline"></a></h2>
-<section id="id46">
-<h3>🎉 Features<a class="headerlink" href="#id46" title="Permalink to this headline"></a></h3>
+<section id="id50">
+<h3>🎉 Features<a class="headerlink" href="#id50" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Working with sensitive data: Introduced <code class="docutils literal notranslate"><span class="pre">sensitive=True</span></code> option to mask non-aggregated data (such as samples, duplicates, frequency tables for categorical columns) [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/503">#503</a>].</p></li>
 <li><p>The sample section can be parametrized with a custom sample (for instance mock data).</p></li>
@@ -471,8 +498,8 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>A pie chart can be generated for boolean and (low) categorical columns.</p></li>
 </ul>
 </section>
-<section id="id49">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id49" title="Permalink to this headline"></a></h3>
+<section id="id53">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id53" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>NaT in date columns were interpreted as a date in 1680 by histograms [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/507">#507</a>].</p></li>
 <li><p>ValueError: (‘widget type not understood’, ‘select’) [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/493">#493</a>].</p></li>
@@ -480,29 +507,29 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>Formatting of precision of numeric values has been improved in a few places.</p></li>
 </ul>
 </section>
-<section id="id53">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id53" title="Permalink to this headline"></a></h3>
+<section id="id57">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id57" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Histograms used to be calculated at view time (single thread) and are now computed in parallel.</p></li>
 <li><p>Matplotlib’s rcParams are now modified through the contextmanager [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/494">#494</a>].</p></li>
 </ul>
 </section>
-<section id="id55">
-<h3>📖 Documentation<a class="headerlink" href="#id55" title="Permalink to this headline"></a></h3>
+<section id="id59">
+<h3>📖 Documentation<a class="headerlink" href="#id59" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Links to Colab and Binder notebooks [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/480">#480</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/497">#497</a>].</p></li>
 <li><p>The documentation for sensitive data, large datasets and metadata have been extended.</p></li>
 </ul>
 </section>
-<section id="id58">
-<h3>🚨 Breaking changes<a class="headerlink" href="#id58" title="Permalink to this headline"></a></h3>
+<section id="id62">
+<h3>🚨 Breaking changes<a class="headerlink" href="#id62" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bayesian_blocks</span></code> binning has been removed, together with the <code class="docutils literal notranslate"><span class="pre">astropy</span></code> dependency.</p></li>
 <li><p>Config files <code class="docutils literal notranslate"><span class="pre">config_dark.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">config_united.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">config_explorative.yaml</span></code> have been removed in favour of shorthand for groups of parameters.</p></li>
 </ul>
 </section>
-<section id="id59">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id59" title="Permalink to this headline"></a></h3>
+<section id="id63">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id63" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">isort</span></code> updated to major version 5.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">attrs</span></code> is now required for classes.</p></li>
@@ -511,8 +538,8 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-8-0">
 <h2>Changelog v2.8.0<a class="headerlink" href="#changelog-v2-8-0" title="Permalink to this headline"></a></h2>
-<section id="id60">
-<h3>🎉 Features<a class="headerlink" href="#id60" title="Permalink to this headline"></a></h3>
+<section id="id64">
+<h3>🎉 Features<a class="headerlink" href="#id64" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Expanded the Unicode analysis capabilities: next to the most occurring unicode scripts, categories and blocks, it’s now possible to inspect the most frequent characters for each of them.</p></li>
 <li><p>ProfileReport.set_variable now accepts nested parameters such as <code class="docutils literal notranslate"><span class="pre">report.set_variable(&quot;variables.descriptions&quot;,</span> <span class="pre">{&quot;var1&quot;:</span> <span class="pre">&quot;Identifier&quot;})</span></code>.</p></li>
@@ -526,8 +553,8 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p><strong>Config</strong>: Included a new configuration sample file <code class="docutils literal notranslate"><span class="pre">config_explorative.yml</span></code>, including <code class="docutils literal notranslate"><span class="pre">Text</span></code> (length distribution, unicode information),  <code class="docutils literal notranslate"><span class="pre">File</span></code> (file size, creation time), <code class="docutils literal notranslate"><span class="pre">Image</span></code> (dimensions, exif information).</p></li>
 </ul>
 </section>
-<section id="id65">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id65" title="Permalink to this headline"></a></h3>
+<section id="id69">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id69" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Resolved color ValueError on Mac (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/464">#464</a>).</p></li>
 <li><p><strong>Style</strong>: too many interactions overflowed tabs. Now they elegantly turn into a select control.</p></li>
@@ -536,16 +563,16 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>Slimmed down the HTML by removing classes and more effective CSS.</p></li>
 </ul>
 </section>
-<section id="id67">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id67" title="Permalink to this headline"></a></h3>
+<section id="id71">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id71" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><strong>CI</strong>: Added macOS and Windows to the testing environments (experimental).</p></li>
 <li><p><strong>CI</strong>: Added python3.9-dev to the testing environment (experimental).</p></li>
 <li><p><strong>CI</strong>: Reduced the number of permutations for code formatting and type checking.</p></li>
 </ul>
 </section>
-<section id="id68">
-<h3>📖 Documentation<a class="headerlink" href="#id68" title="Permalink to this headline"></a></h3>
+<section id="id72">
+<h3>📖 Documentation<a class="headerlink" href="#id72" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>API documentation is now available.</p></li>
 </ul>
@@ -556,14 +583,14 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>The <code class="docutils literal notranslate"><span class="pre">bayesian_bins</span></code> parameter will be removed in the next release.</p></li>
 </ul>
 </section>
-<section id="id69">
-<h3>🚨 Breaking changes<a class="headerlink" href="#id69" title="Permalink to this headline"></a></h3>
+<section id="id73">
+<h3>🚨 Breaking changes<a class="headerlink" href="#id73" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><strong>Config</strong>: <code class="docutils literal notranslate"><span class="pre">vars.cat.check_composition</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">vars.cat.unicode</span></code> and <code class="docutils literal notranslate"><span class="pre">vars.cat.length</span></code>.</p></li>
 </ul>
 </section>
-<section id="id70">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id70" title="Permalink to this headline"></a></h3>
+<section id="id74">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id74" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Update <code class="docutils literal notranslate"><span class="pre">visions</span></code> to <code class="docutils literal notranslate"><span class="pre">0.4.4</span></code> for more informative Unicode summaries.</p></li>
 </ul>
@@ -571,8 +598,8 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-7-1">
 <h2>Changelog v2.7.1<a class="headerlink" href="#changelog-v2-7-1" title="Permalink to this headline"></a></h2>
-<section id="id71">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id71" title="Permalink to this headline"></a></h3>
+<section id="id75">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id75" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Fix version of <code class="docutils literal notranslate"><span class="pre">visions</span></code> due to breaking changes in new summarization functions.</p></li>
 </ul>
@@ -580,8 +607,8 @@ For example, you can now set the title in the following way <code class="docutil
 </section>
 <section id="changelog-v2-7-0">
 <h2>Changelog v2.7.0<a class="headerlink" href="#changelog-v2-7-0" title="Permalink to this headline"></a></h2>
-<section id="id72">
-<h3>🎉 Features<a class="headerlink" href="#id72" title="Permalink to this headline"></a></h3>
+<section id="id76">
+<h3>🎉 Features<a class="headerlink" href="#id76" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Reports are built in phases, see issue for details (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/421">#421</a>)</p></li>
 <li><p>The most occurring duplicates rows are included in the report.</p></li>
@@ -593,8 +620,8 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p><strong>CI</strong>: Linting, building the documentation and examples and uploading the package to PyPi have been automated using git flow and Github Actions.</p></li>
 </ul>
 </section>
-<section id="id77">
-<h3>🐛 Bug fixes<a class="headerlink" href="#id77" title="Permalink to this headline"></a></h3>
+<section id="id81">
+<h3>🐛 Bug fixes<a class="headerlink" href="#id81" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>warnings were not shown in the “warnings” tab, but were at variable level (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/389">#389</a>).</p></li>
 <li><p>The “median absolute deviation” is now reported instead of the “mean absolute deviation” (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/453">#453</a>).</p></li>
@@ -603,8 +630,8 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p>The logic for calculating infinite values is now correct (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/397">#397</a>).</p></li>
 </ul>
 </section>
-<section id="id82">
-<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id82" title="Permalink to this headline"></a></h3>
+<section id="id86">
+<h3>👷‍♂️ Internal Improvements<a class="headerlink" href="#id86" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>The number of progress bars is reduced. The progress bars are now grouped by build phase (e.g. describing dataset, building report structure, rendering report, exporting to file).</p></li>
 <li><p>The progress bars provide more information about the current step to the user <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/434">#434</a>).</p></li>
@@ -620,22 +647,22 @@ For example, you can now set the title in the following way <code class="docutil
 <li><p><strong>Cln</strong>: the imports are automatically ordered with <code class="docutils literal notranslate"><span class="pre">isort</span></code>.</p></li>
 </ul>
 </section>
-<section id="id87">
-<h3>⚠️  Deprecated<a class="headerlink" href="#id87" title="Permalink to this headline"></a></h3>
+<section id="id91">
+<h3>⚠️  Deprecated<a class="headerlink" href="#id91" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><strong>Doc</strong>: the <code class="docutils literal notranslate"><span class="pre">pdoc3</span></code> documentation will be removed in the future.</p></li>
 <li><p><strong>Config</strong>: using the config globally is deprecated. In the future, the configuration will be tied to the ProfileReport.</p></li>
 </ul>
 </section>
-<section id="id88">
-<h3>🚨 Breaking changes<a class="headerlink" href="#id88" title="Permalink to this headline"></a></h3>
+<section id="id92">
+<h3>🚨 Breaking changes<a class="headerlink" href="#id92" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><strong>Doc</strong>: the example HTML reports were removed from the repository (still available in the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch and documentation).</p></li>
 <li><p>The recoded “correlation” was removed for not being informative enough to justify it’s costs.</p></li>
 </ul>
 </section>
-<section id="id89">
-<h3>⬆️ Dependencies<a class="headerlink" href="#id89" title="Permalink to this headline"></a></h3>
+<section id="id93">
+<h3>⬆️ Dependencies<a class="headerlink" href="#id93" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Requirements now correctly excludes pandas 1.0.0, 1.0.1 and 1.0.2. Either user pandas &lt;1 or &gt;= 1.0.3.</p></li>
 </ul>

@@ -80,7 +80,7 @@ def extract_zip(outfile, effective_path):
         with zipfile.ZipFile(outfile) as z:
             z.extractall(effective_path)
     except zipfile.BadZipFile as e:
-        raise ValueError(&#34;Bad zip file&#34;, e)
+        raise ValueError(&#34;Bad zip file&#34;) from e
 
 
 def test_jpeg1(h, f):
@@ -156,7 +156,7 @@ def convert_timestamp_to_datetime(timestamp: int) -&gt; datetime:
         with zipfile.ZipFile(outfile) as z:
             z.extractall(effective_path)
     except zipfile.BadZipFile as e:
-        raise ValueError(&#34;Bad zip file&#34;, e)</code></pre>
+        raise ValueError(&#34;Bad zip file&#34;) from e</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.utils.common.test_jpeg1"><code class="name flex">

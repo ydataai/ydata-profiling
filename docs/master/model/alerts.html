@@ -364,9 +364,10 @@ def type_date_alert(series: pd.Series) -&gt; bool:
 
     try:
         series.apply(parse)
-        return True
     except ParserError:
-        return False</code></pre>
+        return False
+    else:
+        return True</code></pre>
 </details>
 </section>
 <section>
@@ -707,9 +708,10 @@ def type_date_alert(series: pd.Series) -&gt; bool:
 
     try:
         series.apply(parse)
-        return True
     except ParserError:
-        return False</code></pre>
+        return False
+    else:
+        return True</code></pre>
 </details>
 </dd>
 <dt id="pandas_profiling.model.alerts.unsupported_alerts"><code class="name flex">
