@@ -61,10 +61,10 @@ class ExpectationsReport:
         """
         try:
             import great_expectations as ge
-        except ImportError:
+        except ImportError as ex:
             raise ImportError(
                 "Please install great expectations before using the expectation functionality"
-            )
+            ) from ex
 
         # Use report title if suite is empty
         if suite_name is None:

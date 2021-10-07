@@ -333,6 +333,7 @@ def type_date_alert(series: pd.Series) -> bool:
 
     try:
         series.apply(parse)
-        return True
     except ParserError:
         return False
+    else:
+        return True
