@@ -1,5 +1,5 @@
 """Common util functions (e.g. missing in Python)."""
-import collections
+import collections.abc
 import zipfile
 from datetime import datetime, timedelta
 
@@ -20,7 +20,7 @@ def update(d: dict, u: Mapping) -> dict:
         The merged dictionary.
     """
     for k, v in u.items():
-        if isinstance(v, collections.Mapping):
+        if isinstance(v, collections.abc.Mapping):
             d[k] = update(d.get(k, {}), v)
         else:
             d[k] = v
@@ -51,7 +51,7 @@ def extract_zip(outfile, effective_path):
         with zipfile.ZipFile(outfile) as z:
             z.extractall(effective_path)
     except zipfile.BadZipFile as e:
-        raise ValueError("Bad zip file", e)
+        raise ValueError("Bad zip file") from e
 
 
 def test_jpeg1(h, f):

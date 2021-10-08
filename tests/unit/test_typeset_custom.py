@@ -1,4 +1,5 @@
 import datetime
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -149,6 +150,19 @@ Numeric2 = type_map2["Numeric"]
 Categorical2 = type_map2["Categorical"]
 Boolean2 = type_map2["Boolean"]
 
+
+@dataclass
+class DataTest:
+    def __init__(self, name, contains_type, infer_type, cast_result=None):
+        self.name = name
+        self.contains_type = contains_type
+        self.infer_type = infer_type
+        self.cast_result = cast_result
+
+
+cases = [
+    DataTest("x", Numeric, Numeric),
+]
 
 contains_map = {
     Numeric: {

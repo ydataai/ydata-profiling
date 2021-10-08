@@ -2,6 +2,10 @@
 Changelog
 =========
 
+.. include:: changelog/v3_1_1.rst
+
+.. include:: changelog/v3_1_0.rst
+
 .. include:: changelog/v3_0_0.rst
 
 .. include:: changelog/v2_13_0.rst

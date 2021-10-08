@@ -17,7 +17,7 @@ def get_font_size(data: pd.DataFrame) -> float:
     Returns:
         Font size for missing values plots.
     """
-    max_label_length = max([len(label) for label in data.columns])
+    max_label_length = max(len(label) for label in data.columns)
 
     if len(data.columns) < 20:
         font_size = 13.0

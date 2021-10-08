@@ -42,9 +42,10 @@ def is_image_truncated(image: Image) -> bool:
     """
     try:
         image.load()
-        return False
     except (OSError, AttributeError):
         return True
+    else:
+        return False
 
 
 def get_image_shape(image: Image) -> Optional[Tuple[int, int]]:
@@ -215,29 +216,20 @@ def image_summary(
     image_information = series.apply(
         partial(extract_image_information, exif=exif, hash=hash)
     )
+    summary = {
+        "n_truncated": sum(
+            1 for x in image_information if "truncated" in x and x["truncated"]
+        ),
+        "image_dimensions": pd.Series(
+            [x["size"] for x in image_information if "size" in x],
+            name="image_dimensions",
+        ),
+    }
 
-    result.n_truncated = sum(
-        [1 for x in image_information if "truncated" in x and x["truncated"]]
-    )
-
-    result.image_dimensions = pd.Series(
-        [x["size"] for x in image_information if "size" in x], name="image_dimensions"
-    )
-
-    image_widths = result.image_dimensions.map(lambda x: x[0])
-    r = named_aggregate_summary(image_widths, "width")
-    result.max_width = r["max_width"]
-    result.min_width = r["min_width"]
-    result.mean_width = r["mean_width"]
-    result.median_width = r["median_width"]
-
-    image_heights = result.image_dimensions.map(lambda x: x[1])
-    r = named_aggregate_summary(image_heights, "height")
-    result.max_height = r["max_height"]
-    result.min_height = r["min_height"]
-    result.mean_height = r["mean_height"]
-    result.median_height = r["median_height"]
-
+    image_widths = summary["image_dimensions"].map(lambda x: x[0])
+    summary.update(named_aggregate_summary(image_widths, "width"))
+    image_heights = summary["image_dimensions"].map(lambda x: x[1])
+    summary.update(named_aggregate_summary(image_heights, "height"))
     image_areas = image_widths * image_heights
     r = named_aggregate_summary(image_areas, "area")
     result.max_area = r["max_area"]

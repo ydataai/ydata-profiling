@@ -1,0 +1,14 @@
+Changelog v3.1.1
+----------------
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+- Character counts bugfix `[#842] <https://github.com/pandas-profiling/pandas-profiling/issues/842>`_
+
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- tryceratops for CI: improved exception handling
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+- tangled-up-in-unicode 0.2.0 (unicode 14)

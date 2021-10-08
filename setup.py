@@ -11,7 +11,7 @@ with (source_root / "README.md").open(encoding="utf-8") as f:
 with (source_root / "requirements.txt").open(encoding="utf8") as f:
     requirements = f.readlines()
 
-version = "3.0.0"
+version = "3.1.1"
 
 with (source_root / "src" / "pandas_profiling" / "version.py").open(
     "w", encoding="utf-8"
@@ -64,6 +64,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     keywords="pandas data-science data-analysis python jupyter ipython",
     long_description=long_description,
