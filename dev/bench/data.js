@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1633632500561,
+  "lastUpdate": 1633697232727,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -3619,6 +3619,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.2791567458696478",
             "extra": "mean: 17.193888374000018 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c188d97c40b9b144571339c3f12a0f6259106121",
+          "message": "Merge pull request #857 from pandas-profiling/dependabot/pip/joblib-approx-eq-1.1.0\n\nbuild(deps): update joblib requirement from ~=1.0.1 to ~=1.1.0",
+          "timestamp": "2021-10-08T14:33:22+02:00",
+          "tree_id": "a7a15d4ebb48ca80e72d20f56c03cba73427b679",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/c188d97c40b9b144571339c3f12a0f6259106121"
+        },
+        "date": 1633697227996,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.11354110796257119,
+            "unit": "iter/sec",
+            "range": "stddev: 0.09115267203772369",
+            "extra": "mean: 8.807382788000007 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.11266939716152481,
+            "unit": "iter/sec",
+            "range": "stddev: 0.07662534458306572",
+            "extra": "mean: 8.875524545199994 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.5143956460231919,
+            "unit": "iter/sec",
+            "range": "stddev: 0.06849290539543433",
+            "extra": "mean: 1.9440288963000172 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.08342740905396964,
+            "unit": "iter/sec",
+            "range": "stddev: 0.5180016166540876",
+            "extra": "mean: 11.986468372200012 sec\nrounds: 10"
           }
         ]
       }
