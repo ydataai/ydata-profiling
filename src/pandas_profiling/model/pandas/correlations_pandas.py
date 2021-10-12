@@ -1,7 +1,11 @@
 """Correlations between variables."""
+import itertools
+import warnings
 from typing import Optional
 
+import numpy as np
 import pandas as pd
+from scipy import stats
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import Kendall, Pearson, Spearman, Cramers, PhiK

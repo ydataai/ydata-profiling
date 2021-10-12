@@ -231,7 +231,7 @@ def supported_alerts(summary: dict) -> List[Alert]:
             )
         )
     if summary.get("n_distinct", np.nan) == 1:
-        if isinstance(summary["value_counts"], pd.DataFrame):
+        if isinstance(summary["value_counts"], (pd.DataFrame, pd.Series)):
             summary["mode"] = summary["value_counts"].index[0]
         else:
             summary["mode"] = summary["value_counts"].first()[0]
