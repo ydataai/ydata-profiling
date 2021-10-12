@@ -4,6 +4,8 @@ from typing import Tuple
 
 import numpy as np
 from pyspark.sql import DataFrame
+from pyspark.sql.functions import array, map_keys, map_values
+from pyspark.sql.types import ArrayType, MapType
 from tqdm import tqdm
 from visions import VisionsTypeset
 
@@ -44,6 +46,15 @@ def spark_describe_1d(
         # Detect variable types from pandas dataframe (df.dtypes).
         # [new dtypes, changed using `astype` function are now considered]
         # vtype = typeset.detect_type(series)
+        original_type = series.schema[0].dataType
+
+        if isinstance(original_type, MapType):
+            spark_type = "MapType"
+        elif isinstance(original_type, ArrayType):
+            spark_type = "ArrayType"
+        else:
+            spark_type = str(original_type)
+
         vtype = {
             "LongType": "Numeric",
             "DoubleType": "Numeric",
@@ -51,7 +62,9 @@ def spark_describe_1d(
             "BooleanType": "Boolean",
             "DateType": "DateTime",
             "TimestampType": "DateTime",
-        }[str(series.schema[0].dataType)]
+            "ArrayType": "Categorical",
+            "MapType": "Categorical",
+        }[spark_type]
 
     return summarizer.summarize(config, series, dtype=vtype)
 

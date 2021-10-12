@@ -1,6 +1,8 @@
 import warnings
 
 from pyspark.sql import DataFrame
+from pyspark.sql.functions import array, map_keys, map_values
+from pyspark.sql.types import MapType
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
@@ -28,16 +30,18 @@ def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
     Returns:
         The preprocessed DataFrame
     """
-    # Treat index as any other column
-    # if (
-    #     not pd.Index(np.arange(0, len(df))).equals(df.index)
-    #     or df.index.dtype != np.int64
-    # ):
-    #     df = df.reset_index()
-    #
-    # # Rename reserved column names
-    # df = rename_index(df)
-    #
-    # # Ensure that columns are strings
-    # df.columns = df.columns.astype("str")
-    return df
+
+    # this converts any MapTypes into ArrayType as MapTypes cannot be groupby-ed
+    column_type_tuple = list(zip(df.columns, [i.dataType for i in df.schema]))
+    converted_dataframe = df
+    for column, col_type in column_type_tuple:
+        if isinstance(col_type, MapType):
+            converted_dataframe = converted_dataframe.withColumn(
+                column,
+                array(
+                    map_keys(converted_dataframe[column]),
+                    map_values(converted_dataframe[column]),
+                ),
+            )
+
+    return converted_dataframe
