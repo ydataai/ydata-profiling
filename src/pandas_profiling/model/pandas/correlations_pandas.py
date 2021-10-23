@@ -8,7 +8,13 @@ import pandas as pd
 from scipy import stats
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.correlations import Kendall, Pearson, Spearman, Cramers, PhiK
+from pandas_profiling.model.correlations import (
+    Cramers,
+    Kendall,
+    Pearson,
+    PhiK,
+    Spearman,
+)
 
 
 @Spearman.compute.register(Settings, pd.DataFrame, dict)
