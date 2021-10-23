@@ -20,7 +20,7 @@ def describe_categorical_1d_spark(
     Returns:
         A dict containing calculated series description values.
     """
-    
+
     # FIXME: cat description
     result = CategoricalColumnResult()
     redact = config.vars.cat.redact
