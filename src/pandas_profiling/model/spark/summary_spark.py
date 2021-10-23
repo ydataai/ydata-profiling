@@ -44,14 +44,19 @@ def spark_describe_1d(
         # Detect variable types from pandas dataframe (df.dtypes).
         # [new dtypes, changed using `astype` function are now considered]
         # vtype = typeset.detect_type(series)
+        if str(series.schema[0].dataType).startswith("ArrayType"):
+            dtype = "ArrayType"
+        else :
+            dtype = str(series.schema[0].dataType)
         vtype = {
             "LongType": "Numeric",
             "DoubleType": "Numeric",
             "StringType": "Categorical",
+            "ArrayType": "Categorical",
             "BooleanType": "Boolean",
             "DateType": "DateTime",
             "TimestampType": "DateTime",
-        }[str(series.schema[0].dataType)]
+        }[dtype]
 
     return summarizer.summarize(config, series, dtype=vtype)
 
