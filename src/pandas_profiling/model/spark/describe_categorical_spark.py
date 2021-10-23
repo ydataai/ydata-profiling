@@ -20,7 +20,11 @@ def describe_categorical_1d_spark(
     Returns:
         A dict containing calculated series description values.
     """
-
+    
     # FIXME: cat description
+    result = CategoricalColumnResult()
+    redact = config.vars.cat.redact
+    if not redact:
+        result.first_rows = df.limit(5).toPandas().squeeze("columns")
 
-    return config, df, CategoricalColumnResult()
+    return config, df, result
