@@ -246,6 +246,7 @@ class Settings(BaseSettings):
     dataset: Dataset = Dataset()
     variables: Variables = Variables()
     infer_dtypes: bool = True
+    include_index: bool = True
 
     # Show the description at each variable (in addition to the overview tab)
     show_variable_description: bool = True

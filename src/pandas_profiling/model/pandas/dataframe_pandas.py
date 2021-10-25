@@ -18,7 +18,8 @@ def pandas_check_dataframe(df: pd.DataFrame) -> None:
 def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     """Preprocess the dataframe
 
-    - Appends the index to the dataframe when it contains information
+    - Drops the index if `include_index` is False
+    - Otherwise, appends the index to the dataframe when it contains information
     - Rename the "index" column to "df_index", if exists
     - Convert the DataFrame's columns to str
 
@@ -29,8 +30,12 @@ def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         The preprocessed DataFrame
     """
+    # Drop index if config specifies
+    if not config.include_index:
+        df = df.reset_index(drop=True)
+
     # Treat index as any other column
-    if (
+    elif (
         not pd.Index(np.arange(0, len(df))).equals(df.index)
         or df.index.dtype != np.int64
     ):
