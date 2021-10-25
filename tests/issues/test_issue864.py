@@ -4,9 +4,10 @@ https://github.com/pandas-profiling/pandas-profiling/issues/
 
 Validate Extreme Values sub-tabs state the correct number of extreme values shown.
 """
-import pandas as pd
-import random
 import fnmatch
+import random
+
+import pandas as pd
 
 from pandas_profiling import ProfileReport
 
@@ -15,7 +16,7 @@ def test_issue864():
     def random_list(n):
         return [random.randrange(0, 100) for _ in range(0, n)]
 
-    df = pd.DataFrame({'a': random_list(30)})
+    df = pd.DataFrame({"a": random_list(30)})
 
     profile = ProfileReport(df)
 
@@ -24,9 +25,9 @@ def test_issue864():
         profile.config.n_extreme_obs = n_extreme_obs
         profile.invalidate_cache()
 
-        reg_min = f'*<a href=* aria-controls=* role=tab data-toggle=tab>Minimum {n_extreme_obs} values</a>*'
-        reg_max = f'*<a href=* aria-controls=* role=tab data-toggle=tab>Maximum {n_extreme_obs} values</a>*'
-        
+        reg_min = f"*<a href=* aria-controls=* role=tab data-toggle=tab>Minimum {n_extreme_obs} values</a>*"
+        reg_max = f"*<a href=* aria-controls=* role=tab data-toggle=tab>Maximum {n_extreme_obs} values</a>*"
+
         html = profile.to_html()
 
         assert fnmatch.fnmatch(html, reg_min)
