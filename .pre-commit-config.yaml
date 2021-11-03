@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/psf/black
-    rev: 21.9b0
+    rev: 21.10b0
     hooks:
     - id: black
       language_version: python3.8
@@ -18,7 +18,7 @@ repos:
     -   id: pyupgrade
         args: ['--py36-plus','--exit-zero-even-if-changed']
 -   repo: https://github.com/pycqa/isort
-    rev: 5.9.3
+    rev: 5.10.0
     hooks:
       - id: isort
         files: '.*'
@@ -28,7 +28,7 @@ repos:
     hooks:
     -   id: check-manifest
 -   repo: https://github.com/PyCQA/flake8
-    rev: "3.9.2"
+    rev: "4.0.1"
     hooks:
     -   id: flake8
         args: [ "--ignore=E203,E501,W291,W503,SFS301,SIM106" ]
@@ -39,7 +39,7 @@ repos:
           - flake8-eradicate
           - flake8-print
 -   repo: https://github.com/PyCQA/flake8
-    rev: "3.9.2"
+    rev: "4.0.1"
     hooks:
     -   id: flake8
         name: flake8-annotations

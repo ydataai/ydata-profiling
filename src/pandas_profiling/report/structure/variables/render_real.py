@@ -250,13 +250,13 @@ def render_real(config: Settings, summary: dict) -> dict:
         [
             FrequencyTable(
                 template_variables["firstn_expanded"],
-                name="Minimum 5 values",
+                name=f"Minimum {config.n_extreme_obs} values",
                 anchor_id=f"{varid}firstn",
                 redact=False,
             ),
             FrequencyTable(
                 template_variables["lastn_expanded"],
-                name="Maximum 5 values",
+                name=f"Maximum {config.n_extreme_obs} values",
                 anchor_id=f"{varid}lastn",
                 redact=False,
             ),

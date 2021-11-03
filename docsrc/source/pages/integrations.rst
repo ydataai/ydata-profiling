@@ -84,7 +84,7 @@ Streamlit
 
 `Streamlit <https://www.streamlit.io>`_ is an open-source Python library made to build web-apps for machine learning and data science.
 
-.. image:: ../_static/streamlit-integration.gif
+.. image:: https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif
 
 .. code-block:: python
 
