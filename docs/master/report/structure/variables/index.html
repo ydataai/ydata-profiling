@@ -593,13 +593,13 @@ __all__ = [
         [
             FrequencyTable(
                 template_variables[&#34;firstn_expanded&#34;],
-                name=&#34;Minimum 5 values&#34;,
+                name=f&#34;Minimum {config.n_extreme_obs} values&#34;,
                 anchor_id=&#34;firstn&#34;,
                 redact=False,
             ),
             FrequencyTable(
                 template_variables[&#34;lastn_expanded&#34;],
-                name=&#34;Maximum 5 values&#34;,
+                name=f&#34;Maximum {config.n_extreme_obs} values&#34;,
                 anchor_id=&#34;lastn&#34;,
                 redact=False,
             ),
@@ -1404,13 +1404,13 @@ __all__ = [
         [
             FrequencyTable(
                 template_variables[&#34;firstn_expanded&#34;],
-                name=&#34;Minimum 5 values&#34;,
+                name=f&#34;Minimum {config.n_extreme_obs} values&#34;,
                 anchor_id=f&#34;{varid}firstn&#34;,
                 redact=False,
             ),
             FrequencyTable(
                 template_variables[&#34;lastn_expanded&#34;],
-                name=&#34;Maximum 5 values&#34;,
+                name=f&#34;Maximum {config.n_extreme_obs} values&#34;,
                 anchor_id=f&#34;{varid}lastn&#34;,
                 redact=False,
             ),
