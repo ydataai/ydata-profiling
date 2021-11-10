@@ -49,6 +49,7 @@ vars:
         coerce_str_to_date: false
         redact: false
         histogram_largest: 50
+        stop_words: []
     bool:
         n_obs: 3
         # string to boolean mapping dict
