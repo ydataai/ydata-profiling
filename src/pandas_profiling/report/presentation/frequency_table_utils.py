@@ -19,7 +19,7 @@ def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -> List[D
 
     # TODO: replace '' by '(Empty)' ?
     # FIXME: Move to spark components
-    if not isinstance(freqtable, pd.DataFrame):
+    if not isinstance(freqtable, (pd.DataFrame, pd.Series)):
         freqtable = freqtable.toPandas()
 
     # FIXME!
