@@ -2,7 +2,7 @@ from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
-from pyspark.sql import DataFrame
+# from pyspark.sql import DataFrame
 
 
 def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -> List[Dict]:
@@ -19,7 +19,7 @@ def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -> List[D
 
     # TODO: replace '' by '(Empty)' ?
     # FIXME: Move to spark components
-    if isinstance(freqtable, DataFrame):
+    if not isinstance(freqtable, pd.DataFrame):
         freqtable = freqtable.toPandas()
 
     # FIXME!
