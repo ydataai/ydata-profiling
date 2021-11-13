@@ -2,6 +2,7 @@
 
 .. include:: ../../README.md
 """
+import importlib.util
 
 import matplotlib
 
@@ -13,7 +14,10 @@ matplotlib.use("svg")
 
 # backend
 import pandas_profiling.model.pandas  # isort:skip  # noqa
-import pandas_profiling.model.spark  # isort:skip  # noqa
+
+spec = importlib.util.find_spec("pyspark")
+if spec is not None:
+    import pandas_profiling.model.spark  # isort:skip  # noqa
 
 
 __all__ = [
