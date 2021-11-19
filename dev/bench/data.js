@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1637259131968,
+  "lastUpdate": 1637345571732,
   "repoUrl": "https://github.com/pandas-profiling/pandas-profiling",
   "entries": {
     "Pandas Profiling Benchmarks": [
@@ -4295,6 +4295,58 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.2168968549282555",
             "extra": "mean: 17.995951631699995 sec\nrounds: 10"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "committer": {
+            "email": "sbrugman@users.noreply.github.com",
+            "name": "Simon Brugman",
+            "username": "sbrugman"
+          },
+          "distinct": true,
+          "id": "2dd039093999e80efaeaa440ee0e79b833d2ffb3",
+          "message": "ci: dependency update",
+          "timestamp": "2021-11-19T17:52:22Z",
+          "tree_id": "8c72baeef55d4f5e2dd99d1cf28f287638945ea8",
+          "url": "https://github.com/pandas-profiling/pandas-profiling/commit/2dd039093999e80efaeaa440ee0e79b833d2ffb3"
+        },
+        "date": 1637345566239,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_explorative",
+            "value": 0.07690112184918267,
+            "unit": "iter/sec",
+            "range": "stddev: 0.1617434787294163",
+            "extra": "mean: 13.00371146679999 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_default",
+            "value": 0.07667788734281912,
+            "unit": "iter/sec",
+            "range": "stddev: 0.18023328849393283",
+            "extra": "mean: 13.041569540499996 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_titanic_minimal",
+            "value": 0.3276823392384216,
+            "unit": "iter/sec",
+            "range": "stddev: 0.07781030936051682",
+            "extra": "mean: 3.051736026800029 sec\nrounds: 10"
+          },
+          {
+            "name": "tests/benchmarks/bench.py::test_rdw_minimal",
+            "value": 0.052523322995862584,
+            "unit": "iter/sec",
+            "range": "stddev: 0.17347342421539708",
+            "extra": "mean: 19.039160947200024 sec\nrounds: 10"
           }
         ]
       }
