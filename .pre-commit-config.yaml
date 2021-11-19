@@ -54,7 +54,7 @@ repos:
             ^src/pandas_profiling/utils/imghdr_patch.py
           )
 -   repo: https://github.com/asottile/blacken-docs
-    rev: v1.11.0
+    rev: v1.12.0
     hooks:
     -   id: blacken-docs
 -   repo: https://github.com/pre-commit/pygrep-hooks
