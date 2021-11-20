@@ -35,7 +35,11 @@ def correlation_data_cat(spark_session):
 def test_spearman_spark(correlation_data_num):
     cfg = Settings()
 
-    res = spark_spearman_compute(cfg, correlation_data_num, {})
+    res = spark_spearman_compute(
+        cfg,
+        correlation_data_num,
+        {"test_num_1": {"type": "Numeric"}, "test_num_2": {"type": "Numeric"}},
+    )
     print(res)
 
     res = pandas_spearman_compute(cfg, correlation_data_num.toPandas(), {})

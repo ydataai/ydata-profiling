@@ -1,8 +1,10 @@
 """Correlations between variables."""
 from typing import Optional
 
+from packaging import version
 import pandas as pd
 import phik
+import pyspark
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.stat import Correlation
 from pyspark.sql import DataFrame
@@ -32,9 +34,13 @@ def spark_spearman_compute(
     # convert to vector column first
     vector_col = "corr_features"
 
-    assembler = VectorAssembler(
-        inputCols=df.columns, outputCol=vector_col, handleInvalid="skip"
-    )
+    assembler_args = {"inputCols": df.columns, "outputCol": vector_col}
+
+    # As handleInvalid was only implemented in spark 2.4.0, we use it only if pyspark version >= 2.4.0
+    if version.parse(pyspark.__version__) >= version.parse("2.4.0"):
+        assembler_args["handleInvalid"] = "skip"
+
+    assembler = VectorAssembler(**assembler_args)
     df_vector = assembler.transform(df).select(vector_col)
 
     # get correlation matrix
