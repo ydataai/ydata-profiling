@@ -5,7 +5,7 @@ repos:
     - id: black
       language_version: python3.8
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.2.1
+    rev: 1.2.2
     hooks:
     - id: nbqa-black
     - id: nbqa-isort
