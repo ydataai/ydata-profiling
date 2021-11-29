@@ -1,5 +1,5 @@
 pytest
-coverage~=6.0
+coverage~=6.2
 codecov
 pytest-cov
 pytest-benchmark~=3.4.1
