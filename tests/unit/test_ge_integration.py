@@ -9,7 +9,7 @@ from pandas_profiling import ProfileReport
 
 @pytest.fixture
 def df():
-    return pd.DataFrame({"num": [1, 2, 3, 4, 5]})
+    return pd.DataFrame({"num": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]})
 
 
 @pytest.fixture(scope="function")

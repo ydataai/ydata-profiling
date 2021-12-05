@@ -317,7 +317,7 @@ def expected_results():
             "sum": 9,
             "variance": 0.0,
             "mode": 1.0,
-            "monotonicity": Monotonicity.INCREASING,
+            "monotonic": Monotonicity.INCREASING,
         },
         "s2": {
             "quantiles": check_is_NaN,
@@ -541,14 +541,14 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
     for k, v in expected_results[column].items():
         if v == check_is_NaN:
             test_condition = k not in results["variables"][column]
-        elif isinstance(v, float):
+        elif isinstance(v, float) or k == "quantiles":
             test_condition = pytest.approx(v) == results["variables"][column][k]
         else:
             test_condition = v == results["variables"][column][k]
 
         assert (
             test_condition
-        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN, {v}"
 
     if results["variables"][column]["type"] in ["Numeric", "DateTime"]:
         assert (

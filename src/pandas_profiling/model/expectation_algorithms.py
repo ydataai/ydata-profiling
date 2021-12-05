@@ -1,5 +1,15 @@
 from typing import Any, Tuple
 
+from pandas_profiling.model.schema import Monotonicity
+
+try:
+    from great_expectations.profile.base import ProfilerTypeMapping
+except ImportError:
+
+    class ProfilerTypeMapping:
+        INT_TYPE_NAMES = ["int"]
+        FLOAT_TYPE_NAMES = ["float"]
+
 
 def generic_expectations(
     name: str, summary: dict, batch: Any, *args
@@ -18,12 +28,11 @@ def generic_expectations(
 def numeric_expectations(
     name: str, summary: dict, batch: Any, *args
 ) -> Tuple[str, dict, Any]:
-    from great_expectations.profile.base import ProfilerTypeMapping
-
     numeric_type_names = (
         ProfilerTypeMapping.INT_TYPE_NAMES + ProfilerTypeMapping.FLOAT_TYPE_NAMES
     )
 
+    batch = batch["generic_expectations"]
     batch.expect_column_values_to_be_in_type_list(
         name,
         numeric_type_names,
@@ -37,15 +46,14 @@ def numeric_expectations(
         },
     )
 
-    if summary["monotonic_increase"]:
-        batch.expect_column_values_to_be_increasing(
-            name, strictly=summary["monotonic_increase_strict"]
-        )
-
-    if summary["monotonic_decrease"]:
-        batch.expect_column_values_to_be_decreasing(
-            name, strictly=summary["monotonic_decrease_strict"]
-        )
+    if summary["monotonic"] == Monotonicity.INCREASING:
+        batch.expect_column_values_to_be_increasing(name, strictly=False)
+    elif summary["monotonic"] == Monotonicity.INCREASING_STRICT:
+        batch.expect_column_values_to_be_increasing(name, strictly=True)
+    elif summary["monotonic"] == Monotonicity.DECREASING:
+        batch.expect_column_values_to_be_decreasing(name, strictly=False)
+    elif summary["monotonic"] == Monotonicity.DECREASING_STRICT:
+        batch.expect_column_values_to_be_decreasing(name, strictly=True)
 
     if any(k in summary for k in ["min", "max"]):
         batch.expect_column_values_to_be_between(

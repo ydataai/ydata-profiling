@@ -1,10 +1,10 @@
 """Correlations between variables."""
 from typing import Optional
 
-from packaging import version
 import pandas as pd
 import phik
 import pyspark
+from packaging import version
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.stat import Correlation
 from pyspark.sql import DataFrame

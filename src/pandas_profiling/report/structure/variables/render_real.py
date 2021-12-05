@@ -228,7 +228,7 @@ def render_real(config: Settings, summary: dict) -> dict:
         },
     ]
 
-    if "monotonicity" in summary:
+    if summary["monotonic"] is not None:
         stats.append(
             {
                 "name": "Monotonicity",

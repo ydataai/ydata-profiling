@@ -41,7 +41,7 @@ class Handler:
         funcs = self.mapping.get(dtype, [])
         results = {"type": dtype}
         for i, fnx in enumerate(funcs):
-            cfg, series, res = fnx(*args, results)
+            cfg, series, res = fnx(*args, results, **kwargs)
             results[fnx.__name__] = res
             if type(res) != bool:
                 args = (cfg, series)

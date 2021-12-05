@@ -1,4 +1,4 @@
-from typing import Any, List, TypeVar
+from typing import Any, List
 
 from multimethod import multimethod
 

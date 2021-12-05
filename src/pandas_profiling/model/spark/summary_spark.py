@@ -46,7 +46,7 @@ def spark_describe_1d(
         # vtype = typeset.detect_type(series)
         if str(series.schema[0].dataType).startswith("ArrayType"):
             dtype = "ArrayType"
-        else :
+        else:
             dtype = str(series.schema[0].dataType)
         vtype = {
             "LongType": "Numeric",

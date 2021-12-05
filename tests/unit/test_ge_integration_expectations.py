@@ -12,6 +12,7 @@ from pandas_profiling.model.expectation_algorithms import (
     path_expectations,
     url_expectations,
 )
+from pandas_profiling.model.schema import Monotonicity
 
 
 @pytest.fixture(scope="function")
@@ -51,22 +52,17 @@ def test_numeric_expectations(batch):
     numeric_expectations(
         "column",
         {
-            "monotonic_increase": True,
-            "monotonic_increase_strict": True,
-            "monotonic_decrease_strict": False,
-            "monotonic_decrease": True,
+            "monotonic": Monotonicity.INCREASING_STRICT,
             "min": -1,
             "max": 5,
         },
-        batch,
+        {"generic_expectations": batch},
     )
     batch.expect_column_values_to_be_in_type_list.assert_called_once()
     batch.expect_column_values_to_be_increasing.assert_called_once_with(
         "column", strictly=True
     )
-    batch.expect_column_values_to_be_decreasing.assert_called_once_with(
-        "column", strictly=False
-    )
+    batch.expect_column_values_to_be_decreasing.assert_not_called()
     batch.expect_column_values_to_be_between.assert_called_once_with(
         "column",
         min_value=-1,
@@ -79,12 +75,9 @@ def test_numeric_expectations_min(batch):
     numeric_expectations(
         "column",
         {
-            "monotonic_increase": False,
-            "monotonic_increase_strict": False,
-            "monotonic_decrease_strict": False,
-            "monotonic_decrease": False,
+            "monotonic": Monotonicity.NOT_MONOTONIC,
         },
-        batch,
+        {"generic_expectations": batch},
     )
     batch.expect_column_values_to_be_in_type_list.assert_called_once()
     batch.expect_column_values_to_be_increasing.assert_not_called()
@@ -98,7 +91,7 @@ def test_categorical_expectations(batch):
         {
             "n_distinct": 1,
             "p_distinct": 0.1,
-            "value_counts_without_nan": {"val1": 1, "val2": 2},
+            "value_counts": {"val1": 1, "val2": 2},
         },
         batch,
     )
