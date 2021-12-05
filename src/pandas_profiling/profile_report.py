@@ -428,7 +428,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return ""
 
     def get_default_settings(self, df) -> Settings:
-        if isinstance(df, pd.DataFrame) or isinstance(df, pd.Series):
+        if isinstance(df, (pd.DataFrame, pd.Series)):
             return PandasSettings()
         else:
             return SparkSettings()
