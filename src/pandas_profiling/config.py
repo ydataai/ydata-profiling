@@ -57,6 +57,7 @@ class CatVars(BaseModel):
     coerce_str_to_date: bool = False
     redact: bool = False
     histogram_largest: int = 50
+    stop_words: List[str] = []
 
 
 class BoolVars(BaseModel):
