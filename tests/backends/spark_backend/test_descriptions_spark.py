@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling.config import Settings
+from pandas_profiling.config import SparkSettings
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import *
 from pandas_profiling.model.typeset import ProfilingTypeSet
@@ -382,20 +382,7 @@ def test_describe_spark_df(
     typeset,
     spark_session,
 ):
-    cfg = Settings()
-    cfg.vars.num.low_categorical_threshold = 0
-    cfg.infer_dtypes = False
-    cfg.correlations["pearson"].calculate = False
-    cfg.correlations["spearman"].calculate = False
-    cfg.correlations["kendall"].calculate = False
-    cfg.correlations["cramers"].calculate = False
-    cfg.correlations["phi_k"].calculate = False
-    cfg.interactions.continuous = False
-    cfg.missing_diagrams["bar"] = False
-    cfg.missing_diagrams["dendrogram"] = False
-    cfg.missing_diagrams["heatmap"] = False
-    cfg.missing_diagrams["matrix"] = False
-
+    cfg = SparkSettings()
     # cfg["spark"]["quantile_error"].set(0)
 
     spark = spark_session
