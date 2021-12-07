@@ -5,7 +5,6 @@ from typing import Any, Dict, List, Optional
 import matplotlib
 from pydantic import BaseModel, BaseSettings, Field
 
-matplotlib.use("Agg")
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
