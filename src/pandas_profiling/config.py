@@ -1,8 +1,6 @@
 """Configuration for the package."""
 from enum import Enum
 from typing import Any, Dict, List, Optional
-
-import matplotlib
 from pydantic import BaseModel, BaseSettings, Field
 
 
