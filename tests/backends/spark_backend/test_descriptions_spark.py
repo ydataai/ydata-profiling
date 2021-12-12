@@ -382,10 +382,12 @@ def test_describe_spark_df(
     typeset,
     spark_session,
 ):
-    cfg = SparkSettings()
-    # cfg["spark"]["quantile_error"].set(0)
 
-    spark = spark_session
+    cfg = SparkSettings()
+
+    # disable correlations for description test
+    cfg.correlations["pearson"].calculate = False
+    cfg.correlations["spearman"].calculate = False
 
     if column == "mixed":
         describe_data[column] = [str(i) for i in describe_data[column]]
