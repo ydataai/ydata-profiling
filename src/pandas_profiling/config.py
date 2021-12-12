@@ -322,8 +322,8 @@ class SparkSettings(Settings):
         "cramers": Correlation(key="cramers"),
         "phi_k": Correlation(key="phi_k"),
     }
-    correlations["pearson"].calculate = False
-    correlations["spearman"].calculate = False
+    correlations["pearson"].calculate = True
+    correlations["spearman"].calculate = True
     correlations["kendall"].calculate = False
     correlations["cramers"].calculate = False
     correlations["phi_k"].calculate = False
