@@ -40,4 +40,9 @@ def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
     #
     # # Ensure that columns are strings
     # df.columns = df.columns.astype("str")
+
+    if config.persist:
+        # persist dataframe to improve speed
+        df.persist()
+
     return df

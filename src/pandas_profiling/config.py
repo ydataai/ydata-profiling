@@ -309,6 +309,9 @@ class PandasSettings(Settings):
 
 class SparkSettings(Settings):
     # TO-DO write description
+
+    persist: bool = False
+
     vars: Univariate = Univariate()
 
     vars.num.low_categorical_threshold = 0
