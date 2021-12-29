@@ -13,7 +13,7 @@ from pandas_profiling.model.correlations import (
     calculate_correlation,
     get_active_correlations,
 )
-from pandas_profiling.model.dataframe import check_dataframe, preprocess
+from pandas_profiling.model.dataframe import check_dataframe, cleanup, preprocess
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
 from pandas_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
@@ -190,6 +190,9 @@ def describe(
         pbar.set_postfix_str("Completed")
 
         date_end = datetime.utcnow()
+
+    # run cleanup function
+    _ = cleanup(config, df)
 
     analysis = {
         "title": config.title,

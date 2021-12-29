@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.dataframe import check_dataframe, preprocess
+from pandas_profiling.model.dataframe import check_dataframe, cleanup, preprocess
 from pandas_profiling.utils.dataframe import rename_index
 
 
@@ -41,4 +41,9 @@ def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
 
     # Ensure that columns are strings
     df.columns = df.columns.astype("str")
+    return df
+
+
+@cleanup.register
+def pandas_cleanup(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     return df

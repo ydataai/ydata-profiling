@@ -13,3 +13,8 @@ def check_dataframe(df: Any) -> None:
 @multimethod
 def preprocess(config: Settings, df: Any) -> Any:
     return df
+
+
+@multimethod
+def cleanup(config: Settings, df: Any) -> Any:
+    return df

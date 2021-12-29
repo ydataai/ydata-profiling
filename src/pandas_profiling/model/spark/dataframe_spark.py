@@ -3,7 +3,8 @@ import warnings
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.dataframe import check_dataframe, preprocess
+from pandas_profiling.model.dataframe import check_dataframe, cleanup, preprocess
+from pandas_profiling.model.spark.persist import GlobalPersistHandler
 
 
 @check_dataframe.register
@@ -40,4 +41,12 @@ def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
     #
     # # Ensure that columns are strings
     # df.columns = df.columns.astype("str")
+    return df
+
+
+@cleanup.register
+def spark_cleanup(config: Settings, df: DataFrame) -> DataFrame:
+
+    GlobalPersistHandler.unpersist_all()
+
     return df
