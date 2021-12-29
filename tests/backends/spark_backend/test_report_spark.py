@@ -20,5 +20,5 @@ def correlation_data_num(spark_session):
 def test_report_spark(correlation_data_num):
 
     a = ProfileReport(correlation_data_num)
-    
+
     a.to_file("test.html", silent=False)
