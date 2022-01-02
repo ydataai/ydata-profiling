@@ -329,7 +329,7 @@ def alert_value(value: float) -> bool:
 
 
 def skewness_alert(v: float, threshold: int) -> bool:
-    return not np.isnan(v) and (v < (-1 * threshold) or v > threshold)
+    return not pd.isnull(v) and (v < (-1 * threshold) or v > threshold)
 
 
 def type_date_alert(series: pd.Series) -> bool:
