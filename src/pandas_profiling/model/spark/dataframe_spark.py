@@ -28,16 +28,27 @@ def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
     Returns:
         The preprocessed DataFrame
     """
-    # Treat index as any other column
-    # if (
-    #     not pd.Index(np.arange(0, len(df))).equals(df.index)
-    #     or df.index.dtype != np.int64
-    # ):
-    #     df = df.reset_index()
-    #
-    # # Rename reserved column names
-    # df = rename_index(df)
-    #
-    # # Ensure that columns are strings
-    # df.columns = df.columns.astype("str")
-    return df
+
+    def _check_column_map_type(df: DataFrame, column_name: str) -> bool:
+        return str(df.select(column_name).schema[0].dataType).startswith("MapType")
+
+    columns_to_remove = list(
+        filter(lambda x: _check_column_map_type(df, x), df.columns)
+    )
+
+    # raise warning and filter if this isn't empty
+    if columns_to_remove:
+        warnings.warn(
+            f"""spark-profiling does not handle MapTypes. Column(s) { ','.join(columns_to_remove) } will be ignored.
+            To fix this, consider converting your MapType into a StructTypes of StructFields i.e. 
+            {{'key1':'value1',...}} -> [('key1','value1'), ...], or extracting the key,value pairs out
+            into individual columns using pyspark.sql.functions.explode.
+            """
+        )
+        columns_to_keep = list(
+            filter(lambda x: not _check_column_map_type(df, x), df.columns)
+        )
+        return df.select(*columns_to_keep)
+
+    else:
+        return df
