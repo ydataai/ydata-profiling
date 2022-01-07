@@ -138,6 +138,7 @@ plot:
     pie:
         # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
         max_unique: 10
+        colors: null # use null for default or give a list of matplotlib recognised strings      
 
     histogram:
         x_axis_labels: true

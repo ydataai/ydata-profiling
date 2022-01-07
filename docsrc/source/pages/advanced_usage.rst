@@ -165,6 +165,8 @@ It's possible to disable certain groups of features through configuration shorth
 
 Customise plots
 ---------------
+Plot rendering options
+^^^^^^^^^^^^^^^^^^^^^^
 A way how to pass arguments to the underlying matplotlib is to use the ``plot`` argument. It is possible to change the default format of images to png (default svg) using the key-pair ``image_format: "png"`` and also the resolution of the image using ``dpi: 800``.
 An example would be:
 
@@ -176,6 +178,29 @@ An example would be:
         explorative=True,
         plot={"dpi": 200, "image_format": "png"},
     )
+
+Pie charts
+^^^^^^^^^^
+Pie charts are used to plot the frequency of categories in categorical (or boolean) features.
+
+By default, a feature is considered as categorical if it does not have more than 10 distinct values.
+This threshold can be configured with the ``plot.pie.max_unique`` setting.
+
+.. code-block:: python
+    profile = ProfileReport(pd.DataFrame(["a", "b", "c"]))
+    # Changing the *max_unique* threshold to 2 will make feature non-categorical
+    profile.config.plot.pie.max_unique = 2
+
+If the feature is not considered as categorical, the pie chart will not be displayed.
+
+All pie charts can therefore be removed by setting: ``plot.pie.max_unique = 0``.
+
+The pie chart colors can be configured to any `recognised matplotlib colour <https://matplotlib.org/stable/tutorials/colors/colors.html>`_
+with the ``plot.pie.colors`` setting. 
+
+.. code-block:: python
+    profile = ProfileReport(pd.DataFrame([1, 2, 3]))
+    profile.config.plot.pie.colors = ["gold", "b", "#FF796C"]
 
 Customise correlation matrix
 -----------------------------
