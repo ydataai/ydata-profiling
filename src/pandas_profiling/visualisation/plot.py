@@ -302,6 +302,19 @@ def scatter_pairwise(
 def pie_plot(
     config: Settings, data: pd.Series, legend_kws: Optional[dict] = None
 ) -> str:
+    """Generate pie plot showing proportions of categorical and boolean
+    variables. Modify colors by setting 'config.plot.pie.colors' to a
+    list of valid matplotib colors.
+    https://matplotlib.org/stable/tutorials/colors/colors.html
+
+    Args:
+        config (Settings): a config
+        data (pd.Series): the categories and their frequency
+        legend_kws (Optional[dict], optional): Defaults to None.
+
+    Returns:
+        str: pie plot encoded in text
+    """
     if legend_kws is None:
         legend_kws = {}
 
@@ -313,7 +326,12 @@ def pie_plot(
 
         return my_autopct
 
-    wedges, _, _ = plt.pie(data, autopct=make_autopct(data), textprops={"color": "w"})
+    wedges, _, _ = plt.pie(
+        data,
+        autopct=make_autopct(data),
+        textprops={"color": "w"},
+        colors=config.plot.pie.colors,
+    )
     plt.legend(wedges, data.index.values, **legend_kws)
 
     return plot_360_n0sc0pe(config)

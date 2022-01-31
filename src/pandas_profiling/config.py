@@ -133,6 +133,11 @@ class Pie(BaseModel):
     # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
     max_unique: int = 10
 
+    # Colors shoud be a list of matplotlib recognised strings:
+    # --> https://matplotlib.org/stable/tutorials/colors/colors.html
+    # --> matplotlib defaults are used by default
+    colors: Optional[List[str]] = None
+
 
 class Plot(BaseModel):
     missing: MissingPlot = MissingPlot()
