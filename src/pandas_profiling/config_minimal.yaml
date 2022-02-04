@@ -148,6 +148,9 @@ plot:
         # Maximum number of bins (when bins=0)
         max_bins: 250
 
+        # Do the histogram with a sample
+        sample: False
+
 # The number of observations to show
 n_obs_unique: 5
 n_extreme_obs: 5

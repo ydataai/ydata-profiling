@@ -6,10 +6,13 @@ from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.schema import NumericColumnResult
-from pandas_profiling.model.summary_algorithms import describe_numeric_1d
+from pandas_profiling.model.summary_algorithms import (
+    describe_numeric_1d,
+    histogram_compute,
+    histogram_spark_compute,
+)
 
-
-def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
+def numeric_stats_spark(df: DataFrame) -> dict:
     column = df.columns[0]
 
     expr = [
@@ -38,10 +41,11 @@ def describe_numeric_1d_spark(
     Returns:
         A dict containing calculated series description values.
     """
+    column_name = df.columns[0]
 
     result = NumericColumnResult()
 
-    stats = numeric_stats_spark(df, summary)
+    stats = numeric_stats_spark(df)
     # summary.update(numeric_stats)
     result.min = stats["min"]
     result.max = stats["max"]
@@ -55,7 +59,7 @@ def describe_numeric_1d_spark(
     value_counts = summary["describe_counts"].value_counts
 
     n_infinite = (
-        value_counts.where(F.col(df.columns[0]).isin([np.inf, -np.inf]))
+        value_counts.where(F.col(column_name).isin([np.inf, -np.inf]))
         .agg(F.sum(F.col("count")).alias("count"))
         .first()
     )
@@ -65,7 +69,7 @@ def describe_numeric_1d_spark(
         n_infinite = n_infinite["count"]
     result.n_infinite = n_infinite
 
-    n_zeros = value_counts.where(f"{df.columns[0]} = 0").first()
+    n_zeros = value_counts.where(f"{column_name} = 0").first()
     if n_zeros is None:
         n_zeros = 0
     else:
@@ -73,7 +77,7 @@ def describe_numeric_1d_spark(
     result.n_zeros = n_zeros
 
     n_negative = (
-        value_counts.where(f"{df.columns[0]} < 0")
+        value_counts.where(f"{column_name} < 0")
         .agg(F.sum(F.col("count")).alias("count"))
         .first()
     )
@@ -91,7 +95,7 @@ def describe_numeric_1d_spark(
         for percentile, value in zip(
             quantiles,
             df.stat.approxQuantile(
-                f"{df.columns[0]}",
+                f"{column_name}",
                 quantiles,
                 quantile_threshold,
             ),
@@ -101,7 +105,7 @@ def describe_numeric_1d_spark(
     median = result.quantiles["50%"]
 
     result.mad = df.select(
-        (F.abs(F.col(f"{df.columns[0]}").cast("int") - median)).alias("abs_dev")
+        (F.abs(F.col(f"{column_name}").cast("int") - median)).alias("abs_dev")
     ).stat.approxQuantile("abs_dev", [0.5], quantile_threshold)[0]
 
     # FIXME: move to fmt
@@ -119,20 +123,28 @@ def describe_numeric_1d_spark(
     # summary["monotonic"] =
 
     # this function only displays the top N (see config) values for a histogram.
-    # This might be confusing if there are a lot of values of equal magnitude, but we cannot bring all the values to
-    # display in pandas display
-    # the alternative is to do this in spark natively, but it is not trivial
-    # summary.update(
-    #     histogram_compute(
-    #         value_counts.index.values,
-    #         summary["n_distinct"],
-    #         weights=value_counts.values,
-    #     )
-    # )
 
-    # buckets = config.plot.histogram.bins
-    # if not isinstance(buckets, int):
-    #     buckets = 50
-    # print('histogram', value_counts.rdd.values().histogram(buckets=None))
+    sample = config.plot.histogram.sample
+
+    if sample:
+        result.histogram = histogram_compute(
+            config,
+            value_counts.index.values,
+            summary["n_distinct"],
+            weights=value_counts.values,
+        )
+
+    else:
+        n_unique = summary["describe_counts"].value_counts.where("count == 1").count()
+        value_counts, bins = histogram_spark_compute(config,
+                                                     df=df,
+                                                     minim= result.min,
+                                                     maxim=result.max,
+                                                     n_unique=n_unique,
+                                                     )
+
+        result.histogram = np.histogram(value_counts.index.values,
+                                        bins=bins,
+                                        weights=value_counts.values)
 
     return config, df, result
