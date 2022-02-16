@@ -78,6 +78,7 @@ def describe_data():
             [1, 2],
         ],
         "mixed": [1, 2, "a", 4, 5, 6, 7, 8, 9],
+        "dict": [{"hello": "there", "General": "Kenobi"}],
     }
     return data
 
@@ -352,6 +353,7 @@ def expected_results():
             "n_missing": 0,
             "p_missing": 0,
         },
+        "dict": {},
     }
 
 
@@ -372,6 +374,7 @@ def expected_results():
         "bool_01_with_nan",
         "list",
         "mixed",
+        "dict",
     ],
 )
 def test_describe_spark_df(
