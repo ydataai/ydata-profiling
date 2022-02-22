@@ -17,6 +17,7 @@
    pages/integrations
    pages/great_expectations_integration
    pages/changelog
+   pages/history
 
 .. toctree::
    :maxdepth: 3
