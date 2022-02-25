@@ -13,7 +13,7 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import pie_plot
+from pandas_profiling.visualisation.plot import cat_frequency_plot
 
 
 def render_boolean(config: Settings, summary: dict) -> dict:
@@ -83,19 +83,20 @@ def render_boolean(config: Settings, summary: dict) -> dict:
         )
     ]
 
-    max_unique = config.plot.pie.max_unique
-    if max_unique > 0:
+    show = config.plot.cat_freq.show
+    max_unique = config.plot.cat_freq.max_unique
+
+    if show and (max_unique > 0):
         items.append(
             Image(
-                pie_plot(
+                cat_frequency_plot(
                     config,
                     summary["value_counts_without_nan"],
-                    legend_kws={"loc": "upper right"},
                 ),
                 image_format=image_format,
-                alt="Chart",
-                name="Chart",
-                anchor_id=f"{varid}pie_chart",
+                alt="Category Frequency Plot",
+                name="Category Frequency Plot",
+                anchor_id=f"{varid}cat_frequency_plot",
             )
         )
 

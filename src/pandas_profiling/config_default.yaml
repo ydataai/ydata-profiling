@@ -135,8 +135,9 @@ plot:
         # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
         force_labels: true
 
-    pie:
-        # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+    cat_frequency:
+        show: true  # if false, the category frequency plot is turned off
+        type: 'bar' # options: 'bar', 'pie'
         max_unique: 10
         colors: null # use null for default or give a list of matplotlib recognised strings      
 
