@@ -96,12 +96,10 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
         }
 
         template_variables.update(summary)
-        
+
         # Per type template variables
         render_map_type = render_map.get(summary["type"], "Unsupported")
-        template_variables.update(
-            render_map_type(config, template_variables)
-        )
+        template_variables.update(render_map_type(config, template_variables))
 
         # Ignore these
         if reject_variables:

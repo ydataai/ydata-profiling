@@ -129,11 +129,15 @@ class Histogram(BaseModel):
     x_axis_labels: bool = True
 
 
-class Pie(BaseModel):
-    # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+class CatFrequencyPlot(BaseModel):
+    show: bool = True  # if false, the category frequency plot is turned off
+    type: str = "bar"  # options: 'bar', 'pie'
+
+    # The cat frequency plot is only rendered if the number of distinct values is
+    # smaller or equal to "max_unique"
     max_unique: int = 10
 
-    # Colors shoud be a list of matplotlib recognised strings:
+    # Colors should be a list of matplotlib recognised strings:
     # --> https://matplotlib.org/stable/tutorials/colors/colors.html
     # --> matplotlib defaults are used by default
     colors: Optional[List[str]] = None
@@ -143,11 +147,10 @@ class Plot(BaseModel):
     missing: MissingPlot = MissingPlot()
     image_format: ImageType = ImageType.svg
     correlation: CorrelationPlot = CorrelationPlot()
-    # PNG dpi
-    dpi: int = 800
+    dpi: int = 800  # PNG dpi
     histogram: Histogram = Histogram()
     scatter_threshold: int = 1000
-    pie: Pie = Pie()
+    cat_freq: CatFrequencyPlot = CatFrequencyPlot()
 
 
 class Theme(Enum):
