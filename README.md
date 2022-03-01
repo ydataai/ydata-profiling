@@ -1,22 +1,22 @@
 # Pandas Profiling
 
-![Pandas Profiling Logo Header](https://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png)
+![Pandas Profiling Logo Header](https://pandas-profiling.ydata.ai/docs/assets/logo_header.png)
 
 [![Build Status](https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master)](https://travis-ci.com/pandas-profiling/pandas-profiling)
 [![Code Coverage](https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/pandas-profiling/pandas-profiling)
-[![Release Version](https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg)](https://github.com/pandas-profiling/pandas-profiling/releases)
+[![Release Version](https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg)](https://github.com/ydataai/pandas-profiling/releases)
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 
 <p align="center">
-  <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/">Documentation</a>
+  <a href="https://pandas-profiling.ydata.ai/docs/master/rtd/">Documentation</a>
   |
-  <a href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Slack</a>
+  <a href="https://slack.ydata.ai">Slack</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
   |
-  <a href="https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog">Latest changelog</a>
+  <a href="https://pandas-profiling.ydata.ai/docs/master/rtd/pages/changelog.html#changelog">Latest changelog</a>
 
 </p>
 
@@ -66,28 +66,28 @@ _Contents:_ **[Examples](#examples)** |
 
 The following examples can give you an impression of what the package can do:
 
-* [Census Income](https://pandas-profiling.github.io/pandas-profiling/examples/master/census/census_report.html) (US Adult Census data relating income)
-* [NASA Meteorites](https://pandas-profiling.github.io/pandas-profiling/examples/master/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
-* [Titanic](https://pandas-profiling.github.io/pandas-profiling/examples/master/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
-* [NZA](https://pandas-profiling.github.io/pandas-profiling/examples/master/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
-* [Stata Auto](https://pandas-profiling.github.io/pandas-profiling/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
-* [Vektis](https://pandas-profiling.github.io/pandas-profiling/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
-* [Colors](https://pandas-profiling.github.io/pandas-profiling/examples/master/colors/colors_report.html) (a simple colors dataset)
-* [UCI Bank Dataset](https://pandas-profiling.github.io/pandas-profiling/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
-* [RDW](https://pandas-profiling.github.io/pandas-profiling/examples/master/rdw/rdw.html) (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)
+* [Census Income](https://pandas-profiling.ydata.ai/examples/master/census/census_report.html) (US Adult Census data relating income)
+* [NASA Meteorites](https://pandas-profiling.ydata.ai/examples/master/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
+* [Titanic](https://pandas-profiling.ydata.ai/examples/master/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
+* [NZA](https://pandas-profiling.ydata.ai/examples/master/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
+* [Stata Auto](https://pandas-profiling.ydata.ai/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
+* [Vektis](https://pandas-profiling.ydata.ai/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
+* [Colors](https://pandas-profiling.ydata.ai/examples/master/colors/colors_report.html) (a simple colors dataset)
+* [UCI Bank Dataset](https://pandas-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
+* [RDW](https://pandas-profiling.ydata.ai/examples/master/rdw/rdw.html) (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)
 
 
 Specific features:
 
-* [Russian Vocabulary](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/russian_vocabulary.html) (demonstrates text analysis)
-* [Cats and Dogs](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/cats-and-dogs.html) (demonstrates image analysis from the file system)
-* [Celebrity Faces](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/celebrity-faces.html) (demonstrates image analysis with EXIF information)
-* [Website Inaccessibility](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/website_inaccessibility_report.html) (demonstrates URL analysis)
-* [Orange prices](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/united_report.html) and [Coal prices](https://pandas-profiling.github.io/pandas-profiling/examples/master/features/flatly_report.html) (showcases report themes)
+* [Russian Vocabulary](https://pandas-profiling.ydata.ai/examples/master/features/russian_vocabulary.html) (demonstrates text analysis)
+* [Cats and Dogs](https://pandas-profiling.ydata.ai/examples/master/features/cats-and-dogs.html) (demonstrates image analysis from the file system)
+* [Celebrity Faces](https://pandas-profiling.ydata.ai/examples/master/features/celebrity-faces.html) (demonstrates image analysis with EXIF information)
+* [Website Inaccessibility](https://pandas-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (demonstrates URL analysis)
+* [Orange prices](https://pandas-profiling.ydata.ai/examples/master/features/united_report.html) and [Coal prices](https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html) (showcases report themes)
 
 Tutorials:
 
-* [Tutorial: report structure using Kaggle data (advanced)](https://pandas-profiling.github.io/pandas-profiling/examples/master/tutorials/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/tutorials/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftutorials%2Fmodify_report_structure.ipynb)
+* [Tutorial: report structure using Kaggle data (advanced)](https://pandas-profiling.ydata.ai/examples/master/tutorials/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/tutorials/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftutorials%2Fmodify_report_structure.ipynb)
 
 
 ## Installation
@@ -107,7 +107,7 @@ pip install pandas-profiling[notebook]
 Alternatively, you could install the latest version directly from Github:
 
 ```sh
-pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
+pip install https://github.com/ydataai/pandas-profiling/archive/master.zip
 ```    
     
 ### Using conda
@@ -123,7 +123,7 @@ conda install -c conda-forge pandas-profiling
 
 ### From source
 
-Download the source code by cloning the repository or by pressing ['Download ZIP'](https://github.com/pandas-profiling/pandas-profiling/archive/master.zip) on this page. 
+Download the source code by cloning the repository or by pressing ['Download ZIP'](https://github.com/ydataai/pandas-profiling/archive/master.zip) on this page. 
 
 Install by navigating to the proper directory and running:
 
@@ -133,7 +133,7 @@ python setup.py install
 
 ## Documentation
 
-The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/). Previous documentation is still available [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/).
+The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.ydata.ai/docs/master/rtd/). Previous documentation is still available [here](https://pandas-profiling.ydata.ai/docs/master/).
 
 ### Getting started
 
@@ -153,20 +153,20 @@ profile = ProfileReport(df, title="Pandas Profiling Report")
 
 ### Explore deeper
 
-You can configure the profile report in any way you like. The example code below loads the explorative configuration, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml).
+You can configure the profile report in any way you like. The example code below loads the explorative configuration, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the [default configuration file](https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml).
 
 ```python
 profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 ```
 
-Learn more about configuring `pandas-profiling` on the [Advanced usage](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html) page.
+Learn more about configuring `pandas-profiling` on the [Advanced usage](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/advanced_usage.html) page.
 
 #### Jupyter Notebook
 
 We recommend generating reports interactively by using the Jupyter notebook. 
 There are two interfaces (see animations below): through widgets and through a HTML report.
 
-<img alt="Notebook Widgets" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/widgets.gif" width="800" />
+<img alt="Notebook Widgets" src="https://pandas-profiling.ydata.ai/docs/master/assets/widgets.gif" width="800" />
 
 This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 
@@ -176,7 +176,7 @@ profile.to_widgets()
 
 The HTML report can be included in a Jupyter notebook:
 
-<img alt="HTML" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/iframe.gif" width="800" />
+<img alt="HTML" src="https://pandas-profiling.ydata.ai/docs/master/assets/iframe.gif" width="800" />
 
 Run the following code:
 
@@ -213,7 +213,7 @@ profile = ProfileReport(large_dataset, minimal=True)
 profile.to_file("output.html")
 ```
 
-Benchmarks are available [here](https://pandas-profiling.github.io/pandas-profiling/dev/bench/).
+Benchmarks are available [here](https://pandas-profiling.ydata.ai/dev/bench/).
 
 ### Command line usage
 
@@ -234,9 +234,9 @@ A set of options is available in order to adapt the report generated.
 * `progress_bar` (`bool`): If True, `pandas-profiling` will display a progress bar.
 * `infer_dtypes` (`bool`): When `True` (default) the `dtype` of variables are inferred using `visions` using the typeset logic (for instance a column that has integers stored as string will be analyzed as if being numeric).
 
-More settings can be found in the [default configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml) and [minimal configuration file](https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml).
+More settings can be found in the [default configuration file](https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml) and [minimal configuration file](https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml).
 
-You find the configuration docs on the advanced usage page [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/advanced_usage.html)
+You find the configuration docs on the advanced usage page [here](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/advanced_usage.html)
 
 **Example**
 ```python
@@ -251,9 +251,9 @@ Need help? Want to share a perspective? Want to report a bug? Ideas for collabor
 You can reach out via the following channels:
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
-- [Github Issues](https://github.com/pandas-profiling/pandas-profiling/issues): bugs, proposals for change, feature requests
-- [Slack](https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA): general chat, questions, collaboration
-- [Email](mailto:pandasprofiling@gmail.com): project collaboration or sponsoring
+- [Github Issues](https://github.com/ydataai/pandas-profiling/issues): bugs, proposals for change, feature requests
+- [Slack](https://slack.ydata.ai): general chat, questions, collaboration
+- [Email](mailto:developers@ydata.ai): project collaboration or sponsoring
 
 ## Go beyond
 
@@ -302,7 +302,7 @@ This a world-class open-source library that helps you to maintain data quality a
 Great Expectations allows you to create Expectations (which are basically unit tests for your data) and Data Docs (conveniently shareable HTML data reports).
 `pandas-profiling` features a method to create a suite of Expectations based on the results of your ProfileReport, which you can store, and use to validate another (or future) dataset.
 
-You can find more details on the Great Expectations integration [here](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/great_expectations_integration.html)
+You can find more details on the Great Expectations integration [here](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/great_expectations_integration.html)
 
 </td>
 </tr>
@@ -316,7 +316,7 @@ Maintaining and developing the open-source code for pandas-profiling, with milli
 <tr>
 <td>
 
-<img alt="Lambda Labs" src="https://pandas-profiling.github.io/pandas-profiling/docs/master/assets/lambda-labs.png" width="500" />
+<img alt="Lambda Labs" src="https://pandas-profiling.ydata.ai/docs/master/assets/lambda-labs.png" width="500" />
 
 </td>
 <td>
@@ -341,14 +341,14 @@ Types are a powerful abstraction for effective data analysis, that goes beyond t
 
 We have developed a type system for Python, tailored for data analysis: [visions](https://github.com/dylan-profiler/visions).
 Choosing an appropriate typeset can both improve the overall expressiveness and reduce the complexity of your analysis/code.
-To learn more about `pandas-profiling`'s type system, check out the default implementation [here](https://github.com/pandas-profiling/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py).
+To learn more about `pandas-profiling`'s type system, check out the default implementation [here](https://github.com/ydataai/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py).
 In the meantime, user customized summarizations and type definitions are now fully supported - if you have a specific use-case please reach out with ideas or a PR!
 
 ## Contributing
 
-Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html).
+Read on getting involved in the [Contribution Guide](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/contribution_guidelines.html).
 
-A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA).
+A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://slack.ydata.ai).
 
 ## Editor integration
 
@@ -374,7 +374,7 @@ A low threshold place to ask questions or start contributing is by reaching out 
     - Arguments: `"$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"`
     - Working Directory: `$ProjectFileDir$`
   
-<img alt="PyCharm Integration" src="https://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png" width="400" />
+<img alt="PyCharm Integration" src="https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png" width="400" />
   
 To use the PyCharm Integration, right click on any dataset file:
 
@@ -392,7 +392,7 @@ You need [Python 3](https://python3statement.org/) to run this package. Other de
 
 | Filename | Requirements|
 |----------|-------------|
-| [requirements.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements.txt) | Package requirements|
-| [requirements-dev.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt)  |  Requirements for development|
-| [requirements-test.txt](https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt) | Requirements for testing|
-| [setup.py](https://github.com/pandas-profiling/pandas-profiling/blob/master/setup.py) | Requirements for Widgets etc. |
+| [requirements.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements.txt) | Package requirements|
+| [requirements-dev.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-dev.txt)  |  Requirements for development|
+| [requirements-test.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-test.txt) | Requirements for testing|
+| [setup.py](https://github.com/ydataai/pandas-profiling/blob/master/setup.py) | Requirements for Widgets etc. |
