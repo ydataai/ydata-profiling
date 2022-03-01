@@ -39,7 +39,7 @@ There is a specific tag for ``pandas-profiling``:
 Slack community
 ---------------
 
-`Join the Slack community <https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA>`_ and come into contact with other users and developers, that might be able to answer your questions.
+`Join the Slack community <https://slack.ydata.ai>`_ and come into contact with other users and developers, that might be able to answer your questions.
 
 Reporting a bug
 ---------------
