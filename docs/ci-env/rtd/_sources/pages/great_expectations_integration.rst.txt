@@ -68,7 +68,7 @@ You can also configure each feature individually in the function call:
         handler=handler
     )
 
-See `the Great Expectations Examples <https://pandas-profiling.github.io/pandas-profiling/examples/master/features/great_expectations_example.html>`_ for complete examples.
+See `the Great Expectations Examples <https://pandas-profiling.ydata.ai/examples/master/features/great_expectations_example.html>`_ for complete examples.
 
 
 Included Expectation types

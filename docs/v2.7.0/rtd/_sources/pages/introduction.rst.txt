@@ -2,7 +2,7 @@
 Introduction
 ============
 
-.. image:: https://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png
+.. image:: https://pandas-profiling.ydata.ai/docs/assets/logo_header.png
   :alt: Pandas Profiling Logo Header
 
 .. image:: https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master

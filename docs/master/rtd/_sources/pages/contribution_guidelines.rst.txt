@@ -12,7 +12,7 @@ Contributing a new feature
   
 Slack community
 ---------------
-A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. `Join the Slack community <https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA>`_.
+A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. `Join the Slack community <https://slack.ydata.ai>`_.
 
 Developer tools
 ---------------
