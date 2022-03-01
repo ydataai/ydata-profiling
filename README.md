@@ -346,7 +346,7 @@ In the meantime, user customized summarizations and type definitions are now ful
 
 ## Contributing
 
-Read on getting involved in the [Contribution Guide](https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/contribution_guidelines.html).
+Read on getting involved in the [Contribution Guide](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/contribution_guidelines.html).
 
 A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA).
 
