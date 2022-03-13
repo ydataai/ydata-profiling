@@ -49,6 +49,7 @@ def spark_describe_1d(
         else:
             dtype = str(series.schema[0].dataType)
         vtype = {
+            "IntegerType": "Numeric",
             "LongType": "Numeric",
             "DoubleType": "Numeric",
             "StringType": "Categorical",
