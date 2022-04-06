@@ -15,7 +15,7 @@ def func(df, **kwargs):
 def test_titanic_explorative(benchmark):
     file_name = cache_file(
         "titanic.parquet",
-        "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/titanic.parquet",
+        "https://github.com/ydataai/pandas-profiling-data/raw/master/data/titanic.parquet",
     )
 
     data = pd.read_parquet(file_name)
@@ -27,7 +27,7 @@ def test_titanic_explorative(benchmark):
 def test_titanic_default(benchmark):
     file_name = cache_file(
         "titanic.parquet",
-        "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/titanic.parquet",
+        "https://github.com/ydataai/pandas-profiling-data/raw/master/data/titanic.parquet",
     )
 
     data = pd.read_parquet(file_name)
@@ -38,7 +38,7 @@ def test_titanic_default(benchmark):
 def test_titanic_minimal(benchmark):
     file_name = cache_file(
         "titanic.parquet",
-        "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/titanic.parquet",
+        "https://github.com/ydataai/pandas-profiling-data/raw/master/data/titanic.parquet",
     )
 
     data = pd.read_parquet(file_name)
@@ -50,7 +50,7 @@ def test_titanic_minimal(benchmark):
 def test_rdw_minimal(benchmark):
     file_name = cache_file(
         "rdw_sample_100k.parquet",
-        "https://github.com/pandas-profiling/pandas-profiling-data/raw/master/data/rdw_sample_100k.parquet",
+        "https://github.com/ydataai/pandas-profiling-data/raw/master/data/rdw_sample_100k.parquet",
     )
 
     data = pd.read_parquet(file_name)
