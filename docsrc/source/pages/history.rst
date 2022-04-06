@@ -10,19 +10,18 @@ history <https://github.com/pandas-profiling/pandas-profiling/graphs/contributor
 Inception
 ---------
 
-During an internship at AXA Bank around forecasting and stress-testing
-of pension plan portfolios, as a young intern, `Jos
-Polfliet <https://www.linkedin.com/in/jos-polfliet/>`__ was asked to
-research and propose a programming language to write this in. Back then,
-Python was not as well-known and definitely not an obvious choice for a
-large bank. He argued that NumPy and scikit-learn made Python the best
-choice and happily, they trusted him. 🐍🐍 This choice set Jos on the path
-that would eventually lead to developing pandas-profiling 🐼⭐
+In 2016, `Jos Polfliet`_ was working for SAS Institute and was getting
+bored with doing the same types of exploratory data analysis over and
+over again. Automating his own logic, he noticed it was useful and
+decided to open-source it under the MIT License. The package was named
+``pandas-profiling`` as a contraction of *pandas* and *data profiling*.
+The idea was to enable the user to perform automated exploratory data
+analysis, beyond what the ``df.describe()`` function was offering and by
+abusing Jupyters HTML output. Since that start, human years of
+repetitive plotting and summary statistics have been saved from the
+Machine Learning community.
 
-In 2016, Jos launched pandas-profiling to generate profile reports from
-a pandas DataFrame. The idea was to enable the user to perform serious
-exploratory data analysis, beyond what the ``df.describe()`` function
-was offering.
+.. _Jos Polfliet: https://www.linkedin.com/in/jos-polfliet/
 
 Second life
 -----------
