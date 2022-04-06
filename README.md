@@ -45,12 +45,6 @@ Beta testers wanted! The Spark backend will be released as a pre-release for thi
 
 **Monitoring time series?**: I'd like to draw your attention to [popmon](https://github.com/ing-bank/popmon). Whereas pandas-profiling allows you to explore patterns in a single dataset, popmon allows you to uncover temporal patterns. It's worth checking out!
 
-**Support `pandas-profiling`** 
-The development of `pandas-profiling` relies completely on contributions.
-If you find value in the package, we welcome you to support the project directly through [GitHub Sponsors](https://github.com/sponsors/sbrugman)!
-Please help me to continue to support this package.
-Find more information: [Sponsor the project on GitHub](https://github.com/sponsors/sbrugman)
-
 ---
 
 _Contents:_ **[Examples](#examples)** |
@@ -307,32 +301,6 @@ You can find more details on the Great Expectations integration [here](https://p
 </td>
 </tr>
 </table>
-
-## Supporting open source
-
-Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible without support of our gracious sponsors.
-
-<table>
-<tr>
-<td>
-
-<img alt="Lambda Labs" src="https://pandas-profiling.ydata.ai/docs/master/assets/lambda-labs.png" width="500" />
-
-</td>
-<td>
-
-[Lambda workstations](https://lambdalabs.com/), servers, laptops, and cloud services power engineers and researchers at Fortune 500 companies and 94% of the top 50 universities. [Lambda Cloud](https://lambdalabs.com/service/gpu-cloud) offers 4 & 8 GPU instances starting at $1.50 / hr. Pre-installed with TensorFlow, PyTorch, Ubuntu, CUDA, and cuDNN.
-
-</td>
-</tr>
-</table>
-
-We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: 
-
-    Martin Sotir, Stephanie Rivera, abdulAziz
-
-More info if you would like to appear here: [Github Sponsor page](https://github.com/sponsors/sbrugman)
-
 
 ## Types
 
