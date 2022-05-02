@@ -1,4 +1,4 @@
-from typing import Any, Callable, Union
+from typing import Any, Callable, Optional
 
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.core.renderable import Renderable
@@ -8,7 +8,7 @@ class Variable(ItemRenderer):
     def __init__(
         self,
         top: Renderable,
-        bottom: Union[Renderable, None] = None,
+        bottom: Optional[Renderable] = None,
         ignore: bool = False,
         **kwargs,
     ):

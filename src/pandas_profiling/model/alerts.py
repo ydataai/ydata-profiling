@@ -1,7 +1,7 @@
 """Logic for alerting the user on possibly problematic patterns in the data (e.g. high number of zeros , constant
 values, high correlations)."""
 from enum import Enum, auto, unique
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set
 
 import numpy as np
 import pandas as pd
@@ -69,7 +69,7 @@ class Alert:
         self,
         alert_type: AlertType,
         values: Optional[Dict] = None,
-        column_name: Union[str, None] = None,
+        column_name: Optional[str] = None,
         fields: Optional[Set] = None,
     ):
         if values is None:
