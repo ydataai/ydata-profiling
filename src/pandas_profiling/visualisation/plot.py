@@ -336,7 +336,7 @@ def _plot_stacked_barh(
         # If the new bar is big enough write the label
         pc_of_total = x / data.sum() * 100
         # Requires matplotlib >= 3.4.0
-        if pc_of_total > 8 and hasattr(ax, 'bar_label'):
+        if pc_of_total > 8 and hasattr(ax, "bar_label"):
             display_txt = f"{pc_of_total:.1f}%\n({x})"
             ax.bar_label(
                 rects,
