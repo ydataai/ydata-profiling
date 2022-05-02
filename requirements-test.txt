@@ -1,5 +1,5 @@
 pytest
-coverage~=6.2
+coverage~=6.3
 codecov
 pytest-cov
 nbval
