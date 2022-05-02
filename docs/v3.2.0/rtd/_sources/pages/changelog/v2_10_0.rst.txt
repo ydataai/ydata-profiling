@@ -1,0 +1,18 @@
+Changelog v2.10.0
+-----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Restructured the overview for categorical variables.
+- Handling of compressed files
+- Option for random sample
+- Restructure categorical variable overview
+
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Full visions integration for type system: read more `here <https://github.com/dylan-profiler/visions>`_.
+- Migrate from Travis CI to Github Actions...
+
+🚨 Breaking changes
+^^^^^^^^^^^^^^^^^^^
+- The configuration parameter ``vars.cat.unicode`` is replaced by ``vars.cat.characters``.

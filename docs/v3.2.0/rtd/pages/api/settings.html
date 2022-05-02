@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings &mdash; pandas-profiling 3.1.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="pandas_profiling.config.Settings" href="_autosummary/pandas_profiling.config.Settings.html" />
+    <link rel="prev" title="pandas_profiling.config.Config" href="_autosummary/pandas_profiling.config.Config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #174C4F" >
+            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pandas Profiling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../announcements.html">Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../big_data.html">Big Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata.html">Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../great_expectations_integration.html">Integration with Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribution_guidelines.html">Contribution Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="profile_report.html">Profile Report</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Settings.html">pandas_profiling.config.Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Config.html">pandas_profiling.config.Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Correlation.html">pandas_profiling.config.Correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.CorrelationPlot.html">pandas_profiling.config.CorrelationPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.MissingPlot.html">pandas_profiling.config.MissingPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.ImageType.html">pandas_profiling.config.ImageType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Dataset.html">pandas_profiling.config.Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Duplicates.html">pandas_profiling.config.Duplicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Html.html">pandas_profiling.config.Html</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Interactions.html">pandas_profiling.config.Interactions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Plot.html">pandas_profiling.config.Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Theme.html">pandas_profiling.config.Theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Style.html">pandas_profiling.config.Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Samples.html">pandas_profiling.config.Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Report.html">pandas_profiling.config.Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Variables.html">pandas_profiling.config.Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Univariate.html">pandas_profiling.config.Univariate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.NumVars.html">pandas_profiling.config.NumVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.CatVars.html">pandas_profiling.config.CatVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.ImageVars.html">pandas_profiling.config.ImageVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.BoolVars.html">pandas_profiling.config.BoolVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.PathVars.html">pandas_profiling.config.PathVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.FileVars.html">pandas_profiling.config.FileVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.UrlVars.html">pandas_profiling.config.UrlVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/pandas_profiling.config.Histogram.html">pandas_profiling.config.Histogram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="report.html">Report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualisation.html">Visualisation</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #174C4F" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pandas-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">API</a> &raquo;</li>
+      <li>Settings</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pages/api/settings.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="settings">
+<h1>Settings<a class="headerlink" href="#settings" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings" title="pandas_profiling.config.Settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Settings</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Config.html#pandas_profiling.config.Config" title="pandas_profiling.config.Config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Correlation.html#pandas_profiling.config.Correlation" title="pandas_profiling.config.Correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Correlation</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.CorrelationPlot.html#pandas_profiling.config.CorrelationPlot" title="pandas_profiling.config.CorrelationPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CorrelationPlot</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot" title="pandas_profiling.config.MissingPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MissingPlot</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.ImageType.html#pandas_profiling.config.ImageType" title="pandas_profiling.config.ImageType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageType</span></code></a>(value)</p></td>
+<td><p>An enumeration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset" title="pandas_profiling.config.Dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dataset</span></code></a></p></td>
+<td><p>Metadata of the dataset</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Duplicates.html#pandas_profiling.config.Duplicates" title="pandas_profiling.config.Duplicates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Duplicates</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html" title="pandas_profiling.config.Html"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Html</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Interactions.html#pandas_profiling.config.Interactions" title="pandas_profiling.config.Interactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Interactions</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot" title="pandas_profiling.config.Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Theme.html#pandas_profiling.config.Theme" title="pandas_profiling.config.Theme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Theme</span></code></a>(value)</p></td>
+<td><p>An enumeration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Style.html#pandas_profiling.config.Style" title="pandas_profiling.config.Style"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Style</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Samples.html#pandas_profiling.config.Samples" title="pandas_profiling.config.Samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Samples</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Report.html#pandas_profiling.config.Report" title="pandas_profiling.config.Report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Report</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Variables.html#pandas_profiling.config.Variables" title="pandas_profiling.config.Variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variables</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate" title="pandas_profiling.config.Univariate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Univariate</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars" title="pandas_profiling.config.NumVars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumVars</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars" title="pandas_profiling.config.CatVars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CatVars</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.ImageVars.html#pandas_profiling.config.ImageVars" title="pandas_profiling.config.ImageVars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageVars</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars" title="pandas_profiling.config.BoolVars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoolVars</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.PathVars.html#pandas_profiling.config.PathVars" title="pandas_profiling.config.PathVars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PathVars</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.FileVars.html#pandas_profiling.config.FileVars" title="pandas_profiling.config.FileVars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileVars</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.UrlVars.html#pandas_profiling.config.UrlVars" title="pandas_profiling.config.UrlVars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UrlVars</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.config.Histogram.html#pandas_profiling.config.Histogram" title="pandas_profiling.config.Histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Histogram</span></code></a></p></td>
+<td><p>Create a new model by parsing and validating input data from keyword arguments.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="_autosummary/pandas_profiling.config.Config.html" class="btn btn-neutral float-left" title="pandas_profiling.config.Config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_autosummary/pandas_profiling.config.Settings.html" class="btn btn-neutral float-right" title="pandas_profiling.config.Settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Simon Brugman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

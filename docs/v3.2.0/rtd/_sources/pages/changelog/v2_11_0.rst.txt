@@ -1,0 +1,16 @@
+Changelog v2.11.0
+-----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Great Expectations integration `[430] <https://github.com/pandas-profiling/pandas-profiling/issues/430>`_ `docs <https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/great_expectations_integration.html>`_ (thanks @spbail, @talagluck and the Great Expectations team).
+- Introduced the ``infer_dtypes`` parameter to control automatic inference of data types `[676] <https://github.com/pandas-profiling/pandas-profiling/issues/676>`_ (thanks @mohith7548 and @ieaves).
+- Improved JSON representation for pd.Series, pd.DataFrame, numpy data and Samples.
+
+🚨 Breaking changes
+^^^^^^^^^^^^^^^^^^^
+- Global config setting removed; config resets on report initialization.
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+- Update ``pyupgrade`` to ``2.10.0``.

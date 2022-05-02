@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pandas_profiling.report.presentation.flavours.html API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pandas_profiling.report.presentation.flavours.html</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from pandas_profiling.report.presentation.flavours.html.alerts import HTMLAlerts
+from pandas_profiling.report.presentation.flavours.html.collapse import HTMLCollapse
+from pandas_profiling.report.presentation.flavours.html.container import HTMLContainer
+from pandas_profiling.report.presentation.flavours.html.duplicate import HTMLDuplicate
+from pandas_profiling.report.presentation.flavours.html.frequency_table import (
+    HTMLFrequencyTable,
+)
+from pandas_profiling.report.presentation.flavours.html.frequency_table_small import (
+    HTMLFrequencyTableSmall,
+)
+from pandas_profiling.report.presentation.flavours.html.html import HTMLHTML
+from pandas_profiling.report.presentation.flavours.html.image import HTMLImage
+from pandas_profiling.report.presentation.flavours.html.root import HTMLRoot
+from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
+from pandas_profiling.report.presentation.flavours.html.table import HTMLTable
+from pandas_profiling.report.presentation.flavours.html.toggle_button import (
+    HTMLToggleButton,
+)
+from pandas_profiling.report.presentation.flavours.html.variable import HTMLVariable
+from pandas_profiling.report.presentation.flavours.html.variable_info import (
+    HTMLVariableInfo,
+)
+
+__all__ = [
+    &#34;HTMLCollapse&#34;,
+    &#34;HTMLContainer&#34;,
+    &#34;HTMLDuplicate&#34;,
+    &#34;HTMLFrequencyTable&#34;,
+    &#34;HTMLFrequencyTableSmall&#34;,
+    &#34;HTMLHTML&#34;,
+    &#34;HTMLImage&#34;,
+    &#34;HTMLRoot&#34;,
+    &#34;HTMLSample&#34;,
+    &#34;HTMLTable&#34;,
+    &#34;HTMLToggleButton&#34;,
+    &#34;HTMLVariable&#34;,
+    &#34;HTMLVariableInfo&#34;,
+    &#34;HTMLAlerts&#34;,
+]</code></pre>
+</details>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.alerts" href="alerts.html">pandas_profiling.report.presentation.flavours.html.alerts</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.html.collapse</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.container" href="container.html">pandas_profiling.report.presentation.flavours.html.container</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.duplicate" href="duplicate.html">pandas_profiling.report.presentation.flavours.html.duplicate</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.frequency_table" href="frequency_table.html">pandas_profiling.report.presentation.flavours.html.frequency_table</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.frequency_table_small" href="frequency_table_small.html">pandas_profiling.report.presentation.flavours.html.frequency_table_small</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.html" href="html.html">pandas_profiling.report.presentation.flavours.html.html</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.image" href="image.html">pandas_profiling.report.presentation.flavours.html.image</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.root" href="root.html">pandas_profiling.report.presentation.flavours.html.root</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.sample" href="sample.html">pandas_profiling.report.presentation.flavours.html.sample</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.table" href="table.html">pandas_profiling.report.presentation.flavours.html.table</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.templates" href="templates.html">pandas_profiling.report.presentation.flavours.html.templates</a></code></dt>
+<dd>
+<div class="desc"><p>Contains all templates used for generating the HTML profile report</p></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.flavours.html.toggle_button</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.variable" href="variable.html">pandas_profiling.report.presentation.flavours.html.variable</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pandas_profiling.report.presentation.flavours.html.variable_info" href="variable_info.html">pandas_profiling.report.presentation.flavours.html.variable_info</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLAlerts"><code class="flex name class">
+<span>class <span class="ident">HTMLAlerts</span></span>
+<span>(</span><span>alerts: List[<a title="pandas_profiling.model.alerts.Alert" href="../../../../model/alerts.html#pandas_profiling.model.alerts.Alert">Alert</a>], **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLAlerts(Alerts):
+    def render(self) -&gt; str:
+        styles = {
+            &#34;constant&#34;: &#34;warning&#34;,
+            &#34;unsupported&#34;: &#34;warning&#34;,
+            &#34;type_date&#34;: &#34;warning&#34;,
+            &#34;constant_length&#34;: &#34;primary&#34;,
+            &#34;high_cardinality&#34;: &#34;primary&#34;,
+            &#34;unique&#34;: &#34;primary&#34;,
+            &#34;uniform&#34;: &#34;primary&#34;,
+            &#34;infinite&#34;: &#34;info&#34;,
+            &#34;zeros&#34;: &#34;info&#34;,
+            &#34;truncated&#34;: &#34;info&#34;,
+            &#34;missing&#34;: &#34;info&#34;,
+            &#34;skewed&#34;: &#34;info&#34;,
+            &#34;high_correlation&#34;: &#34;default&#34;,
+            &#34;duplicates&#34;: &#34;default&#34;,
+        }
+
+        return templates.template(&#34;alerts.html&#34;).render(**self.content, styles=styles)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.alerts.Alerts" href="../../core/alerts.html#pandas_profiling.report.presentation.core.alerts.Alerts">Alerts</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLAlerts.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    styles = {
+        &#34;constant&#34;: &#34;warning&#34;,
+        &#34;unsupported&#34;: &#34;warning&#34;,
+        &#34;type_date&#34;: &#34;warning&#34;,
+        &#34;constant_length&#34;: &#34;primary&#34;,
+        &#34;high_cardinality&#34;: &#34;primary&#34;,
+        &#34;unique&#34;: &#34;primary&#34;,
+        &#34;uniform&#34;: &#34;primary&#34;,
+        &#34;infinite&#34;: &#34;info&#34;,
+        &#34;zeros&#34;: &#34;info&#34;,
+        &#34;truncated&#34;: &#34;info&#34;,
+        &#34;missing&#34;: &#34;info&#34;,
+        &#34;skewed&#34;: &#34;info&#34;,
+        &#34;high_correlation&#34;: &#34;default&#34;,
+        &#34;duplicates&#34;: &#34;default&#34;,
+    }
+
+    return templates.template(&#34;alerts.html&#34;).render(**self.content, styles=styles)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLCollapse"><code class="flex name class">
+<span>class <span class="ident">HTMLCollapse</span></span>
+<span>(</span><span>button: <a title="pandas_profiling.report.presentation.core.toggle_button.ToggleButton" href="../../core/toggle_button.html#pandas_profiling.report.presentation.core.toggle_button.ToggleButton">ToggleButton</a>, item: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLCollapse(Collapse):
+    def render(self) -&gt; str:
+        return templates.template(&#34;collapse.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.collapse.Collapse" href="../../core/collapse.html#pandas_profiling.report.presentation.core.collapse.Collapse">Collapse</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLCollapse.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;collapse.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLContainer"><code class="flex name class">
+<span>class <span class="ident">HTMLContainer</span></span>
+<span>(</span><span>items: Sequence[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>], sequence_type: str, nested: bool = False, name: Optional[str] = None, anchor_id: Optional[str] = None, classes: Optional[str] = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLContainer(Container):
+    def render(self) -&gt; str:
+        if self.sequence_type in [&#34;list&#34;, &#34;accordion&#34;]:
+            return templates.template(&#34;sequence/list.html&#34;).render(
+                anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
+            )
+        elif self.sequence_type == &#34;named_list&#34;:
+            return templates.template(&#34;sequence/named_list.html&#34;).render(
+                anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
+            )
+        elif self.sequence_type == &#34;tabs&#34;:
+            return templates.template(&#34;sequence/tabs.html&#34;).render(
+                tabs=self.content[&#34;items&#34;],
+                anchor_id=self.content[&#34;anchor_id&#34;],
+                nested=self.content[&#34;nested&#34;],
+            )
+        elif self.sequence_type == &#34;select&#34;:
+            return templates.template(&#34;sequence/select.html&#34;).render(
+                tabs=self.content[&#34;items&#34;],
+                anchor_id=self.content[&#34;anchor_id&#34;],
+                nested=self.content[&#34;nested&#34;],
+            )
+        elif self.sequence_type == &#34;sections&#34;:
+            return templates.template(&#34;sequence/sections.html&#34;).render(
+                sections=self.content[&#34;items&#34;],
+                full_width=self.content[&#34;full_width&#34;],
+            )
+        elif self.sequence_type == &#34;grid&#34;:
+            return templates.template(&#34;sequence/grid.html&#34;).render(
+                items=self.content[&#34;items&#34;]
+            )
+        elif self.sequence_type == &#34;batch_grid&#34;:
+            return templates.template(&#34;sequence/batch_grid.html&#34;).render(
+                items=self.content[&#34;items&#34;],
+                batch_size=self.content[&#34;batch_size&#34;],
+                titles=self.content.get(&#34;titles&#34;, True),
+                subtitles=self.content.get(&#34;subtitles&#34;, False),
+            )
+        else:
+            raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.container.Container" href="../../core/container.html#pandas_profiling.report.presentation.core.container.Container">Container</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLContainer.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    if self.sequence_type in [&#34;list&#34;, &#34;accordion&#34;]:
+        return templates.template(&#34;sequence/list.html&#34;).render(
+            anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
+        )
+    elif self.sequence_type == &#34;named_list&#34;:
+        return templates.template(&#34;sequence/named_list.html&#34;).render(
+            anchor_id=self.content[&#34;anchor_id&#34;], items=self.content[&#34;items&#34;]
+        )
+    elif self.sequence_type == &#34;tabs&#34;:
+        return templates.template(&#34;sequence/tabs.html&#34;).render(
+            tabs=self.content[&#34;items&#34;],
+            anchor_id=self.content[&#34;anchor_id&#34;],
+            nested=self.content[&#34;nested&#34;],
+        )
+    elif self.sequence_type == &#34;select&#34;:
+        return templates.template(&#34;sequence/select.html&#34;).render(
+            tabs=self.content[&#34;items&#34;],
+            anchor_id=self.content[&#34;anchor_id&#34;],
+            nested=self.content[&#34;nested&#34;],
+        )
+    elif self.sequence_type == &#34;sections&#34;:
+        return templates.template(&#34;sequence/sections.html&#34;).render(
+            sections=self.content[&#34;items&#34;],
+            full_width=self.content[&#34;full_width&#34;],
+        )
+    elif self.sequence_type == &#34;grid&#34;:
+        return templates.template(&#34;sequence/grid.html&#34;).render(
+            items=self.content[&#34;items&#34;]
+        )
+    elif self.sequence_type == &#34;batch_grid&#34;:
+        return templates.template(&#34;sequence/batch_grid.html&#34;).render(
+            items=self.content[&#34;items&#34;],
+            batch_size=self.content[&#34;batch_size&#34;],
+            titles=self.content.get(&#34;titles&#34;, True),
+            subtitles=self.content.get(&#34;subtitles&#34;, False),
+        )
+    else:
+        raise ValueError(&#34;Template not understood&#34;, self.sequence_type)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLDuplicate"><code class="flex name class">
+<span>class <span class="ident">HTMLDuplicate</span></span>
+<span>(</span><span>name: str, duplicate: pandas.core.frame.DataFrame, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLDuplicate(Duplicate):
+    def render(self) -&gt; str:
+        duplicate_html = self.content[&#34;duplicate&#34;].to_html(
+            classes=&#34;duplicate table table-striped&#34;
+        )
+        return templates.template(&#34;duplicate.html&#34;).render(
+            **self.content, duplicate_html=duplicate_html
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.duplicate.Duplicate" href="../../core/duplicate.html#pandas_profiling.report.presentation.core.duplicate.Duplicate">Duplicate</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLDuplicate.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    duplicate_html = self.content[&#34;duplicate&#34;].to_html(
+        classes=&#34;duplicate table table-striped&#34;
+    )
+    return templates.template(&#34;duplicate.html&#34;).render(
+        **self.content, duplicate_html=duplicate_html
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable"><code class="flex name class">
+<span>class <span class="ident">HTMLFrequencyTable</span></span>
+<span>(</span><span>rows: list, redact: bool, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLFrequencyTable(FrequencyTable):
+    def render(self) -&gt; str:
+        return templates.template(&#34;frequency_table.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.frequency_table.FrequencyTable" href="../../core/frequency_table.html#pandas_profiling.report.presentation.core.frequency_table.FrequencyTable">FrequencyTable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;frequency_table.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall"><code class="flex name class">
+<span>class <span class="ident">HTMLFrequencyTableSmall</span></span>
+<span>(</span><span>rows: List[Any], redact: bool, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLFrequencyTableSmall(FrequencyTableSmall):
+    def render(self) -&gt; str:
+        return templates.template(&#34;frequency_table_small.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.frequency_table_small.FrequencyTableSmall" href="../../core/frequency_table_small.html#pandas_profiling.report.presentation.core.frequency_table_small.FrequencyTableSmall">FrequencyTableSmall</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;frequency_table_small.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLHTML"><code class="flex name class">
+<span>class <span class="ident">HTMLHTML</span></span>
+<span>(</span><span>content: str, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLHTML(HTML):
+    def render(self) -&gt; str:
+        return self.content[&#34;html&#34;]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.html.HTML" href="../../core/html.html#pandas_profiling.report.presentation.core.html.HTML">HTML</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLHTML.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return self.content[&#34;html&#34;]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLImage"><code class="flex name class">
+<span>class <span class="ident">HTMLImage</span></span>
+<span>(</span><span>image: str, image_format: <a title="pandas_profiling.config.ImageType" href="../../../../config.html#pandas_profiling.config.ImageType">ImageType</a>, alt: str, caption: Optional[str] = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLImage(Image):
+    def render(self) -&gt; str:
+        return templates.template(&#34;diagram.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.image.Image" href="../../core/image.html#pandas_profiling.report.presentation.core.image.Image">Image</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLImage.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;diagram.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLRoot"><code class="flex name class">
+<span>class <span class="ident">HTMLRoot</span></span>
+<span>(</span><span>name: str, body: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, footer: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wrapper for the report.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLRoot(Root):
+    def render(self, **kwargs) -&gt; str:
+        nav_items = [
+            (section.name, section.anchor_id)
+            for section in self.content[&#34;body&#34;].content[&#34;items&#34;]
+        ]
+
+        return templates.template(&#34;report.html&#34;).render(
+            **self.content, nav_items=nav_items, **kwargs
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.root.Root" href="../../core/root.html#pandas_profiling.report.presentation.core.root.Root">Root</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLRoot.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self, **kwargs) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self, **kwargs) -&gt; str:
+    nav_items = [
+        (section.name, section.anchor_id)
+        for section in self.content[&#34;body&#34;].content[&#34;items&#34;]
+    ]
+
+    return templates.template(&#34;report.html&#34;).render(
+        **self.content, nav_items=nav_items, **kwargs
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLSample"><code class="flex name class">
+<span>class <span class="ident">HTMLSample</span></span>
+<span>(</span><span>name: str, sample: pandas.core.frame.DataFrame, caption: Optional[str] = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLSample(Sample):
+    def render(self) -&gt; str:
+        sample_html = self.content[&#34;sample&#34;].to_html(
+            classes=&#34;sample table table-striped&#34;
+        )
+        return templates.template(&#34;sample.html&#34;).render(
+            **self.content, sample_html=sample_html
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.sample.Sample" href="../../core/sample.html#pandas_profiling.report.presentation.core.sample.Sample">Sample</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLSample.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    sample_html = self.content[&#34;sample&#34;].to_html(
+        classes=&#34;sample table table-striped&#34;
+    )
+    return templates.template(&#34;sample.html&#34;).render(
+        **self.content, sample_html=sample_html
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLTable"><code class="flex name class">
+<span>class <span class="ident">HTMLTable</span></span>
+<span>(</span><span>rows: Sequence[+T_co], name: Optional[str] = None, caption: Optional[str] = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLTable(Table):
+    def render(self) -&gt; str:
+        return templates.template(&#34;table.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.table.Table" href="../../core/table.html#pandas_profiling.report.presentation.core.table.Table">Table</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLTable.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;table.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLToggleButton"><code class="flex name class">
+<span>class <span class="ident">HTMLToggleButton</span></span>
+<span>(</span><span>text: str, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLToggleButton(ToggleButton):
+    def render(self) -&gt; str:
+        return templates.template(&#34;toggle_button.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.toggle_button.ToggleButton" href="../../core/toggle_button.html#pandas_profiling.report.presentation.core.toggle_button.ToggleButton">ToggleButton</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLToggleButton.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;toggle_button.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLVariable"><code class="flex name class">
+<span>class <span class="ident">HTMLVariable</span></span>
+<span>(</span><span>top: <a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>, bottom: Optional[<a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a>] = None, ignore: bool = False, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLVariable(Variable):
+    def render(self) -&gt; str:
+        return templates.template(&#34;variable.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.variable.Variable" href="../../core/variable.html#pandas_profiling.report.presentation.core.variable.Variable">Variable</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLVariable.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;variable.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo"><code class="flex name class">
+<span>class <span class="ident">HTMLVariableInfo</span></span>
+<span>(</span><span>anchor_id: str, var_name: str, var_type: str, alerts: List[<a title="pandas_profiling.model.alerts.Alert" href="../../../../model/alerts.html#pandas_profiling.model.alerts.Alert">Alert</a>], description: str, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLVariableInfo(VariableInfo):
+    def render(self) -&gt; str:
+        return templates.template(&#34;variable_info.html&#34;).render(**self.content)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pandas_profiling.report.presentation.core.variable_info.VariableInfo" href="../../core/variable_info.html#pandas_profiling.report.presentation.core.variable_info.VariableInfo">VariableInfo</a></li>
+<li><a title="pandas_profiling.report.presentation.core.item_renderer.ItemRenderer" href="../../core/item_renderer.html#pandas_profiling.report.presentation.core.item_renderer.ItemRenderer">ItemRenderer</a></li>
+<li><a title="pandas_profiling.report.presentation.core.renderable.Renderable" href="../../core/renderable.html#pandas_profiling.report.presentation.core.renderable.Renderable">Renderable</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self) -&gt; str:
+    return templates.template(&#34;variable_info.html&#34;).render(**self.content)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pandas_profiling.report.presentation.flavours" href="../index.html">pandas_profiling.report.presentation.flavours</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.alerts" href="alerts.html">pandas_profiling.report.presentation.flavours.html.alerts</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.collapse" href="collapse.html">pandas_profiling.report.presentation.flavours.html.collapse</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.container" href="container.html">pandas_profiling.report.presentation.flavours.html.container</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.duplicate" href="duplicate.html">pandas_profiling.report.presentation.flavours.html.duplicate</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.frequency_table" href="frequency_table.html">pandas_profiling.report.presentation.flavours.html.frequency_table</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.frequency_table_small" href="frequency_table_small.html">pandas_profiling.report.presentation.flavours.html.frequency_table_small</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.html" href="html.html">pandas_profiling.report.presentation.flavours.html.html</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.image" href="image.html">pandas_profiling.report.presentation.flavours.html.image</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.root" href="root.html">pandas_profiling.report.presentation.flavours.html.root</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.sample" href="sample.html">pandas_profiling.report.presentation.flavours.html.sample</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.table" href="table.html">pandas_profiling.report.presentation.flavours.html.table</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.templates" href="templates.html">pandas_profiling.report.presentation.flavours.html.templates</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.toggle_button" href="toggle_button.html">pandas_profiling.report.presentation.flavours.html.toggle_button</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.variable" href="variable.html">pandas_profiling.report.presentation.flavours.html.variable</a></code></li>
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.variable_info" href="variable_info.html">pandas_profiling.report.presentation.flavours.html.variable_info</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLAlerts" href="#pandas_profiling.report.presentation.flavours.html.HTMLAlerts">HTMLAlerts</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLAlerts.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLAlerts.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLCollapse" href="#pandas_profiling.report.presentation.flavours.html.HTMLCollapse">HTMLCollapse</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLCollapse.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLCollapse.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLContainer" href="#pandas_profiling.report.presentation.flavours.html.HTMLContainer">HTMLContainer</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLContainer.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLContainer.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLDuplicate" href="#pandas_profiling.report.presentation.flavours.html.HTMLDuplicate">HTMLDuplicate</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLDuplicate.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLDuplicate.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable" href="#pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable">HTMLFrequencyTable</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTable.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall" href="#pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall">HTMLFrequencyTableSmall</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLFrequencyTableSmall.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLHTML" href="#pandas_profiling.report.presentation.flavours.html.HTMLHTML">HTMLHTML</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLHTML.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLHTML.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLImage" href="#pandas_profiling.report.presentation.flavours.html.HTMLImage">HTMLImage</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLImage.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLImage.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLRoot" href="#pandas_profiling.report.presentation.flavours.html.HTMLRoot">HTMLRoot</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLRoot.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLRoot.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLSample" href="#pandas_profiling.report.presentation.flavours.html.HTMLSample">HTMLSample</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLSample.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLSample.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLTable" href="#pandas_profiling.report.presentation.flavours.html.HTMLTable">HTMLTable</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLTable.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLTable.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLToggleButton" href="#pandas_profiling.report.presentation.flavours.html.HTMLToggleButton">HTMLToggleButton</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLToggleButton.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLToggleButton.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLVariable" href="#pandas_profiling.report.presentation.flavours.html.HTMLVariable">HTMLVariable</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLVariable.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLVariable.render">render</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo" href="#pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo">HTMLVariableInfo</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo.render" href="#pandas_profiling.report.presentation.flavours.html.HTMLVariableInfo.render">render</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

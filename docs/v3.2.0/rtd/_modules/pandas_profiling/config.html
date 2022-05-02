@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pandas_profiling.config &mdash; pandas-profiling 3.1.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #174C4F" >
+            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pandas Profiling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/announcements.html">Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/advanced_usage.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/big_data.html">Big Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/metadata.html">Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/great_expectations_integration.html">Integration with Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/history.html">History</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/contribution_guidelines.html">Contribution Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/resources.html">Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #174C4F" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pandas-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>pandas_profiling.config</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pandas_profiling.config</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Configuration for the package.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">BaseSettings</span><span class="p">,</span> <span class="n">Field</span>
+
+
+<span class="k">def</span> <span class="nf">_merge_dictionaries</span><span class="p">(</span><span class="n">dict1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">dict2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursive merge dictionaries.</span>
+
+<span class="sd">    :param dict1: Base dictionary to merge.</span>
+<span class="sd">    :param dict2: Dictionary to merge on top of base dictionary.</span>
+<span class="sd">    :return: Merged dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">dict1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">dict2_node</span> <span class="o">=</span> <span class="n">dict2</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">_merge_dictionaries</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">dict2_node</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict2</span><span class="p">:</span>
+                <span class="n">dict2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">return</span> <span class="n">dict2</span>
+
+
+<div class="viewcode-block" id="Dataset"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset">[docs]</a><span class="k">class</span> <span class="nc">Dataset</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Metadata of the dataset&quot;&quot;&quot;</span>
+
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">creator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">copyright_holder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">copyright_year</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="NumVars"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars">[docs]</a><span class="k">class</span> <span class="nc">NumVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">quantiles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">]</span>
+    <span class="n">skewness_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">low_categorical_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="c1"># Set to zero to disable</span>
+    <span class="n">chi_squared_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span></div>
+
+
+<div class="viewcode-block" id="CatVars"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars">[docs]</a><span class="k">class</span> <span class="nc">CatVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">length</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">characters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">words</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">cardinality_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">n_obs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="c1"># Set to zero to disable</span>
+    <span class="n">chi_squared_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span>
+    <span class="n">coerce_str_to_date</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">redact</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">histogram_largest</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">stop_words</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="BoolVars"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars">[docs]</a><span class="k">class</span> <span class="nc">BoolVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">n_obs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="c1"># string to boolean mapping dict</span>
+    <span class="n">mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;yes&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;no&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;true&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;false&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="FileVars"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.FileVars.html#pandas_profiling.config.FileVars">[docs]</a><span class="k">class</span> <span class="nc">FileVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="PathVars"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.PathVars.html#pandas_profiling.config.PathVars">[docs]</a><span class="k">class</span> <span class="nc">PathVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ImageVars"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.ImageVars.html#pandas_profiling.config.ImageVars">[docs]</a><span class="k">class</span> <span class="nc">ImageVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">exif</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="nb">hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="UrlVars"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.UrlVars.html#pandas_profiling.config.UrlVars">[docs]</a><span class="k">class</span> <span class="nc">UrlVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Univariate"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate">[docs]</a><span class="k">class</span> <span class="nc">Univariate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">num</span><span class="p">:</span> <span class="n">NumVars</span> <span class="o">=</span> <span class="n">NumVars</span><span class="p">()</span>
+    <span class="n">cat</span><span class="p">:</span> <span class="n">CatVars</span> <span class="o">=</span> <span class="n">CatVars</span><span class="p">()</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">ImageVars</span> <span class="o">=</span> <span class="n">ImageVars</span><span class="p">()</span>
+    <span class="nb">bool</span><span class="p">:</span> <span class="n">BoolVars</span> <span class="o">=</span> <span class="n">BoolVars</span><span class="p">()</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">PathVars</span> <span class="o">=</span> <span class="n">PathVars</span><span class="p">()</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">FileVars</span> <span class="o">=</span> <span class="n">FileVars</span><span class="p">()</span>
+    <span class="n">url</span><span class="p">:</span> <span class="n">UrlVars</span> <span class="o">=</span> <span class="n">UrlVars</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MissingPlot"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot">[docs]</a><span class="k">class</span> <span class="nc">MissingPlot</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="c1"># Force labels when there are &gt; 50 variables</span>
+    <span class="c1"># https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615</span>
+    <span class="n">force_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;RdBu&quot;</span></div>
+
+
+<div class="viewcode-block" id="ImageType"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.ImageType.html#pandas_profiling.config.ImageType">[docs]</a><span class="k">class</span> <span class="nc">ImageType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">svg</span> <span class="o">=</span> <span class="s2">&quot;svg&quot;</span>
+    <span class="n">png</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span></div>
+
+
+<div class="viewcode-block" id="CorrelationPlot"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.CorrelationPlot.html#pandas_profiling.config.CorrelationPlot">[docs]</a><span class="k">class</span> <span class="nc">CorrelationPlot</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;RdBu&quot;</span>
+    <span class="n">bad</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#000000&quot;</span></div>
+
+
+<div class="viewcode-block" id="Histogram"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Histogram.html#pandas_profiling.config.Histogram">[docs]</a><span class="k">class</span> <span class="nc">Histogram</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="c1"># Number of bins (set to 0 to automatically detect the bin size)</span>
+    <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="c1"># Maximum number of bins (when bins=0)</span>
+    <span class="n">max_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span>
+    <span class="n">x_axis_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<span class="k">class</span> <span class="nc">CatFrequencyPlot</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># if false, the category frequency plot is turned off</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>  <span class="c1"># options: &#39;bar&#39;, &#39;pie&#39;</span>
+
+    <span class="c1"># The cat frequency plot is only rendered if the number of distinct values is</span>
+    <span class="c1"># smaller or equal to &quot;max_unique&quot;</span>
+    <span class="n">max_unique</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># Colors should be a list of matplotlib recognised strings:</span>
+    <span class="c1"># --&gt; https://matplotlib.org/stable/tutorials/colors/colors.html</span>
+    <span class="c1"># --&gt; matplotlib defaults are used by default</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="Plot"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot">[docs]</a><span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">missing</span><span class="p">:</span> <span class="n">MissingPlot</span> <span class="o">=</span> <span class="n">MissingPlot</span><span class="p">()</span>
+    <span class="n">image_format</span><span class="p">:</span> <span class="n">ImageType</span> <span class="o">=</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">svg</span>
+    <span class="n">correlation</span><span class="p">:</span> <span class="n">CorrelationPlot</span> <span class="o">=</span> <span class="n">CorrelationPlot</span><span class="p">()</span>
+    <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span>  <span class="c1"># PNG dpi</span>
+    <span class="n">histogram</span><span class="p">:</span> <span class="n">Histogram</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">()</span>
+    <span class="n">scatter_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">cat_freq</span><span class="p">:</span> <span class="n">CatFrequencyPlot</span> <span class="o">=</span> <span class="n">CatFrequencyPlot</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Theme"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Theme.html#pandas_profiling.config.Theme">[docs]</a><span class="k">class</span> <span class="nc">Theme</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">united</span> <span class="o">=</span> <span class="s2">&quot;united&quot;</span>
+    <span class="n">flatly</span> <span class="o">=</span> <span class="s2">&quot;flatly&quot;</span></div>
+
+
+<div class="viewcode-block" id="Style"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Style.html#pandas_profiling.config.Style">[docs]</a><span class="k">class</span> <span class="nc">Style</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">primary_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#337ab7&quot;</span>
+    <span class="n">logo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Theme</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Html"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html">[docs]</a><span class="k">class</span> <span class="nc">Html</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="c1"># Styling options for the HTML report</span>
+    <span class="n">style</span><span class="p">:</span> <span class="n">Style</span> <span class="o">=</span> <span class="n">Style</span><span class="p">()</span>
+
+    <span class="c1"># Show navbar</span>
+    <span class="n">navbar_show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Minify the html</span>
+    <span class="n">minify_html</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Offline support</span>
+    <span class="n">use_local_assets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># If True, single file, else directory with assets</span>
+    <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Assets prefix if inline = True</span>
+    <span class="n">assets_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Internal usage</span>
+    <span class="n">assets_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">full_width</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Duplicates"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Duplicates.html#pandas_profiling.config.Duplicates">[docs]</a><span class="k">class</span> <span class="nc">Duplicates</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">head</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;# duplicates&quot;</span></div>
+
+
+<div class="viewcode-block" id="Correlation"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Correlation.html#pandas_profiling.config.Correlation">[docs]</a><span class="k">class</span> <span class="nc">Correlation</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">calculate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">warn_high_correlations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">Correlations</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">pearson</span><span class="p">:</span> <span class="n">Correlation</span> <span class="o">=</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;pearson&quot;</span><span class="p">)</span>
+    <span class="n">spearman</span><span class="p">:</span> <span class="n">Correlation</span> <span class="o">=</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;spearman&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Interactions"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Interactions.html#pandas_profiling.config.Interactions">[docs]</a><span class="k">class</span> <span class="nc">Interactions</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="c1"># Set to False to disable scatter plots</span>
+    <span class="n">continuous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">targets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="Samples"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Samples.html#pandas_profiling.config.Samples">[docs]</a><span class="k">class</span> <span class="nc">Samples</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">head</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">tail</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">random</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="Variables"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Variables.html#pandas_profiling.config.Variables">[docs]</a><span class="k">class</span> <span class="nc">Variables</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">descriptions</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<span class="k">class</span> <span class="nc">IframeAttribute</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="s2">&quot;src&quot;</span>
+    <span class="n">srcdoc</span> <span class="o">=</span> <span class="s2">&quot;srcdoc&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">Iframe</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;800px&quot;</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;100%&quot;</span>
+    <span class="n">attribute</span><span class="p">:</span> <span class="n">IframeAttribute</span> <span class="o">=</span> <span class="n">IframeAttribute</span><span class="o">.</span><span class="n">srcdoc</span>
+
+
+<span class="k">class</span> <span class="nc">Notebook</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;When in a Jupyter notebook&quot;&quot;&quot;</span>
+
+    <span class="n">iframe</span><span class="p">:</span> <span class="n">Iframe</span> <span class="o">=</span> <span class="n">Iframe</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Report.html#pandas_profiling.config.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">precision</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span></div>
+
+
+<div class="viewcode-block" id="Settings"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings">[docs]</a><span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+    <span class="c1"># Default prefix to avoid collisions with environment variables</span>
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">env_prefix</span> <span class="o">=</span> <span class="s2">&quot;profile_&quot;</span>
+
+    <span class="c1"># Title of the document</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pandas Profiling Report&quot;</span>
+
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">()</span>
+    <span class="n">variables</span><span class="p">:</span> <span class="n">Variables</span> <span class="o">=</span> <span class="n">Variables</span><span class="p">()</span>
+    <span class="n">infer_dtypes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Show the description at each variable (in addition to the overview tab)</span>
+    <span class="n">show_variable_description</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Number of workers (0=multiprocessing.cpu_count())</span>
+    <span class="n">pool_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Show the progress bar</span>
+    <span class="n">progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Per variable type description settings</span>
+    <span class="nb">vars</span><span class="p">:</span> <span class="n">Univariate</span> <span class="o">=</span> <span class="n">Univariate</span><span class="p">()</span>
+
+    <span class="c1"># Sort the variables. Possible values: ascending, descending or None (leaves original sorting)</span>
+    <span class="n">sort</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">missing_diagrams</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;matrix&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;dendrogram&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;heatmap&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">correlations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Correlation</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;spearman&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;spearman&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;pearson&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;pearson&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;kendall&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;kendall&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;cramers&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;cramers&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;phi_k&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;phi_k&quot;</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="n">interactions</span><span class="p">:</span> <span class="n">Interactions</span> <span class="o">=</span> <span class="n">Interactions</span><span class="p">()</span>
+
+    <span class="n">categorical_maximum_correlation_distinct</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="c1"># Use `deep` flag for memory_usage</span>
+    <span class="n">memory_deep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">plot</span><span class="p">:</span> <span class="n">Plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">()</span>
+    <span class="n">duplicates</span><span class="p">:</span> <span class="n">Duplicates</span> <span class="o">=</span> <span class="n">Duplicates</span><span class="p">()</span>
+    <span class="n">samples</span><span class="p">:</span> <span class="n">Samples</span> <span class="o">=</span> <span class="n">Samples</span><span class="p">()</span>
+
+    <span class="n">reject_variables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># The number of observations to show</span>
+    <span class="n">n_obs_unique</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">n_freq_table_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">n_extreme_obs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># Report rendering</span>
+    <span class="n">report</span><span class="p">:</span> <span class="n">Report</span> <span class="o">=</span> <span class="n">Report</span><span class="p">()</span>
+    <span class="n">html</span><span class="p">:</span> <span class="n">Html</span> <span class="o">=</span> <span class="n">Html</span><span class="p">()</span>
+    <span class="n">notebook</span> <span class="o">=</span> <span class="n">Notebook</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Settings.update"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Settings&quot;</span><span class="p">:</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="n">_merge_dictionaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">updates</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../pages/api/_autosummary/pandas_profiling.config.Config.html#pandas_profiling.config.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">arg_groups</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;sensitive&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;samples&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;duplicates&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;vars&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cat&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;redact&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;dark_mode&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="n">Theme</span><span class="o">.</span><span class="n">flatly</span><span class="p">,</span>
+                    <span class="s2">&quot;primary_color&quot;</span><span class="p">:</span> <span class="s2">&quot;#2c3e50&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;orange_mode&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="n">Theme</span><span class="o">.</span><span class="n">united</span><span class="p">,</span>
+                    <span class="s2">&quot;primary_color&quot;</span><span class="p">:</span> <span class="s2">&quot;#d34615&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;explorative&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;vars&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;cat&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;characters&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;words&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;n_obs_unique&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s2">&quot;n_extreme_obs&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s2">&quot;n_freq_table_max&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s2">&quot;memory_deep&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="n">_shorthands</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;creator&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;author&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;copyright_holder&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;copyright_year&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;samples&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;head&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;tail&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+        <span class="s2">&quot;duplicates&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;head&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+        <span class="s2">&quot;interactions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;targets&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;continuous&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;missing_diagrams&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;matrix&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;heatmap&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;dendrogram&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;correlations&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;pearson&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s2">&quot;spearman&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s2">&quot;kendall&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s2">&quot;phi_k&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s2">&quot;cramers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_arg_groups</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">arg_groups</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Config</span><span class="o">.</span><span class="n">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">Config</span><span class="o">.</span><span class="n">_shorthands</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">_shorthands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">kwargs</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Simon Brugman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

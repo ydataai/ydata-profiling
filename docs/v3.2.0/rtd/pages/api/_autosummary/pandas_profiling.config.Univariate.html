@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pandas_profiling.config.Univariate &mdash; pandas-profiling 3.1.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="pandas_profiling.config.NumVars" href="pandas_profiling.config.NumVars.html" />
+    <link rel="prev" title="pandas_profiling.config.Variables" href="pandas_profiling.config.Variables.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #174C4F" >
+            <a href="../../../index.html" class="icon icon-home"> pandas-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pandas Profiling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../announcements.html">Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../big_data.html">Big Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sensitive_data.html">Sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metadata.html">Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../great_expectations_integration.html">Integration with Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution_guidelines.html">Contribution Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../profile_report.html">Profile Report</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../settings.html">Settings</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Settings.html">pandas_profiling.config.Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Config.html">pandas_profiling.config.Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Correlation.html">pandas_profiling.config.Correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html">pandas_profiling.config.CorrelationPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.MissingPlot.html">pandas_profiling.config.MissingPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageType.html">pandas_profiling.config.ImageType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Dataset.html">pandas_profiling.config.Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Duplicates.html">pandas_profiling.config.Duplicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Html.html">pandas_profiling.config.Html</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Interactions.html">pandas_profiling.config.Interactions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Plot.html">pandas_profiling.config.Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Theme.html">pandas_profiling.config.Theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Style.html">pandas_profiling.config.Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Samples.html">pandas_profiling.config.Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Report.html">pandas_profiling.config.Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Variables.html">pandas_profiling.config.Variables</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.Univariate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.NumVars.html">pandas_profiling.config.NumVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CatVars.html">pandas_profiling.config.CatVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageVars.html">pandas_profiling.config.ImageVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.BoolVars.html">pandas_profiling.config.BoolVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.PathVars.html">pandas_profiling.config.PathVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.FileVars.html">pandas_profiling.config.FileVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.UrlVars.html">pandas_profiling.config.UrlVars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Histogram.html">pandas_profiling.config.Histogram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../controller.html">Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../report.html">Report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualisation.html">Visualisation</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #174C4F" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pandas-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../api.html">API</a> &raquo;</li>
+          <li><a href="../settings.html">Settings</a> &raquo;</li>
+      <li>pandas_profiling.config.Univariate</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/pages/api/_autosummary/pandas_profiling.config.Univariate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pandas-profiling-config-univariate">
+<h1>pandas_profiling.config.Univariate<a class="headerlink" href="#pandas-profiling-config-univariate" title="Permalink to this headline"></a></h1>
+<dl class="py class pydantic_model">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pandas_profiling.config.</span></span><span class="sig-name descname"><span class="pre">Univariate</span></span><a class="reference internal" href="../../../_modules/pandas_profiling/config.html#Univariate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.Univariate" title="Permalink to this definition"></a></dt>
+<dd><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Fields</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.bool" title="pandas_profiling.config.Univariate.bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span> <span class="pre">(pandas_profiling.config.BoolVars)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.cat" title="pandas_profiling.config.Univariate.cat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cat</span> <span class="pre">(pandas_profiling.config.CatVars)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.file" title="pandas_profiling.config.Univariate.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span> <span class="pre">(pandas_profiling.config.FileVars)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.image" title="pandas_profiling.config.Univariate.image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image</span> <span class="pre">(pandas_profiling.config.ImageVars)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.num" title="pandas_profiling.config.Univariate.num"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num</span> <span class="pre">(pandas_profiling.config.NumVars)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.path" title="pandas_profiling.config.Univariate.path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span> <span class="pre">(pandas_profiling.config.PathVars)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.url" title="pandas_profiling.config.Univariate.url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url</span> <span class="pre">(pandas_profiling.config.UrlVars)</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.bool">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars" title="pandas_profiling.config.BoolVars"><span class="pre">pandas_profiling.config.BoolVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">BoolVars(n_obs=3,</span> <span class="pre">mappings={'t':</span> <span class="pre">True,</span> <span class="pre">'f':</span> <span class="pre">False,</span> <span class="pre">'yes':</span> <span class="pre">True,</span> <span class="pre">'no':</span> <span class="pre">False,</span> <span class="pre">'y':</span> <span class="pre">True,</span> <span class="pre">'n':</span> <span class="pre">False,</span> <span class="pre">'true':</span> <span class="pre">True,</span> <span class="pre">'false':</span> <span class="pre">False})</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.bool" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.cat">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars" title="pandas_profiling.config.CatVars"><span class="pre">pandas_profiling.config.CatVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">CatVars(length=True,</span> <span class="pre">characters=True,</span> <span class="pre">words=True,</span> <span class="pre">cardinality_threshold=50,</span> <span class="pre">n_obs=5,</span> <span class="pre">chi_squared_threshold=0.999,</span> <span class="pre">coerce_str_to_date=False,</span> <span class="pre">redact=False,</span> <span class="pre">histogram_largest=50,</span> <span class="pre">stop_words=[])</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.cat" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.file">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.FileVars.html#pandas_profiling.config.FileVars" title="pandas_profiling.config.FileVars"><span class="pre">pandas_profiling.config.FileVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">FileVars(active=False)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.image">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.ImageVars.html#pandas_profiling.config.ImageVars" title="pandas_profiling.config.ImageVars"><span class="pre">pandas_profiling.config.ImageVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">ImageVars(active=False,</span> <span class="pre">exif=True,</span> <span class="pre">hash=True)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.image" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.num">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars" title="pandas_profiling.config.NumVars"><span class="pre">pandas_profiling.config.NumVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">NumVars(quantiles=[0.05,</span> <span class="pre">0.25,</span> <span class="pre">0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.95],</span> <span class="pre">skewness_threshold=20,</span> <span class="pre">low_categorical_threshold=5,</span> <span class="pre">chi_squared_threshold=0.999)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.num" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.path">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.PathVars.html#pandas_profiling.config.PathVars" title="pandas_profiling.config.PathVars"><span class="pre">pandas_profiling.config.PathVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PathVars(active=False)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.url">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.UrlVars.html#pandas_profiling.config.UrlVars" title="pandas_profiling.config.UrlVars"><span class="pre">pandas_profiling.config.UrlVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">UrlVars(active=False)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.url" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pandas_profiling.config.Variables.html" class="btn btn-neutral float-left" title="pandas_profiling.config.Variables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pandas_profiling.config.NumVars.html" class="btn btn-neutral float-right" title="pandas_profiling.config.NumVars" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Simon Brugman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

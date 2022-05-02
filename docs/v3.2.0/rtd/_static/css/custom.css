@@ -1,0 +1,21 @@
+.wy-menu-vertical header, .wy-menu-vertical p.caption{
+    color: #247080;
+}
+
+a{
+    color: #36acb3;
+}
+
+.wy-side-nav-search input[type=text] {
+    border-color: #247080;
+}
+
+.text-pink {
+    color: #ea4aaa!important;
+}
+
+/*
+dark: 174C4F
+middle: 247080
+light: 36acb3
+ */
