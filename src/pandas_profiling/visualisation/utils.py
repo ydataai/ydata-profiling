@@ -3,7 +3,7 @@ import base64
 import uuid
 from io import BytesIO, StringIO
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 from urllib.parse import quote
 
 import matplotlib.pyplot as plt
@@ -45,7 +45,7 @@ def base64_image(image: bytes, mime_type: str) -> str:
 
 def plot_360_n0sc0pe(
     config: Settings,
-    image_format: Union[str, None] = None,
+    image_format: Optional[str] = None,
     bbox_extra_artists: Optional[List[Artist]] = None,
     bbox_inches: Optional[str] = None,
 ) -> str:
