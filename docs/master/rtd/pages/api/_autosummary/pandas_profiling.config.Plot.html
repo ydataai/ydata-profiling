@@ -39,7 +39,6 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-    
               <p class="caption" role="heading"><span class="caption-text">Pandas Profiling</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
@@ -54,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
 <ul>
@@ -72,7 +72,6 @@
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html">pandas_profiling.config.CorrelationPlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.MissingPlot.html">pandas_profiling.config.MissingPlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageType.html">pandas_profiling.config.ImageType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Pie.html">pandas_profiling.config.Pie</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Dataset.html">pandas_profiling.config.Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Duplicates.html">pandas_profiling.config.Duplicates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Html.html">pandas_profiling.config.Html</a></li>
@@ -103,35 +102,6 @@
 </li>
 </ul>
 
-
-    <div style="padding-top: 20px">
-        <a href="https://github.com/sponsors/sbrugman">
-            <summary id="sponsor-button-repo" class="btn btn-sm" title="Sponsor pandas-profiling/pandas-profiling" data-ga-click="Repository, show sponsor modal, action:files#disambiguate; text:Sponsor" role="button">
-              <svg class="octicon octicon-heart text-pink v-align-text-bottom" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.727 3C7.091 3 6.001 4.65 6.001 4.65S4.909 3 3.273 3C1.636 3 0 4.1 0 6.3 0 9.6 6 14 6 14s6-4.4 6-7.7C12 4.1 10.364 3 8.727 3z"></path></svg>
-              Sponsor
-            </summary>
-        </a>
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
       </div>
     </nav>
@@ -160,57 +130,57 @@
              
   <section id="pandas-profiling-config-plot">
 <h1>pandas_profiling.config.Plot<a class="headerlink" href="#pandas-profiling-config-plot" title="Permalink to this headline"></a></h1>
-<dl class="py pydantic_model">
+<dl class="py class pydantic_model">
 <dt class="sig sig-object py" id="pandas_profiling.config.Plot">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span> </em><span class="sig-prename descclassname"><span class="pre">pandas_profiling.config.</span></span><span class="sig-name descname"><span class="pre">Plot</span></span><a class="reference internal" href="../../../_modules/pandas_profiling/config.html#Plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.Plot" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pandas_profiling.config.</span></span><span class="sig-name descname"><span class="pre">Plot</span></span><a class="reference internal" href="../../../_modules/pandas_profiling/config.html#Plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.Plot" title="Permalink to this definition"></a></dt>
 <dd><p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Fields</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#pandas_profiling.config.Plot.cat_freq" title="pandas_profiling.config.Plot.cat_freq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cat_freq</span> <span class="pre">(pandas_profiling.config.CatFrequencyPlot)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Plot.correlation" title="pandas_profiling.config.Plot.correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlation</span> <span class="pre">(pandas_profiling.config.CorrelationPlot)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Plot.dpi" title="pandas_profiling.config.Plot.dpi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dpi</span> <span class="pre">(int)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Plot.histogram" title="pandas_profiling.config.Plot.histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">histogram</span> <span class="pre">(pandas_profiling.config.Histogram)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Plot.image_format" title="pandas_profiling.config.Plot.image_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_format</span> <span class="pre">(pandas_profiling.config.ImageType)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Plot.missing" title="pandas_profiling.config.Plot.missing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing</span> <span class="pre">(pandas_profiling.config.MissingPlot)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Plot.pie" title="pandas_profiling.config.Plot.pie"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pie</span> <span class="pre">(pandas_profiling.config.Pie)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Plot.scatter_threshold" title="pandas_profiling.config.Plot.scatter_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_threshold</span> <span class="pre">(int)</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py pydantic_field">
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Plot.cat_freq">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cat_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pandas_profiling.config.CatFrequencyPlot</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">CatFrequencyPlot(show=True,</span> <span class="pre">type='bar',</span> <span class="pre">max_unique=10,</span> <span class="pre">colors=None)</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.cat_freq" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Plot.correlation">
-<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">correlation</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html#pandas_profiling.config.CorrelationPlot" title="pandas_profiling.config.CorrelationPlot"><span class="pre">pandas_profiling.config.CorrelationPlot</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">CorrelationPlot(cmap='RdBu',</span> <span class="pre">bad='#000000')</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.correlation" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">correlation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html#pandas_profiling.config.CorrelationPlot" title="pandas_profiling.config.CorrelationPlot"><span class="pre">pandas_profiling.config.CorrelationPlot</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">CorrelationPlot(cmap='RdBu',</span> <span class="pre">bad='#000000')</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.correlation" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py pydantic_field">
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Plot.dpi">
-<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">dpi</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><em class="property"> <span class="pre">=</span> <span class="pre">800</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.dpi" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dpi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">800</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.dpi" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py pydantic_field">
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Plot.histogram">
-<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">histogram</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="pandas_profiling.config.Histogram.html#pandas_profiling.config.Histogram" title="pandas_profiling.config.Histogram"><span class="pre">pandas_profiling.config.Histogram</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">Histogram(bins=50,</span> <span class="pre">max_bins=250,</span> <span class="pre">x_axis_labels=True)</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.histogram" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">histogram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.Histogram.html#pandas_profiling.config.Histogram" title="pandas_profiling.config.Histogram"><span class="pre">pandas_profiling.config.Histogram</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Histogram(bins=50,</span> <span class="pre">max_bins=250,</span> <span class="pre">x_axis_labels=True)</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.histogram" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py pydantic_field">
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Plot.image_format">
-<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">image_format</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="pandas_profiling.config.ImageType.html#pandas_profiling.config.ImageType" title="pandas_profiling.config.ImageType"><span class="pre">pandas_profiling.config.ImageType</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">ImageType.svg</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.image_format" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_format</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.ImageType.html#pandas_profiling.config.ImageType" title="pandas_profiling.config.ImageType"><span class="pre">pandas_profiling.config.ImageType</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">ImageType.svg</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.image_format" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py pydantic_field">
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Plot.missing">
-<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">missing</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot" title="pandas_profiling.config.MissingPlot"><span class="pre">pandas_profiling.config.MissingPlot</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">MissingPlot(force_labels=True,</span> <span class="pre">cmap='RdBu')</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.missing" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">missing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot" title="pandas_profiling.config.MissingPlot"><span class="pre">pandas_profiling.config.MissingPlot</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">MissingPlot(force_labels=True,</span> <span class="pre">cmap='RdBu')</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.missing" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Plot.pie">
-<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">pie</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="pandas_profiling.config.Pie.html#pandas_profiling.config.Pie" title="pandas_profiling.config.Pie"><span class="pre">pandas_profiling.config.Pie</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">Pie(max_unique=10)</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.pie" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py pydantic_field">
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Plot.scatter_threshold">
-<em class="property"><span class="pre">field</span> </em><span class="sig-name descname"><span class="pre">scatter_threshold</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><em class="property"> <span class="pre">=</span> <span class="pre">1000</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.scatter_threshold" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scatter_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></em><a class="headerlink" href="#pandas_profiling.config.Plot.scatter_threshold" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -228,7 +198,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, Simon Brugman.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

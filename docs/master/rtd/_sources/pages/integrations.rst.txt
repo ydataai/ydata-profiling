@@ -217,7 +217,7 @@ PyCharm
     - Working Directory: ``$ProjectFileDir$``
 
 
-.. image:: https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png
+.. image:: https://pandas-profiling.github.io/pandas-profiling/docs/assets/pycharm-integration.png
   :alt: PyCharm Integration
   :width: 400
 

@@ -25,9 +25,9 @@
 <p>Main module of pandas-profiling.</p>
 <h1 id="pandas-profiling">Pandas Profiling</h1>
 <p><img alt="Pandas Profiling Logo Header" src="https://pandas-profiling.ydata.ai/docs/assets/logo_header.png"></p>
-<p><a href="https://travis-ci.com/pandas-profiling/pandas-profiling"><img alt="Build Status" src="https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master"></a>
-<a href="https://codecov.io/gh/pandas-profiling/pandas-profiling"><img alt="Code Coverage" src="https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF"></a>
-<a href="https://github.com/pandas-profiling/pandas-profiling/releases"><img alt="Release Version" src="https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg"></a>
+<p><a href="https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml"><img alt="Build Status" src="https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master"></a>
+<a href="https://codecov.io/gh/ydataai/pandas-profiling"><img alt="Code Coverage" src="https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF"></a>
+<a href="https://github.com/ydataai/pandas-profiling/releases"><img alt="Release Version" src="https://img.shields.io/github/release/ydataai/pandas-profiling.svg"></a>
 <a href="https://pypi.org/project/pandas-profiling/"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/pandas-profiling"></a>
 <a href="https://github.com/python/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a></p>
 <p align="center">
@@ -59,11 +59,6 @@
 <p><strong>Spark backend in progress</strong>: We can happily announce that we're nearing v1 for the Spark backend for generating profile reports.
 Beta testers wanted! The Spark backend will be released as a pre-release for this package.</p>
 <p><strong>Monitoring time series?</strong>: I'd like to draw your attention to <a href="https://github.com/ing-bank/popmon">popmon</a>. Whereas pandas-profiling allows you to explore patterns in a single dataset, popmon allows you to uncover temporal patterns. It's worth checking out!</p>
-<p><strong>Support <code>pandas-profiling</code></strong>
-The development of <code>pandas-profiling</code> relies completely on contributions.
-If you find value in the package, we welcome you to support the project directly through <a href="https://github.com/sponsors/sbrugman">GitHub Sponsors</a>!
-Please help me to continue to support this package.
-Find more information: <a href="https://github.com/sponsors/sbrugman">Sponsor the project on GitHub</a></p>
 <hr>
 <p><em>Contents:</em> <strong><a href="#examples">Examples</a></strong> |
 <strong><a href="#installation">Installation</a></strong> | <strong><a href="#documentation">Documentation</a></strong> |
@@ -83,6 +78,7 @@ Find more information: <a href="https://github.com/sponsors/sbrugman">Sponsor th
 <li><a href="https://pandas-profiling.ydata.ai/examples/master/vektis/vektis_report.html">Vektis</a> (Vektis Dutch Healthcare data)</li>
 <li><a href="https://pandas-profiling.ydata.ai/examples/master/colors/colors_report.html">Colors</a> (a simple colors dataset)</li>
 <li><a href="https://pandas-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html">UCI Bank Dataset</a> (banking marketing dataset)</li>
+<li><a href="https://pandas-profiling.ydata.ai/examples/master/rdw/rdw.html">RDW</a> (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)</li>
 </ul>
 <p>Specific features:</p>
 <ul>
@@ -105,7 +101,7 @@ Find more information: <a href="https://github.com/sponsors/sbrugman">Sponsor th
 <pre><code class="language-sh">pip install pandas-profiling[notebook]
 </code></pre>
 <p>Alternatively, you could install the latest version directly from Github:</p>
-<pre><code class="language-sh">pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
+<pre><code class="language-sh">pip install https://github.com/ydataai/pandas-profiling/archive/master.zip
 </code></pre>
 <h3 id="using-conda">Using conda</h3>
 <p><a href="https://anaconda.org/conda-forge/pandas-profiling"><img alt="Conda Downloads" src="https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg"></a>
@@ -114,7 +110,7 @@ Find more information: <a href="https://github.com/sponsors/sbrugman">Sponsor th
 <pre><code class="language-sh">conda install -c conda-forge pandas-profiling
 </code></pre>
 <h3 id="from-source">From source</h3>
-<p>Download the source code by cloning the repository or by pressing <a href="https://github.com/pandas-profiling/pandas-profiling/archive/master.zip">'Download ZIP'</a> on this page. </p>
+<p>Download the source code by cloning the repository or by pressing <a href="https://github.com/ydataai/pandas-profiling/archive/master.zip">'Download ZIP'</a> on this page. </p>
 <p>Install by navigating to the proper directory and running:</p>
 <pre><code class="language-sh">python setup.py install
 </code></pre>
@@ -132,7 +128,7 @@ df = pd.DataFrame(np.random.rand(100, 5), columns=[&quot;a&quot;, &quot;b&quot;,
 <pre><code class="language-python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;)
 </code></pre>
 <h3 id="explore-deeper">Explore deeper</h3>
-<p>You can configure the profile report in any way you like. The example code below loads the explorative configuration, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
+<p>You can configure the profile report in any way you like. The example code below loads the explorative configuration, that includes many features for text (length distribution, unicode information), files (file size, creation time) and images (dimensions, exif information). If you are interested what exact settings were used, you can compare with the <a href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
 <pre><code class="language-python">profile = ProfileReport(df, title=&quot;Pandas Profiling Report&quot;, explorative=True)
 </code></pre>
 <p>Learn more about configuring <code>pandas-profiling</code> on the <a href="https://pandas-profiling.ydata.ai/docs/master/rtd/pages/advanced_usage.html">Advanced usage</a> page.</p>
@@ -180,7 +176,7 @@ profile.to_file(&quot;output.html&quot;)
 <li><code>progress_bar</code> (<code>bool</code>): If True, <code>pandas-profiling</code> will display a progress bar.</li>
 <li><code>infer_dtypes</code> (<code>bool</code>): When <code>True</code> (default) the <code>dtype</code> of variables are inferred using <code>visions</code> using the typeset logic (for instance a column that has integers stored as string will be analyzed as if being numeric).</li>
 </ul>
-<p>More settings can be found in the <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a> and <a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a>.</p>
+<p>More settings can be found in the <a href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a> and <a href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">minimal configuration file</a>.</p>
 <p>You find the configuration docs on the advanced usage page <a href="https://pandas-profiling.ydata.ai/docs/master/rtd/pages/advanced_usage.html">here</a></p>
 <p><strong>Example</strong></p>
 <pre><code class="language-python">profile = df.profile_report(
@@ -193,7 +189,7 @@ profile.to_file(&quot;output.html&quot;)
 You can reach out via the following channels:</p>
 <ul>
 <li><a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>: ideal for asking questions on how to use the package</li>
-<li><a href="https://github.com/pandas-profiling/pandas-profiling/issues">Github Issues</a>: bugs, proposals for change, feature requests</li>
+<li><a href="https://github.com/ydataai/pandas-profiling/issues">Github Issues</a>: bugs, proposals for change, feature requests</li>
 <li><a href="https://slack.ydata.ai">Slack</a>: general chat, questions, collaboration</li>
 <li><a href="mailto:developers@ydata.ai">Email</a>: project collaboration or sponsoring</li>
 </ul>
@@ -234,28 +230,12 @@ You can find more details on the Great Expectations integration [here](https://p
 </td>
 </tr>
 </table>
-<h2 id="supporting-open-source">Supporting open source</h2>
-<p>Maintaining and developing the open-source code for pandas-profiling, with millions of downloads and thousands of users, would not be possible without support of our gracious sponsors.</p>
-<table>
-<tr>
-<td>
-<img alt="Lambda Labs" src="https://pandas-profiling.ydata.ai/docs/master/assets/lambda-labs.png" width="500" />
-</td>
-<td>
-[Lambda workstations](https://lambdalabs.com/), servers, laptops, and cloud services power engineers and researchers at Fortune 500 companies and 94% of the top 50 universities. [Lambda Cloud](https://lambdalabs.com/service/gpu-cloud) offers 4 & 8 GPU instances starting at $1.50 / hr. Pre-installed with TensorFlow, PyTorch, Ubuntu, CUDA, and cuDNN.
-</td>
-</tr>
-</table>
-<p>We would like to thank our generous Github Sponsors supporters who make pandas-profiling possible: </p>
-<pre><code>Martin Sotir, Stephanie Rivera, abdulAziz
-</code></pre>
-<p>More info if you would like to appear here: <a href="https://github.com/sponsors/sbrugman">Github Sponsor page</a></p>
 <h2 id="types">Types</h2>
 <p>Types are a powerful abstraction for effective data analysis, that goes beyond the logical data types (integer, float etc.).
 <code>pandas-profiling</code> currently, recognizes the following types: <em>Boolean, Numerical, Date, Categorical, URL, Path, File</em> and <em>Image</em>.</p>
 <p>We have developed a type system for Python, tailored for data analysis: <a href="https://github.com/dylan-profiler/visions">visions</a>.
 Choosing an appropriate typeset can both improve the overall expressiveness and reduce the complexity of your analysis/code.
-To learn more about <code>pandas-profiling</code>'s type system, check out the default implementation <a href="https://github.com/pandas-profiling/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py">here</a>.
+To learn more about <code>pandas-profiling</code>'s type system, check out the default implementation <a href="https://github.com/ydataai/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py">here</a>.
 In the meantime, user customized summarizations and type definitions are now fully supported - if you have a specific use-case please reach out with ideas or a PR!</p>
 <h2 id="contributing">Contributing</h2>
 <p>Read on getting involved in the <a href="https://pandas-profiling.ydata.ai/docs/master/rtd/pages/contribution_guidelines.html">Contribution Guide</a>.</p>
@@ -302,19 +282,19 @@ $ where pandas_profiling
 </thead>
 <tbody>
 <tr>
-<td><a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements.txt">requirements.txt</a></td>
+<td><a href="https://github.com/ydataai/pandas-profiling/blob/master/requirements.txt">requirements.txt</a></td>
 <td>Package requirements</td>
 </tr>
 <tr>
-<td><a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-dev.txt">requirements-dev.txt</a></td>
+<td><a href="https://github.com/ydataai/pandas-profiling/blob/master/requirements-dev.txt">requirements-dev.txt</a></td>
 <td>Requirements for development</td>
 </tr>
 <tr>
-<td><a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/requirements-test.txt">requirements-test.txt</a></td>
+<td><a href="https://github.com/ydataai/pandas-profiling/blob/master/requirements-test.txt">requirements-test.txt</a></td>
 <td>Requirements for testing</td>
 </tr>
 <tr>
-<td><a href="https://github.com/pandas-profiling/pandas-profiling/blob/master/setup.py">setup.py</a></td>
+<td><a href="https://github.com/ydataai/pandas-profiling/blob/master/setup.py">setup.py</a></td>
 <td>Requirements for Widgets etc.</td>
 </tr>
 </tbody>
@@ -1304,7 +1284,6 @@ the Iframe.</p>
 <li><a href="#great-expectations">Great Expectations</a></li>
 </ul>
 </li>
-<li><a href="#supporting-open-source">Supporting open source</a></li>
 <li><a href="#types">Types</a></li>
 <li><a href="#contributing">Contributing</a></li>
 <li><a href="#editor-integration">Editor integration</a><ul>

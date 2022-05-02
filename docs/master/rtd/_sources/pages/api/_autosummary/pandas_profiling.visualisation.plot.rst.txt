@@ -13,12 +13,12 @@
 
    .. autosummary::
    
+      cat_frequency_plot
       correlation_matrix
       get_cmap_half
       get_correlation_font_size
       histogram
       mini_histogram
-      pie_plot
       scatter_complex
       scatter_pairwise
       scatter_series

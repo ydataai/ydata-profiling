@@ -83,7 +83,7 @@ More information is available at the `ipywidgets documentation <https://ipywidge
 From source
 -----------
 
-Download the source code by cloning the repository or by pressing `'Download ZIP' <https://github.com/pandas-profiling/pandas-profiling/archive/master.zip>`_ on this page.
+Download the source code by cloning the repository or by pressing `'Download ZIP' <https://github.com/ydataai/pandas-profiling/archive/master.zip>`_ on this page.
 Install by navigating to the proper directory and running
 
 .. code-block:: console
@@ -94,4 +94,4 @@ This can also be done in one line:
 
 .. code-block:: console
 
-    pip install https://github.com/pandas-profiling/pandas-profiling/archive/master.zip
+    pip install https://github.com/ydataai/pandas-profiling/archive/master.zip

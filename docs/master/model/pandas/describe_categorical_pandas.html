@@ -29,7 +29,7 @@
 <pre><code class="python">import contextlib
 import string
 from collections import Counter
-from typing import Tuple
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -162,8 +162,21 @@ def unicode_summary_vc(vc: pd.Series) -&gt; dict:
     return summary
 
 
-def word_summary_vc(vc: pd.Series) -&gt; dict:
-    # TODO: preprocess (stopwords)
+def word_summary_vc(vc: pd.Series, stop_words: List[str] = []) -&gt; dict:
+    &#34;&#34;&#34;Count the number of occurrences of each individual word across
+    all lines of the data Series, then sort from the word with the most
+    occurrences to the word with the least occurrences. If a list of
+    stop words is given, they will be ignored.
+
+    Args:
+        vc: Series containing all unique categories as index and their
+            frequency as value. Sorted from the most frequent down.
+        stop_words: List of stop words to ignore, empty by default.
+
+    Returns:
+        A dict containing the results as a Series with unique words as
+        index and the computed frequency as value
+    &#34;&#34;&#34;
     # TODO: configurable lowercase/punctuation etc.
     # TODO: remove punctuation in words
 
@@ -175,6 +188,12 @@ def word_summary_vc(vc: pd.Series) -&gt; dict:
     word_counts = word_counts[word_counts.index.notnull()]
     word_counts = word_counts.groupby(level=0, sort=False).sum()
     word_counts = word_counts.sort_values(ascending=False)
+
+    # Remove stop words
+    if len(stop_words) &gt; 0:
+        stop_words = [x.lower() for x in stop_words]
+        word_counts = word_counts.loc[~word_counts.index.isin(stop_words)]
+
     return {&#34;word_counts&#34;: word_counts}
 
 
@@ -246,7 +265,7 @@ def pandas_describe_categorical_1d(
         summary.update(unicode_summary_vc(value_counts))
 
     if config.vars.cat.words:
-        summary.update(word_summary_vc(value_counts))
+        summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     return config, series, summary</code></pre>
 </details>
@@ -424,7 +443,7 @@ def pandas_describe_categorical_1d(
         summary.update(unicode_summary_vc(value_counts))
 
     if config.vars.cat.words:
-        summary.update(word_summary_vc(value_counts))
+        summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     return config, series, summary</code></pre>
 </details>
@@ -521,16 +540,43 @@ def pandas_describe_categorical_1d(
 </details>
 </dd>
 <dt id="pandas_profiling.model.pandas.describe_categorical_pandas.word_summary_vc"><code class="name flex">
-<span>def <span class="ident">word_summary_vc</span></span>(<span>vc: pandas.core.series.Series) ‑> dict</span>
+<span>def <span class="ident">word_summary_vc</span></span>(<span>vc: pandas.core.series.Series, stop_words: List[str] = []) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Count the number of occurrences of each individual word across
+all lines of the data Series, then sort from the word with the most
+occurrences to the word with the least occurrences. If a list of
+stop words is given, they will be ignored.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>vc</code></strong></dt>
+<dd>Series containing all unique categories as index and their
+frequency as value. Sorted from the most frequent down.</dd>
+<dt><strong><code>stop_words</code></strong></dt>
+<dd>List of stop words to ignore, empty by default.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A dict containing the results as a Series with unique words as
+index and the computed frequency as value</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def word_summary_vc(vc: pd.Series) -&gt; dict:
-    # TODO: preprocess (stopwords)
+<pre><code class="python">def word_summary_vc(vc: pd.Series, stop_words: List[str] = []) -&gt; dict:
+    &#34;&#34;&#34;Count the number of occurrences of each individual word across
+    all lines of the data Series, then sort from the word with the most
+    occurrences to the word with the least occurrences. If a list of
+    stop words is given, they will be ignored.
+
+    Args:
+        vc: Series containing all unique categories as index and their
+            frequency as value. Sorted from the most frequent down.
+        stop_words: List of stop words to ignore, empty by default.
+
+    Returns:
+        A dict containing the results as a Series with unique words as
+        index and the computed frequency as value
+    &#34;&#34;&#34;
     # TODO: configurable lowercase/punctuation etc.
     # TODO: remove punctuation in words
 
@@ -542,6 +588,12 @@ def pandas_describe_categorical_1d(
     word_counts = word_counts[word_counts.index.notnull()]
     word_counts = word_counts.groupby(level=0, sort=False).sum()
     word_counts = word_counts.sort_values(ascending=False)
+
+    # Remove stop words
+    if len(stop_words) &gt; 0:
+        stop_words = [x.lower() for x in stop_words]
+        word_counts = word_counts.loc[~word_counts.index.isin(stop_words)]
+
     return {&#34;word_counts&#34;: word_counts}</code></pre>
 </details>
 </dd>

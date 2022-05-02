@@ -70,7 +70,7 @@ You can also configure each feature individually in the function call:
         handler=handler,
     )
 
-See `the Great Expectations Examples <https://pandas-profiling.ydata.ai/examples/master/features/great_expectations_example.html>`_ for complete examples.
+See `the Great Expectations Examples <https://github.com/pandas-profiling/pandas-profiling/blob/master/examples/features/great_expectations_example.py>`_ for complete examples.
 
 
 Included Expectation types

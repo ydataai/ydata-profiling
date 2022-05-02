@@ -31,10 +31,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-import matplotlib
 from pydantic import BaseModel, BaseSettings, Field
-
-matplotlib.use(&#34;Agg&#34;)
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -&gt; dict:
@@ -86,6 +83,7 @@ class CatVars(BaseModel):
     coerce_str_to_date: bool = False
     redact: bool = False
     histogram_largest: int = 50
+    stop_words: List[str] = []
 
 
 class BoolVars(BaseModel):
@@ -157,20 +155,28 @@ class Histogram(BaseModel):
     x_axis_labels: bool = True
 
 
-class Pie(BaseModel):
-    # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+class CatFrequencyPlot(BaseModel):
+    show: bool = True  # if false, the category frequency plot is turned off
+    type: str = &#34;bar&#34;  # options: &#39;bar&#39;, &#39;pie&#39;
+
+    # The cat frequency plot is only rendered if the number of distinct values is
+    # smaller or equal to &#34;max_unique&#34;
     max_unique: int = 10
+
+    # Colors should be a list of matplotlib recognised strings:
+    # --&gt; https://matplotlib.org/stable/tutorials/colors/colors.html
+    # --&gt; matplotlib defaults are used by default
+    colors: Optional[List[str]] = None
 
 
 class Plot(BaseModel):
     missing: MissingPlot = MissingPlot()
     image_format: ImageType = ImageType.svg
     correlation: CorrelationPlot = CorrelationPlot()
-    # PNG dpi
-    dpi: int = 800
+    dpi: int = 800  # PNG dpi
     histogram: Histogram = Histogram()
     scatter_threshold: int = 1000
-    pie: Pie = Pie()
+    cat_freq: CatFrequencyPlot = CatFrequencyPlot()
 
 
 class Theme(Enum):
@@ -462,6 +468,55 @@ class Config:
 </dd>
 </dl>
 </dd>
+<dt id="pandas_profiling.config.CatFrequencyPlot"><code class="flex name class">
+<span>class <span class="ident">CatFrequencyPlot</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CatFrequencyPlot(BaseModel):
+    show: bool = True  # if false, the category frequency plot is turned off
+    type: str = &#34;bar&#34;  # options: &#39;bar&#39;, &#39;pie&#39;
+
+    # The cat frequency plot is only rendered if the number of distinct values is
+    # smaller or equal to &#34;max_unique&#34;
+    max_unique: int = 10
+
+    # Colors should be a list of matplotlib recognised strings:
+    # --&gt; https://matplotlib.org/stable/tutorials/colors/colors.html
+    # --&gt; matplotlib defaults are used by default
+    colors: Optional[List[str]] = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pandas_profiling.config.CatFrequencyPlot.colors"><code class="name">var <span class="ident">colors</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatFrequencyPlot.max_unique"><code class="name">var <span class="ident">max_unique</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatFrequencyPlot.show"><code class="name">var <span class="ident">show</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatFrequencyPlot.type"><code class="name">var <span class="ident">type</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="pandas_profiling.config.CatVars"><code class="flex name class">
 <span>class <span class="ident">CatVars</span></span>
 <span>(</span><span>**data: Any)</span>
@@ -483,7 +538,8 @@ class Config:
     chi_squared_threshold: float = 0.999
     coerce_str_to_date: bool = False
     redact: bool = False
-    histogram_largest: int = 50</code></pre>
+    histogram_largest: int = 50
+    stop_words: List[str] = []</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -521,6 +577,10 @@ class Config:
 <div class="desc"></div>
 </dd>
 <dt id="pandas_profiling.config.CatVars.redact"><code class="name">var <span class="ident">redact</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pandas_profiling.config.CatVars.stop_words"><code class="name">var <span class="ident">stop_words</span> : List[str]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1296,34 +1356,6 @@ def shorthands(kwargs: dict) -&gt; dict:
 </dd>
 </dl>
 </dd>
-<dt id="pandas_profiling.config.Pie"><code class="flex name class">
-<span>class <span class="ident">Pie</span></span>
-<span>(</span><span>**data: Any)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Pie(BaseModel):
-    # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
-    max_unique: int = 10</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>pydantic.main.BaseModel</li>
-<li>pydantic.utils.Representation</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="pandas_profiling.config.Pie.max_unique"><code class="name">var <span class="ident">max_unique</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
 <dt id="pandas_profiling.config.Plot"><code class="flex name class">
 <span>class <span class="ident">Plot</span></span>
 <span>(</span><span>**data: Any)</span>
@@ -1339,11 +1371,10 @@ def shorthands(kwargs: dict) -&gt; dict:
     missing: MissingPlot = MissingPlot()
     image_format: ImageType = ImageType.svg
     correlation: CorrelationPlot = CorrelationPlot()
-    # PNG dpi
-    dpi: int = 800
+    dpi: int = 800  # PNG dpi
     histogram: Histogram = Histogram()
     scatter_threshold: int = 1000
-    pie: Pie = Pie()</code></pre>
+    cat_freq: CatFrequencyPlot = CatFrequencyPlot()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1352,6 +1383,10 @@ def shorthands(kwargs: dict) -&gt; dict:
 </ul>
 <h3>Class variables</h3>
 <dl>
+<dt id="pandas_profiling.config.Plot.cat_freq"><code class="name">var <span class="ident">cat_freq</span> : <a title="pandas_profiling.config.CatFrequencyPlot" href="#pandas_profiling.config.CatFrequencyPlot">CatFrequencyPlot</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="pandas_profiling.config.Plot.correlation"><code class="name">var <span class="ident">correlation</span> : <a title="pandas_profiling.config.CorrelationPlot" href="#pandas_profiling.config.CorrelationPlot">CorrelationPlot</a></code></dt>
 <dd>
 <div class="desc"></div>
@@ -1369,10 +1404,6 @@ def shorthands(kwargs: dict) -&gt; dict:
 <div class="desc"></div>
 </dd>
 <dt id="pandas_profiling.config.Plot.missing"><code class="name">var <span class="ident">missing</span> : <a title="pandas_profiling.config.MissingPlot" href="#pandas_profiling.config.MissingPlot">MissingPlot</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="pandas_profiling.config.Plot.pie"><code class="name">var <span class="ident">pie</span> : <a title="pandas_profiling.config.Pie" href="#pandas_profiling.config.Pie">Pie</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1850,6 +1881,15 @@ Heroku and any 12 factor app design.</p></div>
 </ul>
 </li>
 <li>
+<h4><code><a title="pandas_profiling.config.CatFrequencyPlot" href="#pandas_profiling.config.CatFrequencyPlot">CatFrequencyPlot</a></code></h4>
+<ul class="">
+<li><code><a title="pandas_profiling.config.CatFrequencyPlot.colors" href="#pandas_profiling.config.CatFrequencyPlot.colors">colors</a></code></li>
+<li><code><a title="pandas_profiling.config.CatFrequencyPlot.max_unique" href="#pandas_profiling.config.CatFrequencyPlot.max_unique">max_unique</a></code></li>
+<li><code><a title="pandas_profiling.config.CatFrequencyPlot.show" href="#pandas_profiling.config.CatFrequencyPlot.show">show</a></code></li>
+<li><code><a title="pandas_profiling.config.CatFrequencyPlot.type" href="#pandas_profiling.config.CatFrequencyPlot.type">type</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="pandas_profiling.config.CatVars" href="#pandas_profiling.config.CatVars">CatVars</a></code></h4>
 <ul class="">
 <li><code><a title="pandas_profiling.config.CatVars.cardinality_threshold" href="#pandas_profiling.config.CatVars.cardinality_threshold">cardinality_threshold</a></code></li>
@@ -1860,6 +1900,7 @@ Heroku and any 12 factor app design.</p></div>
 <li><code><a title="pandas_profiling.config.CatVars.length" href="#pandas_profiling.config.CatVars.length">length</a></code></li>
 <li><code><a title="pandas_profiling.config.CatVars.n_obs" href="#pandas_profiling.config.CatVars.n_obs">n_obs</a></code></li>
 <li><code><a title="pandas_profiling.config.CatVars.redact" href="#pandas_profiling.config.CatVars.redact">redact</a></code></li>
+<li><code><a title="pandas_profiling.config.CatVars.stop_words" href="#pandas_profiling.config.CatVars.stop_words">stop_words</a></code></li>
 <li><code><a title="pandas_profiling.config.CatVars.words" href="#pandas_profiling.config.CatVars.words">words</a></code></li>
 </ul>
 </li>
@@ -2005,20 +2046,14 @@ Heroku and any 12 factor app design.</p></div>
 </ul>
 </li>
 <li>
-<h4><code><a title="pandas_profiling.config.Pie" href="#pandas_profiling.config.Pie">Pie</a></code></h4>
-<ul class="">
-<li><code><a title="pandas_profiling.config.Pie.max_unique" href="#pandas_profiling.config.Pie.max_unique">max_unique</a></code></li>
-</ul>
-</li>
-<li>
 <h4><code><a title="pandas_profiling.config.Plot" href="#pandas_profiling.config.Plot">Plot</a></code></h4>
 <ul class="two-column">
+<li><code><a title="pandas_profiling.config.Plot.cat_freq" href="#pandas_profiling.config.Plot.cat_freq">cat_freq</a></code></li>
 <li><code><a title="pandas_profiling.config.Plot.correlation" href="#pandas_profiling.config.Plot.correlation">correlation</a></code></li>
 <li><code><a title="pandas_profiling.config.Plot.dpi" href="#pandas_profiling.config.Plot.dpi">dpi</a></code></li>
 <li><code><a title="pandas_profiling.config.Plot.histogram" href="#pandas_profiling.config.Plot.histogram">histogram</a></code></li>
 <li><code><a title="pandas_profiling.config.Plot.image_format" href="#pandas_profiling.config.Plot.image_format">image_format</a></code></li>
 <li><code><a title="pandas_profiling.config.Plot.missing" href="#pandas_profiling.config.Plot.missing">missing</a></code></li>
-<li><code><a title="pandas_profiling.config.Plot.pie" href="#pandas_profiling.config.Plot.pie">pie</a></code></li>
 <li><code><a title="pandas_profiling.config.Plot.scatter_threshold" href="#pandas_profiling.config.Plot.scatter_threshold">scatter_threshold</a></code></li>
 </ul>
 </li>

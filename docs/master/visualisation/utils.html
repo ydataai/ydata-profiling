@@ -32,10 +32,11 @@ import base64
 import uuid
 from io import BytesIO, StringIO
 from pathlib import Path
-from typing import Tuple, Union
+from typing import List, Optional, Tuple
 from urllib.parse import quote
 
 import matplotlib.pyplot as plt
+from matplotlib.artist import Artist
 
 from pandas_profiling.config import Settings
 
@@ -71,7 +72,12 @@ def base64_image(image: bytes, mime_type: str) -&gt; str:
     return f&#34;data:{mime_type};base64,{image_data}&#34;
 
 
-def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&gt; str:
+def plot_360_n0sc0pe(
+    config: Settings,
+    image_format: Optional[str] = None,
+    bbox_extra_artists: Optional[List[Artist]] = None,
+    bbox_inches: Optional[str] = None,
+) -&gt; str:
     &#34;&#34;&#34;Quickscope the plot to a base64 encoded string.
 
     Args:
@@ -92,12 +98,24 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&
     if config.html.inline:
         if image_format == &#34;svg&#34;:
             image_str = StringIO()
-            plt.savefig(image_str, format=image_format)
+
+            plt.savefig(
+                image_str,
+                format=image_format,
+                bbox_extra_artists=bbox_extra_artists,
+                bbox_inches=bbox_inches,
+            )
             plt.close()
             result_string = image_str.getvalue()
         else:
             image_bytes = BytesIO()
-            plt.savefig(image_bytes, dpi=config.plot.dpi, format=image_format)
+            plt.savefig(
+                image_bytes,
+                dpi=config.plot.dpi,
+                format=image_format,
+                bbox_extra_artists=bbox_extra_artists,
+                bbox_inches=bbox_inches,
+            )
             plt.close()
             result_string = base64_image(
                 image_bytes.getvalue(), mime_types[image_format]
@@ -115,7 +133,9 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&
 
         if image_format == &#34;png&#34;:
             args[&#34;dpi&#34;] = config.plot.dpi
-        plt.savefig(**args)
+        plt.savefig(
+            bbox_extra_artists=bbox_extra_artists, bbox_inches=bbox_inches, **args
+        )
         plt.close()
         result_string = suffix
 
@@ -195,7 +215,7 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&
 </details>
 </dd>
 <dt id="pandas_profiling.visualisation.utils.plot_360_n0sc0pe"><code class="name flex">
-<span>def <span class="ident">plot_360_n0sc0pe</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, image_format: Optional[str] = None) ‑> str</span>
+<span>def <span class="ident">plot_360_n0sc0pe</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, image_format: Optional[str] = None, bbox_extra_artists: Optional[List[matplotlib.artist.Artist]] = None, bbox_inches: Optional[str] = None) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Quickscope the plot to a base64 encoded string.</p>
@@ -212,7 +232,12 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&gt; str:
+<pre><code class="python">def plot_360_n0sc0pe(
+    config: Settings,
+    image_format: Optional[str] = None,
+    bbox_extra_artists: Optional[List[Artist]] = None,
+    bbox_inches: Optional[str] = None,
+) -&gt; str:
     &#34;&#34;&#34;Quickscope the plot to a base64 encoded string.
 
     Args:
@@ -233,12 +258,24 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&
     if config.html.inline:
         if image_format == &#34;svg&#34;:
             image_str = StringIO()
-            plt.savefig(image_str, format=image_format)
+
+            plt.savefig(
+                image_str,
+                format=image_format,
+                bbox_extra_artists=bbox_extra_artists,
+                bbox_inches=bbox_inches,
+            )
             plt.close()
             result_string = image_str.getvalue()
         else:
             image_bytes = BytesIO()
-            plt.savefig(image_bytes, dpi=config.plot.dpi, format=image_format)
+            plt.savefig(
+                image_bytes,
+                dpi=config.plot.dpi,
+                format=image_format,
+                bbox_extra_artists=bbox_extra_artists,
+                bbox_inches=bbox_inches,
+            )
             plt.close()
             result_string = base64_image(
                 image_bytes.getvalue(), mime_types[image_format]
@@ -256,7 +293,9 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -&
 
         if image_format == &#34;png&#34;:
             args[&#34;dpi&#34;] = config.plot.dpi
-        plt.savefig(**args)
+        plt.savefig(
+            bbox_extra_artists=bbox_extra_artists, bbox_inches=bbox_inches, **args
+        )
         plt.close()
         result_string = suffix
 

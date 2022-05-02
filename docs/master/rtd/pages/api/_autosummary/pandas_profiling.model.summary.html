@@ -39,7 +39,6 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-    
               <p class="caption" role="heading"><span class="caption-text">Pandas Profiling</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
@@ -54,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../great_expectations_integration.html">Integration with Great Expectations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
 <ul>
@@ -89,35 +89,6 @@
 </li>
 </ul>
 
-
-    <div style="padding-top: 20px">
-        <a href="https://github.com/sponsors/sbrugman">
-            <summary id="sponsor-button-repo" class="btn btn-sm" title="Sponsor pandas-profiling/pandas-profiling" data-ga-click="Repository, show sponsor modal, action:files#disambiguate; text:Sponsor" role="button">
-              <svg class="octicon octicon-heart text-pink v-align-text-bottom" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8.727 3C7.091 3 6.001 4.65 6.001 4.65S4.909 3 3.273 3C1.636 3 0 4.1 0 6.3 0 9.6 6 14 6 14s6-4.4 6-7.7C12 4.1 10.364 3 8.727 3z"></path></svg>
-              Sponsor
-            </summary>
-        </a>
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
       </div>
     </nav>
@@ -148,17 +119,22 @@
 <span id="pandas-profiling-model-summary"></span><h1>pandas_profiling.model.summary<a class="headerlink" href="#module-pandas_profiling.model.summary" title="Permalink to this headline"></a></h1>
 <p>Compute statistical description of datasets.</p>
 <p class="rubric">Functions</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe_1d</span></code>(config, series, summarizer, typeset)</p></td>
-<td><p>pandas_describe_1d(config: pandas_profiling.config.Settings, series: pandas.core.series.Series, summarizer: pandas_profiling.model.summarizer.BaseSummarizer, typeset: visions.typesets.typeset.VisionsTypeset) -&gt; dict</p></td>
+<td><p>pandas_describe_1d(config: pandas_profiling.config.Settings, series: pandas.core.series.Series, summarizer: pandas_profiling.model.summarizer.BaseSummarizer, typeset: visions.typesets.typeset.VisionsTypeset) -&gt; dict Describe a series (infer the variable type, then calculate type-specific values).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_series_descriptions</span></code>(config, df, ...)</p></td>
-<td><p>pandas_get_series_descriptions(config: pandas_profiling.config.Settings, df: pandas.core.frame.DataFrame, summarizer: pandas_profiling.model.summarizer.BaseSummarizer, typeset: visions.typesets.typeset.VisionsTypeset, pbar: tqdm.std.tqdm) -&gt; dict</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</p></td>
 </tr>
 </tbody>
 </table>
@@ -175,7 +151,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, Simon Brugman.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

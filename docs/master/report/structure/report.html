@@ -127,9 +127,8 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -&gt; li
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(
-            render_map[summary[&#34;type&#34;]](config, template_variables)
-        )
+        render_map_type = render_map.get(summary[&#34;type&#34;], render_map[&#34;Unsupported&#34;])
+        template_variables.update(render_map_type(config, template_variables))
 
         # Ignore these
         if reject_variables:
@@ -734,9 +733,8 @@ def get_report_structure(config: Settings, summary: dict) -&gt; Root:
         template_variables.update(summary)
 
         # Per type template variables
-        template_variables.update(
-            render_map[summary[&#34;type&#34;]](config, template_variables)
-        )
+        render_map_type = render_map.get(summary[&#34;type&#34;], render_map[&#34;Unsupported&#34;])
+        template_variables.update(render_map_type(config, template_variables))
 
         # Ignore these
         if reject_variables:

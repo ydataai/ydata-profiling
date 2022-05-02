@@ -29,8 +29,9 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Plot functions for the profiling report.&#34;&#34;&#34;
 import copy
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, List, Optional, Tuple, Union
 
+import matplotlib
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -327,12 +328,78 @@ def scatter_pairwise(
     return plot_360_n0sc0pe(config)
 
 
-@manage_matplotlib_context()
-def pie_plot(
-    config: Settings, data: pd.Series, legend_kws: Optional[dict] = None
-) -&gt; str:
-    if legend_kws is None:
-        legend_kws = {}
+def _plot_stacked_barh(
+    data: pd.Series,
+    colors: List,
+) -&gt; Tuple[plt.Axes, matplotlib.legend.Legend]:
+    &#34;&#34;&#34;Plot a stacked horizontal bar chart to show category frequency.
+    Works for boolean and categorical features.
+
+    Args:
+        data (pd.Series): category frequencies with category names as index
+        colors (list): list of colors in a valid matplotlib format
+
+    Returns:
+        ax: Stacked bar plot (matplotlib.axes)
+        legend: Legend handler (matplotlib)
+    &#34;&#34;&#34;
+    # Use the pd.Series indices as category names
+    labels = data.index.values.astype(str)
+
+    # Plot
+    _, ax = plt.subplots(figsize=(7, 2))
+    ax.axis(&#34;off&#34;)
+
+    ax.set_xlim(0, np.sum(data))
+    ax.set_ylim(0.4, 1.6)
+
+    starts = 0
+    for x, label, color in zip(data, labels, colors):
+        # Add a rectangle to the stacked barh chart
+        rects = ax.barh(y=1, width=x, height=1, left=starts, label=label, color=color)
+
+        # Label color depends on the darkness of the rectangle
+        r, g, b, _ = rects[0].get_facecolor()
+        text_color = &#34;white&#34; if r * g * b &lt; 0.5 else &#34;darkgrey&#34;
+
+        # If the new bar is big enough write the label
+        pc_of_total = x / data.sum() * 100
+        # Requires matplotlib &gt;= 3.4.0
+        if pc_of_total &gt; 8 and hasattr(ax, &#34;bar_label&#34;):
+            display_txt = f&#34;{pc_of_total:.1f}%\n({x})&#34;
+            ax.bar_label(
+                rects,
+                labels=[display_txt],
+                label_type=&#34;center&#34;,
+                color=text_color,
+                fontsize=&#34;x-large&#34;,
+                fontweight=&#34;bold&#34;,
+            )
+
+        starts += x
+
+    legend = ax.legend(
+        ncol=1, bbox_to_anchor=(0, 0), fontsize=&#34;xx-large&#34;, loc=&#34;upper left&#34;
+    )
+
+    return ax, legend
+
+
+def _plot_pie_chart(
+    data: pd.Series,
+    colors: List,
+) -&gt; Tuple[plt.Axes, matplotlib.legend.Legend]:
+    &#34;&#34;&#34;Plot a pie chart to show category frequency.
+    Works for boolean and categorical features.
+
+    Args:
+        data (pd.Series): category frequencies with category names as index
+        colors (list): list of colors in a valid matplotlib format
+
+    Returns:
+        ax: pie chart (matplotlib.axes)
+        legend: Legend handler (matplotlib)
+    &#34;&#34;&#34;
 
     def make_autopct(values: pd.Series) -&gt; Callable:
         def my_autopct(pct: float) -&gt; str:
@@ -342,10 +409,78 @@ def pie_plot(
 
         return my_autopct
 
-    wedges, _, _ = plt.pie(data, autopct=make_autopct(data), textprops={&#34;color&#34;: &#34;w&#34;})
-    plt.legend(wedges, data.index.values, **legend_kws)
+    _, ax = plt.subplots(figsize=(4, 4))
+    wedges, _, _ = plt.pie(
+        data,
+        autopct=make_autopct(data),
+        textprops={&#34;color&#34;: &#34;w&#34;},
+        colors=colors,
+    )
+    legend = plt.legend(
+        wedges,
+        data.index.values,
+        fontsize=&#34;large&#34;,
+        bbox_to_anchor=(0, 0),
+        loc=&#34;upper left&#34;,
+    )
 
-    return plot_360_n0sc0pe(config)</code></pre>
+    return ax, legend
+
+
+@manage_matplotlib_context()
+def cat_frequency_plot(
+    config: Settings,
+    data: pd.Series,
+) -&gt; str:
+    &#34;&#34;&#34;Generate category frequency plot to show category frequency.
+    Works for boolean and categorical features.
+
+    Modify colors by setting &#39;config.plot.cat_freq.colors&#39; to a
+    list of valid matplotib colors:
+    https://matplotlib.org/stable/tutorials/colors/colors.html
+
+    Args:
+        config (Settings): a profile report config
+        data (pd.Series): category frequencies with category names as index
+
+    Returns:
+        str: encoded category frequency plot encoded
+    &#34;&#34;&#34;
+    # Get colors, if not defined, use matplotlib defaults
+    colors = config.plot.cat_freq.colors
+    if colors is None:
+        # Get matplotlib defaults
+        colors = plt.rcParams[&#34;axes.prop_cycle&#34;].by_key()[&#34;color&#34;]
+
+    # If there are more categories than colors, loop through the colors again
+    if len(colors) &lt; len(data):
+        multiplier = int(len(data) / len(colors)) + 1
+        colors = multiplier * colors  # repeat colors as required
+        colors = colors[0 : len(data)]  # select the exact number of colors required
+
+    # Create the plot
+    plot_type = config.plot.cat_freq.type
+    if plot_type == &#34;bar&#34;:
+        plot, legend = _plot_stacked_barh(data, colors)
+
+    elif plot_type == &#34;pie&#34;:
+        plot, legend = _plot_pie_chart(data, colors)
+
+    else:
+        msg = (
+            f&#34;&#39;{plot_type}&#39; is not a valid plot type! &#34;
+            &#34;Expected values are [&#39;bar&#39;, &#39;pie&#39;]&#34;
+        )
+        msg
+        raise ValueError(msg)
+
+    return plot_360_n0sc0pe(
+        config,
+        bbox_extra_artists=[
+            legend,
+        ],
+        bbox_inches=&#34;tight&#34;,
+    )</code></pre>
 </details>
 </section>
 <section>
@@ -355,6 +490,87 @@ def pie_plot(
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pandas_profiling.visualisation.plot.cat_frequency_plot"><code class="name flex">
+<span>def <span class="ident">cat_frequency_plot</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, data: pandas.core.series.Series) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate category frequency plot to show category frequency.
+Works for boolean and categorical features.</p>
+<p>Modify colors by setting 'config.plot.cat_freq.colors' to a
+list of valid matplotib colors:
+<a href="https://matplotlib.org/stable/tutorials/colors/colors.html">https://matplotlib.org/stable/tutorials/colors/colors.html</a></p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>config</code></strong> :&ensp;<code>Settings</code></dt>
+<dd>a profile report config</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>pd.Series</code></dt>
+<dd>category frequencies with category names as index</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>encoded category frequency plot encoded</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@manage_matplotlib_context()
+def cat_frequency_plot(
+    config: Settings,
+    data: pd.Series,
+) -&gt; str:
+    &#34;&#34;&#34;Generate category frequency plot to show category frequency.
+    Works for boolean and categorical features.
+
+    Modify colors by setting &#39;config.plot.cat_freq.colors&#39; to a
+    list of valid matplotib colors:
+    https://matplotlib.org/stable/tutorials/colors/colors.html
+
+    Args:
+        config (Settings): a profile report config
+        data (pd.Series): category frequencies with category names as index
+
+    Returns:
+        str: encoded category frequency plot encoded
+    &#34;&#34;&#34;
+    # Get colors, if not defined, use matplotlib defaults
+    colors = config.plot.cat_freq.colors
+    if colors is None:
+        # Get matplotlib defaults
+        colors = plt.rcParams[&#34;axes.prop_cycle&#34;].by_key()[&#34;color&#34;]
+
+    # If there are more categories than colors, loop through the colors again
+    if len(colors) &lt; len(data):
+        multiplier = int(len(data) / len(colors)) + 1
+        colors = multiplier * colors  # repeat colors as required
+        colors = colors[0 : len(data)]  # select the exact number of colors required
+
+    # Create the plot
+    plot_type = config.plot.cat_freq.type
+    if plot_type == &#34;bar&#34;:
+        plot, legend = _plot_stacked_barh(data, colors)
+
+    elif plot_type == &#34;pie&#34;:
+        plot, legend = _plot_pie_chart(data, colors)
+
+    else:
+        msg = (
+            f&#34;&#39;{plot_type}&#39; is not a valid plot type! &#34;
+            &#34;Expected values are [&#39;bar&#39;, &#39;pie&#39;]&#34;
+        )
+        msg
+        raise ValueError(msg)
+
+    return plot_360_n0sc0pe(
+        config,
+        bbox_extra_artists=[
+            legend,
+        ],
+        bbox_inches=&#34;tight&#34;,
+    )</code></pre>
+</details>
+</dd>
 <dt id="pandas_profiling.visualisation.plot.correlation_matrix"><code class="name flex">
 <span>def <span class="ident">correlation_matrix</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, data: pandas.core.frame.DataFrame, vmin: int = -1) ‑> str</span>
 </code></dt>
@@ -594,36 +810,6 @@ def mini_histogram(
     return plot_360_n0sc0pe(config)</code></pre>
 </details>
 </dd>
-<dt id="pandas_profiling.visualisation.plot.pie_plot"><code class="name flex">
-<span>def <span class="ident">pie_plot</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, data: pandas.core.series.Series, legend_kws: Optional[dict] = None) ‑> str</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@manage_matplotlib_context()
-def pie_plot(
-    config: Settings, data: pd.Series, legend_kws: Optional[dict] = None
-) -&gt; str:
-    if legend_kws is None:
-        legend_kws = {}
-
-    def make_autopct(values: pd.Series) -&gt; Callable:
-        def my_autopct(pct: float) -&gt; str:
-            total = np.sum(values)
-            val = int(round(pct * total / 100.0))
-            return f&#34;{pct:.1f}%  ({val:d})&#34;
-
-        return my_autopct
-
-    wedges, _, _ = plt.pie(data, autopct=make_autopct(data), textprops={&#34;color&#34;: &#34;w&#34;})
-    plt.legend(wedges, data.index.values, **legend_kws)
-
-    return plot_360_n0sc0pe(config)</code></pre>
-</details>
-</dd>
 <dt id="pandas_profiling.visualisation.plot.scatter_complex"><code class="name flex">
 <span>def <span class="ident">scatter_complex</span></span>(<span>config: <a title="pandas_profiling.config.Settings" href="../config.html#pandas_profiling.config.Settings">Settings</a>, series: pandas.core.series.Series) ‑> str</span>
 </code></dt>
@@ -814,12 +1000,12 @@ def scatter_series(
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pandas_profiling.visualisation.plot.cat_frequency_plot" href="#pandas_profiling.visualisation.plot.cat_frequency_plot">cat_frequency_plot</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.correlation_matrix" href="#pandas_profiling.visualisation.plot.correlation_matrix">correlation_matrix</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.get_cmap_half" href="#pandas_profiling.visualisation.plot.get_cmap_half">get_cmap_half</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.get_correlation_font_size" href="#pandas_profiling.visualisation.plot.get_correlation_font_size">get_correlation_font_size</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.histogram" href="#pandas_profiling.visualisation.plot.histogram">histogram</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.mini_histogram" href="#pandas_profiling.visualisation.plot.mini_histogram">mini_histogram</a></code></li>
-<li><code><a title="pandas_profiling.visualisation.plot.pie_plot" href="#pandas_profiling.visualisation.plot.pie_plot">pie_plot</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.scatter_complex" href="#pandas_profiling.visualisation.plot.scatter_complex">scatter_complex</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.scatter_pairwise" href="#pandas_profiling.visualisation.plot.scatter_pairwise">scatter_pairwise</a></code></li>
 <li><code><a title="pandas_profiling.visualisation.plot.scatter_series" href="#pandas_profiling.visualisation.plot.scatter_series">scatter_series</a></code></li>

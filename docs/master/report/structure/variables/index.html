@@ -140,19 +140,20 @@ __all__ = [
         )
     ]
 
-    max_unique = config.plot.pie.max_unique
-    if max_unique &gt; 0:
+    show = config.plot.cat_freq.show
+    max_unique = config.plot.cat_freq.max_unique
+
+    if show and (max_unique &gt; 0):
         items.append(
             Image(
-                pie_plot(
+                cat_frequency_plot(
                     config,
                     summary[&#34;value_counts_without_nan&#34;],
-                    legend_kws={&#34;loc&#34;: &#34;upper right&#34;},
                 ),
                 image_format=image_format,
-                alt=&#34;Chart&#34;,
-                name=&#34;Chart&#34;,
-                anchor_id=f&#34;{varid}pie_chart&#34;,
+                alt=&#34;Category Frequency Plot&#34;,
+                name=&#34;Category Frequency Plot&#34;,
+                anchor_id=f&#34;{varid}cat_frequency_plot&#34;,
             )
         )
 
@@ -274,19 +275,20 @@ __all__ = [
     if length:
         string_items.append(length_histo)
 
-    max_unique = config.plot.pie.max_unique
-    if max_unique &gt; 0 and summary[&#34;n_distinct&#34;] &lt;= max_unique:
+    show = config.plot.cat_freq.show
+    max_unique = config.plot.cat_freq.max_unique
+
+    if show and (max_unique &gt; 0) and (summary[&#34;n_distinct&#34;] &lt;= max_unique):
         string_items.append(
             Image(
-                pie_plot(
+                cat_frequency_plot(
                     config,
                     summary[&#34;value_counts_without_nan&#34;],
-                    legend_kws={&#34;loc&#34;: &#34;upper right&#34;},
                 ),
                 image_format=image_format,
-                alt=&#34;Pie chart&#34;,
-                name=&#34;Pie chart&#34;,
-                anchor_id=f&#34;{varid}pie_chart&#34;,
+                alt=&#34;Category Frequency Plot&#34;,
+                name=&#34;Category Frequency Plot&#34;,
+                anchor_id=f&#34;{varid}cat_frequency_plot&#34;,
             )
         )
 

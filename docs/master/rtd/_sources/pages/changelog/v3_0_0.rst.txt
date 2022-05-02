@@ -18,7 +18,7 @@ This is the first release to adhere to the `SemVer <https://semver.org/>`_ and `
 📖 Documentation
 ^^^^^^^^^^^^^^^^
 - Enforce QA using flake8 for documentation, for instance checking for backticks and enforcing black code style on examples.
-- Automated configuration documentation `API <https://pandas-profiling.ydata.ai/docs/master/rtd/pages/api/_autosummary/pandas_profiling.config.Settings.html>`_.
+- Automated configuration documentation `API <https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/api/_autosummary/pandas_profiling.config.Settings.html>`_.
 
 👷‍♂️ Internal Improvements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

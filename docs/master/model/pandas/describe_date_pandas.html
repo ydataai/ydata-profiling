@@ -66,7 +66,7 @@ def pandas_describe_date_1d(
 
     summary[&#34;range&#34;] = summary[&#34;max&#34;] - summary[&#34;min&#34;]
 
-    values = series.values.astype(np.int64) // 10 ** 9
+    values = series.values.astype(np.int64) // 10**9
 
     if config.vars.num.chi_squared_threshold &gt; 0.0:
         summary[&#34;chi_squared&#34;] = chi_square(values)
@@ -127,7 +127,7 @@ def pandas_describe_date_1d(
 
     summary[&#34;range&#34;] = summary[&#34;max&#34;] - summary[&#34;min&#34;]
 
-    values = series.values.astype(np.int64) // 10 ** 9
+    values = series.values.astype(np.int64) // 10**9
 
     if config.vars.num.chi_squared_threshold &gt; 0.0:
         summary[&#34;chi_squared&#34;] = chi_square(values)
