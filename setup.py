@@ -38,7 +38,7 @@ setup(
     install_requires=requirements,
     extras_require={
         "notebook": [
-            "jupyter-client>=6.0.0",
+            "jupyter-client>=5.3.4",
             "jupyter-core>=4.6.3",
             "ipywidgets>=7.5.1",
         ],

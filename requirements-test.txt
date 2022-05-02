@@ -1,8 +1,7 @@
 pytest
-coverage~=6.0
+coverage~=6.3
 codecov
 pytest-cov
-pytest-benchmark~=3.4.1
 nbval
 pyarrow
 twine>=3.1.1

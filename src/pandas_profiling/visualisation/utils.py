@@ -3,10 +3,11 @@ import base64
 import uuid
 from io import BytesIO, StringIO
 from pathlib import Path
-from typing import Tuple, Union
+from typing import List, Optional, Tuple
 from urllib.parse import quote
 
 import matplotlib.pyplot as plt
+from matplotlib.artist import Artist
 
 from pandas_profiling.config import Settings
 
@@ -42,7 +43,12 @@ def base64_image(image: bytes, mime_type: str) -> str:
     return f"data:{mime_type};base64,{image_data}"
 
 
-def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) -> str:
+def plot_360_n0sc0pe(
+    config: Settings,
+    image_format: Optional[str] = None,
+    bbox_extra_artists: Optional[List[Artist]] = None,
+    bbox_inches: Optional[str] = None,
+) -> str:
     """Quickscope the plot to a base64 encoded string.
 
     Args:
@@ -63,12 +69,24 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) ->
     if config.html.inline:
         if image_format == "svg":
             image_str = StringIO()
-            plt.savefig(image_str, format=image_format)
+
+            plt.savefig(
+                image_str,
+                format=image_format,
+                bbox_extra_artists=bbox_extra_artists,
+                bbox_inches=bbox_inches,
+            )
             plt.close()
             result_string = image_str.getvalue()
         else:
             image_bytes = BytesIO()
-            plt.savefig(image_bytes, dpi=config.plot.dpi, format=image_format)
+            plt.savefig(
+                image_bytes,
+                dpi=config.plot.dpi,
+                format=image_format,
+                bbox_extra_artists=bbox_extra_artists,
+                bbox_inches=bbox_inches,
+            )
             plt.close()
             result_string = base64_image(
                 image_bytes.getvalue(), mime_types[image_format]
@@ -86,7 +104,9 @@ def plot_360_n0sc0pe(config: Settings, image_format: Union[str, None] = None) ->
 
         if image_format == "png":
             args["dpi"] = config.plot.dpi
-        plt.savefig(**args)
+        plt.savefig(
+            bbox_extra_artists=bbox_extra_artists, bbox_inches=bbox_inches, **args
+        )
         plt.close()
         result_string = suffix
 

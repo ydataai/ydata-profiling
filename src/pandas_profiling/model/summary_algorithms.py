@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional, Tuple, TypeVar
 import numpy as np
 import pandas as pd
 from multimethod import multimethod
-from scipy.stats.stats import chisquare
+from scipy.stats import chisquare
 
 from pandas_profiling.config import Settings
 
