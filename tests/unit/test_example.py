@@ -33,7 +33,7 @@ def test_example(get_data_file, test_output_dir):
     # Example: Duplicate observations
     duplicates_to_add = pd.DataFrame(df.iloc[0:10].copy())
 
-    df = df.append(duplicates_to_add, ignore_index=True)
+    df = pd.concat([df, duplicates_to_add], ignore_index=True)
 
     output_file = test_output_dir / "profile.html"
     profile = ProfileReport(
