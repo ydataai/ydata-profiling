@@ -21,6 +21,7 @@ Read more on this page: `'Installing Python Packages from a Jupyter Notebook' <h
 
 Related issues:
 `[950] <https://github.com/ydataai/pandas-profiling/issues/950>`_
+`[939] <https://github.com/ydataai/pandas-profiling/issues/939>`_
 `[528] <https://github.com/ydataai/pandas-profiling/issues/528>`_
 `[485] <https://github.com/ydataai/pandas-profiling/issues/485>`_
 `[396] <https://github.com/ydataai/pandas-profiling/issues/396>`_
