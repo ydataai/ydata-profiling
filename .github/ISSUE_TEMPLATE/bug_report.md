@@ -32,24 +32,11 @@ report.to_file("report.html")
 
 ### Context: Environment and Version information
 
-- Operating system: 
+- pandas-profiling version: X
 - Python version (fill out): 3.X
-- Environment (choose one): Command line, IDE (PyCharm, Spyder, IDLE etc.), Jupyter Notebook (Colab or local)
-<!--
-Version information is essential in reproducing and resolving bugs. Please report:
-* _`pip`_: If you are using `pip`, run `pip freeze` in your environment and report the results. The list of packages can be rather long, you can use the snippet below to collapse the output.
-
-<details><summary>Click to expand <strong><em>Version information</em></strong></summary>
-<p>
-
-```
-<<< Put your version information here >>>
-```
-
-</p>
-</details>
--->
-
+- Dependencies (e.g. `pip` or `conda`, [help](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html))
+- Environment (e.g. Command line, IDE (PyCharm, Spyder, IDLE etc.), Jupyter Notebook (Colab or local)): X
+- Operating system: X
 
 ## Proposed solution
 <!--- Not obligatory, but suggest a fix/reason for the bug, -->
