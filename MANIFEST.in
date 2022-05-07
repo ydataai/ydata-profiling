@@ -7,9 +7,6 @@ include *.md
 include mypy.ini
 include src/pandas_profiling/py.typed
 
-# Styles
-include src/pandas_profiling/visualisation/*.mplstyle
-
 # Templates and static resources
 recursive-include src/pandas_profiling/report/presentation/flavours/html/templates *.html *.js *.css
 
