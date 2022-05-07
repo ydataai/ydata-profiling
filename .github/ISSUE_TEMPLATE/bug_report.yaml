@@ -1,0 +1,85 @@
+name: Bug Report (form)
+description: File a bug report
+title: ""
+labels: ["bug", "triage"]
+#assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Provide a concise summary of the issue in the title field above.
+        The [documentation](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html) contains instructions on creating bug reports.
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behaviour
+      description: Tell us what happens instead of the expected behavior.
+      placeholder: ''
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behaviour
+      description:  Tell us what should happen
+      placeholder: ''
+    validations:
+      required: true
+  - type: textarea
+    id: data-description
+    attributes:
+      label: Data Description
+      description: Describe the data, provide a sample and/or dataset characteristics (such as schema).
+      placeholder: ''
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code that reproduces the bug
+      description: A minimal standalone code sample that reproduces the bug
+      placeholder: |
+        import pandas as pd
+        from pandas_profiling import ProfileReport
+
+        df = pd.read_parquet(r"<file>")
+        report = ProfileReport(df, title="bug report")
+        report.to_file("report.html")
+      render: Python
+    validations:
+      required: false
+
+  - type: input
+    id: package-version
+    attributes:
+      label: pandas-profiling version
+      description: What version of pandas-profiling are you running?
+      placeholder: v2.3.0
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: dependencies
+      description: Please report versions of dependencies (e.g. via `pip freeze` or `conda list`)
+      placeholder: ''
+      render: Text
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: OS
+      description: On what operating system did the bug occur (e.g. windows, macos, ubuntu)?
+      placeholder: ''
+    validations:
+      required: false
+#  - type: checkboxes
+#    id: terms
+#    attributes:
+#      label: Code of Conduct
+#      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+#      options:
+#        - label: I agree to follow this project's Code of Conduct
+#          required: true
