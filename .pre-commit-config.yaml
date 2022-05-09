@@ -75,6 +75,10 @@ repos:
     hooks:
       - id: tryceratops
         args: ["-i", "TC003","--autofix"]
+-   repo: https://github.com/kynan/nbstripout
+    rev: 0.5.0
+    hooks:
+      - id: nbstripout
 
 ci:
   autoupdate_commit_msg: 'ci: pre-commit-config update'
