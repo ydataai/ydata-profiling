@@ -60,6 +60,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Support</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#frequent-issues">Frequent issues</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#typeerror-plot-histogram-got-an-unexpected-keyword-argument-title">TypeError: _plot_histogram() got an unexpected keyword argument ‘title’</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#conda-install-defaults-to-v1-4-1">Conda install defaults to v1.4.1</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#jupyter-intslider-value-0">Jupyter “IntSlider(value=0)”</a></li>
 </ul>
@@ -69,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#help-on-stackoverflow">Help on Stackoverflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#slack-community">Slack community</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reporting-a-bug">Reporting a bug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#issue-formatting">Issue formatting</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contribution_guidelines.html">Contribution Guidelines</a></li>
@@ -110,6 +112,19 @@
 <p>First, we need to know whether a problem is actually a bug in the code, or that it’s caused by something else, such as your local environment. The first step is to create a new environment with a fresh installation. In many cases, the problem will be resolved by this step.</p>
 <section id="frequent-issues">
 <h3>Frequent issues<a class="headerlink" href="#frequent-issues" title="Permalink to this headline"></a></h3>
+<section id="typeerror-plot-histogram-got-an-unexpected-keyword-argument-title">
+<h4>TypeError: _plot_histogram() got an unexpected keyword argument ‘title’<a class="headerlink" href="#typeerror-plot-histogram-got-an-unexpected-keyword-argument-title" title="Permalink to this headline"></a></h4>
+<p>This error occurs when using outdated versions of the package.</p>
+<p>Ensure that you are using the latest version, and when in a notebook, ensure that you’ve restarted the kernel when needed!
+Also make sure that you install in the right environment (please use <code class="docutils literal notranslate"><span class="pre">!{sys.executable}</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">pandas-profiling</span></code>!).
+Read more on this page: <a class="reference external" href="https://jakevdp.github.io/blog/2017/12/05/installing-python-packages-from-jupyter/">‘Installing Python Packages from a Jupyter Notebook’</a>.</p>
+<p>Related issues:
+<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/950">[950]</a>
+<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/939">[939]</a>
+<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/528">[528]</a>
+<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/485">[485]</a>
+<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/396">[396]</a></p>
+</section>
 <section id="conda-install-defaults-to-v1-4-1">
 <h4>Conda install defaults to v1.4.1<a class="headerlink" href="#conda-install-defaults-to-v1-4-1" title="Permalink to this headline"></a></h4>
 <p>Some users experience that <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">pandas-profiling</span></code> defaults to 1.4.1.</p>
@@ -132,7 +147,7 @@ There is a specific tag for <code class="docutils literal notranslate"><span cla
 </section>
 <section id="slack-community">
 <h2>Slack community<a class="headerlink" href="#slack-community" title="Permalink to this headline"></a></h2>
-<p><a class="reference external" href="https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA">Join the Slack community</a> and come into contact with other users and developers, that might be able to answer your questions.</p>
+<p><a class="reference external" href="https://slack.ydata.ai">Join the Slack community</a> and come into contact with other users and developers, that might be able to answer your questions.</p>
 </section>
 <section id="reporting-a-bug">
 <h2>Reporting a bug<a class="headerlink" href="#reporting-a-bug" title="Permalink to this headline"></a></h2>
@@ -140,19 +155,29 @@ There is a specific tag for <code class="docutils literal notranslate"><span cla
 <p>You should provide the minimal information to reproduce this bug. <a class="reference external" href="http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports">This guide</a> can help crafting a minimal bug report. Please include:</p>
 <ul>
 <li><p>the minimal code you are using to generate the report</p></li>
-<li><p>Which environment you are using:</p>
+<li><p>Which environment you are using. Version information is essential in reproducing and resolving bugs. Please report relevant environment details such as:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>operating system (e.g. Windows, Linux, Mac)</p></li>
 <li><p>Python version (e.g. 3.7)</p></li>
 <li><p>Jupyter notebook( or cloud services like Google Colab, Kaggle Kernels, etc), console or IDE (such as PyCharm,VS Code,etc)</p></li>
 <li><p>package manager (e.g. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">--version</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">info</span></code>)</p></li>
-<li><p>packages (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">freeze</span> <span class="pre">&gt;</span> <span class="pre">packages.txt</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">list</span></code>)</p></li>
+<li><p>packages (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">freeze</span> <span class="pre">&gt;</span> <span class="pre">packages.txt</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">list</span></code>). Please make sure this is contained in a collapsed section (instructions below)</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p>a sample of the dataset (<code class="docutils literal notranslate"><span class="pre">df.sample()</span></code> or <code class="docutils literal notranslate"><span class="pre">df.head()</span></code>)</p></li>
-<li><p>a description of the dataset (<code class="docutils literal notranslate"><span class="pre">df.info()</span></code>)</p></li>
+<li><p>a sample of the dataset (<code class="docutils literal notranslate"><span class="pre">df.sample()</span></code> or <code class="docutils literal notranslate"><span class="pre">df.head()</span></code>) Please share your dataframe. If the data is confidential, for example when it contains company-sensitive information, provide us with a synthetic or open dataset that produces the same error.</p></li>
+</ul>
+<p>You can anonymize the column names if necessary.</p>
+<ul class="simple">
+<li><p>a description of the dataset (<code class="docutils literal notranslate"><span class="pre">df.info()</span></code>) You should provide the DataFrame structure, for example by reporting the output of <code class="docutils literal notranslate"><span class="pre">`df.info()</span></code>.</p></li>
+</ul>
+</section>
+<section id="issue-formatting">
+<h2>Issue formatting<a class="headerlink" href="#issue-formatting" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>GitHub highlighting: wrap all code and error messages in fenced blocks, and in particular add the language identifier. Check the <a class="reference external" href="https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks">Github docs on highlighting code blocks</a> for details.</p></li>
+<li><p>Organize long error messages and requirement listings in collapsed sections. The <a class="reference external" href="https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections">Github docs on collapsed sections</a> provide detailed information.</p></li>
 </ul>
 </section>
 </section>
