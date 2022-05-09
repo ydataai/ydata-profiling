@@ -78,11 +78,20 @@ body:
       placeholder: ex. Windows 10
     validations:
       required: false
-#  - type: checkboxes
-#    id: terms
-#    attributes:
-#      label: Code of Conduct
-#      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
-#      options:
-#        - label: I agree to follow this project's Code of Conduct
-#          required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      description: |
+        Please complete the checklist below to ensure the bug report is helpful and can be addressed effectively
+        
+        Tips:
+          - Help for writing better bug reports is available in the [documentation](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html).
+          - If the description consists of multiple non-related bugs, you are encouraged to create separate issues.
+      options:
+        - label: There is not yet another bug report for this issue in the [issue tracker](https://github.com/ydataai/pandas-profiling/issues)
+          required: true
+        - label: The problem is reproducible from this bug report. [This guide](http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports) can help to craft a minimal bug report.
+          required: true
+        - label: The issue has not been resolved by the entries listed under [Frequent Issues](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html#frequent-issues).
+          required: true
