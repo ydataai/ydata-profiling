@@ -2,20 +2,20 @@
 Introduction
 ============
 
-.. image:: https://pandas-profiling.github.io/pandas-profiling/docs/assets/logo_header.png
+.. image:: https://ydataai.github.io/pandas-profiling/docs/assets/logo_header.png
   :alt: Pandas Profiling Logo Header
 
-.. image:: https://travis-ci.com/pandas-profiling/pandas-profiling.svg?branch=master
+.. image:: https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master
   :alt: Build Status
-  :target: https://travis-ci.com/pandas-profiling/pandas-profiling)
+  :target: https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml
 
-.. image:: https://codecov.io/gh/pandas-profiling/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF
+.. image:: https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF
   :alt: Code Coverage
-  :target: https://codecov.io/gh/pandas-profiling/pandas-profiling)
+  :target: https://codecov.io/gh/ydataai/pandas-profiling
 
 .. image:: https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg
   :alt: Release Version
-  :target: https://github.com/pandas-profiling/pandas-profiling/releases
+  :target: https://github.com/ydataai/pandas-profiling/releases
 
 .. image:: https://img.shields.io/pypi/pyversions/pandas-profiling
   :alt: Python Version

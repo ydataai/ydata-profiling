@@ -57,7 +57,7 @@ def test_summarizer(config):
         pps.summarize(
             config,
             pd.Series(
-                [os.path.abspath(base_path + r"../../../docsrc/assets/lambda-labs.png")]
+                [os.path.abspath(base_path + r"../../../docsrc/assets/logo_header.png")]
             ),
             "Image",
         )

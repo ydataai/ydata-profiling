@@ -13,7 +13,7 @@ jobs:
         numpy: ["numpy==1.19.5"]
         include:
           - os: macos-latest
-            python-version: 3.6
+            python-version: 3.7
             pandas: "pandas>1.1"
             numpy: "numpy"
 #          - os: windows-2016
@@ -21,15 +21,15 @@ jobs:
 #            pandas: "pandas>1.1"
 #            numpy: "numpy"
           - os: ubuntu-latest
-            python-version: 3.6
-            pandas: "pandas>1.1"
-            numpy: "numpy"
-          - os: ubuntu-latest
             python-version: 3.7
             pandas: "pandas>1.1"
             numpy: "numpy"
           - os: ubuntu-latest
             python-version: 3.8
+            pandas: "pandas>1.1"
+            numpy: "numpy"
+          - os: ubuntu-latest
+            python-version: 3.9
             pandas: "pandas>1.1"
             numpy: "numpy"
 

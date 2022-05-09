@@ -30,6 +30,8 @@ Articles
 
 Videos
 ------
+- `Installing Anaconda, Creating a virtual environment and installing pandas-profiling in it <https://www.youtube.com/watch?v=q2E8RLsznaA>`_
+  (Abhiram R - EverythingPython, Jan 25, 2022)
 
 - `How to Install and Use Pandas Profiling on Google Colab <https://www.youtube.com/watch?v=pLxgt20kKWU>`_
   (Chanin Nantasenamat, Apr 25, 2020)
