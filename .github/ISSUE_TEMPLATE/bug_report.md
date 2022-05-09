@@ -1,69 +1,56 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug report (free format)
+about: Create a bug report helping us improve
 title: ''
 labels: bug
 assignees: ''
 
 ---
 
-**Describe the bug**
+<!--- Provide a general summary of the issue in the Title above -->
 
-<!--
-A clear and concise description of what the bug is.
-If the description consists of multiple non-related bugs, you are encouraged to create separate issues.
--->
+## Current Behaviour
+<!--- Tell us what happens instead of the expected behavior -->
 
-**To Reproduce**
+## Expected Behaviour
+<!--- Tell us what should happen -->
 
-<!--
-We would need to reproduce your scenario before being able to resolve it. 
+## Steps to Reproduce
 
-_Data:_
-Please share your dataframe. 
-If the data is confidential, for example when it contains company-sensitive information, provide us with a synthetic or open dataset that produces the same error. 
-You should provide the DataFrame structure, for example by reporting the output of `df.info()`. 
-You can anonymize the column names if necessary.
+### Data description, sample and/or characteristics
 
-_Code:_ Preferably, use this code format:
+### Code to reproduce
+
 ```python
-"""
-Test for issue XXX:
-https://github.com/pandas-profiling/pandas-profiling/issues/XXX
-"""
 import pandas as pd
-import pandas_profiling
+from pandas_profiling import ProfileReport
 
-
-def test_issueXXX():
-    df = pd.read_csv(r"<file>")
-
-    # Minimal reproducible code
-```
---> 
-
-**Version information:**
-
-<!--
-Version information is essential in reproducing and resolving bugs. Please report:
-
-* _Python version_: Your exact Python version.
-* _Environment_: Where do you run the code? Command line, IDE (PyCharm, Spyder, IDLE etc.), Jupyter Notebook (Colab or local)
-* _`pip`_: If you are using `pip`, run `pip freeze` in your environment and report the results. The list of packages can be rather long, you can use the snippet below to collapse the output.
-
-<details><summary>Click to expand <strong><em>Version information</em></strong></summary>
-<p>
-
-```
-<<< Put your version information here >>>
+df = pd.read_parquet(r"<file>")
+report = ProfileReport(df, title="bug report")
+report.to_file("report.html")
 ```
 
-</p>
-</details>
--->
+### Context: Environment and Version information
 
-**Additional context**
+- pandas-profiling version: X
+- Python version (fill out): 3.X
+- Dependencies (e.g. `pip` or `conda`, [help](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html))
+- Environment (e.g. Command line, IDE (PyCharm, Spyder, IDLE etc.), Jupyter Notebook (Colab or local)): X
+- Operating system: X
 
-<!--
-Add any other context about the problem here.
--->
+## Proposed solution
+<!--- Not obligatory, but suggest a fix/reason for the bug, -->
+
+
+## Checklist
+
+Please complete the checklist below to ensure the bug report is helpful and can be addressed effectively:
+
+- [ ] All (relevant) sections above are filled out.
+- [ ] The problem is reproducible from this bug report. [This guide](http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports) can help to craft a minimal bug report.
+- [ ] The issue has not been resolved by the entries listed under [Frequent Issues](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html#frequent-issues).
+- [ ] The bug report is formatted according to [the guidelines](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html#issue-formatting).
+
+Tips:
+- Help for writing better bug reports is available in the [documentation](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html).
+- If the description consists of multiple non-related bugs, you are encouraged to create separate issues.

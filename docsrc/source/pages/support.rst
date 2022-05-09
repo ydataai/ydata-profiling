@@ -10,6 +10,23 @@ First, we need to know whether a problem is actually a bug in the code, or that 
 Frequent issues
 ~~~~~~~~~~~~~~~
 
+TypeError: _plot_histogram() got an unexpected keyword argument 'title'
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This error occurs when using outdated versions of the package.
+
+Ensure that you are using the latest version, and when in a notebook, ensure that you've restarted the kernel when needed!
+Also make sure that you install in the right environment (please use ``!{sys.executable} -m pip install -U pandas-profiling``!).
+Read more on this page: `'Installing Python Packages from a Jupyter Notebook' <https://jakevdp.github.io/blog/2017/12/05/installing-python-packages-from-jupyter/>`_.
+
+Related issues:
+`[950] <https://github.com/ydataai/pandas-profiling/issues/950>`_
+`[939] <https://github.com/ydataai/pandas-profiling/issues/939>`_
+`[528] <https://github.com/ydataai/pandas-profiling/issues/528>`_
+`[485] <https://github.com/ydataai/pandas-profiling/issues/485>`_
+`[396] <https://github.com/ydataai/pandas-profiling/issues/396>`_
+
+
 Conda install defaults to v1.4.1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -39,7 +56,7 @@ There is a specific tag for ``pandas-profiling``:
 Slack community
 ---------------
 
-`Join the Slack community <https://join.slack.com/t/pandas-profiling/shared_invite/zt-oe5ol4yc-YtbOxNBGUCb~v73TamRLuA>`_ and come into contact with other users and developers, that might be able to answer your questions.
+`Join the Slack community <https://slack.ydata.ai>`_ and come into contact with other users and developers, that might be able to answer your questions.
 
 Reporting a bug
 ---------------
@@ -50,13 +67,23 @@ You should provide the minimal information to reproduce this bug. `This guide <h
 
 - the minimal code you are using to generate the report
 
-- Which environment you are using:
+- Which environment you are using. Version information is essential in reproducing and resolving bugs. Please report relevant environment details such as:
 
         - operating system (e.g. Windows, Linux, Mac)
         - Python version (e.g. 3.7)
         - Jupyter notebook( or cloud services like Google Colab, Kaggle Kernels, etc), console or IDE (such as PyCharm,VS Code,etc)
         - package manager (e.g. ``pip --version`` or ``conda info``)
-        - packages (``pip freeze > packages.txt`` or ``conda list``)
+        - packages (``pip freeze > packages.txt`` or ``conda list``). Please make sure this is contained in a collapsed section (instructions below)
 
-- a sample of the dataset (``df.sample()`` or ``df.head()``)
-- a description of the dataset (``df.info()``)
+- a sample of the dataset (``df.sample()`` or ``df.head()``) Please share your dataframe. If the data is confidential, for example when it contains company-sensitive information, provide us with a synthetic or open dataset that produces the same error.
+You can anonymize the column names if necessary.
+
+- a description of the dataset (``df.info()``) You should provide the DataFrame structure, for example by reporting the output of ```df.info()``.
+
+Issue formatting
+----------------
+
+- GitHub highlighting: wrap all code and error messages in fenced blocks, and in particular add the language identifier. Check the `Github docs on highlighting code blocks <https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks>`_ for details.
+- Organize long error messages and requirement listings in collapsed sections. The `Github docs on collapsed sections <https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections>`_ provide detailed information.
+
+
