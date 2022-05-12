@@ -24,7 +24,7 @@ You can install using the pip package manager by running
     pip install -U pandas-profiling[notebook]
     jupyter nbextension enable --py widgetsnbextension
 
-If you are in a notebook (locally, at LambdaLabs, on Google Colab or Kaggle), you can run:
+If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can run:
 
 .. code-block::
 
@@ -32,7 +32,7 @@ If you are in a notebook (locally, at LambdaLabs, on Google Colab or Kaggle), yo
     !{sys.executable} -m pip install -U pandas-profiling[notebook]
     !jupyter nbextension enable --py widgetsnbextension
 
-You may have to restart the kernel or runtime.
+You may have to restart the kernel or runtime for the package to work.
 
 Using conda
 -----------
@@ -45,7 +45,7 @@ Using conda
   :alt: Conda Version
   :target: https://anaconda.org/conda-forge/pandas-profiling
 
-You can install using the conda package manager by running
+A new conda environment containing the module can be created via: 
 
 .. code-block:: console
 
@@ -53,44 +53,40 @@ You can install using the conda package manager by running
     conda activate pandas-profiling
     conda install -c conda-forge pandas-profiling
 
-This creates a new conda environment containing the module.
-
 .. hint::
 
-        Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the main channel. See `frequent issues <Support.rst#frequent-issues>`_
+        Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the ``main`` channel. See `frequent issues <Support.rst#frequent-issues>`_ for details. 
 
-Jupyter notebook/lab
---------------------
+Widgets in Jupyter Notebook/Lab
+-------------------------------
 
-For the Jupyter widgets extension to work, which is used for Progress Bars and the widget interface, you might need to activate the extensions. Installing with conda will enable the extension for you for Jupyter Notebooks (not lab).
-
-For Jupyter notebooks:
-
-.. code-block::
-
-  jupyter nbextension enable --py widgetsnbextension
-
-For Jupyter lab:
+For the Jupyter widgets extension to work (used for progress bars and the interactive widget-based report), you might need to activate the corresponding extensions. 
+This can be done via pip: 
 
 .. code-block::
 
-  conda install -c conda-forge nodejs
-  jupyter labextension install @jupyter-widgets/jupyterlab-manager
+  pip install ipywidgets
 
+Or via conda: 
 
-More information is available at the `ipywidgets documentation <https://ipywidgets.readthedocs.io/en/stable/user_install.html>`_.
+.. code-block::
+
+  conda install -c conda-forge ipywidgets
+
+In most cases, this will also automatically configure both Jupyter Notebook and Jupyter Lab 3.0. For older versions of both or in more complex
+environment configurations, refer to `the official ipywidgets documentation <https://ipywidgets.readthedocs.io/en/stable/user_install.html>`_.
 
 From source
 -----------
 
 Download the source code by cloning the repository or by pressing `'Download ZIP' <https://github.com/ydataai/pandas-profiling/archive/master.zip>`_ on this page.
-Install by navigating to the proper directory and running
+Install it by navigating to the uncompressed directory and running:
 
 .. code-block:: console
 
     python setup.py install
 
-This can also be done in one line:
+This can also be done via the following one-liner: 
 
 .. code-block:: console
 
