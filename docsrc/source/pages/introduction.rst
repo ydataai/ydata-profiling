@@ -32,7 +32,7 @@ which automatically generates a standardized univariate and multivariate report 
 For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
 
 * **Type inference**: detect the types of columns in a ``DataFrame``
-* **Essentials**: type, unique values, missing values indication
+* **Essentials**: type, unique values, indication of missing values
 * **Quantile statistics**: minimum value, Q1, median, Q3, maximum, range, interquartile range
 * **Descriptive statistics**: mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
 * **Most frequent and extreme values**
