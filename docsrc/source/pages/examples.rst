@@ -34,14 +34,14 @@ Tutorials
 
 .. |nasa_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
- :target: https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb
+ :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb
 .. |nasa_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
  :target: https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb
 
 .. |titanic_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
- :target: https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb
+ :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb
 
 .. |titanic_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
@@ -49,7 +49,7 @@ Tutorials
 
 .. |kaggle_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
- :target: https://mybinder.org/v2/gh/ydata-ai/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb
+ :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb
 
 .. |kaggle_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
