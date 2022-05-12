@@ -18,6 +18,8 @@ The following example reports showcase the potentialities of the package across 
 
 - `Vektis <https://pandas-profiling.ydata.ai/examples/master/vektis/vektis_report.html>`_ (Vektis Dutch Healthcare data)
 
+- `UCI Bank Dataset <https://pandas-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html>`_ (marketing dataset from a bank)
+
 - `Russian Vocabulary <https://pandas-profiling.ydata.ai/examples/master/features/russian_vocabulary.html>`_ (100 most common Russian words, showcasing unicode text analysis)
 
 - `Website Inaccessibility <https://pandas-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html>`_ (website accessibility analysis, showcasing support for URL data)
@@ -37,7 +39,7 @@ Tutorials
  :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb
 .. |nasa_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
- :target: https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb
+ :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb
 
 .. |titanic_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
@@ -45,7 +47,7 @@ Tutorials
 
 .. |titanic_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
- :target: https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb
+ :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic.ipynb
 
 .. |kaggle_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
