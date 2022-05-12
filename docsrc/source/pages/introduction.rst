@@ -41,6 +41,8 @@ For each column, the following information (whenever relevant for the column typ
 * **Missing values**: via counts, matrix, heatmap and dendrograms
 * **Duplicate rows**: list of the most common duplicated rows
 * **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
+* **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and EXIF existance
+
 
 The report contains three additional sections: 
 
