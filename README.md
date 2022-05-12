@@ -265,7 +265,7 @@ You can reach out via the following channels:
 <td>
 
 For many real-world problems we are interested how the data changes over time. 
-The excellent pacakge `popmon` allows you to profile and monitor data trends over time and generates reports in a similar fashion as you're used to using pandas-profiling.
+The excellent package `popmon` allows you to profile and monitor data trends over time and generates reports in a similar fashion as you're used to using pandas-profiling.
 Inspecting the report often shows patterns that are going by undetected during standard data exploration.
 Moreover, popmon can be used to monitor the stability of input and output of machine learning models.
 The package is fully open-source and you can find it [here](https://github.com/ing-bank/popmon)! 
