@@ -58,30 +58,23 @@ _Contents:_ **[Examples](#examples)** |
 
 ## Examples
 
-The following examples can give you an impression of what the package can do:
+The following example reports showcase the potentialities of the package across a wide range of dataset and data types:
 
-* [Census Income](https://pandas-profiling.ydata.ai/examples/master/census/census_report.html) (US Adult Census data relating income)
-* [NASA Meteorites](https://pandas-profiling.ydata.ai/examples/master/meteorites/meteorites_report.html) (comprehensive set of meteorite landings) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
-* [Titanic](https://pandas-profiling.ydata.ai/examples/master/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
+* [Census Income](https://pandas-profiling.ydata.ai/examples/master/census/census_report.html) (US Adult Census data relating income with other demographic properties)
+* [NASA Meteorites](https://pandas-profiling.ydata.ai/examples/master/meteorites/meteorites_report.html) (comprehensive set of meteorite landing - object properties and locations) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb)
+* [Titanic](https://pandas-profiling.ydata.ai/examples/master/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb)
 * [NZA](https://pandas-profiling.ydata.ai/examples/master/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
 * [Stata Auto](https://pandas-profiling.ydata.ai/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
-* [Vektis](https://pandas-profiling.ydata.ai/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
 * [Colors](https://pandas-profiling.ydata.ai/examples/master/colors/colors_report.html) (a simple colors dataset)
-* [UCI Bank Dataset](https://pandas-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (banking marketing dataset)
-* [RDW](https://pandas-profiling.ydata.ai/examples/master/rdw/rdw.html) (RDW, the Dutch DMV's vehicle registration 10 million rows, 71 features)
-
-
-Specific features:
-
-* [Russian Vocabulary](https://pandas-profiling.ydata.ai/examples/master/features/russian_vocabulary.html) (demonstrates text analysis)
-* [Cats and Dogs](https://pandas-profiling.ydata.ai/examples/master/features/cats-and-dogs.html) (demonstrates image analysis from the file system)
-* [Celebrity Faces](https://pandas-profiling.ydata.ai/examples/master/features/celebrity-faces.html) (demonstrates image analysis with EXIF information)
-* [Website Inaccessibility](https://pandas-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (demonstrates URL analysis)
-* [Orange prices](https://pandas-profiling.ydata.ai/examples/master/features/united_report.html) and [Coal prices](https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html) (showcases report themes)
+* [Vektis](https://pandas-profiling.ydata.ai/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
+* [UCI Bank Dataset](https://pandas-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (marketing dataset from a bank)
+* [Russian Vocabulary](https://pandas-profiling.ydata.ai/examples/master/features/russian_vocabulary.html) (100 most common Russian words, showcasing unicode text analysis)
+* [Website Inaccessibility](https://pandas-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
+* [Orange prices](https://pandas-profiling.ydata.ai/examples/master/features/united_report.html) and [Coal prices](https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
 
 Tutorials:
 
-* [Tutorial: report structure using Kaggle data (advanced)](https://pandas-profiling.ydata.ai/examples/master/tutorials/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/pandas-profiling/pandas-profiling/blob/master/examples/tutorials/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/pandas-profiling/pandas-profiling/master?filepath=examples%2Ftutorials%2Fmodify_report_structure.ipynb)
+* [Tutorial: report structure using Kaggle data (advanced)](https://github.com/ydataai/pandas-profiling/blob/develop/examples/tutorials/modify_report_structure.ipynb) (modify the report's structure) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/tutorials/modify_report_structure.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftutorials%2Fmodify_report_structure.ipynb)
 
 
 ## Installation
