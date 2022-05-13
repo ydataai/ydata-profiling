@@ -17,7 +17,7 @@ Using pip
   :alt: PyPi Version
   :target: https://pypi.org/project/pandas-profiling/
 
-You can install using the pip package manager by running
+You can install using the ``pip`` package manager by running:
 
 .. code-block:: console
 
@@ -55,25 +55,25 @@ A new conda environment containing the module can be created via:
 
 .. hint::
 
-        Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the ``main`` channel. See `frequent issues <Support.rst#frequent-issues>`_ for details. 
+        Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the ``main`` channel and will be installed. See `Frequent issues <Support.rst#frequent-issues>`_ for details. 
 
 Widgets in Jupyter Notebook/Lab
 -------------------------------
 
 For the Jupyter widgets extension to work (used for progress bars and the interactive widget-based report), you might need to activate the corresponding extensions. 
-This can be done via pip: 
+This can be done via ``pip``: 
 
 .. code-block::
 
   pip install ipywidgets
 
-Or via conda: 
+Or via ``conda``: 
 
 .. code-block::
 
   conda install -c conda-forge ipywidgets
 
-In most cases, this will also automatically configure both Jupyter Notebook and Jupyter Lab 3.0. For older versions of both or in more complex
+In most cases, this will also automatically configure Jupyter Notebook and Jupyter Lab (``>=3.0``). For older versions of both or in more complex
 environment configurations, refer to `the official ipywidgets documentation <https://ipywidgets.readthedocs.io/en/stable/user_install.html>`_.
 
 From source
