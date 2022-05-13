@@ -26,7 +26,7 @@ Introduction
   :target: https://github.com/python/black
 
 ``pandas-profiling`` generates profile reports from a pandas ``DataFrame``.
-The pandas ``df.describe()`` function is handy yet a little basic for exploratory data analysis. ``pandas_profiling`` extends the pandas DataFrame with ``df.profile_report()``,  
+The pandas ``df.describe()`` function is handy yet a little basic for exploratory data analysis. ``pandas_profiling`` extends pandas DataFrame with ``df.profile_report()``,  
 which automatically generates a standardized univariate and multivariate report for data understanding. 
 
 For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
@@ -38,16 +38,16 @@ For each column, the following information (whenever relevant for the column typ
 * **Most frequent and extreme values**
 * **Histograms:** categorical and numerical
 * **Correlations**: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér's V, Phik)
-* **Missing values**: via counts, matrix, heatmap and dendrograms
+* **Missing values**: through counts, matrix, heatmap and dendrograms
 * **Duplicate rows**: list of the most common duplicated rows
 * **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
-* **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and EXIF existance
+* **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existance of EXIF metadata
 
 
 The report contains three additional sections: 
 
-* **Overview**: global information about the data (number of records, number of variables, overall missigness and duplicates, memory footprint)
+* **Overview**: mostly global details about the dataset (number of records, number of variables, overall missigness and duplicates, memory footprint)
 * **Warnings**: a comprehensive and automatic list of potential data quality issues (high correlation, skewness, uniformity, zeros, missing values, constant values, between others) 
 * **Reproduction**: technical details about the analysis (time, version and configuration)
 
-The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as a regular HTML or embedded in an interactive way inside Jupyter Notebooks. 
+The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks. 
