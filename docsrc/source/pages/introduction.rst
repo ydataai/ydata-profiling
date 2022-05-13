@@ -25,19 +25,29 @@ Introduction
   :alt: Code style: black
   :target: https://github.com/python/black
 
-Generates profile reports from a pandas ``DataFrame``.
-The pandas ``df.describe()`` function is great but a little basic for serious exploratory data analysis.
-``pandas_profiling`` extends the pandas DataFrame with ``df.profile_report()`` for quick data analysis.
+``pandas-profiling`` generates profile reports from a pandas ``DataFrame``.
+The pandas ``df.describe()`` function is handy yet a little basic for exploratory data analysis. ``pandas_profiling`` extends pandas DataFrame with ``df.profile_report()``,  
+which automatically generates a standardized univariate and multivariate report for data understanding. 
 
-For each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:
+For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
 
-* **Type inference**: detect the types of columns in a dataframe.
-* **Essentials**: type, unique values, missing values
-* **Quantile statistics** like minimum value, Q1, median, Q3, maximum, range, interquartile range
-* **Descriptive statistics** like mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
-* **Most frequent values**
-* **Histograms**
-* **Correlations** highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices
-* **Missing values** matrix, count, heatmap and dendrogram of missing values
-* **Duplicate rows** Lists the most occurring duplicate rows
-* **Text analysis** learn about categories (Uppercase, Space), scripts (Latin, Cyrillic) and blocks (ASCII) of text data
+* **Type inference**: detect the types of columns in a ``DataFrame``
+* **Essentials**: type, unique values, indication of missing values
+* **Quantile statistics**: minimum value, Q1, median, Q3, maximum, range, interquartile range
+* **Descriptive statistics**: mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
+* **Most frequent and extreme values**
+* **Histograms:** categorical and numerical
+* **Correlations**: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér's V, Phik)
+* **Missing values**: through counts, matrix, heatmap and dendrograms
+* **Duplicate rows**: list of the most common duplicated rows
+* **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
+* **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existance of EXIF metadata
+
+
+The report contains three additional sections: 
+
+* **Overview**: mostly global details about the dataset (number of records, number of variables, overall missigness and duplicates, memory footprint)
+* **Warnings**: a comprehensive and automatic list of potential data quality issues (high correlation, skewness, uniformity, zeros, missing values, constant values, between others) 
+* **Reproduction**: technical details about the analysis (time, version and configuration)
+
+The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks. 
