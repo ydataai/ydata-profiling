@@ -8,7 +8,7 @@ body:
       value: |
         You are very much welcome in sharing what functionality is missing in `pandas-profiling`.
         Provide a concise summary of the feature in the title field above.
-        The [documentation](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/contribution_guidelines.html) contains instructions on contributing to this package.
+        The [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/contribution_guidelines.html) contains instructions on contributing to this package.
 
   - type: textarea
     id: missing-functionality
