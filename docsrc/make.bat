@@ -31,7 +31,7 @@ goto end
 
 :github
 call make html
-robocopy .\build\html ..\docs\rtd /E /MOVE
+robocopy .\build\html ..\docs\ /E /MOVE
 rmdir .\build /s /q
 goto end
 
