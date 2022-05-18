@@ -1,5 +1,5 @@
 =============
-Announcements
+(Past) Announcements
 =============
 
 .. include:: announcements/2020-05-12-release-v2-8-0.rst

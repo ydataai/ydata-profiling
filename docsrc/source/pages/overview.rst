@@ -1,6 +1,6 @@
-============
-Introduction
-============
+========
+Overview
+========
 
 .. image:: https://ydataai.github.io/pandas-profiling/docs/assets/logo_header.png
   :alt: Pandas Profiling Logo Header

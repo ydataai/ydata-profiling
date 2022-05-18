@@ -1,8 +1,8 @@
-===============
-Getting started
-===============
+==========
+Quickstart
+==========
 
-Getting started
+Quickstart
 Start by loading in your pandas DataFrame, e.g. by using
 
 .. code-block:: python

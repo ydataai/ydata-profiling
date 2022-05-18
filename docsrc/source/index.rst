@@ -1,36 +1,58 @@
-.. include:: pages/introduction.rst
+.. include:: pages/overview.rst
 
 .. toctree::
    :maxdepth: 3
-   :caption: Pandas Profiling
+   :caption: Getting started
    :hidden:
 
-   pages/introduction
-   pages/announcements
-   pages/examples
+.. 
+
+   pages/overview
    pages/installation
-   pages/getting_started
+   pages/quickstart
+   pages/concepts
+   pages/examples
+   pages/changelog
+   
+.. toctree::
+   :maxdepth: 3
+   :caption: Use cases
+   :hidden:
+
    pages/advanced_usage
    pages/big_data
    pages/sensitive_data
    pages/metadata
+  
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Integrations
+   :hidden:
+
    pages/integrations
    pages/great_expectations_integration
-   pages/changelog
-   pages/history
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Advanced usage
+   :hidden:
 
 .. toctree::
    :maxdepth: 3
    :caption: Support and contribution
    :hidden:
 
+   pages/common_issues
    pages/support
    pages/contribution_guidelines
-   pages/resources
-
+   
 .. toctree::
    :maxdepth: 3
    :caption: Reference
    :hidden:
 
    pages/api
+   pages/history
+   pages/resources
+   pages/announcements
