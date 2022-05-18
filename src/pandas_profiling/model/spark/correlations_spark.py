@@ -1,5 +1,4 @@
 """Correlations between variables."""
-import enum
 from typing import Optional
 
 import pandas as pd
@@ -29,9 +28,8 @@ SPARK_CORRELATION_SPEARMAN = "spearman"
 def spark_spearman_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[DataFrame]:
-    matrix = _compute_native_spark_corr(
+    matrix = _compute_spark_corr_natively(
         df, summary, corr_type=SPARK_CORRELATION_SPEARMAN
-
     )
     return pd.DataFrame(matrix, index=df.columns, columns=df.columns)
 
@@ -40,18 +38,17 @@ def spark_spearman_compute(
 def spark_pearson_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[DataFrame]:
-    matrix = _compute_native_spark_corr(
+    matrix = _compute_spark_corr_natively(
         df, summary, corr_type=SPARK_CORRELATION_PEARSON
     )
     return pd.DataFrame(matrix, index=df.columns, columns=df.columns)
 
 
-def _compute_native_spark_corr(
-    df: DataFrame, summary: dict, corr_type: str
-):
+def _compute_spark_corr_natively(df: DataFrame, summary: dict, corr_type: str):
     """
-    This function encapsulates the calling of the native spark correlations for the pearson
-    and spearman functions. The two base calls are Correlation.corr(dataframe, method="pearson" OR "spearman")
+    This function exists as pearson and spearman correlation computations have the
+    exact same workflow. The syntax is Correlation.corr(dataframe, method="pearson" OR "spearman"),
+    and Correlation is from pyspark.ml.stat
     """
     variables = {column: description["type"] for column, description in summary.items()}
     interval_columns = [
