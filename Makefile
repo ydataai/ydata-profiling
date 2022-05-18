@@ -3,7 +3,6 @@
 docs:
 	rm -rf docs/
 	mkdir docs/
-	cp -a ./docsrc/assets/ ./docs/assets/
 	# sphinx
 	cd docsrc/ && make github
 
