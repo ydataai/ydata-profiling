@@ -49,36 +49,6 @@ If you have data in another Python framework, you can use pandas-profiling by co
   # Source: https://github.com/modin-project/modin/issues/896
 
 
-User interfaces
----------------
-
-This section lists the various ways the user can interact with the profiling results.
-
-HTML Report
-~~~~~~~~~~~
-
-.. image:: ../_static/iframe.gif
-
-Jupyter Lab/Notebook
-~~~~~~~~~~~~~~~~~~~~
-
-.. image:: ../_static/widgets.gif
-
-Command line
-~~~~~~~~~~~~
-
-Command line usage
-For standard formatted CSV files that can be read immediately by pandas, you can use the pandas_profiling executable. Run
-
-.. code-block:: console
-
-    pandas_profiling -h
-
-for information about options and arguments.
-
-.. image:: ../_static/cli.png
-  :width: 80%
-
 Streamlit
 ~~~~~~~~~
 

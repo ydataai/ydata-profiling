@@ -32,12 +32,12 @@ You can configure the profile report in any way you like. The example code below
 
 Learn more about configuring ``pandas-profiling`` on the :doc:`advanced_usage` page.
 
-Jupyter notebook
+Jupyter Notebook
 ----------------
 
 We recommend generating reports interactively by using the Jupyter notebook. There are two interfaces (see animations below): through widgets and through a HTML report.
 
-.. image:: ../_static/widgets.gif
+.. image:: ../../_static/widgets.gif
 
 This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 
@@ -47,7 +47,7 @@ This is achieved by simply displaying the report. In the Jupyter Notebook, run:
 
 The HTML report can be included in a Jupyter notebook:
 
-.. image:: ../_static/iframe.gif
+.. image:: ../../_static/iframe.gif
 
 Run the following code:
 
@@ -73,7 +73,6 @@ Alternatively, you can obtain the data as json:
 
         # As a file
         profile.to_file("your_report.json")
-
 
 
 Command line usage
