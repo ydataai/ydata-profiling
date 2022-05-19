@@ -46,7 +46,7 @@ Branch naming:
 - release/v[VERSION]: releases
 - gh-pages: documentation and examples are hosted here
 
-.. figure::  ../_static/figure-git-workflow.svg
+.. figure::  ../../_static/figure-git-workflow.svg
   :alt: Workflow
   :width: 80%
 

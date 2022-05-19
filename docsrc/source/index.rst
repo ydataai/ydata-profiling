@@ -43,9 +43,9 @@
    :maxdepth: 3
    :caption: Support and contribution
 
+   pages/support_contrib/help_troubleshoot
    pages/support_contrib/common_issues
-   pages/support
-   pages/contribution_guidelines
+   pages/support_contrib/contribution_guidelines
    
 .. toctree::
    :maxdepth: 3
