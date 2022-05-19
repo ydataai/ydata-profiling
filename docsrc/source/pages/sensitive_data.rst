@@ -1,6 +1,6 @@
-==============
-Sensitive data
-==============
+=======================
+Handling sensitive data
+=======================
 
 When dealing with sensitive data, such as private health records, sharing a report that includes a sample would violate patient's privacy. The following shorthand groups together various options so that only aggregate information is provided in the report:
 

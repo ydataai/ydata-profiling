@@ -1,6 +1,6 @@
-========
-Metadata
-========
+======================================
+Dataset metadata and data dictionaries
+======================================
 
 Dataset metadata
 ----------------

@@ -1,6 +1,6 @@
-=============
-Big Datasets
-=============
+===========================
+Working with large datasets
+===========================
 
 Pandas Profiling by default comprehensively summarizes the input dataset in a way that gives the most insights for data analysis.
 For small datasets these computations can be performed in real-time.
