@@ -28,7 +28,7 @@ The configuration file can be found here: `config_minimal.yaml <https://github.c
 Sample
 ------
 
-.. image:: ../_static/twitter_wisdom.png
+.. image:: ../../_static/twitter_wisdom.png
   :target: https://twitter.com/ogrisel/status/951425284963733505
 
 .. code-block:: python

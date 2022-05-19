@@ -15,22 +15,19 @@
    :maxdepth: 3
    :caption: Use cases
 
-   pages/big_data
-   pages/sensitive_data
-   pages/metadata
-
-.. pages/custom_report_appearance #TODO
+   pages/use_cases/big_data
+   pages/use_cases/sensitive_data
+   pages/use_cases/metadata
+   pages/use_cases/custom_report_appearance
   
 
 .. toctree::
    :maxdepth: 3
    :caption: Integrations
 
-   pages/other_data_backends
-
-.. pages/dash #TODO
-   
+   pages/other_data_backends   
    pages/great_expectations_integration
+   pages/data_apps
    pages/pipelines
    pages/cloud_services
    pages/ides
