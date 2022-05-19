@@ -8,7 +8,7 @@ General settings
 ----------------
 
 .. csv-table::
-   :file: config_general.csv
+   :file: tables/config_general.csv
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
@@ -29,7 +29,7 @@ Variable summary settings
 -------------------------
 
 .. csv-table::
-   :file: config_variables.csv
+   :file: tables/config_variables.csv
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
@@ -63,7 +63,7 @@ Missing data overview plots
 ---------------------------
 
 .. csv-table::
-   :file: config_missing.csv
+   :file: tables/config_missing.csv
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
@@ -84,7 +84,7 @@ Correlations
 ------------
 
 .. csv-table::
-   :file: config_correlations.csv
+   :file: tables/config_correlations.csv
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
@@ -113,7 +113,7 @@ Interactions
 ------------
 
 .. csv-table::
-   :file: config_interactions.csv
+   :file: tables/config_interactions.csv
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
@@ -121,7 +121,7 @@ The HTML Report
 ---------------
 
 .. csv-table::
-   :file: config_html.csv
+   :file: tables/config_html.csv
    :widths: 30, 200, 200, 200
    :header-rows: 1
 
