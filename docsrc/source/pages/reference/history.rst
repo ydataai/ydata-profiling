@@ -45,7 +45,7 @@ downloads and users working in any industry, including many at FAANG,
 banks and insurance companies, startups, universities. pandas-profiling
 has been named one of the Top 20 ML packages by Google.
 
-What’s next?
+What's next?
 ------------
 
 Pandas Profiling will be part of a bigger mission, the Data-Centric AI

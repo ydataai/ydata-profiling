@@ -51,7 +51,7 @@
    :maxdepth: 3
    :caption: Reference
 
-   pages/api
-   pages/history
-   pages/resources
-   pages/announcements
+   pages/reference/api
+   pages/reference/history
+   pages/reference/resources
+   pages/reference/announcements
