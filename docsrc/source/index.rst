@@ -25,12 +25,12 @@
    :maxdepth: 3
    :caption: Integrations
 
-   pages/other_data_backends   
-   pages/great_expectations_integration
-   pages/data_apps
-   pages/pipelines
-   pages/cloud_services
-   pages/ides
+   pages/integrations/other_data_frameworks  
+   pages/integrations/great_expectations
+   pages/integrations/data_apps
+   pages/integrations/pipelines
+   pages/integrations/cloud_services
+   pages/integrations/ides
 
 
 .. toctree::
@@ -43,7 +43,7 @@
    :maxdepth: 3
    :caption: Support and contribution
 
-   pages/common_issues
+   pages/support_contrib/common_issues
    pages/support
    pages/contribution_guidelines
    
