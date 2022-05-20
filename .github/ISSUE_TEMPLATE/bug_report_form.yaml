@@ -9,7 +9,7 @@ body:
       value: |
         Thanks for taking the time to fill out this bug report!
         Provide a concise summary of the issue in the title field above.
-        The [documentation](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html) contains instructions on creating bug reports.
+        The [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support.html) contains instructions on creating bug reports.
   - type: textarea
     id: current-behavior
     attributes:
@@ -62,7 +62,7 @@ body:
     id: dependencies
     attributes:
       label: Dependencies
-      description: Please report versions of relevant dependencies (e.g. via `pip freeze` or `conda list`, [more information](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html))
+      description: Please report versions of relevant dependencies (e.g. via `pip freeze` or `conda list`, [more information](https://pandas-profiling.ydata.ai/docs/master/pages/support.html))
       placeholder: |
         pandas==1.4.2
         numpy==2.3.4
@@ -86,12 +86,12 @@ body:
         Please complete the checklist below to ensure the bug report is helpful and can be addressed effectively
         
         Tips:
-          - Help for writing better bug reports is available in the [documentation](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html).
+          - Help for writing better bug reports is available in the [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support.html).
           - If the description consists of multiple non-related bugs, you are encouraged to create separate issues.
       options:
         - label: There is not yet another bug report for this issue in the [issue tracker](https://github.com/ydataai/pandas-profiling/issues)
           required: true
         - label: The problem is reproducible from this bug report. [This guide](http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports) can help to craft a minimal bug report.
           required: true
-        - label: The issue has not been resolved by the entries listed under [Frequent Issues](https://pandas-profiling.ydata.ai/docs/master/rtd/pages/support.html#frequent-issues).
+        - label: The issue has not been resolved by the entries listed under [Frequent Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support.html#frequent-issues).
           required: true

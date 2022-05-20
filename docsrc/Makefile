@@ -13,7 +13,7 @@ help:
 
 github:
 	@make html
-	@cp -a build/html/. ../docs/rtd
+	@cp -a build/html/. ../docs/
 	@rm -rf build
 
 .PHONY: help Makefile

@@ -15,7 +15,7 @@ Moreover, the progress bar provides more information on the building phase and s
 
 Documentation
 ^^^^^^^^^^^^^
-This version introduces `more elaborate documentation <https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/index.html>`_ powered by Sphinx.
+This version introduces `more elaborate documentation <https://pandas-profiling.github.io/pandas-profiling/docs/master/index.html>`_ powered by Sphinx.
 The previously used pdoc3 has been adequate initially, however misses functionality and extensibility.
 Several recurring topics are now documented, for instance the configuration parameters are documented and there are pages on big datasets, sensitive data, integrations and resources.
 
@@ -27,7 +27,7 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 
 Find more information here:
 
- - `Changelog v2.7.0 <https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/changelog.html#changelog-v2-7-0>`_
+ - `Changelog v2.7.0 <https://pandas-profiling.github.io/pandas-profiling/docs/master/pages/changelog.html#changelog-v2-7-0>`_
  - `Sponsor the project on GitHub <https://github.com/sponsors/sbrugman>`_
 
  *May 7, 2020 💘*
