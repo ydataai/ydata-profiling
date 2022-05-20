@@ -8,9 +8,12 @@
    pages/getting_started/overview
    pages/getting_started/installation
    pages/getting_started/quickstart
-   pages/getting_started/concepts
    pages/getting_started/examples
    pages/getting_started/changelog
+
+.. 
+   pages/getting_started/concepts # TODO
+
    
 .. toctree::
    :maxdepth: 3

@@ -39,6 +39,8 @@ PyCharm
   :alt: PyCharm Integration
   :width: 400
   :align: center
+
 |
+
 To use the PyCharm Integration, right click on any dataset file:
 *External Tools* > *Pandas Profiling*.

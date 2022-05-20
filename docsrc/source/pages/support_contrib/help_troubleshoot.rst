@@ -42,8 +42,7 @@ You should provide the minimal information to reproduce this bug. `This guide <h
         - package manager (e.g. ``pip --version`` or ``conda info``)
         - packages (``pip freeze > packages.txt`` or ``conda list``). Please make sure this is contained in a collapsed section (instructions below)
 
-- a sample of the dataset (``df.sample()`` or ``df.head()``) Please share your dataframe. If the data is confidential, for example when it contains company-sensitive information, provide us with a synthetic or open dataset that produces the same error.
-You can anonymize the column names if necessary.
+- a sample of the dataset (``df.sample()`` or ``df.head()``) Please share your dataframe. If the data is confidential, for example when it contains company-sensitive information, provide us with a synthetic or open dataset that produces the same error. You can anonymize the column names if necessary.
 
 - a description of the dataset (``df.info()``) You should provide the DataFrame structure, for example by reporting the output of ```df.info()``.
 
