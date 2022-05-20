@@ -3,6 +3,7 @@
 .. toctree::
    :maxdepth: 3
    :caption: Getting started
+   :hidden: 
 
    pages/getting_started/overview
    pages/getting_started/installation
@@ -14,6 +15,7 @@
 .. toctree::
    :maxdepth: 3
    :caption: Use cases
+   :hidden:
 
    pages/use_cases/big_data
    pages/use_cases/sensitive_data
@@ -24,6 +26,7 @@
 .. toctree::
    :maxdepth: 3
    :caption: Integrations
+   :hidden:
 
    pages/integrations/other_data_frameworks  
    pages/integrations/great_expectations
@@ -36,12 +39,14 @@
 .. toctree::
    :maxdepth: 3
    :caption: Advanced usage
+   :hidden:
 
    pages/advanced_usage
 
 .. toctree::
    :maxdepth: 3
    :caption: Support and contribution
+   :hidden:
 
    pages/support_contrib/help_troubleshoot
    pages/support_contrib/common_issues
@@ -50,6 +55,7 @@
 .. toctree::
    :maxdepth: 3
    :caption: Reference
+   :hidden:
 
    pages/reference/api
    pages/reference/history

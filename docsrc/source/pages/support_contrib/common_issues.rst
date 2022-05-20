@@ -34,4 +34,4 @@ For an illustration of this approach see `here <https://github.com/pandas-profil
 Jupyter "IntSlider(value=0)"
 ----------------------------
 
-When in a Jupyter environment, you see some text, such as ``IntSlider(value=0)`` or interactive ``(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))``, then the Jupyter Widgets are not activated. The :doc:`installation` page contains instructions on how to resolve this problem.
+When in a Jupyter environment, you see some text, such as ``IntSlider(value=0)`` or interactive ``(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))``, then the Jupyter Widgets are not activated. The :doc:`../getting_started/installation` page contains instructions on how to resolve this problem.
