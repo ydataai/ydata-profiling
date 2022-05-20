@@ -30,7 +30,7 @@ You can configure the profile report in any way you like. The example code below
         profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 
 
-Learn more about configuring ``pandas-profiling`` on the :doc:`advanced_usage` page.
+Learn more about configuring ``pandas-profiling`` on the :doc:`../advanced_usage/available_settings` page.
 
 Jupyter Notebook
 ----------------
