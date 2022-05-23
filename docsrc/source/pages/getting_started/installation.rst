@@ -55,12 +55,12 @@ A new conda environment containing the module can be created via:
 
 .. hint::
 
-        Don't forget to specify the ``conda-forge`` channel. Omitting it won't result in an error, as an outdated package lives on the ``main`` channel and will be installed. See `Frequent issues <Support.rst#frequent-issues>`_ for details. 
+        Don't forget to specify the ``conda-forge`` channel. Omitting it **will not** lead to an error, as an outdated package lives on the ``main`` channel and will be installed. See :doc:`../support_contrib/common_issues` for details. 
 
 Widgets in Jupyter Notebook/Lab
 -------------------------------
 
-For the Jupyter widgets extension to work (used for progress bars and the interactive widget-based report), you might need to activate the corresponding extensions. 
+For the Jupyter widgets extension (used for progress bars and the interactive widget-based report) to work, you might need to install and activate the corresponding extensions. 
 This can be done via ``pip``: 
 
 .. code-block::
@@ -79,7 +79,7 @@ environment configurations, refer to `the official ipywidgets documentation <htt
 From source
 -----------
 
-Download the source code by cloning the repository or by pressing `'Download ZIP' <https://github.com/ydataai/pandas-profiling/archive/master.zip>`_ on this page.
+Download the source code by cloning the repository or by clicking on `'Download ZIP' <https://github.com/ydataai/pandas-profiling/archive/master.zip>`_.
 Install it by navigating to the uncompressed directory and running:
 
 .. code-block:: console
