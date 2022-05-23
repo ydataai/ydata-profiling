@@ -2,8 +2,8 @@
 Resources
 =========
 
-This page contains a series of community-contributed resources that can be found over the web.
-Found, written or recorded a contribution? Feel free to contribute it via de pull request on Github.
+This page contains a series of community-contributed resources that can be found throughout the web.
+Found, written or recorded a contribution? Feel free to contribute it via a pull request on GitHub.
 
 Notebooks
 ---------
