@@ -313,33 +313,7 @@ A low threshold place to ask questions or start contributing is by reaching out 
 
 ## Editor integration
 
-### PyCharm integration 
-
-1. Install `pandas-profiling` via the instructions above
-2. Locate your `pandas-profiling` executable.
-    - On macOS / Linux / BSD:
-        ```sh
-        $ which pandas_profiling
-        (example) /usr/local/bin/pandas_profiling
-        ```
-    - On Windows:
-        ```console
-        $ where pandas_profiling
-        (example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe
-        ```
-3. In PyCharm, go to _Settings_ (or _Preferences_ on macOS) > _Tools_ > _External tools_
-4. Click the _+_ icon to add a new external tool
-5. Insert the following values
-	- Name: Pandas Profiling
-    - Program: _**The location obtained in step 2**_
-    - Arguments: `"$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"`
-    - Working Directory: `$ProjectFileDir$`
-  
-<img alt="PyCharm Integration" src="https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png" width="400" />
-  
-To use the PyCharm Integration, right click on any dataset file:
-
-_External Tools_ > _Pandas Profiling_.
+Some Integrated Development Environments integrate with `pandas-profiling`. See the [Integrations documentation page](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/ides.html) for details.
 
 ### Other integrations
 
