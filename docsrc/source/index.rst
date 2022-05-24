@@ -9,7 +9,6 @@
    pages/getting_started/installation
    pages/getting_started/quickstart
    pages/getting_started/examples
-   pages/getting_started/changelog
 
 .. 
    pages/getting_started/concepts # TODO
@@ -66,7 +65,9 @@
    :caption: Reference
    :hidden:
 
+   pages/reference/changelog
    pages/reference/api
    pages/reference/history
-   pages/reference/resources
    pages/reference/announcements
+   pages/reference/resources
+   

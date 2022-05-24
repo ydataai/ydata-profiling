@@ -27,7 +27,7 @@ It's extra exciting that GitHub **matches your contribution** for the first year
 
 Find more information here:
 
- - `Changelog v2.7.0 <https://pandas-profiling.github.io/pandas-profiling/docs/master/pages/changelog.html#changelog-v2-7-0>`_
+ - `Changelog v2.7.0 <https://pandas-profiling.github.io/pandas-profiling/docs/master/pages/reference/changelog.html#changelog-v2-7-0>`_
  - `Sponsor the project on GitHub <https://github.com/sponsors/sbrugman>`_
 
  *May 7, 2020 💘*

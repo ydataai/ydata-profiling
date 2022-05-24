@@ -16,7 +16,7 @@
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
   |
-  <a href="https://pandas-profiling.ydata.ai/docs/master/pages/getting_started/changelog.html#changelog">Latest changelog</a>
+  <a href="https://pandas-profiling.ydata.ai/docs/master/pages/reference/changelog.html#changelog">Latest changelog</a>
 
 </p>
 
