@@ -2,9 +2,7 @@
 Pipelines
 =========
 
-With Python, command-line and Jupyter interfaces, ``pandas-profiling`` integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect.
-
-Integration with `Dagster <https://github.com/dagster-io/dagster>`_ or `Prefect <https://github.com/prefecthq/prefect>`_ can be achieved in a similar way as with Airflow.
+With Python, command-line and Jupyter interfaces, ``pandas-profiling`` integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect, allowing it to easily becomes a building block of data ingestion and analysis pipelines. Integration with `Dagster <https://github.com/dagster-io/dagster>`_ or `Prefect <https://github.com/prefecthq/prefect>`_ can be achieved in a similar way as with Airflow.
 
 Airflow
 -------

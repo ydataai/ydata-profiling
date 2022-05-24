@@ -2,6 +2,8 @@
 Interactive applications
 ========================
 
+The ``pandas-profiling`` report, through several of its interfaces, can be integrated in interactive data applications such as those developed with `Streamlit <https://streamlit.io>`_ or `Panel <https://panel.holoviz.org>`_.
+
 Streamlit
 ---------
 
@@ -25,13 +27,14 @@ Streamlit
   st.write(df)
   st_profile_report(pr)
 
-You can install this `Pandas Profiling component <https://github.com/Ghasel/streamlit-pandas-profiling>`_ for Streamlit with pip:
+You can install the `pandas-profiling component <https://github.com/Ghasel/streamlit-pandas-profiling>`_ for Streamlit with pip:
 
 .. code-block:: console
 
   pip install streamlit-pandas-profiling
 
+
 Panel
 -----
 
-For more information on how to use ``pandas-profiling`` in Panel, see https://github.com/pandas-profiling/pandas-profiling/issues/491 and the Pandas Profiling example at https://awesome-panel.org.
+For more information on how to use ``pandas-profiling`` in Panel, see `this GitHub issue <https://github.com/pandas-profiling/pandas-profiling/issues/491>`_ and `this integration example <https://awesome-panel.org/pandas_profiling_app>`_.

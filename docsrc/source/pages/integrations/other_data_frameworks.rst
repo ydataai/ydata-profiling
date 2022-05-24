@@ -2,14 +2,10 @@
 Other data frameworks
 =====================
 
-.. # TODO: Intro
-
 ``pandas-profiling`` is built on ``pandas`` and ``numpy``.
-Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata.
-Read more on `supported formats by Pandas <https://pandas.pydata.org/docs/user_guide/io.html>`_. 
+Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata. Read more on `supported formats by Pandas <https://pandas.pydata.org/docs/user_guide/io.html>`_. 
 
-If you have data in another Python framework, you can use pandas-profiling by converting to a pandas DataFrame. 
-For large datasets you might need to sample. Direct integrations are not yet supported.
+If you have data in another framework of the Python Data ecosystem, you can use ``pandas-profiling`` by converting to a pandas ``DataFrame``, as direct integrations are not yet supported. Large datasets might require sampling (as seen in :doc:`../use_cases/big_data`).
 
 .. code-block:: python
   :caption: PySpark to Pandas
@@ -45,5 +41,3 @@ For large datasets you might need to sample. Direct integrations are not yet sup
   #   storage (csv, hdf, sql, ect) and then read it back using Pandas. This will probably be the safer
   #   way when working big DataFrames, to avoid out of memory issues."
   # Source: https://github.com/modin-project/modin/issues/896
-
-.. # TODO: Dash

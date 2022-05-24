@@ -2,12 +2,12 @@
 IDEs
 ====
 
-.. # TODO: intro
+The package can be directly consumed in some Integrated Development Environments, such as `PyCharm <https://www.jetbrains.com/pycharm/>`_. 
 
 PyCharm
 -------
 
-1. Install ``pandas-profiling`` via the instructions above
+1. Install ``pandas-profiling`` via :doc:`..getting_started/installation`
 2. Locate your ``pandas-profiling`` executable.
 
   On macOS / Linux / BSD:
@@ -24,8 +24,8 @@ PyCharm
     $ where pandas_profiling
     (example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe
 
-3. In Pycharm, go to *Settings* (or *Preferences* on macOS) > *Tools* > *External tools*
-4. Click the *+* icon to add a new external tool
+3. In PyCharm, go to *Settings* (or *Preferences* on macOS) > *Tools* > *External tools*
+4. Click the **+** icon to add a new external tool
 5. Insert the following values
 
   - Name: ``Pandas Profiling``
@@ -42,5 +42,4 @@ PyCharm
 
 |
 
-To use the PyCharm Integration, right click on any dataset file:
-*External Tools* > *Pandas Profiling*.
+To use the PyCharm Integration, right click on any dataset file and *External Tools* > *Pandas Profiling*.
