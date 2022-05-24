@@ -30,7 +30,7 @@
    :caption: Integrations
    :hidden:
 
-   pages/integrations/other_data_frameworks  
+   pages/integrations/other_dataframe_libraries  
    pages/integrations/great_expectations
    pages/integrations/data_apps
    pages/integrations/pipelines
