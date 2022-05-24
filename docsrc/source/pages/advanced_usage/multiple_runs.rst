@@ -1,13 +1,11 @@
-=============
-Multiple runs
-=============
+========================================
+Caching results throughout multiple runs
+========================================
 
-Multiple runs
--------------
-The ProfileReport caches intermediary results for improved performance.
-For rendering both the HTMl report write the statistics as a JSON file will reuse the same computations.
-If you modify the configuration in between runs, you should either create a new ``ProfileReport`` object or invalidate the relevant cached values.
-If the config for only the HTML report is changed (for instance you would like to tune the theme), then you only need to reset the cached HTML report.
-You can use the ``report.invalidate_cache()`` method for this.
-Passing the values "rendering" only resets previously rendered reports (HTML, JSON or widgets).
-Alternatively "report" also resets the report structure.
+The ``ProfileReport`` object caches intermediary results for improved performance, which exported HTML and JSON files will reuse. 
+
+If you modify the configuration in-between runs, either a new ``ProfileReport`` object should be created or relevant cached values should be invalidated through ``report.invalidate_cache()``. The specific set of caches to reset can be passed as an argument to the ``ìnvalidate_cache()`` method: 
+
+- *rendering* to invalidate previously rendered reports (HTML, JSON or widgets)
+- *report* to remove the caching of the report's structure
+- *None* (default) to invalidate all caches

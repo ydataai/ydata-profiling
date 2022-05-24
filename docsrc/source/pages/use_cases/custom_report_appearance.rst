@@ -7,7 +7,7 @@ In some situations, a user might want to customize the appearance of the report 
 Customizing the report's theme
 ------------------------------
 
-Several aspects of the HTML report can be customized via the configuration file. The table below shows them:
+Several aspects of the report can be customized. The table below shows the available settings:
 
 .. csv-table::
    :file: ../tables/config_html.csv

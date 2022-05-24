@@ -2,31 +2,35 @@
 Changing settings
 =================
 
-Using a custom configuration file
----------------------------------
+There are three ways to change the settings listed in :doc:`available_settings`:
 
-To set the configuration of pandas-profiling using a custom file, you can start one of the sample configuration files below.
-Then, change the configuration to your liking.
+* through code 
+* through a custom configuration file
+* through environment variables
+
+
+Through code
+------------
 
 .. code-block:: python
+   :caption: Configuration example
 
-  from pandas_profiling import ProfileReport
+    # Change the config when creating the report
+    profile = df.profile_report(title="Pandas Profiling Report", pool_size=1)
 
-  profile = ProfileReport(df, config_file="your_config.yml")
-  profile.to_file("report.html")
+    # Change the config after
+    profile.config.html.minify_html = False
 
-Sample configuration files
---------------------------
-A great way to get an overview of the possible configuration is to look through sample configuration files.
-The repository contains the following files:
+    profile.to_file("output.html")
 
-- `default configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_ (default),
-- `minimal configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
 
-Configuration shorthands
-------------------------
+Some related settings are grouped together in configuration shorthands, making it easy to selectively enable or disable certain report sections or functionality: 
 
-It's possible to disable certain groups of features through configuration shorthands.
+- ``samples``: control whether the dataset preview is shown. 
+- ``correlation``: control whether correlation computations are executed.
+- ``missing_diagrams``: control whether missing value analysis is executed. 
+- ``duplicates``: control whether duplicate rows are previewed.
+- ``interactions``: control whether interactions are computed. 
 
 .. code-block:: python
 
@@ -39,11 +43,29 @@ It's possible to disable certain groups of features through configuration shorth
         interactions=None,
     )
 
-Read config from environment
-----------------------------
-Any profile report config setting can also be read in from environment variables.
 
-For example:
+Through a custom configuration file
+-----------------------------------
+
+To control ``pandas-profiling`` through a custom file, you can start with one of the sample configuration files below:
+
+- `default configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_ (default)
+- `minimal configuration file <https://github.com/pandas-profiling/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
+
+Change the configuration to your liking and point towards that configuration file when computing the report:  
+
+.. code-block:: python
+
+  from pandas_profiling import ProfileReport
+
+  profile = ProfileReport(df, config_file="your_config.yml")
+  profile.to_file("report.html")
+
+
+Through environment variables
+-----------------------------
+
+Any configuration setting can also be read from environment variables. For example:
 
 .. code-block:: python
 
@@ -57,7 +79,7 @@ is equivalent to setting the title as an environment variable
 
     export PROFILE_TITLE="My Custom Pandas Profiling Report"
 
-and running
+and then running
 
 .. code-block:: python
 

@@ -7,7 +7,7 @@ The package can be directly consumed in some Integrated Development Environments
 PyCharm
 -------
 
-1. Install ``pandas-profiling`` via :doc:`..getting_started/installation`
+1. Install ``pandas-profiling`` via :doc:`../getting_started/installation`
 2. Locate your ``pandas-profiling`` executable.
 
   On macOS / Linux / BSD:
