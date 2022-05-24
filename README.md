@@ -120,7 +120,7 @@ python setup.py install
 
 ## Documentation
 
-The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.ydata.ai/docs/master/). Previous documentation is still available [here](https://pandas-profiling.ydata.ai/docs/master/).
+The documentation for `pandas_profiling` can be found [here](https://pandas-profiling.ydata.ai/docs/master).
 
 ### Getting started
 
