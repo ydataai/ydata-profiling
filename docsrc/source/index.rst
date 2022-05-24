@@ -1,36 +1,73 @@
-.. include:: pages/introduction.rst
+.. include:: pages/getting_started/overview.rst
 
 .. toctree::
    :maxdepth: 3
-   :caption: Pandas Profiling
+   :caption: Getting started
+   :hidden: 
+
+   pages/getting_started/overview
+   pages/getting_started/installation
+   pages/getting_started/quickstart
+   pages/getting_started/examples
+
+.. 
+   pages/getting_started/concepts # TODO
+
+   
+.. toctree::
+   :maxdepth: 3
+   :caption: Use cases
    :hidden:
 
-   pages/introduction
-   pages/announcements
-   pages/examples
-   pages/installation
-   pages/getting_started
-   pages/advanced_usage
-   pages/big_data
-   pages/sensitive_data
-   pages/metadata
-   pages/integrations
-   pages/great_expectations_integration
-   pages/changelog
-   pages/history
+   pages/use_cases/big_data
+   pages/use_cases/sensitive_data
+   pages/use_cases/metadata
+   pages/use_cases/custom_report_appearance
+  
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Integrations
+   :hidden:
+
+   pages/integrations/other_dataframe_libraries  
+   pages/integrations/great_expectations
+   pages/integrations/data_apps
+   pages/integrations/pipelines
+   pages/integrations/cloud_services
+   pages/integrations/ides
+
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Advanced usage
+   :hidden:
+
+   pages/advanced_usage/available_settings
+   pages/advanced_usage/changing_settings
+   pages/advanced_usage/multiple_runs
+
+.. pages/advanced_usage/customizing_structure #TODO
+
+.. pages/advanced_usage/corr_mat_values #TODO
 
 .. toctree::
    :maxdepth: 3
    :caption: Support and contribution
    :hidden:
 
-   pages/support
-   pages/contribution_guidelines
-   pages/resources
-
+   pages/support_contrib/help_troubleshoot
+   pages/support_contrib/common_issues
+   pages/support_contrib/contribution_guidelines
+   
 .. toctree::
    :maxdepth: 3
    :caption: Reference
    :hidden:
 
-   pages/api
+   pages/reference/changelog
+   pages/reference/api
+   pages/reference/history
+   pages/reference/announcements
+   pages/reference/resources
+   

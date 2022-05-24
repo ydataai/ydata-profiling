@@ -16,7 +16,7 @@
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
   |
-  <a href="https://pandas-profiling.ydata.ai/docs/master/pages/changelog.html#changelog">Latest changelog</a>
+  <a href="https://pandas-profiling.ydata.ai/docs/master/pages/reference/changelog.html#changelog">Latest changelog</a>
 
 </p>
 
@@ -146,7 +146,7 @@ You can configure the profile report in any way you like. The example code below
 profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 ```
 
-Learn more about configuring `pandas-profiling` on the [Advanced usage](https://pandas-profiling.ydata.ai/docs/master/pages/advanced_usage.html) page.
+Learn more about configuring `pandas-profiling` on the [Advanced usage](https://pandas-profiling.ydata.ai/docs/master/pages/advanced_usage/available_settings.html) page.
 
 #### Jupyter Notebook
 
@@ -223,7 +223,7 @@ A set of options is available in order to adapt the report generated.
 
 More settings can be found in the [default configuration file](https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml) and [minimal configuration file](https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml).
 
-You find the configuration docs on the advanced usage page [here](https://pandas-profiling.ydata.ai/docs/master/pages/advanced_usage.html)
+You find the configuration docs on the advanced usage page [here](https://pandas-profiling.ydata.ai/docs/master/pages/advanced_usage/available_settings.html)
 
 **Example**
 ```python
@@ -289,7 +289,7 @@ This a world-class open-source library that helps you to maintain data quality a
 Great Expectations allows you to create Expectations (which are basically unit tests for your data) and Data Docs (conveniently shareable HTML data reports).
 `pandas-profiling` features a method to create a suite of Expectations based on the results of your ProfileReport, which you can store, and use to validate another (or future) dataset.
 
-You can find more details on the Great Expectations integration [here](https://pandas-profiling.ydata.ai/docs/master/pages/great_expectations_integration.html)
+You can find more details on the Great Expectations integration [here](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html)
 
 </td>
 </tr>
@@ -307,39 +307,13 @@ In the meantime, user customized summarizations and type definitions are now ful
 
 ## Contributing
 
-Read on getting involved in the [Contribution Guide](https://pandas-profiling.ydata.ai/docs/master/pages/contribution_guidelines.html).
+Read on getting involved in the [Contribution Guide](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
 
 A low threshold place to ask questions or start contributing is by reaching out on the pandas-profiling Slack. [Join the Slack community](https://slack.ydata.ai).
 
 ## Editor integration
 
-### PyCharm integration 
-
-1. Install `pandas-profiling` via the instructions above
-2. Locate your `pandas-profiling` executable.
-    - On macOS / Linux / BSD:
-        ```sh
-        $ which pandas_profiling
-        (example) /usr/local/bin/pandas_profiling
-        ```
-    - On Windows:
-        ```console
-        $ where pandas_profiling
-        (example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe
-        ```
-3. In PyCharm, go to _Settings_ (or _Preferences_ on macOS) > _Tools_ > _External tools_
-4. Click the _+_ icon to add a new external tool
-5. Insert the following values
-	- Name: Pandas Profiling
-    - Program: _**The location obtained in step 2**_
-    - Arguments: `"$FilePath$" "$FileDir$/$FileNameWithoutAllExtensions$_report.html"`
-    - Working Directory: `$ProjectFileDir$`
-  
-<img alt="PyCharm Integration" src="https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png" width="400" />
-  
-To use the PyCharm Integration, right click on any dataset file:
-
-_External Tools_ > _Pandas Profiling_.
+Some Integrated Development Environments integrate with `pandas-profiling`. See the [Integrations documentation page](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/ides.html) for details.
 
 ### Other integrations
 
