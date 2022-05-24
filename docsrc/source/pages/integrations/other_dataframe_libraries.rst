@@ -1,6 +1,6 @@
-=====================
-Other data frameworks
-=====================
+=========================
+Other DataFrame libraries
+=========================
 
 ``pandas-profiling`` is built on ``pandas`` and ``numpy``.
 Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata. Read more on `supported formats by Pandas <https://pandas.pydata.org/docs/user_guide/io.html>`_. 
