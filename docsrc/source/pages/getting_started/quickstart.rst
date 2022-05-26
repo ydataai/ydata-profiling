@@ -62,13 +62,18 @@ Alternatively, the report's data can be obtained as a JSON file:
 
 Command line usage
 ------------------
-For standard formatted CSV files (which can be read directly by pandas without additional settings), the ``pandas_profiling`` executable can be used in the command line:
+For standard formatted CSV files (which can be read directly by pandas without additional settings), the ``pandas_profiling`` executable can be used in the command line. The example below generates a report named *Example Profiling Report*, using a configuration file called ``default.yaml``, in the file ``report.html`` by processing a ``data.csv`` dataset. 
+
+.. code-block:: bash
+
+        pandas_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
+
+
+Information about all available options and arguments can be viewed through the snippet below. The CLI utility allows defining input and output filenames, setting a custom report title, specifying :doc:`a configuration file for custom behaviour <../advanced_usage/changing_settings>` and control other advanced aspects of the experience. 
 
 .. code-block:: bash
 
         pandas_profiling -h
-
-The snippet above displays information about options and arguments.
 
 
 Deeper profiling
@@ -76,11 +81,11 @@ Deeper profiling
 
 The contents, behaviour and appearance of the report are easily customizable. The example code below loads the `explorative configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml>`_, 
 which includes many features for text analysis (length distribution, word distribution and character/unicode information), files (file size, creation time) and images (dimensions, EXIF information). 
-These exact settings used in this explorative configuration file can be compared with the `default configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_.
+The exact settings used in this explorative configuration file can be compared with the `default configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_.
 
 .. code-block:: python
 
         profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
 
 
-Learn more about configuring ``pandas-profiling`` on the :doc:`../advanced_usage/available_settings` page. 
+On the CLI utility ``pandas_profiling``, this mode can be activated with the ``-e`` flag. Learn more about configuring ``pandas-profiling`` on the :doc:`../advanced_usage/available_settings`.

@@ -53,6 +53,6 @@ The report contains three additional sections:
 The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks. 
 
 .. NOTE::
-   **⚡ Looking for a Spark backend for profiling large datasets?**
+   **⚡ Looking for a Spark backend to profile large datasets?**
 
    While not yet finished, a Spark backend is in development. Progress can be tracked `here <https://github.com/ydataai/pandas-profiling/projects/3>`_. Testing and contributions are welcome!
