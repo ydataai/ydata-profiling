@@ -1,0 +1,31 @@
+Warning,Description (per profiling),Notes
+Constant,The count of unique values in the column is 1.,
+Zeros,Whether the column contains zeros,% and number of zero values is shown in the profiling
+High Correlation,Whether the correlations between any two columns (either Spearman, Cramer, Pearson, Kendall and Phi_k correlations) are above the 0.9 threshold,In the profiling, a column can be correlated with multiple others
+High Cardinality,Whether the column has more than 50 distinct values,
+Duplicates,If there are more than 10 duplicated records in the dataset,"This is a dataset level warning (as opposed to many others which refer only to a specific column)
+
+In the profiling, number and percentage of duplicated records is shown. 
+"
+Skewness,Whether the distribution of a column is skewed. Threshold to consider a distribution skewed is skewness bigger than 20.,"In the profiling, the value of the skewness indicator is shown. 
+
+Computation/used indicator seems to be different/in a different range compared to what’s available in the SDK?"
+Missing Values,If records are missing from a column,In the profiling, this is a column level indicator with the amount and percentage of missing values shown.
+Infinite Values,If any entry in the column is infinite (either np.inf or - np.inf),In the profiling, the number and percentage of infinite values is shown.
+Unique Values,Whether the column only has unique values (the number of unique values is the same as the number of values),
+Date,Whether the column likely contains Date or Datetime entries,
+Rejected,Whether the variable has mixed types or is constant, thus not suitable for further analysis. ,
+Uniform,Whether the column values follows a uniform distribution, evaluated through a Chi-squared test score for the distribution with score > 0.999,
+Constant length,For columns which are strings/date/datetimes, whether the length of the values is constant (in practice, minimum and maximum lengths are the same),
+Unsupported,"If the variable type of a column is not supported (examples: empty, has lists/dicts/tuples, has mixed types)
+
+Currently supported types:
+- Boolean
+- Numerical real
+- Numerical complex
+- Date/ Datetime
+- Categorical
+- URL
+- AbsPath (file)
+- ImagePath (image-like file)",
+E-mail,Whether the column contains emails,The probabilty of a column containing e-mails. SDK has 3 levels: no e-mail, moderate when 50 to 70% of the entires match an email-like pattern, high when more than 70% of the entries match
