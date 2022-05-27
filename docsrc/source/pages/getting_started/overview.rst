@@ -47,7 +47,7 @@ For each column, the following information (whenever relevant for the column typ
 The report contains three additional sections: 
 
 * **Overview**: mostly global details about the dataset (number of records, number of variables, overall missigness and duplicates, memory footprint)
-* **Warnings**: a comprehensive and automatic list of potential data quality issues (high correlation, skewness, uniformity, zeros, missing values, constant values, between others) 
+* **Alerts**: a comprehensive and automatic list of potential data quality issues (high correlation, skewness, uniformity, zeros, missing values, constant values, between others) 
 * **Reproduction**: technical details about the analysis (time, version and configuration)
 
 The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks. 
