@@ -18,23 +18,21 @@ Types, when going beyond the the logical data types such as integer, floats, etc
 
 Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``pandas-profiling``'s default typeset `here <https://github.com/ydataai/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py>`_. 
 
-Data quality warnings
----------------------
+Data quality alerts
+-------------------
 
 .. figure::  ../../_static/warnings_section.png
   :alt: Data quality warnings
   :width: 100%
   :align: center
 
-.. TODO: Add legend
+  Alerts section in the *NASA Meteorites* dataset's report. Some alerts include numerical indicators. 
 
-
-The **Warnings** section of the report includes a comprehensive and automatic list of potential data quality issues. Some are evaluated per column, others refer to inter-column relationships while others are dataset-wide. The table below lists all possible data quality warnings and their meaning. 
+The **Alerts** section of the report includes a comprehensive and automatic list of potential data quality issues. Although useful, the decision on whether an alert is in fact a data quality issue always requires domain validation. Some of the warnings refer to a specific column, others refer to inter-column relationships and others are dataset-wide. The table below lists all possible data quality alerts and their meanings. 
 
 .. csv-table::
-   :file: ../tables/data_quality_warnings.csv
-   :widths: 30, 200, 200
+   :file: ../tables/data_quality_alerts.csv
+   :widths: 50, 350
    :header-rows: 1
 
-
-Information on the default values and the specific parameters/thresholds used in the computation of these warnings can be consulted in :doc:`../advanced_usage/available_settings`. 
+Information on the default values and the specific parameters/thresholds used in the computation of these alerts, as well as settings to disable specific ones, can be consulted in :doc:`../advanced_usage/available_settings`. 
