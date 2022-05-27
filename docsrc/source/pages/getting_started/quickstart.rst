@@ -69,11 +69,19 @@ For standard formatted CSV files (which can be read directly by pandas without a
         pandas_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
 
 
-Information about all available options and arguments can be viewed through the snippet below. The CLI utility allows defining input and output filenames, setting a custom report title, specifying :doc:`a configuration file for custom behaviour <../advanced_usage/changing_settings>` and control other advanced aspects of the experience. 
+Information about all available options and arguments can be viewed through the command below. The CLI allows defining input and output filenames, setting a custom report title, specifying :doc:`a configuration file for custom behaviour <../advanced_usage/changing_settings>` and control other advanced aspects of the experience. 
 
 .. code-block:: bash
 
         pandas_profiling -h
+
+
+.. figure::  ../../_static/cli.png
+  :alt: Options for the CLI
+  :width: 100%
+  :align: center
+
+  Options available in the CLI
 
 
 Deeper profiling
