@@ -47,6 +47,29 @@ The reader of the report might want to know that the profile is generated using 
   profile = sample.profile_report(description=description, minimal=True)
   profile.to_file("output.html")
 
+Disable expensive computations
+------------------------------
+
+To decrease the computational burden in particularly large datasets but still maintain some information of interest that may stem from them, some computations can be filtered only for certain columns. Particularly, a list of targets can be provided to **Interactions**, so that only the interactions with these variables in specific are computed. 
+
+.. code-block:: python
+
+    from pandas_profiling import ProfileReport
+    import pandas as pd
+
+    # Reading the data
+    data = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+
+    # Creating the profile without specifying the data source, to allow editing the configuration
+    profile = ProfileReport()
+    profile.config.interactions.targets = ["Name", "Sex", "Age"]
+
+    # Assigning a DataFrame and exporting to a file, triggering computation
+    profile.df = data
+    profile.to_file("report.html")
+
+The setting controlling this, ``ìnteractions.targets``, can be changed via multiple interfaces (configuration files or environment variables). For details, see :doc:`../advanced_usage/changing_settings`.
+
 Concurrency
 -----------
 

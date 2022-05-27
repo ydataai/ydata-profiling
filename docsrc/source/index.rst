@@ -8,11 +8,8 @@
    pages/getting_started/overview
    pages/getting_started/installation
    pages/getting_started/quickstart
+   pages/getting_started/concepts
    pages/getting_started/examples
-
-.. 
-   pages/getting_started/concepts # TODO
-
    
 .. toctree::
    :maxdepth: 3
@@ -46,6 +43,7 @@
    pages/advanced_usage/available_settings
    pages/advanced_usage/changing_settings
    pages/advanced_usage/multiple_runs
+   pages/advanced_usage/corr_mat_access
 
 .. pages/advanced_usage/customizing_structure #TODO
 

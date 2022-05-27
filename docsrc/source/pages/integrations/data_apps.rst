@@ -34,6 +34,79 @@ You can install the `pandas-profiling component <https://github.com/Ghasel/strea
   pip install streamlit-pandas-profiling
 
 
+Dash
+----
+
+`Dash <hhttps://github.com/plotly/dash>`_ is a Python framework for building machine learning & data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where ``pandas-profiling`` also focuses. Inline access to the insights provided by ``pandas-profiling`` can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist: 
+
+Load HTML version of report as an asset 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Assuming the HTML version of the report is in ``report.html``, move it to a folder called ``assets``. The snippet below shows a simple Dash app, ``app.py``, embedding this report:
+
+.. code-block:: python
+
+    import dash
+    from dash import html
+
+    app = dash.Dash(__name__)
+
+    app.layout = html.Div(
+        children=[
+            html.Iframe(
+                src="assets/census_report.html", # must be under assets/ to be properly served
+                style={"height": "1080px", "width": "100%"},
+            )
+        ]
+    )
+
+    if __name__ == "__main__":
+        app.run_server(debug=True)
+
+When running `python app.py`, a Dash app with the report embedded will be available on `<http://127.0.0.1:8050>`_. 
+
+Directly embed the raw HTML
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A more unorthodox option requiring no explicit file handling involves using the ``dash-dangerously-set-inner-html`` library to directly embed the HTML raw text (thus requiring no HTML export). Install the library through ``pip``: 
+
+.. code-block:: console
+
+    pip install dash-dangerously-set-inner-html
+
+
+And configure the Dash app as in the following snippet:
+
+.. code-block:: python
+
+    import pandas as pd
+    from pandas_profiling import ProfileReport
+    import dash
+    from dash import html
+    import dash_dangerously_set_inner_html
+
+    # Creating the Report
+    df = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+    profile = ProfileReport(df, title="Titanic Dataset")
+    text_raw = profile.to_html()
+
+    # Creating the Dash app
+
+    app = dash.Dash(__name__)
+
+    app.layout = html.Div([
+    dash_dangerously_set_inner_html.DangerouslySetInnerHTML(text_raw)])
+
+    app.layout = html.Div([
+    dash_dangerously_set_inner_html.DangerouslySetInnerHTML(text_raw)])
+
+    if __name__ == "__main__":
+        app.run_server(debug=True)
+
+When running `python app.py`, a Dash app with the report embedded will be available on `<http://127.0.0.1:8050>`_. While this option is somewhat more direct, **the embedded report will not be fully interactive, with some buttons unclickable**. 
+
+
+
 Panel
 -----
 

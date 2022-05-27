@@ -26,12 +26,6 @@ The following example reports showcase the potentialities of the package across 
 
 - `Orange prices <https://pandas-profiling.ydata.ai/examples/master/features/united_report.html>`_ and `Coal prices <https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html>`_ (simple pricing evolution datasets, showcasing the theming options)
 
-Tutorials
----------
-
-- `Tutorial: report structure using Kaggle data (advanced) <https://github.com/ydataai/pandas-profiling/blob/master/examples/tutorials/modify_report_structure.ipynb>`_ (modify the report's structure) |kaggle_binder| |kaggle_colab|
-
-
 
 
 .. |nasa_binder| image:: https://mybinder.org/badge_logo.svg
@@ -48,11 +42,3 @@ Tutorials
 .. |titanic_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
  :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic.ipynb
-
-.. |kaggle_binder| image:: https://mybinder.org/badge_logo.svg
- :alt: Open in Binder
- :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fkaggle%2Fmodify_report_structure.ipynb
-
-.. |kaggle_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
- :alt: Open in Colab
- :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/tutorials/modify_report_structure.ipynb

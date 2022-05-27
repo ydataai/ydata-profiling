@@ -15,12 +15,13 @@ Through code
 .. code-block:: python
    :caption: Configuration example
 
-    # Change the config when creating the report
+    # Create the ProfileReport object without specifying a DataFrame
     profile = df.profile_report(title="Pandas Profiling Report", pool_size=1)
 
-    # Change the config after
+    # Change the configuration as desired
     profile.config.html.minify_html = False
 
+    # Specify a DataFrame and trigger the report's computation
     profile.to_file("output.html")
 
 
