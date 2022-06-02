@@ -26,7 +26,7 @@ Overview
   :target: https://github.com/python/black
 
 ``pandas-profiling`` generates profile reports from a pandas ``DataFrame``.
-The pandas ``df.describe()`` function is handy yet a little basic for exploratory data analysis. ``pandas_profiling`` extends pandas DataFrame with ``df.profile_report()``,  
+The pandas ``df.describe()`` function is handy yet a little basic for exploratory data analysis. ``pandas-profiling`` extends pandas ``DataFrame`` with ``df.profile_report()``,  
 which automatically generates a standardized univariate and multivariate report for data understanding. 
 
 For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
