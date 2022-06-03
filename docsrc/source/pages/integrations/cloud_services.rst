@@ -16,7 +16,7 @@ Lambda GPU Cloud
 Google Cloud
 ------------
 
-The Google Cloud Platform documentation features an article that uses ``pandas-profiling``. You can check it here: `Building a propensity model for financial services on Google Cloud <https://cloud.google.com/solutions/building-a-propensity-model-for-financial-services-on-gcp>`_.
+The Google Cloud Platform documentation features an article that uses ``pandas-profiling``. You can check it here: `Building a propensity model for financial services on Google Cloud <https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb>`_.
 
 Kaggle
 ------
