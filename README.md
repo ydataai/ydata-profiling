@@ -43,13 +43,11 @@ The report contains three additional sections:
 - **Reproduction**: technical details about the analysis (time, version and configuration)
 
 
-> ⚡ Looking for a Spark backend to profile large datasets? WIP, track progress [here](https://github.com/ydataai/pandas-profiling/projects/3).
+> ⚡ Looking for a Spark backend to profile large datasets? It's WIP. Track progress [here](https://github.com/ydataai/pandas-profiling/projects/3).
 > 
 > ⌛ Interested in uncovering temporal patterns? Check out [popmon](https://github.com/ing-bank/popmon).
 
----
-
-## Quickstart
+## ▶️ Quickstart
 
 Start by loading your pandas `DataFrame` as you normally would, e.g. by using:
 
@@ -89,7 +87,7 @@ profile.to_notebook_iframe()
 
 ### Exporting the report to a file
 
-To generate a HTML report file, save the ProfileReport to an object and use the to_file() function:
+To generate a HTML report file, save the `ProfileReport` to an object and use the `to_file()` function:
 
 ```python
 profile.to_file("your_report.html")
@@ -107,15 +105,15 @@ profile.to_file("your_report.json")
 
 ### Command line usage
 
-For standard formatted CSV files (which can be read directly by pandas without additional settings), the pandas_profiling executable can be used in the command line. The example below generates a report named Example Profiling Report, using a configuration file called default.yaml, in the file report.html by processing a data.csv dataset.
+For standard formatted CSV files (which can be read directly by pandas without additional settings), the `pandas_profiling` executable can be used in the command line. The example below generates a report named _Example Profiling Report_, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
 
 ```sh
 pandas_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
 ```
 
-Additional details on the CLI [on the documentation](https://pandas-profiling.ydata.ai/docs/master/pages/getting_started/quickstart.html#command-line-usage).
+Additional details on the CLI are available [on the documentation](https://pandas-profiling.ydata.ai/docs/master/pages/getting_started/quickstart.html#command-line-usage).
 
-## Examples
+## 👀 Examples
 
 The following example reports showcase the potentialities of the package across a wide range of dataset and data types:
 
@@ -131,9 +129,9 @@ The following example reports showcase the potentialities of the package across 
 * [Website Inaccessibility](https://pandas-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
 * [Orange prices](https://pandas-profiling.ydata.ai/examples/master/features/united_report.html) and [Coal prices](https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
 
-## Installation
+## 🛠️ Installation
 
-Additional details, including information about widgets, are available [on the documentation](https://pandas-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
+Additional details, including information about widget support, are available [on the documentation](https://pandas-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
 
 ### Using pip
 [![PyPi Downloads](https://pepy.tech/badge/pandas-profiling)](https://pepy.tech/project/pandas-profiling)
@@ -167,9 +165,9 @@ Install by navigating to the proper directory and running:
 python setup.py install
 ```
 
-The profile report is written in HTML and CSS, which means `pandas-profiling` requires a modern browser. 
+The profile report is written in HTML and CSS, which means a modern browser is required. 
 
-You need [Python 3](https://python3statement.org/) to run this package. Other dependencies can be found in the requirements files:
+You need [Python 3](https://python3statement.org/) to run the package. Other dependencies can be found in the requirements files:
 
 | Filename | Requirements|
 |----------|-------------|
@@ -178,7 +176,7 @@ You need [Python 3](https://python3statement.org/) to run this package. Other de
 | [requirements-test.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-test.txt) | Requirements for testing|
 | [setup.py](https://github.com/ydataai/pandas-profiling/blob/master/setup.py) | Requirements for widgets etc. |
 
-## Use cases
+## 📝 Use cases
 
 The documentation includes guides, tips and tricks for tackling commmon use cases:
 
@@ -186,41 +184,34 @@ The documentation includes guides, tips and tricks for tackling commmon use case
 |---|---|
 | [Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html ) | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets |
 | [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html ) | Generating reports which are mindful about sensitive data in the input dataset |
-| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html) | Embedding overall dataset details and column-specific data dictionary for easier sharing |
-| [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Personalising the appearance of the report's page and of its plots |
+| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html) | Complementing the report with dataset details and column-specific data dictionaries |
+| [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations |
 
-## Integrations
+## 🔗 Integrations
 
-To maximize its usefulness in real world contexts, `pandas-profiling` has a set of implicit and explicit integration with a variety of other actors in the Data Science ecosystem: 
+To maximize its usefulness in real world contexts, `pandas-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
 
 | Integration type | Description |
 |---|---|
-| [Other DataFrame libraries](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/other_dataframe_libraries.html) | How to compute the profiling of data stored in libraries different than pandas |
-| [Great Expectations](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html) | Generating [Great Expectations](https://greatexpectations.io) expectations suites straight from a profiling report |
+| [Other DataFrame libraries](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/other_dataframe_libraries.html) | How to compute the profiling of data stored in libraries other than pandas |
+| [Great Expectations](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html) | Generating [Great Expectations](https://greatexpectations.io) expectations suites directly from a profiling report |
 | [Interactive applications](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/data_apps.html) | Embedding profiling reports in [Streamlit](http://streamlit.io), [Dash](http://dash.plotly.com) or [Panel](https://panel.holoviz.org) applications |
 | [Pipelines](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/pipelines.html) | Integration with DAG workflow execution tools like [Airflow](https://airflow.apache.org) or [Kedro](https://kedro.org) |
 | [Cloud services](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html) | Using `pandas-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
 | [IDEs](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/ides.html) | Using `pandas-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/) |
 
-## Support
-Need help? Want to share a perspective? Want to report a bug? Ideas for collaborations? Reach out via the following channels:
+## 🙋 Support
+Need help? Want to share a perspective? Report a bug? Ideas for collaborations? Reach out via the following channels:
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
-- [Github Issues](https://github.com/ydataai/pandas-profiling/issues): bugs, proposals for change, feature requests
-- [Slack](https://slack.datacentricai.community): general chat, questions, collaboration
+- [GitHub Issues](https://github.com/ydataai/pandas-profiling/issues): bugs, proposals for changes, feature requests
+- [Slack](https://slack.datacentricai.community): general chat, questions, collaborations
 - [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
 
-> ❗ Before reporting an issue, check out [Common Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
+> ❗ Before reporting an issue on GitHub, check out [Common Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
 
----
-## Contributing
+## 🤝🏽 Contributing
 
 Learn how to get involved in the [Contribution Guide](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
 
 A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Slack](https://slack.datacentricai.community).
-
-Contributors:
-
-<a href="https://github.com/ydataai/pandas-profiling/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ydataai/pandas-profiling" />
-</a>
