@@ -20,7 +20,7 @@
 
 </p>
 
-`pandas-profiling` generates profile reports from a pandas `DataFrame`. The pandas `df.describe()` function is handy yet a little basic for exploratory data analysis. `pandas-profiling` extends pandas DataFrame with `df.profile_report()`, which automatically generates a standardized univariate and multivariate report for data understanding.
+`pandas-profiling` generates profile reports from a pandas `DataFrame`. The pandas `df.describe()` function is handy yet a little basic for exploratory data analysis. `pandas-profiling` extends pandas `DataFrame` with `df.profile_report()`, which automatically generates a standardized univariate and multivariate report for data understanding.
 
 For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
 
@@ -43,7 +43,7 @@ The report contains three additional sections:
 - **Reproduction**: technical details about the analysis (time, version and configuration)
 
 
-> ⚡ Looking for a Spark backend to profile large datasets? It's WIP. Track progress [here](https://github.com/ydataai/pandas-profiling/projects/3).
+> ⚡ Looking for a Spark backend to profile large datasets? It's [work in progress](https://github.com/ydataai/pandas-profiling/projects/3).
 > 
 > ⌛ Interested in uncovering temporal patterns? Check out [popmon](https://github.com/ing-bank/popmon).
 
@@ -103,7 +103,7 @@ json_data = profile.to_json()
 profile.to_file("your_report.json")
 ```
 
-### Command line usage
+### Using in the command line
 
 For standard formatted CSV files (which can be read directly by pandas without additional settings), the `pandas_profiling` executable can be used in the command line. The example below generates a report named _Example Profiling Report_, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
 
@@ -157,15 +157,15 @@ conda install -c conda-forge pandas-profiling
 
 ### From source (development)
 
-Download the source code by cloning the repository or by clicking on ['Download ZIP'](https://github.com/ydataai/pandas-profiling/archive/master.zip).
+Download the source code by cloning the repository or click on [Download ZIP](https://github.com/ydataai/pandas-profiling/archive/master.zip) to download the latest stable version.
 
-Install by navigating to the proper directory and running:
+Install it by navigating to the proper directory and running:
 
 ```sh
 python setup.py install
 ```
 
-The profile report is written in HTML and CSS, which means a modern browser is required. 
+The profiling report is written in HTML and CSS, which means a modern browser is required. 
 
 You need [Python 3](https://python3statement.org/) to run the package. Other dependencies can be found in the requirements files:
 
