@@ -180,6 +180,16 @@ class Html(BaseModel):
     full_width: bool = False
 
 
+# Describes how non-finite numbers (such as NaN or Infinity) should be encoded in the JSON output
+class JsonNonFiniteEncoding(Enum):
+    # Use the default python behaviour, which violates the official JSON standard
+    PYTHON_NATIVE = 0
+    # Encode non-finite numbers as null values
+    NULL = 1
+    # Encode non-finite numbers as null values
+    STRING = 2
+
+
 class Duplicates(BaseModel):
     head: int = 10
     key: str = "# duplicates"
@@ -292,6 +302,9 @@ class Settings(BaseSettings):
     n_obs_unique: int = 10
     n_freq_table_max: int = 10
     n_extreme_obs: int = 10
+
+    # JSON output
+    json_non_finite_encoding: JsonNonFiniteEncoding = JsonNonFiniteEncoding.NULL
 
     # Report rendering
     report: Report = Report()
