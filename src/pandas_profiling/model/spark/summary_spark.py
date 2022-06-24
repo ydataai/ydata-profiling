@@ -51,7 +51,11 @@ def spark_describe_1d(
         vtype = {
             "IntegerType": "Numeric",
             "LongType": "Numeric",
+            "ShortType": "Numeric",
+            "ByteType": "Numeric",
             "DoubleType": "Numeric",
+            "FloatType": "Numeric",
+            "DecimalType": "Numeric",
             "StringType": "Categorical",
             "ArrayType": "Categorical",
             "BooleanType": "Boolean",
