@@ -353,10 +353,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                         # stringify the non-finite value, or output it as is to keep the default
                         # Python behaviour.
                         if self.config.json_non_finite_encoding == JsonNonFiniteEncoding.NULL:
-                            print(self.config.json_non_finite_encoding)
                             return None
                         elif self.config.json_non_finite_encoding == JsonNonFiniteEncoding.STRING:
-                            print(self.config.json_non_finite_encoding)
                             return str(o)
                         else:
                             return o
