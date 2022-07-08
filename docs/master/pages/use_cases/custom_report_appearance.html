@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customizing the report’s appearance &mdash; pandas-profiling 3.2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Other DataFrame libraries" href="../integrations/other_dataframe_libraries.html" />
+    <link rel="prev" title="Dataset metadata and data dictionaries" href="metadata.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use cases</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="big_data.html">Profiling large datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Customizing the report’s appearance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-the-report-s-theme">Customizing the report’s theme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-the-visualizations">Customizing the visualizations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plot-rendering-options">Plot rendering options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pie-charts">Pie charts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#colour-palettes">Colour palettes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/other_dataframe_libraries.html">Other DataFrame libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/great_expectations.html">Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/data_apps.html">Interactive applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/pipelines.html">Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/cloud_services.html">Cloud services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/ides.html">IDEs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/available_settings.html">Available settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/changing_settings.html">Changing settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/multiple_runs.html">Caching results throughout multiple runs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/corr_mat_access.html">Accessing the values of correlation matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../support_contrib/help_troubleshoot.html">Help &amp; Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support_contrib/common_issues.html">Common issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support_contrib/contribution_guidelines.html">Contribution Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/announcements.html">Past Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/resources.html">Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pandas-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Customizing the report’s appearance</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pages/use_cases/custom_report_appearance.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="customizing-the-report-s-appearance">
+<h1>Customizing the report’s appearance<a class="headerlink" href="#customizing-the-report-s-appearance" title="Permalink to this heading"></a></h1>
+<p>In some situations, a user might want to customize the appearance of the report to match personal preferences or a corporate brand. <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> offers two major customization dimensions: the <strong>styling of the HTML report</strong> and the <strong>styling of the visualizations and plots</strong> contained within.</p>
+<section id="customizing-the-report-s-theme">
+<h2>Customizing the report’s theme<a class="headerlink" href="#customizing-the-report-s-theme" title="Permalink to this heading"></a></h2>
+<p>Several aspects of the report can be customized. The table below shows the available settings:</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 32%" />
+<col style="width: 32%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">html.minify_html</span></code></p></td>
+<td><p>bool</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the output HTML is minified using the <code class="docutils literal notranslate"><span class="pre">htmlmin</span></code> package.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">html.use_local_assets</span></code></p></td>
+<td><p>bool</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, all assets (stylesheets, scripts, images) are stored locally. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, a CDN is used for some stylesheets and scripts.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">html.inline</span></code></p></td>
+<td><p>boolean</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, all assets are contained in the report. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then a web export is created, where all assets are stored in the ‘[REPORT_NAME]_assets/’ directory.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">html.navbar_show</span></code></p></td>
+<td><p>boolean</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p>Whether to include a navigation bar in the report</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">html.style.theme</span></code></p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>Select a <em>bootswatch</em> theme. Available options: <em>flatly</em> (dark) and <em>united</em> (orange)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">html.style.logo</span></code></p></td>
+<td><p>string</p></td>
+<td></td>
+<td><p>A base64 encoded logo, to display in the navigation bar.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">html.style.primary_color</span></code></p></td>
+<td><p>string</p></td>
+<td><p><em>#337ab7</em></p></td>
+<td><p>The primary color to use in the report.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">html.style.full_width</span></code></p></td>
+<td><p>boolean</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>By default, the width of the report is fixed. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the full width of the screen is used.</p></td>
+</tr>
+</tbody>
+</table>
+<p>See <a class="reference internal" href="../advanced_usage/changing_settings.html"><span class="doc">Changing settings</span></a> to see how to change and apply this settings.</p>
+</section>
+<section id="customizing-the-visualizations">
+<h2>Customizing the visualizations<a class="headerlink" href="#customizing-the-visualizations" title="Permalink to this heading"></a></h2>
+<section id="plot-rendering-options">
+<h3>Plot rendering options<a class="headerlink" href="#plot-rendering-options" title="Permalink to this heading"></a></h3>
+<p>A way how to pass arguments to the underlying <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> visualization engine is to use the <code class="docutils literal notranslate"><span class="pre">plot</span></code> argument when computing the profile. It is possible to change the default format of images to png (default is SVG) using the key-pair <code class="docutils literal notranslate"><span class="pre">image_format:</span> <span class="pre">&quot;png&quot;</span></code> and also the resolution of the images using <code class="docutils literal notranslate"><span class="pre">dpi:</span> <span class="pre">800</span></code>.
+An example would be:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
+    <span class="n">planets</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span>
+    <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dpi&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s2">&quot;image_format&quot;</span><span class="p">:</span> <span class="s2">&quot;png&quot;</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pie-charts">
+<h3>Pie charts<a class="headerlink" href="#pie-charts" title="Permalink to this heading"></a></h3>
+<p>Pie charts are used to plot the frequency of categories in categorical (or boolean) features. By default, a feature is considered as categorical if it does not have more than 10 distinct values. This threshold can be configured with the <code class="docutils literal notranslate"><span class="pre">plot.pie.max_unique</span></code> setting.</p>
+<p>If the feature is not considered as categorical, the pie chart will not be displayed. All pie charts can therefore be removed by setting: <code class="docutils literal notranslate"><span class="pre">plot.pie.max_unique</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p>
+<p>The pie chart’s colors can be configured to any <a class="reference external" href="https://matplotlib.org/stable/tutorials/colors/colors.html">recognised matplotlib colour</a> with the <code class="docutils literal notranslate"><span class="pre">plot.pie.colors</span></code> setting.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">pie</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gold&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;#FF796C&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="colour-palettes">
+<h3>Colour palettes<a class="headerlink" href="#colour-palettes" title="Permalink to this heading"></a></h3>
+<p>The palettes used in visualizations like correlation matrices and missing values overview can also be customized via the <code class="docutils literal notranslate"><span class="pre">plot</span></code> argument. To customize the palette used by the correlation matrix, use the <code class="docutils literal notranslate"><span class="pre">correlation</span></code> key:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span>
+    <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;correlation&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;RdBu_r&quot;</span><span class="p">,</span> <span class="s2">&quot;bad&quot;</span><span class="p">:</span> <span class="s2">&quot;#000000&quot;</span><span class="p">}},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly, the palette for <em>Missing values</em> can be changed using <code class="docutils literal notranslate"><span class="pre">missing</span></code> argument:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span>
+    <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">plot</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;missing&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;RdBu_r&quot;</span><span class="p">}},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> accepts all <code class="docutils literal notranslate"><span class="pre">cmap</span></code> values (colormaps) accepted by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>. The list of available colourmaps can <a class="reference external" href="https://matplotlib.org/stable/tutorials/colors/colormaps.html">be accessed here</a>. Alternatively, it is possible to create <a class="reference external" href="https://matplotlib.org/stable/gallery/color/custom_cmap.html">custom palettes</a>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="metadata.html" class="btn btn-neutral float-left" title="Dataset metadata and data dictionaries" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../integrations/other_dataframe_libraries.html" class="btn btn-neutral float-right" title="Other DataFrame libraries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Simon Brugman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
