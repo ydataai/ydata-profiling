@@ -11,16 +11,16 @@ The following example shows how to generate a report with a *description*, *copy
 .. code-block:: python
 
     report = df.profile_report(
-        title=Masked data,
+        title="Masked data",
         dataset={
-            description: This profiling report was generated using a sample of 5% of the original dataset.,
-            copyright_holder: StataCorp LLC,
-            copyright_year: 2020,
-            url: http://www.stata-press.com/data/r15/auto2.dta,
+            "description": "This profiling report was generated using a sample of 5% of the original dataset.",
+            "copyright_holder": "StataCorp LLC",
+            "copyright_year": 2020,
+            "url": "http://www.stata-press.com/data/r15/auto2.dta",
         },
     )
 
-    report.to_file(Path(stata_auto_report.html))
+    report.to_file(Path("stata_auto_report.html"))
 
 Column descriptions
 -------------------
@@ -33,10 +33,10 @@ In addition to providing dataset details, often users want to include column-spe
 
     profile = df.profile_report(
         variables={
-            descriptions: {
-                files: Files in the filesystem, # variable name: variable description
-                datec: Creation date,
-                datem: Modification date,
+            "descriptions": {
+                "files": "Files in the filesystem, # variable name: variable description",
+                "datec": "Creation date",
+                "datem": "Modification date",
             }
         }
     )
@@ -69,11 +69,11 @@ Alternatively, column descriptions can be loaded from a JSON file:
             definitions = json.load(f)
 
         # By default, the descriptions are presented in the Overview section, next to each variable
-        report = df.profile_report(variable={descriptions: definitions})
+        report = df.profile_report(variable={"descriptions": definitions})
 
         # We can disable showing the descriptions next to each variable
         report = df.profile_report(
-            variable={descriptions: definitions}, show_variable_description=False
+            variable={"descriptions": definitions}, show_variable_description=False
         )
 
         report.to_file('report.html')

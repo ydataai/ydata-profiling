@@ -54,7 +54,7 @@ Assuming the HTML version of the report is in ``report.html``, move it to a fold
     app.layout = html.Div(
         children=[
             html.Iframe(
-                src="assets/census_report.html", # must be under assets/ to be properly served
+                src="assets/census_report.html",  # must be under assets/ to be properly served
                 style={"height": "1080px", "width": "100%"},
             )
         ]
@@ -63,7 +63,7 @@ Assuming the HTML version of the report is in ``report.html``, move it to a fold
     if __name__ == "__main__":
         app.run_server(debug=True)
 
-When running `python app.py`, a Dash app with the report embedded will be available on `<http://127.0.0.1:8050>`_. 
+When running ``python app.py``, a Dash app with the report embedded will be available on `<http://127.0.0.1:8050>`_.
 
 Directly embed the raw HTML
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -86,7 +86,9 @@ And configure the Dash app as in the following snippet:
     import dash_dangerously_set_inner_html
 
     # Creating the Report
-    df = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+    df = pd.read_csv(
+        "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+    )
     profile = ProfileReport(df, title="Titanic Dataset")
     text_raw = profile.to_html()
 
@@ -94,16 +96,18 @@ And configure the Dash app as in the following snippet:
 
     app = dash.Dash(__name__)
 
-    app.layout = html.Div([
-    dash_dangerously_set_inner_html.DangerouslySetInnerHTML(text_raw)])
+    app.layout = html.Div(
+        [dash_dangerously_set_inner_html.DangerouslySetInnerHTML(text_raw)]
+    )
 
-    app.layout = html.Div([
-    dash_dangerously_set_inner_html.DangerouslySetInnerHTML(text_raw)])
+    app.layout = html.Div(
+        [dash_dangerously_set_inner_html.DangerouslySetInnerHTML(text_raw)]
+    )
 
     if __name__ == "__main__":
         app.run_server(debug=True)
 
-When running `python app.py`, a Dash app with the report embedded will be available on `<http://127.0.0.1:8050>`_. While this option is somewhat more direct, **the embedded report will not be fully interactive, with some buttons unclickable**. 
+When running ``python app.py``, a Dash app with the report embedded will be available on ``<http://127.0.0.1:8050>`_. While this option is somewhat more direct, **the embedded report will not be fully interactive, with some buttons unclickable**.
 
 
 

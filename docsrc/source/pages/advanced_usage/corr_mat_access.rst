@@ -10,7 +10,9 @@ The snippet below shows how to list the available correlation matrices:
   :caption: Listing available correlation information in the report
 
     # Computing the report
-    data = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+    data = pd.read_csv(
+        "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+    )
     profile = ProfileReport(data, title="Titanic")
 
     # Listing available correlation
@@ -23,7 +25,7 @@ In this case, all the 5 possible correlation metrics were computed and the outpu
   :caption: Accessing the values of the Pearson correlation
 
     # DataFrame where row and column names are the names of the original columns
-    pearson_df = correlations['pearson']
+    pearson_df = correlations["pearson"]
 
     # Actual correlation values
     pearson_mat = pearson_df.values
