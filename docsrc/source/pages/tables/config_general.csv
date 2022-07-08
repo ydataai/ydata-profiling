@@ -1,0 +1,4 @@
+Parameter,Type,Default,Description
+``title``,string,"Pandas Profiling Report","Title for the report, shown in the header and title bar."
+``pool_size``,integer,0,"Number of workers in thread pool. When set to zero, it is set to the number of CPUs available."
+``progress_bar``,boolean,``True``,"If ``True``, ``pandas-profiling`` will display a progress bar."
