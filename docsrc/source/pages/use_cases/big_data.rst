@@ -58,7 +58,9 @@ To decrease the computational burden in particularly large datasets but still ma
     import pandas as pd
 
     # Reading the data
-    data = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+    data = pd.read_csv(
+        "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+    )
 
     # Creating the profile without specifying the data source, to allow editing the configuration
     profile = ProfileReport()
