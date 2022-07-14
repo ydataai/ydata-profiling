@@ -334,7 +334,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             if isinstance(o, dict):
                 return {encode_it(k): encode_it(v) for k, v in o.items()}
             else:
-                if isinstance(o, (bool, int, float, str)):
+                if isinstance(o, (bool, int, str)):
                     return o
                 elif isinstance(o, float):
                     if not math.isfinite(o):
