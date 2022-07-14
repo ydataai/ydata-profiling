@@ -1,9 +1,13 @@
 """Configuration for the package."""
 from enum import Enum
 from typing import Any, Dict, List, Optional
-
+import warnings
 from pydantic import BaseModel, BaseSettings, Field
 
+# Comment this function to see Warnings in console
+def warn(*args, **kwargs):
+    pass
+warnings.warn = warn
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
     """
@@ -185,6 +189,22 @@ class Html(BaseModel):
 
     full_width: bool = False
 
+class JsonNonFiniteEncoding(Enum):
+    # Use the default python behaviour, which violates the official JSON standard, basically allow_nan = False
+    __default = 0
+    # Encode non-finite numbers as null values, allow_nan = True
+    __num_null = 1
+    # Encode non-finite floats as null values, allow_nan = True
+    __float_null = 2
+
+    def fetch_python(self):
+        return self.__default
+
+    def fetch_null_values(self):
+        return self.__num_null
+
+    def fetch_float_values(self):
+        return self.__float_null
 
 class Duplicates(BaseModel):
     head: int = 10
@@ -299,6 +319,11 @@ class Settings(BaseSettings):
     n_freq_table_max: int = 10
     n_extreme_obs: int = 10
 
+    #JSON for non finite values
+
+    Jsnf_instance = JsonNonFiniteEncoding
+    json_non_finite_encoding: Jsnf_instance = Jsnf_instance._JsonNonFiniteEncoding__num_null.value
+
     # Report rendering
     report: Report = Report()
     html: Html = Html()
@@ -308,6 +333,43 @@ class Settings(BaseSettings):
         update = _merge_dictionaries(self.dict(), updates)
         return self.parse_obj(self.copy(update=update))
 
+class PandasSettings(Settings):
+    pass
+
+class SparkSettings(Settings):
+    # TO-DO write description
+    vars: Univariate = Univariate()
+
+    vars.num.low_categorical_threshold = 0
+
+    infer_dtypes = False
+
+    correlations: Dict[str, Correlation] = {
+        "spearman": Correlation(key="spearman"),
+        "pearson": Correlation(key="pearson"),
+        "kendall": Correlation(key="kendall"),
+        "cramers": Correlation(key="cramers"),
+        "phi_k": Correlation(key="phi_k"),
+    }
+    correlations["pearson"].calculate = True
+    correlations["spearman"].calculate = True
+    correlations["kendall"].calculate = False
+    correlations["cramers"].calculate = False
+    correlations["phi_k"].calculate = False
+
+    interactions: Interactions = Interactions()
+    interactions.continuous = False
+
+    missing_diagrams: Dict[str, bool] = {
+        "bar": False,
+        "matrix": False,
+        "dendrogram": False,
+        "heatmap": False,
+    }
+
+    samples: Samples = Samples()
+    samples.tail = 0
+    samples.random = 0
 
 class Config:
     arg_groups: Dict[str, Any] = {

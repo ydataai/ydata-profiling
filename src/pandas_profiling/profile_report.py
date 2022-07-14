@@ -3,14 +3,19 @@ import json
 import warnings
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
-
+import math
 import numpy as np
 import pandas as pd
 import yaml
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
-
-from pandas_profiling.config import Config, Settings
+from pandas_profiling.config import (
+    Config,
+    PandasSettings,
+    Settings,
+    SparkSettings,
+    JsonNonFiniteEncoding,
+)
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
@@ -331,6 +336,22 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             else:
                 if isinstance(o, (bool, int, float, str)):
                     return o
+                elif isinstance(o, float):
+                    if not math.isfinite(o):
+                        # Special handling for non-finite floats.
+                        # This is necessary because JSON does not support NaN/Infinity values.
+                        # The default in Python is to generate invalid JSON.
+                        # Depending on the configuration, we can encode them as null values,
+                        # stringify the non-finite value, or output it as is to keep the default ,Python behaviour.
+                        Jsnf_instance = JsonNonFiniteEncoding
+                        if self.config.json_non_finite_encoding.value == Jsnf_instance._JsonNonFiniteEncoding__num_null.value:
+                            return None
+                        elif self.config.json_non_finite_encoding.value == Jsnf_instance._JsonNonFiniteEncoding__float_null.value:
+                            return str(o)
+                        else:
+                            return o
+                    else:
+                        return o
                 elif isinstance(o, list):
                     return [encode_it(v) for v in o]
                 elif isinstance(o, set):
@@ -420,3 +441,10 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
+
+    def get_default_settings(self, df) -> Settings:
+        if isinstance(df, (pd.DataFrame, pd.Series)):
+            return PandasSettings()
+        else:
+            return SparkSettings()
+
