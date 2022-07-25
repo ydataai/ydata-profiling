@@ -91,6 +91,14 @@ class UrlVars(BaseModel):
     active: bool = False
 
 
+class TimeseriesVars(BaseModel):
+    active: bool = False
+    autocorrelation: float = 0.7
+    lags: List[int] = [1, 7, 12, 24, 30]
+    adfuller: Dict[str, Any] = {"significance": 0.05, "autolag": "AIC"}
+    pacf_acf: Dict[str, int] = {"lag": 100}
+
+
 class Univariate(BaseModel):
     num: NumVars = NumVars()
     cat: CatVars = CatVars()
@@ -99,6 +107,7 @@ class Univariate(BaseModel):
     path: PathVars = PathVars()
     file: FileVars = FileVars()
     url: UrlVars = UrlVars()
+    timeseries: TimeseriesVars = TimeseriesVars()
 
 
 class MissingPlot(BaseModel):
@@ -331,6 +340,32 @@ class Config:
                     "primary_color": "#d34615",
                 }
             }
+        },
+        "tsmode": {
+            "samples": None,
+            "duplicates": None,
+            "vars": {
+                "cat": {"redact": True},
+                "timeseries": {"active": True},
+            },
+            "plot": {
+                "correlation": {"cmap": "Reds"},
+                "missing": {"cmap": "Reds"},
+            },
+            "correlations": {
+                "pearson": {"calculate": True},
+                "spearman": {"calculate": True},
+                "kendall": {"calculate": True},
+                "phi_k": {"calculate": False},
+                "cramers": {"calculate": False},
+            },
+            "html": {
+                "navbar_show": False,
+                "style": {
+                    "theme": Theme.flatly,
+                    "full_width": True,
+                },
+            },
         },
         "explorative": {
             "vars": {

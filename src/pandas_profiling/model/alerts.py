@@ -56,6 +56,9 @@ class AlertType(Enum):
     UNIFORM = auto()
     """The variable is uniformly distributed"""
 
+    NON_STATIONARY = auto()
+    """The variable is a non-stationary series."""
+
     EMPTY = auto()
     """The DataFrame is empty"""
 
@@ -167,6 +170,15 @@ def numeric_alerts(config: Settings, summary: dict) -> List[Alert]:
         and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
     ):
         alerts.append(Alert(alert_type=AlertType.UNIFORM))
+
+    return alerts
+
+
+def timeseries_alerts(config: Settings, summary: dict) -> List[Alert]:
+    alerts = numeric_alerts(config, summary)
+
+    if summary["stationary"]:
+        alerts.append(Alert(alert_type=AlertType.NON_STATIONARY))
 
     return alerts
 
@@ -283,6 +295,8 @@ def check_variable_alerts(config: Settings, col: str, description: dict) -> List
             alerts += categorical_alerts(config, description)
         if description["type"] == "Numeric":
             alerts += numeric_alerts(config, description)
+        if description["type"] == "TimeSeries":
+            alerts += timeseries_alerts(config, description)
 
     for idx in range(len(alerts)):
         alerts[idx].column_name = col

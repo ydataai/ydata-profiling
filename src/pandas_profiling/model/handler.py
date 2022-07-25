@@ -76,6 +76,7 @@ def get_render_map() -> Dict[str, Callable]:
         "File": render_algorithms.render_file,
         "Image": render_algorithms.render_image,
         "Unsupported": render_algorithms.render_generic,
+        "TimeSeries": render_algorithms.render_timeseries,
     }
 
     return render_map

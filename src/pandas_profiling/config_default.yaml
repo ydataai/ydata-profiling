@@ -72,6 +72,15 @@ vars:
         active: false
     url:
         active: false
+    timeseries:
+        active: true
+        autocorrelation: 0.7
+        lags: [1, 7, 12, 24, 30]
+        adfuller:
+            significance: .05
+            autolag: AIC
+        pacf_acf:
+            lag: 100
 
 # Sort the variables. Possible values: "ascending", "descending" or null (leaves original sorting)
 sort: null

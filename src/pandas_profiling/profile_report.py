@@ -53,6 +53,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         sensitive: bool = False,
         dark_mode: bool = False,
         orange_mode: bool = False,
+        tsmode: bool = False,
         sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
@@ -101,6 +102,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             report_config = report_config.update(Config.get_arg_groups("dark_mode"))
         if orange_mode:
             report_config = report_config.update(Config.get_arg_groups("orange_mode"))
+        if tsmode:
+            report_config = report_config.update(Config.get_arg_groups("tsmode"))
         if len(kwargs) > 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 

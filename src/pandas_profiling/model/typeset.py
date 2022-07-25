@@ -198,6 +198,29 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         def contains_op(series: pd.Series, state: dict) -> bool:
             return all(imghdr.what(p) for p in series)
 
+    class TimeSeries(visions.VisionsBaseType):
+        @staticmethod
+        def get_relations() -> Sequence[TypeRelation]:
+            return [IdentityRelation(Unsupported)]
+
+        @staticmethod
+        @multimethod
+        @series_not_empty
+        @series_handle_nulls
+        def contains_op(series: pd.Series, state: dict) -> bool:
+            def is_timedependent(series: pd.Series) -> bool:
+                autocorrelation_threshold = config.vars.timeseries.autocorrelation
+                lags = config.vars.timeseries.lags
+                for lag in lags:
+                    autcorr = series.autocorr(lag=lag)
+                    if autcorr >= autocorrelation_threshold:
+                        return True
+
+                return False
+
+            is_numeric = pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
+            return is_numeric and is_timedependent(series)
+
     types = {Unsupported, Boolean, Numeric, Categorical, DateTime}
     if config.vars.path.active:
         types.add(Path)
@@ -208,6 +231,10 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
     if config.vars.url.active:
         types.add(URL)
+
+    if config.vars.timeseries.active:
+        types.add(TimeSeries)
+
     return types
 
 

@@ -19,6 +19,7 @@ class HTMLAlerts(Alerts):
             "skewed": "info",
             "high_correlation": "default",
             "duplicates": "default",
+            "non_stationary": "primary",
         }
 
         return templates.template("alerts.html").render(**self.content, styles=styles)
