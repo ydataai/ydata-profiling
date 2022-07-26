@@ -73,7 +73,7 @@ vars:
     url:
         active: false
     timeseries:
-        active: true
+        active: false
         autocorrelation: 0.7
         lags: [1, 7, 12, 24, 30]
         adfuller:

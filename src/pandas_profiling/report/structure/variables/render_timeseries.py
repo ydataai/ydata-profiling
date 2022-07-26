@@ -23,9 +23,9 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
     image_format = config.plot.image_format
 
     if summary["min"] >= 0:
-        name = "Numeric time series (&Ropf;<sub>&ge;0</sub>)"
+        name = "Numeric time series"
     else:
-        name = "Numeric time series (&Ropf;)"
+        name = "Numeric time series"
 
     # Top
     info = VariableInfo(
@@ -270,7 +270,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         plot_acf_pacf(config, summary["series"]),
         image_format=image_format,
         alt="Autocorrelation",
-        caption=f"<strong>ACF and PACF</strong>",
+        caption="<strong>ACF and PACF</strong>",
         name="Autocorrelation",
         anchor_id=f"{varid}acf_pacf",
     )

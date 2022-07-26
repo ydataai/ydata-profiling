@@ -201,7 +201,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
     class TimeSeries(visions.VisionsBaseType):
         @staticmethod
         def get_relations() -> Sequence[TypeRelation]:
-            return [IdentityRelation(Unsupported)]
+            return [IdentityRelation(Numeric)]
 
         @staticmethod
         @multimethod

@@ -502,6 +502,7 @@ def _get_ts_lag(config: Settings, series: pd.Series) -> int:
     max_lag_size = (len(series) // 2) - 1
     return np.min([lag, max_lag_size])
 
+
 @manage_matplotlib_context()
 def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
     lag = _get_ts_lag(config, series)
