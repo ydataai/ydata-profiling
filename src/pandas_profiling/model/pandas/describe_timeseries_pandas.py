@@ -21,7 +21,7 @@ def is_stationary(config: Settings, series: pd.Series) -> bool:
     adfuller_test = adfuller(series.dropna(), autolag=autolag)
     p_value = adfuller_test[1]
 
-    return p_value < significance_threshold
+    return p_value >= significance_threshold
 
 
 @describe_timeseries_1d.register
