@@ -211,10 +211,12 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
             def is_timedependent(series: pd.Series) -> bool:
                 autocorrelation_threshold = config.vars.timeseries.autocorrelation
                 lags = config.vars.timeseries.lags
-                for lag in lags:
-                    autcorr = series.autocorr(lag=lag)
-                    if autcorr >= autocorrelation_threshold:
-                        return True
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", RuntimeWarning)
+                    for lag in lags:
+                        autcorr = series.autocorr(lag=lag)
+                        if autcorr >= autocorrelation_threshold:
+                            return True
 
                 return False
 
