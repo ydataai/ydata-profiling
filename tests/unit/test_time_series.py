@@ -7,14 +7,22 @@ from pandas_profiling import ProfileReport
 
 @pytest.fixture
 def dataframe() -> pd.DataFrame:
-    size = 20
+    size = 1000
+    time_steps = np.arange(size)
+
     return pd.DataFrame(
         {
-            "ts": np.arange(size),
-            "reverse": reversed(np.arange(size)),
-            "ts_with_nan": [x if x % 4 != 0 else None for x in np.arange(size)],
-            "ts_negatives": -1 * np.arange(size),
-            "non_ts": np.ones(20),
+            "ascending_sequence": time_steps,
+            "descending_sequence": time_steps[::-1],
+            "ascending_sequence_with_noise": [x + e for x, e in zip(time_steps, np.random.normal(10, 100, size))],
+            "descending_sequence_with_noise": [x + e for x, e in zip(time_steps[::-1], np.random.normal(10, 100, size))],
+            "ts_with_nan": [x if x % 4 != 0 else None for x in time_steps],
+            "ts_negatives": -1 * time_steps,
+            "constant": np.ones(size),
+            "sin": map(lambda x: round(np.sin(x * np.pi / 180), 2), time_steps),
+            "cos": map(lambda x: round(np.cos(x * np.pi / 180), 2), time_steps),
+            "uniform": map(lambda x: round(x, 2), np.random.uniform(0, 10, size)),
+            "gaussian": map(lambda x: round(x, 2), np.random.normal(0, 1, size)),
         }
     )
 
@@ -27,5 +35,5 @@ def test_timeseries(dataframe):
         "role=tab data-toggle=tab>Autocorrelation<" in html
     ), "TimeSeries not detected"
     assert (
-        html.count("role=tab data-toggle=tab>Autocorrelation<") == 4
+        html.count("role=tab data-toggle=tab>Autocorrelation<") == 8
     ), "TimeSeries incorrecly indentified"
