@@ -498,7 +498,7 @@ def mini_ts_plot(config: Settings, series: pd.Series) -> str:
 
 
 def _get_ts_lag(config: Settings, series: pd.Series) -> int:
-    lag = config.vars.timeseries.pacf_acf["lag"]
+    lag = config.vars.timeseries.pacf_acf_lag
     max_lag_size = (len(series) // 2) - 1
     return np.min([lag, max_lag_size])
 

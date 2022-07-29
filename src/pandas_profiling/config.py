@@ -95,8 +95,8 @@ class TimeseriesVars(BaseModel):
     active: bool = False
     autocorrelation: float = 0.7
     lags: List[int] = [1, 7, 12, 24, 30]
-    adfuller: Dict[str, Any] = {"significance": 0.05, "autolag": "AIC"}
-    pacf_acf: Dict[str, int] = {"lag": 100}
+    significance: float = 0.05
+    pacf_acf_lag: int = 100
 
 
 class Univariate(BaseModel):

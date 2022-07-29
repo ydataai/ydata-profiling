@@ -13,12 +13,10 @@ from pandas_profiling.model.summary_algorithms import (
 
 
 def is_stationary(config: Settings, series: pd.Series) -> bool:
-    addfuler_config = config.vars.timeseries.adfuller
-    significance_threshold = addfuler_config["significance"]
-    autolag = addfuler_config["autolag"]
+    significance_threshold = config.vars.timeseries.significance
 
     # make sure the data has no missing values
-    adfuller_test = adfuller(series.dropna(), autolag=autolag)
+    adfuller_test = adfuller(series.dropna())
     p_value = adfuller_test[1]
 
     return p_value >= significance_threshold

@@ -177,7 +177,7 @@ def numeric_alerts(config: Settings, summary: dict) -> List[Alert]:
 def timeseries_alerts(config: Settings, summary: dict) -> List[Alert]:
     alerts = numeric_alerts(config, summary)
 
-    if summary["stationary"]:
+    if not summary["stationary"]:
         alerts.append(Alert(alert_type=AlertType.NON_STATIONARY))
 
     return alerts
