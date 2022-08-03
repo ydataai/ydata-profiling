@@ -29,6 +29,7 @@ class WidgetAlerts(Alerts):
             "duplicates": "",
             "empty": "",
             "non_stationary": "",
+            "seasonal": "",
         }
 
         items = []

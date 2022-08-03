@@ -59,6 +59,9 @@ class AlertType(Enum):
     NON_STATIONARY = auto()
     """The variable is a non-stationary series."""
 
+    SEASONAL = auto()
+    """The variable is a seasonal time series."""
+
     EMPTY = auto()
     """The DataFrame is empty"""
 
@@ -179,6 +182,9 @@ def timeseries_alerts(config: Settings, summary: dict) -> List[Alert]:
 
     if not summary["stationary"]:
         alerts.append(Alert(alert_type=AlertType.NON_STATIONARY))
+
+    if summary["seasonal"]:
+        alerts.append(Alert(alert_type=AlertType.SEASONAL))
 
     return alerts
 
