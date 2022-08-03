@@ -72,6 +72,12 @@ vars:
         active: false
     url:
         active: false
+    timeseries:
+        active: false
+        autocorrelation: 0.7
+        lags: [1, 7, 12, 24, 30]
+        significance: 0.05
+        pacf_acf_lag: 100
 
 # Sort the variables. Possible values: "ascending", "descending" or null (leaves original sorting)
 sort: null

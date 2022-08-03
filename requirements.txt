@@ -22,3 +22,5 @@ requests>=2.24.0
 tqdm>=4.48.2
 seaborn>=0.10.1
 multimethod>=1.4
+# metrics
+statsmodels>=0.13.2

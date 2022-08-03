@@ -28,6 +28,8 @@ class WidgetAlerts(Alerts):
             "high_correlation": "",
             "duplicates": "",
             "empty": "",
+            "non_stationary": "",
+            "seasonal": "",
         }
 
         items = []
