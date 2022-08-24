@@ -54,6 +54,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         dark_mode: bool = False,
         orange_mode: bool = False,
         tsmode: bool = False,
+        type_schema: Optional[dict] = None,
         sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
@@ -104,6 +105,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             report_config = report_config.update(Config.get_arg_groups("orange_mode"))
         if tsmode:
             report_config = report_config.update(Config.get_arg_groups("tsmode"))
+        if type_schema:
+            report_config = report_config.update({"type_schema": type_schema})
         if len(kwargs) > 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 

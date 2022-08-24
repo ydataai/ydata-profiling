@@ -250,6 +250,10 @@ class Report(BaseModel):
     precision: int = 10
 
 
+class TypeSchema(BaseModel):
+    timeseries: list = []
+
+
 class Settings(BaseSettings):
     # Default prefix to avoid collisions with environment variables
     class Config:
@@ -312,6 +316,9 @@ class Settings(BaseSettings):
     report: Report = Report()
     html: Html = Html()
     notebook = Notebook()
+
+    # ts config
+    type_schema: TypeSchema = TypeSchema()
 
     def update(self, updates: dict) -> "Settings":
         update = _merge_dictionaries(self.dict(), updates)

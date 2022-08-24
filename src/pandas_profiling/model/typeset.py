@@ -220,6 +220,9 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
                 return False
 
+            if config.type_schema and series.name in config.type_schema.timeseries:
+                return True
+
             is_numeric = pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
             return is_numeric and is_timedependent(series)
 
