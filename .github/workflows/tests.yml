@@ -33,7 +33,7 @@ jobs:
             pandas: "pandas>1.1"
             numpy: "numpy"
           - os: ubuntu-latest
-            python-version: 3.10
+            python-version: "3.10"
             pandas: "pandas>1.1"
             numpy: "numpy"
 
