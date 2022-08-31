@@ -32,6 +32,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
+from pandas_profiling.visualisation.plot import plot_timeseries_heatmap
 
 
 class ProfileReport(SerializeReport, ExpectationsReport):
@@ -190,29 +191,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         else:
             df = df.T[:max_entities]
         
-        return self._create_timeseries_plot(df)
-
-    def _create_timeseries_plot(self, df: pd.DataFrame):
-        _, ax = plt.subplots(figsize=(12, 5), dpi=100)
-        cmap = mpl.colors.LinearSegmentedColormap.from_list(
-            'report',
-            ['white', self.config.html.style.primary_color],
-            N=64
-        )
-        pc = ax.pcolormesh(
-            df,
-            edgecolors=ax.get_facecolor(),
-            linewidth=0.25,
-            cmap=cmap
-        )
-        pc.set_clim(0, np.nanmax(df))
-        ax.set_yticks([x + 0.5 for x in range(len(df))])
-        ax.set_yticklabels(df.index)
-        ax.set_xticks([])
-        ax.set_aspect("equal")
-
-        ax.invert_yaxis()
-        return ax
+        return plot_timeseries_heatmap(self.config, df)
 
     def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.

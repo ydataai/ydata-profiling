@@ -511,3 +511,39 @@ def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5))
     plot_pacf(series.dropna(), lags=lag, ax=axes[1], title="PACF", method="ywm")
 
     return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_timeseries_heatmap(
+    config: Settings,
+    df: pd.DataFrame,
+    figsize:Tuple[int, int]=(12, 5)
+) -> plt.Axes:
+    """Plot a time series heatmap plot and return the AxesSubplot object.
+    Args:
+        series: The data to plot
+        figsize: The size of the figure (width, height) in inches, default (6,4)
+    Returns:
+        The TimeSeries heatmap.
+    """
+    _, ax = plt.subplots(figsize=figsize)
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        'report',
+        ['white', config.html.style.primary_color],
+        N=64
+    )
+    pc = ax.pcolormesh(
+        df,
+        edgecolors=ax.get_facecolor(),
+        linewidth=0.25,
+        cmap=cmap
+    )
+    pc.set_clim(0, np.nanmax(df))
+    ax.set_yticks([x + 0.5 for x in range(len(df))])
+    ax.set_yticklabels(df.index)
+    ax.set_xticks([])
+    ax.set_xlabel("Time")
+    ax.set_aspect("equal")
+
+    ax.invert_yaxis()
+    return ax
