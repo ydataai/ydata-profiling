@@ -2,10 +2,12 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import yaml
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
@@ -135,6 +137,82 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             )
         else:
             return df
+
+    def timeseries_heatmap(
+        self,
+        dataframe: pd.DataFrame,
+        entity_column: str,
+        sortby: Optional[Union[str, list]] = None,
+        max_entities: int = 5,
+        selected_entities: Optional[List[str]] = None
+    ):
+        """Generate a multi entity timeseries heatmap based on a pandas DataFrame.
+
+        Args:
+            dataframe: the pandas DataFrame
+            entity_column: name of the entities column
+            sortby: column that define the timesteps (only dates and numerical variables are supported)
+            max_entities: max entities that will be displayed
+            selected_entities: Optional list of entities to be displayed (overules max_entities)
+        """
+
+        if sortby is None:
+            sortbykey = "_index"
+            df = dataframe[entity_column].copy().reset_index()
+            df.columns = [sortbykey, entity_column]
+            
+        else:
+            if isinstance(sortby, str):
+                sortby = [sortby]
+            cols = [entity_column, *sortby]
+            df = dataframe[cols].copy()
+            sortbykey = sortby[0]
+
+
+        if df[sortbykey].dtype == "O":
+            try:
+                df[sortbykey] = pd.to_datetime(df[sortbykey])
+            except:
+                raise ValueError(f"column {sortbykey} dtype {df[sortbykey].dtype} is not supported.")
+        nbins = np.min([50, df[sortbykey].nunique()])
+
+        df["__bins"] = pd.cut(
+            df[sortbykey],
+            bins=nbins,
+            include_lowest=True,
+            labels=range(nbins)
+        )
+
+        df = df.groupby([entity_column, "__bins"])[sortbykey].count()
+        df = df.reset_index().pivot(entity_column, "__bins", sortbykey).T
+        if selected_entities:
+            df = df[selected_entities].T
+        else:
+            df = df.T[:max_entities]
+        
+        return self._create_timeseries_plot(df)
+
+    def _create_timeseries_plot(self, df: pd.DataFrame):
+        _, ax = plt.subplots(figsize=(12, 5), dpi=100)
+        cmap = mpl.colors.LinearSegmentedColormap.from_list(
+            'report',
+            ['white', self.config.html.style.primary_color],
+            N=64
+        )
+        pc = ax.pcolormesh(
+            df,
+            edgecolors=ax.get_facecolor(),
+            linewidth=0.25,
+            cmap=cmap
+        )
+        pc.set_clim(0, np.nanmax(df))
+        ax.set_yticks([x + 0.5 for x in range(len(df))])
+        ax.set_yticklabels(df.index)
+        ax.set_xticks([])
+        ax.set_aspect("equal")
+
+        ax.invert_yaxis()
+        return ax
 
     def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.
