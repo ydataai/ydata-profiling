@@ -513,7 +513,6 @@ def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5))
     return plot_360_n0sc0pe(config)
 
 
-@manage_matplotlib_context()
 def plot_timeseries_heatmap(
     config: Settings, df: pd.DataFrame, figsize: Tuple[int, int] = (12, 5)
 ) -> plt.Axes:
