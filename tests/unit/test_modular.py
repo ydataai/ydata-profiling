@@ -31,7 +31,7 @@ def tdf(get_data_file):
 
     # Example: Duplicate observations
     duplicates_to_add = pd.DataFrame(df.iloc[0:10])
-    df = df.append(duplicates_to_add, ignore_index=True)
+    df = pd.concat([df, duplicates_to_add], ignore_index=True)
     return df
 
 

@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional, Tuple, TypeVar
 import numpy as np
 import pandas as pd
 from multimethod import multimethod
-from scipy.stats.stats import chisquare
+from scipy.stats import chisquare
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.schema import (
@@ -182,4 +182,11 @@ def describe_image_1d(
 def describe_boolean_1d(
     config: Settings, series: Any, summary: dict
 ) -> Tuple[Settings, Any, BooleanColumnResult]:
+    raise NotImplementedError()
+
+
+@multimethod
+def describe_timeseries_1d(
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, dict]:
     raise NotImplementedError()

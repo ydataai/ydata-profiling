@@ -1,0 +1,44 @@
+name: Feature Request
+description: Suggest an idea for this project
+title: "Feature Request"
+labels: ["feature request", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        You are very much welcome in sharing what functionality is missing in `pandas-profiling`.
+        Provide a concise summary of the feature in the title field above.
+        The [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html) contains instructions on contributing to this package.
+
+  - type: textarea
+    id: missing-functionality
+    attributes:
+      label: Missing functionality
+      description: What functionality are you missing?
+      placeholder: ex. As a frequent user of profiling for X, I am often encountering...
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-feature
+    attributes:
+      label: Proposed feature
+      description: How would you envision the package including the feature?
+      placeholder: ex. hierarchical clustering enables users to quickly spot relevant variables
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other routes are there to achieve the same results?
+      placeholder: ex. It's possible to replace X by Y in the eventual report, however this is infeasible for ...
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Relevant context for the discussion
+      placeholder: ex. Our environment is heavily restricted by Z as we are dealing with C4 client data.
+    validations:
+      required: false

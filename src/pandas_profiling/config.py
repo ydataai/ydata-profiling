@@ -2,10 +2,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-import matplotlib
 from pydantic import BaseModel, BaseSettings, Field
-
-matplotlib.use("Agg")
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
@@ -57,6 +54,7 @@ class CatVars(BaseModel):
     coerce_str_to_date: bool = False
     redact: bool = False
     histogram_largest: int = 50
+    stop_words: List[str] = []
 
 
 class BoolVars(BaseModel):
@@ -93,6 +91,15 @@ class UrlVars(BaseModel):
     active: bool = False
 
 
+class TimeseriesVars(BaseModel):
+    active: bool = False
+    sortby: Optional[str] = None
+    autocorrelation: float = 0.7
+    lags: List[int] = [1, 7, 12, 24, 30]
+    significance: float = 0.05
+    pacf_acf_lag: int = 100
+
+
 class Univariate(BaseModel):
     num: NumVars = NumVars()
     cat: CatVars = CatVars()
@@ -101,6 +108,7 @@ class Univariate(BaseModel):
     path: PathVars = PathVars()
     file: FileVars = FileVars()
     url: UrlVars = UrlVars()
+    timeseries: TimeseriesVars = TimeseriesVars()
 
 
 class MissingPlot(BaseModel):
@@ -128,20 +136,28 @@ class Histogram(BaseModel):
     x_axis_labels: bool = True
 
 
-class Pie(BaseModel):
-    # display a pie chart if the number of distinct values is smaller or equal (set to 0 to disable)
+class CatFrequencyPlot(BaseModel):
+    show: bool = True  # if false, the category frequency plot is turned off
+    type: str = "bar"  # options: 'bar', 'pie'
+
+    # The cat frequency plot is only rendered if the number of distinct values is
+    # smaller or equal to "max_unique"
     max_unique: int = 10
+
+    # Colors should be a list of matplotlib recognised strings:
+    # --> https://matplotlib.org/stable/tutorials/colors/colors.html
+    # --> matplotlib defaults are used by default
+    colors: Optional[List[str]] = None
 
 
 class Plot(BaseModel):
     missing: MissingPlot = MissingPlot()
     image_format: ImageType = ImageType.svg
     correlation: CorrelationPlot = CorrelationPlot()
-    # PNG dpi
-    dpi: int = 800
+    dpi: int = 800  # PNG dpi
     histogram: Histogram = Histogram()
     scatter_threshold: int = 1000
-    pie: Pie = Pie()
+    cat_freq: CatFrequencyPlot = CatFrequencyPlot()
 
 
 class Theme(Enum):
@@ -365,6 +381,32 @@ class Config:
                     "primary_color": "#d34615",
                 }
             }
+        },
+        "tsmode": {
+            "samples": None,
+            "duplicates": None,
+            "vars": {
+                "cat": {"redact": True},
+                "timeseries": {"active": True},
+            },
+            "plot": {
+                "correlation": {"cmap": "Reds"},
+                "missing": {"cmap": "Reds"},
+            },
+            "correlations": {
+                "pearson": {"calculate": True},
+                "spearman": {"calculate": True},
+                "kendall": {"calculate": True},
+                "phi_k": {"calculate": False},
+                "cramers": {"calculate": False},
+            },
+            "html": {
+                "navbar_show": False,
+                "style": {
+                    "theme": Theme.flatly,
+                    "full_width": True,
+                },
+            },
         },
         "explorative": {
             "vars": {

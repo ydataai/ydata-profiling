@@ -1,11 +1,11 @@
 repos:
 -   repo: https://github.com/psf/black
-    rev: 21.11b1
+    rev: 22.3.0
     hooks:
     - id: black
       language_version: python3.8
 -   repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.1.1
+    rev: 1.2.2
     hooks:
     - id: nbqa-black
     - id: nbqa-isort
@@ -13,10 +13,10 @@ repos:
     - id: nbqa-pyupgrade
       args: [ --nbqa-mutate, --py36-plus ]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.1
+    rev: v2.31.0
     hooks:
     -   id: pyupgrade
-        args: ['--py36-plus','--exit-zero-even-if-changed']
+        args: ['--py37-plus','--exit-zero-even-if-changed']
 -   repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
@@ -54,7 +54,7 @@ repos:
             ^src/pandas_profiling/utils/imghdr_patch.py
           )
 -   repo: https://github.com/asottile/blacken-docs
-    rev: v1.12.0
+    rev: v1.12.1
     hooks:
     -   id: blacken-docs
 -   repo: https://github.com/pre-commit/pygrep-hooks
@@ -62,7 +62,7 @@ repos:
     hooks:
     -   id: rst-backticks
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v0.910-1'
+    rev: 'v0.931'
     hooks:
     -   id: mypy
         additional_dependencies:
@@ -75,6 +75,10 @@ repos:
     hooks:
       - id: tryceratops
         args: ["-i", "TC003","--autofix"]
+-   repo: https://github.com/kynan/nbstripout
+    rev: 0.5.0
+    hooks:
+      - id: nbstripout
 
 ci:
   autoupdate_commit_msg: 'ci: pre-commit-config update'

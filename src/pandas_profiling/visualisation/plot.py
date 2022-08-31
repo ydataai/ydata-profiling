@@ -1,7 +1,8 @@
 """Plot functions for the profiling report."""
 import copy
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, List, Optional, Tuple, Union
 
+import matplotlib
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -9,6 +10,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 from pandas_profiling.config import Settings
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
@@ -300,12 +302,78 @@ def scatter_pairwise(
     return plot_360_n0sc0pe(config)
 
 
-@manage_matplotlib_context()
-def pie_plot(
-    config: Settings, data: pd.Series, legend_kws: Optional[dict] = None
-) -> str:
-    if legend_kws is None:
-        legend_kws = {}
+def _plot_stacked_barh(
+    data: pd.Series,
+    colors: List,
+) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
+    """Plot a stacked horizontal bar chart to show category frequency.
+    Works for boolean and categorical features.
+
+    Args:
+        data (pd.Series): category frequencies with category names as index
+        colors (list): list of colors in a valid matplotlib format
+
+    Returns:
+        ax: Stacked bar plot (matplotlib.axes)
+        legend: Legend handler (matplotlib)
+    """
+    # Use the pd.Series indices as category names
+    labels = data.index.values.astype(str)
+
+    # Plot
+    _, ax = plt.subplots(figsize=(7, 2))
+    ax.axis("off")
+
+    ax.set_xlim(0, np.sum(data))
+    ax.set_ylim(0.4, 1.6)
+
+    starts = 0
+    for x, label, color in zip(data, labels, colors):
+        # Add a rectangle to the stacked barh chart
+        rects = ax.barh(y=1, width=x, height=1, left=starts, label=label, color=color)
+
+        # Label color depends on the darkness of the rectangle
+        r, g, b, _ = rects[0].get_facecolor()
+        text_color = "white" if r * g * b < 0.5 else "darkgrey"
+
+        # If the new bar is big enough write the label
+        pc_of_total = x / data.sum() * 100
+        # Requires matplotlib >= 3.4.0
+        if pc_of_total > 8 and hasattr(ax, "bar_label"):
+            display_txt = f"{pc_of_total:.1f}%\n({x})"
+            ax.bar_label(
+                rects,
+                labels=[display_txt],
+                label_type="center",
+                color=text_color,
+                fontsize="x-large",
+                fontweight="bold",
+            )
+
+        starts += x
+
+    legend = ax.legend(
+        ncol=1, bbox_to_anchor=(0, 0), fontsize="xx-large", loc="upper left"
+    )
+
+    return ax, legend
+
+
+def _plot_pie_chart(
+    data: pd.Series,
+    colors: List,
+) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
+    """Plot a pie chart to show category frequency.
+    Works for boolean and categorical features.
+
+    Args:
+        data (pd.Series): category frequencies with category names as index
+        colors (list): list of colors in a valid matplotlib format
+
+    Returns:
+        ax: pie chart (matplotlib.axes)
+        legend: Legend handler (matplotlib)
+    """
 
     def make_autopct(values: pd.Series) -> Callable:
         def my_autopct(pct: float) -> str:
@@ -315,7 +383,133 @@ def pie_plot(
 
         return my_autopct
 
-    wedges, _, _ = plt.pie(data, autopct=make_autopct(data), textprops={"color": "w"})
-    plt.legend(wedges, data.index.values, **legend_kws)
+    _, ax = plt.subplots(figsize=(4, 4))
+    wedges, _, _ = plt.pie(
+        data,
+        autopct=make_autopct(data),
+        textprops={"color": "w"},
+        colors=colors,
+    )
+    legend = plt.legend(
+        wedges,
+        data.index.values,
+        fontsize="large",
+        bbox_to_anchor=(0, 0),
+        loc="upper left",
+    )
+
+    return ax, legend
+
+
+@manage_matplotlib_context()
+def cat_frequency_plot(
+    config: Settings,
+    data: pd.Series,
+) -> str:
+    """Generate category frequency plot to show category frequency.
+    Works for boolean and categorical features.
+
+    Modify colors by setting 'config.plot.cat_freq.colors' to a
+    list of valid matplotib colors:
+    https://matplotlib.org/stable/tutorials/colors/colors.html
+
+    Args:
+        config (Settings): a profile report config
+        data (pd.Series): category frequencies with category names as index
+
+    Returns:
+        str: encoded category frequency plot encoded
+    """
+    # Get colors, if not defined, use matplotlib defaults
+    colors = config.plot.cat_freq.colors
+    if colors is None:
+        # Get matplotlib defaults
+        colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
+
+    # If there are more categories than colors, loop through the colors again
+    if len(colors) < len(data):
+        multiplier = int(len(data) / len(colors)) + 1
+        colors = multiplier * colors  # repeat colors as required
+        colors = colors[0 : len(data)]  # select the exact number of colors required
+
+    # Create the plot
+    plot_type = config.plot.cat_freq.type
+    if plot_type == "bar":
+        plot, legend = _plot_stacked_barh(data, colors)
+
+    elif plot_type == "pie":
+        plot, legend = _plot_pie_chart(data, colors)
+
+    else:
+        msg = (
+            f"'{plot_type}' is not a valid plot type! "
+            "Expected values are ['bar', 'pie']"
+        )
+        msg
+        raise ValueError(msg)
+
+    return plot_360_n0sc0pe(
+        config,
+        bbox_extra_artists=[
+            legend,
+        ],
+        bbox_inches="tight",
+    )
+
+
+def _plot_timeseries(
+    config: Settings,
+    series: pd.Series,
+    figsize: tuple = (6, 4),
+) -> matplotlib.figure.Figure:
+    """Plot an line plot from the data and return the AxesSubplot object.
+    Args:
+        series: The data to plot
+        figsize: The size of the figure (width, height) in inches, default (6,4)
+    Returns:
+        The TimeSeries lineplot.
+    """
+    fig = plt.figure(figsize=figsize)
+    plot = fig.add_subplot(111)
+
+    color = config.html.style.primary_color
+
+    series.plot(color=color)
+    return plot
+
+
+@manage_matplotlib_context()
+def mini_ts_plot(config: Settings, series: pd.Series) -> str:
+    """Plot an time-series plot of the data.
+    Args:
+      series: The data to plot.
+    Returns:
+      The resulting timeseries plot encoded as a string.
+    """
+    plot = _plot_timeseries(config, series, figsize=(3, 2.25))
+    plot.xaxis.set_tick_params(rotation=45)
+    plt.rc("ytick", labelsize=3)
+
+    for tick in plot.xaxis.get_major_ticks():
+        if isinstance(series.index, pd.DatetimeIndex):
+            tick.label1.set_fontsize(6)
+        else:
+            tick.label1.set_fontsize(8)
+    plot.figure.tight_layout()
+    return plot_360_n0sc0pe(config)
+
+
+def _get_ts_lag(config: Settings, series: pd.Series) -> int:
+    lag = config.vars.timeseries.pacf_acf_lag
+    max_lag_size = (len(series) // 2) - 1
+    return np.min([lag, max_lag_size])
+
+
+@manage_matplotlib_context()
+def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
+    lag = _get_ts_lag(config, series)
+    _, axes = plt.subplots(nrows=1, ncols=2, figsize=figsize)
+    plot_acf(series.dropna(), lags=lag, ax=axes[0], title="ACF", fft=True)
+    plot_pacf(series.dropna(), lags=lag, ax=axes[1], title="PACF", method="ywm")
 
     return plot_360_n0sc0pe(config)

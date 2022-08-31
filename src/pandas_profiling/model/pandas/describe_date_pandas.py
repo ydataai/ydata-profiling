@@ -36,7 +36,7 @@ def pandas_describe_date_1d(
     result.max = pd.Timestamp.to_pydatetime(series.max())
     result.range = result.max - result.min
 
-    values = series.values.astype(np.int64) // 10 ** 9
+    values = series.values.astype(np.int64) // 10**9
 
     if config.vars.num.chi_squared_threshold > 0.0:
         result.chi_squared = chi_square(values)

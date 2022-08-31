@@ -10,11 +10,11 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [ 3.8 ]
-        pandas: ["pandas==0.25.3", "pandas==1.0.5"]
+        pandas: ["pandas>1.1"]
         numpy: ["numpy==1.19.5"]
         include:
           - os: macos-latest
-            python-version: 3.6
+            python-version: 3.7
             pandas: "pandas>1.1"
             numpy: "numpy"
 #          - os: windows-2016
@@ -22,15 +22,19 @@ jobs:
 #            pandas: "pandas>1.1"
 #            numpy: "numpy"
           - os: ubuntu-latest
-            python-version: 3.6
-            pandas: "pandas>1.1"
-            numpy: "numpy"
-          - os: ubuntu-latest
             python-version: 3.7
             pandas: "pandas>1.1"
             numpy: "numpy"
           - os: ubuntu-latest
             python-version: 3.8
+            pandas: "pandas>1.1"
+            numpy: "numpy"
+          - os: ubuntu-latest
+            python-version: 3.9
+            pandas: "pandas>1.1"
+            numpy: "numpy"
+          - os: ubuntu-latest
+            python-version: "3.10"
             pandas: "pandas>1.1"
             numpy: "numpy"
 

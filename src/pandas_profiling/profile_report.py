@@ -53,6 +53,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         sensitive: bool = False,
         dark_mode: bool = False,
         orange_mode: bool = False,
+        tsmode: bool = False,
+        sortby: Optional[str] = None,
         sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
@@ -103,10 +105,14 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             report_config = report_config.update(Config.get_arg_groups("dark_mode"))
         if orange_mode:
             report_config = report_config.update(Config.get_arg_groups("orange_mode"))
+        if tsmode:
+            report_config = report_config.update(Config.get_arg_groups("tsmode"))
+            if sortby:
+                report_config.vars.timeseries.sortby = sortby
         if len(kwargs) > 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 
-        self.df = df
+        self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
         self._df_hash = None
         self._sample = sample
@@ -116,6 +122,21 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if not lazy:
             # Trigger building the report structure
             _ = self.report
+
+    @staticmethod
+    def __initialize_dataframe(
+        df: Optional[pd.DataFrame], report_config: Settings
+    ) -> Optional[pd.DataFrame]:
+        if (
+            df is not None
+            and report_config.vars.timeseries.active
+            and report_config.vars.timeseries.sortby
+        ):
+            return df.sort_values(by=report_config.vars.timeseries.sortby).reset_index(
+                drop=True
+            )
+        else:
+            return df
 
     def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.

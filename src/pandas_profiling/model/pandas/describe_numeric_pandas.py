@@ -92,10 +92,11 @@ def pandas_describe_numeric_1d(
     infinity_index = value_counts.index.isin(infinity_values)
     result.n_infinite = value_counts.loc[infinity_index].sum()
 
+    summary["n_zeros"] = 0
     if 0 in value_counts.index:
-        result.n_zeros = value_counts.loc[0]
-    else:
-        result.n_zeros = 0
+        summary["n_zeros"] = value_counts.loc[0]
+
+    stats = summary
 
     if isinstance(series.dtype, _IntegerDtype):
         stats = numeric_stats_pandas(series)

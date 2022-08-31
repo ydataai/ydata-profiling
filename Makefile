@@ -3,11 +3,6 @@
 docs:
 	rm -rf docs/
 	mkdir docs/
-	# pdoc3
-	cp -a ./docsrc/assets/ ./docs/assets/
-	pdoc3 --html --force --output-dir docs pandas_profiling
-	mv docs/pandas_profiling/* docs
-	rmdir docs/pandas_profiling
 	# sphinx
 	cd docsrc/ && make github
 

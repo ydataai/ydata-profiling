@@ -1,0 +1,97 @@
+name: Bug Report (form)
+description: File a bug report
+title: "Bug Report"
+labels: ["bug", "triage"]
+#assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Provide a concise summary of the issue in the title field above.
+        The [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/help_troubleshoot.html) contains instructions on creating bug reports.
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behaviour
+      description: Tell us what happens instead of the expected behavior.
+      placeholder: ex. Using settings XYZ, I would expect the report to contain A
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behaviour
+      description:  Tell us what should happen
+      placeholder: ex. the report contained B
+    validations:
+      required: true
+  - type: textarea
+    id: data-description
+    attributes:
+      label: Data Description
+      description: Describe the data, provide a sample and/or dataset characteristics (such as schema).
+      placeholder: ex. My dataset is publicly available from [URL]
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code that reproduces the bug
+      description: A minimal standalone code sample that reproduces the bug
+      placeholder: |
+        import pandas as pd
+        from pandas_profiling import ProfileReport
+
+        df = pd.read_parquet(r"<file>")
+        report = ProfileReport(df, title="bug report")
+        report.to_file("report.html")
+      render: Python
+    validations:
+      required: false
+
+  - type: input
+    id: package-version
+    attributes:
+      label: pandas-profiling version
+      description: What version of pandas-profiling are you running?
+      placeholder: v2.3.0
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Please report versions of relevant dependencies (e.g. via `pip freeze` or `conda list`, [more information](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/help_troubleshoot.html))
+      placeholder: |
+        pandas==1.4.2
+        numpy==2.3.4
+        etc.
+      render: Text
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: OS
+      description: On what operating system did the bug occur (e.g. windows, macos, ubuntu)?
+      placeholder: ex. Windows 10
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      description: |
+        Please complete the checklist below to ensure the bug report is helpful and can be addressed effectively
+        
+        Tips:
+          - Help for writing better bug reports is available in the [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/help_troubleshoot.html).
+          - If the description consists of multiple non-related bugs, you are encouraged to create separate issues.
+      options:
+        - label: There is not yet another bug report for this issue in the [issue tracker](https://github.com/ydataai/pandas-profiling/issues)
+          required: true
+        - label: The problem is reproducible from this bug report. [This guide](http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports) can help to craft a minimal bug report.
+          required: true
+        - label: The issue has not been resolved by the entries listed under [Common Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
+          required: true

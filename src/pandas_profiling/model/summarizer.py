@@ -16,6 +16,7 @@ from pandas_profiling.model.summary_algorithms import (
     describe_numeric_1d,
     describe_path_1d,
     describe_supported,
+    describe_timeseries_1d,
     describe_url_1d,
 )
 
@@ -68,6 +69,9 @@ class PandasProfilingSummarizer(BaseSummarizer):
             ],
             "Image": [
                 describe_image_1d,
+            ],
+            "TimeSeries": [
+                describe_timeseries_1d,
             ],
         }
         super().__init__(summary_map, typeset, *args, **kwargs)

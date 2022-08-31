@@ -1,7 +1,7 @@
 import contextlib
 import string
 from collections import Counter
-from typing import Tuple
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -136,8 +136,21 @@ def unicode_summary_vc(vc: pd.Series) -> CharacterResult:
     return result
 
 
-def word_summary_vc(vc: pd.Series) -> WordResult:
-    # TODO: preprocess (stopwords)
+def word_summary_vc(vc: pd.Series, stop_words: List[str] = []) -> dict:
+    """Count the number of occurrences of each individual word across
+    all lines of the data Series, then sort from the word with the most
+    occurrences to the word with the least occurrences. If a list of
+    stop words is given, they will be ignored.
+
+    Args:
+        vc: Series containing all unique categories as index and their
+            frequency as value. Sorted from the most frequent down.
+        stop_words: List of stop words to ignore, empty by default.
+
+    Returns:
+        A dict containing the results as a Series with unique words as
+        index and the computed frequency as value
+    """
     # TODO: configurable lowercase/punctuation etc.
     # TODO: remove punctuation in words
 
@@ -149,6 +162,13 @@ def word_summary_vc(vc: pd.Series) -> WordResult:
     word_counts = word_counts[word_counts.index.notnull()]
     word_counts = word_counts.groupby(level=0, sort=False).sum()
     word_counts = word_counts.sort_values(ascending=False)
+
+    # Remove stop words
+    if len(stop_words) > 0:
+        stop_words = [x.lower() for x in stop_words]
+        word_counts = word_counts.loc[~word_counts.index.isin(stop_words)]
+
+    return {"word_counts": word_counts}
 
     result = WordResult()
     result.word_counts = word_counts
@@ -223,6 +243,6 @@ def pandas_describe_categorical_1d(
         result.characters = unicode_summary_vc(value_counts)
 
     if config.vars.cat.words:
-        result.words = word_summary_vc(value_counts)
+        summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     return config, series, result
