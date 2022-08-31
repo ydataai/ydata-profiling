@@ -42,10 +42,11 @@ def dataframe() -> pd.DataFrame:
         {
             "entity": np.random.randint(3, size=size),
             "ints": np.array(size),
-            "date": pd.date_range('1/1/2022', periods=size),
-            "floats": np.random.randn(size)
+            "date": pd.date_range("1/1/2022", periods=size),
+            "floats": np.random.randn(size),
         }
     )
+
 
 def test_timeseries_identification(html_profile: str):
     assert "<th>TimeSeries</th>" in html_profile, "TimeSeries not detected"

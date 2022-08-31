@@ -515,9 +515,7 @@ def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5))
 
 @manage_matplotlib_context()
 def plot_timeseries_heatmap(
-    config: Settings,
-    df: pd.DataFrame,
-    figsize:Tuple[int, int]=(12, 5)
+    config: Settings, df: pd.DataFrame, figsize: Tuple[int, int] = (12, 5)
 ) -> plt.Axes:
     """Plot a time series heatmap plot and return the AxesSubplot object.
     Args:
@@ -528,16 +526,9 @@ def plot_timeseries_heatmap(
     """
     _, ax = plt.subplots(figsize=figsize)
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
-        'report',
-        ['white', config.html.style.primary_color],
-        N=64
+        "report", ["white", config.html.style.primary_color], N=64
     )
-    pc = ax.pcolormesh(
-        df,
-        edgecolors=ax.get_facecolor(),
-        linewidth=0.25,
-        cmap=cmap
-    )
+    pc = ax.pcolormesh(df, edgecolors=ax.get_facecolor(), linewidth=0.25, cmap=cmap)
     pc.set_clim(0, np.nanmax(df))
     ax.set_yticks([x + 0.5 for x in range(len(df))])
     ax.set_yticklabels(df.index)

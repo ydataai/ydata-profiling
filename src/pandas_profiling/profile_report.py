@@ -4,10 +4,10 @@ import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-import numpy as np
-import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import yaml
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
@@ -145,7 +145,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         entity_column: str,
         sortby: Optional[Union[str, list]] = None,
         max_entities: int = 5,
-        selected_entities: Optional[List[str]] = None
+        selected_entities: Optional[List[str]] = None,
     ):
         """Generate a multi entity timeseries heatmap based on a pandas DataFrame.
 
@@ -161,7 +161,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             sortbykey = "_index"
             df = dataframe[entity_column].copy().reset_index()
             df.columns = [sortbykey, entity_column]
-            
+
         else:
             if isinstance(sortby, str):
                 sortby = [sortby]
@@ -169,19 +169,17 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             df = dataframe[cols].copy()
             sortbykey = sortby[0]
 
-
         if df[sortbykey].dtype == "O":
             try:
                 df[sortbykey] = pd.to_datetime(df[sortbykey])
-            except:
-                raise ValueError(f"column {sortbykey} dtype {df[sortbykey].dtype} is not supported.")
+            except Exception as ex:
+                raise ValueError(
+                    f"column {sortbykey} dtype {df[sortbykey].dtype} is not supported."
+                ) from ex
         nbins = np.min([50, df[sortbykey].nunique()])
 
         df["__bins"] = pd.cut(
-            df[sortbykey],
-            bins=nbins,
-            include_lowest=True,
-            labels=range(nbins)
+            df[sortbykey], bins=nbins, include_lowest=True, labels=range(nbins)
         )
 
         df = df.groupby([entity_column, "__bins"])[sortbykey].count()
@@ -190,7 +188,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             df = df[selected_entities].T
         else:
             df = df.T[:max_entities]
-        
+
         return plot_timeseries_heatmap(self.config, df)
 
     def invalidate_cache(self, subset: Optional[str] = None) -> None:
