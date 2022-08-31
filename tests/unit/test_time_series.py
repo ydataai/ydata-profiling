@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
@@ -34,6 +35,18 @@ def html_profile() -> str:
     return profile.to_html()
 
 
+@pytest.fixture
+def dataframe() -> pd.DataFrame:
+    size = 100
+    return pd.DataFrame(
+        {
+            "entity": np.random.randint(3, size=size),
+            "ints": np.array(size),
+            "date": pd.date_range('1/1/2022', periods=size),
+            "floats": np.random.randn(size)
+        }
+    )
+
 def test_timeseries_identification(html_profile: str):
     assert "<th>TimeSeries</th>" in html_profile, "TimeSeries not detected"
     assert (
@@ -57,3 +70,18 @@ def test_timeseries_seasonality(html_profile: str):
     assert (
         html_profile.count(">Seasonal</span>") == 2
     ), "Seasonality warning incorrecly indentified"
+
+
+def test_timeseries_heatmap(dataframe: pd.DataFrame):
+    profile = ProfileReport()
+    plot = profile.timeseries_heatmap(dataframe, "entity", sortby="ints")
+    assert isinstance(plot, plt.Axes)
+
+    plot = profile.timeseries_heatmap(dataframe, "entity", sortby="date")
+    assert isinstance(plot, plt.Axes)
+
+    plot = profile.timeseries_heatmap(dataframe, "entity", sortby="floats")
+    assert isinstance(plot, plt.Axes)
+
+    plot = profile.timeseries_heatmap(dataframe, "entity")
+    assert isinstance(plot, plt.Axes)
