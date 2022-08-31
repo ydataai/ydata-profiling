@@ -101,21 +101,8 @@ cfg.samples.tail = 0
 cfg.samples.random = 0
 
 
-import sparkmon
-
-# Create an app connection
-# via a Spark session
-# application = sparkmon.create_application_from_spark(spark)
-# or via a remote Spark web UI link
-application = sparkmon.create_application_from_link(
-    index=0, web_url="http://192.168.0.105:4040"
-)
-
 # Create and start the monitoring process
 warnings.filterwarnings("ignore", category=MatplotlibDeprecationWarning)
 
-with sparkmon.SparkMon(
-    application, period=5, callbacks=[sparkmon.callbacks.plot_to_image]
-) as mon:
-    a = ProfileReport(correlation_data_num, config=cfg)
-    a.to_file("test.html", silent=False)
+a = ProfileReport(correlation_data_num, config=cfg)
+a.to_file("test.html", silent=False)
