@@ -533,7 +533,5 @@ def plot_timeseries_heatmap(
     ax.set_yticklabels(df.index)
     ax.set_xticks([])
     ax.set_xlabel("Time")
-    ax.set_aspect("equal")
-
     ax.invert_yaxis()
     return ax

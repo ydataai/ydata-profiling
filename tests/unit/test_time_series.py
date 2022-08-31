@@ -75,14 +75,14 @@ def test_timeseries_seasonality(html_profile: str):
 
 def test_timeseries_heatmap(dataframe: pd.DataFrame):
     profile = ProfileReport()
-    plot = profile.timeseries_heatmap(dataframe, "entity", sortby="ints")
+    plot = profile._timeseries_heatmap(dataframe, "entity", sortby="ints")
     assert isinstance(plot, plt.Axes)
 
-    plot = profile.timeseries_heatmap(dataframe, "entity", sortby="date")
+    plot = profile._timeseries_heatmap(dataframe, "entity", sortby="date")
     assert isinstance(plot, plt.Axes)
 
-    plot = profile.timeseries_heatmap(dataframe, "entity", sortby="floats")
+    plot = profile._timeseries_heatmap(dataframe, "entity", sortby="floats")
     assert isinstance(plot, plt.Axes)
 
-    plot = profile.timeseries_heatmap(dataframe, "entity")
+    plot = profile._timeseries_heatmap(dataframe, "entity")
     assert isinstance(plot, plt.Axes)

@@ -139,7 +139,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         else:
             return df
 
-    def timeseries_heatmap(
+    def _timeseries_heatmap(
         self,
         dataframe: pd.DataFrame,
         entity_column: str,
@@ -147,16 +147,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         max_entities: int = 5,
         selected_entities: Optional[List[str]] = None,
     ):
-        """Generate a multi entity timeseries heatmap based on a pandas DataFrame.
-
-        Args:
-            dataframe: the pandas DataFrame
-            entity_column: name of the entities column
-            sortby: column that define the timesteps (only dates and numerical variables are supported)
-            max_entities: max entities that will be displayed
-            selected_entities: Optional list of entities to be displayed (overules max_entities)
-        """
-
         if sortby is None:
             sortbykey = "_index"
             df = dataframe[entity_column].copy().reset_index()
@@ -188,8 +178,37 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             df = df[selected_entities].T
         else:
             df = df.T[:max_entities]
-
+        
         return plot_timeseries_heatmap(self.config, df)
+
+    def timeseries_heatmap(
+        self,
+        dataframe: pd.DataFrame,
+        entity_column: str,
+        sortby: Optional[Union[str, list]] = None,
+        max_entities: int = 5,
+        selected_entities: Optional[List[str]] = None,
+    ):
+        """Generate a multi entity timeseries heatmap based on a pandas DataFrame.
+
+        Args:
+            dataframe: the pandas DataFrame
+            entity_column: name of the entities column
+            sortby: column that define the timesteps (only dates and numerical variables are supported)
+            max_entities: max entities that will be displayed
+            selected_entities: Optional list of entities to be displayed (overules max_entities)
+        """
+    
+        ax = self._timeseries_heatmap(
+            dataframe,
+            entity_column,
+            sortby,
+            max_entities,
+            selected_entities,
+        )
+        # workaround to deal with matpotlib erros with the aspect ratio config
+        ax.set_aspect("equal")
+        return ax
 
     def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.
