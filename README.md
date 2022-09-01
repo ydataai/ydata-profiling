@@ -20,6 +20,10 @@
 
 </p>
 
+<p align="center">
+  Do you like this project? Show us you love and <a href="https://engage.ydata.ai">give feedback!</a>
+</p>
+
 `pandas-profiling` generates profile reports from a pandas `DataFrame`. The pandas `df.describe()` function is handy yet a little basic for exploratory data analysis. `pandas-profiling` extends pandas `DataFrame` with `df.profile_report()`, which automatically generates a standardized univariate and multivariate report for data understanding.
 
 For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
