@@ -5,10 +5,10 @@ from matplotlib.legend import Legend
 from matplotlib.pyplot import Axes, close, rcParams
 
 from pandas_profiling.visualisation.plot import (
+    _create_timeseries_heatmap,
     _plot_pie_chart,
     _plot_stacked_barh,
     _prepare_heatmap_data,
-    _create_timeseries_heatmap,
 )
 
 # Generating dummy data
