@@ -3,7 +3,6 @@ import copy
 from typing import Any, Callable, List, Optional, Tuple, Union
 
 import matplotlib
-from matplotlib.axes import Axes
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -552,7 +551,7 @@ def _prepare_heatmap_data(
         df = df[selected_entities].T
     else:
         df = df.T[:max_entities]
-    
+
     return df
 
 
@@ -598,11 +597,7 @@ def timeseries_heatmap(
         The TimeSeries heatmap.
     """
     df = _prepare_heatmap_data(
-        dataframe,
-        entity_column,
-        sortby,
-        max_entities,
-        selected_entities
+        dataframe, entity_column, sortby, max_entities, selected_entities
     )
     ax = _create_timeseries_heatmap(df, figsize, color)
     ax.set_aspect(1)
