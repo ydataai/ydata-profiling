@@ -1,9 +1,15 @@
+import numpy as np
 import pandas as pd
 import pytest
 from matplotlib.legend import Legend
 from matplotlib.pyplot import Axes, close, rcParams
 
-from pandas_profiling.visualisation.plot import _plot_pie_chart, _plot_stacked_barh
+from pandas_profiling.visualisation.plot import (
+    _plot_pie_chart,
+    _plot_stacked_barh,
+    _prepare_heatmap_data,
+    _create_timeseries_heatmap,
+)
 
 # Generating dummy data
 ids = ["bool", "cat"]
@@ -22,6 +28,19 @@ dummy_cat_data = pd.Series(
         "JimISGODDOT": 1,
     }
 )
+
+
+@pytest.fixture
+def dataframe() -> pd.DataFrame:
+    size = 100
+    return pd.DataFrame(
+        {
+            "entity": np.random.randint(3, size=size),
+            "ints": np.array(size),
+            "date": pd.date_range("1/1/2022", periods=size),
+            "floats": np.random.randn(size),
+        }
+    )
 
 
 # Unit tests
@@ -49,3 +68,21 @@ def test_plot_pie_chart(data):
     assert issubclass(type(ax), Axes)  # test that a matplotlib plot is returned
     assert issubclass(type(legend), Legend)
     close(ax.get_figure())
+
+
+def test_timeseries_heatmap(dataframe: pd.DataFrame):
+    df = _prepare_heatmap_data(dataframe, "entity", sortby="ints")
+    plot = _create_timeseries_heatmap(df)
+    assert isinstance(plot, Axes)
+
+    df = _prepare_heatmap_data(dataframe, "entity", sortby="date")
+    plot = _create_timeseries_heatmap(df)
+    assert isinstance(plot, Axes)
+
+    df = _prepare_heatmap_data(dataframe, "entity", sortby="floats")
+    plot = _create_timeseries_heatmap(df)
+    assert isinstance(plot, Axes)
+
+    df = _prepare_heatmap_data(dataframe, "entity")
+    plot = _create_timeseries_heatmap(df)
+    assert isinstance(plot, Axes)
