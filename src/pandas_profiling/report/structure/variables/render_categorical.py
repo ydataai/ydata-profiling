@@ -410,7 +410,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             Image(
                 cat_frequency_plot(
                     config,
-                    summary["value_counts_without_nan"],
+                    summary["value_counts"],
                 ),
                 image_format=image_format,
                 alt="Category Frequency Plot",

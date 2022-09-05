@@ -62,11 +62,11 @@ def get_render_map() -> Dict[str, Callable]:
     import pandas_profiling.report.structure.variables as render_algorithms
 
     render_map = {
-        "Boolean": render_algorithms.render_boolean,
+        # "Boolean": render_algorithms.render_boolean,
         "Numeric": render_algorithms.render_real,
         "Complex": render_algorithms.render_complex,
         "DateTime": render_algorithms.render_date,
-        "Categorical": render_algorithms.render_categorical,
+        # "Categorical": render_algorithms.render_categorical,
         "URL": render_algorithms.render_url,
         "Path": render_algorithms.render_path,
         "File": render_algorithms.render_file,
