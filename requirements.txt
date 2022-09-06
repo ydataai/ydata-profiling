@@ -21,6 +21,9 @@ requests>=2.24.0, <2.29
 # Progress bar
 tqdm>=4.48.2, <4.65
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f18fa7f0 (build(deps): update seaborn requirement)
 seaborn>=0.10.1, <0.13
 multimethod>=1.4, <1.9
 =======
