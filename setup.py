@@ -11,7 +11,7 @@ with (source_root / "README.md").open(encoding="utf-8") as f:
 with (source_root / "requirements.txt").open(encoding="utf8") as f:
     requirements = f.readlines()
 
-version = "3.2.0"
+version = "3.3.0"
 
 with (source_root / "src" / "pandas_profiling" / "version.py").open(
     "w", encoding="utf-8"
@@ -33,7 +33,7 @@ setup(
     package_dir={"": "src"},
     url="https://github.com/ydataai/pandas-profiling",
     license="MIT",
-    description="Generate profile report for pandas DataFrame",
+    description="Data profiling made easy.",
     python_requires=">=3.7, <3.11",
     install_requires=requirements,
     extras_require={
