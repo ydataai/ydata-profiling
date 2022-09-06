@@ -342,31 +342,6 @@ class Config:
                 }
             }
         },
-        "tsmode": {
-            "duplicates": None,
-            "vars": {
-                "cat": {"redact": True},
-                "timeseries": {"active": True},
-            },
-            "plot": {
-                "correlation": {"cmap": "Reds"},
-                "missing": {"cmap": "Reds"},
-            },
-            "correlations": {
-                "pearson": {"calculate": True},
-                "spearman": {"calculate": True},
-                "kendall": {"calculate": True},
-                "phi_k": {"calculate": False},
-                "cramers": {"calculate": False},
-            },
-            "html": {
-                "navbar_show": False,
-                "style": {
-                    "theme": Theme.flatly,
-                    "full_width": True,
-                },
-            },
-        },
         "explorative": {
             "vars": {
                 "cat": {"characters": True, "words": True},
