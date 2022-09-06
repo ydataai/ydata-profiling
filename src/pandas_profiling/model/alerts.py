@@ -56,6 +56,12 @@ class AlertType(Enum):
     UNIFORM = auto()
     """The variable is uniformly distributed"""
 
+    NON_STATIONARY = auto()
+    """The variable is a non-stationary series."""
+
+    SEASONAL = auto()
+    """The variable is a seasonal time series."""
+
     EMPTY = auto()
     """The DataFrame is empty"""
 
@@ -167,6 +173,18 @@ def numeric_alerts(config: Settings, summary: dict) -> List[Alert]:
         and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
     ):
         alerts.append(Alert(alert_type=AlertType.UNIFORM))
+
+    return alerts
+
+
+def timeseries_alerts(config: Settings, summary: dict) -> List[Alert]:
+    alerts = numeric_alerts(config, summary)
+
+    if not summary["stationary"]:
+        alerts.append(Alert(alert_type=AlertType.NON_STATIONARY))
+
+    if summary["seasonal"]:
+        alerts.append(Alert(alert_type=AlertType.SEASONAL))
 
     return alerts
 
@@ -283,6 +301,8 @@ def check_variable_alerts(config: Settings, col: str, description: dict) -> List
             alerts += categorical_alerts(config, description)
         if description["type"] == "Numeric":
             alerts += numeric_alerts(config, description)
+        if description["type"] == "TimeSeries":
+            alerts += timeseries_alerts(config, description)
 
     for idx in range(len(alerts)):
         alerts[idx].column_name = col
@@ -293,19 +313,24 @@ def check_variable_alerts(config: Settings, col: str, description: dict) -> List
 def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert]:
     alerts = []
 
+    correlations_consolidated = {}
     for corr, matrix in correlations.items():
         if config.correlations[corr].warn_high_correlations:
             threshold = config.correlations[corr].threshold
             correlated_mapping = perform_check_correlation(matrix, threshold)
-            if len(correlated_mapping) > 0:
-                for k, v in correlated_mapping.items():
-                    alerts.append(
-                        Alert(
-                            column_name=k,
-                            alert_type=AlertType.HIGH_CORRELATION,
-                            values={"corr": corr, "fields": v},
-                        )
-                    )
+            for col, fields in correlated_mapping.items():
+                set(fields).update(set(correlated_mapping.get(col, [])))
+                correlations_consolidated[col] = fields
+
+    if len(correlations_consolidated) > 0:
+        for col, fields in correlations_consolidated.items():
+            alerts.append(
+                Alert(
+                    column_name=col,
+                    alert_type=AlertType.HIGH_CORRELATION,
+                    values={"corr": 'Overall', "fields": fields},
+                )
+            )
     return alerts
 
 

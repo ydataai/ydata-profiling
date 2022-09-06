@@ -27,14 +27,14 @@ with (source_root / "src" / "pandas_profiling" / "version.py").open(
 setup(
     name="pandas-profiling",
     version=version,
-    author="Simon Brugman",
-    author_email="pandasprofiling@gmail.com",
+    author="YData Labs Inc",
+    author_email="opensource@ydata.ai",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    url="https://github.com/pandas-profiling/pandas-profiling",
+    url="https://github.com/ydataai/pandas-profiling",
     license="MIT",
     description="Generate profile report for pandas DataFrame",
-    python_requires=">=3.6",
+    python_requires=">=3.7, <3.11",
     install_requires=requirements,
     extras_require={
         "notebook": [
@@ -60,7 +60,6 @@ setup(
         "Topic :: Scientific/Engineering",
         "Framework :: IPython",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",

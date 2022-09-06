@@ -91,6 +91,15 @@ class UrlVars(BaseModel):
     active: bool = False
 
 
+class TimeseriesVars(BaseModel):
+    active: bool = False
+    sortby: Optional[str] = None
+    autocorrelation: float = 0.7
+    lags: List[int] = [1, 7, 12, 24, 30]
+    significance: float = 0.05
+    pacf_acf_lag: int = 100
+
+
 class Univariate(BaseModel):
     num: NumVars = NumVars()
     cat: CatVars = CatVars()
@@ -99,6 +108,7 @@ class Univariate(BaseModel):
     path: PathVars = PathVars()
     file: FileVars = FileVars()
     url: UrlVars = UrlVars()
+    timeseries: TimeseriesVars = TimeseriesVars()
 
 
 class MissingPlot(BaseModel):

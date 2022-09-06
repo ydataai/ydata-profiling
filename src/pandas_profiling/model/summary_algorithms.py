@@ -170,3 +170,10 @@ def describe_boolean_1d(
     config: Settings, series: Any, summary: dict
 ) -> Tuple[Settings, Any, dict]:
     raise NotImplementedError()
+
+
+@multimethod
+def describe_timeseries_1d(
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, dict]:
+    raise NotImplementedError()

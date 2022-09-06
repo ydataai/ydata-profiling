@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 from pandas_profiling.config import Settings
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
@@ -452,3 +453,152 @@ def cat_frequency_plot(
         ],
         bbox_inches="tight",
     )
+
+
+def _plot_timeseries(
+    config: Settings,
+    series: pd.Series,
+    figsize: tuple = (6, 4),
+) -> matplotlib.figure.Figure:
+    """Plot an line plot from the data and return the AxesSubplot object.
+    Args:
+        series: The data to plot
+        figsize: The size of the figure (width, height) in inches, default (6,4)
+    Returns:
+        The TimeSeries lineplot.
+    """
+    fig = plt.figure(figsize=figsize)
+    plot = fig.add_subplot(111)
+
+    color = config.html.style.primary_color
+
+    series.plot(color=color)
+    return plot
+
+
+@manage_matplotlib_context()
+def mini_ts_plot(config: Settings, series: pd.Series) -> str:
+    """Plot an time-series plot of the data.
+    Args:
+      series: The data to plot.
+    Returns:
+      The resulting timeseries plot encoded as a string.
+    """
+    plot = _plot_timeseries(config, series, figsize=(3, 2.25))
+    plot.xaxis.set_tick_params(rotation=45)
+    plt.rc("ytick", labelsize=3)
+
+    for tick in plot.xaxis.get_major_ticks():
+        if isinstance(series.index, pd.DatetimeIndex):
+            tick.label1.set_fontsize(6)
+        else:
+            tick.label1.set_fontsize(8)
+    plot.figure.tight_layout()
+    return plot_360_n0sc0pe(config)
+
+
+def _get_ts_lag(config: Settings, series: pd.Series) -> int:
+    lag = config.vars.timeseries.pacf_acf_lag
+    max_lag_size = (len(series) // 2) - 1
+    return np.min([lag, max_lag_size])
+
+
+@manage_matplotlib_context()
+def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
+    lag = _get_ts_lag(config, series)
+    _, axes = plt.subplots(nrows=1, ncols=2, figsize=figsize)
+    plot_acf(series.dropna(), lags=lag, ax=axes[0], title="ACF", fft=True)
+    plot_pacf(series.dropna(), lags=lag, ax=axes[1], title="PACF", method="ywm")
+
+    return plot_360_n0sc0pe(config)
+
+
+def _prepare_heatmap_data(
+    dataframe: pd.DataFrame,
+    entity_column: str,
+    sortby: Optional[Union[str, list]] = None,
+    max_entities: int = 5,
+    selected_entities: Optional[List[str]] = None,
+) -> pd.DataFrame:
+    if sortby is None:
+        sortbykey = "_index"
+        df = dataframe[entity_column].copy().reset_index()
+        df.columns = [sortbykey, entity_column]
+
+    else:
+        if isinstance(sortby, str):
+            sortby = [sortby]
+        cols = [entity_column, *sortby]
+        df = dataframe[cols].copy()
+        sortbykey = sortby[0]
+
+    if df[sortbykey].dtype == "O":
+        try:
+            df[sortbykey] = pd.to_datetime(df[sortbykey])
+        except Exception as ex:
+            raise ValueError(
+                f"column {sortbykey} dtype {df[sortbykey].dtype} is not supported."
+            ) from ex
+    nbins = np.min([50, df[sortbykey].nunique()])
+
+    df["__bins"] = pd.cut(
+        df[sortbykey], bins=nbins, include_lowest=True, labels=range(nbins)
+    )
+
+    df = df.groupby([entity_column, "__bins"])[sortbykey].count()
+    df = df.reset_index().pivot(entity_column, "__bins", sortbykey).T
+    if selected_entities:
+        df = df[selected_entities].T
+    else:
+        df = df.T[:max_entities]
+
+    return df
+
+
+def _create_timeseries_heatmap(
+    df: pd.DataFrame,
+    figsize: Tuple[int, int] = (12, 5),
+    color: str = "#337ab7",
+) -> plt.Axes:
+    _, ax = plt.subplots(figsize=figsize)
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        "report", ["white", color], N=64
+    )
+    pc = ax.pcolormesh(df, edgecolors=ax.get_facecolor(), linewidth=0.25, cmap=cmap)
+    pc.set_clim(0, np.nanmax(df))
+    ax.set_yticks([x + 0.5 for x in range(len(df))])
+    ax.set_yticklabels(df.index)
+    ax.set_xticks([])
+    ax.set_xlabel("Time")
+    ax.invert_yaxis()
+    return ax
+
+
+def timeseries_heatmap(
+    dataframe: pd.DataFrame,
+    entity_column: str,
+    sortby: Optional[Union[str, list]] = None,
+    max_entities: int = 5,
+    selected_entities: Optional[List[str]] = None,
+    figsize: Tuple[int, int] = (12, 5),
+    color: str = "#337ab7",
+) -> plt.Axes:
+    """Generate a multi entity timeseries heatmap based on a pandas DataFrame.
+
+    Args:
+        dataframe: the pandas DataFrame
+        entity_column: name of the entities column
+        sortby: column that define the timesteps (only dates and numerical variables are supported)
+        max_entities: max entities that will be displayed
+        selected_entities: Optional list of entities to be displayed (overules max_entities)
+        figsize: The size of the figure (width, height) in inches, default (10,5)
+        color: the primary color, default '#337ab7'
+    Returns:
+        The TimeSeries heatmap.
+    """
+    df = _prepare_heatmap_data(
+        dataframe, entity_column, sortby, max_entities, selected_entities
+    )
+    ax = _create_timeseries_heatmap(df, figsize, color)
+    ax.set_aspect(1)
+    return ax
