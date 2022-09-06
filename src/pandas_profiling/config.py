@@ -343,7 +343,6 @@ class Config:
             }
         },
         "tsmode": {
-            "samples": None,
             "duplicates": None,
             "vars": {
                 "cat": {"redact": True},
