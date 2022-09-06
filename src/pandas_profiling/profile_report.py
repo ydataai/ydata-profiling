@@ -105,8 +105,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             report_config = report_config.update(Config.get_arg_groups("dark_mode"))
         if orange_mode:
             report_config = report_config.update(Config.get_arg_groups("orange_mode"))
+        report_config.vars.timeseries.active = tsmode
         if tsmode:
-            report_config = report_config.update(Config.get_arg_groups("tsmode"))
             if sortby:
                 report_config.vars.timeseries.sortby = sortby
         if len(kwargs) > 0:
