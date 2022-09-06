@@ -15,14 +15,14 @@ from pandas_profiling.model.summary_algorithms import (
 )
 
 
-def is_stationary(config: Settings, series: pd.Series) -> bool:
+def stationarity_test(config: Settings, series: pd.Series) -> Tuple[bool, float]:
     significance_threshold = config.vars.timeseries.significance
 
     # make sure the data has no missing values
     adfuller_test = adfuller(series.dropna())
     p_value = adfuller_test[1]
 
-    return p_value < significance_threshold
+    return p_value < significance_threshold, p_value
 
 
 def fftfreq(n: int, d: float = 1.0) -> np.ndarray:
@@ -104,9 +104,7 @@ def get_fft_peaks(
         removes the harmonics (multiplies of the base harmonics found)
 
     Args:
-        fft: FFT computed by FFTDetector.get_fft
-        sample_spacing: Optional; scaling FFT for a different time unit.
-            I.e. for hourly time series, sample_spacing=24.0 FFT x axis will be 1/day.
+        fft: FFT computed by get_fft
         mad_threshold: Optional; constant for the outlier algorithm for peak detector.
             The larger the value the less sensitive the outlier algorithm is.
 
@@ -162,7 +160,9 @@ def pandas_describe_timeseries_1d(
     config, series, stats = describe_numeric_1d(config, series, summary)
 
     stats["seasonal"] = seasonality_test(series)["seasonality_presence"]
-    stats["stationary"] = is_stationary(config, series) and not stats["seasonal"]
+    is_stationary, p_value = stationarity_test(config, series)
+    stats["stationary"] = is_stationary and not stats["seasonal"]
+    stats["addfuller"] = p_value
     stats["series"] = series
 
     return config, series, stats

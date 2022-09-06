@@ -219,6 +219,10 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
                 "name": "Monotonicity",
                 "value": fmt_monotonic(summary["monotonic"]),
             },
+            {
+                "name": "Augmented Dickey-Fuller test p-value",
+                "value": fmt_numeric(summary["addfuller"]),
+            },
         ],
         name="Descriptive statistics",
     )
