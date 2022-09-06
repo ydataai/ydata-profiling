@@ -55,7 +55,7 @@ TypeError: concat() got an unexpected keyword argument 'join_axes'
 
 This issue happens when, for instance, a report is converted to an *iframe* via ``ProfileReport.to_notebook_iframe()`` in a notebook environment (Google Colab, Jupyter Lab, Jupyter Notebook, etc). 
 
-This is due to an incompatibility in an old package version (particularly 1.4.1, which a ``conda`` installation may default to, as discussed above). Upgrading the package to a newer version (either via ``pip install pandas-profiling==3.2.0`` or  ``conda install -c conda-forge pandas-profiling=3.2.0`` fixes the issue. 
+This is due to an incompatibility in an old package version (particularly 1.4.1, which a ``conda`` installation may default to, as discussed above). Upgrading the package to a newer version (either via ``pip install pandas-profiling==3.3.0`` or  ``conda install -c conda-forge pandas-profiling=3.3.0`` fixes the issue.
 
 Related GitHub issues:
 
