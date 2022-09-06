@@ -23,6 +23,7 @@
       numeric_alerts
       skewness_alert
       supported_alerts
+      timeseries_alerts
       type_date_alert
       unsupported_alerts
    

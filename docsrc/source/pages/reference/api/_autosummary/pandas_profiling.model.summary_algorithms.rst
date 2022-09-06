@@ -24,6 +24,7 @@
       describe_numeric_1d
       describe_path_1d
       describe_supported
+      describe_timeseries_1d
       describe_url_1d
       func_nullable_series_contains
       histogram_compute
