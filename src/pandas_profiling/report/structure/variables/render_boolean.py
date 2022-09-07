@@ -90,16 +90,12 @@ def render_boolean(config: Settings, summary: dict) -> dict:
     ]
 
     max_unique = config.plot.pie.max_unique
-    show = config.plot.cat_freq.show=======
+    show = config.plot.cat_freq.show()
 
     if show and (max_unique > 0):
         items.append(
             Image(
-                cat_frequency_plot(
-                    config,
-                    summary["value_counts_without_nan"]
-                    legend_kws={"loc": "upper right"},
-                ),
+                cat_frequency_plot(config, summary["value_counts"]),
                 image_format=image_format,
                 alt="Category Frequency Plot",
                 name="Category Frequency Plot",
