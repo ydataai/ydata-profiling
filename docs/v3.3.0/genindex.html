@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index &mdash; pandas-profiling 3.2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+            <a href="index.html" class="icon icon-home"> pandas-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/getting_started/concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/getting_started/examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use cases</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/use_cases/big_data.html">Profiling large datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/integrations/other_dataframe_libraries.html">Other DataFrame libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/integrations/great_expectations.html">Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/integrations/data_apps.html">Interactive applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/integrations/pipelines.html">Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/integrations/cloud_services.html">Cloud services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/integrations/ides.html">IDEs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/advanced_usage/available_settings.html">Available settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/advanced_usage/changing_settings.html">Changing settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/advanced_usage/multiple_runs.html">Caching results throughout multiple runs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/advanced_usage/corr_mat_access.html">Accessing the values of correlation matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/support_contrib/help_troubleshoot.html">Help &amp; Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/support_contrib/common_issues.html">Common issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/support_contrib/contribution_guidelines.html">Contribution Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pages/reference/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/reference/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/reference/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/reference/announcements.html">Past Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/reference/resources.html">Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pandas-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Index</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Config.html#pandas_profiling.config.Config.__init__">__init__() (pandas_profiling.config.Config method)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.ImageType.html#pandas_profiling.config.ImageType.__init__">(pandas_profiling.config.ImageType method)</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Theme.html#pandas_profiling.config.Theme.__init__">(pandas_profiling.config.Theme method)</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport.__init__">(pandas_profiling.profile_report.ProfileReport method)</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.serialize_report.SerializeReport.html#pandas_profiling.serialize_report.SerializeReport.__init__">(pandas_profiling.serialize_report.SerializeReport method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.FileVars.html#pandas_profiling.config.FileVars.active">active (pandas_profiling.config.FileVars attribute)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.ImageVars.html#pandas_profiling.config.ImageVars.active">(pandas_profiling.config.ImageVars attribute)</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.PathVars.html#pandas_profiling.config.PathVars.active">(pandas_profiling.config.PathVars attribute)</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.UrlVars.html#pandas_profiling.config.UrlVars.active">(pandas_profiling.config.UrlVars attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.assets_path">assets_path (pandas_profiling.config.Html attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.assets_prefix">assets_prefix (pandas_profiling.config.Html attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset.author">author (pandas_profiling.config.Dataset attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CorrelationPlot.html#pandas_profiling.config.CorrelationPlot.bad">bad (pandas_profiling.config.CorrelationPlot attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Histogram.html#pandas_profiling.config.Histogram.bins">bins (pandas_profiling.config.Histogram attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.bool">bool (pandas_profiling.config.Univariate attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Correlation.html#pandas_profiling.config.Correlation.calculate">calculate (pandas_profiling.config.Correlation attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.cardinality_threshold">cardinality_threshold (pandas_profiling.config.CatVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.cat">cat (pandas_profiling.config.Univariate attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot.cat_freq">cat_freq (pandas_profiling.config.Plot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.categorical_maximum_correlation_distinct">categorical_maximum_correlation_distinct (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.characters">characters (pandas_profiling.config.CatVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.chi_squared_threshold">chi_squared_threshold (pandas_profiling.config.CatVars attribute)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars.chi_squared_threshold">(pandas_profiling.config.NumVars attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CorrelationPlot.html#pandas_profiling.config.CorrelationPlot.cmap">cmap (pandas_profiling.config.CorrelationPlot attribute)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot.cmap">(pandas_profiling.config.MissingPlot attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.coerce_str_to_date">coerce_str_to_date (pandas_profiling.config.CatVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Config.html#pandas_profiling.config.Config">Config (class in pandas_profiling.config)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Interactions.html#pandas_profiling.config.Interactions.continuous">continuous (pandas_profiling.config.Interactions attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset.copyright_holder">copyright_holder (pandas_profiling.config.Dataset attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset.copyright_year">copyright_year (pandas_profiling.config.Dataset attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot.correlation">correlation (pandas_profiling.config.Plot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.correlations">correlations (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset.creator">creator (pandas_profiling.config.Dataset attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.dataset">dataset (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset.description">description (pandas_profiling.config.Dataset attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Variables.html#pandas_profiling.config.Variables.descriptions">descriptions (pandas_profiling.config.Variables attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot.dpi">dpi (pandas_profiling.config.Plot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.duplicates">duplicates (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.ImageVars.html#pandas_profiling.config.ImageVars.exif">exif (pandas_profiling.config.ImageVars attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.file">file (pandas_profiling.config.Univariate attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot.force_labels">force_labels (pandas_profiling.config.MissingPlot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.full_width">full_width (pandas_profiling.config.Html attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.ImageVars.html#pandas_profiling.config.ImageVars.hash">hash (pandas_profiling.config.ImageVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Duplicates.html#pandas_profiling.config.Duplicates.head">head (pandas_profiling.config.Duplicates attribute)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Samples.html#pandas_profiling.config.Samples.head">(pandas_profiling.config.Samples attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot.histogram">histogram (pandas_profiling.config.Plot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.histogram_largest">histogram_largest (pandas_profiling.config.CatVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.html">html (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.image">image (pandas_profiling.config.Univariate attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot.image_format">image_format (pandas_profiling.config.Plot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.ImageType.html#pandas_profiling.config.ImageType">ImageType (class in pandas_profiling.config)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.infer_dtypes">infer_dtypes (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.inline">inline (pandas_profiling.config.Html attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.interactions">interactions (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Correlation.html#pandas_profiling.config.Correlation.key">key (pandas_profiling.config.Correlation attribute)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Duplicates.html#pandas_profiling.config.Duplicates.key">(pandas_profiling.config.Duplicates attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.length">length (pandas_profiling.config.CatVars attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Style.html#pandas_profiling.config.Style.logo">logo (pandas_profiling.config.Style attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars.low_categorical_threshold">low_categorical_threshold (pandas_profiling.config.NumVars attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars.mappings">mappings (pandas_profiling.config.BoolVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Histogram.html#pandas_profiling.config.Histogram.max_bins">max_bins (pandas_profiling.config.Histogram attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.memory_deep">memory_deep (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.minify_html">minify_html (pandas_profiling.config.Html attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot.missing">missing (pandas_profiling.config.Plot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.missing_diagrams">missing_diagrams (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.controller.console.html#module-pandas_profiling.controller.console">pandas_profiling.controller.console</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.controller.pandas_decorator.html#module-pandas_profiling.controller.pandas_decorator">pandas_profiling.controller.pandas_decorator</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.alerts.html#module-pandas_profiling.model.alerts">pandas_profiling.model.alerts</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.correlations.html#module-pandas_profiling.model.correlations">pandas_profiling.model.correlations</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.describe.html#module-pandas_profiling.model.describe">pandas_profiling.model.describe</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.duplicates.html#module-pandas_profiling.model.duplicates">pandas_profiling.model.duplicates</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.expectation_algorithms.html#module-pandas_profiling.model.expectation_algorithms">pandas_profiling.model.expectation_algorithms</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.handler.html#module-pandas_profiling.model.handler">pandas_profiling.model.handler</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.sample.html#module-pandas_profiling.model.sample">pandas_profiling.model.sample</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.summarizer.html#module-pandas_profiling.model.summarizer">pandas_profiling.model.summarizer</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.summary.html#module-pandas_profiling.model.summary">pandas_profiling.model.summary</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.summary_algorithms.html#module-pandas_profiling.model.summary_algorithms">pandas_profiling.model.summary_algorithms</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.typeset.html#module-pandas_profiling.model.typeset">pandas_profiling.model.typeset</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.typeset_relations.html#module-pandas_profiling.model.typeset_relations">pandas_profiling.model.typeset_relations</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.alerts.html#module-pandas_profiling.report.presentation.core.alerts">pandas_profiling.report.presentation.core.alerts</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.collapse.html#module-pandas_profiling.report.presentation.core.collapse">pandas_profiling.report.presentation.core.collapse</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.container.html#module-pandas_profiling.report.presentation.core.container">pandas_profiling.report.presentation.core.container</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.duplicate.html#module-pandas_profiling.report.presentation.core.duplicate">pandas_profiling.report.presentation.core.duplicate</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.frequency_table.html#module-pandas_profiling.report.presentation.core.frequency_table">pandas_profiling.report.presentation.core.frequency_table</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.frequency_table_small.html#module-pandas_profiling.report.presentation.core.frequency_table_small">pandas_profiling.report.presentation.core.frequency_table_small</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.html.html#module-pandas_profiling.report.presentation.core.html">pandas_profiling.report.presentation.core.html</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.image.html#module-pandas_profiling.report.presentation.core.image">pandas_profiling.report.presentation.core.image</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.item_renderer.html#module-pandas_profiling.report.presentation.core.item_renderer">pandas_profiling.report.presentation.core.item_renderer</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.renderable.html#module-pandas_profiling.report.presentation.core.renderable">pandas_profiling.report.presentation.core.renderable</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.root.html#module-pandas_profiling.report.presentation.core.root">pandas_profiling.report.presentation.core.root</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.sample.html#module-pandas_profiling.report.presentation.core.sample">pandas_profiling.report.presentation.core.sample</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.table.html#module-pandas_profiling.report.presentation.core.table">pandas_profiling.report.presentation.core.table</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.toggle_button.html#module-pandas_profiling.report.presentation.core.toggle_button">pandas_profiling.report.presentation.core.toggle_button</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.variable.html#module-pandas_profiling.report.presentation.core.variable">pandas_profiling.report.presentation.core.variable</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.variable_info.html#module-pandas_profiling.report.presentation.core.variable_info">pandas_profiling.report.presentation.core.variable_info</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.structure.correlations.html#module-pandas_profiling.report.structure.correlations">pandas_profiling.report.structure.correlations</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.structure.overview.html#module-pandas_profiling.report.structure.overview">pandas_profiling.report.structure.overview</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.structure.report.html#module-pandas_profiling.report.structure.report">pandas_profiling.report.structure.report</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.cache.html#module-pandas_profiling.utils.cache">pandas_profiling.utils.cache</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.common.html#module-pandas_profiling.utils.common">pandas_profiling.utils.common</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.dataframe.html#module-pandas_profiling.utils.dataframe">pandas_profiling.utils.dataframe</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.notebook.html#module-pandas_profiling.utils.notebook">pandas_profiling.utils.notebook</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.paths.html#module-pandas_profiling.utils.paths">pandas_profiling.utils.paths</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.visualisation.missing.html#module-pandas_profiling.visualisation.missing">pandas_profiling.visualisation.missing</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.visualisation.plot.html#module-pandas_profiling.visualisation.plot">pandas_profiling.visualisation.plot</a>
+</li>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.visualisation.utils.html#module-pandas_profiling.visualisation.utils">pandas_profiling.visualisation.utils</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.n_extreme_obs">n_extreme_obs (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.n_freq_table_max">n_freq_table_max (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars.n_obs">n_obs (pandas_profiling.config.BoolVars attribute)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.n_obs">(pandas_profiling.config.CatVars attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.n_obs_unique">n_obs_unique (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.navbar_show">navbar_show (pandas_profiling.config.Html attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.num">num (pandas_profiling.config.Univariate attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    pandas_profiling.controller.console
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.controller.console.html#module-pandas_profiling.controller.console">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.controller.pandas_decorator
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.controller.pandas_decorator.html#module-pandas_profiling.controller.pandas_decorator">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.alerts
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.alerts.html#module-pandas_profiling.model.alerts">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.correlations
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.correlations.html#module-pandas_profiling.model.correlations">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.describe
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.describe.html#module-pandas_profiling.model.describe">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.duplicates
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.duplicates.html#module-pandas_profiling.model.duplicates">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.expectation_algorithms
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.expectation_algorithms.html#module-pandas_profiling.model.expectation_algorithms">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.handler
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.handler.html#module-pandas_profiling.model.handler">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.sample
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.sample.html#module-pandas_profiling.model.sample">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.summarizer
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.summarizer.html#module-pandas_profiling.model.summarizer">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.summary
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.summary.html#module-pandas_profiling.model.summary">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.summary_algorithms
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.summary_algorithms.html#module-pandas_profiling.model.summary_algorithms">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.typeset
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.typeset.html#module-pandas_profiling.model.typeset">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.model.typeset_relations
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.model.typeset_relations.html#module-pandas_profiling.model.typeset_relations">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.alerts
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.alerts.html#module-pandas_profiling.report.presentation.core.alerts">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.collapse
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.collapse.html#module-pandas_profiling.report.presentation.core.collapse">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.container
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.container.html#module-pandas_profiling.report.presentation.core.container">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.duplicate
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.duplicate.html#module-pandas_profiling.report.presentation.core.duplicate">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.frequency_table
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.frequency_table.html#module-pandas_profiling.report.presentation.core.frequency_table">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.frequency_table_small
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.frequency_table_small.html#module-pandas_profiling.report.presentation.core.frequency_table_small">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.html
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.html.html#module-pandas_profiling.report.presentation.core.html">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.image
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.image.html#module-pandas_profiling.report.presentation.core.image">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    pandas_profiling.report.presentation.core.item_renderer
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.item_renderer.html#module-pandas_profiling.report.presentation.core.item_renderer">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.renderable
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.renderable.html#module-pandas_profiling.report.presentation.core.renderable">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.root
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.root.html#module-pandas_profiling.report.presentation.core.root">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.sample
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.sample.html#module-pandas_profiling.report.presentation.core.sample">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.table
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.table.html#module-pandas_profiling.report.presentation.core.table">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.toggle_button
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.toggle_button.html#module-pandas_profiling.report.presentation.core.toggle_button">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.variable
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.variable.html#module-pandas_profiling.report.presentation.core.variable">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.presentation.core.variable_info
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.presentation.core.variable_info.html#module-pandas_profiling.report.presentation.core.variable_info">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.structure.correlations
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.structure.correlations.html#module-pandas_profiling.report.structure.correlations">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.structure.overview
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.structure.overview.html#module-pandas_profiling.report.structure.overview">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.report.structure.report
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.report.structure.report.html#module-pandas_profiling.report.structure.report">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.utils.cache
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.cache.html#module-pandas_profiling.utils.cache">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.utils.common
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.common.html#module-pandas_profiling.utils.common">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.utils.dataframe
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.dataframe.html#module-pandas_profiling.utils.dataframe">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.utils.notebook
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.notebook.html#module-pandas_profiling.utils.notebook">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.utils.paths
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.utils.paths.html#module-pandas_profiling.utils.paths">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.visualisation.missing
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.visualisation.missing.html#module-pandas_profiling.visualisation.missing">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.visualisation.plot
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.visualisation.plot.html#module-pandas_profiling.visualisation.plot">module</a>
+</li>
+      </ul></li>
+      <li>
+    pandas_profiling.visualisation.utils
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.visualisation.utils.html#module-pandas_profiling.visualisation.utils">module</a>
+</li>
+      </ul></li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.path">path (pandas_profiling.config.Univariate attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.plot">plot (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.pool_size">pool_size (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Report.html#pandas_profiling.config.Report.precision">precision (pandas_profiling.config.Report attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Style.html#pandas_profiling.config.Style.primary_color">primary_color (pandas_profiling.config.Style attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport">ProfileReport (class in pandas_profiling.profile_report)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.progress_bar">progress_bar (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars.quantiles">quantiles (pandas_profiling.config.NumVars attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Samples.html#pandas_profiling.config.Samples.random">random (pandas_profiling.config.Samples attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.redact">redact (pandas_profiling.config.CatVars attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.reject_variables">reject_variables (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.report">report (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.samples">samples (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Plot.html#pandas_profiling.config.Plot.scatter_threshold">scatter_threshold (pandas_profiling.config.Plot attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.serialize_report.SerializeReport.html#pandas_profiling.serialize_report.SerializeReport">SerializeReport (class in pandas_profiling.serialize_report)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.show_variable_description">show_variable_description (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars.skewness_threshold">skewness_threshold (pandas_profiling.config.NumVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.sort">sort (pandas_profiling.config.Settings attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.stop_words">stop_words (pandas_profiling.config.CatVars attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.style">style (pandas_profiling.config.Html attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Samples.html#pandas_profiling.config.Samples.tail">tail (pandas_profiling.config.Samples attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Interactions.html#pandas_profiling.config.Interactions.targets">targets (pandas_profiling.config.Interactions attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Theme.html#pandas_profiling.config.Theme">Theme (class in pandas_profiling.config)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Style.html#pandas_profiling.config.Style.theme">theme (pandas_profiling.config.Style attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Correlation.html#pandas_profiling.config.Correlation.threshold">threshold (pandas_profiling.config.Correlation attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.timeseries">timeseries (pandas_profiling.config.Univariate attribute)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.title">title (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.update">update() (pandas_profiling.config.Settings method)</a>
+</li>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Dataset.html#pandas_profiling.config.Dataset.url">url (pandas_profiling.config.Dataset attribute)</a>
+
+      <ul>
+        <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate.url">(pandas_profiling.config.Univariate attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html.use_local_assets">use_local_assets (pandas_profiling.config.Html attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.variables">variables (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.vars">vars (pandas_profiling.config.Settings attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Correlation.html#pandas_profiling.config.Correlation.warn_high_correlations">warn_high_correlations (pandas_profiling.config.Correlation attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.words">words (pandas_profiling.config.CatVars attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pages/reference/api/_autosummary/pandas_profiling.config.Histogram.html#pandas_profiling.config.Histogram.x_axis_labels">x_axis_labels (pandas_profiling.config.Histogram attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

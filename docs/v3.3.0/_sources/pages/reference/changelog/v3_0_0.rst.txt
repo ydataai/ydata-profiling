@@ -1,0 +1,48 @@
+Changelog v3.0.0
+----------------
+
+This is the first release to adhere to the `SemVer <https://semver.org/>`_ and `Conventional Commits <https://conventionalcommits.org/>`_ specifications.
+
+🎉 Features
+^^^^^^^^^^^
+
+- The report configuration was completely overhauled, providing a more intuitive API and fixing issues inherent to the previous global config.
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+
+- Various issues could not be (easily) solved in the previous configuration architecture, are fixed in this release (`[584] <https://github.com/pandas-profiling/pandas-profiling/issues/584>`_, `[644] <https://github.com/pandas-profiling/pandas-profiling/issues/644>`_, `[698] <https://github.com/pandas-profiling/pandas-profiling/issues/698>`_, `[720] <https://github.com/pandas-profiling/pandas-profiling/issues/720>`_ and `[724] <https://github.com/pandas-profiling/pandas-profiling/issues/724>`_)
+- Fix crash with exotic characters (`[707] <https://github.com/pandas-profiling/pandas-profiling/issues/707>`_)
+- Fixed the way (sub)titles were shown in the report grids.
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+- Enforce QA using flake8 for documentation, for instance checking for backticks and enforcing black code style on examples.
+- Automated configuration documentation `API <https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/pages/api/_autosummary/pandas_profiling.config.Settings.html>`_.
+
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- CI: mypy type checking was moved to the pre-commit hooks.
+
+
+🚨 Breaking changes
+^^^^^^^^^^^^^^^^^^^
+
+The configuration syntax has changed!
+
+The **yaml configuration** now requires the official syntax (e.g. ``null`` instead of ``None``).
+The previously used configuration library could not handle comments with indentation - you are now free to use conventional yaml.
+
+For the **python configuration** the ``set_variable`` method has been replaced by more intuitively accessing the configuration object.
+For example, you can now set the title in the following way ``report.config.title = "My title"``.
+
+The docs provide additional examples.
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+
+- ``pydantic`` and ``PyYaml`` are dependencies for the new configuration.
+- ``confuse`` and ``attrs`` are no longer (explicit) dependencies.
+- Upgraded ``tangled-up-in-unicode`` to 0.0.7.
+
