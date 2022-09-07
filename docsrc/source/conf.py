@@ -22,8 +22,8 @@ sys.path.insert(0, os.path.join("..", "..", "src", "pandas_profiling"))
 
 project = "pandas-profiling"
 year = date.today().year
-copyright = f"{year}, Simon Brugman"
-author = "Simon Brugman"
+copyright = f"{year}, YData Labs Inc"
+author = "YData Labs Inc"
 
 # The full version, including alpha/beta/rc tags
 

@@ -74,7 +74,7 @@ def warn_correlation(correlation_name: str, error: str) -> None:
 To hide this warning, disable the calculation
 (using `df.profile_report(correlations={{\"{correlation_name}\": {{\"calculate\": False}}}})`
 If this is problematic for your use case, please report this as an issue:
-https://github.com/pandas-profiling/pandas-profiling/issues
+https://github.com/ydataai/pandas-profiling/issues
 (include the error message: '{error}')"""
     )
 

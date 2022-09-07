@@ -332,7 +332,7 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
                 Alert(
                     column_name=col,
                     alert_type=AlertType.HIGH_CORRELATION,
-                    values={"corr": 'Overall', "fields": fields},
+                    values={"corr": "Overall", "fields": fields},
                 )
             )
     return alerts
