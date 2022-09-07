@@ -20,11 +20,36 @@ from pandas_profiling.model.correlations import (
     Spearman,
 )
 
+SPARK_CORRELATION_PEARSON = "pearson"
+SPARK_CORRELATION_SPEARMAN = "spearman"
+
 
 @Spearman.compute.register(Settings, DataFrame, dict)
 def spark_spearman_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[DataFrame]:
+    matrix = _compute_spark_corr_natively(
+        df, summary, corr_type=SPARK_CORRELATION_SPEARMAN
+    )
+    return pd.DataFrame(matrix, index=df.columns, columns=df.columns)
+
+
+@Pearson.compute.register(Settings, DataFrame, dict)
+def spark_pearson_compute(
+    config: Settings, df: DataFrame, summary: dict
+) -> Optional[DataFrame]:
+    matrix = _compute_spark_corr_natively(
+        df, summary, corr_type=SPARK_CORRELATION_PEARSON
+    )
+    return pd.DataFrame(matrix, index=df.columns, columns=df.columns)
+
+
+def _compute_spark_corr_natively(df: DataFrame, summary: dict, corr_type: str):
+    """
+    This function exists as pearson and spearman correlation computations have the
+    exact same workflow. The syntax is Correlation.corr(dataframe, method="pearson" OR "spearman"),
+    and Correlation is from pyspark.ml.stat
+    """
     variables = {column: description["type"] for column, description in summary.items()}
     interval_columns = [
         column for column, type_name in variables.items() if type_name == "Numeric"
@@ -45,33 +70,9 @@ def spark_spearman_compute(
 
     # get correlation matrix
     matrix = (
-        Correlation.corr(df_vector, vector_col, method="spearman").head()[0].toArray()
+        Correlation.corr(df_vector, vector_col, method=corr_type).head()[0].toArray()
     )
-    return pd.DataFrame(matrix, index=df.columns, columns=df.columns)
-
-
-@Pearson.compute.register(Settings, DataFrame, dict)
-def spark_pearson_compute(
-    config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
-    # convert to vector column first
-    variables = {column: description["type"] for column, description in summary.items()}
-    interval_columns = [
-        column for column, type_name in variables.items() if type_name == "Numeric"
-    ]
-    df = df.select(*interval_columns)
-
-    vector_col = "corr_features"
-    assembler = VectorAssembler(
-        inputCols=df.columns, outputCol=vector_col, handleInvalid="skip"
-    )
-    df_vector = assembler.transform(df).select(vector_col)
-
-    # get correlation matrix
-    matrix = (
-        Correlation.corr(df_vector, vector_col, method="pearson").head()[0].toArray()
-    )
-    return pd.DataFrame(matrix, index=df.columns, columns=df.columns)
+    return matrix
 
 
 @Kendall.compute.register(Settings, DataFrame, dict)

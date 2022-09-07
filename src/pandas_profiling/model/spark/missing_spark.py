@@ -31,7 +31,7 @@ class MissingnoBarSparkPatch:
     like bad practice as well.
     """
 
-    def __init__(self, df, columns, original_df_size=None):
+    def __init__(self, df, columns=None, original_df_size=None):
         self.df = df
         self.columns = columns
         self.original_df_size = original_df_size
