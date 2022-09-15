@@ -20,7 +20,12 @@ tangled-up-in-unicode==0.2.0
 requests>=2.24.0, <2.29
 # Progress bar
 tqdm>=4.48.2, <4.65
+<<<<<<< HEAD
 seaborn>=0.10.1, <0.13
 multimethod>=1.4, <1.9
+=======
+seaborn>=0.10.1, <0.12
+multimethod>=1.4, <1.10
+>>>>>>> 03937dab (build(deps): update multimethod requirement)
 # metrics
 statsmodels>=0.13.2, <0.14
