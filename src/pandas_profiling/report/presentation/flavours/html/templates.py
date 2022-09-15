@@ -4,7 +4,7 @@ from pathlib import Path
 
 import jinja2
 
-from pandas_profiling.config import Settings, Theme
+from pandas_profiling.config import Settings
 from pandas_profiling.report.formatters import fmt, fmt_badge, fmt_numeric, fmt_percent
 
 # Initializing Jinja
@@ -48,10 +48,7 @@ def create_html_assets(config: Settings, output_file: Path) -> None:
 
     if config.html.use_local_assets:
         if theme is not None:
-            if theme == Theme.flatly:
-                css.append("wrapper/assets/flatly.bootstrap.min.css")
-            if theme == Theme.united:
-                css.append("wrapper/assets/united.bootstrap.min.css")
+            css.append(f"wrapper/assets/{theme.value}.bootstrap.min.css")
         else:
             css.append("wrapper/assets/bootstrap.min.css")
             css.append("wrapper/assets/bootstrap-theme.min.css")

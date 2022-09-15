@@ -163,6 +163,8 @@ class Plot(BaseModel):
 class Theme(Enum):
     united = "united"
     flatly = "flatly"
+    cosmo = "cosmo"
+    simplex = "simplex"
 
 
 class Style(BaseModel):
