@@ -2,7 +2,6 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import ProfileReport
-from pandas_profiling.config import SparkSettings
 
 
 @pytest.fixture

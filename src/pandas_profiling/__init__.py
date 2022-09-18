@@ -9,6 +9,7 @@ from pandas_profiling.version import __version__
 
 # backend
 import pandas_profiling.model.pandas  # isort:skip  # noqa
+import pandas_profiling.model.spark  # isort:skip  # noqa
 
 
 __all__ = [
