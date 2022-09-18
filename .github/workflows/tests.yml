@@ -5,6 +5,7 @@ on: push
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    continue-on-error: True
     strategy:
       matrix:
         os: [ ubuntu-latest ]
@@ -76,6 +77,7 @@ jobs:
       - run: make test
   coverage:
     runs-on: ${{ matrix.os }}
+    continue-on-error: True
     strategy:
       matrix:
         os: [ ubuntu-latest ]
@@ -121,3 +123,75 @@ jobs:
       - run: make install
       - run: make test_cov
       - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
+
+  test_spark:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: True
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [3.6, 3.7, 3.8]
+        pandas: ["pandas==0.25.3", "pandas==1.0.5", "pandas>1.1"]
+        spark: ["2.3.0", "2.4.7", "3.0.1"]
+        hadoop: [ 2.7 ]
+        numpy: ["numpy==1.19.5"]
+        java_home: [ /usr/lib/jvm/java-8-openjdk-amd64 ]
+        exclude:
+           - python-version: 3.8
+             spark: "2.3.0"
+           - python-version: 3.8
+             spark: "2.4.7"
+#          - os: macos-latest
+#            python-version: 3.6
+#            pandas: ">1.1"
+#          - os: windows-2016
+#            python-version: 3.6
+#            pandas: ">1.1"
+
+    name: Tests Spark | python ${{ matrix.python-version }}, ${{ matrix.os }}, spark${{ matrix.spark }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
+    env:
+      JAVA_HOME: ${{ matrix.java_home }}
+      SPARK_VERSION: ${{ matrix.spark }}
+      HADOOP_VERSION: ${{ matrix.hadoop }}
+      SPARK_DIRECTORY: ${{ github.workspace }}/../
+      SPARK_HOME: ${{ github.workspace }}/../spark/
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Linux')
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-\
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'macOS')
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - uses: actions/cache@v2
+        if: startsWith(runner.os, 'Windows')
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+      - run: |
+          pip install --upgrade pip setuptools wheel
+          pip install pytest-spark>=0.6.0 pyarrow==1.0.1
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+          pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
+      - if: ${{ matrix.spark != '3.0.1' }}
+        run: echo "ARROW_PRE_0_15_IPC_FORMAT=1" >> $GITHUB_ENV
+      - run: echo "SPARK_LOCAL_IP=127.0.0.1" >> $GITHUB_ENV
+      - run: make install
+      - run: make install-spark-ci
+      - run: make test_spark

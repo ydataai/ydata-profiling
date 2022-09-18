@@ -2,6 +2,7 @@ pytest
 coverage~=6.4
 codecov
 pytest-cov
+pytest-spark
 nbval
 pyarrow
 twine>=3.1.1
