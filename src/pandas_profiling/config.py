@@ -163,6 +163,8 @@ class Plot(BaseModel):
 class Theme(Enum):
     united = "united"
     flatly = "flatly"
+    cosmo = "cosmo"
+    simplex = "simplex"
 
 
 class Style(BaseModel):
@@ -341,32 +343,6 @@ class Config:
                     "primary_color": "#d34615",
                 }
             }
-        },
-        "tsmode": {
-            "samples": None,
-            "duplicates": None,
-            "vars": {
-                "cat": {"redact": True},
-                "timeseries": {"active": True},
-            },
-            "plot": {
-                "correlation": {"cmap": "Reds"},
-                "missing": {"cmap": "Reds"},
-            },
-            "correlations": {
-                "pearson": {"calculate": True},
-                "spearman": {"calculate": True},
-                "kendall": {"calculate": True},
-                "phi_k": {"calculate": False},
-                "cramers": {"calculate": False},
-            },
-            "html": {
-                "navbar_show": False,
-                "style": {
-                    "theme": Theme.flatly,
-                    "full_width": True,
-                },
-            },
         },
         "explorative": {
             "vars": {

@@ -2,10 +2,8 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
@@ -105,10 +103,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             report_config = report_config.update(Config.get_arg_groups("dark_mode"))
         if orange_mode:
             report_config = report_config.update(Config.get_arg_groups("orange_mode"))
-        if tsmode:
-            report_config = report_config.update(Config.get_arg_groups("tsmode"))
-            if sortby:
-                report_config.vars.timeseries.sortby = sortby
+        report_config.vars.timeseries.active = tsmode
+        if tsmode and sortby:
+            report_config.vars.timeseries.sortby = sortby
         if len(kwargs) > 0:
             report_config = report_config.update(Config.shorthands(kwargs))
 
