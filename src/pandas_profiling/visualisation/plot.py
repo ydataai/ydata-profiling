@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
+from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
@@ -505,10 +506,34 @@ def _get_ts_lag(config: Settings, series: pd.Series) -> int:
 
 @manage_matplotlib_context()
 def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
+    color = config.html.style.primary_color
+
     lag = _get_ts_lag(config, series)
     _, axes = plt.subplots(nrows=1, ncols=2, figsize=figsize)
-    plot_acf(series.dropna(), lags=lag, ax=axes[0], title="ACF", fft=True)
-    plot_pacf(series.dropna(), lags=lag, ax=axes[1], title="PACF", method="ywm")
+
+    plot_acf(
+        series.dropna(),
+        lags=lag,
+        ax=axes[0],
+        title="ACF",
+        fft=True,
+        color=color,
+        vlines_kwargs={"colors": color},
+    )
+    plot_pacf(
+        series.dropna(),
+        lags=lag,
+        ax=axes[1],
+        title="PACF",
+        method="ywm",
+        color=color,
+        vlines_kwargs={"colors": color},
+    )
+
+    for ax in axes:
+        for item in ax.collections:
+            if type(item) == PolyCollection:
+                item.set_facecolor(color)
 
     return plot_360_n0sc0pe(config)
 
