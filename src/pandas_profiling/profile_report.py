@@ -1,5 +1,6 @@
 import copy
 import json
+import math
 import warnings
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
@@ -10,7 +11,13 @@ import yaml
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
-from pandas_profiling.config import Config, PandasSettings, Settings, SparkSettings
+from pandas_profiling.config import (
+    Config,
+    PandasSettings,
+    Settings,
+    SparkSettings,
+    JsonNonFiniteEncoding
+)
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
@@ -355,8 +362,24 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             if isinstance(o, dict):
                 return {encode_it(k): encode_it(v) for k, v in o.items()}
             else:
-                if isinstance(o, (bool, int, float, str)):
+                if isinstance(o, (bool, int, str)):
                     return o
+                elif isinstance(o, float):
+                    if not math.isfinite(o):
+                        # Special handling for non-finite floats.
+                        # This is necessary because JSON does not support NaN/Infinity values.
+                        # The default in Python is to generate invalid JSON.
+                        # Depending on the configuration, we can encode them as null values,
+                        # stringify the non-finite value, or output it as is to keep the default
+                        # Python behaviour.
+                        if self.config.json_non_finite_encoding == JsonNonFiniteEncoding.NULL:
+                            return None
+                        elif self.config.json_non_finite_encoding == JsonNonFiniteEncoding.STRING:
+                            return str(o)
+                        else:
+                            return o
+                    else:
+                        return o
                 elif isinstance(o, list):
                     return [encode_it(v) for v in o]
                 elif isinstance(o, set):
