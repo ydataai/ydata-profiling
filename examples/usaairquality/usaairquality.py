@@ -1,8 +1,7 @@
-from pathlib import Path
-
-import numpy as np
+"""
+    Time-series profiling example for USA AirQuality dataset
+"""
 import pandas as pd
-import requests
 
 from pandas_profiling.utils.cache import cache_file
 from pandas_profiling.visualisation.plot import timeseries_heatmap
@@ -31,7 +30,7 @@ if __name__ == '__main__':
         profile = ProfileReport(
             group[1],
             tsmode=True,
-            sortby=["Date Local"],
+            sortby="Date Local",
             title=f"Air Quality profiling - Site Num: {group[0]}"
         )
 
