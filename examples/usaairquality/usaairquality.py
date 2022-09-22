@@ -26,6 +26,7 @@ if __name__ == '__main__':
     
     # Return the profile per station
     for group in df.groupby('Site Num'):
+        #Running 1 profile per station
         profile = ProfileReport(
             group[1],
             tsmode=True,
