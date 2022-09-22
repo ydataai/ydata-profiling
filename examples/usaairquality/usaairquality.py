@@ -26,12 +26,10 @@ if __name__ == '__main__':
     
     # Return the profile per station
     for group in df.groupby('Site Num'):
-        print(f'Generating the profile for the Site num: {group[0]}')
         profile = ProfileReport(
             group[1],
             tsmode=True,
-            sortby="Date Local",
-            title=f"Air Quality profiling - Site Num: {group[0]}"
+            sortby="Date Local"
         )
 
         profile.to_file(f'Ts_Profile_{group[0]}.html')
