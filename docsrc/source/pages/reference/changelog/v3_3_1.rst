@@ -1,0 +1,18 @@
+Changelog v3.3.1
+----------------
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Add new themes from bootstrap: Cosmo and Flatly
+- Remove support to python 3.6
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+-Add new time-series example `python file and notebook <https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality>`_ for USA AirQuality
+-Add a devcontainer for VSCode and Codespaces by @Anselmoo `[#987] <https://github.com/ydataai/pandas-profiling/issues/987>`_
+
+❤️ Thank you
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+A special thank you to our contributors: @Anselmoo
+
+
+
