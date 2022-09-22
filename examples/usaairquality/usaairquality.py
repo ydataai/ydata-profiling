@@ -31,7 +31,7 @@ if __name__ == '__main__':
         profile = ProfileReport(
             group[1],
             tsmode=True,
-            sortby=["Date Local"],
+            sortby="Date Local",
             title=f"Air Quality profiling - Site Num: {group[0]}"
         )
 
