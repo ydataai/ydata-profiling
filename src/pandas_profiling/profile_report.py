@@ -67,6 +67,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     ):
         """Generate a ProfileReport based on a pandas DataFrame
 
+        Config processing order (in case of duplicate entries, entries later in the order are retained):
+        - config presets (e.g. `config_file`, `minimal` arguments)
+        - config groups (e.g. `explorative` and `sensitive` arguments)
+        - custom settings (e.g. `config` argument)
+        - custom settings **kwargs (e.g. `title`)
+
         Args:
             df: the pandas DataFrame
             minimal: minimal mode is a default configuration with minimal computation
@@ -81,8 +87,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
-        report_config: Settings = Settings() if config is None else config
-
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
@@ -95,21 +99,35 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             with open(config_file) as f:
                 data = yaml.safe_load(f)
 
-            report_config = report_config.parse_obj(data)
+            report_config = Settings().parse_obj(data)
+        else:
+            report_config = Settings()
 
-        if explorative:
-            report_config = report_config.update(Config.get_arg_groups("explorative"))
-        if sensitive:
-            report_config = report_config.update(Config.get_arg_groups("sensitive"))
-        if dark_mode:
-            report_config = report_config.update(Config.get_arg_groups("dark_mode"))
-        if orange_mode:
-            report_config = report_config.update(Config.get_arg_groups("orange_mode"))
+        groups = [
+            (explorative, "explorative"),
+            (sensitive, "sensitive"),
+            (dark_mode, "dark_mode"),
+            (orange_mode, "orange_mode"),
+        ]
+        if any(condition for condition, _ in groups):
+            cfg = Settings()
+            for condition, key in groups:
+                if condition:
+                    cfg = cfg.update(Config.get_arg_groups(key))
+            report_config = cfg.update(report_config.dict())
+
+        if len(kwargs) > 0:
+            shorthands, kwargs = Config.shorthands(kwargs)
+            report_config = Settings().update(shorthands).update(report_config.dict())
+
+        if config is not None:
+            report_config = report_config.update(config.dict())
+        if kwargs != {}:
+            report_config = report_config.update(kwargs)
+
         report_config.vars.timeseries.active = tsmode
         if tsmode and sortby:
             report_config.vars.timeseries.sortby = sortby
-        if len(kwargs) > 0:
-            report_config = report_config.update(Config.shorthands(kwargs))
 
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
