@@ -100,7 +100,8 @@ class Alert:
         if name == "HIGH CORRELATION":
             num = len(self.values["fields"])
             title = ", ".join(self.values["fields"])
-            name = f'<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
+            corr = self.values["corr"]
+            name = f'<abbr title="This variable has a high {corr} correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
         return name
 
     def __repr__(self):
