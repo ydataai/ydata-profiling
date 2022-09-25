@@ -3,12 +3,23 @@ import decimal
 import math
 import re
 from datetime import timedelta
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import numpy as np
 from markupsafe import escape
 
 
+def list_args(func: Callable) -> Callable:
+    def inner(arg: Any, *args: Any, **kwargs: Any) -> Any:
+        if isinstance(arg, list):
+            return [func(v, *args, **kwargs) for v in arg]
+
+        return func(arg, *args, **kwargs)
+
+    return inner
+
+
+@list_args
 def fmt_color(text: str, color: str) -> str:
     """Format a string in a certain color (`<span>`).
 
@@ -22,6 +33,7 @@ def fmt_color(text: str, color: str) -> str:
     return f'<span style="color:{color}">{text}</span>'
 
 
+@list_args
 def fmt_class(text: str, cls: str) -> str:
     """Format a string in a certain class (`<span>`).
 
@@ -35,8 +47,9 @@ def fmt_class(text: str, cls: str) -> str:
     return f'<span class="{cls}">{text}</span>'
 
 
+@list_args
 def fmt_bytesize(num: float, suffix: str = "B") -> str:
-    """Change a number of bytes in a human readable format.
+    """Change a number of bytes in a human-readable format.
 
     Args:
       num: number to format
@@ -52,6 +65,7 @@ def fmt_bytesize(num: float, suffix: str = "B") -> str:
     return f"{num:.1f} Yi{suffix}"
 
 
+@list_args
 def fmt_percent(value: float, edge_cases: bool = True) -> str:
     """Format a ratio as a percentage.
 
@@ -72,6 +86,7 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
     return f"{value*100:2.1f}%"
 
 
+@list_args
 def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -> str:
     # From the `humanfriendly` module (without additional dependency)
     # https://github.com/xolox/python-humanfriendly/
@@ -196,6 +211,7 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
             return concatenate(result)
 
 
+@list_args
 def fmt_numeric(value: float, precision: int = 10) -> str:
     """Format any numeric value.
 
@@ -217,6 +233,7 @@ def fmt_numeric(value: float, precision: int = 10) -> str:
     return fmtted
 
 
+@list_args
 def fmt_number(value: int) -> str:
     """Format any numeric value.
 
@@ -229,6 +246,7 @@ def fmt_number(value: int) -> str:
     return f"{value:n}"
 
 
+@list_args
 def fmt_array(value: np.ndarray, threshold: Any = np.nan) -> str:
     """Format numpy arrays.
 
@@ -245,6 +263,7 @@ def fmt_array(value: np.ndarray, threshold: Any = np.nan) -> str:
     return return_value
 
 
+@list_args
 def fmt(value: Any) -> str:
     """Format any value.
 
@@ -260,6 +279,7 @@ def fmt(value: Any) -> str:
         return str(escape(value))
 
 
+@list_args
 def fmt_monotonic(value: int) -> str:
     if value == 2:
         return "Strictly increasing"
@@ -291,5 +311,6 @@ def help(title: str, url: Optional[str] = None) -> str:
         return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
 
 
+@list_args
 def fmt_badge(value: str) -> str:
     return re.sub(r"\((\d+)\)", r'<span class="badge">\1</span>', value)

@@ -31,6 +31,7 @@ def render_boolean(config: Settings, summary: dict) -> dict:
         var_type="Boolean",
         var_name=summary["varname"],
         description=summary["description"],
+        style=config.html.style,
     )
 
     table = Table(
@@ -60,7 +61,8 @@ def render_boolean(config: Settings, summary: dict) -> dict:
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     fqm = FrequencyTableSmall(
@@ -77,7 +79,7 @@ def render_boolean(config: Settings, summary: dict) -> dict:
     items: List[Renderable] = [
         FrequencyTable(
             template_variables["freq_table_rows"],
-            name="Common Values",
+            name="Common Values (Table)",
             anchor_id=f"{varid}frequency_table",
             redact=False,
         )
@@ -87,18 +89,41 @@ def render_boolean(config: Settings, summary: dict) -> dict:
     max_unique = config.plot.cat_freq.max_unique
 
     if show and (max_unique > 0):
-        items.append(
-            Image(
-                cat_frequency_plot(
-                    config,
-                    summary["value_counts_without_nan"],
-                ),
-                image_format=image_format,
-                alt="Category Frequency Plot",
-                name="Category Frequency Plot",
-                anchor_id=f"{varid}cat_frequency_plot",
+        if isinstance(summary["value_counts_without_nan"], list):
+            items.append(
+                Container(
+                    [
+                        Image(
+                            cat_frequency_plot(
+                                config,
+                                s,
+                            ),
+                            image_format=image_format,
+                            alt=config.html.style._labels[idx],
+                            name=config.html.style._labels[idx],
+                            anchor_id=f"{varid}cat_frequency_plot_{idx}",
+                        )
+                        for idx, s in enumerate(summary["value_counts_without_nan"])
+                    ],
+                    anchor_id=f"{varid}cat_frequency_plot",
+                    name="Common Values (Plot)",
+                    sequence_type="batch_grid",
+                    batch_size=len(config.html.style._labels),
+                )
             )
-        )
+        else:
+            items.append(
+                Image(
+                    cat_frequency_plot(
+                        config,
+                        summary["value_counts_without_nan"],
+                    ),
+                    image_format=image_format,
+                    alt="Common Values (Plot)",
+                    name="Common Values (Plot)",
+                    anchor_id=f"{varid}cat_frequency_plot",
+                )
+            )
 
     template_variables["bottom"] = Container(
         items, sequence_type="tabs", anchor_id=f"{varid}bottom"

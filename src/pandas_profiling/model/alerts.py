@@ -89,6 +89,10 @@ class Alert:
         self.column_name = column_name
 
     @property
+    def alert_type_name(self) -> str:
+        return self.alert_type.name.replace("_", " ").lower().title()
+
+    @property
     def anchor_id(self) -> Optional[str]:
         if self._anchor_id is None:
             self._anchor_id = str(hash(self.column_name))
@@ -254,12 +258,6 @@ def supported_alerts(summary: dict) -> List[Alert]:
             Alert(
                 alert_type=AlertType.CONSTANT,
                 fields={"n_distinct"},
-            )
-        )
-        alerts.append(
-            Alert(
-                alert_type=AlertType.REJECTED,
-                fields=set(),
             )
         )
     return alerts

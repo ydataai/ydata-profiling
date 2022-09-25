@@ -68,29 +68,65 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
     for key, item in summary["correlations"].items():
         vmin, name, description = key_to_data[key]
 
-        diagram = Image(
-            plot.correlation_matrix(config, item, vmin=vmin),
-            image_format=image_format,
-            alt=name,
-            anchor_id=f"{key}_diagram",
-            name=name,
-            classes="correlation-diagram",
-        )
+        if isinstance(item, list):
+            cont: List[Renderable] = []
+            diagrams: List[Renderable] = []
+            for idx, i in enumerate(item):
+                diagram: Renderable = Image(
+                    plot.correlation_matrix(config, i, vmin=vmin),
+                    image_format=image_format,
+                    alt=name,
+                    anchor_id=f"{key}_diagram",
+                    name=config.html.style._labels[idx],
+                    classes="correlation-diagram",
+                )
+                diagrams.append(diagram)
 
-        if len(description) > 0:
-            desc = HTML(
-                f'<div style="padding:20px" class="text-muted"><h3>{name}</h3>{description}</div>',
-                anchor_id=f"{key}_html",
-                classes="correlation-description",
+            if len(description) > 0:
+                desc = HTML(
+                    f'<div style="padding:20px" class="text-muted">{description}</div>',
+                    anchor_id=f"{key}_html",
+                    classes="correlation-description",
+                    name=name,
+                )
+
+                tbl = Container(
+                    diagrams + [desc],
+                    anchor_id=key,
+                    name=name,
+                    sequence_type="batch_grid",
+                    batch_size=len(config.html.style._labels) + 1,
+                )
+                cont.append(tbl)
+            else:
+                raise RuntimeError("Correlation descriptions missing.")
+            items.append(
+                Container(cont, anchor_id=key, name=name, sequence_type="grid")
             )
-
-            tbl = Container(
-                [diagram, desc], anchor_id=key, name=name, sequence_type="grid"
-            )
-
-            items.append(tbl)
         else:
-            items.append(diagram)
+            diagram = Image(
+                plot.correlation_matrix(config, item, vmin=vmin),
+                image_format=image_format,
+                alt=name,
+                anchor_id=f"{key}_diagram",
+                name=name,
+                classes="correlation-diagram",
+            )
+
+            if len(description) > 0:
+                desc = HTML(
+                    f'<div style="padding:20px" class="text-muted"><h3>{name}</h3>{description}</div>',
+                    anchor_id=f"{key}_html",
+                    classes="correlation-description",
+                )
+
+                tbl = Container(
+                    [diagram, desc], anchor_id=key, name=name, sequence_type="grid"
+                )
+
+                items.append(tbl)
+            else:
+                items.append(diagram)
 
     corr = Container(
         items,
@@ -101,9 +137,9 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
 
     if len(items) > 0:
         btn = ToggleButton(
-            "Toggle correlation descriptions",
+            "Show correlation descriptions",
             anchor_id="toggle-correlation-description",
-            name="Toggle correlation descriptions",
+            name="Show correlation descriptions",
         )
 
         return Collapse(

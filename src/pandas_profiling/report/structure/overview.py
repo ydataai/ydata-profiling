@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import List
 from urllib.parse import quote
 
@@ -10,6 +11,7 @@ from pandas_profiling.report.formatters import (
     fmt_numeric,
     fmt_percent,
     fmt_timespan,
+    list_args,
 )
 from pandas_profiling.report.presentation.core import Alerts, Container, Table
 from pandas_profiling.report.presentation.core.renderable import Renderable
@@ -62,8 +64,7 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
     )
 
     dataset_info = Table(
-        table_metrics,
-        name="Dataset statistics",
+        table_metrics, name="Dataset statistics", style=config.html.style
     )
 
     dataset_types = Table(
@@ -75,6 +76,7 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
             for type_name, count in summary["table"]["types"].items()
         ],
         name="Variable types",
+        style=config.html.style,
     )
 
     return Container(
@@ -85,7 +87,7 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
     )
 
 
-def get_dataset_schema(metadata: dict) -> Container:
+def get_dataset_schema(config: Settings, metadata: dict) -> Container:
     about_dataset = []
     for key in ["description", "creator", "author"]:
         if key in metadata and len(metadata[key]) > 0:
@@ -120,36 +122,56 @@ def get_dataset_schema(metadata: dict) -> Container:
             )
 
     return Container(
-        [Table(about_dataset, name="Dataset", anchor_id="metadata_dataset")],
+        [
+            Table(
+                about_dataset,
+                name="Dataset",
+                anchor_id="metadata_dataset",
+                style=config.html.style,
+            )
+        ],
         name="Dataset",
         anchor_id="dataset",
         sequence_type="grid",
     )
 
 
-def get_dataset_reproduction(summary: dict) -> Renderable:
+def get_dataset_reproduction(config: Settings, summary: dict) -> Renderable:
+    """Dataset reproduction part of the report
+
+    Args:
+        config: settings object
+        summary: the dataset summary.
+
+    Returns:
+        A renderable object
+    """
+
     version = summary["package"]["pandas_profiling_version"]
-    config = quote(summary["package"]["pandas_profiling_config"])
+    config_file = summary["package"]["pandas_profiling_config"]
     date_start = summary["analysis"]["date_start"]
     date_end = summary["analysis"]["date_end"]
     duration = summary["analysis"]["duration"]
+
+    @list_args
+    def fmt_version(version: str) -> str:
+        return f'<a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{version}</a>'
+
+    @list_args
+    def fmt_config(config: str) -> str:
+        return f'<a download="config.json" href="data:text/plain;charset=utf-8,{quote(config)}">config.json</a>'
 
     reproduction_table = Table(
         [
             {"name": "Analysis started", "value": fmt(date_start)},
             {"name": "Analysis finished", "value": fmt(date_end)},
             {"name": "Duration", "value": fmt_timespan(duration)},
-            {
-                "name": "Software version",
-                "value": f'<a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{version}</a>',
-            },
-            {
-                "name": "Download configuration",
-                "value": f'<a download="config.json" href="data:text/plain;charset=utf-8,{config}">config.json</a>',
-            },
+            {"name": "Software version", "value": fmt_version(version)},
+            {"name": "Download configuration", "value": fmt_config(config_file)},
         ],
         name="Reproduction",
         anchor_id="overview_reproduction",
+        style=config.html.style,
     )
 
     return Container(
@@ -160,10 +182,11 @@ def get_dataset_reproduction(summary: dict) -> Renderable:
     )
 
 
-def get_dataset_column_definitions(definitions: dict) -> Container:
+def get_dataset_column_definitions(config: Settings, definitions: dict) -> Container:
     """Generate an overview section for the variable description
 
     Args:
+        config: settings object
         definitions: the variable descriptions.
 
     Returns:
@@ -178,6 +201,7 @@ def get_dataset_column_definitions(definitions: dict) -> Container:
             ],
             name="Variable descriptions",
             anchor_id="variable_definition_table",
+            style=config.html.style,
         )
     ]
 
@@ -189,15 +213,48 @@ def get_dataset_column_definitions(definitions: dict) -> Container:
     )
 
 
-def get_dataset_alerts(alerts: list) -> Alerts:
+def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
+    """Obtain the alerts for the report
+
+    Args:
+        config: settings object
+        alerts: list of alerts
+
+    Returns:
+        Alerts renderable object
+    """
+    # add up alerts from multiple reports
+    if isinstance(alerts, tuple):
+        count = 0
+        combined_alerts = defaultdict(dict)
+        for i, a in enumerate(alerts):
+            for alert in a:
+                combined_alerts[f"{alert.alert_type}_{alert.column_name}"][i] = alert
+            count += len(
+                [alert for alert in a if alert.alert_type != AlertType.REJECTED]
+            )
+
+        return Alerts(
+            alerts=combined_alerts,
+            name=f"Alerts ({count})",
+            anchor_id="alerts",
+            style=config.html.style,
+        )
+
     count = len([alert for alert in alerts if alert.alert_type != AlertType.REJECTED])
-    return Alerts(alerts=alerts, name=f"Alerts ({count})", anchor_id="alerts")
+    return Alerts(
+        alerts=alerts,
+        name=f"Alerts ({count})",
+        anchor_id="alerts",
+        style=config.html.style,
+    )
 
 
 def get_dataset_items(config: Settings, summary: dict, alerts: list) -> list:
     """Returns the dataset overview (at the top of the report)
 
     Args:
+        config: settings object
         summary: the calculated summary
         alerts: the alerts
 
@@ -210,7 +267,7 @@ def get_dataset_items(config: Settings, summary: dict, alerts: list) -> list:
     metadata = {key: config.dataset.dict()[key] for key in config.dataset.dict().keys()}
 
     if len(metadata) > 0 and any(len(value) > 0 for value in metadata.values()):
-        items.append(get_dataset_schema(metadata))
+        items.append(get_dataset_schema(config, metadata))
 
     column_details = {
         key: config.variables.descriptions[key]
@@ -218,11 +275,11 @@ def get_dataset_items(config: Settings, summary: dict, alerts: list) -> list:
     }
 
     if len(column_details) > 0:
-        items.append(get_dataset_column_definitions(column_details))
+        items.append(get_dataset_column_definitions(config, column_details))
 
     if alerts:
-        items.append(get_dataset_alerts(alerts))
+        items.append(get_dataset_alerts(config, alerts))
 
-    items.append(get_dataset_reproduction(summary))
+    items.append(get_dataset_reproduction(config, summary))
 
     return items

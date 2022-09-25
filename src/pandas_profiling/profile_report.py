@@ -274,8 +274,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -> None:
         """Write the report to a file.
 
-        By default a name is generated.
-
         Args:
             output_file: The name or the path of the file to generate including the extension (.html, .json).
             silent: if False, opens the file in the default browser or download it in a Google Colab environment
@@ -332,7 +330,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 offline=self.config.html.use_local_assets,
                 inline=self.config.html.inline,
                 assets_prefix=self.config.html.assets_prefix,
-                primary_color=self.config.html.style.primary_color,
+                primary_color=self.config.html.style.primary_colors[0],
                 logo=self.config.html.style.logo,
                 theme=self.config.html.style.theme,
                 title=self.description_set["analysis"]["title"],
@@ -458,3 +456,21 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
+
+    def compare(self, other: "ProfileReport") -> "ProfileReport":
+        """Compare this report with another ProfileReport
+        Alias for:
+        ```
+        pandas_profiling.compare([report1, report2], _labels=[report1.config.title, report2.config.title]
+        ```
+        See `pandas_profiling.compare` for details.
+
+        Args:
+            other: the ProfileReport to compare to
+
+        Returns:
+            Comparison ProfileReport
+        """
+        from pandas_profiling.compare_reports import compare
+
+        return compare([self, other])

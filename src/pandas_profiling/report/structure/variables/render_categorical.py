@@ -1,4 +1,6 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
+
+import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.report.formatters import (
@@ -10,6 +12,7 @@ from pandas_profiling.report.formatters import (
     help,
 )
 from pandas_profiling.report.presentation.core import (
+    HTML,
     Container,
     FrequencyTable,
     FrequencyTableSmall,
@@ -30,7 +33,10 @@ def render_categorical_frequency(
         [
             {
                 "name": "Unique",
-                "value": f"{summary['n_unique']} {help('The number of unique values (all values that occur exactly once in the dataset).')}",
+                "value": fmt_number(summary["n_unique"]),
+                "hint": help(
+                    "The number of unique values (all values that occur exactly once in the dataset)."
+                ),
                 "alert": "n_unique" in summary["alert_fields"],
             },
             {
@@ -41,6 +47,7 @@ def render_categorical_frequency(
         ],
         name="Unique",
         anchor_id=f"{varid}_unique_stats",
+        style=config.html.style,
     )
 
     return frequency_table
@@ -76,10 +83,20 @@ def render_categorical_length(
         ],
         name="Length",
         anchor_id=f"{varid}lengthstats",
+        style=config.html.style,
     )
 
+    if isinstance(summary["histogram_length"], list):
+        hist_data = histogram(
+            config,
+            [x[0] for x in summary["histogram_length"]],
+            [x[1] for x in summary["histogram_length"]],
+        )
+    else:
+        hist_data = histogram(config, *summary["histogram_length"])
+
     length_histo = Image(
-        histogram(config, *summary["histogram_length"]),
+        hist_data,
         image_format=config.plot.image_format,
         alt="length histogram",
         name="Length",
@@ -90,6 +107,15 @@ def render_categorical_length(
     return length_table, length_histo
 
 
+def _get_n(value: Union[list, pd.DataFrame]) -> Union[int, List[int]]:
+    """Helper function to deal with multiple values"""
+    if isinstance(value, list):
+        n = [v.sum() for v in value]
+    else:
+        n = value.sum()
+    return n
+
+
 def render_categorical_unicode(
     config: Settings, summary: dict, varid: str
 ) -> Tuple[Renderable, Renderable]:
@@ -98,7 +124,7 @@ def render_categorical_unicode(
     category_overview = FrequencyTable(
         freq_table(
             freqtable=summary["category_alias_counts"],
-            n=summary["category_alias_counts"].sum(),
+            n=_get_n(summary["category_alias_counts"]),
             max_number_to_print=n_freq_table_max,
         ),
         name="Most occurring categories",
@@ -115,7 +141,7 @@ def render_categorical_unicode(
             FrequencyTable(
                 freq_table(
                     freqtable=category_alias_counts,
-                    n=category_alias_counts.sum(),
+                    n=_get_n(category_alias_counts),
                     max_number_to_print=n_freq_table_max,
                 ),
                 name=f"{category_alias_name}",
@@ -131,7 +157,7 @@ def render_categorical_unicode(
             name="Most frequent character per category",
             sequence_type="batch_grid",
             anchor_id=f"{varid}categories",
-            batch_size=2,
+            batch_size=1,
             subtitles=True,
         ),
     ]
@@ -139,7 +165,7 @@ def render_categorical_unicode(
     script_overview = FrequencyTable(
         freq_table(
             freqtable=summary["script_counts"],
-            n=summary["script_counts"].sum(),
+            n=_get_n(summary["script_counts"]),
             max_number_to_print=n_freq_table_max,
         ),
         name="Most occurring scripts",
@@ -151,7 +177,7 @@ def render_categorical_unicode(
         FrequencyTable(
             freq_table(
                 freqtable=script_counts,
-                n=script_counts.sum(),
+                n=_get_n(script_counts),
                 max_number_to_print=n_freq_table_max,
             ),
             name=f"{script_name}",
@@ -170,7 +196,7 @@ def render_categorical_unicode(
             name="Most frequent character per script",
             sequence_type="batch_grid",
             anchor_id=f"{varid}scripts",
-            batch_size=2,
+            batch_size=1,
             subtitles=True,
         ),
     ]
@@ -178,7 +204,7 @@ def render_categorical_unicode(
     block_overview = FrequencyTable(
         freq_table(
             freqtable=summary["block_alias_counts"],
-            n=summary["block_alias_counts"].sum(),
+            n=_get_n(summary["block_alias_counts"]),
             max_number_to_print=n_freq_table_max,
         ),
         name="Most occurring blocks",
@@ -190,7 +216,7 @@ def render_categorical_unicode(
         FrequencyTable(
             freq_table(
                 freqtable=block_counts,
-                n=block_counts.sum(),
+                n=_get_n(block_counts),
                 max_number_to_print=n_freq_table_max,
             ),
             name=f"{block_name}",
@@ -207,7 +233,7 @@ def render_categorical_unicode(
             name="Most frequent character per block",
             sequence_type="batch_grid",
             anchor_id=f"{varid}blocks",
-            batch_size=2,
+            batch_size=1,
             subtitles=True,
         ),
     ]
@@ -226,22 +252,35 @@ def render_categorical_unicode(
             },
             {
                 "name": "Distinct categories",
-                "value": f"{fmt_number(summary['n_category'])} {help(title='Unicode categories (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_character_property#General_Category')}",
+                "value": fmt_number(summary["n_category"]),
+                "hint": help(
+                    title="Unicode categories (click for more information)",
+                    url="https://en.wikipedia.org/wiki/Unicode_character_property#General_Category",
+                ),
                 "alert": False,
             },
             {
                 "name": "Distinct scripts",
-                "value": f"{fmt_number(summary['n_scripts'])} {help(title='Unicode scripts (click for more information)', url='https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode')}",
+                "value": fmt_number(summary["n_scripts"]),
+                "hint": help(
+                    title="Unicode scripts (click for more information)",
+                    url="https://en.wikipedia.org/wiki/Script_(Unicode)#List_of_scripts_in_Unicode",
+                ),
                 "alert": False,
             },
             {
                 "name": "Distinct blocks",
-                "value": f"{fmt_number(summary['n_block_alias'])} {help(title='Unicode blocks (click for more information)', url='https://en.wikipedia.org/wiki/Unicode_block')}",
+                "value": fmt_number(summary["n_block_alias"]),
+                "hint": help(
+                    title="Unicode blocks (click for more information)",
+                    url="https://en.wikipedia.org/wiki/Unicode_block",
+                ),
                 "alert": False,
             },
         ],
         name="Characters and Unicode",
         caption="The Unicode Standard assigns character properties to each code point, which can be used to analyse textual variables. ",
+        style=config.html.style,
     )
 
     citems = [
@@ -306,6 +345,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         "Categorical",
         summary["alerts"],
         summary["description"],
+        style=config.html.style,
     )
 
     table = Table(
@@ -335,7 +375,8 @@ def render_categorical(config: Settings, summary: dict) -> dict:
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     fqm = FrequencyTableSmall(
@@ -375,17 +416,32 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     if not config.vars.cat.redact:
         rows = ("1st row", "2nd row", "3rd row", "4th row", "5th row")
 
-        sample = Table(
-            [
-                {
-                    "name": name,
-                    "value": fmt(value),
-                    "alert": False,
-                }
-                for name, value in zip(rows, summary["first_rows"])
-            ],
-            name="Sample",
-        )
+        if isinstance(summary["first_rows"], list):
+            sample = Table(
+                [
+                    {
+                        "name": name,
+                        "value": fmt(value),
+                        "alert": False,
+                    }
+                    for name, *value in zip(rows, *summary["first_rows"])
+                ],
+                name="Sample",
+                style=config.html.style,
+            )
+        else:
+            sample = Table(
+                [
+                    {
+                        "name": name,
+                        "value": fmt(value),
+                        "alert": False,
+                    }
+                    for name, value in zip(rows, summary["first_rows"])
+                ],
+                name="Sample",
+                style=config.html.style,
+            )
         overview_items.append(sample)
 
     string_items: List[Renderable] = [frequency_table]
@@ -395,19 +451,49 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     show = config.plot.cat_freq.show
     max_unique = config.plot.cat_freq.max_unique
 
-    if show and (max_unique > 0) and (summary["n_distinct"] <= max_unique):
-        string_items.append(
-            Image(
-                cat_frequency_plot(
-                    config,
-                    summary["value_counts_without_nan"],
-                ),
-                image_format=image_format,
-                alt="Category Frequency Plot",
-                name="Category Frequency Plot",
-                anchor_id=f"{varid}cat_frequency_plot",
+    if show and (max_unique > 0):
+        if isinstance(summary["value_counts_without_nan"], list):
+            string_items.append(
+                Container(
+                    [
+                        Image(
+                            cat_frequency_plot(
+                                config,
+                                s,
+                            ),
+                            image_format=image_format,
+                            alt=config.html.style._labels[idx],
+                            name=config.html.style._labels[idx],
+                            anchor_id=f"{varid}cat_frequency_plot_{idx}",
+                        )
+                        if summary["n_distinct"][idx] <= max_unique
+                        else HTML(
+                            f"<h4 class='indent'>{config.html.style._labels[idx]}</h4><br />"
+                            f"<em>Number of variable categories passes threshold (<code>config.plot.cat_freq.max_unique</code>)</em>"
+                        )
+                        for idx, s in enumerate(summary["value_counts_without_nan"])
+                    ],
+                    anchor_id=f"{varid}cat_frequency_plot",
+                    name="Common Values (Plot)",
+                    sequence_type="batch_grid",
+                    batch_size=len(config.html.style._labels),
+                )
             )
-        )
+        elif (
+            len(config.html.style._labels) == 1 and summary["n_distinct"] <= max_unique
+        ):
+            string_items.append(
+                Image(
+                    cat_frequency_plot(
+                        config,
+                        summary["value_counts_without_nan"],
+                    ),
+                    image_format=image_format,
+                    alt="Common Values (Plot)",
+                    name="Common Values (Plot)",
+                    anchor_id=f"{varid}cat_frequency_plot",
+                )
+            )
 
     bottom_items = [
         Container(
@@ -422,15 +508,17 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             string_items,
             name="Categories",
             anchor_id=f"{varid}string",
-            sequence_type="batch_grid",
-            batch_size=len(string_items),
+            sequence_type="named_list"
+            if len(config.html.style._labels) > 1
+            else "batch_grid",
+            batch_size=len(config.html.style._labels),
         ),
     ]
 
     if words:
         woc = freq_table(
             freqtable=summary["word_counts"],
-            n=summary["word_counts"].sum(),
+            n=_get_n(summary["word_counts"]),
             max_number_to_print=10,
         )
 

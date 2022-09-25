@@ -15,6 +15,7 @@ def render_generic(config: Settings, summary: dict) -> dict:
         var_type="Unsupported",
         var_name=summary["varname"],
         description=summary["description"],
+        style=config.html.style,
     )
 
     table = Table(
@@ -34,7 +35,8 @@ def render_generic(config: Settings, summary: dict) -> dict:
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     return {

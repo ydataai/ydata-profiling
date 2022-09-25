@@ -49,7 +49,7 @@ def plot_missing_matrix(config: Settings, data: pd.DataFrame) -> str:
         figsize=(10, 4),
         fontsize=get_font_size(data) / 20 * 16,
         sparkline=False,
-        color=hex_to_rgb(config.html.style.primary_color),
+        color=hex_to_rgb(config.html.style.primary_colors[0]),
         labels=config.plot.missing.force_labels,
     )
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
@@ -71,7 +71,7 @@ def plot_missing_bar(config: Settings, data: pd.DataFrame) -> str:
         data,
         figsize=(10, 5),
         fontsize=get_font_size(data),
-        color=hex_to_rgb(config.html.style.primary_color),
+        color=hex_to_rgb(config.html.style.primary_colors[0]),
         labels=config.plot.missing.force_labels,
     )
     for ax0 in plt.gcf().get_axes():
