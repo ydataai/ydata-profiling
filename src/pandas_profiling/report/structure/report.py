@@ -42,6 +42,24 @@ def get_missing_items(config: Settings, summary: dict) -> list:
             anchor_id=key,
             caption=item["caption"],
         )
+        if isinstance(item["name"], str)
+        else Container(
+            [
+                ImageWidget(
+                    item["matrix"][i],
+                    image_format=config.plot.image_format,
+                    alt=item["name"][i],
+                    name=config.html.style._labels[i],
+                    anchor_id=key,
+                    caption=item["caption"][i],
+                )
+                for i in range(len(item["name"]))
+            ],
+            sequence_type="batch_grid",
+            batch_size=len(config.html.style._labels),
+            anchor_id=key,
+            name=item["name"][0],
+        )
         for key, item in summary["missing"].items()
     ]
 
@@ -68,25 +86,47 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
     render_map = get_render_map()
 
     for idx, summary in dataframe_summary["variables"].items():
+
         # Common template variables
-        alerts = [
-            alert.fmt()
-            for alert in dataframe_summary["alerts"]
-            if alert.column_name == idx
-        ]
+        if not isinstance(dataframe_summary["alerts"], tuple):
+            alerts = [
+                alert.fmt()
+                for alert in dataframe_summary["alerts"]
+                if alert.column_name == idx
+            ]
 
-        alert_fields = {
-            field
-            for alert in dataframe_summary["alerts"]
-            if alert.column_name == idx
-            for field in alert.fields
-        }
+            alert_fields = {
+                field
+                for alert in dataframe_summary["alerts"]
+                if alert.column_name == idx
+                for field in alert.fields
+            }
 
-        alert_types = {
-            alert.alert_type
-            for alert in dataframe_summary["alerts"]
-            if alert.column_name == idx
-        }
+            alert_types = {
+                alert.alert_type
+                for alert in dataframe_summary["alerts"]
+                if alert.column_name == idx
+            }
+        else:
+            alerts = tuple(
+                [alert.fmt() for alert in abc if alert.column_name == idx]
+                for abc in dataframe_summary["alerts"]
+            )  # type: ignore
+
+            alert_fields = {
+                field
+                for abc in dataframe_summary["alerts"]
+                for alert in abc
+                if alert.column_name == idx
+                for field in alert.fields
+            }
+
+            alert_types = {
+                alert.alert_type
+                for abc in dataframe_summary["alerts"]
+                for alert in abc
+                if alert.column_name == idx
+            }
 
         template_variables = {
             "varname": idx,
@@ -99,7 +139,23 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
         template_variables.update(summary)
 
         # Per type template variables
-        render_map_type = render_map.get(summary["type"], render_map["Unsupported"])
+        if isinstance(summary["type"], list):
+            types = set(summary["type"])
+            if len(types) == 1:
+                variable_type = list(types)[0]
+            else:
+                # This logic may be treated by the typeset
+                if (types == {"Numeric", "Categorical"}) or types == {
+                    "Categorical",
+                    "Unsupported",
+                }:
+                    # Treating numeric as categorical, if one is unsupported, still render as categorical
+                    variable_type = "Categorical"
+                else:
+                    raise ValueError(f"Types for {idx} are not compatible: {types}")
+        else:
+            variable_type = summary["type"]
+        render_map_type = render_map.get(variable_type, render_map["Unsupported"])
         template_variables.update(render_map_type(config, template_variables))
 
         # Ignore these
@@ -110,7 +166,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
 
         bottom = None
         if "bottom" in template_variables and template_variables["bottom"] is not None:
-            btn = ToggleButton("Toggle details", anchor_id=template_variables["varid"])
+            btn = ToggleButton("More details", anchor_id=template_variables["varid"])
             bottom = Collapse(btn, template_variables["bottom"])
 
         var = Variable(
@@ -126,10 +182,13 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
     return templs
 
 
-def get_duplicates_items(duplicates: pd.DataFrame) -> Sequence[Renderable]:
+def get_duplicates_items(
+    config: Settings, duplicates: pd.DataFrame
+) -> Sequence[Renderable]:
     """Create the list of duplicates items
 
     Args:
+        config: settings object
         duplicates: DataFrame of duplicates
 
     Returns:
@@ -137,13 +196,23 @@ def get_duplicates_items(duplicates: pd.DataFrame) -> Sequence[Renderable]:
     """
     items = []
     if duplicates is not None and len(duplicates) > 0:
-        items.append(
-            Duplicate(
-                duplicate=duplicates,
-                name="Most frequently occurring",
-                anchor_id="duplicates",
+        if isinstance(duplicates, list):
+            for idx, df in enumerate(duplicates):
+                items.append(
+                    Duplicate(
+                        duplicate=df,
+                        name=config.html.style._labels[idx],
+                        anchor_id="duplicates",
+                    )
+                )
+        else:
+            items.append(
+                Duplicate(
+                    duplicate=duplicates,
+                    name="Most frequently occurring",
+                    anchor_id="duplicates",
+                )
             )
-        )
     return items
 
 
@@ -168,52 +237,105 @@ def get_definition_items(definitions: pd.DataFrame) -> Sequence[Renderable]:
     return items
 
 
-def get_sample_items(sample: dict) -> List[Sample]:
+def get_sample_items(config: Settings, sample: dict) -> List[Renderable]:
     """Create the list of sample items
 
     Args:
+        config: settings object
         sample: dict of samples
 
     Returns:
         List of sample items to show in the interface.
     """
-    items = [
-        Sample(sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption)
-        for obj in sample
-    ]
+    items: List[Renderable] = []
+    if isinstance(sample, tuple):
+        for s in zip(*sample):
+            items.append(
+                Container(
+                    [
+                        Sample(
+                            sample=obj.data,
+                            name=config.html.style._labels[idx],
+                            anchor_id=obj.id,
+                            caption=obj.caption,
+                        )
+                        for idx, obj in enumerate(s)
+                    ],
+                    sequence_type="batch_grid",
+                    batch_size=len(sample),
+                    anchor_id=f"sample_{slugify(s[0].name)}",
+                    name=s[0].name,
+                )
+            )
+    else:
+        for obj in sample:
+            items.append(
+                Sample(
+                    sample=obj.data,
+                    name=obj.name,
+                    anchor_id=obj.id,
+                    caption=obj.caption,
+                )
+            )
     return items
 
 
-def get_scatter_matrix(config: Settings, scatter_matrix: dict) -> list:
+def get_interactions(config: Settings, interactions: dict) -> list:
     """Returns the interaction components for the report
 
     Args:
         config: report Settings object
-        scatter_matrix: a nested dict containing the scatter plots
+        interactions: a nested dict containing the scatter plots
 
     Returns:
         A list of components for the interaction section of the report
     """
-    titems = []
+    titems: List[Renderable] = []
 
-    for x_col, y_cols in scatter_matrix.items():
-        items = [
-            ImageWidget(
-                splot,
-                image_format=config.plot.image_format,
-                alt=f"{x_col} x {y_col}",
-                anchor_id=f"interactions_{slugify(x_col)}_{slugify(y_col)}",
-                name=y_col,
-            )
-            for y_col, splot in y_cols.items()
-        ]
+    for x_col, y_cols in interactions.items():
+        items: List[Renderable] = []
+        for y_col, splot in y_cols.items():
+            if not isinstance(splot, list):
+                items.append(
+                    ImageWidget(
+                        splot,
+                        image_format=config.plot.image_format,
+                        alt=f"{x_col} x {y_col}",
+                        anchor_id=f"interactions_{slugify(x_col)}_{slugify(y_col)}",
+                        name=y_col,
+                    )
+                )
+            else:
+                items.append(
+                    Container(
+                        [
+                            ImageWidget(
+                                zplot,
+                                image_format=config.plot.image_format,
+                                alt=f"{x_col} x {y_col}",
+                                anchor_id=f"interactions_{slugify(x_col)}_{slugify(y_col)}",
+                                name=config.html.style._labels[idx],
+                            )
+                            if zplot != ""
+                            else HTML(
+                                f"<h4 class='indent'>{config.html.style._labels[idx]}</h4><br />"
+                                f"<em>Interaction plot not present for dataset</em>"
+                            )
+                            for idx, zplot in enumerate(splot)
+                        ],
+                        sequence_type="batch_grid",
+                        batch_size=len(config.html.style._labels),
+                        anchor_id=f"interactions_{slugify(x_col)}_{slugify(y_col)}",
+                        name=y_col,
+                    )
+                )
 
         titems.append(
             Container(
                 items,
                 sequence_type="tabs" if len(items) <= 10 else "select",
                 name=x_col,
-                nested=len(scatter_matrix) > 10,
+                nested=len(interactions) > 10,
                 anchor_id=f"interactions_{slugify(x_col)}",
             )
         )
@@ -261,7 +383,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 )
             )
 
-        scatter_items = get_scatter_matrix(config, summary["scatter"])
+        scatter_items = get_interactions(config, summary["scatter"])
         if len(scatter_items) > 0:
             section_items.append(
                 Container(
@@ -287,23 +409,26 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 )
             )
 
-        sample_items = get_sample_items(summary["sample"])
+        sample_items = get_sample_items(config, summary["sample"])
         if len(sample_items) > 0:
             section_items.append(
                 Container(
                     items=sample_items,
-                    sequence_type="list",
+                    sequence_type="tabs",
                     name="Sample",
                     anchor_id="sample",
                 )
             )
 
-        duplicate_items = get_duplicates_items(summary["duplicates"])
+        duplicate_items = get_duplicates_items(config, summary["duplicates"])
         if len(duplicate_items) > 0:
             section_items.append(
                 Container(
                     items=duplicate_items,
-                    sequence_type="list",
+                    sequence_type="batch_grid",
+                    batch_size=len(duplicate_items)
+                    if isinstance(duplicate_items, list)
+                    else 1,
                     name="Duplicate rows",
                     anchor_id="duplicate",
                 )
@@ -321,4 +446,4 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
         content='Report generated by <a href="https://ydata.ai/?utm_source=opensource&utm_medium=pandasprofiling&utm_campaign=report">YData</a>.'
     )
 
-    return Root("Root", sections, footer)
+    return Root("Root", sections, footer, style=config.html.style)

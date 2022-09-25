@@ -210,6 +210,9 @@ html:
     style:
       theme: null
       logo: ""
-      primary_color: "#337ab7"
+      primary_colors:
+      - "#377eb8"
+      - "#e41a1c"
+      - "#4daf4a"
 
     full_width: false

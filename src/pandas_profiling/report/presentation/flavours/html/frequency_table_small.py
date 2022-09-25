@@ -4,4 +4,9 @@ from pandas_profiling.report.presentation.flavours.html import templates
 
 class HTMLFrequencyTableSmall(FrequencyTableSmall):
     def render(self) -> str:
-        return templates.template("frequency_table_small.html").render(**self.content)
+        html = ""
+        for idx, rows in enumerate(self.content["rows"]):
+            html += templates.template("frequency_table_small.html").render(
+                rows=rows, idx=idx
+            )
+        return html

@@ -27,6 +27,7 @@ def render_count(config: Settings, summary: dict) -> dict:
         "Real number (&Ropf; / &Ropf;<sub>&ge;0</sub>)",
         summary["alerts"],
         summary["description"],
+        style=config.html.style,
     )
 
     table1 = Table(
@@ -51,7 +52,8 @@ def render_count(config: Settings, summary: dict) -> dict:
                 "value": fmt_percent(summary["p_missing"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     table2 = Table(
@@ -88,7 +90,8 @@ def render_count(config: Settings, summary: dict) -> dict:
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     mini_histo = Image(

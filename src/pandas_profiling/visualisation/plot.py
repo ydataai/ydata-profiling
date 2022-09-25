@@ -20,45 +20,83 @@ from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 
 
+def format_fn(tick_val: int, tick_pos: Any) -> str:
+    return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
+
+
 def _plot_histogram(
     config: Settings,
     series: np.ndarray,
     bins: Union[int, np.ndarray],
     figsize: tuple = (6, 4),
     date: bool = False,
+    hide_yaxis: bool = False,
 ) -> plt.Figure:
-    """Plot an histogram from the data and return the AxesSubplot object.
+    """Plot a histogram from the data and return the AxesSubplot object.
 
     Args:
+        config: the Settings object
         series: The data to plot
-        figsize: The size of the figure (width, height) in inches, default (6,4)
         bins: number of bins (int for equal size, ndarray for variable size)
+        figsize: The size of the figure (width, height) in inches, default (6,4)
+        date: is the x-axis of date type
 
     Returns:
         The histogram plot.
     """
-    fig = plt.figure(figsize=figsize)
-    plot = fig.add_subplot(111)
-    plot.set_ylabel("Frequency")
-
     # we have precomputed the histograms...
-    diff = np.diff(bins)
-    plot.bar(
-        bins[:-1] + diff / 2,  # type: ignore
-        series,
-        diff,
-        facecolor=config.html.style.primary_color,
-    )
+    if isinstance(bins, list):
+        n_labels = len(config.html.style._labels)
+        fig, ax = plt.subplots(
+            nrows=n_labels, ncols=1, sharex=True, sharey=True, figsize=(6, 6)
+        )
 
-    if date:
+        for idx in range(n_labels):
+            plot = ax[idx]
 
-        def format_fn(tick_val: int, tick_pos: Any) -> str:
-            return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
+            diff = np.diff(bins[idx])
+            plot.bar(
+                bins[idx][:-1] + diff / 2,  # type: ignore
+                series[idx],
+                diff,
+                facecolor=config.html.style.primary_colors[idx],
+            )
 
-        plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
+            if date:
+                plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
 
-    if not config.plot.histogram.x_axis_labels:
-        plot.set_xticklabels([])
+            if not config.plot.histogram.x_axis_labels:
+                plot.set_xticklabels([])
+
+            if hide_yaxis:
+                plot.yaxis.set_visible(False)
+
+        if not config.plot.histogram.x_axis_labels:
+            fig.xticklabels([])
+
+        if not hide_yaxis:
+            fig.supylabel("Frequency")
+    else:
+        fig = plt.figure(figsize=figsize)
+        plot = fig.add_subplot(111)
+        if not hide_yaxis:
+            plot.set_ylabel("Frequency")
+        else:
+            plot.axes.get_yaxis().set_visible(False)
+
+        diff = np.diff(bins)
+        plot.bar(
+            bins[:-1] + diff / 2,  # type: ignore
+            series,
+            diff,
+            facecolor=config.html.style.primary_colors[0],
+        )
+
+        if date:
+            plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
+
+        if not config.plot.histogram.x_axis_labels:
+            plot.set_xticklabels([])
 
     return plot
 
@@ -105,8 +143,9 @@ def mini_histogram(
     Returns:
       The resulting mini histogram encoded as a string.
     """
-    plot = _plot_histogram(config, series, bins, figsize=(3, 2.25), date=date)
-    plot.axes.get_yaxis().set_visible(False)
+    plot = _plot_histogram(
+        config, series, bins, figsize=(3, 2.25), date=date, hide_yaxis=True
+    )
     plot.set_facecolor("w")
 
     for tick in plot.xaxis.get_major_ticks():
@@ -142,7 +181,7 @@ def get_correlation_font_size(n_labels: int) -> Optional[int]:
     """Dynamic label font sizes in correlation plots
 
     Args:
-        n_labels: the number of labels
+        n_labels: the number of _labels
 
     Returns:
         A font size or None for the default font size
@@ -224,7 +263,7 @@ def scatter_complex(config: Settings, series: pd.Series) -> str:
     plt.ylabel("Imaginary")
     plt.xlabel("Real")
 
-    color = config.html.style.primary_color
+    color = config.html.style.primary_colors[0]
 
     if len(series) > config.plot.scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
@@ -256,7 +295,7 @@ def scatter_series(
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
-    color = config.html.style.primary_color
+    color = config.html.style.primary_colors[0]
 
     data = zip(*series.tolist())
     if len(series) > config.plot.scatter_threshold:
@@ -291,7 +330,7 @@ def scatter_pairwise(
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
-    color = config.html.style.primary_color
+    color = config.html.style.primary_colors[0]
 
     indices = (series1.notna()) & (series2.notna())
     if len(series1) > config.plot.scatter_threshold:
@@ -435,7 +474,11 @@ def cat_frequency_plot(
     # Create the plot
     plot_type = config.plot.cat_freq.type
     if plot_type == "bar":
-        plot, legend = _plot_stacked_barh(data, colors)
+        if isinstance(data, list):
+            for v in data:
+                plot, legend = _plot_stacked_barh(v, colors)
+        else:
+            plot, legend = _plot_stacked_barh(data, colors)
 
     elif plot_type == "pie":
         plot, legend = _plot_pie_chart(data, colors)
