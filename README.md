@@ -200,11 +200,12 @@ You need [Python 3](https://python3statement.org/) to run the package. Other dep
 
 The documentation includes guides, tips and tricks for tackling common use cases:
 
-| Use case | Description |
-|---|---|
-| [Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html ) | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets |
-| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html ) | Generating reports which are mindful about sensitive data in the input dataset |
-| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html) | Complementing the report with dataset details and column-specific data dictionaries |
+| Use case                                                                                                                            | Description |
+|-------------------------------------------------------------------------------------------------------------------------------------|--|
+| [Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets |
+| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset |
+| [Comparing datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset |
+| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries |
 | [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations |
 
 ## 🔗 Integrations
