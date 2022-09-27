@@ -9,68 +9,52 @@ on:
 
 
 
-permissions:
-  id-token: write
-  contents: read
-
-
-
 jobs:
-  wait_previous:
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    name: 'Wait for Previous Runs'
-    runs-on: ubuntu-20.04
-
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
     steps:
-    - uses: ydataai/consecutive-workflow-action@v1.0.2
-      with:
-        token: ${{ secrets.ACCESS_TOKEN }}
+    - uses: actions/checkout@v2
 
-
-  prepare:
-    name: Prepare
-    runs-on: ubuntu-20.04
-
-    needs:
-    - wait_previous
-
-    outputs:
-      terraform_version: ${{ steps.terraform.outputs.version }}
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Get Terraform Version
-      id: terraform
+    - name: Configurating Git
       run: |
-        echo "::set-output name=version::$(cat .terraform-version)"
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git config --local core.autocrlf false
 
-
-  validate:
-    name: Runs terraform plan
-    runs-on: ubuntu-20.04
-
-    needs:
-    - prepare
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
       with:
-        role-to-assume: ${{ secrets.BACKYARD_AWS_ROLE_ARN }}
-        aws-region: eu-west-1
+        python-version: 3.8
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+    - uses: actions/cache@v1
+      name: Cache pip dependencies
       with:
-        terraform_version: ${{ needs.prepare.outputs.terraform_version }}
-        cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
-    - name: Terraform
+    - name: Install pip dependencies
       run: |
-        terraform init
-        terraform plan -var "aws_role_arn=${{ secrets.BACKYARD_AWS_ROLE_ARN }}" -var "azure_subscription_id=${{ secrets.BACKYARD_AZURE_SUBSCRIPTION_ID }}" \
-          -var "azure_client_id=${{ secrets.BACKYARD_AZURE_CLIENT_ID }}" -var "azure_client_secret=${{ secrets.BACKYARD_AZURE_CLIENT_SECRET }}" \
-          -var "azure_tenant_id=${{ secrets.BACKYARD_AZURE_TENANT_ID }}" -var "github_token=${{ secrets.ACCESS_TOKEN }}"
+         pip install --upgrade pip
+         pip install -r requirements.txt
+         pip install -r requirements-dev.txt
+         pip install -r requirements-test.txt
+
+    - name: Install the package
+      run: make install
+
+    - name: Code formatting
+      run: make lint
+
+    - name: Commit documentation changes
+      run: |
+        git add -u
+        git commit -m "[skip ci] Code formatting" -a || true
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}

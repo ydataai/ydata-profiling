@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: Version
       id: version
-      run: echo ::set-output name=value::`echo ${{ github.ref }} | sed -n -E 's/refs\/tags\/build\/([0-9]+.[0-9]+.[0-9]+)\/([[:alnum:]])/\1.\2/p'`
+      run: echo ::set-output name=value::`echo ${{ github.ref }} | sed -n -E 's/refs\/tags\/([0-9]+.[0-9]+.[0-9]+)\/([[:alnum:]])/\1.\2/p'`
 
 
   package:
@@ -55,8 +55,8 @@ jobs:
     - name: Install
       run: make install
 
-    - name: Lint
-      run: make lint
+    # - name: Lint
+    #   run: make lint
     
     - name:  Build package
       run: |
