@@ -40,8 +40,8 @@ jobs:
     - name: Install
       run: make install
 
-    # - name: Lint
-    #   run: make lint
+    - name: Lint
+      run: make lint
     
     - name:  Build package
       run: |

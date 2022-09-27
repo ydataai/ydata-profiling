@@ -16,8 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
           
     - uses: wagoid/commitlint-github-action@v3
 
@@ -26,7 +24,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Configurating Git
       run: |
@@ -49,10 +49,10 @@ jobs:
 
     - name: Install pip dependencies
       run: |
-         pip install --upgrade pip
-         pip install -r requirements.txt
-         pip install -r requirements-dev.txt
-         pip install -r requirements-test.txt
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -r requirements-dev.txt
+        python -m pip install -r requirements-test.txt
 
     - name: Install the package
       run: make install
@@ -66,7 +66,7 @@ jobs:
         git commit -m "[skip ci] Code formatting" -a || true
 
     - name: Push changes
-      uses: ad-m/github-push-action@master
+      uses: ad-m/github-push-action@v0.6.0
       with:
-        branch: ${{ github.ref }}
+        branch: ${{ github.head_ref }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
