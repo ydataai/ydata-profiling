@@ -1,0 +1,76 @@
+name: Pull Request
+
+
+
+on:
+  pull_request:
+    branches:
+    - master
+
+
+
+permissions:
+  id-token: write
+  contents: read
+
+
+
+jobs:
+  wait_previous:
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    name: 'Wait for Previous Runs'
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: ydataai/consecutive-workflow-action@v1.0.2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-20.04
+
+    needs:
+    - wait_previous
+
+    outputs:
+      terraform_version: ${{ steps.terraform.outputs.version }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get Terraform Version
+      id: terraform
+      run: |
+        echo "::set-output name=version::$(cat .terraform-version)"
+
+
+  validate:
+    name: Runs terraform plan
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.BACKYARD_AWS_ROLE_ARN }}
+        aws-region: eu-west-1
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ needs.prepare.outputs.terraform_version }}
+        cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
+
+    - name: Terraform
+      run: |
+        terraform init
+        terraform plan -var "aws_role_arn=${{ secrets.BACKYARD_AWS_ROLE_ARN }}" -var "azure_subscription_id=${{ secrets.BACKYARD_AZURE_SUBSCRIPTION_ID }}" \
+          -var "azure_client_id=${{ secrets.BACKYARD_AZURE_CLIENT_ID }}" -var "azure_client_secret=${{ secrets.BACKYARD_AZURE_CLIENT_SECRET }}" \
+          -var "azure_tenant_id=${{ secrets.BACKYARD_AZURE_TENANT_ID }}" -var "github_token=${{ secrets.ACCESS_TOKEN }}"

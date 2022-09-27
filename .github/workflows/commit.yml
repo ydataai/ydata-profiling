@@ -1,5 +1,13 @@
-name: Lint Commit Messages
-on: [pull_request]
+name: Lint commit messages
+
+
+
+on:
+  pull_request:
+    branches:
+    - master
+
+
 
 jobs:
   commitlint:
