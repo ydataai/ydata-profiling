@@ -10,9 +10,21 @@ on:
 
 
 jobs:
-  lint:
-    name: Lint
+  commitlint:
+    name: Lint commmit message
     runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+          
+    - uses: wagoid/commitlint-github-action@v3
+
+  lint:
+    name: Lint source code
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
 
@@ -48,7 +60,7 @@ jobs:
     - name: Code formatting
       run: make lint
 
-    - name: Commit documentation changes
+    - name: Commit code formatting changes
       run: |
         git add -u
         git commit -m "[skip ci] Code formatting" -a || true

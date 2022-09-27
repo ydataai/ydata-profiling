@@ -16,9 +16,13 @@ include src/pandas_profiling/*.yaml
 # Exclude development, docs, testing and example code
 exclude .pre-commit-config.yaml
 exclude commitlint.config.js
+exclude .releaserc.json
 include Makefile make.bat
-exclude docs examples tests docsrc
+exclude docs examples tests docsrc .devcontainer .github .vscode
 recursive-exclude docs *
 recursive-exclude docsrc *
 recursive-exclude examples *
 recursive-exclude tests *
+recursive-exclude .devcontainer *
+recursive-exclude .github *
+recursive-exclude .vscode *
