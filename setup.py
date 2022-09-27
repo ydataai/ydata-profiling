@@ -42,6 +42,9 @@ setup(
             "jupyter-core>=4.6.3",
             "ipywidgets>=7.5.1",
         ],
+        "unicode": [
+            "tangled-up-in-unicode==0.2.0",
+        ],
     },
     package_data={
         "pandas_profiling": ["py.typed"],
