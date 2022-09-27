@@ -32,7 +32,6 @@ repos:
     rev: "0.47"
     hooks:
     -   id: check-manifest
-        args: 
 -   repo: https://github.com/PyCQA/flake8
     rev: "4.0.1"
     hooks:
