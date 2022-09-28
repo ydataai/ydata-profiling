@@ -27,7 +27,7 @@ jobs:
       uses: oprypin/find-latest-tag@v1.1.0
       with:
         repository: ${{ github.repository }}
-        regex: '^\d+\.\d+\.\d+'
+        regex: '^\d+\.\d+\.\d+\.pre\d+'
         releases-only: false
 
     - name: Extract semantic version
@@ -62,4 +62,5 @@ jobs:
         tag_name: ${{ needs.prepare.outputs.version }}
         release_name: ${{ needs.prepare.outputs.version }}
         body: ${{ github.event.head_commit.message }}
+        target_commitish: ${{ github.sha }}
         prerelease: true
