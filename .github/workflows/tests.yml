@@ -9,6 +9,7 @@ on:
   push:
     branches: 
     - master
+    - develop
 
 
 
