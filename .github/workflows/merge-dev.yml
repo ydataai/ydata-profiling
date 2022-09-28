@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        token: ${{ secrets.ACCESS_TOKEN }}
+        fetch-depth: 0
 
     - name: Find Latest Tag
       id: latest_tag
@@ -43,7 +43,7 @@ jobs:
 
     - name: Compute version
       id: version
-      run: echo "::set-output name=value::${{ steps.semantic.outputs.value }}.dev${{ steps.build_number.outputs.value }}"
+      run: echo "::set-output name=value::${{ steps.semantic.outputs.value }}.pre${{ steps.build_number.outputs.value }}"
 
 
   prerelease:
