@@ -60,6 +60,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         tag_name: ${{ needs.prepare.outputs.version }}
-        name: ${{ needs.prepare.outputs.version }}
+        release_name: ${{ needs.prepare.outputs.version }}
         body: ${{ github.event.head_commit.message }}
         prerelease: true
