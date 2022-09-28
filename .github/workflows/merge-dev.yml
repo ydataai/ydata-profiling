@@ -51,8 +51,6 @@ jobs:
 
 
   prerelease:
-    if: needs.prepare.outputs.new_release == 'true'
-
     name: Generates Prerelease
     runs-on: ubuntu-20.04
 
@@ -62,36 +60,9 @@ jobs:
     - name: Create Pre Release
       uses: actions/create-release@v1
       env:
-        BUILD: ${{ needs.prepare.outputs.build_number }}
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        VERSION: ${{ needs.prepare.outputs.release }}
       with:
-        tag_name: ${{ env.VERSION }}.${{ env.BUILD }}
+        tag_name: ${{ needs.prepare.outputs.version }}
         release_name: ${{ needs.prepare.outputs.version }}
         body: ${{ github.event.head_commit.message }}
         prerelease: true
-
-
-  draft-release:
-    if: needs.prepare.outputs.new_release == 'true'
-
-    name: Draft Release
-    runs-on: ubuntu-20.04
-
-    needs: prepare
-
-    steps:
-    - name: Delete Previous drafts
-      uses: hugo19941994/delete-draft-releases@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
-    - name: Create Draft Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      with:
-        tag_name: ${{ needs.prepare.outputs.release }}
-        release_name: ${{ needs.prepare.outputs.release }}
-        body: ${{ needs.prepare.outputs.release_notes }}
-        draft: true
