@@ -1,3 +1,6 @@
+files: |
+    ^src/|
+    ^tests/|
 repos:
 -   repo: https://github.com/psf/black
     rev: 22.3.0
@@ -9,9 +12,9 @@ repos:
     hooks:
     - id: nbqa-black
     - id: nbqa-isort
-      args: [ --nbqa-mutate, --profile=black, --project=pandas_profiling ]
+      args: [ --profile=black, --project=pandas_profiling ]
     - id: nbqa-pyupgrade
-      args: [ --nbqa-mutate, --py36-plus ]
+      args: [ --py36-plus ]
 -   repo: https://github.com/asottile/pyupgrade
     rev: v2.31.0
     hooks:
