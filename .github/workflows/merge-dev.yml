@@ -27,7 +27,7 @@ jobs:
       uses: oprypin/find-latest-tag@v1.1.0
       with:
         repository: ${{ github.repository }}
-        regex: '^\d+\.\d+\.\d+\.pre\d+'
+        regex: '^\d+\.\d+\.\d+'
         releases-only: false
 
     - name: Extract semantic version
@@ -39,7 +39,7 @@ jobs:
 
     - name: Count number or releases for tag
       id: build_number
-      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.value }}) + 1))"
+      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.value }}.pre) + 1))"
 
     - name: Compute version
       id: version
