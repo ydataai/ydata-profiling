@@ -40,7 +40,7 @@ jobs:
 
     - name: Compute version
       id: version
-      run: echo "::set-output name=value::${{ steps.semantic.outputs.new_release_version }}.pre${{ steps.build_number.outputs.value }}"
+      run: echo "::set-output name=value::${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}"
 
 
   prerelease:
