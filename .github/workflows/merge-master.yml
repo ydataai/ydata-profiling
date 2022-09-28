@@ -37,7 +37,7 @@ jobs:
 
     - name: Count number or releases for tag
       id: build_number
-      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.new_release_version }}) + 1))"
+      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.new_release_version }}.rc) + 1))"
 
     - name: Compute version
       id: version
@@ -59,7 +59,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         tag_name: ${{ needs.prepare.outputs.version }}
-        name: ${{ needs.prepare.outputs.version }}
+        release_name: ${{ needs.prepare.outputs.version }}
         body: ${{ github.event.head_commit.message }}
         prerelease: true
 
