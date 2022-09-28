@@ -1,0 +1,66 @@
+name: Merge into develop branch
+
+
+
+on:
+  push:
+    branches: 
+    - develop
+
+
+
+jobs:
+  prepare:
+    name: Calculate Version and Build Number
+    runs-on: ubuntu-20.04
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Find Latest Tag
+      id: latest_tag
+      uses: oprypin/find-latest-tag@v1.1.0
+      with:
+        repository: ${{ github.repository }}
+        regex: '^\d+\.\d+\.\d+'
+        releases-only: false
+
+    - name: Extract semantic version
+      id: semantic
+      run: echo ::set-output name=value::$(echo ${{ steps.latest_tag.outputs.tag }} | sed -r 's|([0-9]+.[0-9]+.[0-9]+).*|\1|g')
+
+    - name: Computed Semantic Version
+      run: echo ${{ steps.semantic.outputs.value }}
+
+    - name: Count number or releases for tag
+      id: build_number
+      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.value }}.pre) + 1))"
+
+    - name: Compute version
+      id: version
+      run: echo "::set-output name=value::${{ steps.semantic.outputs.value }}.pre${{ steps.build_number.outputs.value }}"
+
+
+  prerelease:
+    name: Generates Prerelease
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - name: Create Pre Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        tag_name: ${{ needs.prepare.outputs.version }}
+        name: ${{ needs.prepare.outputs.version }}
+        body: ${{ github.event.head_commit.message }}
+        target_commitish: ${{ github.sha }}
+        prerelease: true
