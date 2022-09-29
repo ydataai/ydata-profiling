@@ -1,0 +1,85 @@
+name: Merge into master branch
+
+
+on:
+  push:
+    branches: 
+    - master
+
+
+jobs:
+  prepare:
+    name: Calculate Version and Build Number
+    runs-on: ubuntu-20.04
+
+    outputs:
+      build_number: ${{ steps.build_number.outputs.value }}
+      new_release: ${{ steps.semantic.outputs.new_release_published }}
+      release: ${{ steps.semantic.outputs.new_release_version }}
+      release_notes: ${{ steps.semantic.outputs.new_release_notes }}
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+    - uses: cycjimmy/semantic-release-action@v2
+      id: semantic
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        branch: master
+        dry_run: true
+        semantic_version: 18.0.1
+
+    - name: Count number or releases for tag
+      id: build_number
+      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.new_release_version }}.rc) + 1))"
+
+    - name: Compute version
+      id: version
+      run: echo "::set-output name=value::${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}"
+
+  prerelease:
+    if: needs.prepare.outputs.new_release == 'true'
+
+    name: Generates Prerelease
+    runs-on: ubuntu-20.04
+
+    needs: prepare
+
+    steps:
+    - name: Create Pre Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        tag_name: ${{ needs.prepare.outputs.version }}
+        release_name: ${{ needs.prepare.outputs.version }}
+        body: ${{ github.event.head_commit.message }}
+        prerelease: true
+
+  draft-release:
+    if: needs.prepare.outputs.new_release == 'true'
+
+    name: Draft Release
+    runs-on: ubuntu-20.04
+
+    needs: prepare
+
+    steps:
+    - name: Delete Previous drafts
+      uses: hugo19941994/delete-draft-releases@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Create Draft Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        tag_name: ${{ needs.prepare.outputs.release }}
+        release_name: ${{ needs.prepare.outputs.release }}
+        body: ${{ needs.prepare.outputs.release_notes }}
+        draft: true
