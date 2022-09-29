@@ -78,22 +78,3 @@ jobs:
         repo-token: ${{ secrets.ACCESS_TOKEN }}
         release-tag: ${{ needs.package.outputs.version }}
 
-  publish-private-pypi:
-    name: Publish packages to PyPi
-    runs-on: ubuntu-20.04
-
-    needs:
-    - prepare
-    - package
-
-    steps:
-    - uses: actions/download-artifact@v2
-      with:
-        name: built-artifacts
-        path: dist/
-
-    - uses: pypa/gh-action-pypi-publish@v1.4.2
-      with:
-        user: ${{ secrets.PRIVATE_PYPI_USERNAME }}
-        password: ${{ secrets.PRIVATE_PYPI_PASSWORD }}
-        repository_url: ${{ secrets.PRIVATE_PYPI_URL }}
