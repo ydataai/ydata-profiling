@@ -1,6 +1,13 @@
-name: CI
+name: Multi-software test
 
-on: push
+on:
+  pull_request:
+    branches:
+    - master
+  push:
+    branches: 
+    - master
+    - develop
 
 jobs:
   test:
