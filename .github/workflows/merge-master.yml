@@ -1,12 +1,10 @@
 name: Merge into master branch
 
 
-
 on:
   push:
     branches: 
     - master
-
 
 
 jobs:
@@ -43,7 +41,6 @@ jobs:
       id: version
       run: echo "::set-output name=value::${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}"
 
-
   prerelease:
     if: needs.prepare.outputs.new_release == 'true'
 
@@ -62,7 +59,6 @@ jobs:
         release_name: ${{ needs.prepare.outputs.version }}
         body: ${{ github.event.head_commit.message }}
         prerelease: true
-
 
   draft-release:
     if: needs.prepare.outputs.new_release == 'true'

@@ -1,12 +1,10 @@
 name: Pull Request
 
 
-
 on:
   pull_request:
     branches:
     - master
-
 
 
 jobs:

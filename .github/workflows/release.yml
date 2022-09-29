@@ -1,12 +1,10 @@
 name: Release
 
 
-
 on:
   release:
     types:
       - released
-
 
 
 jobs:
@@ -53,7 +51,6 @@ jobs:
       with:
         name: built-artifacts
         path: dist/
-  
 
   upload-assets:
     name: Upload Assets to Release
@@ -72,7 +69,6 @@ jobs:
         files: "dist/*"
         repo-token: ${{ secrets.ACCESS_TOKEN }}
         release-tag: ${{ needs.package.outputs.version }}
-
   
   publish-pypi:
     name: Publish packages to PyPi
@@ -90,7 +86,6 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
-
 
   docs_and_examples:
     name: Documentation and Examples

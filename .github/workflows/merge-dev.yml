@@ -1,12 +1,10 @@
 name: Merge into develop branch
 
 
-
 on:
   push:
     branches: 
     - develop
-
 
 
 jobs:
