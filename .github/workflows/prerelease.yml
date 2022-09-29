@@ -1,0 +1,99 @@
+name: Prerelease
+
+
+on:
+  release:
+    types:
+    - prereleased
+
+
+jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-20.04
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+    - name: Version
+      id: version
+      run: echo ::set-output name=value::`echo ${{ github.ref }} | sed -n -E 's/refs\/tags\/([0-9]+.[0-9]+.[0-9]+)\/([[:alnum:]])/\1.\2/p'`
+
+  package:
+    name: Build and Package
+    runs-on: ubuntu-20.04
+
+    needs: prepare
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.8"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -r requirements-dev.txt
+        python -m pip install -r requirements-test.txt
+    
+    - name: Install
+      run: make install
+
+    - name: Lint
+      run: make lint
+    
+    - name:  Build package
+      run: |
+        python setup.py sdist bdist_wheel
+        twine check dist/*
+
+    - name: Upload Pipeline Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: built-artifacts
+        path: dist/
+
+  upload-assets:
+    name: Upload Assets to Release
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+    - package
+
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: built-artifacts
+        path: dist/
+
+    - uses: AButler/upload-release-assets@v2.0
+      with:
+        files: "dist/*"
+        repo-token: ${{ secrets.ACCESS_TOKEN }}
+        release-tag: ${{ needs.package.outputs.version }}
+
+  publish-private-pypi:
+    name: Publish packages to PyPi
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+    - package
+
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: built-artifacts
+        path: dist/
+
+    - uses: pypa/gh-action-pypi-publish@v1.4.2
+      with:
+        user: ${{ secrets.PRIVATE_PYPI_USERNAME }}
+        password: ${{ secrets.PRIVATE_PYPI_PASSWORD }}
+        repository_url: ${{ secrets.PRIVATE_PYPI_URL }}
