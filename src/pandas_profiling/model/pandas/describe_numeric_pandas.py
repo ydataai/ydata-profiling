@@ -2,7 +2,13 @@ from typing import Any, Dict, Tuple
 
 import numpy as np
 import pandas as pd
-from pandas.core.arrays.integer import _IntegerDtype
+
+from pandas_profiling.utils.compat import pandas_version_info
+
+if pandas_version_info() >= (1, 5):
+    from pandas.core.arrays.integer import IntegerDtype
+else:
+    from pandas.core.arrays.integer import _IntegerDtype as IntegerDtype
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.summary_algorithms import (
@@ -95,7 +101,7 @@ def pandas_describe_numeric_1d(
 
     stats = summary
 
-    if isinstance(series.dtype, _IntegerDtype):
+    if isinstance(series.dtype, IntegerDtype):
         stats.update(numeric_stats_pandas(series))
         present_values = series.astype(str(series.dtype).lower())
         finite_values = present_values
