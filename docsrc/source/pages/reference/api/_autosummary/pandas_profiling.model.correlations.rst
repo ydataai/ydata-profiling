@@ -32,6 +32,7 @@
       Pearson
       PhiK
       Spearman
+      Association
    
    
 

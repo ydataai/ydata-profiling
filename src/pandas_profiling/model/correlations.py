@@ -44,6 +44,13 @@ class Cramers(Correlation):
         raise NotImplementedError()
 
 
+class Association(Correlation):
+    @staticmethod
+    @multimethod
+    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
+        raise NotImplementedError()
+
+
 class PhiK(Correlation):
     @staticmethod
     @multimethod
@@ -66,7 +73,7 @@ def calculate_correlation(
     config: Settings, df: Sized, correlation_name: str, summary: dict
 ) -> Optional[Sized]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramers).
+    (pearson, spearman, kendall, phi_k, cramers, association).
 
     Args:
         config: report Settings object
@@ -86,16 +93,14 @@ def calculate_correlation(
         "spearman": Spearman,
         "kendall": Kendall,
         "cramers": Cramers,
+        "association": Association,
         "phi_k": PhiK,
     }
 
-    correlation = None
-    try:
-        correlation = correlation_measures[correlation_name].compute(
-            config, df, summary
-        )
-    except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
-        warn_correlation(correlation_name, str(e))
+    correlation = correlation_measures[correlation_name].compute(config, df, summary)
+      
+    # except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
+    #     warn_correlation(correlation_name, str(e))
 
     if correlation is not None and len(correlation) <= 0:
         correlation = None

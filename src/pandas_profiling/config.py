@@ -291,6 +291,7 @@ class Settings(BaseSettings):
         "spearman": Correlation(key="spearman"),
         "pearson": Correlation(key="pearson"),
         "kendall": Correlation(key="kendall"),
+        "association": Correlation(key="association"),
         "cramers": Correlation(key="cramers"),
         "phi_k": Correlation(key="phi_k"),
     }
@@ -383,6 +384,7 @@ class Config:
             "kendall": {"calculate": False},
             "phi_k": {"calculate": False},
             "cramers": {"calculate": False},
+            "association": {"calculate": False},
         },
     }
 

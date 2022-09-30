@@ -96,6 +96,7 @@ For instance, to disable all correlation computations (may be relevant for large
             "kendall": {"calculate": False},
             "phi_k": {"calculate": False},
             "cramers": {"calculate": False},
+            "association": {"calculate": False},
         },
     )
 

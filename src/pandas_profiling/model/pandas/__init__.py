@@ -13,6 +13,7 @@ from pandas_profiling.model.pandas import (
     describe_supported_pandas,
     describe_timeseries_pandas,
     describe_url_pandas,
+    discretize_pandas,
     duplicates_pandas,
     missing_pandas,
     sample_pandas,
@@ -35,6 +36,7 @@ __all__ = [
     "describe_supported_pandas",
     "describe_timeseries_pandas",
     "describe_url_pandas",
+    "descritize_pandas"
     "duplicates_pandas",
     "missing_pandas",
     "sample_pandas",
