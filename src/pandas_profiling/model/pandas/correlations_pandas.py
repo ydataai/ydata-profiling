@@ -130,7 +130,7 @@ def pandas_association_compute(
     ]
     df_discretized = Discretizer(
         DiscretizationType.UNIFORM, n_bins=10
-    ).discretize_dataframe(df[numerical_columns])
+    ).discretize_dataframe(df)
     columns_tested = numerical_columns + categorical_columns
     correlation_matrix = pd.DataFrame(
         np.ones((len(columns_tested), len(columns_tested))),
