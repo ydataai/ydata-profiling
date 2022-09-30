@@ -73,7 +73,6 @@ def _cramers_corrected_stat(confusion_matrix: pd.DataFrame, correction: bool) ->
 
 
 def _pairwise_spearman(col_1: pd.Series, col_2: pd.Series) -> float:
-    print(col_1)
     return col_1.corr(col_2, method="spearman")
 
 
@@ -144,7 +143,10 @@ def pandas_association_compute(
             if col_1_name and col_2_name not in categorical_columns
             else _pairwise_cramers
         )
-        def f(x): return df_discretized if x in numerical_columns else df
+
+        def f(x: str) -> pd.Series:
+            return df_discretized if x in numerical_columns else df
+
         score = method(f(col_1_name)[col_1_name], f(col_2_name)[col_2_name])
         (
             correlation_matrix.loc[col_1_name, col_2_name],

@@ -97,10 +97,13 @@ def calculate_correlation(
         "phi_k": PhiK,
     }
 
-    correlation = correlation_measures[correlation_name].compute(config, df, summary)
-
-    # except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
-    #     warn_correlation(correlation_name, str(e))
+    correlation = None
+    try:
+        correlation = correlation_measures[correlation_name].compute(
+            config, df, summary
+        )
+    except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
+        warn_correlation(correlation_name, str(e))
 
     if correlation is not None and len(correlation) <= 0:
         correlation = None

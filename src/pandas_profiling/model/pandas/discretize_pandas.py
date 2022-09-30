@@ -1,7 +1,7 @@
 from enum import Enum
 import pandas as pd
 import numpy as np
-from typing import Optional, List
+from typing import List
 
 
 class DiscretizationType(Enum):
@@ -26,7 +26,7 @@ class Discretizer:
     """
 
     def __init__(
-        self, method=DiscretizationType, n_bins: int = 10, reset_index: bool = False
+        self, method: DiscretizationType, n_bins: int = 10, reset_index: bool = False
     ) -> None:
         self.discretization_type = method
         self.n_bins = n_bins
