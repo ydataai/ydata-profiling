@@ -6,6 +6,11 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 from scipy import stats
+from operator import add 
+import pyspark
+from pyspark import SparkContext, SparkConf
+import numpy as np 
+from collections import defaultdict
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import (
@@ -35,7 +40,68 @@ def pandas_pearson_compute(
 def pandas_kendall_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
-    return df.corr(method="kendall")
+
+        appName = "test"
+        master = "local"
+
+        conf = SparkConf().setAppName(appName).setMaster(master)
+        sc = SparkContext.getOrCreate(conf=conf)
+        #zip sample data and convert to rdd
+        def correlation_kendal(var1,var2):
+            example_data = zip(var1, var2)
+            example_rdd = sc.parallelize(example_data)
+            #filer out all your null values. Row containing nulls will be removed
+            example_rdd = example_rdd.filter(lambda x: x is not None).filter(lambda x: x != "")
+
+            #take the cartesian product of example data (generate all possible combinations)
+            all_pairs = example_rdd.cartesian(example_rdd)
+
+            #function calculating concorant and disconordant pairs
+            def calc(pair):
+                p1, p2 = pair
+                x1, y1 = p1
+                x2, y2 = p2
+                if (x1 == x2) and (y1 == y2):
+                    return ("t", 1) #tie
+                elif x1 == x2:
+                    return ("xtie", 1) #tie
+                elif y1 == y2:
+                    return ("ytie", 1) #tie
+                elif ((x1 > x2) and (y1 > y2)) or ((x1 < x2) and (y1 < y2)):
+                    return ("c", 1) #concordant pair
+                else:
+                    return ("d", 1) #discordant pair
+
+            #rank all pairs and calculate concordant / disconrdant pairs with calc() then return results
+            results  = all_pairs.map(calc)
+
+            #aggregate the results
+            results = results.aggregateByKey(0, add, add)
+
+            #count and collect
+            try:
+                d = {k: v for (k, v) in results.collect()}
+                c_val = 0 if d.get("c") == None else d.get("c")
+                d_val = 0 if d.get("d") == None else d.get("d")
+                x_tie = 0 if d.get("xtie") == None else d.get("xtie")
+                y_tie = 0 if d.get("ytie") == None else d.get("ytie")
+                tau = (c_val - d_val) / ((c_val + d_val + x_tie) * (c_val + d_val + y_tie))**0.5
+                tau=np.round(tau,decimals=6)
+                return tau
+            except Exception as e:
+                raise e
+        mapping_col_dict = defaultdict(list)
+        for column1 in df.columns:
+            for column2 in df.columns:
+                    mapping_col_dict[column1].append(correlation_kendal(df[column1],df[column2]))
+        output_df=pd.DataFrame.from_dict(mapping_col_dict)
+        output_df.index=output_df.columns
+
+        return output_df
+
+
+
+    #return df.corr(method="kendall")
 
 
 def _cramers_corrected_stat(confusion_matrix: pd.DataFrame, correction: bool) -> float:
