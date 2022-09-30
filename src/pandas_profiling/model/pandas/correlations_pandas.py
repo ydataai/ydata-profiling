@@ -144,7 +144,7 @@ def pandas_association_compute(
             if col_1_name and col_2_name not in categorical_columns
             else _pairwise_cramers
         )
-        f = lambda x: df_discretized if x in numerical_columns else df
+        def f(x): return df_discretized if x in numerical_columns else df
         score = method(f(col_1_name)[col_1_name], f(col_2_name)[col_2_name])
         (
             correlation_matrix.loc[col_1_name, col_2_name],
