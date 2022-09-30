@@ -98,7 +98,7 @@ def calculate_correlation(
     }
 
     correlation = correlation_measures[correlation_name].compute(config, df, summary)
-      
+
     # except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
     #     warn_correlation(correlation_name, str(e))
 

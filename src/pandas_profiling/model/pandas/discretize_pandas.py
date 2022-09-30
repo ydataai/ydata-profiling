@@ -23,7 +23,7 @@ class Discretizer:
 
     n_bins (int): number of bins
     reset_index (bool): instruction to reset the index of the dataframe after the discretization
-    """    
+    """
 
     def __init__(
         self, method=DiscretizationType, n_bins: int = 10, reset_index: bool = False
@@ -32,9 +32,7 @@ class Discretizer:
         self.n_bins = n_bins
         self.reset_index = reset_index
 
-    def discretize_dataframe(
-        self, dataframe: pd.DataFrame
-    ) -> pd.DataFrame:
+    def discretize_dataframe(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         """_summary_
 
         Args:
@@ -43,7 +41,7 @@ class Discretizer:
         Returns:
             pd.DataFrame: discretized dataframe
         """
-         
+
         discretized_df = dataframe.copy()
         all_columns = dataframe.columns
         num_columns = self._get_numerical_columns(dataframe)
