@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  if: ${{ github.actor != 'dependabot[bot]' }}
   commitlint:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     name: Lint commmit message
     runs-on: ubuntu-latest
 
