@@ -6,9 +6,9 @@ on:
     branches:
     - master
 
-
 jobs:
   commitlint:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     name: Lint commmit message
     runs-on: ubuntu-latest
 
@@ -57,14 +57,13 @@ jobs:
     - name: Install the package
       run: make install
 
-    - name: Code formatting
+    - name: Validate code formatting
       run: make lint
 
     - name: Commit code formatting changes
       run: |
         git add -u
         git commit -m "[skip ci] Code formatting" -a || true
-
     - name: Push changes
       uses: ad-m/github-push-action@v0.6.0
       with:
