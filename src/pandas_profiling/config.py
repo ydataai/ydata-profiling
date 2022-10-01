@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from pydantic import BaseModel, BaseSettings, Field
+from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
@@ -176,14 +176,14 @@ class Style(BaseModel):
     # Primary color used for comparisons (default: blue, red, green)
     primary_colors: List[str] = ["#377eb8", "#e41a1c", "#4daf4a"]
 
-    # Labels used for comparing reports (private attribute)
-    _labels: List[str] = ["_"]
-
     # Base64-encoded logo image
     logo: str = ""
 
     # HTML Theme (optional, default: None)
     theme: Optional[Theme] = None
+
+    # Labels used for comparing reports (private attribute)
+    _labels: List[str] = PrivateAttr(["_"])
 
 
 class Html(BaseModel):
