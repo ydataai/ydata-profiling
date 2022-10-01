@@ -66,6 +66,7 @@ def create_html_assets(config: Settings, output_file: Path) -> None:
                 template(css_file).render(
                     primary_colors=config.html.style.primary_colors,
                     nav=config.html.navbar_show,
+                    style=config.html.style,
                 )
             )
 
