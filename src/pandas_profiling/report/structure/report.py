@@ -364,13 +364,17 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 name="Overview",
                 anchor_id="overview",
             ),
-            Container(
-                render_variables_section(config, summary),
-                sequence_type="accordion",
-                name="Variables",
-                anchor_id="variables",
-            ),
         ]
+
+        if len(summary["variables"]) > 0:
+            section_items.append(
+                Container(
+                    render_variables_section(config, summary),
+                    sequence_type="accordion",
+                    name="Variables",
+                    anchor_id="variables",
+                )
+            )
 
         scatter_items = get_interactions(config, summary["scatter"])
         if len(scatter_items) > 0:
