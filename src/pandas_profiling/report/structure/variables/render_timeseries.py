@@ -34,6 +34,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         name,
         summary["alerts"],
         summary["description"],
+        style=config.html.style,
     )
 
     table1 = Table(
