@@ -75,7 +75,8 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
                 "fmt": fmt_percent,
                 "alert": "p_infinite" in summary["alert_fields"],
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     table2 = Table(
@@ -116,7 +117,8 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
                 "fmt": fmt_bytesize,
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     mini_plot = Image(
@@ -171,6 +173,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
             },
         ],
         name="Quantile statistics",
+        style=config.html.style,
     )
 
     descriptive_statistics = Table(
@@ -226,6 +229,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
             },
         ],
         name="Descriptive statistics",
+        style=config.html.style,
     )
 
     statistics = Container(
