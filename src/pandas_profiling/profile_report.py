@@ -114,11 +114,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             for condition, key in groups:
                 if condition:
                     cfg = cfg.update(Config.get_arg_groups(key))
-            report_config = cfg.update(report_config.dict())
+            report_config = cfg.update(report_config.dict(exclude_defaults=True))
 
         if len(kwargs) > 0:
             shorthands, kwargs = Config.shorthands(kwargs)
-            report_config = Settings().update(shorthands).update(report_config.dict())
+            report_config = Settings().update(shorthands).update(report_config.dict(exclude_defaults=True))
 
         if config is not None:
             report_config = report_config.update(config.dict())
