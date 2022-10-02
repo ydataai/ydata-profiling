@@ -237,6 +237,14 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @property
     def widgets(self) -> Renderable:
+        if (
+            isinstance(self.description_set["table"]["n"], list)
+            and len(self.description_set["table"]["n"]) > 1
+        ):
+            raise RuntimeError(
+                "Widgets interface not (yet) supported for comparing reports, please use the HTML rendering."
+            )
+
         if self._widgets is None:
             self._widgets = self._render_widgets()
         return self._widgets
