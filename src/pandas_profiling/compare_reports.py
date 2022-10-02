@@ -113,8 +113,8 @@ def compare(
             "Reports will be produced, but may yield unexpected formatting."
         )
 
-    if all(isinstance(report, ProfileReport) for report in reports):
-        # Use titles as _labels
+    if any(not isinstance(report, dict) for report in reports):
+        # Use titles as labels
         labels = [report.config.title for report in reports]  # type: ignore
 
         # Use color per report if not custom set
