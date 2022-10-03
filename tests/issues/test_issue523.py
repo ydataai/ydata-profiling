@@ -3,14 +3,10 @@ Test for issue 523:
 https://github.com/pandas-profiling/pandas-profiling/issues/XXX
 """
 import pandas as pd
-import pytest
 
 from pandas_profiling import ProfileReport
 
 
-@pytest.mark.skipif(
-    int(pd.__version__.split(".")[0]) < 1, reason="requires pandas 1 or higher"
-)
 def test_issue523():
     # https://github.com/pandas-dev/pandas/issues/33803
 
