@@ -52,14 +52,9 @@ jobs:
     - prepare
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Configure Git
-      run: |
-        git config user.email "azory@ydata.ai"
-        git config user.name "Azory YData Bot"
-
-    - name: Create tag
-      run: |
-        git tag -a ${{ needs.prepare.outputs.version }} -m "${{ github.event.head_commit.message }}"
-        git push --tags
+    - uses: simpleactions/create-tag@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        tag: ${{ needs.prepare.outputs.version }}
+        message: ${{  github.event.head_commit.message }}
