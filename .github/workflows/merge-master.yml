@@ -83,6 +83,23 @@ jobs:
         branch: ${{ github.ref }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
+  prerelease-tag:
+    if: needs.prepare.outputs.new_release == 'true'
+
+    name: Create Prerelease Tag
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - uses: rickstaa/action-create-tag@v1
+      with:
+        tag: ${{ needs.prepare.outputs.version }}
+        message: ${{ needs.prepare.outputs.version }}
+
   draft-release:
     if: needs.prepare.outputs.new_release == 'true'
 
