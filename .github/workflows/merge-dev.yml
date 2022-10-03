@@ -54,7 +54,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - uses: rickstaa/action-create-tag@v1
-      with:
-        tag: ${{ needs.prepare.outputs.version }}
-        message: ${{ needs.prepare.outputs.version }}
+    - name: Configure Git
+      run: |
+        git config user.email "azory@ydata.ai"
+        git config user.name "Azory YData Bot"
+
+    - name: Create tag
+      run: |
+        git tag -a ${{ needs.prepare.outputs.version }} -m "${{ github.event.head_commit.message }}"
+        git push --tags
