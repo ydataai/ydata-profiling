@@ -73,12 +73,16 @@ def pandas_cramers_compute(
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
-    categoricals = {
-        key
-        for key, value in summary.items()
-        if value["type"] in {"Categorical", "Boolean"}
-        and value["n_distinct"] <= threshold
-    }
+    # `index` and `columns` must not be a set since Pandas 1.5,
+    # so convert it to a list. The order of the list is arbitrary.
+    categoricals = list(
+        {
+            key
+            for key, value in summary.items()
+            if value["type"] in {"Categorical", "Boolean"}
+            and value["n_distinct"] <= threshold
+        }
+    )
 
     if len(categoricals) <= 1:
         return None
