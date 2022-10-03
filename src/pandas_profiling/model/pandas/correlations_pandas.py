@@ -9,16 +9,16 @@ from scipy import stats
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import (
+    Association,
     Cramers,
     Kendall,
     Pearson,
     PhiK,
     Spearman,
-    Association,
 )
 from pandas_profiling.model.pandas.discretize_pandas import (
-    Discretizer,
     DiscretizationType,
+    Discretizer,
 )
 
 
