@@ -75,4 +75,4 @@ jobs:
       if: ${{ steps.commit.outputs.CHANGES == 'true' }}
       with:
         branch: ${{ github.head_ref }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}

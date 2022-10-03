@@ -81,7 +81,7 @@ jobs:
       uses: ad-m/github-push-action@v0.6.0
       with:
         branch: ${{ github.ref }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}
 
   prerelease-tag:
     if: needs.prepare.outputs.new_release == 'true'
