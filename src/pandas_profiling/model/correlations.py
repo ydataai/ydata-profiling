@@ -5,9 +5,14 @@ from typing import Dict, List, Optional, Sized
 import numpy as np
 import pandas as pd
 from multimethod import multimethod
-from pandas.core.base import DataError
 
 from pandas_profiling.config import Settings
+from pandas_profiling.utils.compat import pandas_version_info
+
+if pandas_version_info() >= (1, 5):
+    from pandas.errors import DataError
+else:
+    from pandas.core.base import DataError
 
 
 class Correlation:
