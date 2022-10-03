@@ -1,9 +1,13 @@
 joblib~=1.2.0 # 1.1.0
 scipy>=1.4.1, <1.10 
+<<<<<<< HEAD
 pandas>1.1, <1.5, !=1.4.0
 <<<<<<< HEAD
 matplotlib>=3.2, <3.7
 =======
+=======
+pandas>1.1, <1.6, !=1.4.0
+>>>>>>> 5c5a710f (feat: add support for Pandas 1.5 (#1076))
 matplotlib>=3.2, <3.6
 >>>>>>> f0caa4ee (build(deps): update pydantic requirement)
 pydantic>=1.8.1, <1.11
