@@ -65,7 +65,7 @@ jobs:
       run: |
         sudo apt-get install -y pandoc
         echo "${{ needs.prepare.outputs.release_notes }}" \
-        | sed 's/# \[.*/# Changelog v3.4.0/g' \
+        | sed 's/# \[.*/# Changelog ${{ needs.prepare.outputs.release }}/g' \
         | sed 's/## Bug Fixes/## 🐛 Bug fixes/g' \
         | sed 's/## Features/## 🎉 Features/g' \
         | sed 's/## BREAKING CHANGES/## 🚨 Breaking changes/g' \
