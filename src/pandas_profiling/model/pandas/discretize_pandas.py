@@ -61,10 +61,10 @@ class Discretizer:
         )
 
     def _discretize_column(self, column: pd.Series) -> pd.Series:
-        if self.discretization_type == DiscretizationType.UNIFORM:
+        if self.discretization_type == DiscretizationType.QUANTILE:
             return self._descritize_quantile(column)
 
-        elif self.discretization_type == DiscretizationType.QUANTILE:
+        elif self.discretization_type == DiscretizationType.UNIFORM:
             return self._descritize_uniform(column)
 
     def _descritize_quantile(self, column: pd.Series) -> pd.Series:
