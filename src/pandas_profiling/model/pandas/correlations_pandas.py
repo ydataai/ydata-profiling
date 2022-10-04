@@ -86,12 +86,12 @@ def pandas_cramers_compute(
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
-    categoricals = {
+    categoricals = [
         key
         for key, value in summary.items()
         if value["type"] in {"Categorical", "Boolean"}
         and value["n_distinct"] <= threshold
-    }
+    ]
 
     if len(categoricals) <= 1:
         return None
