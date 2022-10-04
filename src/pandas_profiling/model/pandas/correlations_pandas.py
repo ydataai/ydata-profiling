@@ -9,11 +9,16 @@ from scipy import stats
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import (
+    Auto,
     Cramers,
     Kendall,
     Pearson,
     PhiK,
     Spearman,
+)
+from pandas_profiling.model.pandas.discretize_pandas import (
+    DiscretizationType,
+    Discretizer,
 )
 
 
@@ -67,22 +72,26 @@ def _cramers_corrected_stat(confusion_matrix: pd.DataFrame, correction: bool) ->
     return corr
 
 
+def _pairwise_spearman(col_1: pd.Series, col_2: pd.Series) -> float:
+    return col_1.corr(col_2, method="spearman")
+
+
+def _pairwise_cramers(col_1: pd.Series, col_2: pd.Series) -> float:
+    return _cramers_corrected_stat(pd.crosstab(col_1, col_2), correction=True)
+
+
 @Cramers.compute.register(Settings, pd.DataFrame, dict)
 def pandas_cramers_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
-    # `index` and `columns` must not be a set since Pandas 1.5,
-    # so convert it to a list. The order of the list is arbitrary.
-    categoricals = list(
-        {
-            key
-            for key, value in summary.items()
-            if value["type"] in {"Categorical", "Boolean"}
-            and value["n_distinct"] <= threshold
-        }
-    )
+    categoricals = {
+        key
+        for key, value in summary.items()
+        if value["type"] in {"Categorical", "Boolean"}
+        and value["n_distinct"] <= threshold
+    }
 
     if len(categoricals) <= 1:
         return None
@@ -104,6 +113,51 @@ def pandas_cramers_compute(
                 confusion_matrix, correction=True
             )
         correlation_matrix.loc[name1, name2] = correlation_matrix.loc[name2, name1]
+    return correlation_matrix
+
+
+@Auto.compute.register(Settings, pd.DataFrame, dict)
+def pandas_auto_compute(
+    config: Settings, df: pd.DataFrame, summary: dict
+) -> Optional[pd.DataFrame]:
+    threshold = config.categorical_maximum_correlation_distinct
+    n_bins = config.discretization_n_bins
+
+    numerical_columns = [
+        key for key, value in summary.items() if value["type"] == "Numeric"
+    ]
+    categorical_columns = [
+        key
+        for key, value in summary.items()
+        if value["type"] in {"Categorical", "Boolean"}
+        and value["n_distinct"] <= threshold
+    ]
+    df_discretized = Discretizer(
+        DiscretizationType.UNIFORM, n_bins=n_bins
+    ).discretize_dataframe(df)
+    columns_tested = numerical_columns + categorical_columns
+    correlation_matrix = pd.DataFrame(
+        np.ones((len(columns_tested), len(columns_tested))),
+        index=columns_tested,
+        columns=columns_tested,
+    )
+    for col_1_name, col_2_name in itertools.combinations(columns_tested, 2):
+
+        method = (
+            _pairwise_spearman
+            if col_1_name and col_2_name not in categorical_columns
+            else _pairwise_cramers
+        )
+
+        def f(x: str) -> pd.Series:
+            return df_discretized if x in numerical_columns else df
+
+        score = method(f(col_1_name)[col_1_name], f(col_2_name)[col_2_name])
+        (
+            correlation_matrix.loc[col_1_name, col_2_name],
+            correlation_matrix.loc[col_2_name, col_1_name],
+        ) = (score, score)
+
     return correlation_matrix
 
 

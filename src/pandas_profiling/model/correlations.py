@@ -21,6 +21,13 @@ class Correlation:
         raise NotImplementedError()
 
 
+class Auto(Correlation):
+    @staticmethod
+    @multimethod
+    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
+        raise NotImplementedError()
+
+
 class Spearman(Correlation):
     @staticmethod
     @multimethod
@@ -71,7 +78,7 @@ def calculate_correlation(
     config: Settings, df: Sized, correlation_name: str, summary: dict
 ) -> Optional[Sized]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (pearson, spearman, kendall, phi_k, cramers).
+    (auto, pearson, spearman, kendall, phi_k, cramers).
 
     Args:
         config: report Settings object
@@ -87,6 +94,7 @@ def calculate_correlation(
         return None
 
     correlation_measures = {
+        "auto": Auto,
         "pearson": Pearson,
         "spearman": Spearman,
         "kendall": Kendall,
