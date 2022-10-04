@@ -20,5 +20,5 @@ jobs:
       uses: andymckay/labeler@master
       with:
         add-labels: "needs-triage"
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        repo-token: ${{ secrets.ACCESS_TOKEN }}
         ignore-if-labeled: true
