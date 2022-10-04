@@ -47,7 +47,7 @@ jobs:
             numpy: "numpy"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: Setup python
       uses: actions/setup-python@v2
@@ -96,7 +96,7 @@ jobs:
         numpy: ["numpy"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup python
       uses: actions/setup-python@v2
