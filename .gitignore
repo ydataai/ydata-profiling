@@ -80,3 +80,4 @@ examples/*/*.csv
 docs/
 docsrc/_build/
 docsrc/source/pages/api/_autosummary/
+venv/
