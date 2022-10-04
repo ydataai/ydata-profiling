@@ -15,9 +15,9 @@ jobs:
     outputs:
       build_number: ${{ steps.build_number.outputs.value }}
       new_release: ${{ steps.semantic.outputs.new_release_published }}
-      release: ${{ steps.semantic.outputs.new_release_version }}
+      release: v${{ steps.semantic.outputs.new_release_version }}
       release_notes: ${{ steps.semantic.outputs.new_release_notes }}
-      version: ${{ steps.version.outputs.value }}
+      version: v${{ steps.version.outputs.value }}
 
     steps:
     - uses: actions/checkout@v2
@@ -31,7 +31,6 @@ jobs:
       with:
         branch: master
         dry_run: true
-        semantic_version: 18.0.1
 
     - name: Count number or releases for tag
       id: build_number
@@ -41,24 +40,65 @@ jobs:
       id: version
       run: echo "::set-output name=value::${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}"
 
-  prerelease:
-    if: needs.prepare.outputs.new_release == 'true'
-
-    name: Generates Prerelease
+  docs-changelog:
+    name: Update changelog on docs 
     runs-on: ubuntu-20.04
 
     needs: prepare
 
     steps:
-    - name: Create Pre Release
-      uses: actions/create-release@v1
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Calculate changelog path
+      id: path
+      run: echo "$(echo "::set-output name=value::docsrc/source/pages/reference/changelog/${{ needs.prepare.outputs.release }}" | sed "s/\./_/g").rst"
+
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git config --local core.autocrlf false
+    
+    - name: Convert changelog from md to rst
+      run: |
+        sudo apt-get install -y pandoc
+        echo "${{ needs.prepare.outputs.release_notes }}" \
+        | sed 's/# \[.*/# Changelog ${{ needs.prepare.outputs.release }}/g' \
+        | sed 's/## Bug Fixes/## 🐛 Bug fixes/g' \
+        | sed 's/## Features/## 🎉 Features/g' \
+        | sed 's/## BREAKING CHANGES/## 🚨 Breaking changes/g' \
+        | sed 's/## Documentation/## 📖 Documentation/g' \
+        | pandoc --from markdown --to rst --standalone > ${{ steps.path.outputs.value }}
+
+    - name: Commit changelog
+      run: |
+        git add ${{ steps.path.outputs.value  }}
+        git commit -m "[skip ci] Update changelogs" -a || true
+
+    - name: Push changes  
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        branch: ${{ github.ref }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+
+  prerelease-tag:
+    if: needs.prepare.outputs.new_release == 'true'
+
+    name: Create Prerelease Tag
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - uses: simpleactions/create-tag@v1.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
-        tag_name: ${{ needs.prepare.outputs.version }}
-        release_name: ${{ needs.prepare.outputs.version }}
-        body: ${{ github.event.head_commit.message }}
-        prerelease: true
+        tag: ${{ needs.prepare.outputs.version }}
+        message: ${{  github.event.head_commit.message }}
 
   draft-release:
     if: needs.prepare.outputs.new_release == 'true'
@@ -66,7 +106,9 @@ jobs:
     name: Draft Release
     runs-on: ubuntu-20.04
 
-    needs: prepare
+    needs:
+    - prepare
+    - docs-changelog
 
     steps:
     - name: Delete Previous drafts
