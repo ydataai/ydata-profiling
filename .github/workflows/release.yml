@@ -156,4 +156,4 @@ jobs:
       with:
         branch: gh-pages
         directory: .
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}

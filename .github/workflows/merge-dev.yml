@@ -44,21 +44,17 @@ jobs:
       run: echo "::set-output name=value::${{ steps.semantic.outputs.value }}.pre${{ steps.build_number.outputs.value }}"
 
 
-  prerelease:
-    name: Generates Prerelease
+  prerelease-tag:
+    name: Create Prerelease Tag
     runs-on: ubuntu-20.04
 
     needs:
     - prepare
 
     steps:
-    - name: Create Pre Release
-      uses: softprops/action-gh-release@v1
+    - uses: simpleactions/create-tag@v1.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
-        tag_name: ${{ needs.prepare.outputs.version }}
-        name: ${{ needs.prepare.outputs.version }}
-        body: ${{ github.event.head_commit.message }}
-        target_commitish: ${{ github.sha }}
-        prerelease: true
+        tag: ${{ needs.prepare.outputs.version }}
+        message: ${{  github.event.head_commit.message }}
