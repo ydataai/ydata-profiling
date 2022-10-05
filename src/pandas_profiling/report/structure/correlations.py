@@ -82,24 +82,22 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
                 )
                 diagrams.append(diagram)
 
-            if len(description) > 0:
-                desc = HTML(
-                    f'<div style="padding:20px" class="text-muted">{description}</div>',
-                    anchor_id=f"{key}_html",
-                    classes="correlation-description",
-                    name=name,
-                )
+            desc = HTML(
+                f'<div style="padding:20px" class="text-muted">{description}</div>',
+                anchor_id=f"{key}_html",
+                classes="correlation-description",
+                name=name,
+            )
 
-                tbl = Container(
-                    diagrams + [desc],
-                    anchor_id=key,
-                    name=name,
-                    sequence_type="batch_grid",
-                    batch_size=len(config.html.style._labels) + 1,
-                )
-                cont.append(tbl)
-            else:
-                raise RuntimeError("Correlation descriptions missing.")
+            tbl = Container(
+                diagrams + [desc],
+                anchor_id=key,
+                name=name,
+                sequence_type="batch_grid",
+                batch_size=len(config.html.style._labels) + 1,
+            )
+            cont.append(tbl)
+
             items.append(
                 Container(cont, anchor_id=key, name=name, sequence_type="grid")
             )

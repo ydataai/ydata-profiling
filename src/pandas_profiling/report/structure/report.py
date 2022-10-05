@@ -108,22 +108,22 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
             }
         else:
             alerts = tuple(
-                [alert.fmt() for alert in abc if alert.column_name == idx]
-                for abc in dataframe_summary["alerts"]
+                [alert.fmt() for alert in summary_alerts if alert.column_name == idx]
+                for summary_alerts in dataframe_summary["alerts"]
             )  # type: ignore
 
             alert_fields = {
                 field
-                for abc in dataframe_summary["alerts"]
-                for alert in abc
+                for summary_alerts in dataframe_summary["alerts"]
+                for alert in summary_alerts
                 if alert.column_name == idx
                 for field in alert.fields
             }
 
             alert_types = {
                 alert.alert_type
-                for abc in dataframe_summary["alerts"]
-                for alert in abc
+                for summary_alerts in dataframe_summary["alerts"]
+                for alert in summary_alerts
                 if alert.column_name == idx
             }
 
@@ -183,7 +183,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
 
 def get_duplicates_items(
     config: Settings, duplicates: pd.DataFrame
-) -> Sequence[Renderable]:
+) -> List[Renderable]:
     """Create the list of duplicates items
 
     Args:
@@ -193,7 +193,7 @@ def get_duplicates_items(
     Returns:
         List of duplicates items to show in the interface.
     """
-    items = []
+    items: List[Renderable] = []
     if duplicates is not None and len(duplicates) > 0:
         if isinstance(duplicates, list):
             for idx, df in enumerate(duplicates):
@@ -419,9 +419,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 Container(
                     items=duplicate_items,
                     sequence_type="batch_grid",
-                    batch_size=len(duplicate_items)
-                    if isinstance(duplicate_items, list)
-                    else 1,
+                    batch_size=len(duplicate_items),
                     name="Duplicate rows",
                     anchor_id="duplicate",
                 )

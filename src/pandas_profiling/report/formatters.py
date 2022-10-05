@@ -10,6 +10,15 @@ from markupsafe import escape
 
 
 def list_args(func: Callable) -> Callable:
+    """Extend the function to allow taking a list as the first argument, and apply the function on each of the elements.
+
+    Args:
+        func: the function to extend
+
+    Returns:
+        The extended function
+    """
+
     def inner(arg: Any, *args: Any, **kwargs: Any) -> Any:
         if isinstance(arg, list):
             return [func(v, *args, **kwargs) for v in arg]

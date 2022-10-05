@@ -1,4 +1,3 @@
-from collections import defaultdict
 from typing import List
 from urllib.parse import quote
 
@@ -226,12 +225,27 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
     # add up alerts from multiple reports
     if isinstance(alerts, tuple):
         count = 0
-        combined_alerts = defaultdict(dict)
-        for i, a in enumerate(alerts):
-            for alert in a:
-                combined_alerts[f"{alert.alert_type}_{alert.column_name}"][i] = alert
+
+        # Initialize
+        no_alerts = [None for _ in range(len(alerts))]
+        combined_alerts = {
+            f"{alert.alert_type}_{alert.column_name}": no_alerts
+            for report_alerts in alerts
+            for alert in report_alerts
+        }
+
+        for report_idx, report_alerts in enumerate(alerts):
+            for alert in report_alerts:
+                combined_alerts[f"{alert.alert_type}_{alert.column_name}"][
+                    report_idx
+                ] = alert
+
             count += len(
-                [alert for alert in a if alert.alert_type != AlertType.REJECTED]
+                [
+                    alert
+                    for alert in report_alerts
+                    if alert.alert_type != AlertType.REJECTED
+                ]
             )
 
         return Alerts(

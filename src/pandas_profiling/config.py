@@ -1,6 +1,6 @@
 """Configuration for the package."""
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
 
@@ -171,6 +171,7 @@ class Style(BaseModel):
     # Primary color used for plotting and text where applicable.
     @property
     def primary_color(self) -> str:
+        # This attribute may be deprecated in the future, please use primary_colors[0]
         return self.primary_colors[0]
 
     # Primary color used for comparisons (default: blue, red, green)
@@ -264,9 +265,6 @@ class Notebook(BaseModel):
 
 class Report(BaseModel):
     # Numeric precision for displaying statistics
-    # 10 if style._labels | length = 1
-    # 8 if style._labels | length = 2
-    # 5 if style._labels | length = 3
     precision: int = 8
 
 
@@ -406,10 +404,11 @@ class Config:
     @staticmethod
     def get_arg_groups(key: str) -> dict:
         kwargs = Config.arg_groups[key]
-        return Config.shorthands(kwargs, split=False)  # type: ignore
+        shorthand_args, _ = Config.shorthands(kwargs, split=False)
+        return shorthand_args
 
     @staticmethod
-    def shorthands(kwargs: dict, split: bool = True) -> Union[Tuple[dict, dict], dict]:
+    def shorthands(kwargs: dict, split: bool = True) -> Tuple[dict, dict]:
         shorthand_args = {}
         if not split:
             shorthand_args = kwargs
@@ -422,4 +421,4 @@ class Config:
         if split:
             return shorthand_args, kwargs
         else:
-            return shorthand_args
+            return shorthand_args, {}

@@ -15,10 +15,9 @@
                 {% set a = value[a] %}
                 {% if a.alert_type.name != "REJECTED" %}
                     <tr{% if loop.first %} style="border-top:0"{% endif %}>
-                        {% for idx in range(style.labels | length) %}
+                        {% for alert in value %}
                             <td>
-                                {% if idx in value %}
-                                    {% set alert = value[idx] %}
+                                {% if alert is not none %}
                                     {% include 'alerts/alert_' + alert.alert_type.name | lower  + '.html'  %}
                                 {% else %}
                                     <em>Alert not present in {{ style.labels[idx] }}</em>
