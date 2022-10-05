@@ -27,6 +27,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         FrequencyTable,
         FrequencyTableSmall,
         Image,
+        InputBox,
         Root,
         Sample,
         Table,
@@ -43,6 +44,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         HTMLFrequencyTable,
         HTMLFrequencyTableSmall,
         HTMLImage,
+        HTMLInputBox,
         HTMLRoot,
         HTMLSample,
         HTMLTable,
@@ -66,6 +68,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Sample: HTMLSample,
         ToggleButton: HTMLToggleButton,
         Collapse: HTMLCollapse,
+        InputBox: HTMLInputBox,
     }
 
 

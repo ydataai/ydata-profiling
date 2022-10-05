@@ -14,7 +14,12 @@ from pandas_profiling.report.presentation.core import (
     Duplicate,
 )
 from pandas_profiling.report.presentation.core import Image as ImageWidget
-from pandas_profiling.report.presentation.core import Sample, ToggleButton, Variable
+from pandas_profiling.report.presentation.core import (
+    InputBox,
+    Sample,
+    ToggleButton,
+    Variable,
+)
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
@@ -58,7 +63,9 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
         The rendered HTML, where each row represents a variable.
     """
 
-    templs = []
+    templs: List[Renderable] = []
+
+    templs.append(InputBox(placeholder="Search Columns", id="search-columns-input"))
 
     descriptions = config.variables.descriptions
     show_description = config.show_variable_description

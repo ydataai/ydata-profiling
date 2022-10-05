@@ -10,6 +10,7 @@ from pandas_profiling.report.presentation.flavours.html.frequency_table_small im
 )
 from pandas_profiling.report.presentation.flavours.html.html import HTMLHTML
 from pandas_profiling.report.presentation.flavours.html.image import HTMLImage
+from pandas_profiling.report.presentation.flavours.html.input import HTMLInputBox
 from pandas_profiling.report.presentation.flavours.html.root import HTMLRoot
 from pandas_profiling.report.presentation.flavours.html.sample import HTMLSample
 from pandas_profiling.report.presentation.flavours.html.table import HTMLTable
@@ -25,6 +26,7 @@ __all__ = [
     "HTMLCollapse",
     "HTMLContainer",
     "HTMLDuplicate",
+    "HTMLInputBox",
     "HTMLFrequencyTable",
     "HTMLFrequencyTableSmall",
     "HTMLHTML",

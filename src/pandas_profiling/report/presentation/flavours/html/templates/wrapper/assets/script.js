@@ -21,3 +21,18 @@ $("a[href^='#'].anchor").on('click', function (e) {
     });
 
 });
+
+$("#search-columns-input").on("input", function (e) {
+    var input = $("#search-columns-input");
+    var searchText = input.val().toLowerCase();
+    var variables = $(".variable");
+
+    variables.each(function (index) {
+        if(!($(this.firstChild.firstChild).attr("title").toLowerCase().includes(searchText))){
+            $(this).parent().hide();
+        }
+        else{
+            $(this).parent().show();
+        }
+    })
+})
