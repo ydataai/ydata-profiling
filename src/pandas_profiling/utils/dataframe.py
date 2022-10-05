@@ -173,7 +173,7 @@ def expand_mixed(df: pd.DataFrame, types: Any = None) -> pd.DataFrame:
             # Add recursion
             expanded = expand_mixed(expanded)
 
-            # Drop te expanded
+            # Drop the expanded
             df.drop(columns=[column_name], inplace=True)
 
             df = pd.concat([df, expanded], axis=1)
