@@ -126,7 +126,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         if config is not None:
             report_config = report_config.update(config.dict())
-        if kwargs != {}:
+        if kwargs:
             report_config = report_config.update(kwargs)
 
         report_config.vars.timeseries.active = tsmode

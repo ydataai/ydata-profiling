@@ -181,7 +181,7 @@ def get_correlation_font_size(n_labels: int) -> Optional[int]:
     """Dynamic label font sizes in correlation plots
 
     Args:
-        n_labels: the number of _labels
+        n_labels: the number of labels
 
     Returns:
         A font size or None for the default font size
