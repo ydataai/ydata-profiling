@@ -6,7 +6,7 @@ on:
 
 jobs:
   commitlint:
-    name: Lint commmit message
+    name: Lint commit message
     runs-on: ubuntu-latest
 
     steps:
