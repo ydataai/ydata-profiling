@@ -8,7 +8,7 @@ In certain data-sensitive contexts (for instance, private health records), shari
 
   report = df.profile_report(sensitive=True)
 
-Additionaly, ``pandas-profiling`` does not send data to external services, making it suitable for private data.
+Additionally, ``pandas-profiling`` does not send data to external services, making it suitable for private data.
 
 Sample and duplicates
 ---------------------
