@@ -288,6 +288,7 @@ class Settings(BaseSettings):
     }
 
     correlations: Dict[str, Correlation] = {
+        "auto": Correlation(key="auto"),
         "spearman": Correlation(key="spearman"),
         "pearson": Correlation(key="pearson"),
         "kendall": Correlation(key="kendall"),
@@ -298,6 +299,7 @@ class Settings(BaseSettings):
     interactions: Interactions = Interactions()
 
     categorical_maximum_correlation_distinct: int = 100
+    discretization_n_bins: int = 10
     # Use `deep` flag for memory_usage
     memory_deep: bool = False
     plot: Plot = Plot()
@@ -378,6 +380,7 @@ class Config:
             "dendrogram": False,
         },
         "correlations": {
+            "auto": {"calculate": False},
             "pearson": {"calculate": False},
             "spearman": {"calculate": False},
             "kendall": {"calculate": False},

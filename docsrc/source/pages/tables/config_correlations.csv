@@ -14,3 +14,6 @@ Parameter,Type,Default,Description
 ``correlations.cramers.calculate``,boolean,``True``,"Whether to calculate this coefficient"
 ``correlations.cramers.warn_high_correlations``,boolean,``True``,"Show warning for correlations higher than the threshold"
 ``correlations.cramers.threshold``,float,0.9,"Warning threshold"
+``correlations.auto.calculate``,boolean,``True``,"Whether to calculate this coefficient"
+``correlations.auto.warn_high_correlations``,boolean,``True``,"Show warning for correlations higher than the threshold"
+``correlations.auto.threshold``,float,0.9,"Warning threshold"
