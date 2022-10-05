@@ -26,13 +26,13 @@
 
    .. autosummary::
    
+      Auto
       Correlation
       Cramers
       Kendall
       Pearson
       PhiK
       Spearman
-      Auto
    
    
 
