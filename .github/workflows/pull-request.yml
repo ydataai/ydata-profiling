@@ -16,7 +16,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: wagoid/commitlint-github-action@v3
+    - uses: wagoid/commitlint-github-action@v5
 
   lint:
     name: Lint source code
