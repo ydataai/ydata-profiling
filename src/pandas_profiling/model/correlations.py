@@ -24,7 +24,9 @@ class Correlation:
 class Auto(Correlation):
     @staticmethod
     @multimethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
+    def compute(
+        config: Settings, df: Sized, summary: dict, n_bins: int
+    ) -> Optional[Sized]:
         raise NotImplementedError()
 
 

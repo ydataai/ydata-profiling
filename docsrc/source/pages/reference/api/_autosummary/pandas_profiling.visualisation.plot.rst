@@ -18,13 +18,10 @@
       get_cmap_half
       get_correlation_font_size
       histogram
-      mini_histogram
-      mini_ts_plot
       plot_acf_pacf
       scatter_complex
       scatter_pairwise
       scatter_series
-      timeseries_heatmap
    
    
 

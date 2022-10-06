@@ -299,7 +299,6 @@ class Settings(BaseSettings):
     interactions: Interactions = Interactions()
 
     categorical_maximum_correlation_distinct: int = 100
-    discretization_n_bins: int = 10
     # Use `deep` flag for memory_usage
     memory_deep: bool = False
     plot: Plot = Plot()

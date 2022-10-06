@@ -158,10 +158,12 @@ def pandas_phik_compute(
 
 @Auto.compute.register(Settings, pd.DataFrame, dict)
 def pandas_auto_compute(
-    config: Settings, df: pd.DataFrame, summary: dict
+    config: Settings,
+    df: pd.DataFrame,
+    summary: dict,
+    n_bins: int = 10,
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
-    n_bins = config.discretization_n_bins
 
     numerical_columns = [
         key for key, value in summary.items() if value["type"] == "Numeric"
