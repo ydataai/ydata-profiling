@@ -21,3 +21,17 @@ $("a[href^='#'].anchor").on('click', function (e) {
     });
 
 });
+
+$("#variables-dropdown").on("change", function (e) {
+    var searchText = $("#variables-dropdown").val();
+    var variables = $(".variable");
+
+    variables.each(function (index) {
+        if(!($(this.firstChild.firstChild).attr("title").toLowerCase().includes(searchText))){
+            $(this).parent().hide();
+        }
+        else{
+            $(this).parent().show();
+        }
+    })
+})
