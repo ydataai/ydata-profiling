@@ -73,14 +73,21 @@ jobs:
         | pandoc --from markdown --to rst --standalone > ${{ steps.path.outputs.value }}
 
     - name: Commit changelog
+      id: commit
       run: |
-        git add ${{ steps.path.outputs.value  }}
-        git commit -m "[skip ci] Update changelogs" -a || true
+        if [[ `git status --porcelain --untracked-files=no` ]]; then
+          echo ::set-output name=CHANGES::true
+          git add ${{ steps.path.outputs.value  }}
+          git commit -m "[skip ci] Update changelogs" -a
+        else
+          echo ::set-output name=CHANGES::false
+        fi
 
-    - name: Push changes  
+    - name: Push changes
       uses: ad-m/github-push-action@v0.6.0
+      if: ${{ steps.commit.outputs.CHANGES == 'true' }}
       with:
-        branch: ${{ github.ref }}
+        branch: ${{ github.head_ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
 
   prerelease-tag:
