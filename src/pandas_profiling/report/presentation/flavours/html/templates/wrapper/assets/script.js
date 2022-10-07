@@ -27,11 +27,7 @@ $("#variables-dropdown").on("change", function (e) {
     var variables = $(".variable");
 
     variables.each(function (index) {
-        if(!($(this.firstChild.firstChild).attr("title").toLowerCase().includes(searchText))){
-            $(this).parent().hide();
-        }
-        else{
-            $(this).parent().show();
-        }
-    })
-})
+        var isMatch = $(this.firstChild.firstChild).attr("title").toLowerCase().includes(searchText);
+        $(this).parent().toggle(isMatch);
+    });
+});

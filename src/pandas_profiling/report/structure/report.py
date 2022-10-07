@@ -60,13 +60,11 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
     """
 
     templs: List[Renderable] = []
-    items = []
-
-    for idx, summary in dataframe_summary["variables"].items():
-        items.append(idx)
-
-    dropdown = Dropdown(name="variables-dropdown", id="variables-dropdown", items=items)
-
+    dropdown = Dropdown(
+        name="variables-dropdown",
+        id="variables-dropdown",
+        items=list(dataframe_summary["variables"]),
+    )
     templs.append(dropdown)
 
     descriptions = config.variables.descriptions
