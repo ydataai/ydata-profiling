@@ -59,7 +59,7 @@ jobs:
     needs: package
 
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: built-artifacts
         path: dist/
@@ -77,7 +77,7 @@ jobs:
     needs: package
 
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: built-artifacts
         path: dist/
