@@ -208,6 +208,7 @@ class Correlation(BaseModel):
     calculate: bool = Field(default=True)
     warn_high_correlations: int = Field(default=10)
     threshold: float = Field(default=0.5)
+    n_bins: int = Field(default=10)
 
 
 class Correlations(BaseModel):

@@ -156,7 +156,7 @@ def pandas_phik_compute(
     return correlation
 
 
-@Auto.compute.register(Settings, pd.DataFrame, dict)
+@Auto.compute.register(Settings, pd.DataFrame, dict, int)
 def pandas_auto_compute(
     config: Settings,
     df: pd.DataFrame,
