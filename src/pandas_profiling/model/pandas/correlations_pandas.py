@@ -97,9 +97,12 @@ def pandas_cramers_compute(
 
     for name1, name2 in itertools.combinations(categoricals, 2):
         confusion_matrix = pd.crosstab(df[name1], df[name2])
-        correlation_matrix.loc[name2, name1] = _cramers_corrected_stat(
-            confusion_matrix, correction=True
-        )
+        if confusion_matrix.empty:
+            correlation_matrix.loc[name2, name1] = np.nan
+        else:
+            correlation_matrix.loc[name2, name1] = _cramers_corrected_stat(
+                confusion_matrix, correction=True
+            )
         correlation_matrix.loc[name1, name2] = correlation_matrix.loc[name2, name1]
     return correlation_matrix
 
