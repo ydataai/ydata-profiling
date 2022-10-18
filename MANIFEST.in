@@ -1,9 +1,8 @@
 # Requirements
 include requirements*.txt
 
-# Include license, version, Readme, etc.
+# Include license, Readme, etc.
 include LICENSE
-include VERSION
 include *.md
 include mypy.ini
 include src/pandas_profiling/py.typed

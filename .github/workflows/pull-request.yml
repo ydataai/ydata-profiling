@@ -56,10 +56,7 @@ jobs:
 
     - name: Validate code formatting
       run: |
-        ls -la .
-        mv .gitignore .gitignore.bak
         make lint
-        mv .gitignore.bak .gitignore
 
     - name: Commit code formatting changes
       id: commit
