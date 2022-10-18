@@ -14,7 +14,7 @@ with (source_root / "requirements.txt").open(encoding="utf8") as f:
 try:
     version = (source_root / "VERSION").read_text().rstrip("\n")
 except FileNotFoundError:
-    version = "0.0.0"
+    version = "dev"
 
 with open(source_root / "src/pandas_profiling/version.py", "w") as version_file:
   version_file.write(f'__version__ = \'{version}\'')
