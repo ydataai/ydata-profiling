@@ -26,6 +26,7 @@
 
    .. autosummary::
    
+      Auto
       Correlation
       Cramers
       Kendall
