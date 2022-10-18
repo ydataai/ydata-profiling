@@ -55,8 +55,7 @@ jobs:
       run: make install
 
     - name: Validate code formatting
-      run: |
-        make lint
+      run: make lint
 
     - name: Commit code formatting changes
       id: commit
