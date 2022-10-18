@@ -147,8 +147,22 @@ Additional details, including information about widget support, are available [o
 You can install using the `pip` package manager by running:
 
 ```sh
-pip install -U pandas-profiling[notebook]
+pip install -U pandas-profiling
 ```
+
+#### Extras
+
+The package declares "extras", sets of additional dependencies.
+
+* `[notebook]`: support for rendering the report in Jupyter notebook widgets.
+* `[unicode]`: support for more detailed Unicode analysis, at the expense of additional disk space.
+
+Install these with e.g.
+
+```sh
+pip install -U pandas-profiling[notebook,unicode]
+```
+
 
 ### Using conda
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
