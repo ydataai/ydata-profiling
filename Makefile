@@ -28,7 +28,6 @@ package:
 	twine check dist/*
 
 install:
-	echo "$(version)" > VERSION
 	pip install -e .[notebook]
 
 lint:
