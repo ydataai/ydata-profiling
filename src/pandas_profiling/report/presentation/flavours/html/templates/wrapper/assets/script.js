@@ -22,12 +22,12 @@ $("a[href^='#'].anchor").on('click', function (e) {
 
 });
 
-$("#variables-dropdown").on("change", function (e) {
-    var searchText = $("#variables-dropdown").val();
+$("select#variables-dropdown").on("change", function (e) {
+    var searchText = $("select#variables-dropdown").val();
     var variables = $(".variable");
-
     variables.each(function (index) {
-        var isMatch = $(this.firstChild.firstChild).attr("title").toLowerCase().includes(searchText);
+        var isMatch = $(this.firstChild.firstChild).attr("title").toLowerCase() == (searchText);
+        if(searchText == ""){isMatch = true};
         $(this).parent().toggle(isMatch);
     });
 });
