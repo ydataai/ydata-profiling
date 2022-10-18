@@ -20,7 +20,7 @@ Integration with Airflow can be easily achieved through the `BashOperator <https
 
 .. code-block:: python
 
-  # Using the Python interface
+  # Using the Python inferface
   import pandas_profiling
 
 

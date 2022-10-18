@@ -5,28 +5,14 @@ from typing import Dict, List, Optional, Sized
 import numpy as np
 import pandas as pd
 from multimethod import multimethod
+from pandas.core.base import DataError
 
 from pandas_profiling.config import Settings
-from pandas_profiling.utils.compat import pandas_version_info
-
-if pandas_version_info() >= (1, 5):
-    from pandas.errors import DataError
-else:
-    from pandas.core.base import DataError
 
 
 class Correlation:
     @staticmethod
     def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
-
-
-class Auto(Correlation):
-    @staticmethod
-    @multimethod
-    def compute(
-        config: Settings, df: Sized, summary: dict, n_bins: int
-    ) -> Optional[Sized]:
         raise NotImplementedError()
 
 
@@ -80,7 +66,7 @@ def calculate_correlation(
     config: Settings, df: Sized, correlation_name: str, summary: dict
 ) -> Optional[Sized]:
     """Calculate the correlation coefficients between variables for the correlation types selected in the config
-    (auto, pearson, spearman, kendall, phi_k, cramers).
+    (pearson, spearman, kendall, phi_k, cramers).
 
     Args:
         config: report Settings object
@@ -96,7 +82,6 @@ def calculate_correlation(
         return None
 
     correlation_measures = {
-        "auto": Auto,
         "pearson": Pearson,
         "spearman": Spearman,
         "kendall": Kendall,

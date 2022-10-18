@@ -18,7 +18,7 @@
       get_cmap_half
       get_correlation_font_size
       histogram
-      plot_acf_pacf
+      mini_histogram
       scatter_complex
       scatter_pairwise
       scatter_series
