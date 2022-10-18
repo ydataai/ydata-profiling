@@ -91,6 +91,7 @@ For instance, to disable all correlation computations (may be relevant for large
     profile = df.profile_report(
         title="Report without correlations",
         correlations={
+            "auto": {"calculate": False},
             "pearson": {"calculate": False},
             "spearman": {"calculate": False},
             "kendall": {"calculate": False},
