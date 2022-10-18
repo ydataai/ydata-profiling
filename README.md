@@ -166,6 +166,7 @@ Download the source code by cloning the repository or click on [Download ZIP](ht
 Install it by navigating to the proper directory and running:
 
 ```sh
+echo "dev" > VERSION
 python setup.py install
 ```
 

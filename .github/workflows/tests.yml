@@ -79,7 +79,7 @@ jobs:
         pip install --upgrade pip setuptools wheel
         pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
         pip install -r requirements-test.txt
-    - run: make install
+    - run: make install version="0.0.0"
 
     - run: make test
 
@@ -127,7 +127,7 @@ jobs:
         pip install --upgrade pip setuptools wheel
         pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
         pip install -r requirements-test.txt
-    - run: make install
+    - run: make install version="0.0.0"
 
     - run: make test_cov
 

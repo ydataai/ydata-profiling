@@ -21,7 +21,14 @@ test_cov:
 examples:
 	find ./examples -maxdepth 2 -type f -name "*.py" -execdir python {} \;
 
+package:
+	rm -rf build dist
+	echo "$(version)" > VERSION
+	python -m setup.py sdist bdist_wheel
+	twine check dist/*
+
 install:
+	echo "$(version)" > VERSION
 	pip install -e .[notebook]
 
 lint:
