@@ -55,12 +55,20 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
     The empirical estimators used for Cramér's V have been proved to be biased, even for large samples.
     We use a bias-corrected measure that has been proposed by Bergsma in 2013 that can be found <a href='http://stats.lse.ac.uk/bergsma/pdf/cramerV3.pdf'>here</a>."""
 
+    auto_description = """The auto setting is an easily interpretable pairwise column metric of the following mapping:
+                        vartype-vartype         : method, 
+                        categorical-categorical : Cramer's V, 
+                        numerical-categorical   : Cramer's V (using a discretized numerical column), 
+                        numerical-numerical     : Spearman's ρ. 
+                        This configuration uses the best suitable for each pair of columns."""
+
     key_to_data = {
         "pearson": (-1, "Pearson's r", pearson_description),
         "spearman": (-1, "Spearman's ρ", spearman_description),
         "kendall": (-1, "Kendall's τ", kendall_description),
         "phi_k": (0, "Phik (φk)", phi_k_description),
         "cramers": (0, "Cramér's V (φc)", cramers_description),
+        "auto": (0, "Auto", auto_description),
     }
 
     image_format = config.plot.image_format
