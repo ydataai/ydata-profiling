@@ -1,6 +1,5 @@
-joblib~=1.2.0 # 1.1.0
-scipy>=1.4.1, <1.10 
-pandas>1.1, <1.5, !=1.4.0
+scipy>=1.4.1, <1.10
+pandas>1.1, <1.6, !=1.4.0
 matplotlib>=3.2, <3.6
 pydantic>=1.8.1, <1.11
 PyYAML>=5.0.0, <6.1
@@ -14,8 +13,6 @@ htmlmin==0.1.12
 missingno>=0.4.2, <0.6
 # Correlations
 phik>=0.11.1,<0.13
-# Text analysis
-tangled-up-in-unicode==0.2.0
 # Examples
 requests>=2.24.0, <2.29
 # Progress bar
