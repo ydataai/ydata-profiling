@@ -19,7 +19,7 @@ The snippet below shows how to list the available correlation matrices:
     correlations = profile.description_set["correlations"]
     print(correlations.keys())
 
-In this case, all the 5 possible correlation metrics were computed and the output would be ``dict_keys(['spearman', 'pearson', 'kendall', 'cramers', 'phi_k'])``. Each ``correlations[CORRELATION_TYPE]`` object is a pandas ``DataFrame``. To access its values:
+In this case, all the 6 possible correlation metrics were computed and the output would be ``dict_keys(['auto', 'spearman', 'pearson', 'kendall', 'cramers', 'phi_k'])``. Each ``correlations[CORRELATION_TYPE]`` object is a pandas ``DataFrame``. To access its values:
 
 .. code-block:: python
   :caption: Accessing the values of the Pearson correlation
