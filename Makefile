@@ -33,7 +33,6 @@ install:
 
 lint:
 	echo "$(version)" > VERSION
-	ls -la .
 	pre-commit run --all-files
 
 clean:
