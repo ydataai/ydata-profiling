@@ -12,10 +12,11 @@ with (source_root / "requirements.txt").open(encoding="utf8") as f:
     requirements = f.readlines()
 
 try:
-    with (source_root / "VERSION").open(encoding="utf8") as f:
-        version = f.read().rstrip("\n")
+    version = (source_root / "VERSION").read_text().rstrip("\n")
 except FileNotFoundError:
-    version = "dev"
+    version = "0.0.0"
+
+print(version)
 
 setup(
     name="pandas-profiling",
