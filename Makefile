@@ -24,7 +24,7 @@ examples:
 package:
 	rm -rf build dist
 	echo "$(version)" > VERSION
-	python -m setup.py sdist bdist_wheel
+	python setup.py sdist bdist_wheel
 	twine check dist/*
 
 install:
