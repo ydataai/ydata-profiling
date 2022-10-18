@@ -1,6 +1,7 @@
 files: |
     ^src/|
     ^tests/|
+    VERSION
 repos:
 -   repo: https://github.com/psf/black
     rev: 22.3.0
