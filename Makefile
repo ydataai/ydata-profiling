@@ -32,7 +32,6 @@ install:
 	pip install -e .[notebook]
 
 lint:
-	echo "$(version)" > VERSION
 	pre-commit run --all-files
 
 clean:
