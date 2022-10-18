@@ -52,10 +52,10 @@ jobs:
         python -m pip install -r requirements-test.txt
 
     - name: Install the package
-      run: make install
+      run: make install version="0.0.0"
 
     - name: Validate code formatting
-      run: make lint
+      run: make lint version="0.0.0"
 
     - name: Commit code formatting changes
       id: commit
