@@ -11,8 +11,6 @@ with (source_root / "README.md").open(encoding="utf-8") as f:
 with (source_root / "requirements.txt").open(encoding="utf8") as f:
     requirements = f.readlines()
 
-version = (source_root / 'VERSION').read_text().rstrip("\n")
-
 try:
     with (source_root / "VERSION").open(encoding="utf8") as f:
         version = f.read().rstrip("\n")
