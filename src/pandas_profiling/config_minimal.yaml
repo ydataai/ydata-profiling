@@ -111,6 +111,10 @@ correlations:
       calculate: false
       warn_high_correlations: true
       threshold: 0.9
+    auto:
+       calculate: false
+       warn_high_correlations: true
+       threshold: 0.9
 
 
 # Bivariate / Pairwise relations

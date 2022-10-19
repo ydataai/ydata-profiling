@@ -3,6 +3,8 @@
 ![Pandas Profiling Logo Header](https://pandas-profiling.ydata.ai/docs/assets/logo_header.png)
 
 [![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
+[![PyPI download month](https://img.shields.io/pypi/dm/pandas-profiling.svg)](https://pypi.python.org/pypi/pandas-profiling/)
+[![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code Coverage](https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/ydataai/pandas-profiling)
 [![Release Version](https://img.shields.io/github/release/ydataai/pandas-profiling.svg)](https://github.com/ydataai/pandas-profiling/releases)
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
@@ -145,8 +147,22 @@ Additional details, including information about widget support, are available [o
 You can install using the `pip` package manager by running:
 
 ```sh
-pip install -U pandas-profiling[notebook]
+pip install -U pandas-profiling
 ```
+
+#### Extras
+
+The package declares "extras", sets of additional dependencies.
+
+* `[notebook]`: support for rendering the report in Jupyter notebook widgets.
+* `[unicode]`: support for more detailed Unicode analysis, at the expense of additional disk space.
+
+Install these with e.g.
+
+```sh
+pip install -U pandas-profiling[notebook,unicode]
+```
+
 
 ### Using conda
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
