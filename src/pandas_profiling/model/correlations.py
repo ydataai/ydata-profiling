@@ -25,7 +25,7 @@ class Auto(Correlation):
     @staticmethod
     @multimethod
     def compute(
-        config: Settings, df: Sized, summary: dict, n_bins: int
+        config: Settings, df: Sized, summary: dict
     ) -> Optional[Sized]:
         raise NotImplementedError()
 
@@ -110,6 +110,7 @@ def calculate_correlation(
             config, df, summary
         )
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
+        import ipdb; ipdb.set_trace()
         warn_correlation(correlation_name, str(e))
 
     if correlation is not None and len(correlation) <= 0:
