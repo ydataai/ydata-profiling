@@ -1,7 +1,6 @@
 from pandas_profiling.report.presentation.core.alerts import Alerts
 from pandas_profiling.report.presentation.core.collapse import Collapse
 from pandas_profiling.report.presentation.core.container import Container
-from pandas_profiling.report.presentation.core.dropdown import Dropdown
 from pandas_profiling.report.presentation.core.duplicate import Duplicate
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
 from pandas_profiling.report.presentation.core.frequency_table_small import (
@@ -20,7 +19,6 @@ __all__ = [
     "Collapse",
     "Container",
     "Duplicate",
-    "Dropdown",
     "FrequencyTable",
     "FrequencyTableSmall",
     "HTML",
