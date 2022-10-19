@@ -23,7 +23,7 @@ $("a[href^='#'].anchor").on('click', function (e) {
 });
 
 $("select#variables-dropdown").on("change", function (e) {
-    var searchText = $("select#variables-dropdown").val();
+    var searchText = $("select#variables-dropdown").val().toLowerCase();
     var variables = $(".variable");
     variables.each(function (index) {
         var isMatch = $(this.firstChild.firstChild).attr("title").toLowerCase() == (searchText);
