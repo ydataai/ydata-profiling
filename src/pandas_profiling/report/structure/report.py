@@ -254,18 +254,6 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
             ),
         ]
 
-        scatter_items = get_scatter_matrix(config, summary["scatter"])
-        if len(scatter_items) > 0:
-            section_items.append(
-                Container(
-                    scatter_items,
-                    sequence_type="tabs" if len(
-                        scatter_items) <= 10 else "select",
-                    name="Interactions",
-                    anchor_id="interactions",
-                ),
-            )
-
         if len(summary["variables"]) > 0:
             section_items.append(
                 Dropdown(
@@ -281,6 +269,19 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                     ),
                 )
             )
+
+        scatter_items = get_scatter_matrix(config, summary["scatter"])
+        if len(scatter_items) > 0:
+            section_items.append(
+                Container(
+                    scatter_items,
+                    sequence_type="tabs" if len(
+                        scatter_items) <= 10 else "select",
+                    name="Interactions",
+                    anchor_id="interactions",
+                ),
+            )
+
 
         corr = get_correlation_items(config, summary)
         if corr is not None:
