@@ -11,7 +11,6 @@ from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
     Container,
-    Dropdown,
     Duplicate,
 )
 from pandas_profiling.report.presentation.core import Image as ImageWidget
@@ -60,12 +59,6 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
     """
 
     templs = []
-    # dropdown = Dropdown(
-    #     name="variables-dropdown",
-    #     id="variables-dropdown",
-    #     items=list(dataframe_summary["variables"]),
-    # )
-    # templs.append(dropdown)
 
     descriptions = config.variables.descriptions
     show_description = config.show_variable_description
@@ -105,8 +98,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
         template_variables.update(summary)
 
         # Per type template variables
-        render_map_type = render_map.get(
-            summary["type"], render_map["Unsupported"])
+        render_map_type = render_map.get(summary["type"], render_map["Unsupported"])
         template_variables.update(render_map_type(config, template_variables))
 
         # Ignore these
@@ -117,8 +109,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
 
         bottom = None
         if "bottom" in template_variables and template_variables["bottom"] is not None:
-            btn = ToggleButton(
-                "Toggle details", anchor_id=template_variables["varid"])
+            btn = ToggleButton("Toggle details", anchor_id=template_variables["varid"])
             bottom = Collapse(btn, template_variables["bottom"])
 
         var = Variable(
@@ -186,8 +177,7 @@ def get_sample_items(sample: dict) -> List[Sample]:
         List of sample items to show in the interface.
     """
     items = [
-        Sample(sample=obj.data, name=obj.name,
-               anchor_id=obj.id, caption=obj.caption)
+        Sample(sample=obj.data, name=obj.name, anchor_id=obj.id, caption=obj.caption)
         for obj in sample
     ]
     return items
@@ -252,6 +242,12 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 name="Overview",
                 anchor_id="overview",
             ),
+            Container(
+                render_variables_section(config, summary),
+                sequence_type="accordion",
+                name="Variables",
+                anchor_id="variables",
+            ),
         ]
 
         scatter_items = get_scatter_matrix(config, summary["scatter"])
@@ -259,27 +255,10 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
             section_items.append(
                 Container(
                     scatter_items,
-                    sequence_type="tabs" if len(
-                        scatter_items) <= 10 else "select",
+                    sequence_type="tabs" if len(scatter_items) <= 10 else "select",
                     name="Interactions",
                     anchor_id="interactions",
                 ),
-            )
-
-        if len(summary["variables"]) > 0:
-            section_items.append(
-                Dropdown(
-                    name="Variables",
-                    anchor_id="variables-dropdown",
-                    id="variables-dropdown",
-                    items=list(summary["variables"]),
-                    item=Container(
-                        render_variables_section(config, summary),
-                        sequence_type="accordion",
-                        name="Variables",
-                        anchor_id="variables",
-                    ),
-                )
             )
 
         corr = get_correlation_items(config, summary)
