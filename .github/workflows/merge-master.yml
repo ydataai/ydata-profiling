@@ -75,7 +75,7 @@ jobs:
     - name: Commit changelog
       id: commit
       run: |
-        if [[ `git status --porcelain --untracked-files=no` ]]; then
+        if [[ `git status --porcelain` ]]; then
           echo ::set-output name=CHANGES::true
           git add ${{ steps.path.outputs.value  }}
           git commit -m "[skip ci] Update changelogs" -a
