@@ -110,7 +110,6 @@ def calculate_correlation(
             config, df, summary
         )
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
-        import ipdb; ipdb.set_trace()
         warn_correlation(correlation_name, str(e))
 
     if correlation is not None and len(correlation) <= 0:
