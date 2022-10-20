@@ -57,8 +57,8 @@ jobs:
 
     - name: Configure Git
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git config --local user.email "azory@ydata.ai"
+        git config --local user.name "Azory"
         git config --local core.autocrlf false
     
     - name: Convert changelog from md to rst
