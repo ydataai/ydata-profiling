@@ -25,7 +25,7 @@ class WidgetDropdown(Dropdown):
 
         dropdown.observe(change_view, names=["value"])            
 
-        if(self.content["item"] != None):
+        if(self.content["item"] is not None):
             return widgets.VBox([dropdown, item])
         else:
             return widgets.Vbox([dropdown])
