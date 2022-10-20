@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; pandas-profiling 3.2.0 documentation</title>
+  <title>Installation &mdash; pandas-profiling 3.4.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -48,6 +49,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#using-conda">Using conda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#widgets-in-jupyter-notebook-lab">Widgets in Jupyter Notebook/Lab</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#from-source">From source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extras">Extras</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
@@ -124,8 +126,7 @@
 <a class="reference external image-reference" href="https://pepy.tech/project/pandas-profiling/month"><img alt="PyPi Monthly Downloads" src="https://pepy.tech/badge/pandas-profiling/month" /></a>
 <a class="reference external image-reference" href="https://pypi.org/project/pandas-profiling/"><img alt="PyPi Version" src="https://badge.fury.io/py/pandas-profiling.svg" /></a>
 <p>You can install using the <code class="docutils literal notranslate"><span class="pre">pip</span></code> package manager by running:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U pandas-profiling[notebook]</span>
-<span class="go">jupyter nbextension enable --py widgetsnbextension</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U pandas-profiling</span>
 </pre></div>
 </div>
 <p>If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can run:</p>
@@ -155,7 +156,8 @@
 <h2>Widgets in Jupyter Notebook/Lab<a class="headerlink" href="#widgets-in-jupyter-notebook-lab" title="Permalink to this heading"></a></h2>
 <p>For the Jupyter widgets extension (used for progress bars and the interactive widget-based report) to work, you might need to install and activate the corresponding extensions.
 This can be done via <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ipywidgets</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pandas</span><span class="o">-</span><span class="n">profiling</span><span class="p">[</span><span class="n">notebook</span><span class="p">]</span>
+<span class="n">jupyter</span> <span class="n">nbextension</span> <span class="n">enable</span> <span class="o">--</span><span class="n">py</span> <span class="n">widgetsnbextension</span>
 </pre></div>
 </div>
 <p>Or via <code class="docutils literal notranslate"><span class="pre">conda</span></code>:</p>
@@ -177,6 +179,18 @@ Install it by navigating to the uncompressed directory and running:</p>
 </pre></div>
 </div>
 </section>
+<section id="extras">
+<h2>Extras<a class="headerlink" href="#extras" title="Permalink to this heading"></a></h2>
+<p>The package declares some “extras”, sets of additional dependencies.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[notebook]</span></code>: support for rendering the report in Jupyter notebook widgets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[unicode]</span></code>: support for more detailed Unicode analysis, at the expense of additional disk space.</p></li>
+</ul>
+<p>Install these with e.g.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U pandas-profiling[notebook,unicode]</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -190,7 +204,7 @@ Install it by navigating to the uncompressed directory and running:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Handling sensitive data &mdash; pandas-profiling 3.2.0 documentation</title>
+  <title>Handling sensitive data &mdash; pandas-profiling 3.4.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -119,7 +120,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">sensitive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Additionaly, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> does not send data to external services, making it suitable for private data.</p>
+<p>Additionally, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> does not send data to external services, making it suitable for private data.</p>
 <section id="sample-and-duplicates">
 <h2>Sample and duplicates<a class="headerlink" href="#sample-and-duplicates" title="Permalink to this heading"></a></h2>
 <p>Explicitly showing a dataset’s sample and duplicate rows can be disabled, to guarantee the report does not directly leak any data:</p>
@@ -165,7 +166,7 @@ To prevent this from happening, keep the string representation.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.config.Univariate &mdash; pandas-profiling 3.2.0 documentation</title>
+  <title>pandas_profiling.config.Univariate &mdash; pandas-profiling 3.4.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -99,7 +100,10 @@
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Samples.html">pandas_profiling.config.Samples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Report.html">pandas_profiling.config.Report</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Variables.html">pandas_profiling.config.Variables</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.Univariate</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.Univariate</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pandas_profiling.config.Univariate"><code class="docutils literal notranslate"><span class="pre">Univariate</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.NumVars.html">pandas_profiling.config.NumVars</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CatVars.html">pandas_profiling.config.CatVars</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageVars.html">pandas_profiling.config.ImageVars</a></li>
@@ -164,6 +168,7 @@
 <li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.image" title="pandas_profiling.config.Univariate.image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image</span> <span class="pre">(pandas_profiling.config.ImageVars)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.num" title="pandas_profiling.config.Univariate.num"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num</span> <span class="pre">(pandas_profiling.config.NumVars)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.path" title="pandas_profiling.config.Univariate.path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span> <span class="pre">(pandas_profiling.config.PathVars)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.timeseries" title="pandas_profiling.config.Univariate.timeseries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeseries</span> <span class="pre">(pandas_profiling.config.TimeseriesVars)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.url" title="pandas_profiling.config.Univariate.url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url</span> <span class="pre">(pandas_profiling.config.UrlVars)</span></code></a></p></li>
 </ul>
 </dd>
@@ -199,6 +204,11 @@
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.timeseries">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timeseries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TimeseriesVars</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">TimeseriesVars(active=False,</span> <span class="pre">sortby=None,</span> <span class="pre">autocorrelation=0.7,</span> <span class="pre">lags=[1,</span> <span class="pre">7,</span> <span class="pre">12,</span> <span class="pre">24,</span> <span class="pre">30],</span> <span class="pre">significance=0.05,</span> <span class="pre">pacf_acf_lag=100)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.timeseries" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Univariate.url">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.UrlVars.html#pandas_profiling.config.UrlVars" title="pandas_profiling.config.UrlVars"><span class="pre">UrlVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">UrlVars(active=False)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.url" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -218,7 +228,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

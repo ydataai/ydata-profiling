@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.config &mdash; pandas-profiling 3.2.0 documentation</title>
+  <title>pandas_profiling.config &mdash; pandas-profiling 3.4.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -201,6 +202,15 @@
     <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
+<span class="k">class</span> <span class="nc">TimeseriesVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">sortby</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">autocorrelation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>
+    <span class="n">lags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+    <span class="n">significance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="n">pacf_acf_lag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+
+
 <div class="viewcode-block" id="Univariate"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.Univariate.html#pandas_profiling.config.Univariate">[docs]</a><span class="k">class</span> <span class="nc">Univariate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">num</span><span class="p">:</span> <span class="n">NumVars</span> <span class="o">=</span> <span class="n">NumVars</span><span class="p">()</span>
     <span class="n">cat</span><span class="p">:</span> <span class="n">CatVars</span> <span class="o">=</span> <span class="n">CatVars</span><span class="p">()</span>
@@ -208,7 +218,8 @@
     <span class="nb">bool</span><span class="p">:</span> <span class="n">BoolVars</span> <span class="o">=</span> <span class="n">BoolVars</span><span class="p">()</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">PathVars</span> <span class="o">=</span> <span class="n">PathVars</span><span class="p">()</span>
     <span class="n">file</span><span class="p">:</span> <span class="n">FileVars</span> <span class="o">=</span> <span class="n">FileVars</span><span class="p">()</span>
-    <span class="n">url</span><span class="p">:</span> <span class="n">UrlVars</span> <span class="o">=</span> <span class="n">UrlVars</span><span class="p">()</span></div>
+    <span class="n">url</span><span class="p">:</span> <span class="n">UrlVars</span> <span class="o">=</span> <span class="n">UrlVars</span><span class="p">()</span>
+    <span class="n">timeseries</span><span class="p">:</span> <span class="n">TimeseriesVars</span> <span class="o">=</span> <span class="n">TimeseriesVars</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MissingPlot"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot">[docs]</a><span class="k">class</span> <span class="nc">MissingPlot</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -262,7 +273,9 @@
 
 <div class="viewcode-block" id="Theme"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.Theme.html#pandas_profiling.config.Theme">[docs]</a><span class="k">class</span> <span class="nc">Theme</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">united</span> <span class="o">=</span> <span class="s2">&quot;united&quot;</span>
-    <span class="n">flatly</span> <span class="o">=</span> <span class="s2">&quot;flatly&quot;</span></div>
+    <span class="n">flatly</span> <span class="o">=</span> <span class="s2">&quot;flatly&quot;</span>
+    <span class="n">cosmo</span> <span class="o">=</span> <span class="s2">&quot;cosmo&quot;</span>
+    <span class="n">simplex</span> <span class="o">=</span> <span class="s2">&quot;simplex&quot;</span></div>
 
 
 <div class="viewcode-block" id="Style"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.Style.html#pandas_profiling.config.Style">[docs]</a><span class="k">class</span> <span class="nc">Style</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -305,7 +318,8 @@
     <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">calculate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">warn_high_correlations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span></div>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">Correlations</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -386,6 +400,7 @@
     <span class="p">}</span>
 
     <span class="n">correlations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Correlation</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;auto&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">),</span>
         <span class="s2">&quot;spearman&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;spearman&quot;</span><span class="p">),</span>
         <span class="s2">&quot;pearson&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;pearson&quot;</span><span class="p">),</span>
         <span class="s2">&quot;kendall&quot;</span><span class="p">:</span> <span class="n">Correlation</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;kendall&quot;</span><span class="p">),</span>
@@ -476,6 +491,7 @@
             <span class="s2">&quot;dendrogram&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">&quot;correlations&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;auto&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
             <span class="s2">&quot;pearson&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
             <span class="s2">&quot;spearman&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
             <span class="s2">&quot;kendall&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
@@ -504,7 +520,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

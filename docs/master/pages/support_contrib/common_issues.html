@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Common issues &mdash; pandas-profiling 3.2.0 documentation</title>
+  <title>Common issues &mdash; pandas-profiling 3.4.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -138,7 +139,7 @@ More information on installing Python packages directly from a notebook: <a clas
 <h2>Conda installation defaults to v1.4.1<a class="headerlink" href="#conda-installation-defaults-to-v1-4-1" title="Permalink to this heading"></a></h2>
 <p>Some users experience that <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">pandas-profiling</span></code> defaults to 1.4.1.</p>
 <p>If creating a new environment with a fresh installation does not resolve this issue, or the current environment must be kept, installing a specific version is one alternative to try: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">pandas-profiling=3.2.0</span></code>.
-If it fails with an <code class="docutils literal notranslate"><span class="pre">UnsatisfiableError</span></code> that suggests dependant packages are either missing or incompatible, then further intervention is required to resolve the <em>environment</em> issue. However, <em>conda</em> error messages in this regard may be too cryptic or insufficient to pinpoint the culprit, therefore you may have to resort to an alternate means of troubleshooting e.g using the <a class="reference external" href="https://github.com/mamba-org/mamba.git">Mamba Package Manager</a>.
+If it fails with an <code class="docutils literal notranslate"><span class="pre">UnsatisfiableError</span></code> that suggests dependent packages are either missing or incompatible, then further intervention is required to resolve the <em>environment</em> issue. However, <em>conda</em> error messages in this regard may be too cryptic or insufficient to pinpoint the culprit, therefore you may have to resort to an alternate means of troubleshooting e.g using the <a class="reference external" href="https://github.com/mamba-org/mamba.git">Mamba Package Manager</a>.
 For an illustration of this approach see <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/655">this issue</a>.</p>
 <p>Related GitHub issues:</p>
 <ul class="simple">
@@ -181,7 +182,7 @@ For an illustration of this approach see <a class="reference external" href="htt
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

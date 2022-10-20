@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.config.Correlation &mdash; pandas-profiling 3.2.0 documentation</title>
+  <title>pandas_profiling.config.Correlation &mdash; pandas-profiling 3.4.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -85,7 +86,10 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../settings.html">Settings</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Settings.html">pandas_profiling.config.Settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Config.html">pandas_profiling.config.Config</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.Correlation</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.Correlation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pandas_profiling.config.Correlation"><code class="docutils literal notranslate"><span class="pre">Correlation</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html">pandas_profiling.config.CorrelationPlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.MissingPlot.html">pandas_profiling.config.MissingPlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageType.html">pandas_profiling.config.ImageType</a></li>
@@ -160,6 +164,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#pandas_profiling.config.Correlation.calculate" title="pandas_profiling.config.Correlation.calculate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate</span> <span class="pre">(bool)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Correlation.key" title="pandas_profiling.config.Correlation.key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pandas_profiling.config.Correlation.n_bins" title="pandas_profiling.config.Correlation.n_bins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_bins</span> <span class="pre">(int)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Correlation.threshold" title="pandas_profiling.config.Correlation.threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threshold</span> <span class="pre">(float)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#pandas_profiling.config.Correlation.warn_high_correlations" title="pandas_profiling.config.Correlation.warn_high_correlations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">warn_high_correlations</span> <span class="pre">(int)</span></code></a></p></li>
 </ul>
@@ -173,6 +178,11 @@
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Correlation.key">
 <em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pandas_profiling.config.Correlation.key" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute pydantic_field">
+<dt class="sig sig-object py" id="pandas_profiling.config.Correlation.n_bins">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_bins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#pandas_profiling.config.Correlation.n_bins" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
@@ -200,7 +210,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

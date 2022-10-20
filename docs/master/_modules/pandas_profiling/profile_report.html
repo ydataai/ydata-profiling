@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.profile_report &mdash; pandas-profiling 3.2.0 documentation</title>
+  <title>pandas_profiling.profile_report &mdash; pandas-profiling 3.4.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -163,6 +164,8 @@
         <span class="n">sensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">dark_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">orange_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">tsmode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">sortby</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">config_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">lazy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -211,10 +214,13 @@
             <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">get_arg_groups</span><span class="p">(</span><span class="s2">&quot;dark_mode&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">orange_mode</span><span class="p">:</span>
             <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">get_arg_groups</span><span class="p">(</span><span class="s2">&quot;orange_mode&quot;</span><span class="p">))</span>
+        <span class="n">report_config</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="n">tsmode</span>
+        <span class="k">if</span> <span class="n">tsmode</span> <span class="ow">and</span> <span class="n">sortby</span><span class="p">:</span>
+            <span class="n">report_config</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">sortby</span> <span class="o">=</span> <span class="n">sortby</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__initialize_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">report_config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">report_config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_df_hash</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="n">sample</span>
@@ -224,6 +230,21 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">lazy</span><span class="p">:</span>
             <span class="c1"># Trigger building the report structure</span>
             <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__initialize_dataframe</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">report_config</span><span class="p">:</span> <span class="n">Settings</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">report_config</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">active</span>
+            <span class="ow">and</span> <span class="n">report_config</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">sortby</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">report_config</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">sortby</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span>
+                <span class="n">drop</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span>
 
     <span class="k">def</span> <span class="nf">invalidate_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Invalidate report cache. Useful after changing setting.</span>
@@ -539,7 +560,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Simon Brugman.</p>
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

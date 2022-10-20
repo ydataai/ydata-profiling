@@ -19,5 +19,7 @@
    
       ~Theme.united
       ~Theme.flatly
+      ~Theme.cosmo
+      ~Theme.simplex
    
    
