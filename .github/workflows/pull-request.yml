@@ -60,6 +60,7 @@ jobs:
       run: make lint
 
     - name: Commit code formatting changes
+      if: always()
       id: commit
       run: |
         if [[ `git status --porcelain --untracked-files=no` ]]; then
