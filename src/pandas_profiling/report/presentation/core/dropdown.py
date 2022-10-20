@@ -1,12 +1,25 @@
 from typing import Any, Callable
 
-from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.core.container import Container
+from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 from pandas_profiling.report.presentation.core.renderable import Renderable
 
+
 class Dropdown(ItemRenderer):
-    def __init__(self, name: str, id: str, items: list, item: Container, anchor_id: str, **kwargs):
-        super().__init__("dropdown", {"name": name, "id": id, "items": items, "item": item, "anchor_id": anchor_id,}, **kwargs)
+    def __init__(
+        self, name: str, id: str, items: list, item: Container, anchor_id: str, **kwargs
+    ):
+        super().__init__(
+            "dropdown",
+            {
+                "name": name,
+                "id": id,
+                "items": items,
+                "item": item,
+                "anchor_id": anchor_id,
+            },
+            **kwargs
+        )
 
     def __repr__(self) -> str:
         return "Dropdown"
