@@ -6,6 +6,9 @@ from pandas_profiling.report.presentation.flavours.widget.container import (
 from pandas_profiling.report.presentation.flavours.widget.duplicate import (
     WidgetDuplicate,
 )
+from pandas_profiling.report.presentation.flavours.widget.dropdown import (
+    WidgetDropdown,
+)
 from pandas_profiling.report.presentation.flavours.widget.frequency_table import (
     WidgetFrequencyTable,
 )
@@ -29,6 +32,7 @@ __all__ = [
     "WidgetCollapse",
     "WidgetContainer",
     "WidgetDuplicate",
+    "WidgetDropdown",
     "WidgetFrequencyTable",
     "WidgetFrequencyTableSmall",
     "WidgetHTML",
