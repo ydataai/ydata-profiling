@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profiling large datasets &mdash; pandas-profiling 3.4.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Handling sensitive data" href="sensitive_data.html" />
+    <link rel="prev" title="Examples" href="../getting_started/examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use cases</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Profiling large datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#minimal-mode">Minimal mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-the-dataset">Sample the dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#disable-expensive-computations">Disable expensive computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#concurrency">Concurrency</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_report_appearance.html">Customizing the report’s appearance</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/other_dataframe_libraries.html">Other DataFrame libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/great_expectations.html">Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/data_apps.html">Interactive applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/pipelines.html">Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/cloud_services.html">Cloud services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/ides.html">IDEs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/available_settings.html">Available settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/changing_settings.html">Changing settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/multiple_runs.html">Caching results throughout multiple runs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage/corr_mat_access.html">Accessing the values of correlation matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../support_contrib/help_troubleshoot.html">Help &amp; Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support_contrib/common_issues.html">Common issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support_contrib/contribution_guidelines.html">Contribution Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/announcements.html">Past Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/resources.html">Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pandas-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Profiling large datasets</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pages/use_cases/big_data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="profiling-large-datasets">
+<h1>Profiling large datasets<a class="headerlink" href="#profiling-large-datasets" title="Permalink to this heading"></a></h1>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> comprehensively summarizes the input dataset in a way that gives the most insights for data analysis. For small datasets, these computations can be performed in <em>quasi</em> real-time. For larger datasets, deciding upfront which calculations to make might be required.
+Whether a computation scales to a large datasets not only depends on the exact size of the detaset, but also on its complexity and on whether fast computations are available. If the computation time of the profiling becomes a bottleneck, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> offers several alternatives to overcome it.</p>
+<section id="minimal-mode">
+<h2>Minimal mode<a class="headerlink" href="#minimal-mode" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> includes a minimal configuration file where the most expensive computations are turned off by default.
+This is the recommended starting point for larger datasets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">large_dataset</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>(minimal mode was introduced in version v2.4.0)</em></p>
+<p>This configuration file can be found here: <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">config_minimal.yaml</a>. More details on settings and configuration are available in <a class="reference internal" href="../advanced_usage/available_settings.html"><span class="doc">Available settings</span></a>.</p>
+</section>
+<section id="sample-the-dataset">
+<h2>Sample the dataset<a class="headerlink" href="#sample-the-dataset" title="Permalink to this heading"></a></h2>
+<p>An alternative way to handle really large datasets is to use a portion of it to generate the profiling report. Several users report this is a good way to scale back the computation time while maintaining representativity.</p>
+<a class="reference external image-reference" href="https://twitter.com/ogrisel/status/951425284963733505"><img alt="../../_images/twitter_wisdom.png" src="../../_images/twitter_wisdom.png" /></a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sample 10.000 rows</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">large_dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The reader of the report might want to know that the profile is generated using a sample from the data. This can be done by adding a description to the report (see <a class="reference internal" href="metadata.html"><span class="doc">Dataset metadata and data dictionaries</span></a> for details).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Disclaimer: this profiling report was generated using a sample of 5</span><span class="si">% o</span><span class="s2">f the original dataset.&quot;</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">large_dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="disable-expensive-computations">
+<h2>Disable expensive computations<a class="headerlink" href="#disable-expensive-computations" title="Permalink to this heading"></a></h2>
+<p>To decrease the computational burden in particularly large datasets but still maintain some information of interest that may stem from them, some computations can be filtered only for certain columns. Particularly, a list of targets can be provided to <strong>Interactions</strong>, so that only the interactions with these variables in specific are computed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># Reading the data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Creating the profile without specifying the data source, to allow editing the configuration</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">()</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">interactions</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Sex&quot;</span><span class="p">,</span> <span class="s2">&quot;Age&quot;</span><span class="p">]</span>
+
+<span class="c1"># Assigning a DataFrame and exporting to a file, triggering computation</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">data</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The setting controlling this, <code class="docutils literal notranslate"><span class="pre">ìnteractions.targets</span></code>, can be changed via multiple interfaces (configuration files or environment variables). For details, see <a class="reference internal" href="../advanced_usage/changing_settings.html"><span class="doc">Changing settings</span></a>.</p>
+</section>
+<section id="concurrency">
+<h2>Concurrency<a class="headerlink" href="#concurrency" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is a project under active development. One of the highly desired features is the addition of a scalable backend such as <a class="reference external" href="https://github.com/modin-project/modin">Modin</a>, <a class="reference external" href="https://spark.apache.org/">Spark</a> or <a class="reference external" href="https://dask.org/">Dask</a>.</p>
+<p>Keep an eye on the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues">GitHub</a> page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is <a class="reference external" href="https://github.com/ydataai/pandas-profiling/projects/3">currently underway</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../getting_started/examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sensitive_data.html" class="btn btn-neutral float-right" title="Handling sensitive data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, YData Labs Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+Changelog v3.1.0
+----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Fine-grained progress bar
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+- Python 3.9 and 3.10 compatibility
+- Phik correlation order
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+- Several link fixes, readme updates
+
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Matplotlib backend
+
+⬆️ Dependencies
+^^^^^^^^^^^^^^^^^^
+- pre-commit
+- visions to 0.7.4
