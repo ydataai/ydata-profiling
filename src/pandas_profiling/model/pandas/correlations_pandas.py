@@ -158,9 +158,7 @@ def pandas_phik_compute(
 
 @Auto.compute.register(Settings, pd.DataFrame, dict)
 def pandas_auto_compute(
-    config: Settings,
-    df: pd.DataFrame,
-    summary: dict
+    config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
