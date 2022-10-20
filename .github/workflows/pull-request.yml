@@ -69,6 +69,7 @@ jobs:
           echo ::set-output name=CHANGES::false
         fi
 
+    # Push changes to the branch
     - name: Push changes
       uses: ad-m/github-push-action@v0.6.0
       if: always()
