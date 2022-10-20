@@ -3,11 +3,9 @@ from pandas_profiling.report.presentation.flavours.widget.collapse import Widget
 from pandas_profiling.report.presentation.flavours.widget.container import (
     WidgetContainer,
 )
+from pandas_profiling.report.presentation.flavours.widget.dropdown import WidgetDropdown
 from pandas_profiling.report.presentation.flavours.widget.duplicate import (
     WidgetDuplicate,
-)
-from pandas_profiling.report.presentation.flavours.widget.dropdown import (
-    WidgetDropdown,
 )
 from pandas_profiling.report.presentation.flavours.widget.frequency_table import (
     WidgetFrequencyTable,
