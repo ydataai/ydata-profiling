@@ -58,6 +58,7 @@ jobs:
       run: make lint
 
     - name: Commit code formatting changes
+      if: always()
       id: commit
       run: |
         if [[ `git status --porcelain --untracked-files=no` ]]; then
@@ -68,9 +69,10 @@ jobs:
           echo ::set-output name=CHANGES::false
         fi
 
+    # Push changes to the branch
     - name: Push changes
       uses: ad-m/github-push-action@v0.6.0
-      if: ${{ steps.commit.outputs.CHANGES == 'true' }}
+      if: always()
       with:
         branch: ${{ github.head_ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
