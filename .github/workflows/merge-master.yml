@@ -150,4 +150,3 @@ jobs:
         body: ${{ needs.prepare.outputs.release_notes }}
         draft: true
         commitish: master
-
