@@ -156,12 +156,11 @@ def pandas_phik_compute(
     return correlation
 
 
-@Auto.compute.register(Settings, pd.DataFrame, dict, int)
+@Auto.compute.register(Settings, pd.DataFrame, dict)
 def pandas_auto_compute(
     config: Settings,
     df: pd.DataFrame,
-    summary: dict,
-    n_bins: int = 10,
+    summary: dict
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
@@ -175,7 +174,7 @@ def pandas_auto_compute(
         and value["n_distinct"] <= threshold
     ]
     df_discretized = Discretizer(
-        DiscretizationType.UNIFORM, n_bins=n_bins
+        DiscretizationType.UNIFORM, n_bins=config.correlations["auto"].n_bins
     ).discretize_dataframe(df)
     columns_tested = numerical_columns + categorical_columns
     correlation_matrix = pd.DataFrame(
