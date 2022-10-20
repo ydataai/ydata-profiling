@@ -1,0 +1,10 @@
+Changelog v3.3.1
+================
+
+🐛 Bug fixes
+-----------
+
+-  remove unused imports
+   (`66864c1 <https://github.com/ydataai/pandas-profiling/commit/66864c15cfa9b80cb426957e17410c579425d450>`__)
+-  Remove unused imports.
+   (`985fbd1 <https://github.com/ydataai/pandas-profiling/commit/985fbd1fc0e826bda3ac1b725fa8842013743ab3>`__)
