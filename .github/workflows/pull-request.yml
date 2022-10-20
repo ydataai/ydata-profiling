@@ -69,10 +69,9 @@ jobs:
           echo ::set-output name=CHANGES::false
         fi
 
-    # Push changes to the branch
     - name: Push changes
       uses: ad-m/github-push-action@v0.6.0
-      if: always()
+      if: ${{ steps.commit.outputs.CHANGES == 'true' }}
       with:
         branch: ${{ github.head_ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
