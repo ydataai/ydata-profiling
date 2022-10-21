@@ -62,12 +62,15 @@ jobs:
       id: commit
       run: |
         if [[ `git status --porcelain --untracked-files=no` ]]; then
-          echo ::set-output name=CHANGES::true
+          echo "CHANGES=true" >> $GITHUB_OUTPUT
           git add -u
           git commit -m "[skip ci] Code formatting" -a
         else
-          echo ::set-output name=CHANGES::false
+          echo "CHANGES=false" >> $GITHUB_OUTPUT
         fi
+
+    - if: always()
+      run: |
         echo ${{ steps.commit.outputs.CHANGES }}
         echo ${{ steps.commit.outputs.CHANGES == 'true' }}
 
