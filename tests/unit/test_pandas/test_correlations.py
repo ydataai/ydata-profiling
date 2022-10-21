@@ -45,7 +45,7 @@ def test_summary():
         "float_1": {"type": "Numeric", "n_distinct": 10},
         "float_2": {"type": "Numeric", "n_distinct": 10},
         "integer_1": {"type": "Numeric", "n_distinct": 10},
-        "integer_1": {"type": "Numeric", "n_distinct": 10},
+        "integer_2": {"type": "Numeric", "n_distinct": 10},
         "string_1": {"type": "Categorical", "n_distinct": 10},
         "string_2": {"type": "Categorical", "n_distinct": 10},
     }
