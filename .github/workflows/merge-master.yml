@@ -89,6 +89,7 @@ jobs:
       with:
         branch: ${{ github.ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
+        force: true
 
   prerelease-tag:
     if: needs.prepare.outputs.new_release == 'true'
