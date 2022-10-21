@@ -68,6 +68,8 @@ jobs:
         else
           echo ::set-output name=CHANGES::false
         fi
+        echo ${{ steps.commit.outputs.CHANGES }}
+        echo ${{ steps.commit.outputs.CHANGES == 'true' }}
 
     - name: Push changes
       uses: ad-m/github-push-action@v0.6.0
