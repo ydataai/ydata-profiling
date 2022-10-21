@@ -57,9 +57,9 @@ jobs:
 
     - name: Configure Git
       run: |
-        git config --local user.email "azory@ydata.ai"
-        git config --local user.name "Azory"
-        git config --local core.autocrlf false
+        git config user.email "azory@ydata.ai"
+        git config user.name "Azory YData Bot"
+        git config core.autocrlf false
     
     - name: Convert changelog from md to rst
       run: |

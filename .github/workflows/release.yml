@@ -98,9 +98,9 @@ jobs:
 
     - name: Configurating Git
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git config --local core.autocrlf false
+        git config user.email "azory@ydata.ai"
+        git config user.name "Azory YData Bot"
+        git config core.autocrlf false
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
