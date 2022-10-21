@@ -15,6 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Version
+      id: version
+      run: echo "value=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+
     - name: Setup Python 3.8
       uses: actions/setup-python@v4
       with:
@@ -42,9 +46,7 @@ jobs:
       run: make lint
     
     - name:  Build package
-      run: |
-        python setup.py sdist bdist_wheel
-        twine check dist/*
+      run: make package version=${{ steps.version.outputs.value }}
 
     - name: Upload Pipeline Artifacts
       uses: actions/upload-artifact@v3
