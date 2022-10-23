@@ -25,4 +25,4 @@ def describe_boolean_1d_spark(
 
     summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
 
-    return config, df, result
+    return config, df, summary

@@ -20,13 +20,13 @@ def describe_supported_spark(
     """
 
     # number of non-NaN observations in the Series
-    count = summary["describe_generic"].count
-    n_distinct = summary["describe_counts"].value_counts.count()
+    count = summary["count"]
+    n_distinct = summary["value_counts"].count()
 
     summary["n_distinct"] = n_distinct
     summary["p_distinct"] = n_distinct / count if count > 0 else 0
 
-    n_unique = summary["describe_counts"].value_counts.where("count == 1").count()
+    n_unique = summary["value_counts"].where("count == 1").count()
     summary["is_unique"] = n_unique == count
     summary["n_unique"] = n_unique
     summary["p_unique"] = n_unique / count

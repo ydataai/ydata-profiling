@@ -50,7 +50,7 @@ def describe_numeric_1d_spark(
     summary["kurtosis"] = stats["kurtosis"]
     summary["sum"] = stats["sum"]
 
-    value_counts = summary["describe_counts"].value_counts
+    value_counts = summary["value_counts"]
 
     n_infinite = (
         value_counts.where(F.col(df.columns[0]).isin([np.inf, -np.inf]))
@@ -96,16 +96,16 @@ def describe_numeric_1d_spark(
         )
     }
 
-    median = summary[quantiles["50%"]]
+    median = summary["quantiles"]["50%"]
 
     summary["mad"] = df.select(
         (F.abs(F.col(f"{df.columns[0]}").cast("int") - median)).alias("abs_dev")
     ).stat.approxQuantile("abs_dev", [0.5], quantile_threshold)[0]
 
     # FIXME: move to fmt
-    summary["p_negative"] = summary["n_negative"] / summary["describe_generic"].n
+    summary["p_negative"] = summary["n_negative"] / summary["n"]
     summary["range"] = summary["max"] - summary["min"]
-    summary["iqr"] = summary[quantiles["75%"]] - summary[quantiles["25%"]]
+    summary["iqr"] = summary["quantiles"]["75%"] - summary["quantiles"]["25%"]
     summary["cv"] = summary["std"] / summary["mean"] if summary["mean"] else np.NaN
     summary["p_zeros"] = summary["n_zeros"] / summary["n"]
     summary["p_infinite"] = summary["n_infinite"] / summary["n"]
