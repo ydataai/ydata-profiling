@@ -43,8 +43,8 @@ def spark_get_table_stats(
     # without this check we'll get a div by zero error
     if result["n"] * result["n_var"] > 0:
         table_stats["p_cells_missing"] = (
-            table_stats["n_cells_missing"] / (result.n * result.n_var)
-            if result.n > 0
+            table_stats["n_cells_missing"] / (result["n"] * result["n_var"])
+            if result["n"] > 0
             else 0
         )
     else:

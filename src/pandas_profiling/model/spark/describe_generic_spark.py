@@ -23,7 +23,7 @@ def describe_generic_spark(
     length = df.count()
 
     summary["n"] = length
-    summary["p_missing"] = summary["describe_counts"].n_missing / length
-    summary["count"] = length - summary["describe_counts"].n_missing
+    summary["p_missing"] = summary["n_missing"] / length
+    summary["count"] = length - summary["n_missing"]
 
     return config, df, summary
