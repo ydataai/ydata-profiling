@@ -50,6 +50,7 @@ def describe_counts_spark(
 
     summary["n_missing"] = n_missing
     summary["value_counts"] = value_counts.persist()
+    summary["value_counts_without_nan"] = value_counts.dropna()
     summary["values"] = value_counts_index_sorted
 
     return config, series, summary
