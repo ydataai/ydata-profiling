@@ -248,7 +248,6 @@ def supported_alerts(summary: dict) -> List[Alert]:
             )
         )
     if summary.get("n_distinct", np.nan) == 1:
-        summary["mode"] = summary["value_counts_without_nan"].index[0]
         alerts.append(
             Alert(
                 alert_type=AlertType.CONSTANT,
