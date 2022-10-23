@@ -5,13 +5,12 @@ from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.duplicates import get_duplicates
-from pandas_profiling.model.schema import DuplicateResult
 
 
 @get_duplicates.register(Settings, DataFrame, Sequence)
 def spark_get_duplicates(
     config: Settings, df: DataFrame, supported_columns: Sequence
-) -> Tuple[DuplicateResult, Optional[DataFrame]]:
+) -> Tuple[dict, Optional[DataFrame]]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -24,13 +23,13 @@ def spark_get_duplicates(
     """
     n_head = config.duplicates.head
 
-    metrics = DuplicateResult()
+    metrics = {}
     if n_head == 0:
         return metrics, None
 
     if not supported_columns or len(df.head(1)) == 0:
-        metrics.n_duplicates = 0
-        metrics.p_duplicates = 0.0
+        metrics["n_duplicates"] = 0
+        metrics["p_duplicates"] = 0.0
         return metrics, None
 
     duplicates_key = config.duplicates.key
@@ -47,7 +46,8 @@ def spark_get_duplicates(
         .filter(F.col(duplicates_key) > 1)
     )
 
-    metrics.n_duplicates = duplicated_df.count()
+    metrics["n_duplicates"] = duplicated_df.count()
+    # TODO: @chanedwin to look at why this isn't enabled
     # metrics["p_duplicates"] = metrics["n_duplicates"] / n_rows
 
     return metrics, (
