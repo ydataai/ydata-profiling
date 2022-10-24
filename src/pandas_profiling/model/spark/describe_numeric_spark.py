@@ -86,19 +86,21 @@ def describe_numeric_1d_spark(
     quantiles = config.vars.num.quantiles
     quantile_threshold = 0.05
 
-    summary["quantiles"] = {
-        f"{percentile:.0%}": value
-        for percentile, value in zip(
-            quantiles,
-            df.stat.approxQuantile(
-                f"{df.columns[0]}",
+    summary.update(
+        {
+            f"{percentile:.0%}": value
+            for percentile, value in zip(
                 quantiles,
-                quantile_threshold,
-            ),
-        )
-    }
+                df.stat.approxQuantile(
+                    f"{df.columns[0]}",
+                    quantiles,
+                    quantile_threshold,
+                ),
+            )
+        }
+    )
 
-    median = summary["quantiles"]["50%"]
+    median = summary["50%"]
 
     summary["mad"] = df.select(
         (F.abs(F.col(f"{df.columns[0]}").cast("int") - median)).alias("abs_dev")
@@ -107,7 +109,7 @@ def describe_numeric_1d_spark(
     # FIXME: move to fmt
     summary["p_negative"] = summary["n_negative"] / summary["n"]
     summary["range"] = summary["max"] - summary["min"]
-    summary["iqr"] = summary["quantiles"]["75%"] - summary["quantiles"]["25%"]
+    summary["iqr"] = summary["75%"] - summary["25%"]
     summary["cv"] = summary["std"] / summary["mean"] if summary["mean"] else np.NaN
     summary["p_zeros"] = summary["n_zeros"] / summary["n"]
     summary["p_infinite"] = summary["n_infinite"] / summary["n"]
