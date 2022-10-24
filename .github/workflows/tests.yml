@@ -157,7 +157,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8]
         pandas: ["pandas==0.25.3", "pandas==1.0.5", "pandas>1.1"]
         spark: ["2.3.0", "2.4.7", "3.0.1"]
         hadoop: [ 2.7 ]
@@ -212,7 +212,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
       - run: |
           pip install --upgrade pip setuptools wheel
-          pip install pytest-spark>=0.6.0 pyarrow==1.0.1
+          pip install pytest-spark>=0.6.0 pyarrow==1.0.1 "${{ matrix.spark }}"
           pip install -r requirements.txt
           pip install -r requirements-test.txt
           pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
