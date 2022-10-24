@@ -390,7 +390,7 @@ def test_describe_spark_df(
     for k, v in expected_results[column].items():
         if v == check_is_NaN:
             # test_condition should be True if column not in results, or the result is a nan value
-            test_condition = k not in results["variables"][column] or np.isnan(
+            test_condition = k not in results["variables"][column] or pd.isna(
                 results["variables"][column].get(k, np.NaN)
             )
         elif isinstance(v, float):
