@@ -345,11 +345,11 @@ def get_alerts(
 
 
 def alert_value(value: float) -> bool:
-    return not np.isnan(value) and value > 0.01
+    return not pd.isna(value) and value > 0.01
 
 
 def skewness_alert(v: float, threshold: int) -> bool:
-    return not np.isnan(v) and (v < (-1 * threshold) or v > threshold)
+    return not pd.isna(v) and (v < (-1 * threshold) or v > threshold)
 
 
 def type_date_alert(series: pd.Series) -> bool:
