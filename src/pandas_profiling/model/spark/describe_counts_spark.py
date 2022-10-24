@@ -50,7 +50,7 @@ def describe_counts_spark(
 
     summary["n_missing"] = n_missing
     summary["value_counts"] = value_counts.persist()
-    summary["values"] = value_counts_index_sorted
+    summary["value_counts_index_sorted"] = value_counts_index_sorted
 
     # this is necessary as freqtables requires value_counts_without_nan
     # to be a pandas series. However, if we try to get everything into

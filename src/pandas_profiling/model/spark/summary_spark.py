@@ -91,6 +91,10 @@ def spark_get_series_descriptions(
             executor.imap_unordered(multiprocess_1d, args)
         ):
             pbar.set_postfix_str(f"Describe variable:{column}")
+
+            # summary clean up for spark
+            description.pop("value_counts")
+
             series_description[column] = description
             pbar.update()
         series_description = {k: series_description[k] for k in df.columns}
@@ -105,4 +109,5 @@ def spark_get_series_descriptions(
 
     # Mapping from column name to variable type
     series_description = sort_column_names(series_description, config.sort)
+
     return series_description

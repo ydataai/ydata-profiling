@@ -25,4 +25,8 @@ def describe_generic_spark(
     summary["p_missing"] = summary["n_missing"] / length
     summary["count"] = length - summary["n_missing"]
 
+    # FIXME: This is not correct, but used to fulfil render expectations
+    # @chanedwin
+    summary["memory_size"] = 0
+
     return config, df, summary
