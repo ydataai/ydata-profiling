@@ -251,7 +251,7 @@ class Report(BaseModel):
     precision: int = 10
 
 
-class PandasSettings(BaseSettings):
+class Settings(BaseSettings):
     # Default prefix to avoid collisions with environment variables
     class Config:
         env_prefix = "profile_"
@@ -319,7 +319,7 @@ class PandasSettings(BaseSettings):
         return self.parse_obj(self.copy(update=update))
 
 
-class SparkSettings(BaseSettings):
+class SparkSettings(Settings):
     # TO-DO write description
     vars: Univariate = Univariate()
 
