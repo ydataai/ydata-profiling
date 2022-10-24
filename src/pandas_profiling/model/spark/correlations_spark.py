@@ -27,7 +27,7 @@ SPARK_CORRELATION_SPEARMAN = "spearman"
 @Spearman.compute.register(Settings, DataFrame, dict)
 def spark_spearman_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     matrix = _compute_spark_corr_natively(
         df, summary, corr_type=SPARK_CORRELATION_SPEARMAN
     )
@@ -37,7 +37,7 @@ def spark_spearman_compute(
 @Pearson.compute.register(Settings, DataFrame, dict)
 def spark_pearson_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     matrix = _compute_spark_corr_natively(
         df, summary, corr_type=SPARK_CORRELATION_PEARSON
     )
@@ -78,21 +78,21 @@ def _compute_spark_corr_natively(df: DataFrame, summary: dict, corr_type: str):
 @Kendall.compute.register(Settings, DataFrame, dict)
 def spark_kendall_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     raise NotImplementedError()
 
 
 @Cramers.compute.register(Settings, DataFrame, dict)
 def spark_cramers_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     raise NotImplementedError()
 
 
 @PhiK.compute.register(Settings, DataFrame, dict)
 def spark_phi_k_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
 
     threshold = config.categorical_maximum_correlation_distinct
     intcols = {

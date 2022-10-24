@@ -3,7 +3,6 @@ from typing import Tuple
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
-
 from pandas_profiling.model.summary_algorithms import describe_categorical_1d
 
 

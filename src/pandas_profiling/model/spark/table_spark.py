@@ -3,7 +3,6 @@ from collections import Counter
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
-
 from pandas_profiling.model.table import get_table_stats
 
 
