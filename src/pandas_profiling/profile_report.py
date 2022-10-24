@@ -10,7 +10,7 @@ import yaml
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
-from pandas_profiling.config import Config, PandasSettings, SparkSettings
+from pandas_profiling.config import Config, Settings, SparkSettings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
@@ -30,6 +30,8 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
+
+from pydantic import BaseSettings
 
 
 class ProfileReport(SerializeReport, ExpectationsReport):
@@ -443,8 +445,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
 
-    def get_default_settings(self, df) -> Settings:
+    def get_default_settings(self, df) -> BaseSettings:
         if isinstance(df, (pd.DataFrame, pd.Series)):
-            return PandasSettings()
+            return Settings()
         else:
             return SparkSettings()
