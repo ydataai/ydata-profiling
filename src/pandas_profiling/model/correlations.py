@@ -77,10 +77,6 @@ def calculate_correlation(
     Returns:
         The correlation matrices for the given correlation measures. Return None if correlation is empty.
     """
-
-    if summary["n"] == 0:
-        return None
-
     correlation_measures = {
         "pearson": Pearson,
         "spearman": Spearman,
