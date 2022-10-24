@@ -184,7 +184,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
       - run: |
           pip install --upgrade pip setuptools wheel
-          pip install pytest-spark>=0.6.0 pyarrow==1.0.1 "${{ matrix.spark }}"
+          pip install pytest-spark>=0.6.0 pyarrow==1.0.1 pyspark=="${{ matrix.spark }}"
           pip install -r requirements.txt
           pip install -r requirements-test.txt
           pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
