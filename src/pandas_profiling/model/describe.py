@@ -88,14 +88,21 @@ def describe(
         ]
         pbar.update()
 
+        # Table statistics
+        table_stats = progress(get_table_stats, pbar, "Get dataframe statistics")(
+            config, df, series_description
+        )
+
         # Get correlations
         correlation_names = get_active_correlations(config)
         pbar.total += len(correlation_names)
 
         correlations = {
             correlation_name: progress(
-                calculate_correlation, pbar, f"Calculate {correlation_name} correlation"
-            )(config, df, correlation_name, series_description)
+                calculate_correlation,
+                pbar,
+                f"Calculate {correlation_name} correlation",
+            )(config, df, correlation_name, table_stats)
             for correlation_name in correlation_names
         }
 
@@ -115,11 +122,6 @@ def describe(
             scatter_matrix[x][y] = progress(
                 get_scatter_plot, pbar, f"scatter {x}, {y}"
             )(config, df, x, y, interval_columns)
-
-        # Table statistics
-        table_stats = progress(get_table_stats, pbar, "Get dataframe statistics")(
-            config, df, series_description
-        )
 
         # missing diagrams
         missing_map = get_missing_active(config, table_stats)
