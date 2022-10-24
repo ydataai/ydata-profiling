@@ -136,23 +136,33 @@ def render_real(config: Settings, summary: dict) -> dict:
             },
             {
                 "name": "5-th percentile",
-                "value": fmt_numeric(summary["5%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["5%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "Q1",
-                "value": fmt_numeric(summary["25%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["25%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "median",
-                "value": fmt_numeric(summary["50%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["50%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "Q3",
-                "value": fmt_numeric(summary["75%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["75%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "95-th percentile",
-                "value": fmt_numeric(summary["95%"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["quantiles"]["95%"], precision=config.report.precision
+                ),
             },
             {
                 "name": "Maximum",

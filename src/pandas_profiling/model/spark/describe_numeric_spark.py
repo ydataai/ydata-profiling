@@ -5,7 +5,10 @@ import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.summary_algorithms import describe_numeric_1d
+from pandas_profiling.model.summary_algorithms import (
+    describe_numeric_1d,
+    histogram_compute,
+)
 
 
 def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
@@ -113,19 +116,23 @@ def describe_numeric_1d_spark(
     # because spark doesn't have an indexing system, there isn't really the idea of monotonic increase/decrease
     # [feature enhancement] we could implement this if the user provides an ordinal column to use for ordering
     # ... https://stackoverflow.com/questions/60221841/how-to-detect-monotonic-decrease-in-pyspark
-    # summary["monotonic"] =
+    summary["monotonic"] = 0
 
     # this function only displays the top N (see config) values for a histogram.
     # This might be confusing if there are a lot of values of equal magnitude, but we cannot bring all the values to
     # display in pandas display
     # the alternative is to do this in spark natively, but it is not trivial
-    # summary.update(
-    #     histogram_compute(
-    #         value_counts.index.values,
-    #         summary["n_distinct"],
-    #         weights=value_counts.values,
-    #     )
-    # )
+    infinity_values = [np.inf, -np.inf]
+    infinity_index = summary["value_counts_without_nan"].index.isin(infinity_values)
+
+    summary.update(
+        histogram_compute(
+            config,
+            summary["value_counts_without_nan"][~infinity_index].index.values,
+            summary["n_distinct"],
+            weights=summary["value_counts_without_nan"][~infinity_index].values,
+        )
+    )
 
     # buckets = config.plot.histogram.bins
     # if not isinstance(buckets, int):

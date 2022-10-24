@@ -27,7 +27,7 @@ def spark_get_duplicates(
     if n_head == 0:
         return metrics, None
 
-    if not supported_columns or len(df.head(1)) == 0:
+    if not supported_columns or df.count() == 0:
         metrics["n_duplicates"] = 0
         metrics["p_duplicates"] = 0.0
         return metrics, None
