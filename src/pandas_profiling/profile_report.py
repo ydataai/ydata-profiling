@@ -7,6 +7,7 @@ from typing import Any, Dict, Optional, Union
 import numpy as np
 import pandas as pd
 import yaml
+from pydantic import BaseSettings
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
@@ -30,8 +31,6 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
-
-from pydantic import BaseSettings
 
 
 class ProfileReport(SerializeReport, ExpectationsReport):

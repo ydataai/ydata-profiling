@@ -22,9 +22,7 @@ def spark_get_table_stats(
     """
     n = df.count()
 
-    result = {}
-    result["n"] = n
-    result["n_var"] = len(df.columns)
+    result = {"n": n, "n_var": len(df.columns)}
 
     table_stats = {
         "n_cells_missing": 0,
