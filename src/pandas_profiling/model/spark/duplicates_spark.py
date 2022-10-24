@@ -47,8 +47,7 @@ def spark_get_duplicates(
     )
 
     metrics["n_duplicates"] = duplicated_df.count()
-    # TODO: @chanedwin to look at why this isn't enabled
-    # metrics["p_duplicates"] = metrics["n_duplicates"] / n_rows
+    metrics["p_duplicates"] = metrics["n_duplicates"] / df.count()
 
     return metrics, (
         duplicated_df.orderBy(duplicates_key, ascending=False).limit(n_head).toPandas()
