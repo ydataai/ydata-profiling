@@ -53,34 +53,46 @@ jobs:
 
     - name: Calculate changelog path
       id: path
-      run: echo "$(echo "::set-output name=value::docsrc/source/pages/reference/changelog/${{ needs.prepare.outputs.release }}" | sed "s/\./_/g").rst"
+      run: echo "value=$(echo "${{ needs.prepare.outputs.release }}" | sed "s/\./_/g").md" >> $GITHUB_OUTPUT
 
     - name: Configure Git
       run: |
         git config user.email "azory@ydata.ai"
         git config user.name "Azory YData Bot"
         git config core.autocrlf false
-    
-    - name: Convert changelog from md to rst
+
+    - name: Write changelog to file
+      uses: DamianReeves/write-file-action@master
+      with:
+        path: docsrc/source/pages/reference/changelog/${{ steps.path.outputs.value }}
+        contents: ${{ needs.prepare.outputs.release_notes }}
+        write-mode: overwrite
+
+    - name: Add changelog to docs
       run: |
-        sudo apt-get install -y pandoc
-        echo "${{ needs.prepare.outputs.release_notes }}" \
-        | sed 's/# \[.*/# Changelog ${{ needs.prepare.outputs.release }}/g' \
-        | sed 's/## Bug Fixes/## 🐛 Bug fixes/g' \
-        | sed 's/## Features/## 🎉 Features/g' \
-        | sed 's/## BREAKING CHANGES/## 🚨 Breaking changes/g' \
-        | sed 's/## Documentation/## 📖 Documentation/g' \
-        | pandoc --from markdown --to rst --standalone > ${{ steps.path.outputs.value }}
+        cd docsrc/source/pages/reference
+        sed -i -e 's/# \[.*/# Changelog ${{ needs.prepare.outputs.release }}/g' \
+            -e 's/## Bug Fixes/## 🐛 Bug fixes/g' \
+            -e 's/## Features/## 🎉 Features/g' \
+            -e 's/## BREAKING CHANGES/## 🚨 Breaking changes/g' \
+            -e 's/## Documentation/## 📖 Documentation/g' \
+            changelog/${{ steps.path.outputs.value }}
+
+        grep -q ".. include:: changelog/${{ steps.path.outputs.value }}" changelog.rst || sed -i "4 a\\
+        .. include:: changelog\/${{ steps.path.outputs.value }}\\
+           :parser: myst_parser.sphinx_\\
+
+        " changelog.rst
 
     - name: Commit changelog
       id: commit
       run: |
         if [[ `git status --porcelain` ]]; then
-          echo ::set-output name=CHANGES::true
-          git add ${{ steps.path.outputs.value  }}
+          echo "CHANGES=true" >> $GITHUB_OUTPUT
+          git add docsrc/source/pages/reference/changelog/${{ steps.path.outputs.value  }}
           git commit -m "[skip ci] Update changelogs" -a
         else
-          echo ::set-output name=CHANGES::false
+          echo "CHANGES=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Push changes
@@ -90,6 +102,7 @@ jobs:
         branch: ${{ github.ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
         force: true
+   
 
   prerelease-tag:
     if: needs.prepare.outputs.new_release == 'true'
