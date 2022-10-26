@@ -146,3 +146,4 @@ jobs:
         release_name: ${{ needs.prepare.outputs.release }}
         body: ${{ needs.prepare.outputs.release_notes }}
         draft: true
+        commitish: master

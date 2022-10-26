@@ -119,35 +119,27 @@ jobs:
 
     - name: Update examples
       run: make examples
-      env:
-        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
 
     - name: Build the documentation
       run: make docs
 
-    - name: Create branch name
-      run: |
-        export BRANCH_NAME="${GITHUB_REF##*/}/"
-        echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-
     - name: Move the changes to the gh-pages branch (release branch)
       run: |
-        mv docs/ ${{ env.BRANCH_NAME }}
-        mkdir docs/
-        mv ${{ env.BRANCH_NAME }} docs/${{ env.BRANCH_NAME }}
-        mv examples/ ${{ env.BRANCH_NAME }}
-        mkdir examples/
-        mv ${{ env.BRANCH_NAME }} examples/${{ env.BRANCH_NAME }}
-        git add -f docs/${{ env.BRANCH_NAME }}
-        git add -f examples/${{ env.BRANCH_NAME }}
-        git stash push -- docs/ examples/${{ env.BRANCH_NAME }}
+        mv docs master
+        mkdir docs
+        mv master docs/master
+        mv examples/ master
+        mkdir examples
+        mv master examples/master
+        git add -f docs/master
+        git add -f examples/master
+        git stash push -- docs/master examples/master
         git fetch origin gh-pages
         git checkout -f gh-pages
         touch .nojekyll
         git add .nojekyll
-        rm -rf docs/${{ env.BRANCH_NAME }}
-        rm -rf examples/${{ env.BRANCH_NAME }}
+        rm -rf docs/master
+        rm -rf examples/master
         git add docs/
         git add examples/
         git stash apply
