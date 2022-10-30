@@ -1,19 +1,6 @@
-<<<<<<< HEAD
-joblib~=1.2.0 # 1.1.0
-scipy>=1.4.1, <1.10 
-<<<<<<< HEAD
-pandas>1.1, <1.5, !=1.4.0
-<<<<<<< HEAD
-matplotlib>=3.2, <3.7
-=======
-=======
-=======
 scipy>=1.4.1, <1.10
->>>>>>> 586cef36 (fix: drop joblib dependency (#1090))
 pandas>1.1, <1.6, !=1.4.0
->>>>>>> 5c5a710f (feat: add support for Pandas 1.5 (#1076))
 matplotlib>=3.2, <3.6
->>>>>>> f0caa4ee (build(deps): update pydantic requirement)
 pydantic>=1.8.1, <1.11
 PyYAML>=5.0.0, <6.1
 jinja2>=2.11.1, <3.2
@@ -30,19 +17,7 @@ phik>=0.11.1,<0.13
 requests>=2.24.0, <2.29
 # Progress bar
 tqdm>=4.48.2, <4.65
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f18fa7f0 (build(deps): update seaborn requirement)
 seaborn>=0.10.1, <0.13
-<<<<<<< HEAD
-multimethod>=1.4, <1.9
-=======
-seaborn>=0.10.1, <0.12
 multimethod>=1.4, <1.10
->>>>>>> 03937dab (build(deps): update multimethod requirement)
-=======
-multimethod>=1.4, <1.10
->>>>>>> 4179fc65 (build(deps): update multimethod requirement (#1063))
 # metrics
 statsmodels>=0.13.2, <0.14

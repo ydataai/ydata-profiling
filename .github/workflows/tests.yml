@@ -4,7 +4,7 @@ name: Multi-software test
 on:
   pull_request:
   push:
-    branches: 
+    branches:
     - master
     - develop
 
@@ -47,13 +47,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Setup python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-    
+
     - uses: actions/cache@v3
       if: startsWith(runner.os, 'Linux')
       with:
@@ -131,25 +131,7 @@ jobs:
 
     - run: make test_cov
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
-      - run: |
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-          pip install -r requirements-test.txt
-      - run: make install
-      - run: make test_cov
-      - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
-=======
     - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
->>>>>>> 2b305a5d (fix: generate tests.yml)
 
   test_spark:
     runs-on: ${{ matrix.os }}
@@ -222,6 +204,3 @@ jobs:
       - run: make install
       - run: make install-spark-ci
       - run: make test_spark
-=======
-    - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
->>>>>>> 42ea65ca (chore(actions): update github actions flow (#1074))
