@@ -3,8 +3,6 @@
 ![Pandas Profiling Logo Header](https://pandas-profiling.ydata.ai/docs/assets/logo_header.png)
 
 [![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
-[![PyPI download month](https://img.shields.io/pypi/dm/pandas-profiling.svg)](https://pypi.python.org/pypi/pandas-profiling/)
-[![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code Coverage](https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/ydataai/pandas-profiling)
 [![Release Version](https://img.shields.io/github/release/ydataai/pandas-profiling.svg)](https://github.com/ydataai/pandas-profiling/releases)
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
@@ -40,7 +38,7 @@ For each column, the following information (whenever relevant for the column typ
 - **Missing values**: through counts, matrix, heatmap and dendrograms
 - **Duplicate rows**: list of the most common duplicated rows
 - **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
-- **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existence of EXIF metadata
+- **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existance of EXIF metadata
 
 The report contains three additional sections:
 
@@ -147,22 +145,8 @@ Additional details, including information about widget support, are available [o
 You can install using the `pip` package manager by running:
 
 ```sh
-pip install -U pandas-profiling
+pip install -U pandas-profiling[notebook]
 ```
-
-#### Extras
-
-The package declares "extras", sets of additional dependencies.
-
-* `[notebook]`: support for rendering the report in Jupyter notebook widgets.
-* `[unicode]`: support for more detailed Unicode analysis, at the expense of additional disk space.
-
-Install these with e.g.
-
-```sh
-pip install -U pandas-profiling[notebook,unicode]
-```
-
 
 ### Using conda
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
@@ -198,7 +182,7 @@ You need [Python 3](https://python3statement.org/) to run the package. Other dep
 
 ## 📝 Use cases
 
-The documentation includes guides, tips and tricks for tackling common use cases:
+The documentation includes guides, tips and tricks for tackling commmon use cases:
 
 | Use case | Description |
 |---|---|

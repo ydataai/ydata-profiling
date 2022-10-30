@@ -53,23 +53,7 @@ def counter_to_series(counter: Counter) -> pd.Series:
 
 
 def unicode_summary_vc(vc: pd.Series) -> dict:
-    try:
-        from tangled_up_in_unicode import (  # type: ignore
-            block,
-            block_abbr,
-            category,
-            category_long,
-            script,
-        )
-    except ImportError:
-        from unicodedata import category as _category  # pylint: disable=import-error
-
-        category = _category  # type: ignore
-        char_handler = lambda char: "(unknown)"  # noqa: E731
-        block = char_handler
-        block_abbr = char_handler
-        category_long = char_handler
-        script = char_handler
+    from tangled_up_in_unicode import block, block_abbr, category, category_long, script
 
     # Unicode Character Summaries (category and script name)
     character_counts = get_character_counts_vc(vc)

@@ -3,13 +3,14 @@ from typing import Tuple
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import CategoricalColumnResult
 from pandas_profiling.model.summary_algorithms import describe_categorical_1d
 
 
 @describe_categorical_1d.register
 def describe_categorical_1d_spark(
     config: Settings, df: DataFrame, summary: dict
-) -> Tuple[Settings, DataFrame, dict]:
+) -> Tuple[Settings, DataFrame, CategoricalColumnResult]:
     """Describe a categorical series.
 
     Args:
@@ -21,8 +22,9 @@ def describe_categorical_1d_spark(
     """
 
     # FIXME: cat description
+    result = CategoricalColumnResult()
     redact = config.vars.cat.redact
     if not redact:
-        summary["first_rows"] = df.limit(5).toPandas().squeeze("columns")
+        result.first_rows = df.limit(5).toPandas().squeeze("columns")
 
-    return config, df, summary
+    return config, df, result

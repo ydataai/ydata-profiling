@@ -40,7 +40,7 @@ def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
     if columns_to_remove:
         warnings.warn(
             f"""spark-profiling does not handle MapTypes. Column(s) { ','.join(columns_to_remove) } will be ignored.
-            To fix this, consider converting your MapType into a StructTypes of StructFields i.e.
+            To fix this, consider converting your MapType into a StructTypes of StructFields i.e. 
             {{'key1':'value1',...}} -> [('key1','value1'), ...], or extracting the key,value pairs out
             into individual columns using pyspark.sql.functions.explode.
             """

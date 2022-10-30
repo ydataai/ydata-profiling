@@ -3,7 +3,6 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from pandas_profiling.utils.compat import pandas_version_info
 from pandas_profiling.utils.dataframe import (
     expand_mixed,
     read_pandas,
@@ -38,17 +37,10 @@ def test_read_pandas_csv():
 
 def test_read_pandas_json():
     p = Path("dataframe.json")
-
-    expected_error, expected_message = (
-        (FileNotFoundError, "File dataframe.json does not exist")
-        if pandas_version_info() >= (1, 5)
-        else (ValueError, "Expected object or value")
-    )
-
-    with pytest.raises(expected_error) as e:
+    with pytest.raises(ValueError) as e:
         read_pandas(p)
 
-    assert str(e.value) == expected_message
+    assert str(e.value) == "Expected object or value"
 
 
 def test_warning():

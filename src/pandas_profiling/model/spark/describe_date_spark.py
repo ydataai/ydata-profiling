@@ -3,13 +3,14 @@ from typing import Tuple
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.schema import DateColumnResult
 from pandas_profiling.model.summary_algorithms import describe_date_1d
 
 
 @describe_date_1d.register
 def describe_date_1d_spark(
     config: Settings, df: DataFrame, summary: dict
-) -> Tuple[Settings, DataFrame, dict]:
+) -> Tuple[Settings, DataFrame, DateColumnResult]:
     """Describe a date series.
 
     Args:
@@ -20,4 +21,5 @@ def describe_date_1d_spark(
         A dict containing calculated series description values.
     """
 
-    return config, df, summary
+    result = DateColumnResult()
+    return config, df, result

@@ -323,6 +323,7 @@ def expected_results():
             "std": 0,
             "sum": 9,
             "variance": 0.0,
+            "mode": 1.0,
             "monotonic_increase": True,
             "monotonic_increase_strict": False,
         },

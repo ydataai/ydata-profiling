@@ -22,7 +22,7 @@ def test_spark_get_duplicates_disabled(duplicates_data):
     cfg.duplicates.head = 0
 
     stats, df = spark_get_duplicates(cfg, duplicates_data, duplicates_data.columns)
-    assert "n_duplicates" not in stats
+    assert stats.n_duplicates is None
     assert df is None
 
 
@@ -32,7 +32,7 @@ def test_spark_get_duplicates(duplicates_data):
     cfg.duplicates.key = "my_name"
 
     stats, df = spark_get_duplicates(cfg, duplicates_data, duplicates_data.columns)
-    assert stats["n_duplicates"] == 1
+    assert stats.n_duplicates == 1
     assert df.head(1)["my_name"][0] == 2
     assert df.head(1).test_num_1[0] == 1
     assert df.head(1).test_num_2[0] == 11

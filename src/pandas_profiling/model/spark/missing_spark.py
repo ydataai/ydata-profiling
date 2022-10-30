@@ -1,5 +1,3 @@
-from typing import Any, List, Optional
-
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
@@ -33,26 +31,24 @@ class MissingnoBarSparkPatch:
     like bad practice as well.
     """
 
-    def __init__(
-        self, df: DataFrame, columns: List[str] = None, original_df_size: int = None
-    ):
+    def __init__(self, df, columns=None, original_df_size=None):
         self.df = df
         self.columns = columns
         self.original_df_size = original_df_size
 
-    def isnull(self) -> Any:
+    def isnull(self):
         """
         This patches the .isnull().sum() function called by missingno library
         """
         return self  # return self to patch .sum() function
 
-    def sum(self) -> DataFrame:
+    def sum(self):
         """
         This patches the .sum() function called by missingno library
         """
         return self.df  # return unwrapped dataframe
 
-    def __len__(self) -> Optional[int]:
+    def __len__(self):
         """
         This patches the len(df) function called by missingno library
         """

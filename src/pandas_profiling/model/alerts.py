@@ -248,6 +248,7 @@ def supported_alerts(summary: dict) -> List[Alert]:
             )
         )
     if summary.get("n_distinct", np.nan) == 1:
+        summary["mode"] = summary["value_counts_without_nan"].index[0]
         alerts.append(
             Alert(
                 alert_type=AlertType.CONSTANT,
@@ -345,11 +346,11 @@ def get_alerts(
 
 
 def alert_value(value: float) -> bool:
-    return not pd.isna(value) and value > 0.01
+    return not np.isnan(value) and value > 0.01
 
 
 def skewness_alert(v: float, threshold: int) -> bool:
-    return not pd.isna(v) and (v < (-1 * threshold) or v > threshold)
+    return not np.isnan(v) and (v < (-1 * threshold) or v > threshold)
 
 
 def type_date_alert(series: pd.Series) -> bool:

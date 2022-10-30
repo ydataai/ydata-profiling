@@ -52,7 +52,9 @@ def to_category(series: pd.Series, state: dict) -> pd.Series:
     if hasnans:
         val = val.replace("nan", np.nan)
 
-    return val.astype("string")
+    if int(pd.__version__.split(".")[0]) >= 1:
+        val = val.astype("string")
+    return val
 
 
 @series_handle_nulls
@@ -85,7 +87,7 @@ def category_to_numeric(series: pd.Series, state: dict) -> pd.Series:
     return pd.to_numeric(series, errors="coerce")
 
 
-hasnan_bool_name = "boolean"
+hasnan_bool_name = "boolean" if int(pd.__version__.split(".")[0]) >= 1 else "Bool"
 
 
 def to_bool(series: pd.Series) -> pd.Series:

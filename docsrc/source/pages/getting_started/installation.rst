@@ -21,7 +21,8 @@ You can install using the ``pip`` package manager by running:
 
 .. code-block:: console
 
-    pip install -U pandas-profiling
+    pip install -U pandas-profiling[notebook]
+    jupyter nbextension enable --py widgetsnbextension
 
 If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can run:
 
@@ -64,8 +65,7 @@ This can be done via ``pip``:
 
 .. code-block::
 
-  pip install pandas-profiling[notebook]
-  jupyter nbextension enable --py widgetsnbextension
+  pip install ipywidgets
 
 Or via ``conda``: 
 
@@ -91,17 +91,3 @@ This can also be done via the following one-liner:
 .. code-block:: console
 
     pip install https://github.com/ydataai/pandas-profiling/archive/master.zip
-
-Extras
-------
-
-The package declares some "extras", sets of additional dependencies.
-
-* ``[notebook]``: support for rendering the report in Jupyter notebook widgets.
-* ``[unicode]``: support for more detailed Unicode analysis, at the expense of additional disk space.
-
-Install these with e.g.
-
-.. code-block:: console
-
-    pip install -U pandas-profiling[notebook,unicode]

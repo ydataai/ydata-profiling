@@ -38,7 +38,7 @@ def test_timeseries_identification(html_profile: str):
     assert "<th>TimeSeries</th>" in html_profile, "TimeSeries not detected"
     assert (
         "<tr><th>TimeSeries</th><td>8</td></tr>" in html_profile
-    ), "TimeSeries incorrectly identified"
+    ), "TimeSeries incorrecly indentified"
 
 
 def test_timeseries_autocorrelation_tab(html_profile: str):
@@ -47,13 +47,13 @@ def test_timeseries_autocorrelation_tab(html_profile: str):
     ), "TimeSeries not detected"
     assert (
         html_profile.count("role=tab data-toggle=tab>Autocorrelation<") == 8
-    ), "TimeSeries autocorrelation tabs incorrectly generated"
+    ), "TimeSeries autocorrelation tabs incorrecly generated"
 
 
 def test_timeseries_seasonality(html_profile: str):
     assert (
         html_profile.count("<code>SEASONAL</code>") == 2
-    ), "Seasonality incorrectly identified"
+    ), "Seasonality incorrecly indentified"
     assert (
         html_profile.count(">Seasonal</span>") == 2
-    ), "Seasonality warning incorrectly identified"
+    ), "Seasonality warning incorrecly indentified"

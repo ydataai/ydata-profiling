@@ -45,7 +45,6 @@ def pandas_describe_counts(
                 "value_counts_without_nan": value_counts_without_nan,
             }
         )
-
         try:
             summary["value_counts_index_sorted"] = summary[
                 "value_counts_without_nan"
