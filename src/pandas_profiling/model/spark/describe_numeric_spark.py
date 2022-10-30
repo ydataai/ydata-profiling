@@ -42,7 +42,6 @@ def describe_numeric_1d_spark(
     """
 
     stats = numeric_stats_spark(df, summary)
-    # summary.update(numeric_stats)
     summary["min"] = stats["min"]
     summary["max"] = stats["max"]
     summary["mean"] = stats["mean"]
@@ -135,10 +134,5 @@ def describe_numeric_1d_spark(
             weights=summary["value_counts_without_nan"][~infinity_index].values,
         )
     )
-
-    # buckets = config.plot.histogram.bins
-    # if not isinstance(buckets, int):
-    #     buckets = 50
-    # print('histogram', value_counts.rdd.values().histogram(buckets=None))
 
     return config, df, summary

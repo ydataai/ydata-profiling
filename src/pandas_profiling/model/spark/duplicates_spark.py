@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
@@ -10,7 +10,7 @@ from pandas_profiling.model.duplicates import get_duplicates
 @get_duplicates.register(Settings, DataFrame, Sequence)
 def spark_get_duplicates(
     config: Settings, df: DataFrame, supported_columns: Sequence
-) -> Tuple[dict, Optional[DataFrame]]:
+) -> Tuple[Dict[str, Any], Optional[DataFrame]]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -23,7 +23,7 @@ def spark_get_duplicates(
     """
     n_head = config.duplicates.head
 
-    metrics = {}
+    metrics: Dict[str, Any] = {}
     if n_head == 0:
         return metrics, None
 
