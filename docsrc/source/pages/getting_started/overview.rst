@@ -37,11 +37,11 @@ For each column, the following information (whenever relevant for the column typ
 * **Descriptive statistics**: mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
 * **Most frequent and extreme values**
 * **Histograms:** categorical and numerical
-* **Correlations**: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér's V, Phik)
+* **Correlations**: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér's V, Phik, Auto)
 * **Missing values**: through counts, matrix, heatmap and dendrograms
 * **Duplicate rows**: list of the most common duplicated rows
 * **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
-* **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existance of EXIF metadata
+* **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existence of EXIF metadata
 
 
 The report contains three additional sections: 

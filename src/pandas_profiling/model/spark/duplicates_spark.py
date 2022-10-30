@@ -1,17 +1,16 @@
-from typing import Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.duplicates import get_duplicates
-from pandas_profiling.model.schema import DuplicateResult
 
 
 @get_duplicates.register(Settings, DataFrame, Sequence)
 def spark_get_duplicates(
     config: Settings, df: DataFrame, supported_columns: Sequence
-) -> Tuple[DuplicateResult, Optional[DataFrame]]:
+) -> Tuple[Dict[str, Any], Optional[DataFrame]]:
     """Obtain the most occurring duplicate rows in the DataFrame.
 
     Args:
@@ -24,13 +23,13 @@ def spark_get_duplicates(
     """
     n_head = config.duplicates.head
 
-    metrics = DuplicateResult()
+    metrics: Dict[str, Any] = {}
     if n_head == 0:
         return metrics, None
 
-    if not supported_columns or len(df.head(1)) == 0:
-        metrics.n_duplicates = 0
-        metrics.p_duplicates = 0.0
+    if not supported_columns or df.count() == 0:
+        metrics["n_duplicates"] = 0
+        metrics["p_duplicates"] = 0.0
         return metrics, None
 
     duplicates_key = config.duplicates.key
@@ -47,8 +46,8 @@ def spark_get_duplicates(
         .filter(F.col(duplicates_key) > 1)
     )
 
-    metrics.n_duplicates = duplicated_df.count()
-    # metrics["p_duplicates"] = metrics["n_duplicates"] / n_rows
+    metrics["n_duplicates"] = duplicated_df.count()
+    metrics["p_duplicates"] = metrics["n_duplicates"] / df.count()
 
     return metrics, (
         duplicated_df.orderBy(duplicates_key, ascending=False).limit(n_head).toPandas()

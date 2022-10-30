@@ -3,14 +3,13 @@ from collections import Counter
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.schema import TableResult
 from pandas_profiling.model.table import get_table_stats
 
 
 @get_table_stats.register
 def spark_get_table_stats(
     config: Settings, df: DataFrame, variable_stats: dict
-) -> TableResult:
+) -> dict:
     """General statistics for the DataFrame.
 
     Args:
@@ -23,9 +22,7 @@ def spark_get_table_stats(
     """
     n = df.count()
 
-    result = TableResult()
-    result.n = n
-    result.n_var = len(df.columns)
+    result = {"n": n, "n_var": len(df.columns)}
 
     table_stats = {
         "n_cells_missing": 0,
@@ -41,21 +38,21 @@ def spark_get_table_stats(
                 table_stats["n_vars_all_missing"] += 1
 
     # without this check we'll get a div by zero error
-    if result.n * result.n_var > 0:
+    if result["n"] * result["n_var"] > 0:
         table_stats["p_cells_missing"] = (
-            table_stats["n_cells_missing"] / (result.n * result.n_var)
-            if result.n > 0
+            table_stats["n_cells_missing"] / (result["n"] * result["n_var"])
+            if result["n"] > 0
             else 0
         )
     else:
         table_stats["p_cells_missing"] = 0
 
-    result.p_cells_missing = table_stats["p_cells_missing"]
-    result.n_cells_missing = table_stats["n_cells_missing"]
-    result.n_vars_all_missing = table_stats["n_vars_all_missing"]
-    result.n_vars_with_missing = table_stats["n_vars_with_missing"]
+    result["p_cells_missing"] = table_stats["p_cells_missing"]
+    result["n_cells_missing"] = table_stats["n_cells_missing"]
+    result["n_vars_all_missing"] = table_stats["n_vars_all_missing"]
+    result["n_vars_with_missing"] = table_stats["n_vars_with_missing"]
 
     # Variable type counts
-    result.types = dict(Counter([v["type"] for v in variable_stats.values()]))
+    result["types"] = dict(Counter([v["type"] for v in variable_stats.values()]))
 
     return result

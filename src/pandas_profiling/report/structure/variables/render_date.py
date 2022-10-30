@@ -55,44 +55,49 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
             },
         ]
     )
+    if "histogram" not in summary:
+        template_variables["top"] = Container([info, table1], sequence_type="grid")
+    else:
+        table2 = Table(
+            [
+                {"name": "Minimum", "value": fmt(summary["min"]), "alert": False},
+                {"name": "Maximum", "value": fmt(summary["max"]), "alert": False},
+            ]
+        )
 
-    table2 = Table(
-        [
-            {"name": "Minimum", "value": fmt(summary["min"]), "alert": False},
-            {"name": "Maximum", "value": fmt(summary["max"]), "alert": False},
-        ]
-    )
+        mini_histo = Image(
+            mini_histogram(
+                config, summary["histogram"][0], summary["histogram"][1], date=True
+            ),
+            image_format=image_format,
+            alt="Mini histogram",
+        )
 
-    mini_histo = Image(
-        mini_histogram(
-            config, summary["histogram"][0], summary["histogram"][1], date=True
-        ),
-        image_format=image_format,
-        alt="Mini histogram",
-    )
+        template_variables["top"] = Container(
+            [info, table1, table2, mini_histo], sequence_type="grid"
+        )
 
-    template_variables["top"] = Container(
-        [info, table1, table2, mini_histo], sequence_type="grid"
-    )
+        # Bottom
+        bottom = Container(
+            [
+                Image(
+                    histogram(
+                        config,
+                        summary["histogram"][0],
+                        summary["histogram"][1],
+                        date=True,
+                    ),
+                    image_format=image_format,
+                    alt="Histogram",
+                    caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
+                    name="Histogram",
+                    anchor_id=f"{varid}histogram",
+                )
+            ],
+            sequence_type="tabs",
+            anchor_id=summary["varid"],
+        )
 
-    # Bottom
-    bottom = Container(
-        [
-            Image(
-                histogram(
-                    config, summary["histogram"][0], summary["histogram"][1], date=True
-                ),
-                image_format=image_format,
-                alt="Histogram",
-                caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
-                name="Histogram",
-                anchor_id=f"{varid}histogram",
-            )
-        ],
-        sequence_type="tabs",
-        anchor_id=summary["varid"],
-    )
-
-    template_variables["bottom"] = bottom
+        template_variables["bottom"] = bottom
 
     return template_variables

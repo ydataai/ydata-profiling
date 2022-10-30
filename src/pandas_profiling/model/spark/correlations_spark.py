@@ -9,7 +9,7 @@ from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.stat import Correlation
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import PandasUDFType, lit, pandas_udf
-from pyspark.sql.types import DoubleType, StructField, StructType
+from pyspark.sql.types import ArrayType, DoubleType, StructField, StructType
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import (
@@ -27,7 +27,7 @@ SPARK_CORRELATION_SPEARMAN = "spearman"
 @Spearman.compute.register(Settings, DataFrame, dict)
 def spark_spearman_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     matrix = _compute_spark_corr_natively(
         df, summary, corr_type=SPARK_CORRELATION_SPEARMAN
     )
@@ -37,14 +37,16 @@ def spark_spearman_compute(
 @Pearson.compute.register(Settings, DataFrame, dict)
 def spark_pearson_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     matrix = _compute_spark_corr_natively(
         df, summary, corr_type=SPARK_CORRELATION_PEARSON
     )
     return pd.DataFrame(matrix, index=df.columns, columns=df.columns)
 
 
-def _compute_spark_corr_natively(df: DataFrame, summary: dict, corr_type: str):
+def _compute_spark_corr_natively(
+    df: DataFrame, summary: dict, corr_type: str
+) -> ArrayType:
     """
     This function exists as pearson and spearman correlation computations have the
     exact same workflow. The syntax is Correlation.corr(dataframe, method="pearson" OR "spearman"),
@@ -78,21 +80,21 @@ def _compute_spark_corr_natively(df: DataFrame, summary: dict, corr_type: str):
 @Kendall.compute.register(Settings, DataFrame, dict)
 def spark_kendall_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     raise NotImplementedError()
 
 
 @Cramers.compute.register(Settings, DataFrame, dict)
 def spark_cramers_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
     raise NotImplementedError()
 
 
 @PhiK.compute.register(Settings, DataFrame, dict)
 def spark_phi_k_compute(
     config: Settings, df: DataFrame, summary: dict
-) -> Optional[DataFrame]:
+) -> Optional[pd.DataFrame]:
 
     threshold = config.categorical_maximum_correlation_distinct
     intcols = {
@@ -126,7 +128,7 @@ def spark_phi_k_compute(
 
     # create the pandas grouped map function to do vectorized kendall within spark itself
     @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
-    def spark_phik(pdf):
+    def spark_phik(pdf: pd.DataFrame) -> pd.DataFrame:
         correlation = phik.phik_matrix(df=pdf, interval_cols=list(intcols))
         return correlation
 

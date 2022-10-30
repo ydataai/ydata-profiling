@@ -1,0 +1,134 @@
+name: Merge into master branch
+
+
+on:
+  push:
+    branches: 
+    - master
+
+
+jobs:
+  prepare:
+    name: Calculate Version and Build Number
+    runs-on: ubuntu-20.04
+
+    outputs:
+      build_number: ${{ steps.build_number.outputs.value }}
+      new_release: ${{ steps.semantic.outputs.new_release_published }}
+      release: v${{ steps.semantic.outputs.new_release_version }}
+      release_notes: ${{ steps.semantic.outputs.new_release_notes }}
+      version: v${{ steps.version.outputs.value }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+    - uses: cycjimmy/semantic-release-action@v2
+      id: semantic
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        branch: master
+        dry_run: true
+
+    - name: Count number or releases for tag
+      id: build_number
+      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.new_release_version }}.rc) + 1))"
+
+    - name: Compute version
+      id: version
+      run: echo "::set-output name=value::${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}"
+
+  docs-changelog:
+    name: Update changelog on docs 
+    runs-on: ubuntu-20.04
+
+    needs: prepare
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Calculate changelog path
+      id: path
+      run: echo "$(echo "::set-output name=value::docsrc/source/pages/reference/changelog/${{ needs.prepare.outputs.release }}" | sed "s/\./_/g").rst"
+
+    - name: Configure Git
+      run: |
+        git config --local user.email "azory@ydata.ai"
+        git config --local user.name "Azory"
+        git config --local core.autocrlf false
+    
+    - name: Convert changelog from md to rst
+      run: |
+        sudo apt-get install -y pandoc
+        echo "${{ needs.prepare.outputs.release_notes }}" \
+        | sed 's/# \[.*/# Changelog ${{ needs.prepare.outputs.release }}/g' \
+        | sed 's/## Bug Fixes/## 🐛 Bug fixes/g' \
+        | sed 's/## Features/## 🎉 Features/g' \
+        | sed 's/## BREAKING CHANGES/## 🚨 Breaking changes/g' \
+        | sed 's/## Documentation/## 📖 Documentation/g' \
+        | pandoc --from markdown --to rst --standalone > ${{ steps.path.outputs.value }}
+
+    - name: Commit changelog
+      id: commit
+      run: |
+        if [[ `git status --porcelain` ]]; then
+          echo ::set-output name=CHANGES::true
+          git add ${{ steps.path.outputs.value  }}
+          git commit -m "[skip ci] Update changelogs" -a
+        else
+          echo ::set-output name=CHANGES::false
+        fi
+
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
+      if: ${{ steps.commit.outputs.CHANGES == 'true' }}
+      with:
+        branch: ${{ github.ref }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+
+  prerelease-tag:
+    if: needs.prepare.outputs.new_release == 'true'
+
+    name: Create Prerelease Tag
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+
+    steps:
+    - uses: simpleactions/create-tag@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        tag: ${{ needs.prepare.outputs.version }}
+        message: ${{  github.event.head_commit.message }}
+
+  draft-release:
+    if: needs.prepare.outputs.new_release == 'true'
+
+    name: Draft Release
+    runs-on: ubuntu-20.04
+
+    needs:
+    - prepare
+    - docs-changelog
+
+    steps:
+    - name: Delete Previous drafts
+      uses: hugo19941994/delete-draft-releases@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Create Draft Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        tag_name: ${{ needs.prepare.outputs.release }}
+        release_name: ${{ needs.prepare.outputs.release }}
+        body: ${{ needs.prepare.outputs.release_notes }}
+        draft: true

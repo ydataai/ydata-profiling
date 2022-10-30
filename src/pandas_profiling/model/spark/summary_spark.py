@@ -43,7 +43,6 @@ def spark_describe_1d(
     else:
         # Detect variable types from pandas dataframe (df.dtypes).
         # [new dtypes, changed using `astype` function are now considered]
-        # vtype = typeset.detect_type(series)
         if str(series.schema[0].dataType).startswith("ArrayType"):
             dtype = "ArrayType"
         else:
@@ -91,18 +90,15 @@ def spark_get_series_descriptions(
             executor.imap_unordered(multiprocess_1d, args)
         ):
             pbar.set_postfix_str(f"Describe variable:{column}")
+
+            # summary clean up for spark
+            description.pop("value_counts")
+
             series_description[column] = description
             pbar.update()
         series_description = {k: series_description[k] for k in df.columns}
 
-    # Restore the original order
-    # series_description = {k: series_description[k] for k in df.columns}
-    # for col in df.columns:
-    #     pbar.set_postfix_str(f"Describe variable:{col}")
-    #     description = describe_1d(config, df.select(col), summarizer, typeset)
-    #     series_description[col] = description
-    #     pbar.update()
-
     # Mapping from column name to variable type
     series_description = sort_column_names(series_description, config.sort)
+
     return series_description

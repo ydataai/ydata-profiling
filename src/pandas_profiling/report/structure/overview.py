@@ -47,19 +47,19 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
                 },
             ]
         )
-
-    table_metrics.extend(
-        [
-            {
-                "name": "Total size in memory",
-                "value": fmt_bytesize(summary["table"]["memory_size"]),
-            },
-            {
-                "name": "Average record size in memory",
-                "value": fmt_bytesize(summary["table"]["record_size"]),
-            },
-        ]
-    )
+    if "memory_size" in summary["table"]:
+        table_metrics.extend(
+            [
+                {
+                    "name": "Total size in memory",
+                    "value": fmt_bytesize(summary["table"]["memory_size"]),
+                },
+                {
+                    "name": "Average record size in memory",
+                    "value": fmt_bytesize(summary["table"]["record_size"]),
+                },
+            ]
+        )
 
     dataset_info = Table(
         table_metrics,
