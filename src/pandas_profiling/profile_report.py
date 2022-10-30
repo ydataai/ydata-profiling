@@ -444,7 +444,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
 
-    def get_default_settings(self, df) -> BaseSettings:
+    def get_default_settings(self, df: Any) -> BaseSettings:
         if isinstance(df, (pd.DataFrame, pd.Series)):
             return Settings()
         else:
