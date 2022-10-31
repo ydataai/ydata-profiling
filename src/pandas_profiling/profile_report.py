@@ -7,10 +7,11 @@ from typing import Any, Dict, Optional, Union
 import numpy as np
 import pandas as pd
 import yaml
+from pydantic import BaseSettings
 from tqdm.auto import tqdm
 from visions import VisionsTypeset
 
-from pandas_profiling.config import Config, Settings
+from pandas_profiling.config import Config, Settings, SparkSettings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
@@ -79,7 +80,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
-        report_config: Settings = Settings() if config is None else config
+        report_config: Settings = (
+            self.get_default_settings(df) if config is None else config
+        )
 
         if config_file is not None and minimal:
             raise ValueError(
@@ -440,3 +443,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
+
+    def get_default_settings(self, df: Any) -> BaseSettings:
+        if isinstance(df, (pd.DataFrame, pd.Series)):
+            return Settings()
+        else:
+            return SparkSettings()
