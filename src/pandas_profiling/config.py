@@ -163,6 +163,8 @@ class Plot(BaseModel):
 class Theme(Enum):
     united = "united"
     flatly = "flatly"
+    cosmo = "cosmo"
+    simplex = "simplex"
 
 
 class Style(BaseModel):
@@ -206,6 +208,7 @@ class Correlation(BaseModel):
     calculate: bool = Field(default=True)
     warn_high_correlations: int = Field(default=10)
     threshold: float = Field(default=0.5)
+    n_bins: int = Field(default=10)
 
 
 class Correlations(BaseModel):
@@ -286,6 +289,7 @@ class Settings(BaseSettings):
     }
 
     correlations: Dict[str, Correlation] = {
+        "auto": Correlation(key="auto"),
         "spearman": Correlation(key="spearman"),
         "pearson": Correlation(key="pearson"),
         "kendall": Correlation(key="kendall"),
@@ -412,6 +416,7 @@ class Config:
             "dendrogram": False,
         },
         "correlations": {
+            "auto": {"calculate": False},
             "pearson": {"calculate": False},
             "spearman": {"calculate": False},
             "kendall": {"calculate": False},

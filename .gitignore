@@ -72,6 +72,7 @@ ipynb_tmp/
 # playground
 /data/
 playground/
+.devcontainer/
 
 # build data
 examples/*/*.html

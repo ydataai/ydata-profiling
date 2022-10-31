@@ -1,12 +1,13 @@
 """Utils for pandas DataFrames."""
+import hashlib
 import re
 import unicodedata
 import warnings
 from pathlib import Path
 from typing import Any, Optional
 
-import joblib
 import pandas as pd
+from pandas.core.util.hashing import hash_pandas_object
 
 
 def warn_read(extension: str) -> None:
@@ -173,15 +174,19 @@ def expand_mixed(df: pd.DataFrame, types: Any = None) -> pd.DataFrame:
             # Add recursion
             expanded = expand_mixed(expanded)
 
-            # Drop te expanded
+            # Drop the expanded
             df.drop(columns=[column_name], inplace=True)
 
             df = pd.concat([df, expanded], axis=1)
     return df
 
 
+# Change this if `hash_dataframe`'s implementation changes.
+HASH_PREFIX = "2@"
+
+
 def hash_dataframe(df: pd.DataFrame) -> str:
-    """Hash a DataFrame (wrapper around joblib.hash, might change in the future)
+    """Hash a DataFrame (implementation might change in the future)
 
     Args:
         df: the DataFrame
@@ -189,7 +194,13 @@ def hash_dataframe(df: pd.DataFrame) -> str:
     Returns:
         The DataFrame's hash
     """
-    return joblib.hash(df)
+    # hash_pandas_object returns a series of uint64s. Using their
+    # binary representation would be more efficient, but it's not
+    # necessarily portable across architectures. Using the human-readable
+    # string values should be good enough.
+    hash_values = "\n".join(hash_pandas_object(df).values.astype(str))
+    digest = hashlib.sha256(hash_values.encode("utf-8")).hexdigest()
+    return f"{HASH_PREFIX}{digest}"
 
 
 def slugify(value: str, allow_unicode: bool = False) -> str:

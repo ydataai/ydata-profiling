@@ -11,6 +11,7 @@ from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
     Container,
+    Dropdown,
     Duplicate,
 )
 from pandas_profiling.report.presentation.core import Image as ImageWidget
@@ -242,13 +243,23 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 name="Overview",
                 anchor_id="overview",
             ),
-            Container(
-                render_variables_section(config, summary),
-                sequence_type="accordion",
-                name="Variables",
-                anchor_id="variables",
-            ),
         ]
+
+        if len(summary["variables"]) > 0:
+            section_items.append(
+                Dropdown(
+                    name="Variables",
+                    anchor_id="variables-dropdown",
+                    id="variables-dropdown",
+                    items=list(summary["variables"]),
+                    item=Container(
+                        render_variables_section(config, summary),
+                        sequence_type="accordion",
+                        name="Variables",
+                        anchor_id="variables",
+                    ),
+                )
+            )
 
         scatter_items = get_scatter_matrix(config, summary["scatter"])
         if len(scatter_items) > 0:

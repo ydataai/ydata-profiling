@@ -1,0 +1,20 @@
+Changelog v3.3.0
+----------------
+
+🎉 Features
+^^^^^^^^^^^
+- Add time-series profiling support: PACF, ACF, Augmented Dickey-Fuller test and Seasonality test
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+- High correlation warning printed multiple time `[#1019] <https://github.com/ydataai/pandas-profiling/issues/1019>`_  `[#824] <https://github.com/ydataai/pandas-profiling/issues/824>`_
+- Incorrect duplicated rows count `[#1012] <https://github.com/ydataai/pandas-profiling/issues/1012>`_
+
+👷‍♂️ Internal Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Improve package installation compatibility: Fix package versions
+- Remove support to python 3.6
+
+📖 Documentation
+^^^^^^^^^^^^^^^^
+-Update package footer author

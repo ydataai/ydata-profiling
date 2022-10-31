@@ -6,6 +6,10 @@
                 {% include 'wrapper/assets/flatly.bootstrap.min.css' %}
             {% elif theme.value == 'united' %}
                 {% include 'wrapper/assets/united.bootstrap.min.css' %}
+            {% elif theme.value == 'simplex' %}
+                {% include 'wrapper/assets/simplex.bootstrap.min.css' %}
+            {% elif theme.value == 'cosmo' %}
+                {% include 'wrapper/assets/cosmo.bootstrap.min.css' %}
             {% endif %}
         {% else %}
             {% include 'wrapper/assets/bootstrap.min.css' %}
@@ -18,6 +22,10 @@
                 <link href="{{ file_name }}_assets/css/flatly.bootstrap.min.css" rel="stylesheet" />
             {% elif theme.value == 'united' %}
                 <link href="{{ file_name }}_assets/css/united.bootstrap.min.css" rel="stylesheet" />
+            {% elif theme.value == 'simplex' %}
+                <link href="{{ file_name }}_assets/css/simplex.bootstrap.min.css" rel="stylesheet" />
+            {% elif theme.value == 'cosmo' %}
+                <link href="{{ file_name }}_assets/css/cosmo.bootstrap.min.css" rel="stylesheet" />
             {% endif %}
         {% else %}
             <link rel="stylesheet" href="{{ file_name }}_assets/css/bootstrap.min.css" />
@@ -30,6 +38,10 @@
             <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-+ENW/yibaokMnme+vBLnHMphUYxHs34h9lpdbSLuAwGkOKFRl4C34WkjazBtb7eT" crossorigin="anonymous" />
         {% elif theme.value == 'united' %}
             <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+        {% elif theme.value == 'simplex' %}
+            <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+        {% elif theme.value == 'cosmo' %}
+            <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
         {% endif %}
     {% else %}
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
