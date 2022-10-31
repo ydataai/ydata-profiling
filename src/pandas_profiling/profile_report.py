@@ -10,7 +10,7 @@ from tqdm.auto import tqdm
 from typeguard import typechecked
 from visions import VisionsTypeset
 
-from pandas_profiling.config import Config, Settings
+from pandas_profiling.config import Config, Settings, SparkSettings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
@@ -493,3 +493,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         from pandas_profiling.compare_reports import compare
 
         return compare([self, other], config if config is not None else self.config)
+
+    def get_default_settings(self, df: Any) -> BaseSettings:
+        if isinstance(df, (pd.DataFrame, pd.Series)):
+            return Settings()
+        else:
+            return SparkSettings()
