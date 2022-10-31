@@ -403,11 +403,13 @@ def render_categorical(config: Settings, summary: dict) -> dict:
 
     overview_items = []
 
-    if length:
+    # length isn't being computed for categorical in spark
+    if length and "max_length" in summary:
         length_table, length_histo = render_categorical_length(config, summary, varid)
         overview_items.append(length_table)
 
-    if characters:
+    # characters isn't being computed for categorical in spark
+    if characters and "category_alias_counts" in summary:
         overview_table_char, unitab = render_categorical_unicode(config, summary, varid)
         overview_items.append(overview_table_char)
 
@@ -444,8 +446,9 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             )
         overview_items.append(sample)
 
+    # length isn't being computed in spark. disable rendering
     string_items: List[Renderable] = [frequency_table]
-    if length:
+    if length and "max_length" in summary:
         string_items.append(length_histo)
 
     show = config.plot.cat_freq.show
@@ -515,7 +518,8 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         ),
     ]
 
-    if words:
+    # words aren't being computed for categorical in spark
+    if words and "word_counts" in summary:
         woc = freq_table(
             freqtable=summary["word_counts"],
             n=_get_n(summary["word_counts"]),
@@ -538,7 +542,8 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             )
         )
 
-    if characters:
+    # characters aren't being computed for categorical in spark
+    if characters and "category_alias_counts" in summary:
         bottom_items.append(
             Container(
                 [unitab],
