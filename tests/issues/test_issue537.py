@@ -114,7 +114,7 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
 
     def run_multiprocess(config, df):
         pool = multiprocessing.pool.ThreadPool(10)
-        args = [(column, series) for column, series in df.iteritems()]
+        args = [(column, series) for column, series in df.items()]
         results = pool.imap_unordered(
             partial(
                 mock_multiprocess_1d,
