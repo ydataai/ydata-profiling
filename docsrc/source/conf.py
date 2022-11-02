@@ -43,7 +43,7 @@ release = _GetApiWrapperVersion()
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "recommonmark",
+    "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
@@ -84,3 +84,8 @@ autoclass_content = "both"
 autosummary_generate = True
 
 autodoc_pydantic_model_show_json = False
+
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}

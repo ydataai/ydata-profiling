@@ -15,6 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Version
+      id: version
+      run: echo "value=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+
     - name: Setup Python 3.8
       uses: actions/setup-python@v4
       with:
@@ -42,9 +46,7 @@ jobs:
       run: make lint
     
     - name:  Build package
-      run: |
-        python setup.py sdist bdist_wheel
-        twine check dist/*
+      run: make package version=${{ steps.version.outputs.value }}
 
     - name: Upload Pipeline Artifacts
       uses: actions/upload-artifact@v3
@@ -96,9 +98,9 @@ jobs:
 
     - name: Configurating Git
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git config --local core.autocrlf false
+        git config user.email "azory@ydata.ai"
+        git config user.name "Azory YData Bot"
+        git config core.autocrlf false
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
@@ -117,35 +119,27 @@ jobs:
 
     - name: Update examples
       run: make examples
-      env:
-        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
 
     - name: Build the documentation
       run: make docs
 
-    - name: Create branch name
-      run: |
-        export BRANCH_NAME="${GITHUB_REF##*/}/"
-        echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-
     - name: Move the changes to the gh-pages branch (release branch)
       run: |
-        mv docs/ ${{ env.BRANCH_NAME }}
-        mkdir docs/
-        mv ${{ env.BRANCH_NAME }} docs/${{ env.BRANCH_NAME }}
-        mv examples/ ${{ env.BRANCH_NAME }}
-        mkdir examples/
-        mv ${{ env.BRANCH_NAME }} examples/${{ env.BRANCH_NAME }}
-        git add -f docs/${{ env.BRANCH_NAME }}
-        git add -f examples/${{ env.BRANCH_NAME }}
-        git stash push -- docs/ examples/${{ env.BRANCH_NAME }}
+        mv docs master
+        mkdir docs
+        mv master docs/master
+        mv examples/ master
+        mkdir examples
+        mv master examples/master
+        git add -f docs/master
+        git add -f examples/master
+        git stash push -- docs/master examples/master
         git fetch origin gh-pages
-        git checkout gh-pages
+        git checkout -f gh-pages
         touch .nojekyll
         git add .nojekyll
-        rm -rf docs/${{ env.BRANCH_NAME }}
-        rm -rf examples/${{ env.BRANCH_NAME }}
+        rm -rf docs/master
+        rm -rf examples/master
         git add docs/
         git add examples/
         git stash apply
