@@ -182,7 +182,7 @@ Download the source code by cloning the repository or click on [Download ZIP](ht
 Install it by navigating to the proper directory and running:
 
 ```sh
-python setup.py install
+pip install -e .
 ```
 
 The profiling report is written in HTML and CSS, which means a modern browser is required. 
