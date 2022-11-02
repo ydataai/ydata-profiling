@@ -1,6 +1,4 @@
-files: |
-    ^src/|
-    ^tests/|
+files: ^src/|^tests/
 repos:
 -   repo: https://github.com/psf/black
     rev: 22.3.0
@@ -30,6 +28,7 @@ repos:
     rev: "0.47"
     hooks:
     -   id: check-manifest
+        args: [ "--ignore=src/pandas_profiling/version.py" ]
 -   repo: https://github.com/PyCQA/flake8
     rev: "4.0.1"
     hooks:
