@@ -2,8 +2,6 @@
 Dataset Comparison
 ==================
 
-*This feature was introduced in pandas-profiling 3.4.*
-
 ``pandas-profiling`` can be used to compare multiple version of the same dataset.
 This is useful when comparing data from multiple time periods, such as two years.
 Another common scenario is to view the dataset profile for training, validation and test sets in machine learning.
@@ -42,11 +40,9 @@ In order to compare more than two reports, the following syntax can be used:
     # Save report to file
     comparison_report.to_file("comparison.html")
 
-Note that generating reports for three or more datasets is not (yet) fully supported.
+Note that this functionality only ensures the support to generate reports to compare two datasets.
 It is possible to obtain the statistics - the report may have formatting issues.
 One of the settings that can be changed to improve the formatting is ``settings.report.precision``.
-As a rule of thumb the value 10 can be used for a single report, 8 for comparing two reports and 5 for comparing three reports.
-
-.. pull-quote::
-
-    ⌛ Interested in uncovering more temporal patterns? Check out `popmon <https://github.com/ing-bank/popmon>`_.
+In case your report has formatting issues, you can improve it by tweaking the settings.
+One of the settings that can be changed is settings.report.precision.
+As a rule of thumb, the value 10 can be used for a single report and 8 for comparing two reports.
