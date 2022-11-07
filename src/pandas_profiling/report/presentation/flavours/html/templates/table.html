@@ -8,7 +8,7 @@
                 <tr>
                     <th>&nbsp;</th>
                     {% for v in rows[0]['value'] %}
-                        <th style="color: {{ style.primary_colors[loop.index0] }};">{{ style.labels[loop.index0] }}</th>
+                        <th style="color: {{ style.primary_colors[loop.index0] }};">{{ style._labels[loop.index0] }}</th>
                     {% endfor %}
                 </tr>
             </thead>

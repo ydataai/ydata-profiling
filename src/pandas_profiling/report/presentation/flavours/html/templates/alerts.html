@@ -4,15 +4,14 @@
         {% if alerts is mapping %}
             <thead>
                 <tr>
-                    {% for index in range(style.labels | length) %}
-                        <th style="color: {{ style.primary_colors[index] }};">{{ style.labels[index] }}</th>
+                    {% for index in range(style._labels | length) %}
+                        <th style="color: {{ style.primary_colors[index] }};">{{ style._labels[index] }}</th>
                     {% endfor %}
                     <th></th>
                 </tr>
             </thead>
             {% for key, value in alerts.items() %}
                 {% set a = value | first %}
-                {% set a = value[a] %}
                 {% if a.alert_type.name != "REJECTED" %}
                     <tr{% if loop.first %} style="border-top:0"{% endif %}>
                         {% for alert in value %}
@@ -20,7 +19,7 @@
                                 {% if alert is not none %}
                                     {% include 'alerts/alert_' + alert.alert_type.name | lower  + '.html'  %}
                                 {% else %}
-                                    <em>Alert not present in {{ style.labels[idx] }}</em>
+                                    <em>Alert not present in {{ style._labels[idx] }}</em>
                                 {% endif %}
                             </td>
                         {% endfor %}
