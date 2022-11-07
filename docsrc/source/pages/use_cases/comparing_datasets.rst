@@ -42,7 +42,7 @@ In order to compare more than two reports, the following syntax can be used:
     # Save report to file
     comparison_report.to_file("comparison.html")
 
-Note that generating reports for three or more datasets is not (yet) supported.
+Note that generating comparison reports for three or more datasets is not (yet) supported.
 It is possible to obtain the statistics - the report may have formatting issues.
 One of the settings that can be changed is settings.report.precision.
 As a rule of thumb, the value 10 can be used for a single report and 8 for comparing two reports.
