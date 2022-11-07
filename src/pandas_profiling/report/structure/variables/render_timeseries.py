@@ -21,11 +21,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
     template_variables = render_common(config, summary)
     image_format = config.plot.image_format
-
-    if summary["min"] >= 0:
-        name = "Numeric time series"
-    else:
-        name = "Numeric time series"
+    name = "Numeric time series"
 
     # Top
     info = VariableInfo(
@@ -239,11 +235,22 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         sequence_type="grid",
     )
 
+    if isinstance(summary["histogram"], list):
+        hist_data = histogram(
+            config,
+            [x[0] for x in summary["histogram"]],
+            [x[1] for x in summary["histogram"]],
+        )
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][0][1]) - 1})"
+    else:
+        hist_data = histogram(config, *summary["histogram"])
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+
     hist = Image(
-        histogram(config, *summary["histogram"]),
+        hist_data,
         image_format=image_format,
         alt="Histogram",
-        caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
+        caption=hist_caption,
         name="Histogram",
         anchor_id=f"{varid}histogram",
     )
