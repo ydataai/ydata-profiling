@@ -499,7 +499,7 @@ def cat_frequency_plot(
     )
 
 
-def create_comparison_color_list(config: Settings):
+def create_comparison_color_list(config: Settings) -> List[str]:
     colors = config.html.style.primary_colors
     labels = config.html.style._labels
 
@@ -532,8 +532,8 @@ def _plot_timeseries(
         labels = config.html.style._labels
         colors = create_comparison_color_list(config)
 
-        for i, serie in enumerate(series):
-            serie.plot(color=colors[i], label=labels[i])
+        for serie, color, label in zip(series, colors, labels):
+            serie.plot(color=color, label=label)
 
     else:
         series.plot(color=config.html.style.primary_color)
@@ -607,33 +607,35 @@ def _plot_acf_pacf_comparison(config: Settings, series: List[pd.Series], figsize
     colors = create_comparison_color_list(config)
 
     _, axes = plt.subplots(nrows=n_labels, ncols=2, figsize=figsize)
-    for i, serie in enumerate(series):
+    is_first = True
+    for serie, (acf_axis, pacf_axis), color in zip(series, axes, colors):
         lag = _get_ts_lag(config, serie)
 
         plot_acf(
             serie.dropna(),
             lags=lag,
-            ax=axes[i][0],
-            title="ACF" if i == 0 else "",
+            ax=acf_axis,
+            title="ACF" if is_first else "",
             fft=True,
-            color=colors[i],
-            vlines_kwargs={"colors": colors[i]},
+            color=color,
+            vlines_kwargs={"colors": color},
         )
         plot_pacf(
-            series[0].dropna(),
+            serie.dropna(),
             lags=lag,
-            ax=axes[i][1],
-            title="PACF" if i == 0 else "",
+            ax=pacf_axis,
+            title="PACF" if is_first else "",
             method="ywm",
-            color=colors[i],
-            vlines_kwargs={"colors": colors[i]},
-    )
+            color=color,
+            vlines_kwargs={"colors": color},
+        )
+        is_first = False
 
-    for i, row in enumerate(axes):
+    for row, color in zip(axes, colors):
         for ax in row:
             for item in ax.collections:
-                if type(item) == PolyCollection:
-                    item.set_facecolor(colors[i])
+                if isinstance(item, PolyCollection):
+                    item.set_facecolor(color)
 
     return plot_360_n0sc0pe(config)
 
