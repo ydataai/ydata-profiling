@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import yaml
 from tqdm.auto import tqdm
+from typeguard import typechecked
 from visions import VisionsTypeset
 
 from pandas_profiling.config import Config, Settings
@@ -32,6 +33,7 @@ from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
 
+@typechecked
 class ProfileReport(SerializeReport, ExpectationsReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
