@@ -318,7 +318,7 @@ def bar(
     labels: bool = False,
     label_rotation: int = 45,
     log: bool = False,
-    color: Tuple[float, ...] = (105, 105, 105),
+    color: Tuple[float, ...] = (0.41, 0.41, 0.41),
     filter: str = None,
     n: int = 0,
     p: int = 0,
