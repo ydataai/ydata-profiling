@@ -30,8 +30,10 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
+from typeguard import typechecked
 
 
+@typechecked
 class ProfileReport(SerializeReport, ExpectationsReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
