@@ -1,6 +1,7 @@
 """Source https://github.com/ResidentMario/missingno"""
 
 import warnings
+from typing import Tuple
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -11,7 +12,9 @@ from matplotlib import gridspec
 from scipy.cluster import hierarchy
 
 
-def nullity_sort(df: pd.DataFrame, sort: str = None, axis: str = "columns"):
+def nullity_sort(
+    df: pd.DataFrame, sort: str = None, axis: str = "columns"
+) -> pd.DataFrame:
     """
     Sorts a DataFrame according to its nullity, in either ascending or descending order.
 
@@ -44,7 +47,9 @@ def nullity_sort(df: pd.DataFrame, sort: str = None, axis: str = "columns"):
             return df.iloc[:, np.flipud(np.argsort(df.count(axis="rows").values))]
 
 
-def nullity_filter(df, filter=None, p=0, n=0):
+def nullity_filter(
+    df: pd.DataFrame, filter: str = None, p: int = 0, n: int = 0
+) -> pd.DataFrame:
     """
     Filters a DataFrame according to its nullity, using some combination of 'top' and 'bottom' numerical and
     percentage values. Percentages and numerical thresholds can be specified simultaneously: for example,
@@ -75,22 +80,27 @@ def nullity_filter(df, filter=None, p=0, n=0):
     return df
 
 
+def set_visibility(axis: mpl.axis.Axis) -> None:
+    for anchor in ["top", "right", "bottom", "left"]:
+        axis.spines[anchor].set_visible(False)
+
+
 def matrix(
-    df,
-    filter=None,
-    n=0,
-    p=0,
-    sort=None,
-    figsize=(25, 10),
-    width_ratios=(15, 1),
-    color=(0.25, 0.25, 0.25),
-    fontsize=16,
-    labels=None,
-    label_rotation=45,
-    sparkline=True,
-    freq=None,
-    ax=None,
-):
+    df: pd.DataFrame,
+    filter: str = None,
+    n: int = 0,
+    p: int = 0,
+    sort: str = None,
+    figsize: Tuple[float, float] = (25, 10),
+    width_ratios: Tuple[int, int] = (15, 1),
+    color: Tuple[float, ...] = (0.25, 0.25, 0.25),
+    fontsize: float = 16,
+    labels: bool = False,
+    label_rotation: int = 45,
+    sparkline: bool = True,
+    freq: str = None,
+    ax: mpl.axis.Axis = None,
+) -> mpl.axis.Axis:
     """
     A matrix visualization of the nullity of the given DataFrame.
 
@@ -153,14 +163,11 @@ def matrix(
     ax0.xaxis.tick_top()
     ax0.xaxis.set_ticks_position("none")
     ax0.yaxis.set_ticks_position("none")
-    ax0.spines["top"].set_visible(False)
-    ax0.spines["right"].set_visible(False)
-    ax0.spines["bottom"].set_visible(False)
-    ax0.spines["left"].set_visible(False)
+    set_visibility(ax0)
 
     # Set up and rotate the column ticks. The labels argument is set to None by default. If the user specifies it in
     # the argument, respect that specification. Otherwise display for <= 50 columns and do not display for > 50.
-    if labels or (labels is None and len(df.columns) <= 50):
+    if labels or (labels and len(df.columns) <= 50):
         ha = "left"
         ax0.set_xticks(list(range(0, width)))
         ax0.set_xticklabels(
@@ -198,7 +205,9 @@ def matrix(
             for value in ts_array:
                 ts_list.append(df.index.get_loc(value))
         except KeyError as ex:
-            raise KeyError("Could not divide time index into desired frequency.") from ex
+            raise KeyError(
+                "Could not divide time index into desired frequency."
+            ) from ex
 
         ax0.set_yticks(ts_list)
         ax0.set_yticklabels(ts_ticks, fontsize=int(fontsize / 16 * 20), rotation=0)
@@ -209,8 +218,8 @@ def matrix(
         )
 
     # Create the inter-column vertical grid.
-    in_between_point = [x + 0.5 for x in range(0, width - 1)]
-    for in_between_point in in_between_point:
+    in_between_points = [x + 0.5 for x in range(0, width - 1)]
+    for in_between_point in in_between_points:
         ax0.axvline(in_between_point, linestyle="-", color="white")
 
     if sparkline:
@@ -231,10 +240,8 @@ def matrix(
             ax1.set_axis_bgcolor((1, 1, 1))
         else:
             ax1.set_facecolor((1, 1, 1))
-        ax1.spines["top"].set_visible(False)
-        ax1.spines["right"].set_visible(False)
-        ax1.spines["bottom"].set_visible(False)
-        ax1.spines["left"].set_visible(False)
+
+        set_visibility(ax1)
         ax1.set_ymargin(0)
 
         # Plot sparkline---plot is sideways so the x and y axis are reversed.
@@ -305,20 +312,20 @@ def matrix(
 
 
 def bar(
-    df,
-    figsize=None,
-    fontsize=16,
-    labels=None,
-    label_rotation=45,
-    log=False,
-    color="dimgray",
-    filter=None,
-    n=0,
-    p=0,
-    sort=None,
-    ax=None,
-    orientation=None,
-):
+    df: pd.DataFrame,
+    figsize: Tuple[float, float] = None,
+    fontsize: float = 16,
+    labels: bool = False,
+    label_rotation: int = 45,
+    log: bool = False,
+    color: Tuple[float, ...] = (105, 105, 105),
+    filter: str = None,
+    n: int = 0,
+    p: int = 0,
+    sort: str = None,
+    ax: mpl.axis.Axis = None,
+    orientation: str = None,
+) -> mpl.axis.Axis:
     """
     A bar chart visualization of the nullity of the given DataFrame.
 
@@ -376,7 +383,7 @@ def bar(
     axes = [ax1]
 
     # Start appending elements, starting with a modified bottom x axis.
-    if labels or (labels is None and len(df.columns) <= 50):
+    if labels or (labels and len(df.columns) <= 50):
         ax1.set_xticklabels(
             ax1.get_xticklabels(),
             rotation=label_rotation,
@@ -459,10 +466,7 @@ def bar(
     ax3.grid(False)
 
     for ax in axes:
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.spines["bottom"].set_visible(False)
-        ax.spines["left"].set_visible(False)
+        set_visibility(ax)
         ax.xaxis.set_ticks_position("none")
         ax.yaxis.set_ticks_position("none")
 
@@ -470,21 +474,21 @@ def bar(
 
 
 def heatmap(
-    df,
-    filter=None,
-    n=0,
-    p=0,
-    sort=None,
-    figsize=(20, 12),
-    fontsize=16,
-    labels=True,
-    label_rotation=45,
-    cmap="RdBu",
-    vmin=-1,
-    vmax=1,
-    cbar=True,
-    ax=None,
-):
+    df: pd.DataFrame,
+    filter: str = None,
+    n: int = 0,
+    p: int = 0,
+    sort: str = None,
+    figsize: Tuple[float, float] = (20, 12),
+    fontsize: float = 16,
+    labels: bool = True,
+    label_rotation: int = 45,
+    cmap: str = "RdBu",
+    vmin: int = -1,
+    vmax: int = 1,
+    cbar: bool = True,
+    ax: mpl.axis.Axis = None,
+) -> mpl.axis.Axis:
     """
     Presents a `seaborn` heatmap visualization of nullity correlation in the given DataFrame.
 
@@ -578,17 +582,17 @@ def heatmap(
 
 
 def dendrogram(
-    df,
-    method="average",
-    filter=None,
-    n=0,
-    p=0,
-    orientation=None,
-    figsize=None,
-    fontsize=16,
-    label_rotation=45,
-    ax=None,
-):
+    df: pd.DataFrame,
+    method: str = "average",
+    filter: str = None,
+    n: int = 0,
+    p: int = 0,
+    orientation: str = None,
+    figsize: Tuple[float, float] = None,
+    fontsize: float = 16,
+    label_rotation: int = 45,
+    ax: mpl.axis.Axis = None,
+) -> mpl.axis.Axis:
     """
     Fits a `scipy` hierarchical clustering algorithm to the given DataFrame's variables and visualizes the results as
     a `scipy` dendrogram.
@@ -652,10 +656,8 @@ def dendrogram(
         ax0.xaxis.tick_top()
     ax0.xaxis.set_ticks_position("none")
     ax0.yaxis.set_ticks_position("none")
-    ax0.spines["top"].set_visible(False)
-    ax0.spines["right"].set_visible(False)
-    ax0.spines["bottom"].set_visible(False)
-    ax0.spines["left"].set_visible(False)
+    set_visibility(ax0)
+
     ax0.patch.set_visible(False)
 
     # Set up the categorical axis labels and draw.
