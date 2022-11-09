@@ -1,10 +1,14 @@
 """Plotting functions for the missing values diagrams"""
 import pandas as pd
 from matplotlib import pyplot as plt
-from missingno import missingno
-
 from pandas_profiling.config import Settings
 from pandas_profiling.visualisation.context import manage_matplotlib_context
+from pandas_profiling.visualisation.missingno import (
+    bar,
+    dendrogram,
+    heatmap,
+    matrix
+)
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
@@ -44,7 +48,7 @@ def plot_missing_matrix(config: Settings, data: pd.DataFrame) -> str:
         The resulting missing values matrix encoded as a string.
     """
 
-    missingno.matrix(
+    matrix(
         data,
         figsize=(10, 4),
         fontsize=get_font_size(data) / 20 * 16,
@@ -67,7 +71,7 @@ def plot_missing_bar(config: Settings, data: pd.DataFrame) -> str:
     Returns:
         The resulting missing values bar plot encoded as a string.
     """
-    missingno.bar(
+    bar(
         data,
         figsize=(10, 5),
         fontsize=get_font_size(data),
@@ -102,7 +106,7 @@ def plot_missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
     if len(data.columns) > 40:
         font_size /= 1.4
 
-    missingno.heatmap(
+    heatmap(
         data,
         figsize=(10, height),
         fontsize=font_size,
@@ -130,6 +134,6 @@ def plot_missing_dendrogram(config: Settings, data: pd.DataFrame) -> str:
       The resulting missing values dendrogram plot encoded as a string.
 
     """
-    missingno.dendrogram(data, fontsize=get_font_size(data) * 2.0)
+    dendrogram(data, fontsize=get_font_size(data) * 2.0)
     plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(config)
