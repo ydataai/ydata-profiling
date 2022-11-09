@@ -8,7 +8,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
-from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap
+from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
@@ -499,9 +499,23 @@ def cat_frequency_plot(
     )
 
 
+def create_comparison_color_list(config: Settings) -> List[str]:
+    colors = config.html.style.primary_colors
+    labels = config.html.style._labels
+
+    if colors < labels:
+        init = colors[0]
+        end = colors[1] if len(colors) >= 2 else "#000000"
+        cmap = LinearSegmentedColormap.from_list(
+            "ts_leg", [init, end], len(labels)
+        )
+        colors = [rgb2hex(cmap(i)) for i in range(cmap.N)]
+    return colors
+
+
 def _plot_timeseries(
     config: Settings,
-    series: pd.Series,
+    series: Union[list, pd.Series],
     figsize: tuple = (6, 4),
 ) -> matplotlib.figure.Figure:
     """Plot an line plot from the data and return the AxesSubplot object.
@@ -514,14 +528,21 @@ def _plot_timeseries(
     fig = plt.figure(figsize=figsize)
     plot = fig.add_subplot(111)
 
-    color = config.html.style.primary_color
+    if isinstance(series, list):
+        labels = config.html.style._labels
+        colors = create_comparison_color_list(config)
 
-    series.plot(color=color)
+        for serie, color, label in zip(series, colors, labels):
+            serie.plot(color=color, label=label)
+
+    else:
+        series.plot(color=config.html.style.primary_color)
+
     return plot
 
 
 @manage_matplotlib_context()
-def mini_ts_plot(config: Settings, series: pd.Series) -> str:
+def mini_ts_plot(config: Settings, series: Union[list, pd.Series]) -> str:
     """Plot an time-series plot of the data.
     Args:
       series: The data to plot.
@@ -547,8 +568,7 @@ def _get_ts_lag(config: Settings, series: pd.Series) -> int:
     return np.min([lag, max_lag_size])
 
 
-@manage_matplotlib_context()
-def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
+def _plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
     color = config.html.style.primary_color
 
     lag = _get_ts_lag(config, series)
@@ -580,6 +600,52 @@ def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5))
 
     return plot_360_n0sc0pe(config)
 
+
+def _plot_acf_pacf_comparison(config: Settings, series: List[pd.Series], figsize: tuple = (15, 5)) -> str:
+    colors = config.html.style.primary_colors
+    n_labels = len(config.html.style._labels)
+    colors = create_comparison_color_list(config)
+
+    _, axes = plt.subplots(nrows=n_labels, ncols=2, figsize=figsize)
+    is_first = True
+    for serie, (acf_axis, pacf_axis), color in zip(series, axes, colors):
+        lag = _get_ts_lag(config, serie)
+
+        plot_acf(
+            serie.dropna(),
+            lags=lag,
+            ax=acf_axis,
+            title="ACF" if is_first else "",
+            fft=True,
+            color=color,
+            vlines_kwargs={"colors": color},
+        )
+        plot_pacf(
+            serie.dropna(),
+            lags=lag,
+            ax=pacf_axis,
+            title="PACF" if is_first else "",
+            method="ywm",
+            color=color,
+            vlines_kwargs={"colors": color},
+        )
+        is_first = False
+
+    for row, color in zip(axes, colors):
+        for ax in row:
+            for item in ax.collections:
+                if isinstance(item, PolyCollection):
+                    item.set_facecolor(color)
+
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_acf_pacf(config: Settings, series: Union[list, pd.Series], figsize: tuple = (15, 5)) -> str:
+    if isinstance(series, list):
+        return _plot_acf_pacf_comparison(config, series, figsize)
+    else:
+        return _plot_acf_pacf(config, series, figsize)
 
 def _prepare_heatmap_data(
     dataframe: pd.DataFrame,

@@ -328,22 +328,22 @@ select.multiple{
     opacity: .1;
 }
 
-{% for idx in range(style.labels | length + 1) %}
+{% for idx in range(style._labels | length + 1) %}
     .freq.table-{{ idx }} .bar {
         background-color: {{ style.primary_colors[idx] }};
     }
 {% endfor %}
-{% if style.labels | length > 1 %}
+{% if style._labels | length > 1 %}
     /* Report comparison */
     /* Mini frequency table */
     table.freq.mini{
-        width:{{ 100 / (style.labels | length) }}%;
+        width:{{ 100 / (style._labels | length) }}%;
         float:left;
     }
     /* Full-sized frequency table */
     table.freq:not(.mini){
-        width:{{ 90 / (style.labels | length) }}%;
-        margin: {{ 4 / (style.labels | length) }}%;
+        width:{{ 90 / (style._labels | length) }}%;
+        margin: {{ 4 / (style._labels | length) }}%;
         float:left;
     }
 {% endif %}

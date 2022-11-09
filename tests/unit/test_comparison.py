@@ -1,5 +1,7 @@
+from matplotlib.pyplot import title
 import pandas as pd
 import pytest
+import numpy as np
 
 from pandas_profiling import ProfileReport, compare
 from pandas_profiling.compare_reports import _compare_title
@@ -40,3 +42,14 @@ def test_title():
     assert _compare_title(["a"]) == "a"
     assert _compare_title(["a", "b"]) == "<em>Comparing</em> a <em>and</em> b"
     assert _compare_title(["a", "b", "c"]) == "<em>Comparing</em> a, b <em>and</em> c"
+
+
+def test_generate_comparison():
+    size = 100
+    df1 = pd.DataFrame({"a": np.arange(size)})
+    df2 = pd.DataFrame({"a": np.arange(size)})
+
+    p1 = ProfileReport(df1, title="p1")
+    p2 = ProfileReport(df2, title="p1")
+    html = p1.compare(p2).to_html()
+    assert len(html) > 0
