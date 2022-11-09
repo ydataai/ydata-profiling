@@ -599,6 +599,7 @@ def _create_timeseries_heatmap(
     ax.invert_yaxis()
     return ax
 
+
 @typechecked
 def timeseries_heatmap(
     dataframe: pd.DataFrame,
