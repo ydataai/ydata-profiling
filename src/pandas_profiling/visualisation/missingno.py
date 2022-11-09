@@ -11,35 +11,37 @@ from matplotlib import gridspec
 from scipy.cluster import hierarchy
 
 
-def nullity_sort(df: pd.DataFrame, sort: str=None, axis:str="columns"):
+def nullity_sort(df: pd.DataFrame, sort: str = None, axis: str = "columns"):
     """
     Sorts a DataFrame according to its nullity, in either ascending or descending order.
 
     Args:
         df: The DataFrame object being sorted.
         sort: The sorting method: either "ascending", "descending", or None (default).
-    
+
     Returns:
         The nullity-sorted DataFrame.
     """
     if sort is None:
         return df
-    elif sort not in ['ascending', 'descending']:
-        raise ValueError('The "sort" parameter must be set to "ascending" or "descending".')
+    elif sort not in ["ascending", "descending"]:
+        raise ValueError(
+            'The "sort" parameter must be set to "ascending" or "descending".'
+        )
 
-    if axis not in ['rows', 'columns']:
+    if axis not in ["rows", "columns"]:
         raise ValueError('The "axis" parameter must be set to "rows" or "columns".')
 
-    if axis == 'columns':
-        if sort == 'ascending':
-            return df.iloc[np.argsort(df.count(axis='columns').values), :]
-        elif sort == 'descending':
-            return df.iloc[np.flipud(np.argsort(df.count(axis='columns').values)), :]
-    elif axis == 'rows':
-        if sort == 'ascending':
-            return df.iloc[:, np.argsort(df.count(axis='rows').values)]
-        elif sort == 'descending':
-            return df.iloc[:, np.flipud(np.argsort(df.count(axis='rows').values))]
+    if axis == "columns":
+        if sort == "ascending":
+            return df.iloc[np.argsort(df.count(axis="columns").values), :]
+        elif sort == "descending":
+            return df.iloc[np.flipud(np.argsort(df.count(axis="columns").values)), :]
+    elif axis == "rows":
+        if sort == "ascending":
+            return df.iloc[:, np.argsort(df.count(axis="rows").values)]
+        elif sort == "descending":
+            return df.iloc[:, np.flipud(np.argsort(df.count(axis="rows").values))]
 
 
 def nullity_filter(df, filter=None, p=0, n=0):
@@ -60,23 +62,34 @@ def nullity_filter(df, filter=None, p=0, n=0):
     Returns:
         The nullity-filtered `DataFrame`.
     """
-    if filter == 'top':
+    if filter == "top":
         if p:
-            df = df.iloc[:, [c >= p for c in df.count(axis='rows').values / len(df)]]
+            df = df.iloc[:, [c >= p for c in df.count(axis="rows").values / len(df)]]
         if n:
-            df = df.iloc[:, np.sort(np.argsort(df.count(axis='rows').values)[-n:])]
-    elif filter == 'bottom':
+            df = df.iloc[:, np.sort(np.argsort(df.count(axis="rows").values)[-n:])]
+    elif filter == "bottom":
         if p:
-            df = df.iloc[:, [c <= p for c in df.count(axis='rows').values / len(df)]]
+            df = df.iloc[:, [c <= p for c in df.count(axis="rows").values / len(df)]]
         if n:
-            df = df.iloc[:, np.sort(np.argsort(df.count(axis='rows').values)[:n])]
+            df = df.iloc[:, np.sort(np.argsort(df.count(axis="rows").values)[:n])]
     return df
 
 
 def matrix(
-    df, filter=None, n=0, p=0, sort=None, figsize=(25, 10), width_ratios=(15, 1),
-    color=(0.25, 0.25, 0.25), fontsize=16, labels=None, label_rotation=45, sparkline=True,
-    freq=None, ax=None
+    df,
+    filter=None,
+    n=0,
+    p=0,
+    sort=None,
+    figsize=(25, 10),
+    width_ratios=(15, 1),
+    color=(0.25, 0.25, 0.25),
+    fontsize=16,
+    labels=None,
+    label_rotation=45,
+    sparkline=True,
+    freq=None,
+    ax=None,
 ):
     """
     A matrix visualization of the nullity of the given DataFrame.
@@ -100,7 +113,7 @@ def matrix(
         The plot axis.
     """
     df = nullity_filter(df, filter=filter, n=n, p=p)
-    df = nullity_sort(df, sort=sort, axis='columns')
+    df = nullity_sort(df, sort=sort, axis="columns")
 
     height = df.shape[0]
     width = df.shape[1]
@@ -132,25 +145,27 @@ def matrix(
         ax0 = ax
 
     # Create the nullity plot.
-    ax0.imshow(g, interpolation='none')
+    ax0.imshow(g, interpolation="none")
 
     # Remove extraneous default visual elements.
-    ax0.set_aspect('auto')
+    ax0.set_aspect("auto")
     ax0.grid(b=False)
     ax0.xaxis.tick_top()
-    ax0.xaxis.set_ticks_position('none')
-    ax0.yaxis.set_ticks_position('none')
-    ax0.spines['top'].set_visible(False)
-    ax0.spines['right'].set_visible(False)
-    ax0.spines['bottom'].set_visible(False)
-    ax0.spines['left'].set_visible(False)
+    ax0.xaxis.set_ticks_position("none")
+    ax0.yaxis.set_ticks_position("none")
+    ax0.spines["top"].set_visible(False)
+    ax0.spines["right"].set_visible(False)
+    ax0.spines["bottom"].set_visible(False)
+    ax0.spines["left"].set_visible(False)
 
     # Set up and rotate the column ticks. The labels argument is set to None by default. If the user specifies it in
     # the argument, respect that specification. Otherwise display for <= 50 columns and do not display for > 50.
     if labels or (labels is None and len(df.columns) <= 50):
-        ha = 'left'
+        ha = "left"
         ax0.set_xticks(list(range(0, width)))
-        ax0.set_xticklabels(list(df.columns), rotation=label_rotation, ha=ha, fontsize=fontsize)
+        ax0.set_xticklabels(
+            list(df.columns), rotation=label_rotation, ha=ha, fontsize=fontsize
+        )
     else:
         ax0.set_xticks([])
 
@@ -159,40 +174,44 @@ def matrix(
         ts_list = []
 
         if type(df.index) == pd.PeriodIndex:
-            ts_array = pd.date_range(df.index.to_timestamp().date[0],
-                                     df.index.to_timestamp().date[-1],
-                                     freq=freq).values
+            ts_array = pd.date_range(
+                df.index.to_timestamp().date[0],
+                df.index.to_timestamp().date[-1],
+                freq=freq,
+            ).values
 
-            ts_ticks = pd.date_range(df.index.to_timestamp().date[0],
-                                     df.index.to_timestamp().date[-1],
-                                     freq=freq).map(lambda t:
-                                                    t.strftime('%Y-%m-%d'))
+            ts_ticks = pd.date_range(
+                df.index.to_timestamp().date[0],
+                df.index.to_timestamp().date[-1],
+                freq=freq,
+            ).map(lambda t: t.strftime("%Y-%m-%d"))
 
         elif type(df.index) == pd.DatetimeIndex:
-            ts_array = pd.date_range(df.index[0], df.index[-1],
-                                     freq=freq).values
+            ts_array = pd.date_range(df.index[0], df.index[-1], freq=freq).values
 
-            ts_ticks = pd.date_range(df.index[0], df.index[-1],
-                                     freq=freq).map(lambda t:
-                                                    t.strftime('%Y-%m-%d'))
+            ts_ticks = pd.date_range(df.index[0], df.index[-1], freq=freq).map(
+                lambda t: t.strftime("%Y-%m-%d")
+            )
         else:
-            raise KeyError('Dataframe index must be PeriodIndex or DatetimeIndex.')
+            raise KeyError("Dataframe index must be PeriodIndex or DatetimeIndex.")
         try:
             for value in ts_array:
                 ts_list.append(df.index.get_loc(value))
-        except KeyError:
-            raise KeyError('Could not divide time index into desired frequency.')
+        except KeyError as ex:
+            raise KeyError("Could not divide time index into desired frequency.") from ex
 
         ax0.set_yticks(ts_list)
         ax0.set_yticklabels(ts_ticks, fontsize=int(fontsize / 16 * 20), rotation=0)
     else:
         ax0.set_yticks([0, df.shape[0] - 1])
-        ax0.set_yticklabels([1, df.shape[0]], fontsize=int(fontsize / 16 * 20), rotation=0)
+        ax0.set_yticklabels(
+            [1, df.shape[0]], fontsize=int(fontsize / 16 * 20), rotation=0
+        )
 
     # Create the inter-column vertical grid.
     in_between_point = [x + 0.5 for x in range(0, width - 1)]
     for in_between_point in in_between_point:
-        ax0.axvline(in_between_point, linestyle='-', color='white')
+        ax0.axvline(in_between_point, linestyle="-", color="white")
 
     if sparkline:
         # Calculate row-wise completeness for the sparkline.
@@ -206,16 +225,16 @@ def matrix(
 
         # Set up the sparkline, remove the border element.
         ax1.grid(b=False)
-        ax1.set_aspect('auto')
+        ax1.set_aspect("auto")
         # GH 25
         if int(mpl.__version__[0]) <= 1:
             ax1.set_axis_bgcolor((1, 1, 1))
         else:
             ax1.set_facecolor((1, 1, 1))
-        ax1.spines['top'].set_visible(False)
-        ax1.spines['right'].set_visible(False)
-        ax1.spines['bottom'].set_visible(False)
-        ax1.spines['left'].set_visible(False)
+        ax1.spines["top"].set_visible(False)
+        ax1.spines["right"].set_visible(False)
+        ax1.spines["bottom"].set_visible(False)
+        ax1.spines["left"].set_visible(False)
         ax1.set_ymargin(0)
 
         # Plot sparkline---plot is sideways so the x and y axis are reversed.
@@ -223,16 +242,20 @@ def matrix(
 
         if labels:
             # Figure out what case to display the label in: mixed, upper, lower.
-            label = 'Data Completeness'
+            label = "Data Completeness"
             if str(df.columns[0]).islower():
                 label = label.lower()
             if str(df.columns[0]).isupper():
                 label = label.upper()
 
             # Set up and rotate the sparkline label.
-            ha = 'left'
-            ax1.set_xticks([min_completeness + (max_completeness - min_completeness) / 2])
-            ax1.set_xticklabels([label], rotation=label_rotation, ha=ha, fontsize=fontsize)
+            ha = "left"
+            ax1.set_xticks(
+                [min_completeness + (max_completeness - min_completeness) / 2]
+            )
+            ax1.set_xticklabels(
+                [label], rotation=label_rotation, ha=ha, fontsize=fontsize
+            )
             ax1.xaxis.tick_top()
             ax1.set_yticks([])
         else:
@@ -240,32 +263,61 @@ def matrix(
             ax1.set_yticks([])
 
         # Add maximum and minimum labels, circles.
-        ax1.annotate(max_completeness,
-                     xy=(max_completeness, max_completeness_index),
-                     xytext=(max_completeness + 2, max_completeness_index),
-                     fontsize=int(fontsize / 16 * 14),
-                     va='center',
-                     ha='left')
-        ax1.annotate(min_completeness,
-                     xy=(min_completeness, min_completeness_index),
-                     xytext=(min_completeness - 2, min_completeness_index),
-                     fontsize=int(fontsize / 16 * 14),
-                     va='center',
-                     ha='right')
+        ax1.annotate(
+            max_completeness,
+            xy=(max_completeness, max_completeness_index),
+            xytext=(max_completeness + 2, max_completeness_index),
+            fontsize=int(fontsize / 16 * 14),
+            va="center",
+            ha="left",
+        )
+        ax1.annotate(
+            min_completeness,
+            xy=(min_completeness, min_completeness_index),
+            xytext=(min_completeness - 2, min_completeness_index),
+            fontsize=int(fontsize / 16 * 14),
+            va="center",
+            ha="right",
+        )
 
-        ax1.set_xlim([min_completeness - 2, max_completeness + 2])  # Otherwise the circles are cut off.
-        ax1.plot([min_completeness], [min_completeness_index], '.', color=color, markersize=10.0)
-        ax1.plot([max_completeness], [max_completeness_index], '.', color=color, markersize=10.0)
+        ax1.set_xlim(
+            [min_completeness - 2, max_completeness + 2]
+        )  # Otherwise the circles are cut off.
+        ax1.plot(
+            [min_completeness],
+            [min_completeness_index],
+            ".",
+            color=color,
+            markersize=10.0,
+        )
+        ax1.plot(
+            [max_completeness],
+            [max_completeness_index],
+            ".",
+            color=color,
+            markersize=10.0,
+        )
 
         # Remove tick mark (only works after plotting).
-        ax1.xaxis.set_ticks_position('none')
+        ax1.xaxis.set_ticks_position("none")
 
     return ax0
 
 
 def bar(
-    df, figsize=None, fontsize=16, labels=None, label_rotation=45, log=False, color='dimgray',
-    filter=None, n=0, p=0, sort=None, ax=None, orientation=None
+    df,
+    figsize=None,
+    fontsize=16,
+    labels=None,
+    label_rotation=45,
+    log=False,
+    color="dimgray",
+    filter=None,
+    n=0,
+    p=0,
+    sort=None,
+    ax=None,
+    orientation=None,
 ):
     """
     A bar chart visualization of the nullity of the given DataFrame.
@@ -289,19 +341,19 @@ def bar(
         The plot axis.
     """
     df = nullity_filter(df, filter=filter, n=n, p=p)
-    df = nullity_sort(df, sort=sort, axis='rows')
+    df = nullity_sort(df, sort=sort, axis="rows")
     nullity_counts = len(df) - df.isnull().sum()
 
     if orientation is None:
         if len(df.columns) > 50:
-            orientation = 'left'
+            orientation = "left"
         else:
-            orientation = 'bottom'
+            orientation = "bottom"
 
     if ax is None:
         ax1 = plt.gca()
         if figsize is None:
-            if len(df.columns) <= 50 or orientation == 'top' or orientation == 'bottom':
+            if len(df.columns) <= 50 or orientation == "top" or orientation == "bottom":
                 figsize = (25, 10)
             else:
                 figsize = (25, (25 + len(df.columns) - 50) * 0.5)
@@ -309,8 +361,14 @@ def bar(
         ax1 = ax
         figsize = None  # for behavioral consistency with other plot types, re-use the given size
 
-    plot_args = {'figsize': figsize, 'fontsize': fontsize, 'log': log, 'color': color, 'ax': ax1}
-    if orientation == 'bottom':
+    plot_args = {
+        "figsize": figsize,
+        "fontsize": fontsize,
+        "log": log,
+        "color": color,
+        "ax": ax1,
+    }
+    if orientation == "bottom":
         (nullity_counts / len(df)).plot.bar(**plot_args)
     else:
         (nullity_counts / len(df)).plot.barh(**plot_args)
@@ -320,7 +378,10 @@ def bar(
     # Start appending elements, starting with a modified bottom x axis.
     if labels or (labels is None and len(df.columns) <= 50):
         ax1.set_xticklabels(
-            ax1.get_xticklabels(), rotation=label_rotation, ha='right', fontsize=fontsize
+            ax1.get_xticklabels(),
+            rotation=label_rotation,
+            ha="right",
+            fontsize=fontsize,
         )
 
         # Create the numerical ticks.
@@ -329,14 +390,18 @@ def bar(
         if not log:
             ax1.set_ylim([0, 1])
             ax2.set_yticks(ax1.get_yticks())
-            ax2.set_yticklabels([int(n * len(df)) for n in ax1.get_yticks()], fontsize=fontsize)
+            ax2.set_yticklabels(
+                [int(n * len(df)) for n in ax1.get_yticks()], fontsize=fontsize
+            )
         else:
             # For some reason when a logarithmic plot is specified `ax1` always contains two more ticks than actually
             # appears in the plot. The fix is to ignore the first and last entries. Also note that when a log scale
             # is used, we have to make it match the `ax1` layout ourselves.
-            ax2.set_yscale('log')
+            ax2.set_yscale("log")
             ax2.set_ylim(ax1.get_ylim())
-        ax2.set_yticklabels([int(n * len(df)) for n in ax1.get_yticks()], fontsize=fontsize)
+        ax2.set_yticklabels(
+            [int(n * len(df)) for n in ax1.get_yticks()], fontsize=fontsize
+        )
 
         # Create the third axis, which displays columnar totals above the rest of the plot.
         ax3 = ax1.twiny()
@@ -344,7 +409,7 @@ def bar(
         ax3.set_xticks(ax1.get_xticks())
         ax3.set_xlim(ax1.get_xlim())
         ax3.set_xticklabels(
-            nullity_counts.values, fontsize=fontsize, rotation=label_rotation, ha='left'
+            nullity_counts.values, fontsize=fontsize, rotation=label_rotation, ha="left"
         )
     else:
         # Create the numerical ticks.
@@ -357,25 +422,29 @@ def bar(
 
             # Bottom
             ax2.set_xticks(ax1.get_xticks())
-            ax2.set_xticklabels([int(n * len(df)) for n in ax1.get_xticks()], fontsize=fontsize)
+            ax2.set_xticklabels(
+                [int(n * len(df)) for n in ax1.get_xticks()], fontsize=fontsize
+            )
 
             # Right
             ax2.set_yticks(ax1.get_yticks())
-            ax2.set_yticklabels(nullity_counts.values, fontsize=fontsize, ha='left')
+            ax2.set_yticklabels(nullity_counts.values, fontsize=fontsize, ha="left")
         else:
             # For some reason when a logarithmic plot is specified `ax1` always contains two more ticks than actually
             # appears in the plot. The fix is to ignore the first and last entries. Also note that when a log scale
             # is used, we have to make it match the `ax1` layout ourselves.
-            ax1.set_xscale('log')
+            ax1.set_xscale("log")
             ax1.set_xlim(ax1.get_xlim())
 
             # Bottom
             ax2.set_xticks(ax1.get_xticks())
-            ax2.set_xticklabels([int(n * len(df)) for n in ax1.get_xticks()], fontsize=fontsize)
+            ax2.set_xticklabels(
+                [int(n * len(df)) for n in ax1.get_xticks()], fontsize=fontsize
+            )
 
             # Right
             ax2.set_yticks(ax1.get_yticks())
-            ax2.set_yticklabels(nullity_counts.values, fontsize=fontsize, ha='left')
+            ax2.set_yticklabels(nullity_counts.values, fontsize=fontsize, ha="left")
 
         # Create the third axis, which displays columnar totals above the rest of the plot.
         ax3 = ax1.twiny()
@@ -383,26 +452,38 @@ def bar(
         axes.append(ax3)
         ax3.set_yticks(ax1.get_yticks())
         if log:
-            ax3.set_xscale('log')
+            ax3.set_xscale("log")
             ax3.set_xlim(ax1.get_xlim())
         ax3.set_ylim(ax1.get_ylim())
 
     ax3.grid(False)
 
     for ax in axes:
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        ax.xaxis.set_ticks_position('none')
-        ax.yaxis.set_ticks_position('none')
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["bottom"].set_visible(False)
+        ax.spines["left"].set_visible(False)
+        ax.xaxis.set_ticks_position("none")
+        ax.yaxis.set_ticks_position("none")
 
     return ax1
 
 
 def heatmap(
-    df, filter=None, n=0, p=0, sort=None, figsize=(20, 12), fontsize=16, labels=True,
-    label_rotation=45, cmap='RdBu', vmin=-1, vmax=1, cbar=True, ax=None
+    df,
+    filter=None,
+    n=0,
+    p=0,
+    sort=None,
+    figsize=(20, 12),
+    fontsize=16,
+    labels=True,
+    label_rotation=45,
+    cmap="RdBu",
+    vmin=-1,
+    vmax=1,
+    cbar=True,
+    ax=None,
 ):
     """
     Presents a `seaborn` heatmap visualization of nullity correlation in the given DataFrame.
@@ -430,7 +511,7 @@ def heatmap(
     """
     # Apply filters and sorts, set up the figure.
     df = nullity_filter(df, filter=filter, n=n, p=p)
-    df = nullity_sort(df, sort=sort, axis='rows')
+    df = nullity_sort(df, sort=sort, axis="rows")
 
     if ax is None:
         plt.figure(figsize=figsize)
@@ -439,7 +520,9 @@ def heatmap(
         ax0 = ax
 
     # Remove completely filled or completely empty variables.
-    df = df.iloc[:, [i for i, n in enumerate(np.var(df.isnull(), axis='rows')) if n > 0]]
+    df = df.iloc[
+        :, [i for i, n in enumerate(np.var(df.isnull(), axis="rows")) if n > 0]
+    ]
 
     # Create and mask the correlation matrix. Construct the base heatmap.
     corr_mat = df.isnull().corr()
@@ -447,35 +530,47 @@ def heatmap(
     mask[np.triu_indices_from(mask)] = True
 
     if labels:
-        sns.heatmap(corr_mat, mask=mask, cmap=cmap, ax=ax0, cbar=cbar,
-                    annot=True, annot_kws={'size': fontsize - 2},
-                    vmin=vmin, vmax=vmax)
+        sns.heatmap(
+            corr_mat,
+            mask=mask,
+            cmap=cmap,
+            ax=ax0,
+            cbar=cbar,
+            annot=True,
+            annot_kws={"size": fontsize - 2},
+            vmin=vmin,
+            vmax=vmax,
+        )
     else:
-        sns.heatmap(corr_mat, mask=mask, cmap=cmap, ax=ax0, cbar=cbar,
-                    vmin=vmin, vmax=vmax)
+        sns.heatmap(
+            corr_mat, mask=mask, cmap=cmap, ax=ax0, cbar=cbar, vmin=vmin, vmax=vmax
+        )
 
     # Apply visual corrections and modifications.
     ax0.xaxis.tick_bottom()
     ax0.set_xticklabels(
-        ax0.xaxis.get_majorticklabels(), rotation=label_rotation, ha='right', fontsize=fontsize
+        ax0.xaxis.get_majorticklabels(),
+        rotation=label_rotation,
+        ha="right",
+        fontsize=fontsize,
     )
     ax0.set_yticklabels(ax0.yaxis.get_majorticklabels(), rotation=0, fontsize=fontsize)
-    ax0.xaxis.set_ticks_position('none')
-    ax0.yaxis.set_ticks_position('none')
+    ax0.xaxis.set_ticks_position("none")
+    ax0.yaxis.set_ticks_position("none")
     ax0.patch.set_visible(False)
 
     for text in ax0.texts:
         t = float(text.get_text())
         if 0.95 <= t < 1:
-            text.set_text('<1')
+            text.set_text("<1")
         elif -1 < t <= -0.95:
-            text.set_text('>-1')
+            text.set_text(">-1")
         elif t == 1:
-            text.set_text('1')
+            text.set_text("1")
         elif t == -1:
-            text.set_text('-1')
+            text.set_text("-1")
         elif -0.05 < t < 0.05:
-            text.set_text('')
+            text.set_text("")
         else:
             text.set_text(round(t, 1))
 
@@ -483,8 +578,16 @@ def heatmap(
 
 
 def dendrogram(
-    df, method='average', filter=None, n=0, p=0, orientation=None, figsize=None, fontsize=16,
-    label_rotation=45, ax=None
+    df,
+    method="average",
+    filter=None,
+    n=0,
+    p=0,
+    orientation=None,
+    figsize=None,
+    fontsize=16,
+    label_rotation=45,
+    ax=None,
 ):
     """
     Fits a `scipy` hierarchical clustering algorithm to the given DataFrame's variables and visualizes the results as
@@ -509,7 +612,7 @@ def dendrogram(
         The plot axis.
     """
     if not figsize:
-        if len(df.columns) <= 50 or orientation == 'top' or orientation == 'bottom':
+        if len(df.columns) <= 50 or orientation == "top" or orientation == "bottom":
             figsize = (25, 10)
         else:
             figsize = (25, (25 + len(df.columns) - 50) * 0.5)
@@ -528,41 +631,45 @@ def dendrogram(
 
     if not orientation:
         if len(df.columns) > 50:
-            orientation = 'left'
+            orientation = "left"
         else:
-            orientation = 'bottom'
+            orientation = "bottom"
 
     hierarchy.dendrogram(
         z,
         orientation=orientation,
         labels=df.columns.tolist(),
-        distance_sort='descending',
-        link_color_func=lambda c: 'black',
+        distance_sort="descending",
+        link_color_func=lambda c: "black",
         leaf_font_size=fontsize,
-        ax=ax0
+        ax=ax0,
     )
 
     # Remove extraneous default visual elements.
-    ax0.set_aspect('auto')
+    ax0.set_aspect("auto")
     ax0.grid(b=False)
-    if orientation == 'bottom':
+    if orientation == "bottom":
         ax0.xaxis.tick_top()
-    ax0.xaxis.set_ticks_position('none')
-    ax0.yaxis.set_ticks_position('none')
-    ax0.spines['top'].set_visible(False)
-    ax0.spines['right'].set_visible(False)
-    ax0.spines['bottom'].set_visible(False)
-    ax0.spines['left'].set_visible(False)
+    ax0.xaxis.set_ticks_position("none")
+    ax0.yaxis.set_ticks_position("none")
+    ax0.spines["top"].set_visible(False)
+    ax0.spines["right"].set_visible(False)
+    ax0.spines["bottom"].set_visible(False)
+    ax0.spines["left"].set_visible(False)
     ax0.patch.set_visible(False)
 
     # Set up the categorical axis labels and draw.
-    if orientation == 'bottom':
-        ax0.set_xticklabels(ax0.xaxis.get_majorticklabels(), rotation=label_rotation, ha='left')
-    elif orientation == 'top':
-        ax0.set_xticklabels(ax0.xaxis.get_majorticklabels(), rotation=label_rotation, ha='right')
-    if orientation == 'bottom' or orientation == 'top':
-        ax0.tick_params(axis='y', labelsize=int(fontsize / 16 * 20))
+    if orientation == "bottom":
+        ax0.set_xticklabels(
+            ax0.xaxis.get_majorticklabels(), rotation=label_rotation, ha="left"
+        )
+    elif orientation == "top":
+        ax0.set_xticklabels(
+            ax0.xaxis.get_majorticklabels(), rotation=label_rotation, ha="right"
+        )
+    if orientation == "bottom" or orientation == "top":
+        ax0.tick_params(axis="y", labelsize=int(fontsize / 16 * 20))
     else:
-        ax0.tick_params(axis='x', labelsize=int(fontsize / 16 * 20))
+        ax0.tick_params(axis="x", labelsize=int(fontsize / 16 * 20))
 
     return ax0

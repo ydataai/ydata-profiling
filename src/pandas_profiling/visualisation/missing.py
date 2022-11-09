@@ -1,14 +1,10 @@
 """Plotting functions for the missing values diagrams"""
 import pandas as pd
 from matplotlib import pyplot as plt
+
 from pandas_profiling.config import Settings
 from pandas_profiling.visualisation.context import manage_matplotlib_context
-from pandas_profiling.visualisation.missingno import (
-    bar,
-    dendrogram,
-    heatmap,
-    matrix
-)
+from pandas_profiling.visualisation.missingno import bar, dendrogram, heatmap, matrix
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
