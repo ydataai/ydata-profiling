@@ -126,6 +126,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         if config is not None:
             report_config = report_config.update(config.dict())
+            report_config.html.style._labels = config.html.style._labels
+
         if kwargs:
             report_config = report_config.update(kwargs)
 
