@@ -114,4 +114,4 @@ When running ``python app.py``, a Dash app with the report embedded will be avai
 Panel
 -----
 
-For more information on how to use ``pandas-profiling`` in Panel, see `this GitHub issue <https://github.com/pandas-profiling/pandas-profiling/issues/491>`_ and `this integration example <https://awesome-panel.org/pandas_profiling_app>`_.
+For more information on how to use ``pandas-profiling`` in Panel, see `this GitHub issue <https://github.com/ydataai/pandas-profiling/issues/491>`_ and `this integration example <https://awesome-panel.org/pandas_profiling_app>`_.
