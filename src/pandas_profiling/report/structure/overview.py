@@ -141,7 +141,7 @@ def get_dataset_reproduction(summary: dict) -> Renderable:
             {"name": "Duration", "value": fmt_timespan(duration)},
             {
                 "name": "Software version",
-                "value": f'<a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{version}</a>',
+                "value": f'<a href="https://github.com/ydataai/pandas-profiling">pandas-profiling v{version}</a>',
             },
             {
                 "name": "Download configuration",

@@ -32,6 +32,6 @@ Therefore, we welcome you to support the project through GitHub!
 Find more information here:
 
 - `Sponsor the project on GitHub <https://github.com/sponsors/sbrugman>`_
-- `Read the release notes v2.6.0 <https://github.com/pandas-profiling/pandas-profiling/releases/tag/v2.6.0>`_
+- `Read the release notes v2.6.0 <https://github.com/ydataai/pandas-profiling/releases/tag/v2.6.0>`_
 
 April 14, 2020 💘

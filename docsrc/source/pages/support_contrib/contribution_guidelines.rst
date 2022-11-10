@@ -65,4 +65,4 @@ The community is low-threshold place to ask questions regarding development and 
 More information
 ----------------
 
-Read more on getting involved in the `Contribution Guide available on GitHub <https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md>`_.
+Read more on getting involved in the `Contribution Guide available on GitHub <https://github.com/ydataai/pandas-profiling/blob/master/CONTRIBUTING.md>`_.
