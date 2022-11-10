@@ -1,6 +1,6 @@
 """
 Test for issue 169:
-https://github.com/pandas-profiling/pandas-profiling/issues/169
+https://github.com/ydataai/pandas-profiling/issues/169
 """
 from io import StringIO
 
