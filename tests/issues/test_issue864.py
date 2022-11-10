@@ -1,6 +1,6 @@
 """
 Test for issue 864:
-https://github.com/pandas-profiling/pandas-profiling/issues/
+https://github.com/ydataai/pandas-profiling/issues/
 
 Validate Extreme Values sub-tabs state the correct number of extreme values shown.
 """
