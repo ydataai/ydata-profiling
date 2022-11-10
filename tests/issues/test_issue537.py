@@ -1,6 +1,6 @@
 """
 Test for issue 537:
-https://github.com/pandas-profiling/pandas-profiling/issues/537
+https://github.com/ydataai/pandas-profiling/issues/537
 
 ValueError: shape mismatch: value array of shape (136,) could not be broadcast to indexing result of shape (135,)
 

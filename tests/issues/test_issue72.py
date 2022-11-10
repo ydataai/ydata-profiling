@@ -1,6 +1,6 @@
 """
 Test for issue 72:
-https://github.com/pandas-profiling/pandas-profiling/issues/72
+https://github.com/ydataai/pandas-profiling/issues/72
 """
 import numpy as np
 import pandas as pd
