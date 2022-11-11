@@ -1,18 +1,24 @@
 name: Label issues
+
+
 on:
   issues:
     types:
       - reopened
       - opened
+
+
 jobs:
   label_issues:
     runs-on: ubuntu-latest
+
     permissions:
       issues: write
+    
     steps:
-      - name: Label issues
-        uses: andymckay/labeler@master
-        with:
-          add-labels: "needs-triage"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          ignore-if-labeled: true
+    - name: Label issues
+      uses: andymckay/labeler@master
+      with:
+        add-labels: "needs-triage"
+        repo-token: ${{ secrets.ACCESS_TOKEN }}
+        ignore-if-labeled: true

@@ -1,6 +1,5 @@
 import os
 
-import pandas as pd
 import pytest
 from visions.test.series import get_series
 from visions.test.utils import (
@@ -15,13 +14,6 @@ from visions.test.utils import (
 from pandas_profiling.config import Settings
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from tests.unit.test_utils import patch_arg
-
-if int(pd.__version__.split(".")[0]) < 1:
-    from visions.dtypes.boolean import BoolDtype  # noqa: F401
-
-    btype = "Bool"
-else:
-    btype = "boolean"
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -100,6 +92,7 @@ contains_map = {
         "str_complex_nan",
         "all_null_empty_str",
         "py_datetime_str",
+        "string_dtype_series",
     },
     Boolean: {
         "bool_series",
@@ -116,53 +109,49 @@ contains_map = {
         "timestamp_series_nat",
         "date_series_nat",
     },
-}
-
-if int(pd.__version__[0]) >= 1:
-    contains_map[Categorical].add("string_dtype_series")
-
-contains_map[Unsupported] = {
-    "module",
-    "nan_series",
-    "nan_series_2",
-    "timedelta_series",
-    "timedelta_series_nat",
-    "timedelta_negative",
-    "path_series_linux",
-    "path_series_linux_missing",
-    "path_series_windows",
-    "url_series",
-    "url_nan_series",
-    "url_none_series",
-    "file_test_py",
-    "file_mixed_ext",
-    "file_test_py_missing",
-    "image_png",
-    "image_png_missing",
-    "image_png",
-    "image_png_missing",
-    "uuid_series",
-    "uuid_series_missing",
-    "mixed_list[str,int]",
-    "mixed_dict",
-    "callable",
-    "mixed_integer",
-    "mixed_list",
-    "date",
-    "time",
-    "empty",
-    "empty_bool",
-    "empty_float",
-    "empty_object",
-    "empty_int64",
-    "ip",
-    "ip_missing",
-    "ip_mixed_v4andv6",
-    "email_address_missing",
-    "email_address",
-    "all_null_none",
-    "all_null_nan",
-    "all_null_nat",
+    Unsupported: {
+        "module",
+        "nan_series",
+        "nan_series_2",
+        "timedelta_series",
+        "timedelta_series_nat",
+        "timedelta_negative",
+        "path_series_linux",
+        "path_series_linux_missing",
+        "path_series_windows",
+        "url_series",
+        "url_nan_series",
+        "url_none_series",
+        "file_test_py",
+        "file_mixed_ext",
+        "file_test_py_missing",
+        "image_png",
+        "image_png_missing",
+        "image_png",
+        "image_png_missing",
+        "uuid_series",
+        "uuid_series_missing",
+        "mixed_list[str,int]",
+        "mixed_dict",
+        "callable",
+        "mixed_integer",
+        "mixed_list",
+        "date",
+        "time",
+        "empty",
+        "empty_bool",
+        "empty_float",
+        "empty_object",
+        "empty_int64",
+        "ip",
+        "ip_missing",
+        "ip_mixed_v4andv6",
+        "email_address_missing",
+        "email_address",
+        "all_null_none",
+        "all_null_nan",
+        "all_null_nat",
+    },
 }
 
 
@@ -293,9 +282,8 @@ inference_map = {
     "all_null_none": Unsupported,
     "complex_series_py_float": Numeric,
     "all_null_nan": Unsupported,
+    "string_dtype_series": Categorical,
 }
-if int(pd.__version__[0]) >= 1:
-    inference_map["string_dtype_series"] = Categorical
 
 
 @pytest.mark.parametrize(

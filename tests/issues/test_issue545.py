@@ -1,20 +1,17 @@
 """
 Test for issue 545:
-https://github.com/pandas-profiling/pandas-profiling/issues/545
+https://github.com/ydataai/pandas-profiling/issues/545
 """
 
 import pandas as pd
 import pytest
 
 from pandas_profiling import ProfileReport
-
-
-def pandas_version():
-    return tuple(int(s) for s in pd.__version__.split("."))
+from pandas_profiling.utils.compat import pandas_version_info
 
 
 @pytest.mark.skipif(
-    pandas_version() <= (1, 1, 0), reason="requires pandas 1.1.1 or higher"
+    pandas_version_info() <= (1, 1, 0), reason="requires pandas 1.1.1 or higher"
 )
 def test_issue545(get_data_file):
     file_name = get_data_file(

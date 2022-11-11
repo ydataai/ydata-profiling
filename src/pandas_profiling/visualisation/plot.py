@@ -12,6 +12,7 @@ from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from typeguard import typechecked
 
 from pandas_profiling.config import Settings
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
@@ -599,6 +600,7 @@ def _create_timeseries_heatmap(
     return ax
 
 
+@typechecked
 def timeseries_heatmap(
     dataframe: pd.DataFrame,
     entity_column: str,

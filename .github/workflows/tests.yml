@@ -1,9 +1,17 @@
-name: CI
+name: Multi-software test
 
-on: push
+
+on:
+  pull_request:
+  push:
+    branches: 
+    - master
+    - develop
+
 
 jobs:
   test:
+    name: Tests | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -37,44 +45,46 @@ jobs:
             pandas: "pandas>1.1"
             numpy: "numpy"
 
-    name: Tests | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'Linux')
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - uses: actions/checkout@v3
+    
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+    
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Linux')
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'macOS')
+      with:
+        path: ~/Library/Caches/pip
+        key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Windows')
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - run: |
+        pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
+        pip install -r requirements-test.txt
+    - run: make install
 
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'macOS')
-        with:
-          path: ~/Library/Caches/pip
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - run: make test
 
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
-      - run: |
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-          pip install -r requirements-test.txt
-      - run: make install
-      - run: make test
   coverage:
+    name: Coverage | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -83,41 +93,42 @@ jobs:
         pandas: [ "pandas>1.1"]
         numpy: ["numpy"]
 
-    name: Coverage | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'Linux')
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'macOS')
-        with:
-          path: ~/Library/Caches/pip
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
 
-      - uses: actions/cache@v2
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
-      - run: |
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-          pip install -r requirements-test.txt
-      - run: make install
-      - run: make test_cov
-      - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Linux')
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'macOS')
+      with:
+        path: ~/Library/Caches/pip
+        key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Windows')
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - run: |
+        pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
+        pip install -r requirements-test.txt
+    - run: make install
+
+    - run: make test_cov
+
+    - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
