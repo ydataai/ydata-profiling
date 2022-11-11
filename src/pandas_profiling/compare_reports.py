@@ -156,7 +156,7 @@ def compare(
     if not all(features[0] == x for x in features):
         warnings.warn(
             "The reports have a different set of columns. "
-            "Report will be produced, but may yield unexpected formatting."
+            "Only the one side report will be generated for the different columns."
         )
 
     if config is None:
@@ -164,7 +164,7 @@ def compare(
 
     if len(reports) > 2:
         warnings.warn(
-            "Comparison of more than two reports is not (yet) supported. "
+            "Comparison of more than two reports is not supported. "
             "Reports may be produced, but may yield unexpected formatting."
         )
 
