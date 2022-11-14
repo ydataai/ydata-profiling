@@ -146,13 +146,26 @@ def compare(
     if len(reports) < 2:
         raise ValueError("At least two reports are required for this comparison")
 
+    report_types = [r.config.vars.timeseries.active for r in reports]
+    if all(report_types) != any(report_types):
+        raise ValueError(
+            "Comparison between timeseries and tabular reports is not supported"
+        )
+
+    features = [set(r.df.columns) for r in reports]
+    if not all(features[0] == x for x in features):
+        warnings.warn(
+            "The reports have a different set of columns. "
+            "Only the one side report will be generated for the different columns."
+        )
+
     if config is None:
         config = Settings()
 
     if len(reports) > 2:
         warnings.warn(
-            "Comparison of more than two reports is in beta. "
-            "Reports will be produced, but may yield unexpected formatting."
+            "Comparison of more than two reports is not supported. "
+            "Reports may be produced, but may yield unexpected formatting."
         )
 
     if all(isinstance(report, ProfileReport) for report in reports):
