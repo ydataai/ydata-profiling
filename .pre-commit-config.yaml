@@ -1,4 +1,6 @@
+default_stages: [commit, push, manual]
 files: ^src/|^tests/
+
 repos:
 -   repo: https://github.com/psf/black
     rev: 22.3.0
