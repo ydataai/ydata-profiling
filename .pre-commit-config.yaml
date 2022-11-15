@@ -1,10 +1,16 @@
-files: ^src/|^tests/
+default_stages: [commit, push, manual]
+
 repos:
+-   repo: https://github.com/commitizen-tools/commitizen
+    rev: v2.37.0
+    hooks:
+    - id: commitizen
+      stages: [commit-msg]
 -   repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
     - id: black
-      language_version: python3.8
+      language_version: python3
 -   repo: https://github.com/nbQA-dev/nbQA
     rev: 1.2.2
     hooks:
