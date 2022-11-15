@@ -86,6 +86,6 @@ autosummary_generate = True
 autodoc_pydantic_model_show_json = False
 
 source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown',
+    ".rst": "restructuredtext",
+    ".md": "markdown",
 }
