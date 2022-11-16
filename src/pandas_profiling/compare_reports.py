@@ -156,8 +156,12 @@ def compare(
     if not all(features[0] == x for x in features):
         warnings.warn(
             "The reports have a different set of columns. "
-            "Only the one side report will be generated for the different columns."
+            "The columns not in the of the leftmost report will be ignored."
         )
+
+    base_features = features[0]
+    for report in reports[1:]:
+        report.df = report.df.loc[:, list(base_features & set(report.df.columns))]
 
     if config is None:
         config = Settings()
