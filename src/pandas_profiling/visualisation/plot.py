@@ -736,3 +736,73 @@ def timeseries_heatmap(
     ax = _create_timeseries_heatmap(df, figsize, color)
     ax.set_aspect(1)
     return ax
+
+
+def _set_visibility(
+    axis: matplotlib.axis.Axis, tick_mark: str = "none"
+) -> matplotlib.axis.Axis:
+    for anchor in ["top", "right", "bottom", "left"]:
+        axis.spines[anchor].set_visible(False)
+    axis.xaxis.set_ticks_position(tick_mark)
+    axis.yaxis.set_ticks_position(tick_mark)
+    return axis
+
+
+def missing_bar(
+    data: pd.DataFrame,
+    figsize: Tuple[float, float] = (25, 10),
+    fontsize: float = 16,
+    labels: bool = True,
+    color: Tuple[float, ...] = (0.41, 0.41, 0.41),
+    label_rotation: int = 45,
+) -> matplotlib.axis.Axis:
+    """
+    A bar chart visualization of the missing data.
+
+    Inspired by https://github.com/ResidentMario/missingno
+
+    Args:
+        data: The input DataFrame.
+        figsize: The size of the figure to display.
+        fontsize: The figure's font size. This default to 16.
+        labels: Whether or not to display the column names. Would need to be turned off on particularly large
+            displays. Defaults to True.
+        color: The color of the filled columns. Default to the RGB multiple `(0.25, 0.25, 0.25)`.
+        label_rotation: What angle to rotate the text labels to. Defaults to 45 degrees.
+    Returns:
+        The plot axis.
+    """
+    null_counts = len(data) - data.isnull().sum()
+    values = null_counts.values
+    null_counts = null_counts / len(data)
+
+    if len(values) <= 50:
+        ax0 = null_counts.plot.bar(figsize=figsize, fontsize=fontsize, color=color)
+        ax0.set_xticklabels(
+            ax0.get_xticklabels(),
+            ha="right",
+            fontsize=fontsize,
+            rotation=label_rotation,
+        )
+
+        ax1 = ax0.twiny()
+        ax1.set_xticks(ax0.get_xticks())
+        ax1.set_xlim(ax0.get_xlim())
+        ax1.set_xticklabels(
+            values, ha="left", fontsize=fontsize, rotation=label_rotation
+        )
+    else:
+        ax0 = null_counts.plot.barh(figsize=figsize, fontsize=fontsize, color=color)
+        ylabels = ax0.get_ytickslabels() if labels else []
+        ax0.set_yticklabels(ylabels, fontsize=fontsize)
+
+        ax1 = ax0.twinx()
+        ax1.set_yticks(ax0.get_yticks())
+        ax1.set_ylim(ax0.get_ylim())
+        ax1.set_yticklabels(values, fontsize=fontsize)
+
+    for ax in [ax0, ax1]:
+        ax = _set_visibility(ax)
+
+    return ax0
+

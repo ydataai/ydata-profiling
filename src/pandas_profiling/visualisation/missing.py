@@ -5,6 +5,9 @@ from missingno import missingno
 
 from pandas_profiling.config import Settings
 from pandas_profiling.visualisation.context import manage_matplotlib_context
+from pandas_profiling.visualisation.plot import (
+    missing_bar,
+)
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
@@ -67,7 +70,7 @@ def plot_missing_bar(config: Settings, data: pd.DataFrame) -> str:
     Returns:
         The resulting missing values bar plot encoded as a string.
     """
-    missingno.bar(
+    missing_bar(
         data,
         figsize=(10, 5),
         fontsize=get_font_size(data),
