@@ -7,6 +7,7 @@ from pandas_profiling.config import Settings
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.plot import (
     missing_bar,
+    missing_heatmap,
     missing_matrix,
 )
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
@@ -105,7 +106,7 @@ def plot_missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
     if len(data.columns) > 40:
         font_size /= 1.4
 
-    missingno.heatmap(
+    missing_heatmap(
         data,
         figsize=(10, height),
         fontsize=font_size,

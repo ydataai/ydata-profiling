@@ -864,3 +864,86 @@ def missing_matrix(
     ax = _set_visibility(ax)
     return ax
 
+
+def missing_heatmap(
+    data: pd.DataFrame,
+    figsize: Tuple[float, float] = (20, 12),
+    fontsize: float = 16,
+    labels: bool = True,
+    label_rotation: int = 45,
+    cmap: str = "RdBu",
+    normalized_cmap: bool = True,
+    cbar: bool = True,
+    ax: matplotlib.axis.Axis = None,
+) -> matplotlib.axis.Axis:
+    """
+    Presents a `seaborn` heatmap visualization of missing data correlation.
+    Note that this visualization has no special support for large datasets.
+
+    Inspired by https://github.com/ResidentMario/missingno
+
+    Args:
+        data: The input DataFrame.
+        figsize: The size of the figure to display. Defaults to (20, 12).
+        fontsize: The figure's font size.
+        labels: Whether or not to label each matrix entry with its correlation (default is True).
+        label_rotation: What angle to rotate the text labels to. Defaults to 45 degrees.
+        cmap: Which colormap to use. Defaults to `RdBu`.
+        normalized_cmap: Use a normalized colormap threshold or not. Defaults to True
+    Returns:
+        The plot axis.
+    """
+    _, ax = plt.subplots(1, 1, figsize=figsize)
+
+    # Remove completely filled or completely empty variables.
+    columns = [i for i, n in enumerate(np.var(data.isnull(), axis="rows")) if n > 0]
+    data = data.iloc[:, columns]
+
+    # Create and mask the correlation matrix. Construct the base heatmap.
+    corr_mat = data.isnull().corr()
+    mask = np.zeros_like(corr_mat)
+    mask[np.triu_indices_from(mask)] = True
+    norm_args = {"vmin": -1, "vmax": 1} if normalized_cmap else {}
+
+    if labels:
+        sns.heatmap(
+            corr_mat,
+            mask=mask,
+            cmap=cmap,
+            ax=ax,
+            cbar=cbar,
+            annot=True,
+            annot_kws={"size": fontsize - 2},
+            **norm_args,
+        )
+    else:
+        sns.heatmap(corr_mat, mask=mask, cmap=cmap, ax=ax, cbar=cbar, **norm_args)
+
+    # Apply visual corrections and modifications.
+    ax.xaxis.tick_bottom()
+    ax.set_xticklabels(
+        ax.xaxis.get_majorticklabels(),
+        rotation=label_rotation,
+        ha="right",
+        fontsize=fontsize,
+    )
+    ax.set_yticklabels(ax.yaxis.get_majorticklabels(), rotation=0, fontsize=fontsize)
+    ax = _set_visibility(ax)
+    ax.patch.set_visible(False)
+
+    for text in ax.texts:
+        t = float(text.get_text())
+        if 0.95 <= t < 1:
+            text.set_text("<1")
+        elif -1 < t <= -0.95:
+            text.set_text(">-1")
+        elif t == 1:
+            text.set_text("1")
+        elif t == -1:
+            text.set_text("-1")
+        elif -0.05 < t < 0.05:
+            text.set_text("")
+        else:
+            text.set_text(round(t, 1))
+
+    return ax
