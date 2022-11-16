@@ -7,6 +7,7 @@ from pandas_profiling.config import Settings
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.plot import (
     missing_bar,
+    missing_matrix,
 )
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
@@ -47,11 +48,10 @@ def plot_missing_matrix(config: Settings, data: pd.DataFrame) -> str:
         The resulting missing values matrix encoded as a string.
     """
 
-    missingno.matrix(
+    missing_matrix(
         data,
         figsize=(10, 4),
         fontsize=get_font_size(data) / 20 * 16,
-        sparkline=False,
         color=hex_to_rgb(config.html.style.primary_colors[0]),
         labels=config.plot.missing.force_labels,
     )

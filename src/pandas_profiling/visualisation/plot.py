@@ -806,3 +806,61 @@ def missing_bar(
 
     return ax0
 
+
+def missing_matrix(
+    data: pd.DataFrame,
+    figsize: Tuple[float, float] = (25, 10),
+    color: Tuple[float, ...] = (0.41, 0.41, 0.41),
+    fontsize: float = 16,
+    labels: bool = True,
+    label_rotation: int = 45,
+) -> matplotlib.axis.Axis:
+    """
+    A matrix visualization of missing data.
+
+    Inspired by https://github.com/ResidentMario/missingno
+
+    Args:
+        data: The input DataFrame.
+        figsize: The size of the figure to display.
+        fontsize: The figure's font size. Default to 16.
+        labels: Whether or not to display the column names when there is more than 50 columns.
+        label_rotation: What angle to rotate the text labels to. Defaults to 45 degrees.
+        color: The color of the filled columns. Default is `(0.41, 0.41, 0.41)`.
+    Returns:
+        The plot axis.
+    """
+    height, width = data.shape
+
+    notnull = data.notnull().values
+    missing_grid = np.zeros((height, width, 3), dtype=np.float32)
+
+    missing_grid[notnull] = color
+    missing_grid[~notnull] = [1, 1, 1]
+
+    _, ax = plt.subplots(1, 1, figsize=figsize)
+
+    # Create the missing matrix plot.
+    ax.imshow(missing_grid, interpolation="none")
+    ax.set_aspect("auto")
+    ax.grid(False)
+    ax.xaxis.tick_top()
+
+    ha = "left"
+    ax.set_xticks(list(range(0, width)))
+    ax.set_xticklabels(
+        list(data.columns), rotation=label_rotation, ha=ha, fontsize=fontsize
+    )
+    ax.set_yticks([0, height - 1])
+    ax.set_yticklabels([1, height], fontsize=fontsize)
+
+    separators = [x + 0.5 for x in range(0, width - 1)]
+    for point in separators:
+        ax.axvline(point, linestyle="-", color="white")
+
+    if not labels and width > 50:
+        ax.set_xticklabels([])
+
+    ax = _set_visibility(ax)
+    return ax
+
