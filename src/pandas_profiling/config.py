@@ -113,7 +113,6 @@ class Univariate(BaseModel):
 
 class MissingPlot(BaseModel):
     # Force labels when there are > 50 variables
-    # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
     force_labels: bool = True
     cmap: str = "RdBu"
 
@@ -298,7 +297,6 @@ class Settings(BaseSettings):
     missing_diagrams: Dict[str, bool] = {
         "bar": True,
         "matrix": True,
-        "dendrogram": True,
         "heatmap": True,
     }
 
@@ -390,7 +388,6 @@ class Config:
             "bar": False,
             "matrix": False,
             "heatmap": False,
-            "dendrogram": False,
         },
         "correlations": {
             "pearson": {"calculate": False},

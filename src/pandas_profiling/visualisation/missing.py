@@ -1,7 +1,6 @@
 """Plotting functions for the missing values diagrams"""
 import pandas as pd
 from matplotlib import pyplot as plt
-from missingno import missingno
 
 from pandas_profiling.config import Settings
 from pandas_profiling.visualisation.context import manage_matplotlib_context
@@ -119,21 +118,4 @@ def plot_missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
     else:
         plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
 
-    return plot_360_n0sc0pe(config)
-
-
-@manage_matplotlib_context()
-def plot_missing_dendrogram(config: Settings, data: pd.DataFrame) -> str:
-    """Generate a dendrogram plot for missing values.
-
-    Args:
-        config: report Settings object
-        data: Pandas DataFrame to generate missing values dendrogram plot from.
-
-    Returns:
-      The resulting missing values dendrogram plot encoded as a string.
-
-    """
-    missingno.dendrogram(data, fontsize=get_font_size(data) * 2.0)
-    plt.subplots_adjust(left=0.1, right=0.9, top=0.7, bottom=0.2)
     return plot_360_n0sc0pe(config)

@@ -793,7 +793,7 @@ def missing_bar(
         )
     else:
         ax0 = null_counts.plot.barh(figsize=figsize, fontsize=fontsize, color=color)
-        ylabels = ax0.get_ytickslabels() if labels else []
+        ylabels = ax0.get_yticklabels() if labels else []
         ax0.set_yticklabels(ylabels, fontsize=fontsize)
 
         ax1 = ax0.twinx()
