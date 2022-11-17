@@ -165,13 +165,17 @@ def compare(
     features = [set(r.df.columns) for r in reports]  # type: ignore
     if not all(features[0] == x for x in features):
         warnings.warn(
-            "The reports have a different set of columns. "
-            "The columns not in the of the leftmost report will be ignored."
+            "The datasets being profiled have a different set of columns. "
+            "Only the left side profile will be calculated."
         )
 
     base_features = features[0]
     for report in reports[1:]:
         report.df = report.df.loc[:, list(base_features & set(report.df.columns))]  # type: ignore
+    
+    reports = [r for r in reports if not r.df.empty]
+    if len(reports) == 1:
+        return reports[0]
 
     if config is None:
         config = Settings()
