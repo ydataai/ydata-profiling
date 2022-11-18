@@ -89,6 +89,10 @@ class Alert:
         self.column_name = column_name
 
     @property
+    def alert_type_name(self) -> str:
+        return self.alert_type.name.replace("_", " ").lower().title()
+
+    @property
     def anchor_id(self) -> Optional[str]:
         if self._anchor_id is None:
             self._anchor_id = str(hash(self.column_name))
@@ -100,7 +104,8 @@ class Alert:
         if name == "HIGH CORRELATION":
             num = len(self.values["fields"])
             title = ", ".join(self.values["fields"])
-            name = f'<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
+            corr = self.values["corr"]
+            name = f'<abbr title="This variable has a high {corr} correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
         return name
 
     def __repr__(self):
@@ -255,12 +260,6 @@ def supported_alerts(summary: dict) -> List[Alert]:
                 fields={"n_distinct"},
             )
         )
-        alerts.append(
-            Alert(
-                alert_type=AlertType.REJECTED,
-                fields=set(),
-            )
-        )
     return alerts
 
 
@@ -328,7 +327,7 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
                 Alert(
                     column_name=col,
                     alert_type=AlertType.HIGH_CORRELATION,
-                    values={"corr": "Overall", "fields": fields},
+                    values={"corr": "overall", "fields": fields},
                 )
             )
     return alerts

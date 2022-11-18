@@ -21,7 +21,8 @@ class WidgetFrequencyTable(FrequencyTable):
     def render(self) -> VBox:
         items = []
 
-        for row in self.content["rows"]:
+        rows = self.content["rows"][0]
+        for row in rows:
             if row["extra_class"] == "missing":
                 items.append(
                     (

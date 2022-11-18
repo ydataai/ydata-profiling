@@ -1,21 +1,12 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import numpy as np
 import pandas as pd
 
 
-def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -> List[Dict]:
-    """Render the rows for a frequency table (value, count).
-
-    Args:
-      freqtable: The frequency table.
-      n: The total number of values.
-      max_number_to_print: The maximum number of observations to print.
-
-    Returns:
-        The rows of the frequency table.
-    """
-
+def _frequency_table(
+    freqtable: pd.Series, n: int, max_number_to_print: int
+) -> List[Dict[str, Any]]:
     # TODO: replace '' by '(Empty)' ?
 
     if max_number_to_print > n:
@@ -82,20 +73,33 @@ def freq_table(freqtable: pd.Series, n: int, max_number_to_print: int) -> List[D
     return rows
 
 
-def extreme_obs_table(
-    freqtable: pd.Series, number_to_print: int, n: int
-) -> List[Dict[str, Any]]:
-    """Similar to the frequency table, for extreme observations.
+def freq_table(
+    freqtable: Union[pd.Series, List[pd.Series]],
+    n: Union[int, List[int]],
+    max_number_to_print: int,
+) -> Union[List[Dict[str, Any]], List[List[Dict[str, Any]]]]:
+    """Render the rows for a frequency table (value, count).
 
     Args:
-      freqtable: The (sorted) frequency table.
-      number_to_print: The number of observations to print.
-      n: The total number of observations.
+      freqtable: The frequency table.
+      n: The total number of values.
+      max_number_to_print: The maximum number of observations to print.
 
     Returns:
-        The HTML rendering of the extreme observation table.
+        The rows of the frequency table.
     """
 
+    if isinstance(freqtable, list) and isinstance(n, list):
+        return [
+            _frequency_table(v, n2, max_number_to_print) for v, n2 in zip(freqtable, n)
+        ]
+    else:
+        return [_frequency_table(freqtable, n, max_number_to_print)]  # type: ignore
+
+
+def _extreme_obs_table(
+    freqtable: pd.Series, number_to_print: int, n: int
+) -> List[Dict[str, Any]]:
     obs_to_print = freqtable.iloc[:number_to_print]
     max_freq = obs_to_print.max()
 
@@ -112,3 +116,26 @@ def extreme_obs_table(
     ]
 
     return rows
+
+
+def extreme_obs_table(
+    freqtable: Union[pd.Series, List[pd.Series]],
+    number_to_print: int,
+    n: Union[int, List[int]],
+) -> List[List[Dict[str, Any]]]:
+    """Similar to the frequency table, for extreme observations.
+
+    Args:
+      freqtable: The (sorted) frequency table.
+      number_to_print: The number of observations to print.
+      n: The total number of observations.
+
+    Returns:
+        The HTML rendering of the extreme observation table.
+    """
+    if isinstance(freqtable, list) and isinstance(n, list):
+        return [
+            _extreme_obs_table(v, number_to_print, n1) for v, n1 in zip(freqtable, n)
+        ]
+
+    return [_extreme_obs_table(freqtable, number_to_print, n)]  # type: ignore

@@ -22,11 +22,6 @@ def missing_heatmap(config: Settings, df: Any) -> str:
     raise NotImplementedError()
 
 
-@multimethod
-def missing_dendrogram(config: Settings, df: Any) -> str:
-    raise NotImplementedError()
-
-
 def get_missing_active(config: Settings, table_stats: dict) -> Dict[Any, Any]:
     """
 
@@ -55,12 +50,6 @@ def get_missing_active(config: Settings, table_stats: dict) -> Dict[Any, Any]:
             "name": "Heatmap",
             "caption": "The correlation heatmap measures nullity correlation: how strongly the presence or absence of one variable affects the presence of another.",
             "function": missing_heatmap,
-        },
-        "dendrogram": {
-            "min_missing": 1,
-            "name": "Dendrogram",
-            "caption": "The dendrogram allows you to more fully correlate variable completion, revealing trends deeper than the pairwise ones visible in the correlation heatmap.",
-            "function": missing_dendrogram,
         },
     }
 
@@ -114,7 +103,7 @@ def get_missing_diagram(
         settings: missing diagram name, caption and function
 
     Returns:
-        A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap, dendrogram).
+        A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap).
     """
 
     if len(df) == 0:
