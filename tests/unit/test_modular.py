@@ -46,7 +46,6 @@ def test_modular_description_set(tdf):
         missing_diagrams={
             "matrix": False,
             "bar": False,
-            "dendrogram": False,
             "heatmap": False,
         },
         pool_size=1,
@@ -91,7 +90,6 @@ def test_modular_present(tdf):
         missing_diagrams={
             "matrix": True,
             "bar": True,
-            "dendrogram": True,
             "heatmap": True,
         },
         pool_size=1,

@@ -1,8 +1,8 @@
 """Configuration for the package."""
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
-from pydantic import BaseModel, BaseSettings, Field
+from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
@@ -113,7 +113,6 @@ class Univariate(BaseModel):
 
 class MissingPlot(BaseModel):
     # Force labels when there are > 50 variables
-    # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
     force_labels: bool = True
     cmap: str = "RdBu"
 
@@ -168,9 +167,23 @@ class Theme(Enum):
 
 
 class Style(BaseModel):
-    primary_color: str = "#337ab7"
+    # Primary color used for plotting and text where applicable.
+    @property
+    def primary_color(self) -> str:
+        # This attribute may be deprecated in the future, please use primary_colors[0]
+        return self.primary_colors[0]
+
+    # Primary color used for comparisons (default: blue, red, green)
+    primary_colors: List[str] = ["#377eb8", "#e41a1c", "#4daf4a"]
+
+    # Base64-encoded logo image
     logo: str = ""
+
+    # HTML Theme (optional, default: None)
     theme: Optional[Theme] = None
+
+    # Labels used for comparing reports (private attribute)
+    _labels: List[str] = PrivateAttr(["_"])
 
 
 class Html(BaseModel):
@@ -251,7 +264,8 @@ class Notebook(BaseModel):
 
 
 class Report(BaseModel):
-    precision: int = 10
+    # Numeric precision for displaying statistics
+    precision: int = 8
 
 
 class Settings(BaseSettings):
@@ -284,7 +298,6 @@ class Settings(BaseSettings):
     missing_diagrams: Dict[str, bool] = {
         "bar": True,
         "matrix": True,
-        "dendrogram": True,
         "heatmap": True,
     }
 
@@ -377,7 +390,6 @@ class Config:
             "bar": False,
             "matrix": False,
             "heatmap": False,
-            "dendrogram": False,
         },
         "correlations": {
             "auto": {"calculate": False},
@@ -392,11 +404,21 @@ class Config:
     @staticmethod
     def get_arg_groups(key: str) -> dict:
         kwargs = Config.arg_groups[key]
-        return Config.shorthands(kwargs)
+        shorthand_args, _ = Config.shorthands(kwargs, split=False)
+        return shorthand_args
 
     @staticmethod
-    def shorthands(kwargs: dict) -> dict:
+    def shorthands(kwargs: dict, split: bool = True) -> Tuple[dict, dict]:
+        shorthand_args = {}
+        if not split:
+            shorthand_args = kwargs
         for key, value in list(kwargs.items()):
             if value is None and key in Config._shorthands:
-                kwargs[key] = Config._shorthands[key]
-        return kwargs
+                shorthand_args[key] = Config._shorthands[key]
+                if split:
+                    del kwargs[key]
+
+        if split:
+            return shorthand_args, kwargs
+        else:
+            return shorthand_args, {}

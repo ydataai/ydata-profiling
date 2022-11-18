@@ -73,7 +73,8 @@ def render_path(config: Settings, summary: dict) -> dict:
                         ),
                         "alert": False,
                     },
-                ]
+                ],
+                style=config.html.style,
             )
         ],
         anchor_id=f"{varid}tbl",
