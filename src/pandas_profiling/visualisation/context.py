@@ -71,6 +71,7 @@ def manage_matplotlib_context() -> Any:
         "ytick.minor.width": 0.5,
         "xtick.major.pad": 7,
         "ytick.major.pad": 7,
+        "backend": "agg",
     }
 
     try:
