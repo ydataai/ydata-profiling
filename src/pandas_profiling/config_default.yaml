@@ -87,7 +87,6 @@ missing_diagrams:
     bar: true
     matrix: true
     heatmap: true
-    dendrogram: true
 
 correlations:
     pearson:
