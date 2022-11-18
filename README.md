@@ -37,7 +37,7 @@ For each column, the following information (whenever relevant for the column typ
 - **Most frequent and extreme values**
 - **Histograms**: categorical and numerical
 - **Correlations**: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér’s V, Phik)
-- **Missing values**: through counts, matrix, heatmap and dendrograms
+- **Missing values**: through counts, matrix and heatmap
 - **Duplicate rows**: list of the most common duplicated rows
 - **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
 - **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existence of EXIF metadata
@@ -200,11 +200,12 @@ You need [Python 3](https://python3statement.org/) to run the package. Other dep
 
 The documentation includes guides, tips and tricks for tackling common use cases:
 
-| Use case | Description |
-|---|---|
-| [Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html ) | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets |
-| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html ) | Generating reports which are mindful about sensitive data in the input dataset |
-| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html) | Complementing the report with dataset details and column-specific data dictionaries |
+| Use case                                                                                                                            | Description |
+|-------------------------------------------------------------------------------------------------------------------------------------|--|
+| [Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets |
+| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset |
+| [Comparing datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset |
+| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries |
 | [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations |
 
 ## 🔗 Integrations

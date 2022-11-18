@@ -12,7 +12,7 @@ def test_html_frequency_table():
     )
     assert str(item) == "HTMLFrequencyTable"
     html = item.render()
-    assert '<table class="freq table table-hover table-striped">' in html
+    assert '<table class="freq table table-hover table-striped table-0">' in html
 
 
 def test_html_html():

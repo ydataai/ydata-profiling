@@ -1,5 +1,6 @@
 from typing import Any, List
 
+from pandas_profiling.config import Style
 from pandas_profiling.model.alerts import Alert
 from pandas_profiling.report.presentation.core.item_renderer import ItemRenderer
 
@@ -12,6 +13,7 @@ class VariableInfo(ItemRenderer):
         var_type: str,
         alerts: List[Alert],
         description: str,
+        style: Style,
         **kwargs
     ):
         super().__init__(
@@ -22,6 +24,7 @@ class VariableInfo(ItemRenderer):
                 "description": description,
                 "var_type": var_type,
                 "alerts": alerts,
+                "style": style,
             },
             **kwargs
         )
