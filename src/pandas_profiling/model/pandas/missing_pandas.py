@@ -1,11 +1,7 @@
 import pandas as pd
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.missing import (
-    missing_bar,
-    missing_heatmap,
-    missing_matrix,
-)
+from pandas_profiling.model.missing import missing_bar, missing_heatmap, missing_matrix
 from pandas_profiling.visualisation.missing import (
     plot_missing_bar,
     plot_missing_heatmap,

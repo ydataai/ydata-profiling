@@ -172,7 +172,7 @@ def compare(
     base_features = features[0]
     for report in reports[1:]:
         report.df = report.df.loc[:, list(base_features & set(report.df.columns))]  # type: ignore
-    
+
     reports = [r for r in reports if not r.df.empty]
     if len(reports) == 1:
         return reports[0]
