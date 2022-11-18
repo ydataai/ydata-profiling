@@ -3,14 +3,14 @@
 .. toctree::
    :maxdepth: 3
    :caption: Getting started
-   :hidden: 
+   :hidden:
 
    pages/getting_started/overview
    pages/getting_started/installation
    pages/getting_started/quickstart
    pages/getting_started/concepts
    pages/getting_started/examples
-   
+
 .. toctree::
    :maxdepth: 3
    :caption: Use cases
@@ -18,16 +18,17 @@
 
    pages/use_cases/big_data
    pages/use_cases/sensitive_data
+   pages/use_cases/comparing_datasets
    pages/use_cases/metadata
    pages/use_cases/custom_report_appearance
-  
+
 
 .. toctree::
    :maxdepth: 3
    :caption: Integrations
    :hidden:
 
-   pages/integrations/other_dataframe_libraries  
+   pages/integrations/other_dataframe_libraries
    pages/integrations/great_expectations
    pages/integrations/data_apps
    pages/integrations/pipelines
@@ -57,7 +58,7 @@
    pages/support_contrib/help_troubleshoot
    pages/support_contrib/common_issues
    pages/support_contrib/contribution_guidelines
-   
+
 .. toctree::
    :maxdepth: 3
    :caption: Reference
@@ -68,4 +69,4 @@
    pages/reference/history
    pages/reference/announcements
    pages/reference/resources
-   
+

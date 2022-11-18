@@ -15,7 +15,6 @@
    
       get_font_size
       plot_missing_bar
-      plot_missing_dendrogram
       plot_missing_heatmap
       plot_missing_matrix
    

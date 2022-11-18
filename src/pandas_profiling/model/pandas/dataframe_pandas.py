@@ -1,6 +1,5 @@
 import warnings
 
-import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import Settings
@@ -29,13 +28,6 @@ def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         The preprocessed DataFrame
     """
-    # Treat index as any other column
-    if (
-        not pd.Index(np.arange(0, len(df))).equals(df.index)
-        or df.index.dtype != np.int64
-    ):
-        df = df.reset_index()
-
     # Rename reserved column names
     df = rename_index(df)
 

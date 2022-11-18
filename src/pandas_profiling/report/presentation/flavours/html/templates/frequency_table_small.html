@@ -1,30 +1,32 @@
 <div class="col-sm-{{ nb_col }} collapse in" id="minifreqtable{{ varid }}">
-    <table class="mini freq">
-        {% for row in rows %}
-            <tr class="{{ row['extra_class'] }}">
-                <th width="50%">
-                      {% if not redact %}
-                        {{ row['label'] | fmt }}
-                      {% endif %}
-                </th>
-                <td width="50%">
-                    <div class="bar"
-                         style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}"
-                         data-toggle="tooltip"
-                         data-placement="right"
-                         data-html="true"
-                         data-delay=500 >
-                        {% if row['width'] > 0.10 %}
-                            {{ row['count'] }}&nbsp;
-                        {% else %}
-                            &nbsp;
+    <table class="mini freq{% if idx is defined %} table-{{ idx }}{% endif %}">
+        {% if rows | length > 0 %}
+            {% for row in rows %}
+                <tr class="{{ row['extra_class'] }}">
+                    <th width="50%">
+                        {% if not redact %}
+                            {{ row['label'] | fmt }}
                         {% endif %}
-                    </div>
-                    {% if row['width'] <= 0.10 %}
-                        {{ row['count'] }}
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+                    </th>
+                    <td width="50%">
+                        <div class="bar"
+                             style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}"
+                             data-toggle="tooltip"
+                             data-placement="right"
+                             data-html="true"
+                             data-delay="500">
+                            {% if row['width'] > 0.10 %}
+                                {{ row['count'] }}&nbsp;
+                            {% else %}
+                                &nbsp;
+                            {% endif %}
+                        </div>
+                        {% if row['width'] <= 0.10 %}
+                            {{ row['count'] }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
     </table>
 </div>
