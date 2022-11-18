@@ -169,9 +169,10 @@ def compare(
             "Only the left side profile will be calculated."
         )
 
-    base_features = features[0]
+    base_features = reports[0].df.columns
     for report in reports[1:]:
-        report.df = report.df.loc[:, list(base_features & set(report.df.columns))]  # type: ignore
+        cols_2_compare = [col for col in base_features if col in report.df.columns] # type: ignore
+        report.df = report.df.loc[:, cols_2_compare]    
 
     reports = [r for r in reports if not r.df.empty]
     if len(reports) == 1:
