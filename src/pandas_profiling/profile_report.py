@@ -67,6 +67,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     ):
         """Generate a ProfileReport based on a pandas DataFrame
 
+        Config processing order (in case of duplicate entries, entries later in the order are retained):
+        - config presets (e.g. `config_file`, `minimal` arguments)
+        - config groups (e.g. `explorative` and `sensitive` arguments)
+        - custom settings (e.g. `config` argument)
+        - custom settings **kwargs (e.g. `title`)
+
         Args:
             df: the pandas DataFrame
             minimal: minimal mode is a default configuration with minimal computation
@@ -81,8 +87,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
-        report_config: Settings = Settings() if config is None else config
-
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
@@ -95,21 +99,41 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             with open(config_file) as f:
                 data = yaml.safe_load(f)
 
-            report_config = report_config.parse_obj(data)
+            report_config = Settings().parse_obj(data)
+        else:
+            report_config = Settings()
 
-        if explorative:
-            report_config = report_config.update(Config.get_arg_groups("explorative"))
-        if sensitive:
-            report_config = report_config.update(Config.get_arg_groups("sensitive"))
-        if dark_mode:
-            report_config = report_config.update(Config.get_arg_groups("dark_mode"))
-        if orange_mode:
-            report_config = report_config.update(Config.get_arg_groups("orange_mode"))
+        groups = [
+            (explorative, "explorative"),
+            (sensitive, "sensitive"),
+            (dark_mode, "dark_mode"),
+            (orange_mode, "orange_mode"),
+        ]
+        if any(condition for condition, _ in groups):
+            cfg = Settings()
+            for condition, key in groups:
+                if condition:
+                    cfg = cfg.update(Config.get_arg_groups(key))
+            report_config = cfg.update(report_config.dict(exclude_defaults=True))
+
+        if len(kwargs) > 0:
+            shorthands, kwargs = Config.shorthands(kwargs)
+            report_config = (
+                Settings()
+                .update(shorthands)
+                .update(report_config.dict(exclude_defaults=True))
+            )
+
+        if config is not None:
+            report_config = report_config.update(config.dict())
+            report_config.html.style._labels = config.html.style._labels
+
+        if kwargs:
+            report_config = report_config.update(kwargs)
+
         report_config.vars.timeseries.active = tsmode
         if tsmode and sortby:
             report_config.vars.timeseries.sortby = sortby
-        if len(kwargs) > 0:
-            report_config = report_config.update(Config.shorthands(kwargs))
 
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
@@ -215,6 +239,14 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @property
     def widgets(self) -> Renderable:
+        if (
+            isinstance(self.description_set["table"]["n"], list)
+            and len(self.description_set["table"]["n"]) > 1
+        ):
+            raise RuntimeError(
+                "Widgets interface not (yet) supported for comparing reports, please use the HTML rendering."
+            )
+
         if self._widgets is None:
             self._widgets = self._render_widgets()
         return self._widgets
@@ -257,8 +289,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def to_file(self, output_file: Union[str, Path], silent: bool = True) -> None:
         """Write the report to a file.
-
-        By default a name is generated.
 
         Args:
             output_file: The name or the path of the file to generate including the extension (.html, .json).
@@ -316,7 +346,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 offline=self.config.html.use_local_assets,
                 inline=self.config.html.inline,
                 assets_prefix=self.config.html.assets_prefix,
-                primary_color=self.config.html.style.primary_color,
+                primary_color=self.config.html.style.primary_colors[0],
                 logo=self.config.html.style.logo,
                 theme=self.config.html.style.theme,
                 title=self.description_set["analysis"]["title"],
@@ -442,3 +472,21 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __repr__(self) -> str:
         """Override so that Jupyter Notebook does not print the object."""
         return ""
+
+    def compare(self, other: "ProfileReport") -> "ProfileReport":
+        """Compare this report with another ProfileReport
+        Alias for:
+        ```
+        pandas_profiling.compare([report1, report2], _labels=[report1.config.title, report2.config.title]
+        ```
+        See `pandas_profiling.compare` for details.
+
+        Args:
+            other: the ProfileReport to compare to
+
+        Returns:
+            Comparison ProfileReport
+        """
+        from pandas_profiling.compare_reports import compare
+
+        return compare([self, other])

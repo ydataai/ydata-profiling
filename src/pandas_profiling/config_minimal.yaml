@@ -88,7 +88,6 @@ missing_diagrams:
     bar: false
     matrix: false
     heatmap: false
-    dendrogram: false
 
 correlations:
     pearson:
@@ -143,7 +142,6 @@ plot:
     missing:
         cmap: 'RdBu'
         # Force labels when there are > 50 variables
-        # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
         force_labels: true
 
     cat_frequency:
@@ -211,6 +209,9 @@ html:
     style:
       theme: null
       logo: ""
-      primary_color: "#337ab7"
+      primary_colors:
+      - "#377eb8"
+      - "#e41a1c"
+      - "#4daf4a"
 
     full_width: false

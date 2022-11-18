@@ -52,14 +52,14 @@ def test_deactivated_cat_frequency_plot(data, plot_type):
     profile.config.plot.cat_freq.show = False
     profile.config.plot.cat_freq.type = plot_type
     html_report = profile.to_html()
-    assert "Category Frequency Plot" not in html_report
+    assert "Common Values (Plot)" not in html_report
 
 
 @pytest.mark.parametrize("data", [dummy_bool_data, dummy_cat_data], ids=["bool", "cat"])
 def test_cat_frequency_default_barh_plot(data):
     profile = generate_report(data)
     html_report = profile.to_html()
-    assert "Category Frequency Plot" in html_report
+    assert "Common Values (Plot)" in html_report
 
 
 @pytest.mark.parametrize("data", [dummy_bool_data, dummy_cat_data], ids=["bool", "cat"])
@@ -76,7 +76,7 @@ def test_max_nuique_smaller_than_unique_cats(plot_type):
     profile.config.plot.cat_freq.max_unique = 2  # smaller than the number of categories
     profile.config.plot.cat_freq.type = plot_type
     html_report = profile.to_html()
-    assert "Category Frequency Plot" not in html_report
+    assert "Common Values (Plot)" not in html_report
 
 
 # - Test category frequency plots color options
@@ -100,7 +100,7 @@ def test_more_cats_than_colors():
     profile = generate_report(test_data)
     profile.config.plot.cat_freq.colors = list(custom_colors.keys())
     html_report = profile.to_html()
-    assert "Category Frequency Plot" in html_report  # just check that it worked
+    assert "Common Values (Plot)" in html_report  # just check that it worked
 
 
 # - Test exceptions

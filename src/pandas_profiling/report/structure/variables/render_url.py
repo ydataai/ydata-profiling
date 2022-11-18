@@ -84,6 +84,7 @@ def render_url(config: Settings, summary: dict) -> dict:
         "URL",
         summary["alerts"],
         summary["description"],
+        style=config.html.style,
     )
 
     table = Table(
@@ -113,7 +114,8 @@ def render_url(config: Settings, summary: dict) -> dict:
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     fqm = FrequencyTableSmall(
