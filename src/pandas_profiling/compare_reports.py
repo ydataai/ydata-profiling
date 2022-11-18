@@ -171,8 +171,8 @@ def compare(
 
     base_features = reports[0].df.columns
     for report in reports[1:]:
-        cols_2_compare = [col for col in base_features if col in report.df.columns] # type: ignore
-        report.df = report.df.loc[:, cols_2_compare]    
+        cols_2_compare = [col for col in base_features if col in report.df.columns]  # type: ignore
+        report.df = report.df.loc[:, cols_2_compare]
 
     reports = [r for r in reports if not r.df.empty]
     if len(reports) == 1:
