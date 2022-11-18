@@ -12,10 +12,11 @@ class WidgetFrequencyTableSmall(FrequencyTableSmall):
         return frequency_table_nb(self.content["rows"])
 
 
-def frequency_table_nb(rows: List[dict]) -> widgets.VBox:
+def frequency_table_nb(rows: List[List[dict]]) -> widgets.VBox:
     items = []
 
-    for row in rows:
+    fq_rows = rows[0]
+    for row in fq_rows:
         if row["extra_class"] == "missing":
             items.append(
                 widgets.HBox(

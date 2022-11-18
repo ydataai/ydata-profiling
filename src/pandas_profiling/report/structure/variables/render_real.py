@@ -22,10 +22,7 @@ def render_real(config: Settings, summary: dict) -> dict:
     template_variables = render_common(config, summary)
     image_format = config.plot.image_format
 
-    if summary["min"] >= 0:
-        name = "Real number (&Ropf;<sub>&ge;0</sub>)"
-    else:
-        name = "Real number (&Ropf;)"
+    name = "Real number (&Ropf;)"
 
     # Top
     info = VariableInfo(
@@ -34,6 +31,7 @@ def render_real(config: Settings, summary: dict) -> dict:
         name,
         summary["alerts"],
         summary["description"],
+        style=config.html.style,
     )
 
     table1 = Table(
@@ -75,7 +73,8 @@ def render_real(config: Settings, summary: dict) -> dict:
                 ),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     table2 = Table(
@@ -115,14 +114,26 @@ def render_real(config: Settings, summary: dict) -> dict:
                 "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
-    mini_histo = Image(
-        mini_histogram(config, *summary["histogram"]),
-        image_format=image_format,
-        alt="Mini histogram",
-    )
+    if isinstance(summary["histogram"], list):
+        mini_histo = Image(
+            mini_histogram(
+                config,
+                [x[0] for x in summary["histogram"]],
+                [x[1] for x in summary["histogram"]],
+            ),
+            image_format=image_format,
+            alt="Mini histogram",
+        )
+    else:
+        mini_histo = Image(
+            mini_histogram(config, *summary["histogram"]),
+            image_format=image_format,
+            alt="Mini histogram",
+        )
 
     template_variables["top"] = Container(
         [info, table1, table2, mini_histo], sequence_type="grid"
@@ -170,6 +181,7 @@ def render_real(config: Settings, summary: dict) -> dict:
             },
         ],
         name="Quantile statistics",
+        style=config.html.style,
     )
 
     descriptive_statistics = Table(
@@ -221,6 +233,7 @@ def render_real(config: Settings, summary: dict) -> dict:
             },
         ],
         name="Descriptive statistics",
+        style=config.html.style,
     )
 
     statistics = Container(
@@ -230,11 +243,22 @@ def render_real(config: Settings, summary: dict) -> dict:
         sequence_type="grid",
     )
 
+    if isinstance(summary["histogram"], list):
+        hist_data = histogram(
+            config,
+            [x[0] for x in summary["histogram"]],
+            [x[1] for x in summary["histogram"]],
+        )
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][0][1]) - 1})"
+    else:
+        hist_data = histogram(config, *summary["histogram"])
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+
     hist = Image(
-        histogram(config, *summary["histogram"]),
+        hist_data,
         image_format=image_format,
         alt="Histogram",
-        caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
+        caption=hist_caption,
         name="Histogram",
         anchor_id=f"{varid}histogram",
     )
