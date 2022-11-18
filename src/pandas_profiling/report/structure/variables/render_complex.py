@@ -27,6 +27,7 @@ def render_complex(config: Settings, summary: dict) -> dict:
         "Complex number (&Copf;)",
         summary["alerts"],
         summary["description"],
+        style=config.html.style,
     )
 
     table1 = Table(
@@ -45,7 +46,8 @@ def render_complex(config: Settings, summary: dict) -> dict:
                 "name": "Memory size",
                 "value": fmt_bytesize(summary["memory_size"]),
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     table2 = Table(
@@ -71,7 +73,8 @@ def render_complex(config: Settings, summary: dict) -> dict:
                 ),
             },
             {"name": "Zeros (%)", "value": fmt_percent(summary["p_zeros"])},
-        ]
+        ],
+        style=config.html.style,
     )
 
     placeholder = HTML("")

@@ -20,7 +20,7 @@ def pandas_get_table_stats(
     Returns:
         A dictionary that contains the table statistics.
     """
-    n = len(df)
+    n = len(df) if not df.empty else 0
 
     memory_size = df.memory_usage(deep=config.memory_deep).sum()
     record_size = float(memory_size) / n if n > 0 else 0
@@ -44,7 +44,7 @@ def pandas_get_table_stats(
 
     table_stats["p_cells_missing"] = (
         table_stats["n_cells_missing"] / (table_stats["n"] * table_stats["n_var"])
-        if table_stats["n"] > 0
+        if table_stats["n"] > 0 and table_stats["n_var"] > 0
         else 0
     )
 

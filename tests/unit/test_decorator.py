@@ -13,6 +13,6 @@ def test_decorator(get_data_file):
         df,
         title="Coursera Test Report",
         samples={"head": 20},
-        missing_diagrams={"heatmap": False, "dendrogram": False},
+        missing_diagrams={"heatmap": False},
     )
     assert "Coursera Test Report" in report.to_html(), "Title is not found"
