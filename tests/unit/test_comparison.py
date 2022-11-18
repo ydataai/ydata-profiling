@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import pytest
-from matplotlib.pyplot import title
 
 from pandas_profiling import ProfileReport, compare
 from pandas_profiling.compare_reports import _compare_title
