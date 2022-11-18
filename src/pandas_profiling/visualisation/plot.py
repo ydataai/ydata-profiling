@@ -507,9 +507,7 @@ def create_comparison_color_list(config: Settings) -> List[str]:
     if colors < labels:
         init = colors[0]
         end = colors[1] if len(colors) >= 2 else "#000000"
-        cmap = LinearSegmentedColormap.from_list(
-            "ts_leg", [init, end], len(labels)
-        )
+        cmap = LinearSegmentedColormap.from_list("ts_leg", [init, end], len(labels))
         colors = [rgb2hex(cmap(i)) for i in range(cmap.N)]
     return colors
 
@@ -569,7 +567,9 @@ def _get_ts_lag(config: Settings, series: pd.Series) -> int:
     return np.min([lag, max_lag_size])
 
 
-def _plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
+def _plot_acf_pacf(
+    config: Settings, series: pd.Series, figsize: tuple = (15, 5)
+) -> str:
     color = config.html.style.primary_color
 
     lag = _get_ts_lag(config, series)
@@ -602,7 +602,9 @@ def _plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)
     return plot_360_n0sc0pe(config)
 
 
-def _plot_acf_pacf_comparison(config: Settings, series: List[pd.Series], figsize: tuple = (15, 5)) -> str:
+def _plot_acf_pacf_comparison(
+    config: Settings, series: List[pd.Series], figsize: tuple = (15, 5)
+) -> str:
     colors = config.html.style.primary_colors
     n_labels = len(config.html.style._labels)
     colors = create_comparison_color_list(config)
@@ -642,11 +644,14 @@ def _plot_acf_pacf_comparison(config: Settings, series: List[pd.Series], figsize
 
 
 @manage_matplotlib_context()
-def plot_acf_pacf(config: Settings, series: Union[list, pd.Series], figsize: tuple = (15, 5)) -> str:
+def plot_acf_pacf(
+    config: Settings, series: Union[list, pd.Series], figsize: tuple = (15, 5)
+) -> str:
     if isinstance(series, list):
         return _plot_acf_pacf_comparison(config, series, figsize)
     else:
         return _plot_acf_pacf(config, series, figsize)
+
 
 def _prepare_heatmap_data(
     dataframe: pd.DataFrame,

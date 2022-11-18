@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 import pandas as pd
 
@@ -131,7 +131,7 @@ def _compare_dataset_description_preprocess(
 
 
 def compare(
-    reports: Union[List[ProfileReport], List[Dict]],
+    reports: List[ProfileReport],
     config: Optional[Settings] = None,
 ) -> ProfileReport:
     """
@@ -146,27 +146,39 @@ def compare(
     if len(reports) < 2:
         raise ValueError("At least two reports are required for this comparison")
 
+    if len(reports) > 2:
+        warnings.warn(
+            "Comparison of more than two reports is not supported. "
+            "Reports may be produced, but may yield unexpected formatting."
+        )
+
     report_types = [r.config.vars.timeseries.active for r in reports]
     if all(report_types) != any(report_types):
         raise ValueError(
             "Comparison between timeseries and tabular reports is not supported"
         )
 
-    features = [set(r.df.columns) for r in reports]
+    is_df_available = [r.df is not None for r in reports]
+    if not all(is_df_available):
+        raise ValueError("Reports where not initialized with a DataFrame.")
+
+    features = [set(r.df.columns) for r in reports]  # type: ignore
     if not all(features[0] == x for x in features):
         warnings.warn(
-            "The reports have a different set of columns. "
-            "Only the one side report will be generated for the different columns."
+            "The datasets being profiled have a different set of columns. "
+            "Only the left side profile will be calculated."
         )
+
+    base_features = features[0]
+    for report in reports[1:]:
+        report.df = report.df.loc[:, list(base_features & set(report.df.columns))]  # type: ignore
+    
+    reports = [r for r in reports if not r.df.empty]
+    if len(reports) == 1:
+        return reports[0]
 
     if config is None:
         config = Settings()
-
-    if len(reports) > 2:
-        warnings.warn(
-            "Comparison of more than two reports is not supported. "
-            "Reports may be produced, but may yield unexpected formatting."
-        )
 
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
