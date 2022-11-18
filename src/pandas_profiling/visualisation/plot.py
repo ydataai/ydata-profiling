@@ -535,7 +535,7 @@ def _plot_timeseries(
             serie.plot(color=color, label=label)
 
     else:
-        series.plot(color=config.html.style.primary_color)
+        series.plot(color=config.html.style.primary_colors[0])
 
     return plot
 
@@ -570,7 +570,7 @@ def _get_ts_lag(config: Settings, series: pd.Series) -> int:
 def _plot_acf_pacf(
     config: Settings, series: pd.Series, figsize: tuple = (15, 5)
 ) -> str:
-    color = config.html.style.primary_color
+    color = config.html.style.primary_colors[0]
 
     lag = _get_ts_lag(config, series)
     _, axes = plt.subplots(nrows=1, ncols=2, figsize=figsize)
