@@ -93,7 +93,7 @@ def pandas_cramers_compute(
             key
             for key, value in summary.items()
             if value["type"] in {"Categorical", "Boolean"}
-            and value["n_distinct"] <= threshold
+            and 1 < value["n_distinct"] <= threshold
         }
     )
 
@@ -161,16 +161,21 @@ def pandas_auto_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
-
     numerical_columns = [
-        key for key, value in summary.items() if value["type"] == "Numeric"
+        key
+        for key, value in summary.items()
+        if value["type"] == "Numeric" and value["n_distinct"] > 1
     ]
     categorical_columns = [
         key
         for key, value in summary.items()
         if value["type"] in {"Categorical", "Boolean"}
-        and value["n_distinct"] <= threshold
+        and 1 < value["n_distinct"] <= threshold
     ]
+
+    if len(numerical_columns + categorical_columns) <= 1:
+        return None
+
     df_discretized = Discretizer(
         DiscretizationType.UNIFORM, n_bins=config.correlations["auto"].n_bins
     ).discretize_dataframe(df)
