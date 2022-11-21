@@ -73,7 +73,9 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         [
             {
                 "name": "Mean",
-                "value": fmt_numeric(summary["mean"], precision=config.report.precision),
+                "value": fmt_numeric(
+                    summary["mean"], precision=config.report.precision
+                ),
                 "alert": False,
             },
             {
