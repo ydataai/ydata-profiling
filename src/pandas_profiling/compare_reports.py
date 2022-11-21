@@ -97,6 +97,13 @@ def _placeholders(*reports: dict) -> None:
                 report["table"]["types"][type_key] = 0
 
 
+def _update_titles(reports: List[ProfileReport]) -> None:
+    """Redefine title of reports with the default one."""
+    for idx, report in enumerate(reports):
+        if report.config.title == "Pandas Profiling Report":
+            report.config.title = f"Dataset {chr(65 + idx)}"
+
+
 def _compare_title(titles: List[str]) -> str:
     if all(titles[0] == title for title in titles[1:]):
         return titles[0]
@@ -120,6 +127,9 @@ def _compare_profile_report_preprocess(
 
     # Obtain description sets
     descriptions = [report.get_description() for report in reports]
+    for label, description in zip(labels, descriptions):
+        description["analysis"]["title"] = label
+
     return labels, descriptions
 
 
@@ -184,6 +194,7 @@ def compare(
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
         # Consider using TypeGuard (3.10): https://docs.python.org/3/library/typing.html#typing.TypeGuard
+        _update_titles(reports)
         labels, descriptions = _compare_profile_report_preprocess(reports)  # type: ignore
     elif all(isinstance(report, dict) for report in reports):
         labels, descriptions = _compare_dataset_description_preprocess(reports)  # type: ignore
