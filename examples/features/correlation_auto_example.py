@@ -15,23 +15,45 @@ The "Auto" correlation is an interpretable pairwise column metric of the followi
 
 """
 
-# Download the UCI Bank Marketing Dataset- as seen in examples/bank_marketing_data/banking_data.py
-file_name = cache_zipped_file(
-    "bank-full.csv",
-    "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank.zip",
-)
+if __name__ == "__main__":
 
-df = pd.read_csv(file_name, sep=";")
+    # Download the UCI Bank Marketing Dataset- as seen in examples/bank_marketing_data/banking_data.py
+    file_name = cache_zipped_file(
+        "bank-full.csv",
+        "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank.zip",
+    )
 
-profile = ProfileReport(
-    df, title="Profile Report of the UCI Bank Marketing Dataset", explorative=True
-)
+    df = pd.read_csv(file_name, sep=";")
 
+    # The default configuration automatically computes the 'Auto' correlation.
+    # You can change the number of bins setting for this calculation as shown below.
+    # This setting changes the granularity of the association measure for Numerical-Categorical column pairs.
 
-# The simplest way to change the number of bins is either through your script or notebook.
-# This changes the granularity of the association measure for Numerical-Categorical column pairs.
-profile.config.correlations["auto"].n_bins = 8
+    profile = ProfileReport(
+        df,
+        title="Profile Report of the UCI Bank Marketing Dataset",
+        config_file="src/pandas_profiling/config_default.yaml",
+        correlations={
+            "auto": {"n_bins": 8},
+        },
+    )
+    # Saving the data profiling report with the 'auto' correlation matrix to a html file
+    profile.to_file(Path("auto_uci_bank_marketing_report.html"))
 
+    # The default configuration only computes the 'Auto' correlation.
+    # To deactivate this setting and instead calculate other types of correlations such as Pearson's
+    # and Cramer's V we can do the following:
 
-# The 'auto' correlation matrix is displayed with the other correlation matrices in the report.
-profile.to_file(Path("uci_bank_marketing_report.html"))
+    no_auto_profile = ProfileReport(
+        df,
+        title="Profile Report of the UCI Bank Marketing Dataset",
+        config_file="src/pandas_profiling/config_default.yaml",
+        correlations={
+            "auto": {"calculate": False},
+            "pearson": {"calculate": True},
+            "cramers": {"calculate": True},
+        },
+    )
+
+    # We can then save the data profiling report without the 'auto' correlation matrix to a html file
+    no_auto_profile.to_file(Path("no_auto_uci_bank_marketing_report.html"))

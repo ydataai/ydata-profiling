@@ -90,23 +90,23 @@ missing_diagrams:
 
 correlations:
     pearson:
-      calculate: true
+      calculate: false
       warn_high_correlations: true
       threshold: 0.9
     spearman:
-      calculate: true
+      calculate: false
       warn_high_correlations: false
       threshold: 0.9
     kendall:
-      calculate: true
+      calculate: false
       warn_high_correlations: false
       threshold: 0.9
     phi_k:
-      calculate: true
+      calculate: false
       warn_high_correlations: false
       threshold: 0.9
     cramers:
-      calculate: true
+      calculate: false
       warn_high_correlations: true
       threshold: 0.9
     auto:
