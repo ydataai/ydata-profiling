@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.config &mdash; pandas-profiling 3.4.0 documentation</title>
+  <title>pandas_profiling.config &mdash; pandas-profiling dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -50,6 +50,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/comparing_datasets.html">Dataset Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -97,9 +98,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>pandas_profiling.config</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pandas_profiling.config</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -111,9 +112,9 @@
   <h1>Source code for pandas_profiling.config</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Configuration for the package.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">BaseSettings</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">BaseSettings</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">PrivateAttr</span>
 
 
 <span class="k">def</span> <span class="nf">_merge_dictionaries</span><span class="p">(</span><span class="n">dict1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">dict2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -224,7 +225,6 @@
 
 <div class="viewcode-block" id="MissingPlot"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.MissingPlot.html#pandas_profiling.config.MissingPlot">[docs]</a><span class="k">class</span> <span class="nc">MissingPlot</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="c1"># Force labels when there are &gt; 50 variables</span>
-    <span class="c1"># https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615</span>
     <span class="n">force_labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;RdBu&quot;</span></div>
 
@@ -279,9 +279,23 @@
 
 
 <div class="viewcode-block" id="Style"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.Style.html#pandas_profiling.config.Style">[docs]</a><span class="k">class</span> <span class="nc">Style</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">primary_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;#337ab7&quot;</span>
+    <span class="c1"># Primary color used for plotting and text where applicable.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">primary_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># This attribute may be deprecated in the future, please use primary_colors[0]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Primary color used for comparisons (default: blue, red, green)</span>
+    <span class="n">primary_colors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#377eb8&quot;</span><span class="p">,</span> <span class="s2">&quot;#e41a1c&quot;</span><span class="p">,</span> <span class="s2">&quot;#4daf4a&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Base64-encoded logo image</span>
     <span class="n">logo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Theme</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="c1"># HTML Theme (optional, default: None)</span>
+    <span class="n">theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Theme</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Labels used for comparing reports (private attribute)</span>
+    <span class="n">_labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">([</span><span class="s2">&quot;_&quot;</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="Html"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.Html.html#pandas_profiling.config.Html">[docs]</a><span class="k">class</span> <span class="nc">Html</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -362,7 +376,8 @@
 
 
 <div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.Report.html#pandas_profiling.config.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">precision</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span></div>
+    <span class="c1"># Numeric precision for displaying statistics</span>
+    <span class="n">precision</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span></div>
 
 
 <div class="viewcode-block" id="Settings"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings">[docs]</a><span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
@@ -395,7 +410,6 @@
     <span class="n">missing_diagrams</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s2">&quot;matrix&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;dendrogram&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s2">&quot;heatmap&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">}</span>
 
@@ -488,7 +502,6 @@
             <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="s2">&quot;matrix&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="s2">&quot;heatmap&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="s2">&quot;dendrogram&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">&quot;correlations&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;auto&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;calculate&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
@@ -503,14 +516,24 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_arg_groups</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">arg_groups</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">Config</span><span class="o">.</span><span class="n">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">shorthand_args</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">shorthand_args</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">split</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="n">shorthand_args</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">split</span><span class="p">:</span>
+            <span class="n">shorthand_args</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">Config</span><span class="o">.</span><span class="n">_shorthands</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">_shorthands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">kwargs</span></div>
+                <span class="n">shorthand_args</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">_shorthands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">split</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">split</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">shorthand_args</span><span class="p">,</span> <span class="n">kwargs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">shorthand_args</span><span class="p">,</span> <span class="p">{}</span></div>
 </pre></div>
 
            </div>

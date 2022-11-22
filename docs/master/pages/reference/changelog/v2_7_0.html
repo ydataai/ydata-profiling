@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog v2.7.0 &mdash; pandas-profiling 3.4.0 documentation</title>
+  <title>Changelog v2.7.0 &mdash; pandas-profiling dev documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -51,6 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -98,8 +99,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Changelog v2.7.0</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Changelog v2.7.0</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/pages/reference/changelog/v2_7_0.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -114,37 +115,37 @@
 <section id="features">
 <h2>🎉 Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>Reports are built in phases, see issue for details (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/421">#421</a>)</p></li>
+<li><p>Reports are built in phases, see issue for details (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/421">#421</a>)</p></li>
 <li><p>The most occurring duplicates rows are included in the report.</p></li>
 <li><p>ProfileReports can now be saved to and loaded from disk (for caching).</p></li>
 <li><p>Explicit analysis duration is added to the reproduction section of the report.</p></li>
 <li><p><strong>Doc</strong>: this version introduces documentation powered by Sphinx. The previously used pdoc3 has been adequate initially, however misses functionality and extensibility.</p></li>
-<li><p><strong>Doc</strong>: Dedicated page for large datasets is created (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/420">#420</a>).</p></li>
-<li><p><strong>Doc</strong>: The installation instructions have been extended, installation via conda would default to 1.4.1 (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/449">#449</a>, <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/448">#448</a>).</p></li>
+<li><p><strong>Doc</strong>: Dedicated page for large datasets is created (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/420">#420</a>).</p></li>
+<li><p><strong>Doc</strong>: The installation instructions have been extended, installation via conda would default to 1.4.1 (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/449">#449</a>, <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/448">#448</a>).</p></li>
 <li><p><strong>CI</strong>: Linting, building the documentation and examples and uploading the package to PyPi have been automated using git flow and Github Actions.</p></li>
 </ul>
 </section>
 <section id="bug-fixes">
 <h2>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>warnings were not shown in the “warnings” tab, but were at variable level (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/389">#389</a>).</p></li>
-<li><p>The “median absolute deviation” is now reported instead of the “mean absolute deviation” (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/453">#453</a>).</p></li>
+<li><p>warnings were not shown in the “warnings” tab, but were at variable level (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/389">#389</a>).</p></li>
+<li><p>The “median absolute deviation” is now reported instead of the “mean absolute deviation” (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/453">#453</a>).</p></li>
 <li><p>Several style-related fixes for Jupyter lab and notebooks (tables, warnings, wide images).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pd.NAN</span></code> introduced in <code class="docutils literal notranslate"><span class="pre">pandas</span></code> 1 now supported (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/437">#437</a>).</p></li>
-<li><p>The logic for calculating infinite values is now correct (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/397">#397</a>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pd.NAN</span></code> introduced in <code class="docutils literal notranslate"><span class="pre">pandas</span></code> 1 now supported (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/437">#437</a>).</p></li>
+<li><p>The logic for calculating infinite values is now correct (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/397">#397</a>).</p></li>
 </ul>
 </section>
 <section id="internal-improvements">
 <h2>👷‍♂️ Internal Improvements<a class="headerlink" href="#internal-improvements" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>The number of progress bars is reduced. The progress bars are now grouped by build phase (e.g. describing dataset, building report structure, rendering report, exporting to file).</p></li>
-<li><p>The progress bars provide more information about the current step to the user <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/434">#434</a>).</p></li>
-<li><p>Invalid correlations coefficients do not cause it to drop the complete variable anymore, instead the plot now propagates the NaN (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/417">#417</a>).</p></li>
+<li><p>The progress bars provide more information about the current step to the user <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/434">#434</a>).</p></li>
+<li><p>Invalid correlations coefficients do not cause it to drop the complete variable anymore, instead the plot now propagates the NaN (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/417">#417</a>).</p></li>
 <li><p><strong>Performance</strong>: type inference test now short-circuit, as <code class="docutils literal notranslate"><span class="pre">visions</span></code> does by default.</p></li>
 <li><p><strong>Performance</strong>: the numerical summary is optimized to use <code class="docutils literal notranslate"><span class="pre">numpy</span></code> directly, instead of slower methods provided by <code class="docutils literal notranslate"><span class="pre">pandas</span></code>.</p></li>
-<li><p><strong>Config</strong>: dynamic histogram bins are now disabled by default default for better default computational performance (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/441">#441</a>).</p></li>
+<li><p><strong>Config</strong>: dynamic histogram bins are now disabled by default default for better default computational performance (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/441">#441</a>).</p></li>
 <li><p><strong>Config</strong>: type inference to warning when date variables are processed as categorical is set to False by default for being a bottleneck for larger datasets.</p></li>
-<li><p><strong>Warn</strong>: the user is warned that the <code class="docutils literal notranslate"><span class="pre">to_widgets</span></code> does not work in Google Colab, which doesn’t support <code class="docutils literal notranslate"><span class="pre">ipywidgets</span></code> properly (<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/462">#462</a>).</p></li>
+<li><p><strong>Warn</strong>: the user is warned that the <code class="docutils literal notranslate"><span class="pre">to_widgets</span></code> does not work in Google Colab, which doesn’t support <code class="docutils literal notranslate"><span class="pre">ipywidgets</span></code> properly (<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/462">#462</a>).</p></li>
 <li><p><strong>Cln</strong>: Moved ProfileReport out of <code class="docutils literal notranslate"><span class="pre">__init__</span></code> to it’s own class file.</p></li>
 <li><p><strong>Cln</strong>: removed the <code class="docutils literal notranslate"><span class="pre">output_file</span></code> parameter form examples.</p></li>
 <li><p><strong>Cln</strong>: the HTML representation of the footer and wrapper are moved out of ProfileReport to the report structure.</p></li>

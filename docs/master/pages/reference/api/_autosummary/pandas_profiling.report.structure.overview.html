@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.report.structure.overview &mdash; pandas-profiling 3.4.0 documentation</title>
+  <title>pandas_profiling.report.structure.overview &mdash; pandas-profiling dev documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -53,6 +53,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -118,10 +119,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../api.html">API</a> &raquo;</li>
-          <li><a href="../report.html">Report</a> &raquo;</li>
-      <li>pandas_profiling.report.structure.overview</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../report.html">Report</a></li>
+      <li class="breadcrumb-item active">pandas_profiling.report.structure.overview</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/pages/reference/api/_autosummary/pandas_profiling.report.structure.overview.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -140,15 +141,10 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_alerts</span></code>(alerts)</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">rtype</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Alerts</span></code></p>
-</dd>
-</dl>
-</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_alerts</span></code>(config, alerts)</p></td>
+<td><p>Obtain the alerts for the report</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_column_definitions</span></code>(definitions)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_column_definitions</span></code>(config, ...)</p></td>
 <td><p>Generate an overview section for the variable description</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_items</span></code>(config, summary, alerts)</p></td>
@@ -162,15 +158,10 @@
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_reproduction</span></code>(summary)</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">rtype</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Renderable</span></code></p>
-</dd>
-</dl>
-</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_reproduction</span></code>(config, summary)</p></td>
+<td><p>Dataset reproduction part of the report</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_schema</span></code>(metadata)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_schema</span></code>(config, metadata)</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">rtype</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog v2.9.0rc1 &mdash; pandas-profiling 3.4.0 documentation</title>
+  <title>Changelog v2.9.0rc1 &mdash; pandas-profiling dev documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -51,6 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -98,8 +99,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Changelog v2.9.0rc1</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Changelog v2.9.0rc1</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/pages/reference/changelog/v2_9_0rc1.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -114,9 +115,9 @@
 <section id="features">
 <h2>🎉 Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>Working with sensitive data: Introduced <code class="docutils literal notranslate"><span class="pre">sensitive=True</span></code> option to mask non-aggregated data (such as samples, duplicates, frequency tables for categorical columns) [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/503">#503</a>].</p></li>
+<li><p>Working with sensitive data: Introduced <code class="docutils literal notranslate"><span class="pre">sensitive=True</span></code> option to mask non-aggregated data (such as samples, duplicates, frequency tables for categorical columns) [<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/503">#503</a>].</p></li>
 <li><p>The sample section can be parametrized with a custom sample (for instance mock data).</p></li>
-<li><p>Introduce shorthands for groups of parameters for styles and explorative mode [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/499">#499</a>].</p></li>
+<li><p>Introduce shorthands for groups of parameters for styles and explorative mode [<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/499">#499</a>].</p></li>
 <li><p>Metadata of a dataset can be added to the report (see documentation).</p></li>
 <li><p>Numeric columns now report monotonicity information.</p></li>
 <li><p>A pie chart can be generated for boolean and (low) categorical columns.</p></li>
@@ -125,9 +126,9 @@
 <section id="bug-fixes">
 <h2>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>NaT in date columns were interpreted as a date in 1680 by histograms [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/507">#507</a>].</p></li>
-<li><p>ValueError: (‘widget type not understood’, ‘select’) [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/493">#493</a>].</p></li>
-<li><p>Fixed regression in working with pandas’ nullable integers [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/502">#502</a>].</p></li>
+<li><p>NaT in date columns were interpreted as a date in 1680 by histograms [<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/507">#507</a>].</p></li>
+<li><p>ValueError: (‘widget type not understood’, ‘select’) [<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/493">#493</a>].</p></li>
+<li><p>Fixed regression in working with pandas’ nullable integers [<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/502">#502</a>].</p></li>
 <li><p>Formatting of precision of numeric values has been improved in a few places.</p></li>
 </ul>
 </section>
@@ -135,13 +136,13 @@
 <h2>👷‍♂️ Internal Improvements<a class="headerlink" href="#internal-improvements" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>Histograms used to be calculated at view time (single thread) and are now computed in parallel.</p></li>
-<li><p>Matplotlib’s rcParams are now modified through the contextmanager [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/494">#494</a>].</p></li>
+<li><p>Matplotlib’s rcParams are now modified through the contextmanager [<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/494">#494</a>].</p></li>
 </ul>
 </section>
 <section id="documentation">
 <h2>📖 Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p>Links to Colab and Binder notebooks [<a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/480">#480</a> and <a class="reference external" href="https://github.com/pandas-profiling/pandas-profiling/issues/497">#497</a>].</p></li>
+<li><p>Links to Colab and Binder notebooks [<a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/480">#480</a> and <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/497">#497</a>].</p></li>
 <li><p>The documentation for sensitive data, large datasets and metadata have been extended.</p></li>
 </ul>
 </section>

@@ -27,6 +27,20 @@ The following commands are supported:
     make clean
 
 
+Contribution quality standards
+------------------------------
+
+To guarantee a high quality of the contributed code, the project workflow validates the added modification as well as the introduced commit messages.
+The same mechanisms are used locally to find and solve existing issues before submitting a pull request.
+
+To active the local mechanisms (created using pre-commit hooks), run the following commands:
+
+.. code-block:: console
+
+    pip install -r requirements-dev.txt
+    pre-commit install --hook-type commit-msg --hook-type pre-commit
+
+
 Git workflow
 ------------
 
@@ -65,4 +79,4 @@ The community is low-threshold place to ask questions regarding development and 
 More information
 ----------------
 
-Read more on getting involved in the `Contribution Guide available on GitHub <https://github.com/pandas-profiling/pandas-profiling/blob/master/CONTRIBUTING.md>`_.
+Read more on getting involved in the `Contribution Guide available on GitHub <https://github.com/ydataai/pandas-profiling/blob/master/CONTRIBUTING.md>`_.

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.visualisation.plot &mdash; pandas-profiling 3.4.0 documentation</title>
+  <title>pandas_profiling.visualisation.plot &mdash; pandas-profiling dev documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -53,6 +53,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -117,10 +118,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../api.html">API</a> &raquo;</li>
-          <li><a href="../visualisation.html">Visualisation</a> &raquo;</li>
-      <li>pandas_profiling.visualisation.plot</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../visualisation.html">Visualisation</a></li>
+      <li class="breadcrumb-item active">pandas_profiling.visualisation.plot</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/pages/reference/api/_autosummary/pandas_profiling.visualisation.plot.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -146,6 +147,22 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlation_matrix</span></code>(config, data[, vmin])</p></td>
 <td><p>Plot image of a matrix correlation.</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_comparison_color_list</span></code>(config)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_fn</span></code>(tick_val, tick_pos)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</p></td>
+</tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cmap_half</span></code>(cmap)</p></td>
 <td><p>Get the upper half of the color map</p></td>
 </tr>
@@ -161,7 +178,16 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mini_ts_plot</span></code>(config, series)</p></td>
 <td><p>Plot an time-series plot of the data.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_acf_pacf</span></code>(config, series[, figsize])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing_bar</span></code>(data[, figsize, fontsize, ...])</p></td>
+<td><p>A bar chart visualization of the missing data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing_heatmap</span></code>(data[, figsize, fontsize, ...])</p></td>
+<td><p>Presents a <cite>seaborn</cite> heatmap visualization of missing data correlation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing_matrix</span></code>(data[, figsize, color, ...])</p></td>
+<td><p>A matrix visualization of missing data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_acf_pacf</span></code>(config, series[, figsize])</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">rtype</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -169,16 +195,16 @@
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_complex</span></code>(config, series)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_complex</span></code>(config, series)</p></td>
 <td><p>Scatter plot (or hexbin plot) from a series of complex values</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_pairwise</span></code>(config, series1, series2, ...)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_pairwise</span></code>(config, series1, series2, ...)</p></td>
 <td><p>Scatter plot (or hexbin plot) from two series</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_series</span></code>(config, series[, x_label, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_series</span></code>(config, series[, x_label, ...])</p></td>
 <td><p>Scatter plot (or hexbin plot) from one series of sequences with length 2</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeseries_heatmap</span></code>(dataframe, entity_column)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeseries_heatmap</span></code>(dataframe, entity_column)</p></td>
 <td><p>Generate a multi entity timeseries heatmap based on a pandas DataFrame.</p></td>
 </tr>
 </tbody>

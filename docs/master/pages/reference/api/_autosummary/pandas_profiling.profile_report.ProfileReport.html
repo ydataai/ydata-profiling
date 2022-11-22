@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.profile_report.ProfileReport &mdash; pandas-profiling 3.4.0 documentation</title>
+  <title>pandas_profiling.profile_report.ProfileReport &mdash; pandas-profiling dev documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -53,6 +53,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -117,10 +118,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../api.html">API</a> &raquo;</li>
-          <li><a href="../profile_report.html">Profile Report</a> &raquo;</li>
-      <li>pandas_profiling.profile_report.ProfileReport</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">API</a></li>
+          <li class="breadcrumb-item"><a href="../profile_report.html">Profile Report</a></li>
+      <li class="breadcrumb-item active">pandas_profiling.profile_report.ProfileReport</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/pages/reference/api/_autosummary/pandas_profiling.profile_report.ProfileReport.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -138,6 +139,11 @@
 <dd><p>Generate a profile report from a Dataset stored as a pandas <cite>DataFrame</cite>.</p>
 <p>Used as is, it will output its content as an HTML report in a Jupyter notebook.</p>
 <p>Generate a ProfileReport based on a pandas DataFrame</p>
+<p>Config processing order (in case of duplicate entries, entries later in the order are retained):
+- config presets (e.g. <cite>config_file</cite>, <cite>minimal</cite> arguments)
+- config groups (e.g. <cite>explorative</cite> and <cite>sensitive</cite> arguments)
+- custom settings (e.g. <cite>config</cite> argument)
+- custom settings <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs (e.g. <cite>title</cite>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -156,6 +162,11 @@
 <dt class="sig sig-object py" id="pandas_profiling.profile_report.ProfileReport.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explorative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orange_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tsmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sortby</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summarizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pandas_profiling/profile_report.html#ProfileReport.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.profile_report.ProfileReport.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a ProfileReport based on a pandas DataFrame</p>
+<p>Config processing order (in case of duplicate entries, entries later in the order are retained):
+- config presets (e.g. <cite>config_file</cite>, <cite>minimal</cite> arguments)
+- config groups (e.g. <cite>explorative</cite> and <cite>sensitive</cite> arguments)
+- custom settings (e.g. <cite>config</cite> argument)
+- custom settings <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs (e.g. <cite>title</cite>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -182,49 +193,52 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#pandas_profiling.profile_report.ProfileReport.__init__" title="pandas_profiling.profile_report.ProfileReport.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([df, minimal, explorative, ...])</p></td>
 <td><p>Generate a ProfileReport based on a pandas DataFrame</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(output_file)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare</span></code>(other)</p></td>
+<td><p>Compare this report with another ProfileReport Alias for: <code class="docutils literal notranslate"><span class="pre">`</span> <span class="pre">pandas_profiling.compare([report1,</span> <span class="pre">report2],</span> <span class="pre">_labels=[report1.config.title,</span> <span class="pre">report2.config.title]</span> <span class="pre">`</span></code> See <cite>pandas_profiling.compare</cite> for details.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code>(output_file)</p></td>
 <td><p>Dump ProfileReport to file</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dumps</span></code>()</p></td>
 <td><p>Serialize ProfileReport and return bytes for reproducing ProfileReport or Caching.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_description</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_description</span></code>()</p></td>
 <td><p>Return the description (a raw statistical summary) of the dataset.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_duplicates</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_duplicates</span></code>()</p></td>
 <td><p>Get duplicate rows and counts based on the configuration</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rejected_variables</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rejected_variables</span></code>()</p></td>
 <td><p>Get variables that are rejected for analysis (e.g.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sample</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sample</span></code>()</p></td>
 <td><p>Get head/tail samples based on the configuration</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">invalidate_cache</span></code>([subset])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">invalidate_cache</span></code>([subset])</p></td>
 <td><p>Invalidate report cache.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(load_file)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(load_file)</p></td>
 <td><p>Load ProfileReport from file</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(data)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loads</span></code>(data)</p></td>
 <td><p>Deserialize the serialized report</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_expectation_suite</span></code>([suite_name, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_expectation_suite</span></code>([suite_name, ...])</p></td>
 <td><p>All parameters default to True to make it easier to access the full functionality of Great Expectations out of the box. :type suite_name: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>] :param suite_name: The name of your expectation suite :type data_context: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>] :param data_context: A user-specified data context :type save_suite: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> :param save_suite: Boolean to determine whether to save the suite to .json as part of the method :type run_validation: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> :param run_validation: Boolean to determine whether to run validation as part of the method :type build_data_docs: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> :param build_data_docs: Boolean to determine whether to build data docs, save the .html file, and open data docs in                         your browser :type handler: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Handler</span></code>] :param handler: The handler to use for building expectation.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_file</span></code>(output_file[, silent])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_file</span></code>(output_file[, silent])</p></td>
 <td><p>Write the report to a file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_html</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_html</span></code>()</p></td>
 <td><p>Generate and return complete template as lengthy string</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code>()</p></td>
 <td><p>Represent the ProfileReport as a JSON string</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_notebook_iframe</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_notebook_iframe</span></code>()</p></td>
 <td><p>Used to output the HTML representation to a Jupyter notebook.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_widgets</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_widgets</span></code>()</p></td>
 <td><p>The ipython notebook widgets user interface.</p></td>
 </tr>
 </tbody>

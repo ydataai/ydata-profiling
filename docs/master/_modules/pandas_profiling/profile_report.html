@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.profile_report &mdash; pandas-profiling 3.4.0 documentation</title>
+  <title>pandas_profiling.profile_report &mdash; pandas-profiling dev documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -50,6 +50,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/comparing_datasets.html">Dataset Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -97,9 +98,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>pandas_profiling.profile_report</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pandas_profiling.profile_report</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -119,6 +120,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">typeguard</span> <span class="kn">import</span> <span class="n">typechecked</span>
 <span class="kn">from</span> <span class="nn">visions</span> <span class="kn">import</span> <span class="n">VisionsTypeset</span>
 
 <span class="kn">from</span> <span class="nn">pandas_profiling.config</span> <span class="kn">import</span> <span class="n">Config</span><span class="p">,</span> <span class="n">Settings</span>
@@ -143,7 +145,8 @@
 <span class="kn">from</span> <span class="nn">pandas_profiling.utils.paths</span> <span class="kn">import</span> <span class="n">get_config</span>
 
 
-<div class="viewcode-block" id="ProfileReport"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport">[docs]</a><span class="k">class</span> <span class="nc">ProfileReport</span><span class="p">(</span><span class="n">SerializeReport</span><span class="p">,</span> <span class="n">ExpectationsReport</span><span class="p">):</span>
+<div class="viewcode-block" id="ProfileReport"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport">[docs]</a><span class="nd">@typechecked</span>
+<span class="k">class</span> <span class="nc">ProfileReport</span><span class="p">(</span><span class="n">SerializeReport</span><span class="p">,</span> <span class="n">ExpectationsReport</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate a profile report from a Dataset stored as a pandas `DataFrame`.</span>
 
 <span class="sd">    Used as is, it will output its content as an HTML report in a Jupyter notebook.</span>
@@ -176,6 +179,12 @@
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate a ProfileReport based on a pandas DataFrame</span>
 
+<span class="sd">        Config processing order (in case of duplicate entries, entries later in the order are retained):</span>
+<span class="sd">        - config presets (e.g. `config_file`, `minimal` arguments)</span>
+<span class="sd">        - config groups (e.g. `explorative` and `sensitive` arguments)</span>
+<span class="sd">        - custom settings (e.g. `config` argument)</span>
+<span class="sd">        - custom settings **kwargs (e.g. `title`)</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            df: the pandas DataFrame</span>
 <span class="sd">            minimal: minimal mode is a default configuration with minimal computation</span>
@@ -190,8 +199,6 @@
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lazy</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can init a not-lazy ProfileReport with no DataFrame&quot;</span><span class="p">)</span>
 
-        <span class="n">report_config</span><span class="p">:</span> <span class="n">Settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">config</span>
-
         <span class="k">if</span> <span class="n">config_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">minimal</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Arguments `config_file` and `minimal` are mutually exclusive.&quot;</span>
@@ -204,21 +211,41 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">report_config</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">report_config</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">explorative</span><span class="p">:</span>
-            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">get_arg_groups</span><span class="p">(</span><span class="s2">&quot;explorative&quot;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">sensitive</span><span class="p">:</span>
-            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">get_arg_groups</span><span class="p">(</span><span class="s2">&quot;sensitive&quot;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">dark_mode</span><span class="p">:</span>
-            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">get_arg_groups</span><span class="p">(</span><span class="s2">&quot;dark_mode&quot;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">orange_mode</span><span class="p">:</span>
-            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">get_arg_groups</span><span class="p">(</span><span class="s2">&quot;orange_mode&quot;</span><span class="p">))</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">explorative</span><span class="p">,</span> <span class="s2">&quot;explorative&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">sensitive</span><span class="p">,</span> <span class="s2">&quot;sensitive&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">dark_mode</span><span class="p">,</span> <span class="s2">&quot;dark_mode&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">orange_mode</span><span class="p">,</span> <span class="s2">&quot;orange_mode&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">condition</span> <span class="k">for</span> <span class="n">condition</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">):</span>
+            <span class="n">cfg</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">condition</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
+                    <span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">get_arg_groups</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="n">report_config</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">report_config</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">shorthands</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">report_config</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">Settings</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">shorthands</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">report_config</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+            <span class="n">report_config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">_labels</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="n">report_config</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="n">tsmode</span>
         <span class="k">if</span> <span class="n">tsmode</span> <span class="ow">and</span> <span class="n">sortby</span><span class="p">:</span>
             <span class="n">report_config</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">sortby</span> <span class="o">=</span> <span class="n">sortby</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">report_config</span> <span class="o">=</span> <span class="n">report_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Config</span><span class="o">.</span><span class="n">shorthands</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__initialize_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">report_config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">report_config</span>
@@ -324,6 +351,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Renderable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;n&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;n&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Widgets interface not (yet) supported for comparing reports, please use the HTML rendering.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_widgets</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span>
@@ -366,8 +401,6 @@
 
     <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">silent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Write the report to a file.</span>
-
-<span class="sd">        By default a name is generated.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            output_file: The name or the path of the file to generate including the extension (.html, .json).</span>
@@ -425,7 +458,7 @@
                 <span class="n">offline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">use_local_assets</span><span class="p">,</span>
                 <span class="n">inline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">inline</span><span class="p">,</span>
                 <span class="n">assets_prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">assets_prefix</span><span class="p">,</span>
-                <span class="n">primary_color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">primary_color</span><span class="p">,</span>
+                <span class="n">primary_color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">primary_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">logo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">logo</span><span class="p">,</span>
                 <span class="n">theme</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span>
                 <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;analysis&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
@@ -550,7 +583,25 @@
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Override so that Jupyter Notebook does not print the object.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Compare this report with another ProfileReport</span>
+<span class="sd">        Alias for:</span>
+<span class="sd">        ```</span>
+<span class="sd">        pandas_profiling.compare([report1, report2], _labels=[report1.config.title, report2.config.title]</span>
+<span class="sd">        ```</span>
+<span class="sd">        See `pandas_profiling.compare` for details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other: the ProfileReport to compare to</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Comparison ProfileReport</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">pandas_profiling.compare_reports</span> <span class="kn">import</span> <span class="n">compare</span>
+
+        <span class="k">return</span> <span class="n">compare</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
 </pre></div>
 
            </div>
