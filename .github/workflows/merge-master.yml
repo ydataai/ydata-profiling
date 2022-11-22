@@ -24,7 +24,7 @@ jobs:
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
 
-    - uses: cycjimmy/semantic-release-action@v2
+    - uses: cycjimmy/semantic-release-action@v3
       id: semantic
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
