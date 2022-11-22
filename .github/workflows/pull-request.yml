@@ -6,6 +6,7 @@ on:
 
 jobs:
   commitlint:
+    if: github.actor != 'dependabot[bot]'
     name: Lint commit message
     runs-on: ubuntu-latest
 
@@ -17,6 +18,7 @@ jobs:
     - uses: wagoid/commitlint-github-action@v5
 
   lint:
+    if: github.actor != 'dependabot[bot]'
     name: Lint source code
     runs-on: ubuntu-latest
 
