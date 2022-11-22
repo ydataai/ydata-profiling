@@ -9,6 +9,7 @@ on:
 
 jobs:
   commitlint:
+    if: github.actor != 'dependabot[bot]'
     name: Lint commit message
     runs-on: ubuntu-latest
 
