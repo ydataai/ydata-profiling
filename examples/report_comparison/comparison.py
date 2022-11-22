@@ -3,7 +3,6 @@ import pandas as pd
 from pandas_profiling import ProfileReport
 from pandas_profiling.utils.cache import cache_file
 
-
 if __name__ == "__main__":
     # Read the Titanic Dataset
     file_name = cache_file(
