@@ -50,6 +50,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
+        token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Calculate changelog path
       id: path
@@ -71,11 +72,11 @@ jobs:
     - name: Add changelog to docs
       run: |
         cd docsrc/source/pages/reference
-        sed -i -e 's/# \[.*/# Changelog ${{ needs.prepare.outputs.release }}/g' \
-            -e 's/## Bug Fixes/## 🐛 Bug fixes/g' \
-            -e 's/## Features/## 🎉 Features/g' \
-            -e 's/## BREAKING CHANGES/## 🚨 Breaking changes/g' \
-            -e 's/## Documentation/## 📖 Documentation/g' \
+        sed -i -e 's/## \[.*/### Changelog ${{ needs.prepare.outputs.release }}/g' \
+            -e 's/### Bug Fixes/#### 🐛 Bug fixes/g' \
+            -e 's/### Features/#### 🎉 Features/g' \
+            -e 's/### BREAKING CHANGES/#### 🚨 Breaking changes/g' \
+            -e 's/### Documentation/#### 📖 Documentation/g' \
             changelog/${{ steps.path.outputs.value }}
 
         grep -q ".. include:: changelog/${{ steps.path.outputs.value }}" changelog.rst || sed -i "4 a\\
@@ -101,7 +102,6 @@ jobs:
       with:
         branch: ${{ github.ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
-        force: true
    
 
   prerelease-tag:
