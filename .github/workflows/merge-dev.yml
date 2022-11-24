@@ -25,8 +25,8 @@ jobs:
       uses: oprypin/find-latest-tag@v1.1.1
       with:
         repository: ${{ github.repository }}
-        regex: '^\d+\.\d+\.\d+'
-        releases-only: false
+        regex: '^v\d+\.\d+\.\d+'
+        releases-only: true
 
     - name: Extract semantic version
       id: semantic
