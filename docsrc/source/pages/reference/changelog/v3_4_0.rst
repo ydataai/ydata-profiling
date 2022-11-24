@@ -1,8 +1,8 @@
 Changelog v3.4.0
-================
+----------------
 
 🐛 Bug fixes
------------
+^^^^^^^^^^^^
 
 -  correlation passing extra parameters
    (`#1114 <https://github.com/ydataai/pandas-profiling/issues/1114>`__)
@@ -29,7 +29,7 @@ Changelog v3.4.0
    (`985fbd1 <https://github.com/ydataai/pandas-profiling/commit/985fbd1fc0e826bda3ac1b725fa8842013743ab3>`__)
 
 🎉 Features
-----------
+^^^^^^^^^^^^
 
 -  add support for Pandas 1.5
    (`#1076 <https://github.com/ydataai/pandas-profiling/issues/1076>`__)
