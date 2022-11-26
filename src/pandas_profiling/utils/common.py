@@ -92,8 +92,7 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
 
 def is_datetime(text: str) -> bool:
     try:
-        parse_datetime(text)
-    except:
+        parse_datetime(text, fuzzy=False)
+        return True
+    except ValueError:
         return False
-
-    return True
