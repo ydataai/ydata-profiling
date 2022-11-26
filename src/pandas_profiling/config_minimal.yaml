@@ -74,7 +74,7 @@ vars:
     url:
         active: false
     timeseries:
-        active: false
+        active: null
         autocorrelation: 0.7
         lags: [1, 7, 12, 24, 30]
         significance: 0.05
