@@ -92,7 +92,7 @@ class UrlVars(BaseModel):
 
 
 class TimeseriesVars(BaseModel):
-    active: bool = False
+    active: Optional[bool] = None
     sortby: Optional[str] = None
     autocorrelation: float = 0.7
     lags: List[int] = [1, 7, 12, 24, 30]
