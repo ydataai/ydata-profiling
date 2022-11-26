@@ -2,6 +2,7 @@
 import collections.abc
 import zipfile
 from datetime import datetime, timedelta
+from dateutil.parser import parse as parse_datetime
 
 # Monkeypatch bug in imagehdr
 from imghdr import tests
@@ -88,3 +89,10 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
         return datetime.fromtimestamp(timestamp)
     else:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
+
+def is_datetime(text: str) -> bool:
+    try:
+        parse_datetime(text, fuzzy=False)
+        return True
+    except ValueError:
+        return False
