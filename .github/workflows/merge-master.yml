@@ -121,6 +121,7 @@ jobs:
         tag: ${{ needs.prepare.outputs.version }}
         message: ${{  github.event.head_commit.message }}
 
+
   draft-release:
     if: needs.prepare.outputs.new_release == 'true'
 

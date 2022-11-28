@@ -2,7 +2,7 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, Tuple
 
 import numpy as np
 import pandas as pd
@@ -29,6 +29,7 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from pandas_profiling.serialize_report import SerializeReport
+from pandas_profiling.utils.common import is_datetime
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
@@ -55,7 +56,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         sensitive: bool = False,
         dark_mode: bool = False,
         orange_mode: bool = False,
-        tsmode: bool = False,
+        tsmode: Optional[bool] = None,
         sortby: Optional[str] = None,
         sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
@@ -131,9 +132,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if kwargs:
             report_config = report_config.update(kwargs)
 
+        if tsmode is None:
+            tsmode, sortby = self.__guess_timeframe(df)
+
         report_config.vars.timeseries.active = tsmode
-        if tsmode and sortby:
-            report_config.vars.timeseries.sortby = sortby
+        report_config.vars.timeseries.sortby = sortby
 
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
@@ -160,6 +163,18 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             )
         else:
             return df
+
+    @staticmethod
+    def __guess_timeframe(df: pd.DataFrame) -> Tuple[bool, Optional[str]]:
+        if len(df) > 10:
+            df = df.head().append(df.tail())
+
+        for i in df.values:
+            for x, j in enumerate(i):
+                if is_datetime(str(j)):
+                    return True, df.columns[x]
+
+        return False, None
 
     def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.
