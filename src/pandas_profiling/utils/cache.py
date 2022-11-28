@@ -1,7 +1,6 @@
 """Dataset cache utility functions"""
 import zipfile
 from pathlib import Path
-
 from urllib import request
 
 from pandas_profiling.utils.paths import get_data_path
