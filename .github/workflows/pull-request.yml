@@ -6,7 +6,7 @@ on:
 
 jobs:
   lint:
-    if: github.actor != 'dependabot[bot]'
+    if: github.actor != 'renovate[bot]'
     name: Lint source code
     runs-on: ubuntu-latest
 
