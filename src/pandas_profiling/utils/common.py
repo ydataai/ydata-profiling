@@ -1,6 +1,7 @@
 """Common util functions (e.g. missing in Python)."""
 import collections.abc
 import zipfile
+import re
 from datetime import datetime, timedelta
 
 # Monkeypatch bug in imagehdr
@@ -88,3 +89,9 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
         return datetime.fromtimestamp(timestamp)
     else:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
+
+def is_datetime(text: str) -> bool:
+    return re.fullmatch(
+        r"(\d{1,2}[.:]\d{1,2}\s+)?(\d{2,4}[/.\-:]\d{2}[/.\-:]\d{2,4})"
+        r"(\s+\d{1,2}[.:]\d{1,2})?", text
+        ) is not None
