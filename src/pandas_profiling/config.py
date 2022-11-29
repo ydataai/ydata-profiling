@@ -303,11 +303,6 @@ class Settings(BaseSettings):
 
     correlations: Dict[str, Correlation] = {
         "auto": Correlation(key="auto"),
-        "spearman": Correlation(key="spearman"),
-        "pearson": Correlation(key="pearson"),
-        "kendall": Correlation(key="kendall"),
-        "cramers": Correlation(key="cramers"),
-        "phi_k": Correlation(key="phi_k"),
     }
 
     interactions: Interactions = Interactions()
