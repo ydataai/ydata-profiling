@@ -342,9 +342,7 @@ def scatter_pairwise(
 
 
 def _plot_stacked_barh(
-    data: pd.Series,
-    colors: List,
-    hide_legend: bool = False
+    data: pd.Series, colors: List, hide_legend: bool = False
 ) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
     """Plot a stacked horizontal bar chart to show category frequency.
     Works for boolean and categorical features.
@@ -403,9 +401,7 @@ def _plot_stacked_barh(
 
 
 def _plot_pie_chart(
-    data: pd.Series,
-    colors: List,
-    hide_legend: bool = False
+    data: pd.Series, colors: List, hide_legend: bool = False
 ) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
     """Plot a pie chart to show category frequency.
     Works for boolean and categorical features.
@@ -485,9 +481,13 @@ def cat_frequency_plot(
     if plot_type == "bar":
         if isinstance(data, list):
             for v in data:
-                plot, legend = _plot_stacked_barh(v, colors, hide_legend=config.vars.cat.redact)
+                plot, legend = _plot_stacked_barh(
+                    v, colors, hide_legend=config.vars.cat.redact
+                )
         else:
-            plot, legend = _plot_stacked_barh(data, colors, hide_legend=config.vars.cat.redact)
+            plot, legend = _plot_stacked_barh(
+                data, colors, hide_legend=config.vars.cat.redact
+            )
 
     elif plot_type == "pie":
         plot, legend = _plot_pie_chart(data, colors, hide_legend=config.vars.cat.redact)
