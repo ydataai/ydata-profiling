@@ -2,7 +2,9 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip();
 });
 
-$("a[href^='#'].anchor").on('click', function (e) {
+$("a").not("[href^='#']").attr('target', '_blank');
+
+$("a[href^='#']").not("[role='tab']").on('click', function (e) {
 
     // prevent default anchor click behavior
     e.preventDefault();
