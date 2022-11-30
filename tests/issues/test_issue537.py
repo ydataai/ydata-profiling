@@ -25,7 +25,7 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-import requests
+from urllib import request
 
 from pandas_profiling.model.summary import describe_1d
 
@@ -56,9 +56,11 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
     """
 
     def download_and_process_data():
-        response = requests.get("https://ndownloader.figshare.com/files/5976042")
-        assert response.status_code == 200
-        file = decompress(response.content)
+        response = request.urlopen("https://ndownloader.figshare.com/files/5976042")
+        # TODO: 'urllib.response.addinfourl.code' is deprecated since Python 3.9,
+        # use 'urllib.response.addinfourl.status' instead on next dependency bump
+        assert response.code == 200
+        file = decompress(response.read())
         text = file.decode()
         split_text = [i.split(",") for i in filter(lambda x: x, text.split("\n"))]
         dt = [

@@ -6,7 +6,7 @@ import sys
 
 import pandas as pd
 import pytest
-import requests
+from urllib.error import URLError, HTTPError
 
 from pandas_profiling import ProfileReport
 from pandas_profiling.utils.cache import cache_zipped_file
@@ -19,7 +19,7 @@ def df():
             "bank-full.csv",
             "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank.zip",
         )
-    except (requests.exceptions.ConnectionError, FileNotFoundError):
+    except (URLError, HTTPError):
         return
 
     # Download the UCI Bank Marketing Dataset
