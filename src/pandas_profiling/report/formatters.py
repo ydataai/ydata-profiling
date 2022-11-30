@@ -315,7 +315,7 @@ def help(title: str, url: Optional[str] = None) -> str:
         HTML formatted help badge
     """
     if url is not None:
-        return f'<a title="{title}" href="{url}" target="_blank"><span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span></a>'
+        return f'<a title="{title}" href="{url}"><span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span></a>'
     else:
         return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
 
