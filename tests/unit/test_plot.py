@@ -45,28 +45,38 @@ def dataframe() -> pd.DataFrame:
 
 # Unit tests
 @pytest.mark.parametrize("data", [dummy_bool_data, dummy_cat_data], ids=ids)
-def test_plot_stacked_barh(data):
+@pytest.mark.parametrize("hide_legend", [False, True])
+def test_plot_stacked_barh(data, hide_legend):
     default_colors = rcParams["axes.prop_cycle"].by_key()["color"]  # careful max is 10
 
     ax, legend = _plot_stacked_barh(
         data=data,
         colors=default_colors[: len(data)],
+        hide_legend=hide_legend
     )
     assert issubclass(type(ax), Axes)  # test that a matplotlib plot is returned
-    assert issubclass(type(legend), Legend)
+    if hide_legend:
+        assert legend is None
+    else:
+        assert issubclass(type(legend), Legend)
     close(ax.get_figure())
 
 
 @pytest.mark.parametrize("data", [dummy_bool_data, dummy_cat_data], ids=ids)
-def test_plot_pie_chart(data):
+@pytest.mark.parametrize("hide_legend", [False, True])
+def test_plot_pie_chart(data, hide_legend):
     default_colors = rcParams["axes.prop_cycle"].by_key()["color"]  # careful max is 10
 
     ax, legend = _plot_pie_chart(
         data=data,
         colors=default_colors[: len(data)],
+        hide_legend=hide_legend
     )
     assert issubclass(type(ax), Axes)  # test that a matplotlib plot is returned
-    assert issubclass(type(legend), Legend)
+    if hide_legend:
+        assert legend is None
+    else:
+        assert issubclass(type(legend), Legend)
     close(ax.get_figure())
 
 
