@@ -50,9 +50,7 @@ def test_plot_stacked_barh(data, hide_legend):
     default_colors = rcParams["axes.prop_cycle"].by_key()["color"]  # careful max is 10
 
     ax, legend = _plot_stacked_barh(
-        data=data,
-        colors=default_colors[: len(data)],
-        hide_legend=hide_legend
+        data=data, colors=default_colors[: len(data)], hide_legend=hide_legend
     )
     assert issubclass(type(ax), Axes)  # test that a matplotlib plot is returned
     if hide_legend:
@@ -68,9 +66,7 @@ def test_plot_pie_chart(data, hide_legend):
     default_colors = rcParams["axes.prop_cycle"].by_key()["color"]  # careful max is 10
 
     ax, legend = _plot_pie_chart(
-        data=data,
-        colors=default_colors[: len(data)],
-        hide_legend=hide_legend
+        data=data, colors=default_colors[: len(data)], hide_legend=hide_legend
     )
     assert issubclass(type(ax), Axes)  # test that a matplotlib plot is returned
     if hide_legend:
