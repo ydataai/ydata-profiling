@@ -477,7 +477,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """Compare this report with another ProfileReport
         Alias for:
         ```
-        pandas_profiling.compare([report1, report2], _labels=[report1.config.title, report2.config.title]
+        pandas_profiling.compare([report1, report2], config=config)
         ```
         See `pandas_profiling.compare` for details.
 
