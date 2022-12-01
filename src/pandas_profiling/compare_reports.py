@@ -114,16 +114,22 @@ def _compare_title(titles: List[str]) -> str:
 
 def _compare_profile_report_preprocess(
     reports: List[ProfileReport],
+    config: Optional[Settings] = None,
 ) -> Tuple[List[str], List[dict]]:
     # Use titles as labels
     labels = [report.config.title for report in reports]
 
     # Use color per report if not custom set
-    if len(reports[0].config.html.style.primary_colors) > 1:
-        for idx, report in enumerate(reports):
-            report.config.html.style.primary_colors = [
-                report.config.html.style.primary_colors[idx]
-            ]
+    if config is None:
+        if len(reports[0].config.html.style.primary_colors) > 1:
+            for idx, report in enumerate(reports):
+                report.config.html.style.primary_colors = [
+                    report.config.html.style.primary_colors[idx]
+                ]
+    else:
+        if len(config.html.style.primary_colors) > 1:
+            for idx, report in enumerate(reports):
+                report.config.html.style.primary_colors = config.html.style.primary_colors
 
     # Obtain description sets
     descriptions = [report.get_description() for report in reports]
@@ -183,19 +189,19 @@ def compare(
     for report in reports[1:]:
         cols_2_compare = [col for col in base_features if col in report.df.columns]  # type: ignore
         report.df = report.df.loc[:, cols_2_compare]  # type: ignore
-
     reports = [r for r in reports if not r.df.empty]  # type: ignore
     if len(reports) == 1:
         return reports[0]
-
     if config is None:
         config = Settings()
+    else:
+        config = config.copy()
 
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
         # Consider using TypeGuard (3.10): https://docs.python.org/3/library/typing.html#typing.TypeGuard
         _update_titles(reports)
-        labels, descriptions = _compare_profile_report_preprocess(reports)  # type: ignore
+        labels, descriptions = _compare_profile_report_preprocess(reports, config)  # type: ignore
     elif all(isinstance(report, dict) for report in reports):
         labels, descriptions = _compare_dataset_description_preprocess(reports)  # type: ignore
     else:
