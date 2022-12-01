@@ -473,7 +473,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
 
-    def compare(self, other: "ProfileReport", config: Optional[Settings] = None) -> "ProfileReport":
+    def compare(
+        self, other: "ProfileReport", config: Optional[Settings] = None
+    ) -> "ProfileReport":
         """Compare this report with another ProfileReport
         Alias for:
         ```
