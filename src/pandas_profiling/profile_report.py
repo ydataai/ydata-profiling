@@ -473,20 +473,21 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """Override so that Jupyter Notebook does not print the object."""
         return ""
 
-    def compare(self, other: "ProfileReport") -> "ProfileReport":
+    def compare(self, other: "ProfileReport", config: Optional[Settings] = None) -> "ProfileReport":
         """Compare this report with another ProfileReport
         Alias for:
         ```
-        pandas_profiling.compare([report1, report2], _labels=[report1.config.title, report2.config.title]
+        pandas_profiling.compare([report1, report2], config=config)
         ```
         See `pandas_profiling.compare` for details.
 
         Args:
             other: the ProfileReport to compare to
+            config: the settings object for the merged ProfileReport. If `None`, uses the caller's config
 
         Returns:
             Comparison ProfileReport
         """
         from pandas_profiling.compare_reports import compare
 
-        return compare([self, other])
+        return compare([self, other], config if config is not None else self.config)
