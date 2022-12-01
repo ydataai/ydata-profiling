@@ -129,7 +129,9 @@ def _compare_profile_report_preprocess(
     else:
         if len(config.html.style.primary_colors) > 1:
             for idx, report in enumerate(reports):
-                report.config.html.style.primary_colors = config.html.style.primary_colors
+                report.config.html.style.primary_colors = (
+                    config.html.style.primary_colors
+                )
 
     # Obtain description sets
     descriptions = [report.get_description() for report in reports]
