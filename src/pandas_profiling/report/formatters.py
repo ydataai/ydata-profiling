@@ -85,8 +85,6 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
     Returns:
         The percentage with 1 point precision.
     """
-    if not (1.0 >= value >= 0.0):
-        raise ValueError(f"Value '{value}' should be a ratio between 1 and 0.")
     if edge_cases and round(value, 3) == 0 and value > 0:
         return "< 0.1%"
     if edge_cases and round(value, 3) == 1 and value < 1:
