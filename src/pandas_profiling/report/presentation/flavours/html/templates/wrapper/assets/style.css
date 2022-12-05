@@ -273,7 +273,7 @@ a.anchor-pos-variable{
 #sample-container, #duplicate-container {
     overflow: auto;
     width: 100%;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 #correlation-table-container {
