@@ -25,6 +25,9 @@ from pandas_profiling.report.presentation.flavours.widget.variable import Widget
 from pandas_profiling.report.presentation.flavours.widget.variable_info import (
     WidgetVariableInfo,
 )
+from pandas_profiling.report.presentation.flavours.widget.correlation_table import (
+    WidgetCorrelationTable,
+)
 
 __all__ = [
     "WidgetCollapse",
@@ -42,4 +45,5 @@ __all__ = [
     "WidgetVariable",
     "WidgetVariableInfo",
     "WidgetAlerts",
+    "WidgetCorrelationTable",
 ]

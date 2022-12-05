@@ -305,6 +305,8 @@ class Settings(BaseSettings):
         "auto": Correlation(key="auto"),
     }
 
+    correlation_table: bool = True
+
     interactions: Interactions = Interactions()
 
     categorical_maximum_correlation_distinct: int = 100
@@ -394,6 +396,7 @@ class Config:
             "phi_k": {"calculate": False},
             "cramers": {"calculate": False},
         },
+        "correlation_table": True,
     }
 
     @staticmethod
