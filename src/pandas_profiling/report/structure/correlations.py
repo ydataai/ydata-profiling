@@ -7,6 +7,7 @@ from pandas_profiling.report.presentation.core import (
     Container,
     Image,
     ToggleButton,
+    CorrelationTable,
 )
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
@@ -59,7 +60,6 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
                             The auto setting is an interpretable pairwise 
                                 column metric of the following mapping:
                         <ul>
-                            <li>  Variable_type-Variable_type : Method, <strong> Range </strong> <br /> </li> 
                             <li> Categorical-Categorical     : Cramer's V, <strong> [0,1] </strong> <br /> </li> 
                             <li> Numerical-Categorical       : Cramer's V, <strong> [0,1] </strong> (using a discretized numerical column) <br /> </li> 
                             <li> Numerical-Numerical         : Spearman's ρ, <strong> [-1,1] </strong> <br /> </li> 
@@ -83,7 +83,6 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
         vmin, name, description = key_to_data[key]
 
         if isinstance(item, list):
-            cont: List[Renderable] = []
             diagrams: List[Renderable] = []
             for idx, i in enumerate(item):
                 diagram: Renderable = Image(
@@ -103,18 +102,42 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
                 name=name,
             )
 
-            tbl = Container(
+            diagrams_with_desc = Container(
                 diagrams + [desc],
-                anchor_id=key,
-                name=name,
+                anchor_id=f"{key}_diagram_with_desc",
+                name="Heatmap" if config.correlation_table else name,
                 sequence_type="batch_grid",
                 batch_size=len(config.html.style._labels) + 1,
             )
-            cont.append(tbl)
 
-            items.append(
-                Container(cont, anchor_id=key, name=name, sequence_type="grid")
-            )
+            if config.correlation_table:
+                tables: List[Renderable] = []
+                for idx, i in enumerate(item):
+                    table = CorrelationTable(
+                        name=config.html.style._labels[idx],
+                        correlation_matrix=i, 
+                        anchor_id=f"{key}_table"
+                    )
+                    tables.append(table)
+                
+                tables_tab = Container(
+                    tables,
+                    anchor_id=f"{key}_tables",
+                    name="Table",
+                    sequence_type="batch_grid",
+                    batch_size=len(config.html.style._labels),
+                )
+                
+                diagrams_tables_tab = Container(
+                        [diagrams_with_desc, tables_tab], 
+                        anchor_id=f"{key}_diagram_table", 
+                        name=name, 
+                        sequence_type="tabs"
+                    )
+                
+                items.append(diagrams_tables_tab)
+            else:
+                items.append(diagrams_with_desc)
         else:
             diagram = Image(
                 plot.correlation_matrix(config, item, vmin=vmin),
@@ -125,26 +148,42 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
                 classes="correlation-diagram",
             )
 
-            if len(description) > 0:
-                desc = HTML(
-                    f'<div style="padding:20px" class="text-muted"><h3>{name}</h3>{description}</div>',
-                    anchor_id=f"{key}_html",
-                    classes="correlation-description",
+            desc = HTML(
+                f'<div style="padding:20px" class="text-muted"><h3>{name}</h3>{description}</div>',
+                anchor_id=f"{key}_html",
+                classes="correlation-description",
+            )
+
+            diagram_with_desc = Container(
+                [diagram, desc], 
+                anchor_id=f"{key}_diagram_with_desc", 
+                name="Heatmap" if config.correlation_table else name, 
+                sequence_type="grid"
+            )
+            
+            if config.correlation_table:
+                table = CorrelationTable(
+                    name="Table", 
+                    correlation_matrix=item, 
+                    anchor_id=f"{key}_table"
                 )
 
-                tbl = Container(
-                    [diagram, desc], anchor_id=key, name=name, sequence_type="grid"
-                )
-
-                items.append(tbl)
+                diagram_table_tabs = Container(
+                        [diagram_with_desc, table], 
+                        anchor_id=f"{key}_diagram_table", 
+                        name=name, 
+                        sequence_type="tabs"
+                    )
+                
+                items.append(diagram_table_tabs)
             else:
-                items.append(diagram)
+                items.append(diagram_with_desc)
 
     corr = Container(
         items,
         sequence_type="tabs",
         name="Correlations Tab",
-        anchor_id="correlations_tab",
+        anchor_id="correlations_tab"
     )
 
     if len(items) > 0:

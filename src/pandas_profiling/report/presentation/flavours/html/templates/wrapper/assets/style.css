@@ -18,7 +18,7 @@ body {
     border-top: hidden;
 }
 
-.row.spacing{
+.row.spacing, [id^=correlations_tab] {
     padding: 2em 1em;
 }
 
@@ -72,11 +72,11 @@ table.example_values {
 }
 
 /* STATS */
-table.stats, table.sample, table.duplicate{
+table.stats, table.sample, table.duplicate, table.correlation-table{
     border: 0;
 }
 
-.stats tr, .sample tr, .duplicate tr {
+.stats tr, .sample tr, .duplicate tr, .correlation-table tr {
     border: 0;
 }
 
@@ -96,27 +96,26 @@ table.stats, table.sample, table.duplicate{
 
 
 /* Sample table */
-table.sample, table.duplicate{
+table.sample, table.duplicate, table.correlation-table {
     margin-bottom: 2em;
     margin-left: 1em;
 }
 
-.sample td, .sample th, .duplicate td, .duplicate th {
+.sample td, .sample th, .duplicate td, .duplicate th, .correlation-table td, .correlation-table th {
     padding: 0.5em;
     white-space: nowrap;
     border: 0;
 
 }
 
-.sample thead, .duplicate thead {
+.sample thead, .duplicate thead, .correlation-table thead {
     border-top: 0;
     border-bottom: 2px solid #ddd;
 }
 
 .sample td, .duplicate td {
     width: 100%;
-}
-
+} 
 
 /* There is no good solution available to make the divs equal height and then center ... */
 .histogram {
@@ -266,10 +265,10 @@ a.anchor-pos-variable{
     /*top: -70px;*/
 }
 
-#sample-container, #duplicate-container{
+#sample-container, #duplicate-container, #correlation-table-container {
     overflow: auto;
     width: 100%;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 #overview-content td, #overview-content th{
