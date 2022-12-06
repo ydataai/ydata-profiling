@@ -248,7 +248,7 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
                     if alert.alert_type != AlertType.REJECTED
                 ]
             )
-        
+
         return Alerts(
             alerts=combined_alerts,
             name=f"Alerts ({count})",
