@@ -195,12 +195,7 @@ def compare(
     if len(reports) == 1:
         return reports[0]
 
-    _config = None
-    if config is None:
-        _config = Settings()
-    else:
-        _config = config.copy()
-
+    _config = Settings() if config is None else config.copy()
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
         # Consider using TypeGuard (3.10): https://docs.python.org/3/library/typing.html#typing.TypeGuard
