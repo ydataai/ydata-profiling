@@ -24,9 +24,6 @@ from pandas_profiling.report.presentation.flavours.html.variable import HTMLVari
 from pandas_profiling.report.presentation.flavours.html.variable_info import (
     HTMLVariableInfo,
 )
-from pandas_profiling.report.presentation.flavours.html.correlation_table import (
-    HTMLCorrelationTable,
-)
 
 __all__ = [
     "HTMLCollapse",

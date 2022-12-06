@@ -53,11 +53,13 @@ def test_standard_report_with_correlation_table():
         assert isinstance(diagram, Image)
 
 
+
 def test_standard_report_without_correlation_table():
     report = generate_report(correlation_table=False)
     renderable = get_correlation_items(report.config, report.description_set)
     for diagram in renderable.content["items"]:
         assert isinstance(diagram, Image)
+
 
 
 def test_compare_report_with_correlation_table():
