@@ -273,7 +273,12 @@ a.anchor-pos-variable{
 #sample-container, #duplicate-container {
     overflow: auto;
     width: 100%;
-    overflow: hidden;
+    overflow-y: hidden;
+}
+
+#correlation-table-container {
+    max-height: 400px;
+    overflow: auto;
 }
 
 #correlation-table-container {
