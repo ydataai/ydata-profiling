@@ -15,6 +15,9 @@ from pandas_profiling.report.presentation.core.table import Table
 from pandas_profiling.report.presentation.core.toggle_button import ToggleButton
 from pandas_profiling.report.presentation.core.variable import Variable
 from pandas_profiling.report.presentation.core.variable_info import VariableInfo
+from pandas_profiling.report.presentation.core.correlation_table import (
+    CorrelationTable,
+)
 
 __all__ = [
     "Collapse",
@@ -32,4 +35,5 @@ __all__ = [
     "Variable",
     "VariableInfo",
     "Alerts",
+    "CorrelationTable",
 ]
