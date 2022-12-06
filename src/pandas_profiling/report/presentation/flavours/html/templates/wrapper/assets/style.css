@@ -71,6 +71,10 @@ table.example_values {
     color: #555;
 }
 
+table.correlation-table {
+    width: 98%  /* To avoid an unnecessary overflow. */
+}
+
 /* STATS */
 table.stats, table.sample, table.duplicate, table.correlation-table{
     border: 0;
@@ -265,10 +269,15 @@ a.anchor-pos-variable{
     /*top: -70px;*/
 }
 
-#sample-container, #duplicate-container, #correlation-table-container {
+#sample-container, #duplicate-container {
     overflow: auto;
     width: 100%;
-    overflow: hidden;
+    overflow-y: hidden;
+}
+
+#correlation-table-container {
+    max-height: 400px;
+    overflow: auto;
 }
 
 #overview-content td, #overview-content th{
