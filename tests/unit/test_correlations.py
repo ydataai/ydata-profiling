@@ -1,13 +1,11 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pytest
+
 from pandas_profiling import ProfileReport
+from pandas_profiling.report.presentation.core import HTML, CorrelationTable, Image
 from pandas_profiling.report.structure.correlations import get_correlation_items
-from pandas_profiling.report.presentation.core import (
-    HTML,
-    Image,
-    CorrelationTable,
-)
+
 
 @pytest.mark.skip
 def generate_df(n: int):
@@ -15,10 +13,15 @@ def generate_df(n: int):
         {
             "num_int": np.random.randint(0, 20, n),
             "num_float": 100 * np.random.normal(0, 0.1, n),
-            "cat_str": np.random.choice(a=["CAT_A", "CAT_B", "CAT_C"], size=n, p=[0.5, 0.3, 0.2]),
-            "cat_int": np.random.choice(a=[1, 2, 5, 10], size=n, p=[0.4, 0.3, 0.2, 0.1])
+            "cat_str": np.random.choice(
+                a=["CAT_A", "CAT_B", "CAT_C"], size=n, p=[0.5, 0.3, 0.2]
+            ),
+            "cat_int": np.random.choice(
+                a=[1, 2, 5, 10], size=n, p=[0.4, 0.3, 0.2, 0.1]
+            ),
         }
     )
+
 
 @pytest.mark.skip
 def generate_report(correlation_table: bool):
@@ -33,9 +36,13 @@ def generate_report(correlation_table: bool):
         "cramers": {"calculate": True},
     }
 
-    return ProfileReport(df, title="Profiling Report", 
-        correlations=correlations, 
-        correlation_table=correlation_table)
+    return ProfileReport(
+        df,
+        title="Profiling Report",
+        correlations=correlations,
+        correlation_table=correlation_table,
+    )
+
 
 def test_standard_report_with_correlation_table():
     report = generate_report(correlation_table=True)
@@ -47,6 +54,7 @@ def test_standard_report_with_correlation_table():
         assert isinstance(diagram, Image)
         assert isinstance(description, HTML)
 
+
 def test_standard_report_without_correlation_table():
     report = generate_report(correlation_table=False)
     renderable = get_correlation_items(report.config, report.description_set)
@@ -54,6 +62,7 @@ def test_standard_report_without_correlation_table():
         diagram, description = cor_item.content["items"]
         assert isinstance(diagram, Image)
         assert isinstance(description, HTML)
+
 
 def test_compare_report_with_correlation_table():
     report1 = generate_report(correlation_table=True)
@@ -68,6 +77,7 @@ def test_compare_report_with_correlation_table():
         assert isinstance(description, HTML)
         for diagram in diagrams_with_desc.content["items"]:
             assert isinstance(diagram, Image)
+
 
 def test_compare_report_without_correlation_table():
     report1 = generate_report(correlation_table=False)
