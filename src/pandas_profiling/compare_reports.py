@@ -194,7 +194,7 @@ def compare(
     reports = [r for r in reports if not r.df.empty]  # type: ignore
     if len(reports) == 1:
         return reports[0]
-    
+
     _config = None
     if config is None:
         _config = Settings()
