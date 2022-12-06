@@ -228,8 +228,9 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
 
         # Initialize
         combined_alerts = {
-            f"{alert.alert_type}_{alert.column_name}": 
-                [None for _ in range(len(alerts))]
+            f"{alert.alert_type}_{alert.column_name}": [
+                None for _ in range(len(alerts))
+            ]
             for report_alerts in alerts
             for alert in report_alerts
         }
@@ -247,7 +248,7 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
                     if alert.alert_type != AlertType.REJECTED
                 ]
             )
-        
+
         return Alerts(
             alerts=combined_alerts,
             name=f"Alerts ({count})",
