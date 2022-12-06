@@ -23,6 +23,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Alerts,
         Collapse,
         Container,
+        CorrelationTable,
         Dropdown,
         Duplicate,
         FrequencyTable,
@@ -34,13 +35,13 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         ToggleButton,
         Variable,
         VariableInfo,
-        CorrelationTable,
     )
     from pandas_profiling.report.presentation.flavours.html import (
         HTMLHTML,
         HTMLAlerts,
         HTMLCollapse,
         HTMLContainer,
+        HTMLCorrelationTable,
         HTMLDropdown,
         HTMLDuplicate,
         HTMLFrequencyTable,
@@ -52,7 +53,6 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         HTMLToggleButton,
         HTMLVariable,
         HTMLVariableInfo,
-        HTMLCorrelationTable,
     )
 
     return {
@@ -95,6 +95,7 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Alerts,
         Collapse,
         Container,
+        CorrelationTable,
         Dropdown,
         Duplicate,
         FrequencyTable,
@@ -106,12 +107,12 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         ToggleButton,
         Variable,
         VariableInfo,
-        CorrelationTable,
     )
     from pandas_profiling.report.presentation.flavours.widget import (
         WidgetAlerts,
         WidgetCollapse,
         WidgetContainer,
+        WidgetCorrelationTable,
         WidgetDropdown,
         WidgetDuplicate,
         WidgetFrequencyTable,
@@ -124,7 +125,6 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         WidgetToggleButton,
         WidgetVariable,
         WidgetVariableInfo,
-        WidgetCorrelationTable,
     )
 
     return {

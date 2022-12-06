@@ -3,6 +3,9 @@ from pandas_profiling.report.presentation.flavours.widget.collapse import Widget
 from pandas_profiling.report.presentation.flavours.widget.container import (
     WidgetContainer,
 )
+from pandas_profiling.report.presentation.flavours.widget.correlation_table import (
+    WidgetCorrelationTable,
+)
 from pandas_profiling.report.presentation.flavours.widget.dropdown import WidgetDropdown
 from pandas_profiling.report.presentation.flavours.widget.duplicate import (
     WidgetDuplicate,
@@ -24,9 +27,6 @@ from pandas_profiling.report.presentation.flavours.widget.toggle_button import (
 from pandas_profiling.report.presentation.flavours.widget.variable import WidgetVariable
 from pandas_profiling.report.presentation.flavours.widget.variable_info import (
     WidgetVariableInfo,
-)
-from pandas_profiling.report.presentation.flavours.widget.correlation_table import (
-    WidgetCorrelationTable,
 )
 
 __all__ = [
