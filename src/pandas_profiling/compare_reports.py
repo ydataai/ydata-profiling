@@ -194,22 +194,24 @@ def compare(
     reports = [r for r in reports if not r.df.empty]  # type: ignore
     if len(reports) == 1:
         return reports[0]
+    
+    _config = None
     if config is None:
-        config = Settings()
+        _config = Settings()
     else:
-        config = config.copy()
+        _config = config.copy()
 
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
         # Consider using TypeGuard (3.10): https://docs.python.org/3/library/typing.html#typing.TypeGuard
         _update_titles(reports)
-        labels, descriptions = _compare_profile_report_preprocess(reports, config)  # type: ignore
+        labels, descriptions = _compare_profile_report_preprocess(reports, _config)  # type: ignore
     elif all(isinstance(report, dict) for report in reports):
         labels, descriptions = _compare_dataset_description_preprocess(reports)  # type: ignore
     else:
         raise TypeError("")
 
-    config.html.style._labels = labels
+    _config.html.style._labels = labels
 
     _placeholders(*descriptions)
 
@@ -219,6 +221,6 @@ def compare(
 
     res["analysis"]["title"] = _compare_title(res["analysis"]["title"])
 
-    profile = ProfileReport(None, config=config)
+    profile = ProfileReport(None, config=_config)
     profile._description_set = res
     return profile
