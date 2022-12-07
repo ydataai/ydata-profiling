@@ -105,7 +105,7 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
 
                 items.append(diagram_table_tabs)
             else:
-                items.append(diagram_with_desc)
+                items.append(diagram)
 
     corr = Container(
         items,
