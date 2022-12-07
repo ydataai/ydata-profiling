@@ -47,21 +47,17 @@ def generate_report(correlation_table: bool):
 def test_standard_report_with_correlation_table():
     report = generate_report(correlation_table=True)
     renderable = get_correlation_items(report.config, report.description_set)
-    for cor_item in renderable.content["item"].content["items"]:
-        diagram_with_desc, table = cor_item.content["items"]
+    for cor_item in renderable.content["items"]:
+        diagram, table = cor_item.content["items"]
         assert isinstance(table, CorrelationTable)
-        diagram, description = diagram_with_desc.content["items"]
         assert isinstance(diagram, Image)
-        assert isinstance(description, HTML)
 
 
 def test_standard_report_without_correlation_table():
     report = generate_report(correlation_table=False)
     renderable = get_correlation_items(report.config, report.description_set)
-    for cor_item in renderable.content["item"].content["items"]:
-        diagram, description = cor_item.content["items"]
+    for diagram in renderable.content["items"]:
         assert isinstance(diagram, Image)
-        assert isinstance(description, HTML)
 
 
 def test_compare_report_with_correlation_table():
@@ -69,13 +65,11 @@ def test_compare_report_with_correlation_table():
     report2 = generate_report(correlation_table=True)
     comp_report = report1.compare(report2)
     renderable = get_correlation_items(comp_report.config, comp_report.description_set)
-    for cor_items in renderable.content["item"].content["items"]:
-        diagrams_with_desc, tables = cor_items.content["items"]
+    for cor_items in renderable.content["items"]:
+        diagrams, tables = cor_items.content["items"]
         for table in tables.content["items"]:
             assert isinstance(table, CorrelationTable)
-        description = diagrams_with_desc.content["items"].pop()
-        assert isinstance(description, HTML)
-        for diagram in diagrams_with_desc.content["items"]:
+        for diagram in diagrams.content["items"]:
             assert isinstance(diagram, Image)
 
 
@@ -84,8 +78,6 @@ def test_compare_report_without_correlation_table():
     report2 = generate_report(correlation_table=False)
     comp_report = report1.compare(report2)
     renderable = get_correlation_items(comp_report.config, comp_report.description_set)
-    for cor_items in renderable.content["item"].content["items"]:
-        description = cor_items.content["items"].pop()
-        assert isinstance(description, HTML)
+    for cor_items in renderable.content["items"]:
         for diagram in cor_items.content["items"]:
             assert isinstance(diagram, Image)
