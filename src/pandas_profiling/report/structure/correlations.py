@@ -1,11 +1,7 @@
 from typing import List, Optional
 
 from pandas_profiling.config import Settings
-from pandas_profiling.report.presentation.core import (
-    Container,
-    CorrelationTable,
-    Image,
-)
+from pandas_profiling.report.presentation.core import Container, CorrelationTable, Image
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
 
