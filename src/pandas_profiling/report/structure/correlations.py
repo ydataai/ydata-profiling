@@ -2,11 +2,9 @@ from typing import List, Optional
 
 from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.core import (
-    HTML,
-    Collapse,
     Container,
+    CorrelationTable,
     Image,
-    ToggleButton,
 )
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
@@ -24,66 +22,21 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
     """
     items: List[Renderable] = []
 
-    pearson_description = (
-        "The Pearson's correlation coefficient (<em>r</em>) is a measure of linear correlation "
-        "between two variables. It's value lies between -1 and +1, -1 indicating total negative "
-        "linear correlation, 0 indicating no linear correlation and 1 indicating total positive "
-        "linear correlation. Furthermore, <em>r</em> is invariant under separate changes in location "
-        "and scale of the two variables, implying that for a linear function the angle to the "
-        "x-axis does not affect <em>r</em>.<br /><br />To calculate <em>r</em> for two "
-        "variables <em>X</em> and <em>Y</em>, one divides the covariance of <em>X</em> and "
-        "<em>Y</em> by the product of their standard deviations. "
-    )
-    spearman_description = """The Spearman's rank correlation coefficient (<em>ρ</em>) is a measure of monotonic 
-    correlation between two variables, and is therefore better in catching nonlinear monotonic correlations than 
-    Pearson's <em>r</em>. It's value lies between -1 and +1, -1 indicating total negative monotonic correlation, 
-    0 indicating no monotonic correlation and 1 indicating total positive monotonic correlation.<br /><br />To 
-    calculate <em>ρ</em> for two variables <em>X</em> and <em>Y</em>, one divides the covariance of the rank 
-    variables of <em>X</em> and <em>Y</em> by the product of their standard deviations. """
-
-    kendall_description = """Similarly to Spearman's rank correlation coefficient, the Kendall rank correlation 
-    coefficient (<em>τ</em>) measures ordinal association between two variables. It's value lies between -1 and +1, 
-    -1 indicating total negative correlation, 0 indicating no correlation and 1 indicating total positive correlation.
-    <br /><br />To calculate <em>τ</em> for two variables <em>X</em> and <em>Y</em>, one determines the number of 
-    concordant and discordant pairs of observations. <em>τ</em> is given by the number of concordant pairs minus the 
-    discordant pairs divided by the total number of pairs."""
-
-    phi_k_description = """Phik (φk) is a new and practical correlation coefficient that works consistently between categorical, ordinal and interval variables, captures non-linear dependency and reverts to the Pearson correlation coefficient in case
-    of a bivariate normal input distribution. There is extensive documentation available <a href='https://phik.readthedocs.io/en/latest/index.html'>here</a>."""
-
-    cramers_description = """Cramér's V is an association measure for nominal random variables. The coefficient ranges from 0 to 1, with 0 indicating independence and 1 indicating perfect association.
-    The empirical estimators used for Cramér's V have been proved to be biased, even for large samples.
-    We use a bias-corrected measure that has been proposed by Bergsma in 2013 that can be found <a href='http://stats.lse.ac.uk/bergsma/pdf/cramerV3.pdf'>here</a>."""
-
-    auto_description = """
-                            The auto setting is an interpretable pairwise 
-                                column metric of the following mapping:
-                        <ul>
-                            <li>  Variable_type-Variable_type : Method, <strong> Range </strong> <br /> </li> 
-                            <li> Categorical-Categorical     : Cramer's V, <strong> [0,1] </strong> <br /> </li> 
-                            <li> Numerical-Categorical       : Cramer's V, <strong> [0,1] </strong> (using a discretized numerical column) <br /> </li> 
-                            <li> Numerical-Numerical         : Spearman's ρ, <strong> [-1,1] </strong> <br /> </li> 
-                        </ul>
-                        The number of bins used in the discretization for the Numerical-Categorical column pair can be changed
-                        using config.correlations["auto"].n_bins. The number of bins affects the granularity of the association you wish to measure. <br><br>
-                        This configuration uses the recommended metric for each pair of columns."""
-
     key_to_data = {
-        "pearson": (-1, "Pearson's r", pearson_description),
-        "spearman": (-1, "Spearman's ρ", spearman_description),
-        "kendall": (-1, "Kendall's τ", kendall_description),
-        "phi_k": (0, "Phik (φk)", phi_k_description),
-        "cramers": (0, "Cramér's V (φc)", cramers_description),
-        "auto": (-1, "Auto", auto_description),
+        "pearson": (-1, "Pearson's r"),
+        "spearman": (-1, "Spearman's ρ"),
+        "kendall": (-1, "Kendall's τ"),
+        "phi_k": (0, "Phik (φk)"),
+        "cramers": (0, "Cramér's V (φc)"),
+        "auto": (-1, "Auto"),
     }
 
     image_format = config.plot.image_format
 
     for key, item in summary["correlations"].items():
-        vmin, name, description = key_to_data[key]
+        vmin, name = key_to_data[key]
 
         if isinstance(item, list):
-            cont: List[Renderable] = []
             diagrams: List[Renderable] = []
             for idx, i in enumerate(item):
                 diagram: Renderable = Image(
@@ -96,66 +49,76 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
                 )
                 diagrams.append(diagram)
 
-            desc = HTML(
-                f'<div style="padding:20px" class="text-muted">{description}</div>',
-                anchor_id=f"{key}_html",
-                classes="correlation-description",
-                name=name,
-            )
-
-            tbl = Container(
-                diagrams + [desc],
-                anchor_id=key,
-                name=name,
+            diagrams_grid = Container(
+                diagrams,
+                anchor_id=f"{key}_diagram_with_desc",
+                name="Heatmap" if config.correlation_table else name,
                 sequence_type="batch_grid",
-                batch_size=len(config.html.style._labels) + 1,
+                batch_size=len(config.html.style._labels),
             )
-            cont.append(tbl)
 
-            items.append(
-                Container(cont, anchor_id=key, name=name, sequence_type="grid")
-            )
+            if config.correlation_table:
+                tables: List[Renderable] = []
+                for idx, i in enumerate(item):
+                    table = CorrelationTable(
+                        name=config.html.style._labels[idx],
+                        correlation_matrix=i,
+                        anchor_id=f"{key}_table",
+                    )
+                    tables.append(table)
+
+                tables_tab = Container(
+                    tables,
+                    anchor_id=f"{key}_tables",
+                    name="Table",
+                    sequence_type="batch_grid",
+                    batch_size=len(config.html.style._labels),
+                )
+
+                diagrams_tables_tab = Container(
+                    [diagrams_grid, tables_tab],
+                    anchor_id=f"{key}_diagram_table",
+                    name=name,
+                    sequence_type="tabs",
+                )
+
+                items.append(diagrams_tables_tab)
+            else:
+                items.append(diagrams_grid)
         else:
             diagram = Image(
                 plot.correlation_matrix(config, item, vmin=vmin),
                 image_format=image_format,
                 alt=name,
                 anchor_id=f"{key}_diagram",
-                name=name,
+                name="Heatmap" if config.correlation_table else name,
                 classes="correlation-diagram",
             )
 
-            if len(description) > 0:
-                desc = HTML(
-                    f'<div style="padding:20px" class="text-muted"><h3>{name}</h3>{description}</div>',
-                    anchor_id=f"{key}_html",
-                    classes="correlation-description",
+            if config.correlation_table:
+                table = CorrelationTable(
+                    name="Table", correlation_matrix=item, anchor_id=f"{key}_table"
                 )
 
-                tbl = Container(
-                    [diagram, desc], anchor_id=key, name=name, sequence_type="grid"
+                diagram_table_tabs = Container(
+                    [diagram, table],
+                    anchor_id=f"{key}_diagram_table",
+                    name=name,
+                    sequence_type="tabs",
                 )
 
-                items.append(tbl)
+                items.append(diagram_table_tabs)
             else:
                 items.append(diagram)
 
     corr = Container(
         items,
         sequence_type="tabs",
-        name="Correlations Tab",
+        name="Correlations",
         anchor_id="correlations_tab",
     )
 
     if len(items) > 0:
-        btn = ToggleButton(
-            "Show correlation descriptions",
-            anchor_id="toggle-correlation-description",
-            name="Show correlation descriptions",
-        )
+        return corr
 
-        return Collapse(
-            name="Correlations", anchor_id="correlations", button=btn, item=corr
-        )
-    else:
-        return None
+    return None

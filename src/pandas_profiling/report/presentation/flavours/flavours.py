@@ -23,6 +23,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Alerts,
         Collapse,
         Container,
+        CorrelationTable,
         Dropdown,
         Duplicate,
         FrequencyTable,
@@ -40,6 +41,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         HTMLAlerts,
         HTMLCollapse,
         HTMLContainer,
+        HTMLCorrelationTable,
         HTMLDropdown,
         HTMLDuplicate,
         HTMLFrequencyTable,
@@ -69,6 +71,7 @@ def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Sample: HTMLSample,
         ToggleButton: HTMLToggleButton,
         Collapse: HTMLCollapse,
+        CorrelationTable: HTMLCorrelationTable,
     }
 
 
@@ -92,6 +95,7 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Alerts,
         Collapse,
         Container,
+        CorrelationTable,
         Dropdown,
         Duplicate,
         FrequencyTable,
@@ -108,6 +112,7 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         WidgetAlerts,
         WidgetCollapse,
         WidgetContainer,
+        WidgetCorrelationTable,
         WidgetDropdown,
         WidgetDuplicate,
         WidgetFrequencyTable,
@@ -138,6 +143,7 @@ def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
         Sample: WidgetSample,
         ToggleButton: WidgetToggleButton,
         Collapse: WidgetCollapse,
+        CorrelationTable: WidgetCorrelationTable,
     }
 
 

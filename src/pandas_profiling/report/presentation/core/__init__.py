@@ -1,6 +1,7 @@
 from pandas_profiling.report.presentation.core.alerts import Alerts
 from pandas_profiling.report.presentation.core.collapse import Collapse
 from pandas_profiling.report.presentation.core.container import Container
+from pandas_profiling.report.presentation.core.correlation_table import CorrelationTable
 from pandas_profiling.report.presentation.core.dropdown import Dropdown
 from pandas_profiling.report.presentation.core.duplicate import Duplicate
 from pandas_profiling.report.presentation.core.frequency_table import FrequencyTable
@@ -32,4 +33,5 @@ __all__ = [
     "Variable",
     "VariableInfo",
     "Alerts",
+    "CorrelationTable",
 ]
