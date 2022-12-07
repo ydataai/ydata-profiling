@@ -18,7 +18,7 @@ body {
     border-top: hidden;
 }
 
-.row.spacing, [id^=correlations_tab] {
+.row.spacing {
     padding: 2em 1em;
 }
 
@@ -249,6 +249,7 @@ table.freq.mini {
 }
 .img-responsive{
     max-width: 99%;
+    min-width: 99%;
 }
 .footer-text{
     padding:20px;
