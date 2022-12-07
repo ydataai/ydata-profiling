@@ -25,6 +25,7 @@ class WidgetAlerts(Alerts):
             "truncated": "info",
             "missing": "info",
             "skewed": "info",
+            "imbalance": "info",
             "high_correlation": "",
             "duplicates": "",
             "empty": "",
