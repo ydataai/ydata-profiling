@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from pandas_profiling import ProfileReport
-from pandas_profiling.report.presentation.core import HTML, CorrelationTable, Image
+from pandas_profiling.report.presentation.core import CorrelationTable, Image
 from pandas_profiling.report.structure.correlations import get_correlation_items
 
 
