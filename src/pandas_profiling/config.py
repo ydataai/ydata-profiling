@@ -48,6 +48,7 @@ class CatVars(BaseModel):
     characters: bool = True
     words: bool = True
     cardinality_threshold: int = 50
+    imbalance_threshold: float = 0.5
     n_obs: int = 5
     # Set to zero to disable
     chi_squared_threshold: float = 0.999
@@ -59,6 +60,7 @@ class CatVars(BaseModel):
 
 class BoolVars(BaseModel):
     n_obs: int = 3
+    imbalance_threshold: float = 0.5
 
     # string to boolean mapping dict
     mappings: Dict[str, bool] = {

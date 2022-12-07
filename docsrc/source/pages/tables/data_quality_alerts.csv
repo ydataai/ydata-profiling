@@ -3,6 +3,7 @@
 "``Zeros``","Column only contains zeros"
 "``High Correlation``","Correlations (either Spearman, Cramer, Pearson, Kendall, 𝜙k) are above the warning threshold (configurable)."
 "``High Cardinality``","Whether the column has more than 50 distinct values. Threshold is configurable."
+"``Imbalance``","Column is highly imbalanced. Threshold is configurable."
 "``Skewness``","Column's univariate distribution presents skewness. Threshold value is configurable."
 "``Missing Values``","Column has missing values"
 "``Infinite Values``","Column has infinite values (either ``np.inf`` or ``-np.inf``)"

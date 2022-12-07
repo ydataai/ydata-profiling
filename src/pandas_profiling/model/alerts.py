@@ -35,6 +35,9 @@ class AlertType(Enum):
     SKEWED = auto()
     """This variable is highly skewed."""
 
+    IMBALANCE = auto()
+    """This variable is imbalanced."""
+
     MISSING = auto()
     """This variable contains missing values."""
 
@@ -224,6 +227,33 @@ def categorical_alerts(config: Settings, summary: dict) -> List[Alert]:
             )
         )
 
+    # Imbalance
+    if (
+        "imbalance" in summary
+        and summary["imbalance"] > config.vars.cat.imbalance_threshold
+    ):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.IMBALANCE,
+                fields={"imbalance"},
+            )
+        )
+    return alerts
+
+
+def boolean_alerts(config: Settings, summary: dict) -> List[Alert]:
+    alerts = []
+    # Imbalance
+    if (
+        "imbalance" in summary
+        and summary["imbalance"] > config.vars.bool.imbalance_threshold
+    ):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.IMBALANCE,
+                fields={"imbalance"},
+            )
+        )
     return alerts
 
 
@@ -302,6 +332,8 @@ def check_variable_alerts(config: Settings, col: str, description: dict) -> List
             alerts += numeric_alerts(config, description)
         if description["type"] == "TimeSeries":
             alerts += timeseries_alerts(config, description)
+        if description["type"] == "Boolean":
+            alerts += boolean_alerts(config, description)
 
     for idx in range(len(alerts)):
         alerts[idx].column_name = col
