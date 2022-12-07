@@ -10,6 +10,7 @@ class HTMLAlerts(Alerts):
             "type_date": "warning",
             "constant_length": "primary",
             "high_cardinality": "primary",
+            "imbalance": "primary",
             "unique": "primary",
             "uniform": "primary",
             "infinite": "info",
