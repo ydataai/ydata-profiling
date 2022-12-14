@@ -19,10 +19,11 @@
                 {% for idx in range(n_labels) %}
                     <td valign="top" width="{{ 100 / n_labels }}%">
                         {% if alerts[idx] | length > 0 %}
+                            <p>
                             {% for alert in alerts[idx] %}
-                                <code>{{ alert }}</code>
-                                <br />
+                                <code>{{ alert }}</code>&nbsp
                             {% endfor %}
+                            </p>
                         {% else %}
                             <em>No alerts</em>
                         {% endif %}
@@ -33,10 +34,11 @@
         </table>
     {% else %}
         {% if alerts | length > 0 %}
+            <p>
             {% for alert in alerts %}
-                <code>{{ alert }}</code>
-                <br />
+                <code>{{ alert }}</code>&nbsp
             {% endfor %}
+            </p>
         {% else %}
             <em>No alerts</em>
         {% endif %}
