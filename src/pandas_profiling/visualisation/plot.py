@@ -55,11 +55,7 @@ def _plot_histogram(
             )
         else:
             fig, ax = plt.subplots(
-                nrows=1,
-                ncols=n_labels,
-                sharex=True,
-                sharey=True,
-                figsize=figsize
+                nrows=1, ncols=n_labels, sharex=True, sharey=True, figsize=figsize
             )
 
         for idx in range(n_labels):
