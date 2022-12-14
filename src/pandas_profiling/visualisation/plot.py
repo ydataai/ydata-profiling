@@ -31,6 +31,7 @@ def _plot_histogram(
     figsize: tuple = (6, 4),
     date: bool = False,
     hide_yaxis: bool = False,
+    v_oriented: bool = True,
 ) -> plt.Figure:
     """Plot a histogram from the data and return the AxesSubplot object.
 
@@ -40,6 +41,7 @@ def _plot_histogram(
         bins: number of bins (int for equal size, ndarray for variable size)
         figsize: The size of the figure (width, height) in inches, default (6,4)
         date: is the x-axis of date type
+        v_oriented: display the histograms on the vertical
 
     Returns:
         The histogram plot.
@@ -47,9 +49,18 @@ def _plot_histogram(
     # we have precomputed the histograms...
     if isinstance(bins, list):
         n_labels = len(config.html.style._labels)
-        fig, ax = plt.subplots(
-            nrows=n_labels, ncols=1, sharex=True, sharey=True, figsize=(6, 6)
-        )
+        if v_oriented:
+            fig, ax = plt.subplots(
+                nrows=n_labels, ncols=1, sharex=True, sharey=True, figsize=figsize
+            )
+        else:
+            fig, ax = plt.subplots(
+                nrows=1,
+                ncols=n_labels,
+                sharex=True,
+                sharey=True,
+                figsize=figsize
+            )
 
         for idx in range(n_labels):
             plot = ax[idx]
@@ -120,7 +131,9 @@ def histogram(
       The resulting histogram encoded as a string.
 
     """
-    plot = _plot_histogram(config, series, bins, date=date)
+    plot = _plot_histogram(
+        config, series, bins, date=date, figsize=(7, 3), v_oriented=False
+    )
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
     return plot_360_n0sc0pe(config)
