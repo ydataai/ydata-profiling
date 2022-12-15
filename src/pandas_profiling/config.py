@@ -340,7 +340,7 @@ class Settings(BaseSettings):
         """Create a Settings object from a yaml file.
 
         Args:
-            config_file: yaml file path 
+            config_file: yaml file path
         Returns:
             Settings
         """
