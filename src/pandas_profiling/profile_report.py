@@ -6,7 +6,6 @@ from typing import Any, Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
-import yaml
 from tqdm.auto import tqdm
 from typeguard import typechecked
 from visions import VisionsTypeset
@@ -96,10 +95,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             if not config_file:
                 config_file = get_config("config_minimal.yaml")
 
-            with open(config_file) as f:
-                data = yaml.safe_load(f)
-
-            report_config = Settings().parse_obj(data)
+            report_config = Settings().from_file(config_file)
         else:
             report_config = Settings()
 
