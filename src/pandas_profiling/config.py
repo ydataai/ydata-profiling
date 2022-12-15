@@ -334,7 +334,7 @@ class Settings(BaseSettings):
     def update(self, updates: dict) -> "Settings":
         update = _merge_dictionaries(self.dict(), updates)
         return self.parse_obj(self.copy(update=update))
-    
+
     @staticmethod
     def from_file(config_file: str) -> "Settings":
         with open(config_file) as f:
