@@ -2,6 +2,7 @@
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
+import yaml
 from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
 
 
@@ -333,6 +334,20 @@ class Settings(BaseSettings):
     def update(self, updates: dict) -> "Settings":
         update = _merge_dictionaries(self.dict(), updates)
         return self.parse_obj(self.copy(update=update))
+
+    @staticmethod
+    def from_file(config_file: str) -> "Settings":
+        """Create a Settings object from a yaml file.
+
+        Args:
+            config_file: yaml file path 
+        Returns:
+            Settings
+        """
+        with open(config_file) as f:
+            data = yaml.safe_load(f)
+
+        return Settings().parse_obj(data)
 
 
 class Config:
