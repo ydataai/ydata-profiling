@@ -337,6 +337,13 @@ class Settings(BaseSettings):
 
     @staticmethod
     def from_file(config_file: str) -> "Settings":
+        """Create a Settings object from a yaml file.
+
+        Args:
+            config_file: yaml file path 
+        Returns:
+            Settings
+        """
         with open(config_file) as f:
             data = yaml.safe_load(f)
 
