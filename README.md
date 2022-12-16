@@ -14,7 +14,7 @@
 <p align="center">
   <a href="https://pandas-profiling.ydata.ai/docs/master/">Documentation</a>
   |
-  <a href="https://slack.datacentricai.community/">Slack</a>
+  <a href="https://discord.com/invite/mw7xjJ7b7s">Discord</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
   |
@@ -226,7 +226,7 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
 - [GitHub Issues](https://github.com/ydataai/pandas-profiling/issues): bugs, proposals for changes, feature requests
-- [Slack](https://slack.datacentricai.community): general chat, questions, collaborations
+- [Discord](https://discord.com/invite/mw7xjJ7b7s): general chat, questions, collaborations
 - [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
 
 > ❗ Before reporting an issue on GitHub, check out [Common Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
@@ -235,4 +235,4 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 
 Learn how to get involved in the [Contribution Guide](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
 
-A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Slack](https://slack.datacentricai.community).
+A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://discord.com/invite/mw7xjJ7b7s).
