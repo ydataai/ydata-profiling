@@ -3,7 +3,7 @@ from typing import Any, List, Optional, Tuple, Union
 
 import pandas as pd
 
-from pandas_profiling.config import Settings
+from pandas_profiling.config import Correlation, Settings
 from pandas_profiling.profile_report import ProfileReport
 
 
@@ -184,6 +184,42 @@ def validate_reports(
         )
 
 
+def _apply_config(description: dict, config: Settings) -> dict:
+    """Apply the configuration for visualilzation purposes.
+
+    This handles the cases in which the report description
+    was computed prior to comparison with a different config
+
+    Args:
+        description: report summary
+        config: the settings object for the ProfileReport
+
+    Returns:
+        the updated description
+    """
+    description["missing"] = {
+        k: v for k, v in description["missing"].items() if config.missing_diagrams[k]
+    }
+
+    description["correlations"] = {
+        k: v
+        for k, v in description["correlations"].items()
+        if config.correlations.get(k, Correlation(calculate=False).calculate)
+    }
+
+    samples = [config.samples.head, config.samples.tail, config.samples.random]
+    samples = [s > 0 for s in samples]
+    description["sample"] = description["sample"] if any(samples) else []
+    description["duplicates"] = (
+        description["duplicates"] if config.duplicates.head > 0 else [None, None]
+    )
+    description["scatter"] = (
+        description["scatter"] if config.interactions.continuous else {}
+    )
+
+    return description
+
+
 def compare(
     reports: List[ProfileReport],
     config: Optional[Settings] = None,
@@ -207,7 +243,7 @@ def compare(
         return reports[0]
 
     if config is None:
-        _config = Settings()    
+        _config = Settings()
     else:
         _config = config.copy()
         for report in reports:
@@ -236,5 +272,5 @@ def compare(
     res["analysis"]["title"] = _compare_title(res["analysis"]["title"])
 
     profile = ProfileReport(None, config=_config)
-    profile._description_set = res
+    profile._description_set = _apply_config(res, _config)
     return profile
