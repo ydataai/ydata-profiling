@@ -148,18 +148,14 @@ def _compare_dataset_description_preprocess(
     return labels, reports
 
 
-def compare(
+def validate_reports(
     reports: List[ProfileReport],
-    config: Optional[Settings] = None,
-) -> ProfileReport:
-    """
-    Compare Profile reports
+) -> None:
+    """Validate if the reports are comparable.
 
     Args:
         reports: two reports to compare
                  input may either be a ProfileReport, or the summary obtained from report.get_description()
-        config: the settings object for the merged ProfileReport
-
     """
     if len(reports) < 2:
         raise ValueError("At least two reports are required for this comparison")
@@ -173,7 +169,7 @@ def compare(
     report_types = [r.config.vars.timeseries.active for r in reports]
     if all(report_types) != any(report_types):
         raise ValueError(
-            "Comparison between timeseries and tabular reports is not supported"
+            "Comparison between timeseries and tabular reports is not supported."
         )
 
     is_df_available = [r.df is not None for r in reports]
@@ -187,6 +183,21 @@ def compare(
             "Only the left side profile will be calculated."
         )
 
+
+def compare(
+    reports: List[ProfileReport],
+    config: Optional[Settings] = None,
+) -> ProfileReport:
+    """
+    Compare Profile reports
+
+    Args:
+        reports: two reports to compare
+                 input may either be a ProfileReport, or the summary obtained from report.get_description()
+        config: the settings object for the merged ProfileReport
+
+    """
+    validate_reports(reports)
     base_features = reports[0].df.columns  # type: ignore
     for report in reports[1:]:
         cols_2_compare = [col for col in base_features if col in report.df.columns]  # type: ignore
@@ -195,7 +206,15 @@ def compare(
     if len(reports) == 1:
         return reports[0]
 
-    _config = Settings() if config is None else config.copy()
+    if config is None:
+        _config = Settings()    
+    else:
+        _config = config.copy()
+        for report in reports:
+            title = report.config.title
+            report.config = config.copy()
+            report.config.title = title
+
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
         # Consider using TypeGuard (3.10): https://docs.python.org/3/library/typing.html#typing.TypeGuard
