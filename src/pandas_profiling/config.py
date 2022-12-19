@@ -1,6 +1,7 @@
 """Configuration for the package."""
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import yaml
 from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
@@ -336,7 +337,7 @@ class Settings(BaseSettings):
         return self.parse_obj(self.copy(update=update))
 
     @staticmethod
-    def from_file(config_file: str) -> "Settings":
+    def from_file(config_file: Union[Path, str]) -> "Settings":
         """Create a Settings object from a yaml file.
 
         Args:
