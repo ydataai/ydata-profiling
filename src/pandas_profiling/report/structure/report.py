@@ -197,6 +197,9 @@ def get_duplicates_items(
     items: List[Renderable] = []
     if duplicates is not None and len(duplicates) > 0:
         if isinstance(duplicates, list):
+            if any([d is None for d in duplicates]):
+                return items
+
             for idx, df in enumerate(duplicates):
                 items.append(
                     Duplicate(
