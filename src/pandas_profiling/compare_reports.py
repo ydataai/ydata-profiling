@@ -211,7 +211,7 @@ def _apply_config(description: dict, config: Settings) -> dict:
     samples = [s > 0 for s in samples]
     description["sample"] = description["sample"] if any(samples) else []
     description["duplicates"] = (
-        description["duplicates"] if config.duplicates.head > 0 else [None, None]
+        description["duplicates"] if config.duplicates.head > 0 else None
     )
     description["scatter"] = (
         description["scatter"] if config.interactions.continuous else {}
@@ -247,9 +247,11 @@ def compare(
     else:
         _config = config.copy()
         for report in reports:
+            tsmode = report.config.vars.timeseries.active
             title = report.config.title
             report.config = config.copy()
             report.config.title = title
+            report.config.vars.timeseries.active = tsmode
 
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
@@ -265,6 +267,8 @@ def compare(
 
     _placeholders(*descriptions)
 
+    descriptions = [_apply_config(d, _config) for d in descriptions]
+
     res: dict = _update_merge(None, descriptions[0])
     for r in descriptions[1:]:
         res = _update_merge(res, r)
@@ -272,5 +276,5 @@ def compare(
     res["analysis"]["title"] = _compare_title(res["analysis"]["title"])
 
     profile = ProfileReport(None, config=_config)
-    profile._description_set = _apply_config(res, _config)
+    profile._description_set = res
     return profile
