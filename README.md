@@ -239,4 +239,4 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 
 Learn how to get involved in the [Contribution Guide](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
 
-A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Slack](https://slack.datacentricai.community).
+A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://discord.com/invite/mw7xjJ7b7s).
