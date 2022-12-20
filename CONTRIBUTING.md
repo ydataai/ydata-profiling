@@ -1,6 +1,6 @@
 ## How to contribute to Pandas-Profiling
 
-Pandas-profiling aims to ease exploratory data analysis for structured datasets. 
+Pandas-profiling aims to ease exploratory data analysis for structured datasets, including time-series. 
 Our focus is to provide users with useful and robust statistics for such datasets encountered in industry, academia and elsewhere.
 Pandas-profiling is open-source and stimulates contributions from passionate community users.
 
@@ -53,10 +53,8 @@ In line with our aim, we identify the following themes:
   You are welcome as part of this community.
   
   _Suggestions for contribution_:
-  Share with us if this package is of value to you, let us know [at this address](mailto:pandasprofiling@gmail.com).
+  Share with us if this package is of value to you, let us know [in our community](https://discord.com/invite/mw7xjJ7b7s).
   We are interested in how you use `pandas-profiling` in your work.
-  Furthermore, we are always looking for contributions to the documentation, issue templates and [discussions](https://github.com/ydataai/pandas-profiling/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion).
-  Advocate, ambassador, share
   
   _Related_: [#87][i87] or [create one](https://github.com/ydataai/pandas-profiling/issues/new/choose).
 
@@ -64,17 +62,8 @@ In line with our aim, we identify the following themes:
   `pandas-profiling` is not a machine learning package, even though many of our users use EDA as a step prior to developing their models.
   Our focus lies in the exploratory data analysis.
   Any functionality that enables machine learning applications by more effective data profiling, is welcome.
-  Future work might include an extension to `pandas-profiling`, specific for profiling of target variables and machine learning predictions.
 
   _Related_: [#124][i124], [#173][i173], [#198][i198] or [create one](https://github.com/ydataai/pandas-profiling/issues/new/choose).
-
-#### Support
-Maintaining the package takes up quite some time, which is all donated voluntarily.
-We are driven to provide new highly-requested features in the area of machine learning.
-Unfortunately, we do not have capacity to actively develop new features.
-If you are willing to support us in this (industry partner or sponsorship), [drop us a line](mailto:pandasprofiling@gmail.com).
-Another low-threshold way to support is to connect your company's logo to the package
-(e.g. let us place it in an "Used at" section, we know from contributions that people at IBM, Microsoft and various types of companies use `pandas-profiling`).
 
 #### **Did you find a bug?**
 
