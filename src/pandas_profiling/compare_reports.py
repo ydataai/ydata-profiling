@@ -223,6 +223,7 @@ def _apply_config(description: dict, config: Settings) -> dict:
 def compare(
     reports: List[ProfileReport],
     config: Optional[Settings] = None,
+    compute: bool = True,
 ) -> ProfileReport:
     """
     Compare Profile reports
@@ -231,6 +232,7 @@ def compare(
         reports: two reports to compare
                  input may either be a ProfileReport, or the summary obtained from report.get_description()
         config: the settings object for the merged ProfileReport
+        compute: recompute the profile report using config or the left report config
 
     """
     validate_reports(reports)
@@ -243,7 +245,7 @@ def compare(
         return reports[0]
 
     if config is None:
-        _config = Settings()
+        _config = reports[0].config.copy()
     else:
         _config = config.copy()
         for report in reports:
@@ -252,6 +254,8 @@ def compare(
             report.config = config.copy()
             report.config.title = title
             report.config.vars.timeseries.active = tsmode
+            if compute:
+                report._description_set = None
 
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
