@@ -25,24 +25,21 @@ Overview
   :alt: Code style: black
   :target: https://github.com/python/black
 
-``pandas-profiling`` generates profile reports from a pandas ``DataFrame``.
-The pandas ``df.describe()`` function is handy yet a little basic for exploratory data analysis. ``pandas-profiling`` extends pandas ``DataFrame`` with ``df.profile_report()``,  
-which automatically generates a standardized univariate and multivariate report for data understanding. 
+``pandas-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, pandas-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
 
-For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
+The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
-* **Type inference**: detect the types of columns in a ``DataFrame``
-* **Essentials**: type, unique values, indication of missing values
-* **Quantile statistics**: minimum value, Q1, median, Q3, maximum, range, interquartile range
-* **Descriptive statistics**: mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
-* **Most frequent and extreme values**
-* **Histograms:** categorical and numerical
-* **Correlations**: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér's V, Phik, Auto)
-* **Missing values**: through counts, matrix and heatmap
-* **Duplicate rows**: list of the most common duplicated rows
-* **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
-* **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existence of EXIF metadata
-
+Key features
+------------
+- **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
+- **Warnings**: A summary of the problems/challenges in the data that you might need to work on (*missing data*, *inaccuracies*, *skewness*, etc.)
+- **Univariate analysis**: including descriptive statistics (mean, median, mode, etc) and informative visualizations such as distribution histograms
+- **Multivariate analysis**: including correlations, a detailed analysis of missing data, duplicate rows, and visual support for variables pairwise interaction
+- **Time-Series**: including different statistical information relative to time dependent data such as auto-correlation and seasonality, along ACF and PACF plots.
+- **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
+- **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existence of EXIF metadata
+- **Compare datasets**: one-line solution to enable a fast and complete report on the comparison of datasets
+- **Flexible output formats**: all analysis can be exported to an HTML report that can be easily shared with different parties, as JSON for an easy integration in automated systems and as a widget in a Jupyter Notebook.
 
 The report contains three additional sections: 
 
@@ -52,7 +49,8 @@ The report contains three additional sections:
 
 The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks. 
 
-.. NOTE::
-   **⚡ Looking for a Spark backend to profile large datasets?**
 
-   While not yet finished, a Spark backend is in development. Progress can be tracked `here <https://github.com/ydataai/pandas-profiling/projects/3>`_. Testing and contributions are welcome!
+.. NOTE::
+   **🎁 Latest features**
+    - Looking for how you can do an EDA for Time-Series 🕛 ? Check `this blogpost <https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913>`_
+    - You want to compare 2 datasets and get a report? Check `this blogpost <https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e>`_
