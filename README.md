@@ -232,7 +232,6 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
 - [GitHub Issues](https://github.com/ydataai/pandas-profiling/issues): bugs, proposals for changes, feature requests
-- [Slack](https://slack.datacentricai.community): general chat, questions, collaborations
 - [Discord](https://discord.com/invite/mw7xjJ7b7s): ideal for projects discussions, ask questions, collaborations, general chat
 - [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
 

@@ -1,12 +1,12 @@
 ==================
-Time-Series Dataset
+Time-Series data
 ==================
 
-``pandas-profiling`` can be used to compare multiple version of the same dataset.
-This is useful when comparing data from multiple time periods, such as two years.
-Another common scenario is to view the dataset profile for training, validation and test sets in machine learning.
+``pandas-profiling`` can be used for a quick Exploratory Data Analysis on time-series data. This is useful for a quick understading on the behaviour of time dependent variables regarding behaviours such as time plots, seasonality, trends and stationarity.
 
-The following syntax can be used to compare two datasets:
+Combined with the profiling reports compare, you're able to compare the evolution and data behaviour through time, in terms of time-series specific statistics such as PACF and ACF plots.
+
+The following syntax can be used to generate a profile under the assumption that the dataset includes time dependent features:
 
 .. code-block:: python
 
@@ -18,25 +18,5 @@ The following syntax can be used to compare two datasets:
     profile.to_file("report_timeseries.html")
 
 
-The comparison report uses the ``title`` attribute out of ``Settings`` as a label throughout.
-The colors are configured in ``settings.html.style.primary_colors``.
-The numeric precision parameter ``settings.report.precision`` can be played with to obtain some additional space in reports.
-
-In order to compare more than two reports, the following syntax can be used:
-
-.. code-block:: python
-
-    from pandas_profiling import ProfileReport, compare
-
-    comparison_report = compare([train_report, validation_report, test_report])
-
-    # Obtain merged statistics
-    statistics = comparison_report.get_description()
-
-    # Save report to file
-    comparison_report.to_file("comparison.html")
-
-Note that this functionality only ensures the support report comparison of two datasets.
-It is possible to obtain the statistics - the report may have formatting issues.
-One of the settings that can be changed is ``settings.report.precision``.
-As a rule of thumb, the value 10 can be used for a single report and 8 for comparing two reports.
+To enable a time-series report to be generated ``ts_mode`` needs to be set to "True". If "True" the variables that have temporal dependence will be automatically identified based on the presence of autocorrelation.
+The time-series report uses the ``sortby`` attribute to order the dataset. If not provided it is assumed that the dataset is already ordered.
