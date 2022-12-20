@@ -223,7 +223,7 @@ def _apply_config(description: dict, config: Settings) -> dict:
 def compare(
     reports: List[ProfileReport],
     config: Optional[Settings] = None,
-    compute: bool = True,
+    compute: bool = False,
 ) -> ProfileReport:
     """
     Compare Profile reports
@@ -233,6 +233,7 @@ def compare(
                  input may either be a ProfileReport, or the summary obtained from report.get_description()
         config: the settings object for the merged ProfileReport
         compute: recompute the profile report using config or the left report config
+                 recommended in cases where the reports were created using different settings
 
     """
     validate_reports(reports)
