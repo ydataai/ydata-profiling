@@ -71,10 +71,10 @@ This package does not have a Contributor License Agreement (CLA), as the GitHub 
 
 Read Github's `open source legal guide <https://opensource.guide/legal/#does-my-project-need-an-additional-contributor-agreement>`_ for further details.
 
-Slack community
+Discord Data-centric community
 ---------------
 
-The community is low-threshold place to ask questions regarding development and contributing. `Join the Slack community <https://slack.datacentricai.community>`_.
+The community is low-threshold place to ask questions regarding development and contributing. `Join the Discord community <https://discord.com/invite/mw7xjJ7b7s>`_.
 
 More information
 ----------------
