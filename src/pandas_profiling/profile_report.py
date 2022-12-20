@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
+from ipywidgets.widgets.widget_box import VBox
 from tqdm.auto import tqdm
 from typeguard import typechecked
 from visions import VisionsTypeset
@@ -23,7 +24,6 @@ from pandas_profiling.model.summarizer import (
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.core import Root
-from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
@@ -234,7 +234,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._json
 
     @property
-    def widgets(self) -> Renderable:
+    def widgets(self) -> VBox:
         if (
             isinstance(self.description_set["table"]["n"], list)
             and len(self.description_set["table"]["n"]) > 1
@@ -357,7 +357,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             pbar.update()
         return html
 
-    def _render_widgets(self) -> Renderable:
+    def _render_widgets(self) -> VBox:
         from pandas_profiling.report.presentation.flavours import WidgetReport
 
         report = self.report
