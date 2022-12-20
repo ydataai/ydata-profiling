@@ -26,21 +26,20 @@
   Do you like this project? Show us your love and <a href="https://engage.ydata.ai">give feedback!</a>
 </p>
 
-`pandas-profiling` generates profile reports from a pandas `DataFrame`. The pandas `df.describe()` function is handy yet a little basic for exploratory data analysis. `pandas-profiling` extends pandas `DataFrame` with `df.profile_report()`, which automatically generates a standardized univariate and multivariate report for data understanding.
+`pandas-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, pandas-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
 
-For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:
+The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**. 
 
-- **Type inference**: detect the types of columns in a DataFrame
-- **Essentials**: type, unique values, indication of missing values
-- **Quantile statistics**: minimum value, Q1, median, Q3, maximum, range, interquartile range
-- **Descriptive statistics**: mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness
-- **Most frequent and extreme values**
-- **Histograms**: categorical and numerical
-- **Correlations**: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér’s V, Phik)
-- **Missing values**: through counts, matrix and heatmap
-- **Duplicate rows**: list of the most common duplicated rows
+### Key features
+- **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
+- **Warnings**: A summary of the problems/challenges in the data that you might need to work on (*missing data*, *inaccuracies*, *skewness*, etc.)
+- **Univariate analysis**: including descriptive statistics (mean, median, mode, etc) and informative visualizations such as distribution histograms
+- **Multivariate analysis**: including correlations, a detailed analysis of missing data, duplicate rows, and visual support for variables pairwise interaction
+- **Time-Series**: including different statistical information relative to time dependent data such as auto-correlation and seasonality, along ACF and PACF plots.
 - **Text analysis**: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)
 - **File and Image analysis**: file sizes, creation dates, dimensions, indication of truncated images and existence of EXIF metadata
+- **Compare datasets**: one-line solution to enable a fast and complete report on the comparison of datasets
+- **Flexible output formats**: all analysis can be exported to an HTML report that can be easily shared with different parties, as JSON for an easy integration in automated systems and as a widget in a Jupyter Notebook.
 
 The report contains three additional sections:
 
@@ -48,10 +47,24 @@ The report contains three additional sections:
 - **Alerts**: a comprehensive and automatic list of potential data quality issues (high correlation, skewness, uniformity, zeros, missing values, constant values, between others)
 - **Reproduction**: technical details about the analysis (time, version and configuration)
 
+> ### 🎁 Latest features 
+> - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
+> - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
+
+## 📝 Use cases
+
+Pandas-profiling can be used to deliver a variety of different use-case. The documentation includes guides, tips and tricks for tackling them:
+
+| Use case | Description                                                                                    |
+|----------|----------------------------------------------------------------------------------------------|
+| [Comparing datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset                                                 |
+| [Profiling a Time-Series dataset](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/time_series_datasets.html)               | Generating a report for a time-series dataset with a single line of code                       |
+|[Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets   |
+| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset                 |
+| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries            |
+| [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations               |
 
 > ⚡ Looking for a Spark backend to profile large datasets? It's [work in progress](https://github.com/ydataai/pandas-profiling/projects/3).
-> 
-> ⌛ Interested in uncovering temporal patterns? Check out [popmon](https://github.com/ing-bank/popmon).
 
 ## ▶️ Quickstart
 
@@ -133,7 +146,10 @@ The following example reports showcase the potentialities of the package across 
 * [UCI Bank Dataset](https://pandas-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (marketing dataset from a bank)
 * [Russian Vocabulary](https://pandas-profiling.ydata.ai/examples/master/features/russian_vocabulary.html) (100 most common Russian words, showcasing unicode text analysis)
 * [Website Inaccessibility](https://pandas-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
-* [Orange prices](https://pandas-profiling.ydata.ai/examples/master/features/united_report.html) and [Coal prices](https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
+* [Orange prices](https://pandas-profiling.ydata.ai/examples/master/features/united_report.html) and 
+* [Coal prices](https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
+* [USA Air Quality](https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
+* [HCC](https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
 
 ## 🛠️ Installation
 
@@ -196,18 +212,6 @@ You need [Python 3](https://python3statement.org/) to run the package. Other dep
 | [requirements-test.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-test.txt) | Requirements for testing|
 | [setup.py](https://github.com/ydataai/pandas-profiling/blob/master/setup.py) | Requirements for widgets etc. |
 
-## 📝 Use cases
-
-The documentation includes guides, tips and tricks for tackling common use cases:
-
-| Use case                                                                                                                            | Description |
-|-------------------------------------------------------------------------------------------------------------------------------------|--|
-| [Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets |
-| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset |
-| [Comparing datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset |
-| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries |
-| [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations |
-
 ## 🔗 Integrations
 
 To maximize its usefulness in real world contexts, `pandas-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
@@ -226,7 +230,7 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
 - [GitHub Issues](https://github.com/ydataai/pandas-profiling/issues): bugs, proposals for changes, feature requests
-- [Discord](https://discord.com/invite/mw7xjJ7b7s): general chat, questions, collaborations
+- [Discord](https://discord.com/invite/mw7xjJ7b7s): ideal for projects discussions, ask questions, collaborations, general chat
 - [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
 
 > ❗ Before reporting an issue on GitHub, check out [Common Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).

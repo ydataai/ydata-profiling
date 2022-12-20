@@ -11,6 +11,7 @@ Types, when going beyond the the logical data types such as integer, floats, etc
 - Numerical
 - Date (and Datetime)
 - Categorical
+- Time-series
 - URL
 - Path
 - File
