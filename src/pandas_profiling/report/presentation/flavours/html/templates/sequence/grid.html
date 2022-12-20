@@ -3,7 +3,7 @@
             {{ items[0].render() }}
         </div>
     {% for item in items[1:] %}
-        <div class="col-sm-4">
+        <div class="col-sm-{% if loop.length == 3 %}4{% else %}6{% endif %}{% if item.content['classes'] %} {{ item.content['classes'] }}{% endif %}">
             {{ item.render() }}
         </div>
     {% endfor %}
