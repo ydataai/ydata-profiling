@@ -30,7 +30,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+        <div class="wy-side-nav-search"  style="background: #e32212" >
             <a href="../../index.html" class="icon icon-home"> pandas-profiling
           </a>
 <div role="search">
@@ -43,7 +43,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key features</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
@@ -92,7 +95,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">pandas-profiling</a>
       </nav>
@@ -120,35 +123,39 @@
 <a class="reference external image-reference" href="https://github.com/ydataai/pandas-profiling/releases"><img alt="Release Version" src="https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg" /></a>
 <a class="reference external image-reference" href="https://pypi.org/project/pandas-profiling/"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/pandas-profiling" /></a>
 <a class="reference external image-reference" href="https://github.com/python/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> generates profile reports from a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.
-The pandas <code class="docutils literal notranslate"><span class="pre">df.describe()</span></code> function is handy yet a little basic for exploratory data analysis. <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> extends pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with <code class="docutils literal notranslate"><span class="pre">df.profile_report()</span></code>,
-which automatically generates a standardized univariate and multivariate report for data understanding.</p>
-<p>For each column, the following information (whenever relevant for the column type) is presented in an interactive HTML report:</p>
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas <cite>df.describe()</cite> function, that is so handy, pandas-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as <strong>html</strong> and <strong>json</strong>.</p>
+<p>The package outputs a simple and digested analysis of a dataset, including <strong>time-series</strong> and <strong>text</strong>.</p>
+<section id="key-features">
+<h2>Key features<a class="headerlink" href="#key-features" title="Permalink to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Type inference</strong>: detect the types of columns in a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></p></li>
-<li><p><strong>Essentials</strong>: type, unique values, indication of missing values</p></li>
-<li><p><strong>Quantile statistics</strong>: minimum value, Q1, median, Q3, maximum, range, interquartile range</p></li>
-<li><p><strong>Descriptive statistics</strong>: mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness</p></li>
-<li><p><strong>Most frequent and extreme values</strong></p></li>
-<li><p><strong>Histograms:</strong> categorical and numerical</p></li>
-<li><p><strong>Correlations</strong>: high correlation warnings, based on different correlation metrics (Spearman, Pearson, Kendall, Cramér’s V, Phik, Auto)</p></li>
-<li><p><strong>Missing values</strong>: through counts, matrix and heatmap</p></li>
-<li><p><strong>Duplicate rows</strong>: list of the most common duplicated rows</p></li>
+<li><p><strong>Type inference</strong>: automatic detection of columns’ data types (<em>Categorical</em>, <em>Numerical</em>, <em>Date</em>, etc.)</p></li>
+<li><p><strong>Warnings</strong>: A summary of the problems/challenges in the data that you might need to work on (<em>missing data</em>, <em>inaccuracies</em>, <em>skewness</em>, etc.)</p></li>
+<li><p><strong>Univariate analysis</strong>: including descriptive statistics (mean, median, mode, etc) and informative visualizations such as distribution histograms</p></li>
+<li><p><strong>Multivariate analysis</strong>: including correlations, a detailed analysis of missing data, duplicate rows, and visual support for variables pairwise interaction</p></li>
+<li><p><strong>Time-Series</strong>: including different statistical information relative to time dependent data such as auto-correlation and seasonality, along ACF and PACF plots.</p></li>
 <li><p><strong>Text analysis</strong>: most common categories (uppercase, lowercase, separator), scripts (Latin, Cyrillic) and blocks (ASCII, Cyrilic)</p></li>
 <li><p><strong>File and Image analysis</strong>: file sizes, creation dates, dimensions, indication of truncated images and existence of EXIF metadata</p></li>
+<li><p><strong>Compare datasets</strong>: one-line solution to enable a fast and complete report on the comparison of datasets</p></li>
+<li><p><strong>Flexible output formats</strong>: all analysis can be exported to an HTML report that can be easily shared with different parties, as JSON for an easy integration in automated systems and as a widget in a Jupyter Notebook.</p></li>
 </ul>
 <p>The report contains three additional sections:</p>
 <ul class="simple">
 <li><p><strong>Overview</strong>: mostly global details about the dataset (number of records, number of variables, overall missigness and duplicates, memory footprint)</p></li>
-<li><p><strong>Alerts</strong>: a comprehensive and automatic list of potential data quality issues (high correlation, skewness, uniformity, zeros, missing values, constant values, between others)</p></li>
+<li><p><strong>Alerts</strong>: a comprehensive and automatic list of potential data quality issues (high correlation, imbalance, skewness, uniformity, zeros, missing values, constant values, between others)</p></li>
 <li><p><strong>Reproduction</strong>: technical details about the analysis (time, version and configuration)</p></li>
 </ul>
 <p>The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>⚡ Looking for a Spark backend to profile large datasets?</strong></p>
-<p>While not yet finished, a Spark backend is in development. Progress can be tracked <a class="reference external" href="https://github.com/ydataai/pandas-profiling/projects/3">here</a>. Testing and contributions are welcome!</p>
+<dl class="simple">
+<dt><strong>🎁 Latest features</strong></dt><dd><ul class="simple">
+<li><p>Looking for how you can do an EDA for Time-Series 🕛 ? Check <a class="reference external" href="https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913">this blogpost</a></p></li>
+<li><p>You want to compare 2 datasets and get a report? Check <a class="reference external" href="https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e">this blogpost</a></p></li>
+</ul>
+</dd>
+</dl>
 </div>
+</section>
 </section>
 
 

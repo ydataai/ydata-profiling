@@ -30,7 +30,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+        <div class="wy-side-nav-search"  style="background: #e32212" >
             <a href="../../../../index.html" class="icon icon-home"> pandas-profiling
           </a>
 <div role="search">
@@ -131,7 +131,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">pandas-profiling</a>
       </nav>
@@ -176,12 +176,12 @@
 </dl>
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Univariate.bool">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars" title="pandas_profiling.config.BoolVars"><span class="pre">BoolVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">BoolVars(n_obs=3,</span> <span class="pre">mappings={'t':</span> <span class="pre">True,</span> <span class="pre">'f':</span> <span class="pre">False,</span> <span class="pre">'yes':</span> <span class="pre">True,</span> <span class="pre">'no':</span> <span class="pre">False,</span> <span class="pre">'y':</span> <span class="pre">True,</span> <span class="pre">'n':</span> <span class="pre">False,</span> <span class="pre">'true':</span> <span class="pre">True,</span> <span class="pre">'false':</span> <span class="pre">False})</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.bool" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars" title="pandas_profiling.config.BoolVars"><span class="pre">BoolVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">BoolVars(n_obs=3,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">mappings={'t':</span> <span class="pre">True,</span> <span class="pre">'f':</span> <span class="pre">False,</span> <span class="pre">'yes':</span> <span class="pre">True,</span> <span class="pre">'no':</span> <span class="pre">False,</span> <span class="pre">'y':</span> <span class="pre">True,</span> <span class="pre">'n':</span> <span class="pre">False,</span> <span class="pre">'true':</span> <span class="pre">True,</span> <span class="pre">'false':</span> <span class="pre">False})</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.bool" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="pandas_profiling.config.Univariate.cat">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars" title="pandas_profiling.config.CatVars"><span class="pre">CatVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">CatVars(length=True,</span> <span class="pre">characters=True,</span> <span class="pre">words=True,</span> <span class="pre">cardinality_threshold=50,</span> <span class="pre">n_obs=5,</span> <span class="pre">chi_squared_threshold=0.999,</span> <span class="pre">coerce_str_to_date=False,</span> <span class="pre">redact=False,</span> <span class="pre">histogram_largest=50,</span> <span class="pre">stop_words=[])</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.cat" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars" title="pandas_profiling.config.CatVars"><span class="pre">CatVars</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">CatVars(length=True,</span> <span class="pre">characters=True,</span> <span class="pre">words=True,</span> <span class="pre">cardinality_threshold=50,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">n_obs=5,</span> <span class="pre">chi_squared_threshold=0.999,</span> <span class="pre">coerce_str_to_date=False,</span> <span class="pre">redact=False,</span> <span class="pre">histogram_largest=50,</span> <span class="pre">stop_words=[])</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.cat" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute pydantic_field">

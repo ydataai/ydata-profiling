@@ -1,17 +1,17 @@
 .wy-menu-vertical header, .wy-menu-vertical p.caption{
-    color: #CB5A29;
+    color: #e32212;
 }
 
 a{
-    color: #CB5A29;
+    color: #e32212;
 }
 
 .wy-side-nav-search input[type=text] {
-    border-color: #CB5A29;
+    border-color: #e32212;
 }
 
 .text-pink {
-    color: #ea4aaa!important;
+    color: #166FF5 !important;
 }
 
 /*

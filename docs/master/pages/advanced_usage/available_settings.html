@@ -30,7 +30,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+        <div class="wy-side-nav-search"  style="background: #e32212" >
             <a href="../../index.html" class="icon icon-home"> pandas-profiling
           </a>
 <div role="search">
@@ -100,7 +100,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">pandas-profiling</a>
       </nav>
@@ -227,20 +227,30 @@
 <td><p>50</p></td>
 <td><p>Warn if the number of distinct values is above this threshold.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vars.cat.n_obs</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vars.cat.imbalance_threshold</span></code></p></td>
+<td><p>float</p></td>
+<td><p>0.5</p></td>
+<td><p>Warn if the imbalance score is above this threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vars.cat.n_obs</span></code></p></td>
 <td><p>integer</p></td>
 <td><p>5</p></td>
 <td><p>Display this number of observations.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vars.cat.chi_squared_threshold</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vars.cat.chi_squared_threshold</span></code></p></td>
 <td><p>float</p></td>
 <td><p>0.999</p></td>
 <td><p>Same as above, but for categorical variables.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vars.bool.n_obs</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vars.bool.n_obs</span></code></p></td>
 <td><p>integer</p></td>
 <td><p>3</p></td>
 <td><p>Same as above, but for boolean variables.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vars.bool.imbalance_threshold</span></code></p></td>
+<td><p>float</p></td>
+<td><p>0.5</p></td>
+<td><p>Warn if the imbalance score is above this threshold.</p></td>
 </tr>
 </tbody>
 </table>

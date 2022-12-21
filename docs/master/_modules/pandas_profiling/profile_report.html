@@ -27,7 +27,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+        <div class="wy-side-nav-search"  style="background: #e32212" >
             <a href="../../index.html" class="icon icon-home"> pandas-profiling
           </a>
 <div role="search">
@@ -89,7 +89,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">pandas-profiling</a>
       </nav>
@@ -118,7 +118,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">ipywidgets.widgets.widget_box</span> <span class="kn">import</span> <span class="n">VBox</span>
 <span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">typeguard</span> <span class="kn">import</span> <span class="n">typechecked</span>
 <span class="kn">from</span> <span class="nn">visions</span> <span class="kn">import</span> <span class="n">VisionsTypeset</span>
@@ -136,7 +136,6 @@
 <span class="kn">from</span> <span class="nn">pandas_profiling.model.typeset</span> <span class="kn">import</span> <span class="n">ProfilingTypeSet</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.report</span> <span class="kn">import</span> <span class="n">get_report_structure</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.core</span> <span class="kn">import</span> <span class="n">Root</span>
-<span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.core.renderable</span> <span class="kn">import</span> <span class="n">Renderable</span>
 <span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.flavours.html.templates</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">create_html_assets</span><span class="p">,</span>
 <span class="p">)</span>
@@ -208,10 +207,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">config_file</span><span class="p">:</span>
                 <span class="n">config_file</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">(</span><span class="s2">&quot;config_minimal.yaml&quot;</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-            <span class="n">report_config</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">report_config</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">report_config</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
 
@@ -350,7 +346,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Renderable</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VBox</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;n&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
             <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;n&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span>
@@ -473,7 +469,7 @@
             <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">html</span>
 
-    <span class="k">def</span> <span class="nf">_render_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Renderable</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_render_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VBox</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.flavours</span> <span class="kn">import</span> <span class="n">WidgetReport</span>
 
         <span class="n">report</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span>
@@ -585,23 +581,26 @@
         <span class="sd">&quot;&quot;&quot;Override so that Jupyter Notebook does not print the object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Settings</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Compare this report with another ProfileReport</span>
 <span class="sd">        Alias for:</span>
 <span class="sd">        ```</span>
-<span class="sd">        pandas_profiling.compare([report1, report2], _labels=[report1.config.title, report2.config.title]</span>
+<span class="sd">        pandas_profiling.compare([report1, report2], config=config)</span>
 <span class="sd">        ```</span>
 <span class="sd">        See `pandas_profiling.compare` for details.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            other: the ProfileReport to compare to</span>
+<span class="sd">            config: the settings object for the merged ProfileReport. If `None`, uses the caller&#39;s config</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Comparison ProfileReport</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">pandas_profiling.compare_reports</span> <span class="kn">import</span> <span class="n">compare</span>
 
-        <span class="k">return</span> <span class="n">compare</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">compare</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="n">config</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

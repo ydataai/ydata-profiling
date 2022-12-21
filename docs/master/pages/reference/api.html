@@ -30,7 +30,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #CB5A29" >
+        <div class="wy-side-nav-search"  style="background: #e32212" >
             <a href="../../index.html" class="icon icon-home"> pandas-profiling
           </a>
 <div role="search">
@@ -101,7 +101,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #CB5A29" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">pandas-profiling</a>
       </nav>
@@ -156,6 +156,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html">pandas_profiling.config.Settings</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.categorical_maximum_correlation_distinct"><code class="docutils literal notranslate"><span class="pre">Settings.categorical_maximum_correlation_distinct</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.correlation_table"><code class="docutils literal notranslate"><span class="pre">Settings.correlation_table</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.correlations"><code class="docutils literal notranslate"><span class="pre">Settings.correlations</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.dataset"><code class="docutils literal notranslate"><span class="pre">Settings.dataset</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.duplicates"><code class="docutils literal notranslate"><span class="pre">Settings.duplicates</span></code></a></li>
@@ -178,6 +179,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.title"><code class="docutils literal notranslate"><span class="pre">Settings.title</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.variables"><code class="docutils literal notranslate"><span class="pre">Settings.variables</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.vars"><code class="docutils literal notranslate"><span class="pre">Settings.vars</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.from_file"><code class="docutils literal notranslate"><span class="pre">Settings.from_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.Settings.html#pandas_profiling.config.Settings.update"><code class="docutils literal notranslate"><span class="pre">Settings.update()</span></code></a></li>
 </ul>
 </li>
@@ -350,6 +352,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.chi_squared_threshold"><code class="docutils literal notranslate"><span class="pre">CatVars.chi_squared_threshold</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.coerce_str_to_date"><code class="docutils literal notranslate"><span class="pre">CatVars.coerce_str_to_date</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.histogram_largest"><code class="docutils literal notranslate"><span class="pre">CatVars.histogram_largest</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.imbalance_threshold"><code class="docutils literal notranslate"><span class="pre">CatVars.imbalance_threshold</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.length"><code class="docutils literal notranslate"><span class="pre">CatVars.length</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.n_obs"><code class="docutils literal notranslate"><span class="pre">CatVars.n_obs</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars.redact"><code class="docutils literal notranslate"><span class="pre">CatVars.redact</span></code></a></li>
@@ -370,6 +373,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.BoolVars.html">pandas_profiling.config.BoolVars</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars"><code class="docutils literal notranslate"><span class="pre">BoolVars</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars.imbalance_threshold"><code class="docutils literal notranslate"><span class="pre">BoolVars.imbalance_threshold</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars.mappings"><code class="docutils literal notranslate"><span class="pre">BoolVars.mappings</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/_autosummary/pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars.n_obs"><code class="docutils literal notranslate"><span class="pre">BoolVars.n_obs</span></code></a></li>
 </ul>
