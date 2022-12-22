@@ -26,7 +26,7 @@ def test_issue416():
     )
     data = profile.get_description()
 
-    assert data["table"]["types"]["Categorical"] == 1
-    assert data["table"]["types"]["Path"] == 1
-    assert data["table"]["types"]["URL"] == 1
+    assert data.table["types"]["Categorical"] == 1
+    assert data.table["types"]["Path"] == 1
+    assert data.table["types"]["URL"] == 1
     assert data["variables"]["path"]["common_prefix"] == "/"

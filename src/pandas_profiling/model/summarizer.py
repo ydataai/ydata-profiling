@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Type
+from typing import Any, Callable, Dict, List, Type, Optional
 
 import numpy as np
 import pandas as pd
@@ -28,14 +28,22 @@ class BaseSummarizer(Handler):
     """
 
     def summarize(
-        self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
+        self, 
+        config: Settings, 
+        series: pd.Series, 
+        dtype: Type[VisionsBaseType], 
+        target_series: Optional[pd.Series] = None
     ) -> dict:
         """
 
         Returns:
             object:
         """
-        _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
+        # TODO delete, its just temporary
+        if target_series is not None:
+            _, _, summary = self.handle(str(dtype), config, series, target_series, {"type": str(dtype)})
+        else:
+            _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
         return summary
 
 

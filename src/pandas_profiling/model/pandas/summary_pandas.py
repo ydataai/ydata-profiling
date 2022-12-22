@@ -58,7 +58,7 @@ def pandas_get_series_descriptions(
     typeset: VisionsTypeset,
     pbar: tqdm,
 ) -> dict:
-    def multiprocess_1d(args: tuple) -> Tuple[str, dict]:
+    def multiprocess_1d(args: Tuple[str, pd.Series] ) -> Tuple[str, dict]:
         """Wrapper to process series in parallel.
 
         Args:

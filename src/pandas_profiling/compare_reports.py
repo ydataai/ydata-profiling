@@ -5,6 +5,7 @@ import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.profile_report import ProfileReport
+from pandas_profiling.model.describe import BaseDescription
 
 
 def _should_wrap(v1: Any, v2: Any) -> bool:
@@ -64,12 +65,12 @@ def _update_merge_mixed(d1: Any, d2: Any) -> Union[dict, list, tuple]:
         return _update_merge_seq(d1, d2)
 
 
-def _update_merge(d1: Optional[dict], d2: dict) -> dict:
+def _update_merge(d1: Optional[BaseDescription], d2: BaseDescription) -> BaseDescription:
     # For convenience in the loop, allow d1 to be empty initially
     if d1 is None:
         return d2
 
-    if not isinstance(d1, dict) or not isinstance(d2, dict):
+    if not isinstance(d1, BaseDescription) or not isinstance(d2, BaseDescription):
         raise TypeError(
             "Both arguments need to be of type dictionary (ProfileReport.description_set)"
         )
@@ -114,7 +115,7 @@ def _compare_title(titles: List[str]) -> str:
 
 def _compare_profile_report_preprocess(
     reports: List[ProfileReport],
-) -> Tuple[List[str], List[dict]]:
+) -> Tuple[List[str], List[BaseDescription]]:
     # Use titles as labels
     labels = [report.config.title for report in reports]
 
@@ -128,15 +129,15 @@ def _compare_profile_report_preprocess(
     # Obtain description sets
     descriptions = [report.get_description() for report in reports]
     for label, description in zip(labels, descriptions):
-        description["analysis"]["title"] = label
+        description.analysis.title = label
 
     return labels, descriptions
 
 
 def _compare_dataset_description_preprocess(
-    reports: List[dict],
-) -> Tuple[List[str], List[dict]]:
-    labels = [report["analysis"]["title"] for report in reports]
+    reports: List[BaseDescription],
+) -> Tuple[List[str], List[BaseDescription]]:
+    labels = [report.analysis.title for report in reports]
     return labels, reports
 
 

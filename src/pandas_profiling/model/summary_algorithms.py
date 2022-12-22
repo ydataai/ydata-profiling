@@ -132,8 +132,8 @@ def describe_date_1d(
 
 @multimethod
 def describe_categorical_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, dict]:
     raise NotImplementedError()
 
 
@@ -176,4 +176,14 @@ def describe_boolean_1d(
 def describe_timeseries_1d(
     config: Settings, series: Any, summary: dict
 ) -> Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
+
+
+# supervised 
+# --------------------------------
+
+@multimethod
+def describe_categorical_1d_supervised(
+    config: Settings, col_values: Any, target_values: Any, summary: dict
+) -> Tuple[Settings, pd.Series, dict]:
     raise NotImplementedError()

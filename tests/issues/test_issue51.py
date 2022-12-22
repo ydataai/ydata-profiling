@@ -63,9 +63,9 @@ def test_issue51_empty():
     report.config.vars.num.low_categorical_threshold = 0
 
     assert (
-        "cramers" not in report.get_description()["correlations"]
+        "cramers" not in report.get_description().correlations
         or (
-            report.get_description()["correlations"]["cramers"].values
+            report.get_description().correlations["cramers"].values
             == np.ones((3, 3))
         ).all()
     )
@@ -85,4 +85,4 @@ def test_issue51_identical():
     )
     report.config.vars.num.low_categorical_threshold = 0
     # this should not return any correlation value as the variables are identical constants
-    assert report.get_description()["correlations"] == {}
+    assert report.get_description().correlations == {}

@@ -1,5 +1,6 @@
 from functools import reduce
 from typing import Any, Callable, Dict, List, Sequence
+from pandas_profiling.config import Settings
 
 import networkx as nx
 from visions import VisionsTypeset
@@ -62,7 +63,7 @@ class Handler:
         return op(*args)
 
 
-def get_render_map() -> Dict[str, Callable]:
+def get_render_map() -> Dict[str, Callable[[Settings, Dict[str, Any]], Dict]]:
     import pandas_profiling.report.structure.variables as render_algorithms
 
     render_map = {

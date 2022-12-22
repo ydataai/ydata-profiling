@@ -23,6 +23,42 @@ from pandas_profiling.model.table import get_table_stats
 from pandas_profiling.utils.progress_bar import progress
 from pandas_profiling.version import __version__
 
+class BaseAnalysis():
+    def __init__(self, title: str, date_start:datetime, date_end:datetime) -> None:
+        self.title = title
+        self.date_start = date_start
+        self.date_end = date_end
+
+    @property
+    def duration(self):
+        return self.date_end - self.date_start
+
+class BaseDescription():
+    def __init__(
+        self, 
+        analysis:BaseAnalysis, 
+        table, 
+        variables, 
+        scatter, 
+        correlations, 
+        missing, 
+        alerts, 
+        package, 
+        sample, 
+        duplicates
+    ) -> None:
+        self.analysis = analysis
+        self.table = table
+        self.variables = variables
+        self.scatter = scatter
+        self.correlations = correlations
+        self.missing = missing
+        self.alerts = alerts
+        self.package = package
+        self.sample = sample
+        self.duplicates = duplicates
+
+
 
 def describe(
     config: Settings,
@@ -30,7 +66,7 @@ def describe(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     sample: Optional[dict] = None,
-) -> dict:
+) -> BaseDescription:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -161,13 +197,27 @@ def describe(
 
         date_end = datetime.utcnow()
 
-    analysis = {
-        "title": config.title,
-        "date_start": date_start,
-        "date_end": date_end,
-        "duration": date_end - date_start,
-    }
+    # analysis = {
+    #     "title": config.title,
+    #     "date_start": date_start,
+    #     "date_end": date_end,
+    #     "duration": date_end - date_start,
+    # }
+    analysis = BaseAnalysis(config.title, date_start, date_end)
 
+    description = BaseDescription(
+        analysis,
+        table_stats,
+        series_description,
+        scatter_matrix,
+        correlations,
+        missing,
+        alerts,
+        package,
+        samples,
+        duplicates
+    )
+    return description
     return {
         # Analysis metadata
         "analysis": analysis,

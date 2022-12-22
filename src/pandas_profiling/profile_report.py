@@ -15,6 +15,7 @@ from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
+from pandas_profiling.model.describe import BaseDescription
 from pandas_profiling.model.sample import Sample
 from pandas_profiling.model.summarizer import (
     BaseSummarizer,
@@ -202,7 +203,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._summarizer
 
     @property
-    def description_set(self) -> Dict[str, Any]:
+    def description_set(self) -> BaseDescription:
         if self._description_set is None:
             self._description_set = describe_df(
                 self.config,
@@ -240,8 +241,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     @property
     def widgets(self) -> Renderable:
         if (
-            isinstance(self.description_set["table"]["n"], list)
-            and len(self.description_set["table"]["n"]) > 1
+            isinstance(self.description_set.table["n"], list)
+            and len(self.description_set.table["n"]) > 1
         ):
             raise RuntimeError(
                 "Widgets interface not (yet) supported for comparing reports, please use the HTML rendering."
@@ -257,7 +258,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         Returns:
             A DataFrame with the duplicate rows and their counts.
         """
-        return self.description_set["duplicates"]
+        return self.description_set.duplicates
 
     def get_sample(self) -> dict:
         """Get head/tail samples based on the configuration
@@ -265,9 +266,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         Returns:
             A dict with the head and tail samples.
         """
-        return self.description_set["sample"]
+        return self.description_set.sample
 
-    def get_description(self) -> dict:
+    def get_description(self) -> BaseDescription:
         """Return the description (a raw statistical summary) of the dataset.
 
         Returns:
@@ -283,7 +284,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """
         return {
             alert.column_name
-            for alert in self.description_set["alerts"]
+            for alert in self.description_set.alerts
             if alert.alert_type == AlertType.REJECTED
         }
 
@@ -349,9 +350,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 primary_color=self.config.html.style.primary_colors[0],
                 logo=self.config.html.style.logo,
                 theme=self.config.html.style.theme,
-                title=self.description_set["analysis"]["title"],
-                date=self.description_set["analysis"]["date_start"],
-                version=self.description_set["package"]["pandas_profiling_version"],
+                title=self.description_set.analysis.title,
+                date=self.description_set.analysis.date_start,
+                version=self.description_set.package["pandas_profiling_version"],
             )
 
             if self.config.html.minify_html:
