@@ -13,7 +13,7 @@ from pandas_profiling.model.correlations import (
     get_active_correlations,
 )
 
-from pandas_profiling.model.description.base_description import BaseDescription, BaseAnalysis
+from pandas_profiling.model.base_classes.base_description import BaseDescription, BaseAnalysis
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.missing import get_missing_active, get_missing_diagram

@@ -14,7 +14,7 @@ from pandas_profiling.report.formatters import (
 )
 from pandas_profiling.report.presentation.core import Alerts, Container, Table
 from pandas_profiling.report.presentation.core.renderable import Renderable
-from pandas_profiling.model.description.base_description import BaseDescription
+from pandas_profiling.model.base_classes.base_description import BaseDescription
 
 
 def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderable:
