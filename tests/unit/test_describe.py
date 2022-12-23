@@ -555,7 +555,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
         "package",
         "sample",
         "duplicates",
-    } == set(results.__dict__.keys()), "Not in results"
+    } == set(results.to_dict().keys()), "Not in results"
 
     # Loop over variables
     for k, v in expected_results[column].items():

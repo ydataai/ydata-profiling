@@ -52,7 +52,7 @@ def test_modular_description_set(tdf):
     )
 
     description = profile.get_description()
-    assert len(description.__dict__) > 0
+    assert len(description.to_dict()) > 0
 
 
 def test_modular_absent(tdf):

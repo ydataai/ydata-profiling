@@ -36,7 +36,7 @@ def _update_merge_dict(d1: BaseDescription, d2: BaseDescription) -> BaseDescript
             k: [d1[k], d2[k]]
             if _should_wrap(d1[k], d2[k])
             else _update_merge_mixed(d1[k], d2[k])
-            for k in {*d1.__dict__} & {*d2.__dict__}
+            for k in {*d1.to_dict()} & {*d2.to_dict()}
         },
     }
 

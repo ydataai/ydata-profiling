@@ -98,7 +98,7 @@ def format_summary(summary: Union[BaseDescription, dict]) -> BaseDescription:
                 return v
 
     if isinstance(summary, BaseDescription):
-        for k, v in summary.__dict__.items():
+        for k, v in summary.to_dict().items():
             setattr(summary, k, fmt(v)) 
     elif isinstance(summary, dict):
         for k, v in summary.items():
