@@ -15,7 +15,7 @@ from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.model.describe import BaseDescription
+from pandas_profiling.model.description.base_description import BaseDescription
 from pandas_profiling.model.sample import Sample
 from pandas_profiling.model.summarizer import (
     BaseSummarizer,
@@ -379,8 +379,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def _render_json(self) -> str:
         def encode_it(o: Any) -> Any:
-            if isinstance(o, dict):
-                return {encode_it(k): encode_it(v) for k, v in o.items()}
+            if isinstance(o, BaseDescription):
+                return {encode_it(k): encode_it(v) for k, v in o.__dict__.items()}
             else:
                 if isinstance(o, (bool, int, float, str)):
                     return o

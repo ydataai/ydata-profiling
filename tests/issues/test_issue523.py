@@ -27,4 +27,4 @@ def test_issue523():
     df = pd.DataFrame({"col": data}, dtype=pd.Int64Dtype())
 
     profile_report = ProfileReport(df, title="Test Report", progress_bar=False)
-    assert len(profile_report.get_description()) > 0
+    assert profile_report.get_description()

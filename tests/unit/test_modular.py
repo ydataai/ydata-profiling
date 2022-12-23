@@ -51,8 +51,8 @@ def test_modular_description_set(tdf):
         pool_size=1,
     )
 
-    html = profile.get_description()
-    assert len(html) > 0
+    description = profile.get_description()
+    assert len(description.__dict__) > 0
 
 
 def test_modular_absent(tdf):

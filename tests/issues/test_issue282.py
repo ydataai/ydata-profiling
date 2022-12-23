@@ -5,6 +5,7 @@ https://github.com/ydataai/pandas-profiling/issues/282
 import pandas as pd
 
 from pandas_profiling import ProfileReport
+from pandas_profiling.model.description.base_description import BaseDescription
 
 
 def test_issue282():
@@ -110,4 +111,4 @@ def test_issue282():
     )
     report = ProfileReport(df, progress_bar=False)
     description = report.get_description()
-    assert type(description) == dict
+    assert type(description) == BaseDescription

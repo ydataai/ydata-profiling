@@ -7,6 +7,7 @@ from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.utils.dataframe import slugify
+from pandas_profiling.model.description.base_description import BaseDescription
 
 
 class ExpectationHandler(Handler):
@@ -86,10 +87,10 @@ class ExpectationsReport:
         batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
 
         # Obtain the profiling summary
-        summary = self.get_description()  # type: ignore
+        summary: BaseDescription = self.get_description()  # type: ignore
 
         # Dispatch to expectations per semantic variable type
-        for name, variable_summary in summary["variables"].items():
+        for name, variable_summary in summary.variables.items():
             handler.handle(variable_summary["type"], name, variable_summary, batch)
 
         # We don't actually update the suite object on the batch in place, so need

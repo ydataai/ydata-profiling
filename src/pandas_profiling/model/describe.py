@@ -12,6 +12,8 @@ from pandas_profiling.model.correlations import (
     calculate_correlation,
     get_active_correlations,
 )
+
+from pandas_profiling.model.description.base_description import BaseDescription, BaseAnalysis
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
@@ -22,42 +24,6 @@ from pandas_profiling.model.summary import get_series_descriptions
 from pandas_profiling.model.table import get_table_stats
 from pandas_profiling.utils.progress_bar import progress
 from pandas_profiling.version import __version__
-
-class BaseAnalysis():
-    def __init__(self, title: str, date_start:datetime, date_end:datetime) -> None:
-        self.title = title
-        self.date_start = date_start
-        self.date_end = date_end
-
-    @property
-    def duration(self):
-        return self.date_end - self.date_start
-
-class BaseDescription():
-    def __init__(
-        self, 
-        analysis:BaseAnalysis, 
-        table, 
-        variables, 
-        scatter, 
-        correlations, 
-        missing, 
-        alerts, 
-        package, 
-        sample, 
-        duplicates
-    ) -> None:
-        self.analysis = analysis
-        self.table = table
-        self.variables = variables
-        self.scatter = scatter
-        self.correlations = correlations
-        self.missing = missing
-        self.alerts = alerts
-        self.package = package
-        self.sample = sample
-        self.duplicates = duplicates
-
 
 
 def describe(
@@ -197,12 +163,6 @@ def describe(
 
         date_end = datetime.utcnow()
 
-    # analysis = {
-    #     "title": config.title,
-    #     "date_start": date_start,
-    #     "date_end": date_end,
-    #     "duration": date_end - date_start,
-    # }
     analysis = BaseAnalysis(config.title, date_start, date_end)
 
     description = BaseDescription(
@@ -218,25 +178,4 @@ def describe(
         duplicates
     )
     return description
-    return {
-        # Analysis metadata
-        "analysis": analysis,
-        # Overall dataset description
-        "table": table_stats,
-        # Per variable descriptions
-        "variables": series_description,
-        # Bivariate relations
-        "scatter": scatter_matrix,
-        # Correlation matrices
-        "correlations": correlations,
-        # Missing values
-        "missing": missing,
-        # Alerts
-        "alerts": alerts,
-        # Package
-        "package": package,
-        # Sample
-        "sample": samples,
-        # Duplicates
-        "duplicates": duplicates,
-    }
+
