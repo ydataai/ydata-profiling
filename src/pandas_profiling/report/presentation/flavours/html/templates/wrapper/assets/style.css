@@ -344,11 +344,6 @@ select.multiple{
 {% endfor %}
 {% if style._labels | length > 1 %}
     /* Report comparison */
-    /* Mini frequency table */
-    table.freq.mini{
-        width:{{ 100 / (style._labels | length) }}%;
-        float:left;
-    }
     /* Full-sized frequency table */
     table.freq:not(.mini){
         width:{{ 90 / (style._labels | length) }}%;

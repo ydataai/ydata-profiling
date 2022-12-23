@@ -23,7 +23,6 @@ from pandas_profiling.model.summarizer import (
 from pandas_profiling.model.typeset import ProfilingTypeSet
 from pandas_profiling.report import get_report_structure
 from pandas_profiling.report.presentation.core import Root
-from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
@@ -234,7 +233,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._json
 
     @property
-    def widgets(self) -> Renderable:
+    def widgets(self) -> Any:
         if (
             isinstance(self.description_set["table"]["n"], list)
             and len(self.description_set["table"]["n"]) > 1
@@ -357,7 +356,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             pbar.update()
         return html
 
-    def _render_widgets(self) -> Renderable:
+    def _render_widgets(self) -> Any:
         from pandas_profiling.report.presentation.flavours import WidgetReport
 
         report = self.report
