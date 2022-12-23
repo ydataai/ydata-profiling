@@ -132,8 +132,8 @@ def describe_date_1d(
 
 @multimethod
 def describe_categorical_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, dict]:
     raise NotImplementedError()
 
 

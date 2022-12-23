@@ -16,7 +16,7 @@ The snippet below shows how to list the available correlation matrices:
     profile = ProfileReport(data, title="Titanic")
 
     # Listing available correlation
-    correlations = profile.description_set["correlations"]
+    correlations = profile.description_set.correlations
     print(correlations.keys())
 
 In this case, all the 6 possible correlation metrics were computed and the output would be ``dict_keys(['auto', 'spearman', 'pearson', 'kendall', 'cramers', 'phi_k'])``. Each ``correlations[CORRELATION_TYPE]`` object is a pandas ``DataFrame``. To access its values:

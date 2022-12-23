@@ -1,10 +1,11 @@
-from typing import Any, Callable, Dict, List, Type
+from typing import Any, Callable, Dict, List, Type, Optional, Union
 
 import numpy as np
 import pandas as pd
 from visions import VisionsBaseType, VisionsTypeset
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.base_classes.base_description import BaseDescription
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -78,7 +79,7 @@ class PandasProfilingSummarizer(BaseSummarizer):
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
-def format_summary(summary: dict) -> dict:
+def format_summary(summary: Union[BaseDescription, dict]) -> BaseDescription:
     def fmt(v: Any) -> Any:
         if isinstance(v, dict):
             return {k: fmt(va) for k, va in v.items()}
@@ -94,5 +95,10 @@ def format_summary(summary: dict) -> dict:
             else:
                 return v
 
-    summary = {k: fmt(v) for k, v in summary.items()}
+    if isinstance(summary, BaseDescription):
+        for k, v in summary.to_dict().items():
+            setattr(summary, k, fmt(v))
+    elif isinstance(summary, dict):
+        for k, v in summary.items():
+            summary[k] = fmt(v)
     return summary

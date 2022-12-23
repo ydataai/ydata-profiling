@@ -39,7 +39,7 @@ def test_issue824():
         len(
             [
                 a
-                for a in report.description_set["alerts"]
+                for a in report.description_set.alerts
                 if a.alert_type == AlertType.HIGH_CORRELATION
             ]
         )

@@ -39,6 +39,6 @@ def test_issue437():
         report = ProfileReport(df)
         description_set = report.description_set
 
-        assert description_set["variables"]["a"]["type"] == "Numeric"
-        assert description_set["variables"]["b"]["type"] == "Numeric"
-        assert description_set["variables"]["c"]["type"] == "Numeric"
+        assert description_set.variables["a"]["type"] == "Numeric"
+        assert description_set.variables["b"]["type"] == "Numeric"
+        assert description_set.variables["c"]["type"] == "Numeric"

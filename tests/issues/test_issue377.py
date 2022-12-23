@@ -36,5 +36,5 @@ def test_issue377(df):
     original_order = tuple(df.columns.values)
 
     profile = ProfileReport(df, sort=None, pool_size=1, progress_bar=False)
-    new_order = tuple(profile.get_description()["variables"].keys())
+    new_order = tuple(profile.get_description().variables.keys())
     assert original_order == new_order

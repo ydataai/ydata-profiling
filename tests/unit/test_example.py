@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling import ProfileReport
+from pandas_profiling.model.base_classes.base_description import BaseDescription
 
 
 def test_example(get_data_file, test_output_dir):
@@ -46,7 +47,7 @@ def test_example(get_data_file, test_output_dir):
     profile.to_file(output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
     assert (
-        type(profile.get_description()) == dict
-        and len(profile.get_description().items()) == 10
+        type(profile.get_description()) == BaseDescription
+        and len(profile.get_description().to_dict().items()) == 10
     ), "Unexpected result"
     assert "<span class=badge>12</span>" in profile.to_html()

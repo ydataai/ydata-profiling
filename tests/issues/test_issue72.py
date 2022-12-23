@@ -15,9 +15,9 @@ def test_issue72_higher():
     report = pandas_profiling.ProfileReport(df, correlations=None)
     report.config.vars.num.low_categorical_threshold = 2
     # 3 > 2, so numerical
-    assert report.get_description()["variables"]["A"]["type"] == "Numeric"
+    assert report.get_description().variables["A"]["type"] == "Numeric"
     # Strings are always categorical
-    assert report.get_description()["variables"]["B"]["type"] == "Numeric"
+    assert report.get_description().variables["B"]["type"] == "Numeric"
 
 
 def test_issue72_equal():
@@ -30,9 +30,9 @@ def test_issue72_equal():
     )
 
     # 3 == 3, so categorical
-    assert report.get_description()["variables"]["A"]["type"] == "Categorical"
+    assert report.get_description().variables["A"]["type"] == "Categorical"
     # Strings are always categorical
-    assert report.get_description()["variables"]["B"]["type"] == "Categorical"
+    assert report.get_description().variables["B"]["type"] == "Categorical"
 
 
 def test_issue72_lower():
@@ -42,6 +42,6 @@ def test_issue72_lower():
     report.config.vars.num.low_categorical_threshold = 10
 
     # 3 < 10, so categorical
-    assert report.get_description()["variables"]["A"]["type"] == "Categorical"
+    assert report.get_description().variables["A"]["type"] == "Categorical"
     # Strings are always categorical
-    assert report.get_description()["variables"]["B"]["type"] == "Categorical"
+    assert report.get_description().variables["B"]["type"] == "Categorical"

@@ -11,7 +11,7 @@ def data():
     return pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
 
-def test_json(data):
+def test_json(data: pd.DataFrame):
     report = ProfileReport(data)
     report_json = report.to_json()
     data = json.loads(report_json)

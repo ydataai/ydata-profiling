@@ -12,6 +12,11 @@ from pandas_profiling.model.correlations import (
     calculate_correlation,
     get_active_correlations,
 )
+
+from pandas_profiling.model.base_classes.base_description import (
+    BaseDescription,
+    BaseAnalysis,
+)
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
@@ -30,7 +35,7 @@ def describe(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     sample: Optional[dict] = None,
-) -> dict:
+) -> BaseDescription:
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -161,32 +166,18 @@ def describe(
 
         date_end = datetime.utcnow()
 
-    analysis = {
-        "title": config.title,
-        "date_start": date_start,
-        "date_end": date_end,
-        "duration": date_end - date_start,
-    }
+    analysis = BaseAnalysis(config.title, date_start, date_end)
 
-    return {
-        # Analysis metadata
-        "analysis": analysis,
-        # Overall dataset description
-        "table": table_stats,
-        # Per variable descriptions
-        "variables": series_description,
-        # Bivariate relations
-        "scatter": scatter_matrix,
-        # Correlation matrices
-        "correlations": correlations,
-        # Missing values
-        "missing": missing,
-        # Alerts
-        "alerts": alerts,
-        # Package
-        "package": package,
-        # Sample
-        "sample": samples,
-        # Duplicates
-        "duplicates": duplicates,
-    }
+    description = BaseDescription(
+        analysis,
+        table_stats,
+        series_description,
+        scatter_matrix,
+        correlations,
+        missing,
+        alerts,
+        package,
+        samples,
+        duplicates,
+    )
+    return description
