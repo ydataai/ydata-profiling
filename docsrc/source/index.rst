@@ -19,6 +19,7 @@
    pages/use_cases/big_data
    pages/use_cases/sensitive_data
    pages/use_cases/comparing_datasets
+   pages/use_cases/time_series_datasets
    pages/use_cases/metadata
    pages/use_cases/custom_report_appearance
 
