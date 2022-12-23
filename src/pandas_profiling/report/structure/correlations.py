@@ -13,7 +13,9 @@ from pandas_profiling.visualisation import plot
 from pandas_profiling.model.base_classes.base_description import BaseDescription
 
 
-def get_correlation_items(config: Settings, summary: BaseDescription) -> Optional[Renderable]:
+def get_correlation_items(
+    config: Settings, summary: BaseDescription
+) -> Optional[Renderable]:
     """Create the list of correlation items
 
     Args:

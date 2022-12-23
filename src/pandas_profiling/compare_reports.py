@@ -65,7 +65,9 @@ def _update_merge_mixed(d1: Any, d2: Any) -> Union[dict, list, tuple]:
         return _update_merge_seq(d1, d2)
 
 
-def _update_merge(d1: Optional[BaseDescription], d2: BaseDescription) -> BaseDescription:
+def _update_merge(
+    d1: Optional[BaseDescription], d2: BaseDescription
+) -> BaseDescription:
     # For convenience in the loop, allow d1 to be empty initially
     if d1 is None:
         return d2

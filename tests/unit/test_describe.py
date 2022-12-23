@@ -543,7 +543,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
         )
 
     results = describe(config, describe_data_frame, summarizer, typeset)
-    
+
     assert {
         "analysis",
         "table",

@@ -29,10 +29,7 @@ class BaseSummarizer(Handler):
     """
 
     def summarize(
-        self, 
-        config: Settings, 
-        series: pd.Series, 
-        dtype: Type[VisionsBaseType]
+        self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
     ) -> dict:
         """
 
@@ -81,6 +78,7 @@ class PandasProfilingSummarizer(BaseSummarizer):
         }
         super().__init__(summary_map, typeset, *args, **kwargs)
 
+
 def format_summary(summary: Union[BaseDescription, dict]) -> BaseDescription:
     def fmt(v: Any) -> Any:
         if isinstance(v, dict):
@@ -99,8 +97,8 @@ def format_summary(summary: Union[BaseDescription, dict]) -> BaseDescription:
 
     if isinstance(summary, BaseDescription):
         for k, v in summary.to_dict().items():
-            setattr(summary, k, fmt(v)) 
+            setattr(summary, k, fmt(v))
     elif isinstance(summary, dict):
         for k, v in summary.items():
-            summary[k] = fmt(v) 
+            summary[k] = fmt(v)
     return summary

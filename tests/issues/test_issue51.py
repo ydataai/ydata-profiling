@@ -65,8 +65,7 @@ def test_issue51_empty():
     assert (
         "cramers" not in report.get_description().correlations
         or (
-            report.get_description().correlations["cramers"].values
-            == np.ones((3, 3))
+            report.get_description().correlations["cramers"].values == np.ones((3, 3))
         ).all()
     )
 

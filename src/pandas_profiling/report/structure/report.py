@@ -67,7 +67,9 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
     return items
 
 
-def render_variables_section(config: Settings, dataframe_summary: BaseDescription) -> list:
+def render_variables_section(
+    config: Settings, dataframe_summary: BaseDescription
+) -> list:
     """Render the HTML for each of the variables in the DataFrame.
 
     Args:
