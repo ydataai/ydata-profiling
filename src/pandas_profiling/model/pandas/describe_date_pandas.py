@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -17,8 +17,11 @@ from pandas_profiling.model.summary_algorithms import (
 @series_hashable
 @series_handle_nulls
 def pandas_describe_date_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Describe a date series.
 
     Args:
@@ -44,4 +47,4 @@ def pandas_describe_date_1d(
         summary["chi_squared"] = chi_square(values)
 
     summary.update(histogram_compute(config, values, summary["n_distinct"]))
-    return config, values, summary
+    return config, values, summary, target_col

@@ -13,7 +13,7 @@ from pandas_profiling.model.correlations import (
     get_active_correlations,
 )
 
-from pandas_profiling.model.base_classes.base_description import (
+from pandas_profiling.model.base.base_description import (
     BaseDescription,
     BaseAnalysis,
 )

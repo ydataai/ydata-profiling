@@ -5,7 +5,7 @@ import pandas as pd
 from visions import VisionsBaseType, VisionsTypeset
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.base_classes.base_description import BaseDescription
+from pandas_profiling.model.base.base_description import BaseDescription
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -29,14 +29,20 @@ class BaseSummarizer(Handler):
     """
 
     def summarize(
-        self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
+        self,
+        config: Settings,
+        series: pd.Series,
+        dtype: Type[VisionsBaseType],
+        target_col: Optional[pd.Series] = None,
     ) -> dict:
         """
 
         Returns:
             object:
         """
-        _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
+        _, _, summary, _ = self.handle(
+            str(dtype), config, series, {"type": str(dtype)}, target_col
+        )
         return summary
 
 

@@ -47,7 +47,7 @@ def test_describe_unique(data, expected, summarizer, typeset):
     """Test the unique feature of 1D data"""
     config = Settings()
     config.vars.num.low_categorical_threshold = 0
-
+    
     desc_1d = describe_1d(config, data, summarizer, typeset)
     if expected["is_unique"] is not None:
         assert (
@@ -568,7 +568,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
 
         assert (
             test_condition
-        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+        ), f"Value `{results.variables[column][k]}` for key `{k}` in column `{column}` is not NaN"
 
     if results.variables[column]["type"] in ["Numeric", "DateTime"]:
         assert (

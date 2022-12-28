@@ -7,7 +7,7 @@ from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.utils.dataframe import slugify
-from pandas_profiling.model.base_classes.base_description import BaseDescription
+from pandas_profiling.model.base.base_description import BaseDescription
 
 
 class ExpectationHandler(Handler):

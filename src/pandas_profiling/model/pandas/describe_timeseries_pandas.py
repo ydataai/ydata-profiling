@@ -1,4 +1,4 @@
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -145,8 +145,11 @@ def get_fft_peaks(
 @series_hashable
 @series_handle_nulls
 def pandas_describe_timeseries_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Describe a timeseries.
 
     Args:
@@ -157,7 +160,7 @@ def pandas_describe_timeseries_1d(
     Returns:
         A dict containing calculated series description values.
     """
-    config, series, stats = describe_numeric_1d(config, series, summary)
+    config, series, stats, _ = describe_numeric_1d(config, series, summary)
 
     stats["seasonal"] = seasonality_test(series)["seasonality_presence"]
     is_stationary, p_value = stationarity_test(config, series)
@@ -165,4 +168,4 @@ def pandas_describe_timeseries_1d(
     stats["addfuller"] = p_value
     stats["series"] = series
 
-    return config, series, stats
+    return config, series, stats, target_col

@@ -1,7 +1,7 @@
 from functools import reduce
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Sequence, Optional
 from pandas_profiling.config import Settings
-
+import pandas as pd
 import networkx as nx
 from visions import VisionsTypeset
 
@@ -52,7 +52,16 @@ class Handler:
                 self.mapping[str(from_type)] + self.mapping[str(to_type)]
             )
 
-    def handle(self, dtype: str, *args, **kwargs) -> dict:
+    def handle(
+        self,
+        dtype: str,
+        config: Settings,
+        series: pd.Series,
+        summary: dict,
+        target_col: Optional[pd.Series] = None,
+        *args,
+        **kwargs
+    ) -> dict:
         """
 
         Returns:
@@ -60,7 +69,7 @@ class Handler:
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)
-        return op(*args)
+        return op(config, series, summary, target_col)
 
 
 def get_render_map() -> Dict[str, Callable[[Settings, Dict[str, Any]], Dict]]:

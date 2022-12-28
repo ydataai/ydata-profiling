@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pandas as pd
 
@@ -8,8 +8,11 @@ from pandas_profiling.model.summary_algorithms import describe_generic
 
 @describe_generic.register
 def pandas_describe_generic(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Describe generic series.
 
     Args:
@@ -33,4 +36,4 @@ def pandas_describe_generic(
         }
     )
 
-    return config, series, summary
+    return config, series, summary, target_col

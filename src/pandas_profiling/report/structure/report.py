@@ -2,7 +2,7 @@
 from typing import List, Sequence
 
 import pandas as pd
-from pandas_profiling.model.base_classes.base_description import BaseDescription
+from pandas_profiling.model.base.base_description import BaseDescription
 from tqdm.auto import tqdm
 
 from pandas_profiling.config import Settings

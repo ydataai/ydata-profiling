@@ -23,7 +23,11 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import cat_frequency_plot, histogram
+from pandas_profiling.visualisation.plot import (
+    cat_frequency_plot,
+    histogram,
+    plot_categories,
+)
 
 
 def render_categorical_frequency(
@@ -388,7 +392,15 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         redact=config.vars.cat.redact,
     )
 
-    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
+    mini_freq_table = Image(
+        plot_categories(config, summary["plot_description"]),
+        image_format=image_format,
+        alt="Mini histogram",
+    )
+
+    template_variables["top"] = Container(
+        [info, table, fqm, mini_freq_table], sequence_type="grid"
+    )
 
     # ============================================================================================
 

@@ -5,7 +5,7 @@ import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.profile_report import ProfileReport
-from pandas_profiling.model.base_classes.base_description import BaseDescription
+from pandas_profiling.model.base.base_description import BaseDescription
 
 
 def _should_wrap(v1: Any, v2: Any) -> bool:

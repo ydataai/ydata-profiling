@@ -28,6 +28,12 @@ def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         The preprocessed DataFrame
     """
+
+    # check, if target column is in dataframe
+    if config.target_col is not None:
+        if config.target_col not in df:
+            raise KeyError(f"target column '{config.target_col}' is not in dataframe.")
+
     # Rename reserved column names
     df = rename_index(df)
 

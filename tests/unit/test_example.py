@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling import ProfileReport
-from pandas_profiling.model.base_classes.base_description import BaseDescription
+from pandas_profiling.model.base.base_description import BaseDescription
 
 
 def test_example(get_data_file, test_output_dir):

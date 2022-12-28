@@ -280,6 +280,9 @@ class Settings(BaseSettings):
     variables: Variables = Variables()
     infer_dtypes: bool = True
 
+    # column name for supervised profiling
+    target_col: Optional[str] = None
+
     # Show the description at each variable (in addition to the overview tab)
     show_variable_description: bool = True
 

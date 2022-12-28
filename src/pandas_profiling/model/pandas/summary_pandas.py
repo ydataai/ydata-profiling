@@ -2,7 +2,7 @@
 
 import multiprocessing
 import multiprocessing.pool
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -21,6 +21,7 @@ def pandas_describe_1d(
     series: pd.Series,
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
+    target_col: Optional[pd.Series] = None,
 ) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
@@ -47,7 +48,7 @@ def pandas_describe_1d(
         # [new dtypes, changed using `astype` function are now considered]
         vtype = typeset.detect_type(series)
 
-    return summarizer.summarize(config, series, dtype=vtype)
+    return summarizer.summarize(config, series, dtype=vtype, target_col=target_col)
 
 
 @get_series_descriptions.register
@@ -69,9 +70,14 @@ def pandas_get_series_descriptions(
             A tuple with column and the series description.
         """
         column, series = args
-        return column, describe_1d(config, series, summarizer, typeset)
+        return column, describe_1d(config, series, summarizer, typeset, target_col)
 
     pool_size = config.pool_size
+
+    if config.target_col is not None:
+        target_col = df[config.target_col]
+    else:
+        target_col = None
 
     # Multiprocessing of Describe 1D for each column
     if pool_size <= 0:

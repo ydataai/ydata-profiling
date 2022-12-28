@@ -243,8 +243,11 @@ def image_summary(series: pd.Series, exif: bool = False, hash: bool = False) -> 
 
 @describe_image_1d.register
 def pandas_describe_image_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     if series.hasnans:
         raise ValueError("May not contain NaNs")
     if not hasattr(series, "str"):
@@ -252,4 +255,4 @@ def pandas_describe_image_1d(
 
     summary.update(image_summary(series, config.vars.image.exif))
 
-    return config, series, summary
+    return config, series, summary, target_col

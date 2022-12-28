@@ -16,6 +16,7 @@ def describe_1d(
     series: Any,
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
+    target_col: Any,
 ) -> dict:
     raise NotImplementedError()
 

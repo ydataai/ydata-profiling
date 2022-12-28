@@ -6,6 +6,7 @@ import matplotlib
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import seaborn.objects as so
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
@@ -15,6 +16,7 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from typeguard import typechecked
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.base.plot_description import BasePlotDescription
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
@@ -22,6 +24,33 @@ from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
 
 def format_fn(tick_val: int, tick_pos: Any) -> str:
     return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _plot_categories(
+    plot_description: BasePlotDescription,
+    figsize: Tuple[float, float] = (6, 4),
+) -> plt.Figure:
+    data_col = plot_description.data_col
+    target_col = plot_description.target_col
+    preprocessed_data = plot_description.preprocessed_plot
+    p = so.Plot(preprocessed_data, x="count", y=data_col, text="count")
+    # supervised plot
+    if target_col is not None and target_col in preprocessed_data:
+        p = p.add(so.Bar(alpha=1), color=target_col)
+    # unsupervised plot
+    else:
+        p = p.add(so.Bar(alpha=1)).add(
+            so.Text({"fontweight": "bold"}, color="w", halign="right")
+        )
+    p = (
+        p.layout(size=figsize)
+        .theme({"axes.facecolor": "w"})
+        .label(
+            x="",
+            y="",
+        )
+    )
+    return p.plot(pyplot=True)
 
 
 def _plot_histogram(
@@ -99,6 +128,15 @@ def _plot_histogram(
             plot.set_xticklabels([])
 
     return plot
+
+
+@manage_matplotlib_context()
+def plot_categories(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    plot = _plot_categories(plot_description, figsize=(3, 2.25))
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
