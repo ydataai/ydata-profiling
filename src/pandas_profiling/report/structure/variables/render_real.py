@@ -14,7 +14,11 @@ from pandas_profiling.report.presentation.core import (
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import histogram, mini_histogram
+from pandas_profiling.visualisation.plot import (
+    histogram,
+    mini_histogram,
+    plot_histogram,
+)
 
 
 def render_real(config: Settings, summary: dict) -> dict:
@@ -135,8 +139,14 @@ def render_real(config: Settings, summary: dict) -> dict:
             alt="Mini histogram",
         )
 
+    mini_histo_so = Image(
+        plot_histogram(config, summary["plot_description"]),
+        image_format=image_format,
+        alt="Mini histogram",
+    )
+
     template_variables["top"] = Container(
-        [info, table1, table2, mini_histo], sequence_type="grid"
+        [info, table1, table2, mini_histo, mini_histo_so], sequence_type="grid"
     )
 
     quantile_statistics = Table(

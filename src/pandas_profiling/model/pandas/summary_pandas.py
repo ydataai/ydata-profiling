@@ -75,7 +75,7 @@ def pandas_get_series_descriptions(
     pool_size = config.pool_size
 
     if config.target_col is not None:
-        target_col = df[config.target_col]
+        target_col = df[config.target_col].astype(str)
     else:
         target_col = None
 

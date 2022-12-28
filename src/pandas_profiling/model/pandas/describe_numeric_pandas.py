@@ -11,6 +11,9 @@ else:
     from pandas.core.arrays.integer import _IntegerDtype as IntegerDtype
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.pandas.plot_description_pandas import (
+    NumericPlotDescriptionPandas,
+)
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
     describe_numeric_1d,
@@ -161,6 +164,10 @@ def pandas_describe_numeric_1d(
             summary["n_distinct"],
             weights=value_counts[~infinity_index].values,
         )
+    )
+
+    stats["plot_description"] = NumericPlotDescriptionPandas(
+        series, target_col, config.plot.histogram.bins
     )
 
     return config, series, stats, target_col

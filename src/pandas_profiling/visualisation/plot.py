@@ -32,16 +32,42 @@ def _plot_categories(
 ) -> plt.Figure:
     data_col = plot_description.data_col
     target_col = plot_description.target_col
+    count_col = plot_description.get_count_col_name()
     preprocessed_data = plot_description.preprocessed_plot
-    p = so.Plot(preprocessed_data, x="count", y=data_col, text="count")
+
+    p = so.Plot(preprocessed_data, x=count_col, y=data_col, text=count_col)
     # supervised plot
-    if target_col is not None and target_col in preprocessed_data:
+    if target_col is not None:
         p = p.add(so.Bar(alpha=1), color=target_col)
     # unsupervised plot
     else:
         p = p.add(so.Bar(alpha=1)).add(
             so.Text({"fontweight": "bold"}, color="w", halign="right")
         )
+    p = (
+        p.layout(size=figsize)
+        .theme({"axes.facecolor": "w"})
+        .label(
+            x="",
+        )
+    )
+    return p.plot(pyplot=True)
+
+
+def _plot_histogram_so(
+    plot_description: BasePlotDescription,
+    figsize: Tuple[float, float] = (6, 4),
+) -> plt.Figure:
+    data_col = plot_description.data_col
+    target_col = plot_description.target_col
+    count_col = plot_description.get_count_col_name()
+    preprocessed_data = plot_description.preprocessed_plot
+
+    p = so.Plot(preprocessed_data, x=data_col, y=count_col)
+    if target_col is not None:
+        p = p.add(so.Bars(alpha=1), color=target_col)
+    else:
+        p = p.add(so.Bars(alpha=1))
     p = (
         p.layout(size=figsize)
         .theme({"axes.facecolor": "w"})
@@ -136,6 +162,15 @@ def plot_categories(
     plot_description: BasePlotDescription,
 ) -> str:
     plot = _plot_categories(plot_description, figsize=(3, 2.25))
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_histogram(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    plot = _plot_histogram_so(plot_description, figsize=(3, 2.25))
     return plot_360_n0sc0pe(config)
 
 

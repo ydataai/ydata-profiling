@@ -22,6 +22,7 @@ class BasePlotDescription:
         target_col: str | None
             column name of target col (if not None, needs to be in preprocessed plot)
         """
+        preprocessed_plot.reset_index(inplace=True, drop=True)
         self._preprocessed_plot = preprocessed_plot
         self._data_col = data_col_name
         self._target_col = target_col_name
@@ -40,6 +41,24 @@ class BasePlotDescription:
     def data_col(self):
         return self._data_col
 
+    @classmethod
+    def prepare_data_col(cls, data_col: pd.Series) -> str:
+        """Fill col name, if None.
 
-class PlotDescriptionCategorical(BasePlotDescription):
-    pass
+        Returns column name
+        """
+        if data_col.name is None:
+            data_col.name = "data_col"
+        return str(data_col.name)
+
+    @classmethod
+    def prepare_target_col(cls, target_col: Optional[pd.Series]):
+        if target_col is None:
+            return None
+        if target_col.name is None:
+            target_col.name = "target_col"
+        return str(target_col.name)
+
+    @classmethod
+    def get_count_col_name(cls) -> str:
+        return "count"
