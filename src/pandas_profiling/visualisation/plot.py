@@ -31,7 +31,6 @@ def _plot_histogram(
     figsize: tuple = (6, 4),
     date: bool = False,
     hide_yaxis: bool = False,
-    vertically: bool = True,
 ) -> plt.Figure:
     """Plot a histogram from the data and return the AxesSubplot object.
 
@@ -41,7 +40,6 @@ def _plot_histogram(
         bins: number of bins (int for equal size, ndarray for variable size)
         figsize: The size of the figure (width, height) in inches, default (6,4)
         date: is the x-axis of date type
-        vertically: display the histograms vertically if true, and horizontally otherwhise
 
     Returns:
         The histogram plot.
@@ -121,7 +119,7 @@ def histogram(
 
     """
     plot = _plot_histogram(
-        config, series, bins, date=date, figsize=(7, 3), vertically=False
+        config, series, bins, date=date, figsize=(7, 3)
     )
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
