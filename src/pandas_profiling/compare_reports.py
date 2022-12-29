@@ -229,12 +229,14 @@ def _is_alert_present(alert, alert_list):
 
 def _create_placehoder_alerts(report_alerts: tuple) -> tuple:
     from copy import copy
+
     fixed = [[] for _ in report_alerts]
     for idx, alerts in enumerate(report_alerts):
         for alert in alerts:
             fixed[idx].append(alert)
             for i, fix in enumerate(fixed):
-                if i == idx: continue
+                if i == idx:
+                    continue
                 if not _is_alert_present(alert, report_alerts[i]):
                     empty_alert = copy(alert)
                     empty_alert._is_empty = True
