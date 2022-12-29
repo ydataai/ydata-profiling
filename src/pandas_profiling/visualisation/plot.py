@@ -49,24 +49,17 @@ def _plot_histogram(
     # we have precomputed the histograms...
     if isinstance(bins, list):
         n_labels = len(config.html.style._labels)
-        if vertically:
-            fig, ax = plt.subplots(
-                nrows=n_labels, ncols=1, sharex=True, sharey=True, figsize=figsize
-            )
-        else:
-            fig, ax = plt.subplots(
-                nrows=1, ncols=n_labels, sharex=True, sharey=True, figsize=figsize
-            )
+        fig = plt.figure(figsize=figsize)
+        plot = fig.add_subplot(111)
 
-        for idx in range(n_labels):
-            plot = ax[idx]
-
+        for idx in reversed(list(range(n_labels))):
             diff = np.diff(bins[idx])
             plot.bar(
                 bins[idx][:-1] + diff / 2,  # type: ignore
                 series[idx],
                 diff,
                 facecolor=config.html.style.primary_colors[idx],
+                alpha=0.6,
             )
 
             if date:
