@@ -2,11 +2,13 @@ import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
+
 if TYPE_CHECKING:
     from pandas_profiling.profile_report import ProfileReport
 
 from pandas_profiling.config import Settings
 from pandas_profiling.report.presentation.core import Root
+from pandas_profiling.model.base.base_description import BaseDescription
 from pandas_profiling.version import __version__
 
 
@@ -65,14 +67,14 @@ class SerializeReport:
                 loaded_report,
             ) = pickle.loads(data)
         except Exception as e:
-            raise ValueError("Failed to load data") from e
+            raise ValueError("Failed to load data", e) from e
 
         if not all(
             (
                 df_hash is None or isinstance(df_hash, str),
                 isinstance(loaded_config, Settings),
                 loaded_description_set is None
-                or isinstance(loaded_description_set, dict),
+                or isinstance(loaded_description_set, BaseDescription),
                 loaded_report is None or isinstance(loaded_report, Root),
             )
         ):
@@ -101,7 +103,7 @@ class SerializeReport:
             # warn if version not equal
             if (
                 loaded_description_set is not None
-                and loaded_description_set["package"]["pandas_profiling_version"]
+                and loaded_description_set.package["pandas_profiling_version"]
                 != __version__
             ):
                 warnings.warn(

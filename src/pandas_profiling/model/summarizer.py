@@ -6,6 +6,7 @@ from visions import VisionsBaseType, VisionsTypeset
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.base.base_description import BaseDescription
+from pandas_profiling.model.base.serializable import SerializableInterface
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -85,26 +86,26 @@ class PandasProfilingSummarizer(BaseSummarizer):
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
-def format_summary(summary: Union[BaseDescription, dict]) -> BaseDescription:
+def format_summary(summary: Union[BaseDescription, dict]) -> Dict:
     def fmt(v: Any) -> Any:
         if isinstance(v, dict):
             return {k: fmt(va) for k, va in v.items()}
-        else:
-            if isinstance(v, pd.Series):
-                return fmt(v.to_dict())
-            elif (
-                isinstance(v, tuple)
-                and len(v) == 2
-                and all(isinstance(x, np.ndarray) for x in v)
-            ):
-                return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
-            else:
-                return v
+        if isinstance(v, pd.Series):
+            return fmt(v.to_dict())
+        if (
+            isinstance(v, tuple)
+            and len(v) == 2
+            and all(isinstance(x, np.ndarray) for x in v)
+        ):
+            return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
+        if isinstance(v, SerializableInterface):
+            v2 = v.to_dict()
+            return fmt(v2)
+        return v
 
     if isinstance(summary, BaseDescription):
-        for k, v in summary.to_dict().items():
-            setattr(summary, k, fmt(v))
-    elif isinstance(summary, dict):
-        for k, v in summary.items():
-            summary[k] = fmt(v)
+        summary = summary.to_dict()
+
+    summary = {k: fmt(v) for k, v in summary.items()}
+
     return summary

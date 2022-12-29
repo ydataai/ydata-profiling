@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Any, Dict, Optional
 import pandas as pd
+from pandas_profiling.model.base.serializable import SerializableInterface
 
 
-class BasePlotDescription:
+class BasePlotDescription(SerializableInterface):
     def __init__(
         self,
         preprocessed_plot: pd.DataFrame,
@@ -62,3 +63,10 @@ class BasePlotDescription:
     @classmethod
     def get_count_col_name(cls) -> str:
         return "count"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "preprocessed_plot": self.preprocessed_plot,
+            "target_col": self.target_col,
+            "data_col": self.data_col,
+        }

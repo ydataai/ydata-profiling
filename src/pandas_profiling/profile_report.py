@@ -379,8 +379,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def _render_json(self) -> str:
         def encode_it(o: Any) -> Any:
-            if isinstance(o, BaseDescription):
-                return {encode_it(k): encode_it(v) for k, v in o.to_dict().items()}
+            if isinstance(o, dict):
+                return {encode_it(k): encode_it(v) for k, v in o.items()}
             else:
                 if isinstance(o, (bool, int, float, str)):
                     return o
@@ -405,6 +405,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             total=1, desc="Render JSON", disable=not self.config.progress_bar
         ) as pbar:
             description = format_summary(description)
+            print(description.keys())
             description = encode_it(description)
             data = json.dumps(description, indent=4)
             pbar.update()

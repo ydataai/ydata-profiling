@@ -1,8 +1,10 @@
 from datetime import datetime
 from typing import Any, Dict
 
+from pandas_profiling.model.base.serializable import SerializableInterface
 
-class BaseAnalysis:
+
+class BaseAnalysis(SerializableInterface):
     def __init__(self, title: str, date_start: datetime, date_end: datetime) -> None:
         self.title = title
         self.date_start = date_start
@@ -12,8 +14,16 @@ class BaseAnalysis:
     def duration(self):
         return self.date_end - self.date_start
 
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "title": self.title,
+            "date_start": self.date_start,
+            "date_end": self.date_end,
+            "duration": self.duration,
+        }
 
-class BaseDescription:
+
+class BaseDescription(SerializableInterface):
     def __init__(
         self,
         analysis: BaseAnalysis,
