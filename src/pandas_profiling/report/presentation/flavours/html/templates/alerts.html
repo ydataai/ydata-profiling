@@ -16,7 +16,7 @@
                     <tr{% if loop.first %} style="border-top:0"{% endif %}>
                         {% for alert in value %}
                             <td>
-                                {% if alert is not none %}
+                                {% if not alert._is_empty %}
                                     {% include 'alerts/alert_' + alert.alert_type.name | lower  + '.html'  %}
                                 {% else %}
                                     <em>Alert not present in {{ style._labels[idx] }}</em>

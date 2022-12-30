@@ -220,6 +220,30 @@ def _apply_config(description: dict, config: Settings) -> dict:
     return description
 
 
+def _is_alert_present(alert, alert_list):
+    for a in alert_list:
+        if a.column_name == alert.column_name and a.alert_type == alert.alert_type:
+            return True
+    return False
+
+
+def _create_placehoder_alerts(report_alerts: tuple) -> tuple:
+    from copy import copy
+
+    fixed = [[] for _ in report_alerts]
+    for idx, alerts in enumerate(report_alerts):
+        for alert in alerts:
+            fixed[idx].append(alert)
+            for i, fix in enumerate(fixed):
+                if i == idx:
+                    continue
+                if not _is_alert_present(alert, report_alerts[i]):
+                    empty_alert = copy(alert)
+                    empty_alert._is_empty = True
+                    fix.append(empty_alert)
+    return tuple(fixed)
+
+
 def compare(
     reports: List[ProfileReport],
     config: Optional[Settings] = None,
@@ -279,7 +303,7 @@ def compare(
         res = _update_merge(res, r)
 
     res["analysis"]["title"] = _compare_title(res["analysis"]["title"])
-
+    res["alerts"] = _create_placehoder_alerts(res["alerts"])
     profile = ProfileReport(None, config=_config)
     profile._description_set = res
     return profile
