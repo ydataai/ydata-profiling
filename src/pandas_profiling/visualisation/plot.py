@@ -31,7 +31,6 @@ def _plot_histogram(
     figsize: tuple = (6, 4),
     date: bool = False,
     hide_yaxis: bool = False,
-    vertically: bool = True,
 ) -> plt.Figure:
     """Plot a histogram from the data and return the AxesSubplot object.
 
@@ -41,7 +40,6 @@ def _plot_histogram(
         bins: number of bins (int for equal size, ndarray for variable size)
         figsize: The size of the figure (width, height) in inches, default (6,4)
         date: is the x-axis of date type
-        vertically: display the histograms vertically if true, and horizontally otherwhise
 
     Returns:
         The histogram plot.
@@ -49,24 +47,17 @@ def _plot_histogram(
     # we have precomputed the histograms...
     if isinstance(bins, list):
         n_labels = len(config.html.style._labels)
-        if vertically:
-            fig, ax = plt.subplots(
-                nrows=n_labels, ncols=1, sharex=True, sharey=True, figsize=figsize
-            )
-        else:
-            fig, ax = plt.subplots(
-                nrows=1, ncols=n_labels, sharex=True, sharey=True, figsize=figsize
-            )
+        fig = plt.figure(figsize=figsize)
+        plot = fig.add_subplot(111)
 
-        for idx in range(n_labels):
-            plot = ax[idx]
-
+        for idx in reversed(list(range(n_labels))):
             diff = np.diff(bins[idx])
             plot.bar(
                 bins[idx][:-1] + diff / 2,  # type: ignore
                 series[idx],
                 diff,
                 facecolor=config.html.style.primary_colors[idx],
+                alpha=0.6,
             )
 
             if date:
@@ -127,9 +118,7 @@ def histogram(
       The resulting histogram encoded as a string.
 
     """
-    plot = _plot_histogram(
-        config, series, bins, date=date, figsize=(7, 3), vertically=False
-    )
+    plot = _plot_histogram(config, series, bins, date=date, figsize=(7, 3))
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
     return plot_360_n0sc0pe(config)
