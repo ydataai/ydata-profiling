@@ -80,6 +80,7 @@ class Alert:
         values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         fields: Optional[Set] = None,
+        is_empty: bool = False,
     ):
         if values is None:
             values = {}
@@ -90,6 +91,7 @@ class Alert:
         self.alert_type = alert_type
         self.values = values
         self.column_name = column_name
+        self._is_empty = is_empty
 
     @property
     def alert_type_name(self) -> str:
