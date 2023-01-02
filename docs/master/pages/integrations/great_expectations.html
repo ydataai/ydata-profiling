@@ -211,7 +211,7 @@ Generating expectations takes place in two steps:</p>
 </ul>
 <p>Adding an expectation to columns with constant length can be achieved for instance using this code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fixed_length</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add a length expectation to columns with constant length values&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a length expectation to columns with constant length values&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">summary</span><span class="p">[</span><span class="s2">&quot;min_length&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">summary</span><span class="p">[</span><span class="s2">&quot;max_length&quot;</span><span class="p">]:</span>
         <span class="n">batch</span><span class="o">.</span><span class="n">expect_column_value_lengths_to_equal</span><span class="p">(</span><span class="n">summary</span><span class="p">[</span><span class="s2">&quot;min_length&quot;</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">batch</span>
@@ -256,7 +256,7 @@ Generating expectations takes place in two steps:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, YData Labs Inc.</p>
+    <p>&#169; Copyright 2023, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

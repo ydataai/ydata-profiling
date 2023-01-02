@@ -164,11 +164,11 @@
 <section id="command-line-usage">
 <h2>Command line usage<a class="headerlink" href="#command-line-usage" title="Permalink to this heading"></a></h2>
 <p>For standard formatted CSV files (which can be read directly by pandas without additional settings), the <code class="docutils literal notranslate"><span class="pre">pandas_profiling</span></code> executable can be used in the command line. The example below generates a report named <em>Example Profiling Report</em>, using a configuration file called <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code>, in the file <code class="docutils literal notranslate"><span class="pre">report.html</span></code> by processing a <code class="docutils literal notranslate"><span class="pre">data.csv</span></code> dataset.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pandas_profiling --title <span class="s2">&quot;Example Profiling Report&quot;</span> --config_file default.yaml data.csv report.html
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pandas_profiling<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;Example Profiling Report&quot;</span><span class="w"> </span>--config_file<span class="w"> </span>default.yaml<span class="w"> </span>data.csv<span class="w"> </span>report.html
 </pre></div>
 </div>
 <p>Information about all available options and arguments can be viewed through the command below. The CLI allows defining input and output filenames, setting a custom report title, specifying <a class="reference internal" href="../advanced_usage/changing_settings.html"><span class="doc">a configuration file for custom behaviour</span></a> and control other advanced aspects of the experience.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pandas_profiling -h
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pandas_profiling<span class="w"> </span>-h
 </pre></div>
 </div>
 <figure class="align-center" id="id1">
@@ -201,7 +201,7 @@ The exact settings used in this explorative configuration file can be compared w
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, YData Labs Inc.</p>
+    <p>&#169; Copyright 2023, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

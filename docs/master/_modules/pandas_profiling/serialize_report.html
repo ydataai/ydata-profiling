@@ -123,7 +123,7 @@
 
 
 <div class="viewcode-block" id="SerializeReport"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.serialize_report.SerializeReport.html#pandas_profiling.serialize_report.SerializeReport">[docs]</a><span class="k">class</span> <span class="nc">SerializeReport</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Extend the report to be able to dump and load reports.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extend the report to be able to dump and load reports.&quot;&quot;&quot;</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">config</span> <span class="o">=</span> <span class="kc">None</span>
@@ -136,7 +136,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Serialize ProfileReport and return bytes for reproducing ProfileReport or Caching.</span>
 
 <span class="sd">        Returns:</span>
@@ -155,7 +155,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="s2">&quot;SerializeReport&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deserialize the serialized report</span>
 
 <span class="sd">        Args:</span>
@@ -229,7 +229,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump ProfileReport to file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
@@ -241,7 +241,7 @@
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">load_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="s2">&quot;SerializeReport&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load ProfileReport from file</span>
 
 <span class="sd">        Raises:</span>
@@ -261,7 +261,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, YData Labs Inc.</p>
+    <p>&#169; Copyright 2023, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

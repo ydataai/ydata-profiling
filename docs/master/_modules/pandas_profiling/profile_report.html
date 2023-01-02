@@ -145,7 +145,7 @@
 
 <div class="viewcode-block" id="ProfileReport"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.profile_report.ProfileReport.html#pandas_profiling.profile_report.ProfileReport">[docs]</a><span class="nd">@typechecked</span>
 <span class="k">class</span> <span class="nc">ProfileReport</span><span class="p">(</span><span class="n">SerializeReport</span><span class="p">,</span> <span class="n">ExpectationsReport</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate a profile report from a Dataset stored as a pandas `DataFrame`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a profile report from a Dataset stored as a pandas `DataFrame`.</span>
 
 <span class="sd">    Used as is, it will output its content as an HTML report in a Jupyter notebook.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -175,7 +175,7 @@
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Settings</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a ProfileReport based on a pandas DataFrame</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a ProfileReport based on a pandas DataFrame</span>
 
 <span class="sd">        Config processing order (in case of duplicate entries, entries later in the order are retained):</span>
 <span class="sd">        - config presets (e.g. `config_file`, `minimal` arguments)</span>
@@ -269,7 +269,7 @@
             <span class="k">return</span> <span class="n">df</span>
 
     <span class="k">def</span> <span class="nf">invalidate_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Invalidate report cache. Useful after changing setting.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invalidate report cache. Useful after changing setting.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            subset:</span>
@@ -359,7 +359,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgets</span>
 
     <span class="k">def</span> <span class="nf">get_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get duplicate rows and counts based on the configuration</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get duplicate rows and counts based on the configuration</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A DataFrame with the duplicate rows and their counts.</span>
@@ -367,7 +367,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;duplicates&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get head/tail samples based on the configuration</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get head/tail samples based on the configuration</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A dict with the head and tail samples.</span>
@@ -375,7 +375,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the description (a raw statistical summary) of the dataset.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the description (a raw statistical summary) of the dataset.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict containing a description for each variable in the DataFrame.</span>
@@ -383,7 +383,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span>
 
     <span class="k">def</span> <span class="nf">get_rejected_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get variables that are rejected for analysis (e.g. constant, mixed data types)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get variables that are rejected for analysis (e.g. constant, mixed data types)</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            a set of column names that are unsupported</span>
@@ -395,7 +395,7 @@
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">silent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Write the report to a file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the report to a file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            output_file: The name or the path of the file to generate including the extension (.html, .json).</span>
@@ -517,7 +517,7 @@
         <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">to_html</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Generate and return complete template as lengthy string</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate and return complete template as lengthy string</span>
 <span class="sd">            for using with frameworks.</span>
 
 <span class="sd">        Returns:</span>
@@ -527,7 +527,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">html</span>
 
     <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Represent the ProfileReport as a JSON string</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represent the ProfileReport as a JSON string</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            JSON string</span>
@@ -536,7 +536,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span>
 
     <span class="k">def</span> <span class="nf">to_notebook_iframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Used to output the HTML representation to a Jupyter notebook.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Used to output the HTML representation to a Jupyter notebook.</span>
 <span class="sd">        When config.notebook.iframe.attribute is &quot;src&quot;, this function creates a temporary HTML file</span>
 <span class="sd">        in `./tmp/profile_[hash].html` and returns an Iframe pointing to that contents.</span>
 <span class="sd">        When config.notebook.iframe.attribute is &quot;srcdoc&quot;, the same HTML is injected in the &quot;srcdoc&quot; attribute of</span>
@@ -557,7 +557,7 @@
             <span class="n">display</span><span class="p">(</span><span class="n">get_notebook_iframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">to_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The ipython notebook widgets user interface.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The ipython notebook widgets user interface.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">files</span>  <span class="c1"># noqa: F401</span>
 
@@ -573,17 +573,17 @@
         <span class="n">display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The ipython notebook widgets user interface gets called by the jupyter notebook.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The ipython notebook widgets user interface gets called by the jupyter notebook.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">to_notebook_iframe</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Override so that Jupyter Notebook does not print the object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override so that Jupyter Notebook does not print the object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Settings</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ProfileReport&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Compare this report with another ProfileReport</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare this report with another ProfileReport</span>
 <span class="sd">        Alias for:</span>
 <span class="sd">        ```</span>
 <span class="sd">        pandas_profiling.compare([report1, report2], config=config)</span>
@@ -609,7 +609,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, YData Labs Inc.</p>
+    <p>&#169; Copyright 2023, YData Labs Inc.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
