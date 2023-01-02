@@ -4,6 +4,7 @@ from typing import Any, List, Optional, Tuple, Union
 import pandas as pd
 
 from pandas_profiling.config import Correlation, Settings
+from pandas_profiling.model.alerts import Alert
 from pandas_profiling.profile_report import ProfileReport
 
 
@@ -220,17 +221,17 @@ def _apply_config(description: dict, config: Settings) -> dict:
     return description
 
 
-def _is_alert_present(alert, alert_list):
-    for a in alert_list:
-        if a.column_name == alert.column_name and a.alert_type == alert.alert_type:
-            return True
-    return False
+def _is_alert_present(alert: Alert, alert_list: list) -> bool:
+    return any(
+        a.column_name == alert.column_name and a.alert_type == alert.alert_type
+        for a in alert_list
+    )
 
 
 def _create_placehoder_alerts(report_alerts: tuple) -> tuple:
     from copy import copy
 
-    fixed = [[] for _ in report_alerts]
+    fixed: list = [[] for _ in report_alerts]
     for idx, alerts in enumerate(report_alerts):
         for alert in alerts:
             fixed[idx].append(alert)
