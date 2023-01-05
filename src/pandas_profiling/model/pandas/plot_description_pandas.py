@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
-import pandas as pd
-import numpy as np
 
+import numpy as np
+import pandas as pd
 from pandas_profiling.model.base.plot_description import BasePlotDescription
 
 
@@ -10,10 +10,11 @@ class CategoricalPlotDescriptionPandas(BasePlotDescription):
         self, data_col: pd.Series, target_col: Optional[pd.Series], max_cat_to_plot: int
     ) -> None:
         """Prepare data for plotting"""
-        __count_col_name = self.get_count_col_name()
+        __count_col_name = self.count_col_name
         __other_placeholder = "other ..."
         data_col_name = self.prepare_data_col(data_col)
         target_col_name = self.prepare_target_col(target_col)
+
         # we have 2 different columns
         if target_col is not None and data_col_name != target_col_name:
             # join columns by id
@@ -50,6 +51,15 @@ class CategoricalPlotDescriptionPandas(BasePlotDescription):
             preprocessed = pd.concat([preprocessed, other])
         super().__init__(preprocessed, data_col_name, target_col_name)
 
+    def get_labels_location(self) -> pd.Series:
+        _col_name = "labels_location"
+        _df = self.preprocessed_plot[self.count_col_name].to_frame()
+        _df[_col_name] = "right"
+        _df.loc[
+            _df[self.count_col_name] < _df[self.count_col_name].max() / 4, _col_name
+        ] = "left"
+        return _df[_col_name]
+
 
 class NumericPlotDescriptionPandas(BasePlotDescription):
     def __init__(
@@ -65,7 +75,7 @@ class NumericPlotDescriptionPandas(BasePlotDescription):
                 data={data_col_name: bin_centers, __count_col_name: hist}
             )
 
-        __count_col_name = self.get_count_col_name()
+        __count_col_name = self.count_col_name
         data_col_name = self.prepare_data_col(data_col)
         target_col_name = self.prepare_target_col(target_col)
         my_range = (data_col.min(), data_col.max())

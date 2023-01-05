@@ -4,6 +4,8 @@ from pandas_profiling.model.base.serializable import SerializableInterface
 
 
 class BasePlotDescription(SerializableInterface):
+    count_col_name = 'count'
+
     def __init__(
         self,
         preprocessed_plot: pd.DataFrame,
@@ -32,7 +34,7 @@ class BasePlotDescription(SerializableInterface):
     @property
     def preprocessed_plot(self) -> pd.DataFrame:
         """Returns preprocessed dataframe for plotting"""
-        return self._preprocessed_plot
+        return self._preprocessed_plot.copy()
 
     @property
     def target_col(self):
@@ -59,10 +61,6 @@ class BasePlotDescription(SerializableInterface):
         if target_col.name is None:
             target_col.name = "target_col"
         return str(target_col.name)
-
-    @classmethod
-    def get_count_col_name(cls) -> str:
-        return "count"
 
     def to_dict(self) -> Dict[str, Any]:
         return {

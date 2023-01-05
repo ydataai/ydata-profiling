@@ -17,6 +17,7 @@ from typeguard import typechecked
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.base.plot_description import BasePlotDescription
+# from pandas_profiling.model.pandas.plot_description_pandas import CategoricalPlotDescriptionPandas
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
@@ -32,17 +33,34 @@ def _plot_categories(
 ) -> plt.Figure:
     data_col = plot_description.data_col
     target_col = plot_description.target_col
-    count_col = plot_description.get_count_col_name()
+    count_col = plot_description.count_col_name
     preprocessed_data = plot_description.preprocessed_plot
-
-    p = so.Plot(preprocessed_data, x=count_col, y=data_col, text=count_col)
+    _text_color = {
+        'left': 'black',
+        'right': 'black'
+    }
+    label_location = plot_description.get_labels_location()
+    print(data_col)
+    print(label_location)
+    p = (
+        so.Plot(preprocessed_data, x=count_col, y=data_col, text=count_col, color=target_col)
+        .add(so.Bar(alpha=1))
+    )
     # supervised plot
     if target_col is not None:
-        p = p.add(so.Bar(alpha=1), color=target_col)
+        pass
     # unsupervised plot
     else:
-        p = p.add(so.Bar(alpha=1)).add(
-            so.Text({"fontweight": "bold"}, color="w", halign="right")
+        print(label_location)
+        p = (
+            p.add(
+            so.Text({"fontweight": "bold"}),
+            color=label_location,
+            halign=label_location
+            )
+            .scale(
+                color=_text_color
+            )
         )
     p = (
         p.layout(size=figsize)
@@ -60,7 +78,7 @@ def _plot_histogram_so(
 ) -> plt.Figure:
     data_col = plot_description.data_col
     target_col = plot_description.target_col
-    count_col = plot_description.get_count_col_name()
+    count_col = plot_description.count_col_name
     preprocessed_data = plot_description.preprocessed_plot
 
     p = so.Plot(preprocessed_data, x=data_col, y=count_col)
