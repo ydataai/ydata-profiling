@@ -1,17 +1,13 @@
 from typing import Any, Dict, Optional
+
 import pandas as pd
 from pandas_profiling.model.base.serializable import SerializableInterface
 
 
 class BasePlotDescription(SerializableInterface):
-    count_col_name = 'count'
+    count_col_name = "count"
 
-    def __init__(
-        self,
-        preprocessed_plot: pd.DataFrame,
-        data_col_name: str,
-        target_col_name: Optional[str],
-    ) -> None:
+    def __init__(self, data_col: pd.Series, target_col: Optional[pd.Series]) -> None:
         """
         preprocessed_plot: pd.DataFrame with 2 or 3 columns (data_col, target_col or None, count)
             in format:
@@ -25,11 +21,9 @@ class BasePlotDescription(SerializableInterface):
         target_col: str | None
             column name of target col (if not None, needs to be in preprocessed plot)
         """
-        preprocessed_plot.reset_index(inplace=True, drop=True)
-        self._preprocessed_plot = preprocessed_plot
-        self._data_col = data_col_name
-        self._target_col = target_col_name
-        # TODO check, if the df is valid
+
+        self._data_col_name = self.__prepare_data_col(data_col)
+        self._target_col_name = self.__prepare_target_col(target_col)
 
     @property
     def preprocessed_plot(self) -> pd.DataFrame:
@@ -37,15 +31,20 @@ class BasePlotDescription(SerializableInterface):
         return self._preprocessed_plot.copy()
 
     @property
-    def target_col(self):
-        return self._target_col
+    def target_col_name(self):
+        return self._target_col_name
 
     @property
-    def data_col(self):
-        return self._data_col
+    def data_col_name(self):
+        return self._data_col_name
+
+    def _set_preprocessed_data(self, preprocessed_plot: pd.DataFrame):
+        preprocessed_plot.reset_index(inplace=True, drop=True)
+        self._preprocessed_plot = preprocessed_plot
+        # TODO check, if the df is valid
 
     @classmethod
-    def prepare_data_col(cls, data_col: pd.Series) -> str:
+    def __prepare_data_col(cls, data_col: pd.Series) -> str:
         """Fill col name, if None.
 
         Returns column name
@@ -55,7 +54,7 @@ class BasePlotDescription(SerializableInterface):
         return str(data_col.name)
 
     @classmethod
-    def prepare_target_col(cls, target_col: Optional[pd.Series]):
+    def __prepare_target_col(cls, target_col: Optional[pd.Series]):
         if target_col is None:
             return None
         if target_col.name is None:
@@ -65,6 +64,6 @@ class BasePlotDescription(SerializableInterface):
     def to_dict(self) -> Dict[str, Any]:
         return {
             "preprocessed_plot": self.preprocessed_plot,
-            "target_col": self.target_col,
-            "data_col": self.data_col,
+            "target_col": self.target_col_name,
+            "data_col": self.data_col_name,
         }
