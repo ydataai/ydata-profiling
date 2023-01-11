@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -9,7 +9,18 @@ class CategoricalPlotDescriptionPandas(BasePlotDescription):
     def __init__(
         self, data_col: pd.Series, target_col: Optional[pd.Series], max_cat_to_plot: int
     ) -> None:
-        """Prepare data for plotting"""
+        """Prepare categorical data for plotting
+
+        Parameters
+        ----------
+        data_col : pd.Series
+            series with data, from processed column
+        target_col : pd.Series or None
+            series with target column, if is set, else None
+        max_cat_to_plot : int
+            limit for plotting. If we have more categories, than max_cat_to_plot,
+            all below threshold will be merged to other category
+        """
         super().__init__(data_col, target_col)
 
         __count_col_name = self.count_col_name
@@ -29,35 +40,11 @@ class CategoricalPlotDescriptionPandas(BasePlotDescription):
         # sorts plot
         preprocessed.sort_values(by=__count_col_name, inplace=True, ascending=False)
 
-        # limit the number of plotted categories
-        # top_n_classes = preprocessed.drop_duplicates(self.data_col_name)[
-        #     self.data_col_name
-        # ].head(max_cat_to_plot)
-        # if top_n_classes.size < preprocessed[self.data_col_name].nunique():
-        #     # select rows, that are not in top n classes and group them
-        #     other = preprocessed[~preprocessed[self.data_col_name].isin(top_n_classes)]
-        #     if target_col is not None and self.data_col_name != self.target_col_name:
-        #         other = (
-        #             other.groupby(self.target_col_name)[__count_col_name]
-        #             .sum()
-        #             .reset_index()
-        #         )
-        #         other[self.data_col_name] = self._other_placeholder
-        #     else:
-        #         sum = other[__count_col_name].sum()
-        #         other = pd.DataFrame(
-        #             data={
-        #                 __count_col_name: [sum],
-        #                 self.data_col_name: [self._other_placeholder],
-        #             }
-        #         )
-        #     # drop all categories, that are not in top_n_categories
-        #     preprocessed = preprocessed[
-        #         preprocessed[self.data_col_name].isin(top_n_classes)
-        #     ]
-        #     # merge top n categories and other
-        #     preprocessed = pd.concat([preprocessed, other])
+        # limit the count of plotted categories
         preprocessed = self._limit_count(preprocessed)
+
+        # add column for label position
+        preprocessed = self._add_labels_location(preprocessed)
         self._set_preprocessed_data(preprocessed)
 
     def _limit_count(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -94,17 +81,13 @@ class CategoricalPlotDescriptionPandas(BasePlotDescription):
             df = pd.concat([df, other])
         return df
 
-    def _add_labels_location(self):
-        pass
-
-    def get_labels_location(self) -> pd.Series:
-        _col_name = "labels_location"
-        _df = self.preprocessed_plot[self.count_col_name].to_frame()
-        _df[_col_name] = "right"
-        _df.loc[
-            _df[self.count_col_name] < _df[self.count_col_name].max() / 4, _col_name
+    def _add_labels_location(self, df: pd.DataFrame):
+        col_name = "labels_location"
+        df[col_name] = "right"
+        df.loc[
+            df[self.count_col_name] < df[self.count_col_name].max() / 4, col_name
         ] = "left"
-        return _df[_col_name]
+        return df
 
 
 class NumericPlotDescriptionPandas(BasePlotDescription):

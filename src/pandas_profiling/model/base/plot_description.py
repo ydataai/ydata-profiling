@@ -9,21 +9,14 @@ class BasePlotDescription(SerializableInterface):
 
     def __init__(self, data_col: pd.Series, target_col: Optional[pd.Series]) -> None:
         """
-        preprocessed_plot: pd.DataFrame with 2 or 3 columns (data_col, target_col or None, count)
-            in format:
-                col_name,   target_name,    count
-                1           0               10
-                1           1               5
-                2           0               8
-                ...
         data_col: str
             column name of data col (needs to be in preprocessed plot)
         target_col: str | None
             column name of target col (if not None, needs to be in preprocessed plot)
         """
 
-        self._data_col_name = self.__prepare_data_col(data_col)
-        self._target_col_name = self.__prepare_target_col(target_col)
+        self.__data_col_name = self.__prepare_data_col(data_col)
+        self.__target_col_name = self.__prepare_target_col(target_col)
 
     @property
     def preprocessed_plot(self) -> pd.DataFrame:
@@ -32,13 +25,22 @@ class BasePlotDescription(SerializableInterface):
 
     @property
     def target_col_name(self):
-        return self._target_col_name
+        return self.__target_col_name
 
     @property
     def data_col_name(self):
-        return self._data_col_name
+        return self.__data_col_name
 
     def _set_preprocessed_data(self, preprocessed_plot: pd.DataFrame):
+        """
+        preprocessed_plot: pd.DataFrame with 2 or 3 columns (data_col, target_col or None, count)
+            in format:
+                col_name,   target_name,    count
+                1           0               10
+                1           1               5
+                2           0               8
+                ...
+        """
         preprocessed_plot.reset_index(inplace=True, drop=True)
         self._preprocessed_plot = preprocessed_plot
         # TODO check, if the df is valid

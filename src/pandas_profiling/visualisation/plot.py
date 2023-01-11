@@ -31,33 +31,30 @@ def _plot_categories(
     plot_description: BasePlotDescription,
     figsize: Tuple[float, float] = (6, 4),
 ) -> plt.Figure:
-    data_col = plot_description.data_col_name
-    target_col = plot_description.target_col_name
-    count_col = plot_description.count_col_name
-    preprocessed_data = plot_description.preprocessed_plot
-    _text_color = {"left": "black", "right": "black"}
-    label_location = plot_description.get_labels_location()
-    print(data_col)
-    print(label_location)
+    _text_color = {"left": "black", "right": "white"}
+    _text_position = {"left": "left", "right": "right"}
+    print(plot_description.data_col_name)
+    print(plot_description.preprocessed_plot["labels_location"])
     p = so.Plot(
-        preprocessed_data, x=count_col, y=data_col, text=count_col, color=target_col
+        plot_description.preprocessed_plot,
+        x=plot_description.count_col_name,
+        y=plot_description.data_col_name,
+        text=plot_description.count_col_name,
+        color=plot_description.target_col_name,
     ).add(so.Bar(alpha=1))
     # supervised plot
-    if target_col is not None:
+    if plot_description.target_col_name is not None:
         pass
     # unsupervised plot
     else:
-        print(label_location)
         p = p.add(
-            so.Text({"fontweight": "bold"}), color=label_location, halign=label_location
-        ).scale(color=_text_color)
-    p = (
-        p.layout(size=figsize)
-        .theme({"axes.facecolor": "w"})
-        .label(
-            x="",
+            so.Text({"fontweight": "bold"}),
+            color="labels_location",
+            halign="labels_location",
+        ).scale(
+            halign=_text_position, color=_text_color, x=so.Continuous().tick(count=0)
         )
-    )
+    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="")
     return p.plot(pyplot=True)
 
 
