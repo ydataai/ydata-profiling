@@ -85,6 +85,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
+        if df is not None and df.empty:
+            raise ValueError("DataFrame is empty. Please provide a non-empty DataFrame.")
+
         if config_file is not None and minimal:
             raise ValueError(
                 "Arguments `config_file` and `minimal` are mutually exclusive."
