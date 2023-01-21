@@ -21,11 +21,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
     template_variables = render_common(config, summary)
     image_format = config.plot.image_format
-
-    if summary["min"] >= 0:
-        name = "Numeric time series"
-    else:
-        name = "Numeric time series"
+    name = "Numeric time series"
 
     # Top
     info = VariableInfo(
@@ -34,88 +30,81 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         name,
         summary["alerts"],
         summary["description"],
+        style=config.html.style,
     )
 
     table1 = Table(
         [
             {
                 "name": "Distinct",
-                "value": summary["n_distinct"],
-                "fmt": fmt,
+                "value": fmt(summary["n_distinct"]),
                 "alert": "n_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Distinct (%)",
-                "value": summary["p_distinct"],
-                "fmt": fmt_percent,
+                "value": fmt_percent(summary["p_distinct"]),
                 "alert": "p_distinct" in summary["alert_fields"],
             },
             {
                 "name": "Missing",
-                "value": summary["n_missing"],
-                "fmt": fmt,
+                "value": fmt(summary["n_missing"]),
                 "alert": "n_missing" in summary["alert_fields"],
             },
             {
                 "name": "Missing (%)",
-                "value": summary["p_missing"],
-                "fmt": fmt_percent,
+                "value": fmt_percent(summary["p_missing"]),
                 "alert": "p_missing" in summary["alert_fields"],
             },
             {
                 "name": "Infinite",
-                "value": summary["n_infinite"],
-                "fmt": fmt,
+                "value": fmt(summary["n_infinite"]),
                 "alert": "n_infinite" in summary["alert_fields"],
             },
             {
                 "name": "Infinite (%)",
-                "value": summary["p_infinite"],
-                "fmt": fmt_percent,
+                "value": fmt_percent(summary["p_infinite"]),
                 "alert": "p_infinite" in summary["alert_fields"],
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     table2 = Table(
         [
             {
                 "name": "Mean",
-                "value": summary["mean"],
-                "fmt": fmt_numeric,
+                "value": fmt_numeric(
+                    summary["mean"], precision=config.report.precision
+                ),
                 "alert": False,
             },
             {
                 "name": "Minimum",
-                "value": summary["min"],
-                "fmt": fmt_numeric,
+                "value": fmt_numeric(summary["min"], precision=config.report.precision),
                 "alert": False,
             },
             {
                 "name": "Maximum",
-                "value": summary["max"],
-                "fmt": fmt_numeric,
+                "value": fmt_numeric(summary["max"], precision=config.report.precision),
                 "alert": False,
             },
             {
                 "name": "Zeros",
-                "value": summary["n_zeros"],
-                "fmt": fmt,
+                "value": fmt(summary["n_zeros"]),
                 "alert": "n_zeros" in summary["alert_fields"],
             },
             {
                 "name": "Zeros (%)",
-                "value": summary["p_zeros"],
-                "fmt": fmt_percent,
+                "value": fmt_percent(summary["p_zeros"]),
                 "alert": "p_zeros" in summary["alert_fields"],
             },
             {
                 "name": "Memory size",
-                "value": summary["memory_size"],
-                "fmt": fmt_bytesize,
+                "value": fmt_bytesize(summary["memory_size"]),
                 "alert": False,
             },
-        ]
+        ],
+        style=config.html.style,
     )
 
     mini_plot = Image(
@@ -170,6 +159,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
             },
         ],
         name="Quantile statistics",
+        style=config.html.style,
     )
 
     descriptive_statistics = Table(
@@ -225,6 +215,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
             },
         ],
         name="Descriptive statistics",
+        style=config.html.style,
     )
 
     statistics = Container(
@@ -234,11 +225,22 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         sequence_type="grid",
     )
 
+    if isinstance(summary["histogram"], list):
+        hist_data = histogram(
+            config,
+            [x[0] for x in summary["histogram"]],
+            [x[1] for x in summary["histogram"]],
+        )
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][0][1]) - 1})"
+    else:
+        hist_data = histogram(config, *summary["histogram"])
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
+
     hist = Image(
-        histogram(config, *summary["histogram"]),
+        hist_data,
         image_format=image_format,
         alt="Histogram",
-        caption=f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})",
+        caption=hist_caption,
         name="Histogram",
         anchor_id=f"{varid}histogram",
     )

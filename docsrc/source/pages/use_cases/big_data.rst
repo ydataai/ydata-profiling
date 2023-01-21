@@ -44,7 +44,7 @@ The reader of the report might want to know that the profile is generated using 
   description = "Disclaimer: this profiling report was generated using a sample of 5% of the original dataset."
   sample = large_dataset.sample(frac=0.05)
 
-  profile = sample.profile_report(description=description, minimal=True)
+  profile = sample.profile_report(dataset={"description": description}, minimal=True)
   profile.to_file("output.html")
 
 Disable expensive computations

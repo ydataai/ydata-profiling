@@ -1,0 +1,30 @@
+name: SonarQube
+
+
+
+on:
+  push:
+    branches:
+    - master
+
+
+
+jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: SonarQube file
+      run: |
+        echo "sonar.projectKey=${{ github.event.repository.name }}" > sonar-project.properties
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@v1.1.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

@@ -1,6 +1,6 @@
 """
 Test for issue 537:
-https://github.com/pandas-profiling/pandas-profiling/issues/537
+https://github.com/ydataai/pandas-profiling/issues/537
 
 ValueError: shape mismatch: value array of shape (136,) could not be broadcast to indexing result of shape (135,)
 
@@ -114,7 +114,7 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
 
     def run_multiprocess(config, df):
         pool = multiprocessing.pool.ThreadPool(10)
-        args = [(column, series) for column, series in df.iteritems()]
+        args = [(column, series) for column, series in df.items()]
         results = pool.imap_unordered(
             partial(
                 mock_multiprocess_1d,

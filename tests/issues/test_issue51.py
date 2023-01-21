@@ -1,6 +1,6 @@
 """
 Test for issue 51:
-https://github.com/pandas-profiling/pandas-profiling/issues/51
+https://github.com/ydataai/pandas-profiling/issues/51
 """
 import numpy as np
 import pandas as pd
@@ -84,7 +84,5 @@ def test_issue51_identical():
         df, title="Pandas Profiling Report", progress_bar=False, explorative=True
     )
     report.config.vars.num.low_categorical_threshold = 0
-
-    assert (
-        report.get_description()["correlations"]["cramers"].values == np.ones((3, 3))
-    ).all()
+    # this should not return any correlation value as the variables are identical constants
+    assert report.get_description()["correlations"] == {}

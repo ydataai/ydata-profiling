@@ -43,7 +43,7 @@ release = _GetApiWrapperVersion()
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "recommonmark",
+    "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
@@ -69,7 +69,7 @@ master_doc = "index"
 # a list of builtin themes.
 
 html_theme = "sphinx_rtd_theme"
-html_theme_options = {"style_nav_header_background": "#CB5A29"}
+html_theme_options = {"style_nav_header_background": "#e32212"}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -84,3 +84,8 @@ autoclass_content = "both"
 autosummary_generate = True
 
 autodoc_pydantic_model_show_json = False
+
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}

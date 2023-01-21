@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
+import pytest
 
 from pandas_profiling import ProfileReport
 
 
-def test_sensitive():
+@pytest.fixture()
+def df():
     df = pd.DataFrame(
         {
             "name": ["John Doe", "Marco Polo", "Louis Brandeis", "William Douglas"],
@@ -16,8 +18,11 @@ def test_sensitive():
             ),
         }
     )
+    return df
 
+
+def test_sensitive(df: pd.DataFrame):
     report = ProfileReport(df, sensitive=True, explorative=True)
-
     html = report.to_html()
+    # Sensitive values should not occur in the HTML report
     assert all(value not in html for value in df["name"].values.tolist())

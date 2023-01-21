@@ -35,6 +35,9 @@ class AlertType(Enum):
     SKEWED = auto()
     """This variable is highly skewed."""
 
+    IMBALANCE = auto()
+    """This variable is imbalanced."""
+
     MISSING = auto()
     """This variable contains missing values."""
 
@@ -77,6 +80,7 @@ class Alert:
         values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         fields: Optional[Set] = None,
+        is_empty: bool = False,
     ):
         if values is None:
             values = {}
@@ -87,6 +91,11 @@ class Alert:
         self.alert_type = alert_type
         self.values = values
         self.column_name = column_name
+        self._is_empty = is_empty
+
+    @property
+    def alert_type_name(self) -> str:
+        return self.alert_type.name.replace("_", " ").lower().title()
 
     @property
     def anchor_id(self) -> Optional[str]:
@@ -100,7 +109,8 @@ class Alert:
         if name == "HIGH CORRELATION":
             num = len(self.values["fields"])
             title = ", ".join(self.values["fields"])
-            name = f'<abbr title="This variable has a high correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
+            corr = self.values["corr"]
+            name = f'<abbr title="This variable has a high {corr} correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
         return name
 
     def __repr__(self):
@@ -219,6 +229,33 @@ def categorical_alerts(config: Settings, summary: dict) -> List[Alert]:
             )
         )
 
+    # Imbalance
+    if (
+        "imbalance" in summary
+        and summary["imbalance"] > config.vars.cat.imbalance_threshold
+    ):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.IMBALANCE,
+                fields={"imbalance"},
+            )
+        )
+    return alerts
+
+
+def boolean_alerts(config: Settings, summary: dict) -> List[Alert]:
+    alerts = []
+    # Imbalance
+    if (
+        "imbalance" in summary
+        and summary["imbalance"] > config.vars.bool.imbalance_threshold
+    ):
+        alerts.append(
+            Alert(
+                alert_type=AlertType.IMBALANCE,
+                fields={"imbalance"},
+            )
+        )
     return alerts
 
 
@@ -252,12 +289,6 @@ def supported_alerts(summary: dict) -> List[Alert]:
             Alert(
                 alert_type=AlertType.CONSTANT,
                 fields={"n_distinct"},
-            )
-        )
-        alerts.append(
-            Alert(
-                alert_type=AlertType.REJECTED,
-                fields=set(),
             )
         )
     return alerts
@@ -302,6 +333,8 @@ def check_variable_alerts(config: Settings, col: str, description: dict) -> List
             alerts += numeric_alerts(config, description)
         if description["type"] == "TimeSeries":
             alerts += timeseries_alerts(config, description)
+        if description["type"] == "Boolean":
+            alerts += boolean_alerts(config, description)
 
     for idx in range(len(alerts)):
         alerts[idx].column_name = col
@@ -327,7 +360,7 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
                 Alert(
                     column_name=col,
                     alert_type=AlertType.HIGH_CORRELATION,
-                    values={"corr": "Overall", "fields": fields},
+                    values={"corr": "overall", "fields": fields},
                 )
             )
     return alerts

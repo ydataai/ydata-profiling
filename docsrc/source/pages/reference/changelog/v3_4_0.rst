@@ -1,0 +1,42 @@
+Changelog v3.4.0
+----------------
+
+🐛 Bug fixes
+^^^^^^^^^^^^
+
+-  correlation passing extra parameters
+   (`#1114 <https://github.com/ydataai/pandas-profiling/issues/1114>`__)
+   (`21f4fe6 <https://github.com/ydataai/pandas-profiling/commit/21f4fe68b3febe359ea60f7b9790a39db28c222a>`__)
+-  cramer’s correlation fails with missings vals
+   (`#1109 <https://github.com/ydataai/pandas-profiling/issues/1109>`__)
+   (`8e7f8b2 <https://github.com/ydataai/pandas-profiling/commit/8e7f8b2147886e1d01e3a5c5fa8423cf8e781b76>`__)
+-  drop joblib dependency
+   (`#1090 <https://github.com/ydataai/pandas-profiling/issues/1090>`__)
+   (`586cef3 <https://github.com/ydataai/pandas-profiling/commit/586cef360d6b8ed926953298ed3a9772b8369052>`__),
+   closes
+   `#1056 <https://github.com/ydataai/pandas-profiling/issues/1056>`__
+-  fix linter errors
+   (`#1117 <https://github.com/ydataai/pandas-profiling/issues/1117>`__)
+   (`5f17cfd <https://github.com/ydataai/pandas-profiling/commit/5f17cfdb3c7c07f981fb200a1f12a73bf40690f3>`__)
+-  make tangled-up-in-unicode an optional dependency
+   (`#1070 <https://github.com/ydataai/pandas-profiling/issues/1070>`__)
+   (`e6b2a00 <https://github.com/ydataai/pandas-profiling/commit/e6b2a0018a007bef8029ca1c69b6123d0a8e5cda>`__)
+-  remove unused imports
+   (`56beed4 <https://github.com/ydataai/pandas-profiling/commit/56beed456c4fab13a45fd77d93ca12fc38053bb0>`__)
+-  remove unused imports
+   (`66864c1 <https://github.com/ydataai/pandas-profiling/commit/66864c15cfa9b80cb426957e17410c579425d450>`__)
+-  Remove unused imports.
+   (`985fbd1 <https://github.com/ydataai/pandas-profiling/commit/985fbd1fc0e826bda3ac1b725fa8842013743ab3>`__)
+
+🎉 Features
+^^^^^^^^^^^^
+
+-  add support for Pandas 1.5
+   (`#1076 <https://github.com/ydataai/pandas-profiling/issues/1076>`__)
+   (`5c5a710 <https://github.com/ydataai/pandas-profiling/commit/5c5a710f23d83ba5ff1dc9ab6fc23b28094560fb>`__)
+-  added filter to locate columns
+   (`#1115 <https://github.com/ydataai/pandas-profiling/issues/1115>`__)
+   (`c2f817d <https://github.com/ydataai/pandas-profiling/commit/c2f817d09a38094dcf83b0e49d86e3c87d822c7b>`__)
+-  introduce auto parameter for correlations
+   (`#1095 <https://github.com/ydataai/pandas-profiling/issues/1095>`__)
+   (`4d2e415 <https://github.com/ydataai/pandas-profiling/commit/4d2e415601afce2c997298cdedc69e6e04ac6689>`__)

@@ -87,27 +87,26 @@ missing_diagrams:
     bar: true
     matrix: true
     heatmap: true
-    dendrogram: true
 
 correlations:
     pearson:
-      calculate: true
+      calculate: false
       warn_high_correlations: true
       threshold: 0.9
     spearman:
-      calculate: true
+      calculate: false
       warn_high_correlations: false
       threshold: 0.9
     kendall:
-      calculate: true
+      calculate: false
       warn_high_correlations: false
       threshold: 0.9
     phi_k:
-      calculate: true
+      calculate: false
       warn_high_correlations: false
       threshold: 0.9
     cramers:
-      calculate: true
+      calculate: false
       warn_high_correlations: true
       threshold: 0.9
     auto:
@@ -210,6 +209,9 @@ html:
     style:
       theme: null
       logo: ""
-      primary_color: "#337ab7"
+      primary_colors:
+      - "#377eb8"
+      - "#e41a1c"
+      - "#4daf4a"
 
     full_width: false

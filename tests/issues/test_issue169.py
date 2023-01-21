@@ -1,6 +1,6 @@
 """
 Test for issue 169:
-https://github.com/pandas-profiling/pandas-profiling/issues/169
+https://github.com/ydataai/pandas-profiling/issues/169
 """
 from io import StringIO
 
@@ -26,7 +26,7 @@ def test_issue_169_column(issue_169_data):
     df = pd.read_csv(issue_169_data, sep=",")
     report = ProfileReport(
         df,
-        missing_diagrams={"dendrogram": True, "heatmap": True},
+        missing_diagrams={"heatmap": True},
         progress_bar=False,
         pool_size=1,
     )
@@ -39,7 +39,7 @@ def test_issue_169_index(issue_169_data):
     df = pd.read_csv(issue_169_data, sep=",", index_col=0)
     report = ProfileReport(
         df,
-        missing_diagrams={"dendrogram": True, "heatmap": True},
+        missing_diagrams={"heatmap": True},
         progress_bar=False,
         pool_size=1,
     )

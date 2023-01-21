@@ -26,6 +26,10 @@ The following example reports showcase the potentialities of the package across 
 
 - `Orange prices <https://pandas-profiling.ydata.ai/examples/master/features/united_report.html>`_ and `Coal prices <https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html>`_ (simple pricing evolution datasets, showcasing the theming options)
 
+- `USA Air Quality <https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality)>`_ (Time-series air quality dataset EDA example)
+
+- `HCC <https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc>`_ (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
+
 
 
 .. |nasa_binder| image:: https://mybinder.org/badge_logo.svg

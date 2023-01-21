@@ -8,15 +8,20 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
-from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap
+from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from typeguard import typechecked
 
 from pandas_profiling.config import Settings
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
+
+
+def format_fn(tick_val: int, tick_pos: Any) -> str:
+    return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def _plot_histogram(
@@ -25,39 +30,71 @@ def _plot_histogram(
     bins: Union[int, np.ndarray],
     figsize: tuple = (6, 4),
     date: bool = False,
+    hide_yaxis: bool = False,
 ) -> plt.Figure:
-    """Plot an histogram from the data and return the AxesSubplot object.
+    """Plot a histogram from the data and return the AxesSubplot object.
 
     Args:
+        config: the Settings object
         series: The data to plot
-        figsize: The size of the figure (width, height) in inches, default (6,4)
         bins: number of bins (int for equal size, ndarray for variable size)
+        figsize: The size of the figure (width, height) in inches, default (6,4)
+        date: is the x-axis of date type
 
     Returns:
         The histogram plot.
     """
-    fig = plt.figure(figsize=figsize)
-    plot = fig.add_subplot(111)
-    plot.set_ylabel("Frequency")
-
     # we have precomputed the histograms...
-    diff = np.diff(bins)
-    plot.bar(
-        bins[:-1] + diff / 2,  # type: ignore
-        series,
-        diff,
-        facecolor=config.html.style.primary_color,
-    )
+    if isinstance(bins, list):
+        n_labels = len(config.html.style._labels)
+        fig = plt.figure(figsize=figsize)
+        plot = fig.add_subplot(111)
 
-    if date:
+        for idx in reversed(list(range(n_labels))):
+            diff = np.diff(bins[idx])
+            plot.bar(
+                bins[idx][:-1] + diff / 2,  # type: ignore
+                series[idx],
+                diff,
+                facecolor=config.html.style.primary_colors[idx],
+                alpha=0.6,
+            )
 
-        def format_fn(tick_val: int, tick_pos: Any) -> str:
-            return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
+            if date:
+                plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
 
-        plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
+            if not config.plot.histogram.x_axis_labels:
+                plot.set_xticklabels([])
 
-    if not config.plot.histogram.x_axis_labels:
-        plot.set_xticklabels([])
+            if hide_yaxis:
+                plot.yaxis.set_visible(False)
+
+        if not config.plot.histogram.x_axis_labels:
+            fig.xticklabels([])
+
+        if not hide_yaxis:
+            fig.supylabel("Frequency")
+    else:
+        fig = plt.figure(figsize=figsize)
+        plot = fig.add_subplot(111)
+        if not hide_yaxis:
+            plot.set_ylabel("Frequency")
+        else:
+            plot.axes.get_yaxis().set_visible(False)
+
+        diff = np.diff(bins)
+        plot.bar(
+            bins[:-1] + diff / 2,  # type: ignore
+            series,
+            diff,
+            facecolor=config.html.style.primary_colors[0],
+        )
+
+        if date:
+            plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
+
+        if not config.plot.histogram.x_axis_labels:
+            plot.set_xticklabels([])
 
     return plot
 
@@ -81,7 +118,7 @@ def histogram(
       The resulting histogram encoded as a string.
 
     """
-    plot = _plot_histogram(config, series, bins, date=date)
+    plot = _plot_histogram(config, series, bins, date=date, figsize=(7, 3))
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
     return plot_360_n0sc0pe(config)
@@ -104,8 +141,9 @@ def mini_histogram(
     Returns:
       The resulting mini histogram encoded as a string.
     """
-    plot = _plot_histogram(config, series, bins, figsize=(3, 2.25), date=date)
-    plot.axes.get_yaxis().set_visible(False)
+    plot = _plot_histogram(
+        config, series, bins, figsize=(3, 2.25), date=date, hide_yaxis=True
+    )
     plot.set_facecolor("w")
 
     for tick in plot.xaxis.get_major_ticks():
@@ -223,7 +261,7 @@ def scatter_complex(config: Settings, series: pd.Series) -> str:
     plt.ylabel("Imaginary")
     plt.xlabel("Real")
 
-    color = config.html.style.primary_color
+    color = config.html.style.primary_colors[0]
 
     if len(series) > config.plot.scatter_threshold:
         cmap = sns.light_palette(color, as_cmap=True)
@@ -255,7 +293,7 @@ def scatter_series(
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
-    color = config.html.style.primary_color
+    color = config.html.style.primary_colors[0]
 
     data = zip(*series.tolist())
     if len(series) > config.plot.scatter_threshold:
@@ -290,7 +328,7 @@ def scatter_pairwise(
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
-    color = config.html.style.primary_color
+    color = config.html.style.primary_colors[0]
 
     indices = (series1.notna()) & (series2.notna())
     if len(series1) > config.plot.scatter_threshold:
@@ -302,8 +340,7 @@ def scatter_pairwise(
 
 
 def _plot_stacked_barh(
-    data: pd.Series,
-    colors: List,
+    data: pd.Series, colors: List, hide_legend: bool = False
 ) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
     """Plot a stacked horizontal bar chart to show category frequency.
     Works for boolean and categorical features.
@@ -311,6 +348,7 @@ def _plot_stacked_barh(
     Args:
         data (pd.Series): category frequencies with category names as index
         colors (list): list of colors in a valid matplotlib format
+        hide_legend (bool): if true, the legend is omitted
 
     Returns:
         ax: Stacked bar plot (matplotlib.axes)
@@ -351,16 +389,17 @@ def _plot_stacked_barh(
 
         starts += x
 
-    legend = ax.legend(
-        ncol=1, bbox_to_anchor=(0, 0), fontsize="xx-large", loc="upper left"
-    )
+    legend = None
+    if not hide_legend:
+        legend = ax.legend(
+            ncol=1, bbox_to_anchor=(0, 0), fontsize="xx-large", loc="upper left"
+        )
 
     return ax, legend
 
 
 def _plot_pie_chart(
-    data: pd.Series,
-    colors: List,
+    data: pd.Series, colors: List, hide_legend: bool = False
 ) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
     """Plot a pie chart to show category frequency.
     Works for boolean and categorical features.
@@ -368,6 +407,7 @@ def _plot_pie_chart(
     Args:
         data (pd.Series): category frequencies with category names as index
         colors (list): list of colors in a valid matplotlib format
+        hide_legend (bool): if true, the legend is omitted
 
     Returns:
         ax: pie chart (matplotlib.axes)
@@ -389,13 +429,16 @@ def _plot_pie_chart(
         textprops={"color": "w"},
         colors=colors,
     )
-    legend = plt.legend(
-        wedges,
-        data.index.values,
-        fontsize="large",
-        bbox_to_anchor=(0, 0),
-        loc="upper left",
-    )
+
+    legend = None
+    if not hide_legend:
+        legend = plt.legend(
+            wedges,
+            data.index.values,
+            fontsize="large",
+            bbox_to_anchor=(0, 0),
+            loc="upper left",
+        )
 
     return ax, legend
 
@@ -434,10 +477,18 @@ def cat_frequency_plot(
     # Create the plot
     plot_type = config.plot.cat_freq.type
     if plot_type == "bar":
-        plot, legend = _plot_stacked_barh(data, colors)
+        if isinstance(data, list):
+            for v in data:
+                plot, legend = _plot_stacked_barh(
+                    v, colors, hide_legend=config.vars.cat.redact
+                )
+        else:
+            plot, legend = _plot_stacked_barh(
+                data, colors, hide_legend=config.vars.cat.redact
+            )
 
     elif plot_type == "pie":
-        plot, legend = _plot_pie_chart(data, colors)
+        plot, legend = _plot_pie_chart(data, colors, hide_legend=config.vars.cat.redact)
 
     else:
         msg = (
@@ -449,16 +500,26 @@ def cat_frequency_plot(
 
     return plot_360_n0sc0pe(
         config,
-        bbox_extra_artists=[
-            legend,
-        ],
+        bbox_extra_artists=[] if legend is None else [legend],
         bbox_inches="tight",
     )
 
 
+def create_comparison_color_list(config: Settings) -> List[str]:
+    colors = config.html.style.primary_colors
+    labels = config.html.style._labels
+
+    if colors < labels:
+        init = colors[0]
+        end = colors[1] if len(colors) >= 2 else "#000000"
+        cmap = LinearSegmentedColormap.from_list("ts_leg", [init, end], len(labels))
+        colors = [rgb2hex(cmap(i)) for i in range(cmap.N)]
+    return colors
+
+
 def _plot_timeseries(
     config: Settings,
-    series: pd.Series,
+    series: Union[list, pd.Series],
     figsize: tuple = (6, 4),
 ) -> matplotlib.figure.Figure:
     """Plot an line plot from the data and return the AxesSubplot object.
@@ -471,14 +532,21 @@ def _plot_timeseries(
     fig = plt.figure(figsize=figsize)
     plot = fig.add_subplot(111)
 
-    color = config.html.style.primary_color
+    if isinstance(series, list):
+        labels = config.html.style._labels
+        colors = create_comparison_color_list(config)
 
-    series.plot(color=color)
+        for serie, color, label in zip(series, colors, labels):
+            serie.plot(color=color, label=label)
+
+    else:
+        series.plot(color=config.html.style.primary_colors[0])
+
     return plot
 
 
 @manage_matplotlib_context()
-def mini_ts_plot(config: Settings, series: pd.Series) -> str:
+def mini_ts_plot(config: Settings, series: Union[list, pd.Series]) -> str:
     """Plot an time-series plot of the data.
     Args:
       series: The data to plot.
@@ -504,9 +572,10 @@ def _get_ts_lag(config: Settings, series: pd.Series) -> int:
     return np.min([lag, max_lag_size])
 
 
-@manage_matplotlib_context()
-def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5)) -> str:
-    color = config.html.style.primary_color
+def _plot_acf_pacf(
+    config: Settings, series: pd.Series, figsize: tuple = (15, 5)
+) -> str:
+    color = config.html.style.primary_colors[0]
 
     lag = _get_ts_lag(config, series)
     _, axes = plt.subplots(nrows=1, ncols=2, figsize=figsize)
@@ -536,6 +605,57 @@ def plot_acf_pacf(config: Settings, series: pd.Series, figsize: tuple = (15, 5))
                 item.set_facecolor(color)
 
     return plot_360_n0sc0pe(config)
+
+
+def _plot_acf_pacf_comparison(
+    config: Settings, series: List[pd.Series], figsize: tuple = (15, 5)
+) -> str:
+    colors = config.html.style.primary_colors
+    n_labels = len(config.html.style._labels)
+    colors = create_comparison_color_list(config)
+
+    _, axes = plt.subplots(nrows=n_labels, ncols=2, figsize=figsize)
+    is_first = True
+    for serie, (acf_axis, pacf_axis), color in zip(series, axes, colors):
+        lag = _get_ts_lag(config, serie)
+
+        plot_acf(
+            serie.dropna(),
+            lags=lag,
+            ax=acf_axis,
+            title="ACF" if is_first else "",
+            fft=True,
+            color=color,
+            vlines_kwargs={"colors": color},
+        )
+        plot_pacf(
+            serie.dropna(),
+            lags=lag,
+            ax=pacf_axis,
+            title="PACF" if is_first else "",
+            method="ywm",
+            color=color,
+            vlines_kwargs={"colors": color},
+        )
+        is_first = False
+
+    for row, color in zip(axes, colors):
+        for ax in row:
+            for item in ax.collections:
+                if isinstance(item, PolyCollection):
+                    item.set_facecolor(color)
+
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_acf_pacf(
+    config: Settings, series: Union[list, pd.Series], figsize: tuple = (15, 5)
+) -> str:
+    if isinstance(series, list):
+        return _plot_acf_pacf_comparison(config, series, figsize)
+    else:
+        return _plot_acf_pacf(config, series, figsize)
 
 
 def _prepare_heatmap_data(
@@ -599,6 +719,7 @@ def _create_timeseries_heatmap(
     return ax
 
 
+@typechecked
 def timeseries_heatmap(
     dataframe: pd.DataFrame,
     entity_column: str,
@@ -626,4 +747,215 @@ def timeseries_heatmap(
     )
     ax = _create_timeseries_heatmap(df, figsize, color)
     ax.set_aspect(1)
+    return ax
+
+
+def _set_visibility(
+    axis: matplotlib.axis.Axis, tick_mark: str = "none"
+) -> matplotlib.axis.Axis:
+    for anchor in ["top", "right", "bottom", "left"]:
+        axis.spines[anchor].set_visible(False)
+    axis.xaxis.set_ticks_position(tick_mark)
+    axis.yaxis.set_ticks_position(tick_mark)
+    return axis
+
+
+def missing_bar(
+    data: pd.DataFrame,
+    figsize: Tuple[float, float] = (25, 10),
+    fontsize: float = 16,
+    labels: bool = True,
+    color: Tuple[float, ...] = (0.41, 0.41, 0.41),
+    label_rotation: int = 45,
+) -> matplotlib.axis.Axis:
+    """
+    A bar chart visualization of the missing data.
+
+    Inspired by https://github.com/ResidentMario/missingno
+
+    Args:
+        data: The input DataFrame.
+        figsize: The size of the figure to display.
+        fontsize: The figure's font size. This default to 16.
+        labels: Whether or not to display the column names. Would need to be turned off on particularly large
+            displays. Defaults to True.
+        color: The color of the filled columns. Default to the RGB multiple `(0.25, 0.25, 0.25)`.
+        label_rotation: What angle to rotate the text labels to. Defaults to 45 degrees.
+    Returns:
+        The plot axis.
+    """
+    null_counts = len(data) - data.isnull().sum()
+    values = null_counts.values
+    null_counts = null_counts / len(data)
+
+    if len(values) <= 50:
+        ax0 = null_counts.plot.bar(figsize=figsize, fontsize=fontsize, color=color)
+        ax0.set_xticklabels(
+            ax0.get_xticklabels(),
+            ha="right",
+            fontsize=fontsize,
+            rotation=label_rotation,
+        )
+
+        ax1 = ax0.twiny()
+        ax1.set_xticks(ax0.get_xticks())
+        ax1.set_xlim(ax0.get_xlim())
+        ax1.set_xticklabels(
+            values, ha="left", fontsize=fontsize, rotation=label_rotation
+        )
+    else:
+        ax0 = null_counts.plot.barh(figsize=figsize, fontsize=fontsize, color=color)
+        ylabels = ax0.get_yticklabels() if labels else []
+        ax0.set_yticklabels(ylabels, fontsize=fontsize)
+
+        ax1 = ax0.twinx()
+        ax1.set_yticks(ax0.get_yticks())
+        ax1.set_ylim(ax0.get_ylim())
+        ax1.set_yticklabels(values, fontsize=fontsize)
+
+    for ax in [ax0, ax1]:
+        ax = _set_visibility(ax)
+
+    return ax0
+
+
+def missing_matrix(
+    data: pd.DataFrame,
+    figsize: Tuple[float, float] = (25, 10),
+    color: Tuple[float, ...] = (0.41, 0.41, 0.41),
+    fontsize: float = 16,
+    labels: bool = True,
+    label_rotation: int = 45,
+) -> matplotlib.axis.Axis:
+    """
+    A matrix visualization of missing data.
+
+    Inspired by https://github.com/ResidentMario/missingno
+
+    Args:
+        data: The input DataFrame.
+        figsize: The size of the figure to display.
+        fontsize: The figure's font size. Default to 16.
+        labels: Whether or not to display the column names when there is more than 50 columns.
+        label_rotation: What angle to rotate the text labels to. Defaults to 45 degrees.
+        color: The color of the filled columns. Default is `(0.41, 0.41, 0.41)`.
+    Returns:
+        The plot axis.
+    """
+    height, width = data.shape
+
+    notnull = data.notnull().values
+    missing_grid = np.zeros((height, width, 3), dtype=np.float32)
+
+    missing_grid[notnull] = color
+    missing_grid[~notnull] = [1, 1, 1]
+
+    _, ax = plt.subplots(1, 1, figsize=figsize)
+
+    # Create the missing matrix plot.
+    ax.imshow(missing_grid, interpolation="none")
+    ax.set_aspect("auto")
+    ax.grid(False)
+    ax.xaxis.tick_top()
+
+    ha = "left"
+    ax.set_xticks(list(range(0, width)))
+    ax.set_xticklabels(
+        list(data.columns), rotation=label_rotation, ha=ha, fontsize=fontsize
+    )
+    ax.set_yticks([0, height - 1])
+    ax.set_yticklabels([1, height], fontsize=fontsize)
+
+    separators = [x + 0.5 for x in range(0, width - 1)]
+    for point in separators:
+        ax.axvline(point, linestyle="-", color="white")
+
+    if not labels and width > 50:
+        ax.set_xticklabels([])
+
+    ax = _set_visibility(ax)
+    return ax
+
+
+def missing_heatmap(
+    data: pd.DataFrame,
+    figsize: Tuple[float, float] = (20, 12),
+    fontsize: float = 16,
+    labels: bool = True,
+    label_rotation: int = 45,
+    cmap: str = "RdBu",
+    normalized_cmap: bool = True,
+    cbar: bool = True,
+    ax: matplotlib.axis.Axis = None,
+) -> matplotlib.axis.Axis:
+    """
+    Presents a `seaborn` heatmap visualization of missing data correlation.
+    Note that this visualization has no special support for large datasets.
+
+    Inspired by https://github.com/ResidentMario/missingno
+
+    Args:
+        data: The input DataFrame.
+        figsize: The size of the figure to display. Defaults to (20, 12).
+        fontsize: The figure's font size.
+        labels: Whether or not to label each matrix entry with its correlation (default is True).
+        label_rotation: What angle to rotate the text labels to. Defaults to 45 degrees.
+        cmap: Which colormap to use. Defaults to `RdBu`.
+        normalized_cmap: Use a normalized colormap threshold or not. Defaults to True
+    Returns:
+        The plot axis.
+    """
+    _, ax = plt.subplots(1, 1, figsize=figsize)
+
+    # Remove completely filled or completely empty variables.
+    columns = [i for i, n in enumerate(np.var(data.isnull(), axis="rows")) if n > 0]
+    data = data.iloc[:, columns]
+
+    # Create and mask the correlation matrix. Construct the base heatmap.
+    corr_mat = data.isnull().corr()
+    mask = np.zeros_like(corr_mat)
+    mask[np.triu_indices_from(mask)] = True
+    norm_args = {"vmin": -1, "vmax": 1} if normalized_cmap else {}
+
+    if labels:
+        sns.heatmap(
+            corr_mat,
+            mask=mask,
+            cmap=cmap,
+            ax=ax,
+            cbar=cbar,
+            annot=True,
+            annot_kws={"size": fontsize - 2},
+            **norm_args,
+        )
+    else:
+        sns.heatmap(corr_mat, mask=mask, cmap=cmap, ax=ax, cbar=cbar, **norm_args)
+
+    # Apply visual corrections and modifications.
+    ax.xaxis.tick_bottom()
+    ax.set_xticklabels(
+        ax.xaxis.get_majorticklabels(),
+        rotation=label_rotation,
+        ha="right",
+        fontsize=fontsize,
+    )
+    ax.set_yticklabels(ax.yaxis.get_majorticklabels(), rotation=0, fontsize=fontsize)
+    ax = _set_visibility(ax)
+    ax.patch.set_visible(False)
+
+    for text in ax.texts:
+        t = float(text.get_text())
+        if 0.95 <= t < 1:
+            text.set_text("<1")
+        elif -1 < t <= -0.95:
+            text.set_text(">-1")
+        elif t == 1:
+            text.set_text("1")
+        elif t == -1:
+            text.set_text("-1")
+        elif -0.05 < t < 0.05:
+            text.set_text("")
+        else:
+            text.set_text(round(t, 1))
+
     return ax

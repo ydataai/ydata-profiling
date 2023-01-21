@@ -2,6 +2,9 @@ name: Pull Request
 
 
 on:
+  push:
+    branches:
+    - renovate/**
   pull_request:
 
 jobs:
@@ -15,8 +18,9 @@ jobs:
         fetch-depth: 0
 
     - uses: wagoid/commitlint-github-action@v5
-
+    
   lint:
+    if: github.actor != 'renovate[bot]'
     name: Lint source code
     runs-on: ubuntu-latest
 
@@ -27,9 +31,9 @@ jobs:
 
     - name: Configurating Git
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git config --local core.autocrlf false
+        git config user.email "azory@ydata.ai"
+        git config user.name "Azory YData Bot"
+        git config core.autocrlf false
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
@@ -62,16 +66,16 @@ jobs:
       id: commit
       run: |
         if [[ `git status --porcelain --untracked-files=no` ]]; then
-          echo ::set-output name=CHANGES::true
+          echo "CHANGES=true" >> $GITHUB_OUTPUT
           git add -u
           git commit -m "[skip ci] Code formatting" -a
         else
-          echo ::set-output name=CHANGES::false
+          echo "CHANGES=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Push changes
       uses: ad-m/github-push-action@v0.6.0
-      if: ${{ steps.commit.outputs.CHANGES == 'true' }}
+      if: always() && steps.commit.outputs.CHANGES == 'true'
       with:
         branch: ${{ github.head_ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}

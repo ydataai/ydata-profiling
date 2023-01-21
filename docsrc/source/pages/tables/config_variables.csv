@@ -9,6 +9,8 @@ Parameter,Type,Default,Description
 ``vars.cat.characters``,boolean,``False``,"Check the distribution of characters and their Unicode properties. Often informative, but may be computationally expensive."
 ``vars.cat.words``,boolean,``False``,"Check the distribution of words. Often informative, but may be computationally expensive."
 ``vars.cat.cardinality_threshold``,integer,50,"Warn if the number of distinct values is above this threshold."
+``vars.cat.imbalance_threshold``,float,0.5,"Warn if the imbalance score is above this threshold."
 ``vars.cat.n_obs``,integer,5,"Display this number of observations."
 ``vars.cat.chi_squared_threshold``,float,0.999,"Same as above, but for categorical variables."
 ``vars.bool.n_obs``,integer,3,"Same as above, but for boolean variables."
+``vars.bool.imbalance_threshold``,float,0.5,"Warn if the imbalance score is above this threshold."

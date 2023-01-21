@@ -11,21 +11,27 @@
     {% endif %}
     <div class="row {% if classes %}{{ classes }}{% else %}variable{% endif %}"{% if id %} id="{{ id }}"{% endif %}{{ border }}>
         <div class="col-sm-{{ c1 }}">
-            <select class="form-control multiple" role="tablist" id="select-{{ id }}" multiple>
+            <select class="form-control multiple"
+                    role="tablist"
+                    id="select-{{ id }}"
+                    multiple>
                 {% for tab in tabs %}
-                    <option role="presentation"{% if loop.first %} class="active"{% endif %}
-                           data-target="#{{ anchor_id }}-{{ tab.anchor_id }}"
-                           aria-controls="{{ anchor_id }}-{{ tab.anchor_id }}"
-                           role="tab"
-                           data-toggle="tab">{{ tab.name | fmt_badge }}
+                    <option role="presentation"
+                            {% if loop.first %} class="active"{% endif %}
+                            data-target="#{{ anchor_id }}-{{ tab.anchor_id }}"
+                            aria-controls="{{ anchor_id }}-{{ tab.anchor_id }}"
+                            role="tab"
+                            data-toggle="tab">
+                        {{ tab.name | fmt_badge }}
                     </option>
                 {% endfor %}
             </select>
         </div>
-
         <div class="tab-content col-sm-{{ c2 }}">
             {% for tab in tabs %}
-                <div role="tabpanel" class="tab-pane col-sm-12{% if loop.first %} active{% endif %}" id="{{ anchor_id }}-{{ tab.anchor_id }}">
+                <div role="tabpanel"
+                     class="tab-pane col-sm-12{% if loop.first %} active{% endif %}"
+                     id="{{ anchor_id }}-{{ tab.anchor_id }}">
                     {{ tab.render() }}
                 </div>
             {% endfor %}

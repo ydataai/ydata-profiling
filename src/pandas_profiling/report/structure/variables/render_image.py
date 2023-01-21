@@ -62,7 +62,8 @@ def render_image(config: Settings, summary: dict) -> dict:
                             ),
                             "alert": False,
                         },
-                    ]
+                    ],
+                    style=config.html.style,
                 ),
                 Table(
                     [
@@ -88,7 +89,8 @@ def render_image(config: Settings, summary: dict) -> dict:
                             ),
                             "alert": False,
                         },
-                    ]
+                    ],
+                    style=config.html.style,
                 ),
                 Table(
                     [
@@ -114,7 +116,8 @@ def render_image(config: Settings, summary: dict) -> dict:
                             ),
                             "alert": False,
                         },
-                    ]
+                    ],
+                    style=config.html.style,
                 ),
             ],
             anchor_id=f"{varid}tbl",
