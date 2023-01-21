@@ -1,0 +1,23 @@
+name: spark-env
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.9
+  - ipykernel
+  - nb_conda
+  - jupyterlab
+  - jupyterlab_code_formatter
+  - isort
+  - black
+  - pyspark=3.2.0
+  - pip
+  - matplotlib
+  - pip:
+    - delta-spark==1.2.1
+    - -r requirements-dev.txt
+    - -r requirements-pandas.txt
+    - -r requirements.txt
+    - -r requirements-spark.txt
