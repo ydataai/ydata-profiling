@@ -12,7 +12,10 @@ from pandas_profiling.utils.compat import pandas_version_info
 if pandas_version_info() >= (1, 5):
     from pandas.errors import DataError
 else:
-    from pandas.core.base import DataError
+    try:
+        from pandas.core.base import DataError
+    except:
+        from pandas.errors import DataError
 
 
 class Correlation:
