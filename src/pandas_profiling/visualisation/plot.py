@@ -230,82 +230,50 @@ def _plot_histogram(
 
 
 @manage_matplotlib_context()
-def plot_mini_cat_dist(
-    config: Settings,
-    plot_description: BasePlotDescription,
-) -> str:
-    """Plots small categorical distribution"""
-    plot = _plot_cat_dist(plot_description, figsize=(3, 2.25))
-    return plot_360_n0sc0pe(config)
-
-
-@manage_matplotlib_context()
 def plot_cat_dist(
-    config: Settings,
-    plot_description: BasePlotDescription,
+    config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots categorical distribution"""
-    plot = _plot_cat_dist(plot_description)
-    return plot_360_n0sc0pe(config)
-
-
-@manage_matplotlib_context()
-def plot_mini_cat_log_odds(
-    config: Settings,
-    plot_description: BasePlotDescription,
-) -> str:
-    """Plots small categorical log odds graph"""
-    plot = _plot_cat_log_odds(plot_description, figsize=(3, 2.25))
+    if mini:
+        plot = _plot_cat_dist(plot_description, figsize=(3, 2.25))
+    else:
+        plot = _plot_cat_dist(plot_description)
     return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
 def plot_cat_log_odds(
-    config: Settings,
-    plot_description: BasePlotDescription,
+    config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots categorical log odds graph"""
-    plot = _plot_cat_log_odds(plot_description)
+    if mini:
+        plot = _plot_cat_log_odds(plot_description, figsize=(3, 2.25))
+    else:
+        plot = _plot_cat_log_odds(plot_description)
     return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
-def plot_mini_histogram(
-    config: Settings,
-    plot_description: BasePlotDescription,
-) -> str:
-    """Plots small histogram for continuos data"""
-    plot = _plot_hist_dist(plot_description, figsize=(3, 2.25))
-    return plot_360_n0sc0pe(config)
-
-
-@manage_matplotlib_context()
-def plot_histogram(
-    config: Settings,
-    plot_description: BasePlotDescription,
+def plot_hist_dist(
+    config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots histogram for continuos data"""
-    plot = _plot_hist_dist(plot_description)
-    return plot_360_n0sc0pe(config)
-
-
-@manage_matplotlib_context()
-def plot_mini_hist_log_odds(
-    config: Settings,
-    plot_description: BasePlotDescription,
-) -> str:
-    """Plots continuous log odds graph"""
-    plot = _plot_hist_log_odds(plot_description, figsize=(3, 2.25))
+    if mini:
+        plot = _plot_hist_dist(plot_description, figsize=(3, 2.25))
+    else:
+        plot = _plot_hist_dist(plot_description)
     return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()
 def plot_hist_log_odds(
-    config: Settings,
-    plot_description: BasePlotDescription,
+    config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots continuous log odds graph"""
-    plot = _plot_hist_log_odds(plot_description)
+    if mini:
+        plot = _plot_hist_log_odds(plot_description, figsize=(3, 2.25))
+    else:
+        plot = _plot_hist_log_odds(plot_description)
     return plot_360_n0sc0pe(config)
 
 

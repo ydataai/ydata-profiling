@@ -27,7 +27,6 @@ from pandas_profiling.visualisation.plot import (
     histogram,
     plot_cat_dist,
     plot_cat_log_odds,
-    plot_mini_cat_dist,
 )
 
 
@@ -394,7 +393,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     )
 
     mini_freq_table = Image(
-        plot_mini_cat_dist(config, summary["plot_description"]),
+        plot_cat_dist(config, summary["plot_description"]),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -469,7 +468,11 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     )
 
     # log odds
-    if config.target_col is not None and config.target_col != summary["varid"]:
+    if (
+        summary["plot_description"].target_col_name is not None
+        and summary["plot_description"].data_col_name
+        != summary["plot_description"].target_col_name
+    ):
         log_odds = Image(
             plot_cat_log_odds(config, summary["plot_description"]),
             image_format=image_format,

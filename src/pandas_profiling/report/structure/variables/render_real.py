@@ -17,9 +17,8 @@ from pandas_profiling.report.structure.variables.render_common import render_com
 from pandas_profiling.visualisation.plot import (
     histogram,
     mini_histogram,
+    plot_hist_dist,
     plot_hist_log_odds,
-    plot_histogram,
-    plot_mini_histogram,
 )
 
 
@@ -142,7 +141,7 @@ def render_real(config: Settings, summary: dict) -> dict:
         )
 
     mini_histo_so = Image(
-        plot_mini_histogram(config, summary["plot_description"]),
+        plot_hist_dist(config, summary["plot_description"], mini=True),
         image_format=image_format,
         alt="Mini histogram",
     )
@@ -270,9 +269,10 @@ def render_real(config: Settings, summary: dict) -> dict:
 
     # distribution
     distribution = Image(
-        plot_histogram(config, summary["plot_description"]),
+        plot_hist_dist(config, summary["plot_description"]),
         image_format=image_format,
         alt="Distribution histogram",
+        caption=hist_caption,
         name="Distribution",
     )
 
