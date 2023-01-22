@@ -103,10 +103,9 @@ class NumericPlotDescriptionPandas(BasePlotDescription):
                 (bin_edges[i] + bin_edges[i + 1]) / 2 for i in range(len(bin_edges) - 1)
             ]
             return pd.DataFrame(
-                data={self.data_col_name: bin_centers, __count_col_name: hist}
+                data={self.data_col_name: bin_centers, self.count_col_name: hist}
             )
 
-        __count_col_name = self.count_col_name
         my_range = (data_col.min(), data_col.max())
         max_bar_count = min(max_bar_count, data_col.nunique())
         # we have target column and one different column
@@ -119,5 +118,4 @@ class NumericPlotDescriptionPandas(BasePlotDescription):
         else:
             distribution = get_hist(data_col)
 
-        distribution.sort_values(by=__count_col_name, ascending=False, inplace=True)
         self._validate(distribution)

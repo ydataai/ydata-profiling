@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional
 
+import numpy as np
 import pandas as pd
 from pandas_profiling.model.base.serializable import SerializableInterface
 
@@ -24,7 +25,7 @@ class BasePlotDescription(SerializableInterface):
     _count_col_name = "count"
     _log_odds_col_name = "log_odds"
     __distribution: pd.DataFrame
-    __log_odds: pd.DataFrame
+    __log_odds: Optional[pd.DataFrame] = None
 
     def __init__(self, data_col: pd.Series, target_col: Optional[pd.Series]) -> None:
         """
@@ -66,13 +67,16 @@ class BasePlotDescription(SerializableInterface):
 
     @property
     def log_odds(self) -> pd.DataFrame:
-        """Returns dataframe with log odds for data column"""
+        """Returns DataFrame with log odds for data column"""
         if self.__log_odds is None:
             raise ValueError(f"log_odds not found in '{self.data_col_name}'")
         return self.__log_odds
 
     @property
     def log_odds_col_name(self) -> str:
+        """DataFrame with log odds information"""
+        if self.__log_odds is None:
+            self.__generate_log_odds()
         return self._log_odds_col_name
 
     def __prepare_data_col(self, data_col: pd.Series) -> None:
@@ -100,6 +104,8 @@ class BasePlotDescription(SerializableInterface):
         }
 
     def __check_columns(self, df: pd.DataFrame):
+        """Checks if df contains all columns (data_col, target_col, count_col)
+        and if columns ar in correct dtype"""
         if self.data_col_name not in df:
             raise ValueError("Data column not in DataFrame")
         if (self.target_col_name is not None) and (self.target_col_name not in df):
@@ -109,8 +115,33 @@ class BasePlotDescription(SerializableInterface):
         if self.count_col_name not in df:
             raise ValueError("Count column not in DataFrame")
 
+        if self.target_col_name is not None:
+            df[self.target_col_name] = df[self.target_col_name].astype(str)
+        return df
+
+    def __generate_log_odds(self):
+        log_odds = pd.pivot_table(
+            self.distribution,
+            values=self.count_col_name,
+            index=self.data_col_name,
+            columns=self.target_col_name,
+            sort=False,
+        ).reset_index()
+        log_odds.columns.name = ""
+        # TODO replace '0' and '1'
+        log_odds["log_odds"] = round(np.log2(log_odds["1"] / log_odds["0"]), 2)
+        # replace all special values with 0
+        log_odds.fillna(0, inplace=True)
+        log_odds.replace([np.inf, -np.inf], 0, inplace=True)
+        self.__log_odds = log_odds
+
     def _validate(self, distribution: pd.DataFrame) -> None:
+        """Validates distribution DataFrame"""
         if not isinstance(distribution, pd.DataFrame):
             raise ValueError("Preprocessed plot must be pd.DataFrame instance.")
         self.__check_columns(distribution)
         self.__distribution = distribution.reset_index(drop=True)
+
+        # generate log_odds just for supervised report
+        if self.target_col_name is not None:
+            self.__generate_log_odds()

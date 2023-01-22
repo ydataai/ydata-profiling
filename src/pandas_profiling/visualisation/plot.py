@@ -44,11 +44,18 @@ def _plot_cat_log_odds(
     Plotter
         Generated plot.
     """
-    p = so.Plot(
-        plot_description.log_odds,
-        x=plot_description.log_odds_col_name,
-        y=plot_description.data_col_name,
-    ).add(so.Bar(color="green"))
+    p = (
+        so.Plot(
+            plot_description.log_odds,
+            x=plot_description.log_odds_col_name,
+            y=plot_description.data_col_name,
+        )
+        .add(so.Bar(color="green"))
+        .add(
+            so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
+            text=plot_description.log_odds_col_name,
+        )
+    )
     p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
     return p.plot(pyplot=True)
 
@@ -92,7 +99,6 @@ def _plot_cat_dist(
             )
         )
 
-    # p = p.scale(y=so.Continuous().label(like="${:10s}"))
     p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
     return p.plot(pyplot=True)
 
@@ -101,31 +107,48 @@ def _plot_hist_log_odds(
     plot_description: BasePlotDescription,
     figsize: Tuple[float, float] = (6, 4),
 ) -> Plotter:
-    raise NotImplementedError
+    p = (
+        so.Plot(
+            plot_description.log_odds,
+            x=plot_description.data_col_name,
+            y=plot_description.log_odds_col_name,
+        )
+        .add(so.Bar(color="green"))
+        .add(
+            so.Text({"fontweight": "bold", "clip_on": False}, valign="bottom"),
+            text="log_odds",
+        )
+    )
+    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="log odds")
+    return p.plot(pyplot=True)
 
 
 def _plot_hist_dist(
     plot_description: BasePlotDescription,
     figsize: Tuple[float, float] = (6, 4),
 ) -> Plotter:
-    data_col = plot_description.data_col_name
-    target_col = plot_description.target_col_name
-    count_col = plot_description.count_col_name
-    preprocessed_data = plot_description.distribution
-
-    p = so.Plot(preprocessed_data, x=data_col, y=count_col)
-    if target_col is not None:
-        p = p.add(so.Bars(alpha=1), color=target_col)
+    p = so.Plot(
+        plot_description.distribution,
+        x=plot_description.data_col_name,
+        y=plot_description.count_col_name,
+    )
+    # supervised
+    if plot_description.target_col_name is not None:
+        p = p.add(
+            so.Bar(alpha=1), so.Dodge(), color=plot_description.target_col_name
+        ).add(
+            so.Text(
+                {"fontweight": "bold", "clip_on": False},
+                valign="bottom",
+                halign="center",
+            ),
+            so.Dodge(),
+            color=plot_description.target_col_name,
+            text=plot_description.count_col_name,
+        )
     else:
         p = p.add(so.Bars(alpha=1))
-    p = (
-        p.layout(size=figsize)
-        .theme({"axes.facecolor": "w"})
-        .label(
-            x="",
-            y="",
-        )
-    )
+    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
     return p.plot(pyplot=True)
 
 
@@ -207,11 +230,32 @@ def _plot_histogram(
 
 
 @manage_matplotlib_context()
-def plot_categories(
+def plot_mini_cat_dist(
     config: Settings,
     plot_description: BasePlotDescription,
 ) -> str:
+    """Plots small categorical distribution"""
     plot = _plot_cat_dist(plot_description, figsize=(3, 2.25))
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_cat_dist(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    """Plots categorical distribution"""
+    plot = _plot_cat_dist(plot_description)
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_mini_cat_log_odds(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    """Plots small categorical log odds graph"""
+    plot = _plot_cat_log_odds(plot_description, figsize=(3, 2.25))
     return plot_360_n0sc0pe(config)
 
 
@@ -220,7 +264,18 @@ def plot_cat_log_odds(
     config: Settings,
     plot_description: BasePlotDescription,
 ) -> str:
-    plot = _plot_cat_log_odds(plot_description, figsize=(3, 2.25))
+    """Plots categorical log odds graph"""
+    plot = _plot_cat_log_odds(plot_description)
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_mini_histogram(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    """Plots small histogram for continuos data"""
+    plot = _plot_hist_dist(plot_description, figsize=(3, 2.25))
     return plot_360_n0sc0pe(config)
 
 
@@ -229,7 +284,28 @@ def plot_histogram(
     config: Settings,
     plot_description: BasePlotDescription,
 ) -> str:
-    plot = _plot_hist_dist(plot_description, figsize=(3, 2.25))
+    """Plots histogram for continuos data"""
+    plot = _plot_hist_dist(plot_description)
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_mini_hist_log_odds(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    """Plots continuous log odds graph"""
+    plot = _plot_hist_log_odds(plot_description, figsize=(3, 2.25))
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_hist_log_odds(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    """Plots continuous log odds graph"""
+    plot = _plot_hist_log_odds(plot_description)
     return plot_360_n0sc0pe(config)
 
 
