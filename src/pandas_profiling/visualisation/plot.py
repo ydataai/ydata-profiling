@@ -14,11 +14,10 @@ from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from pandas_profiling.config import Settings
 from pandas_profiling.model.base.plot_description import BasePlotDescription
-
-# from pandas_profiling.model.pandas.plot_description_pandas import CategoricalPlotDescriptionPandas
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
+from seaborn._core.plot import Plotter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from typeguard import typechecked
 
@@ -27,45 +26,92 @@ def format_fn(tick_val: int, tick_pos: Any) -> str:
     return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _plot_categories(
+"""
+because both visualizations have attribute color.
+
+I'm able co color bars, or the text, but not both at once.
+"""
+
+
+def _plot_cat_log_odds(
     plot_description: BasePlotDescription,
     figsize: Tuple[float, float] = (6, 4),
-) -> plt.Figure:
-    _text_color = {"left": "black", "right": "white"}
-    _text_position = {"left": "left", "right": "right"}
-    print(plot_description.data_col_name)
-    print(plot_description.preprocessed_plot["labels_location"])
+) -> Plotter:
+    """Creates log odds plot for categorical column
+
+    Returns
+    -------
+    Plotter
+        Generated plot.
+    """
     p = so.Plot(
-        plot_description.preprocessed_plot,
-        x=plot_description.count_col_name,
+        plot_description.log_odds,
+        x=plot_description.log_odds_col_name,
         y=plot_description.data_col_name,
-        text=plot_description.count_col_name,
-        color=plot_description.target_col_name,
-    ).add(so.Bar(alpha=1))
-    # supervised plot
-    if plot_description.target_col_name is not None:
-        pass
-    # unsupervised plot
-    else:
-        p = p.add(
-            so.Text({"fontweight": "bold"}),
-            color="labels_location",
-            halign="labels_location",
-        ).scale(
-            halign=_text_position, color=_text_color, x=so.Continuous().tick(count=0)
-        )
-    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="")
+    ).add(so.Bar(color="green"))
+    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
     return p.plot(pyplot=True)
 
 
-def _plot_histogram_so(
+def _plot_cat_dist(
     plot_description: BasePlotDescription,
     figsize: Tuple[float, float] = (6, 4),
-) -> plt.Figure:
+) -> Plotter:
+    _text_color = {"left": "black", "right": "white"}
+    _text_position = {"left": "left", "right": "right"}
+    p = so.Plot(
+        plot_description.distribution,
+        x=plot_description.count_col_name,
+        y=plot_description.data_col_name,
+    )
+    # supervised plot
+    if (
+        plot_description.target_col_name is not None
+        and plot_description.target_col_name != plot_description.data_col_name
+    ):
+
+        p = p.add(
+            so.Bar(alpha=1),
+            so.Dodge(),
+            color=plot_description.target_col_name,
+        )
+    # unsupervised plot
+    else:
+        p = (
+            p.add(so.Bar(alpha=1))
+            .add(
+                so.Text({"fontweight": "bold"}),
+                text=plot_description.count_col_name,
+                color="labels_location",
+                halign="labels_location",
+            )
+            .scale(
+                color=_text_color,
+                halign=_text_position,
+                x=so.Continuous().tick(count=0),
+            )
+        )
+
+    # p = p.scale(y=so.Continuous().label(like="${:10s}"))
+    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
+    return p.plot(pyplot=True)
+
+
+def _plot_hist_log_odds(
+    plot_description: BasePlotDescription,
+    figsize: Tuple[float, float] = (6, 4),
+) -> Plotter:
+    raise NotImplementedError
+
+
+def _plot_hist_dist(
+    plot_description: BasePlotDescription,
+    figsize: Tuple[float, float] = (6, 4),
+) -> Plotter:
     data_col = plot_description.data_col_name
     target_col = plot_description.target_col_name
     count_col = plot_description.count_col_name
-    preprocessed_data = plot_description.preprocessed_plot
+    preprocessed_data = plot_description.distribution
 
     p = so.Plot(preprocessed_data, x=data_col, y=count_col)
     if target_col is not None:
@@ -165,7 +211,16 @@ def plot_categories(
     config: Settings,
     plot_description: BasePlotDescription,
 ) -> str:
-    plot = _plot_categories(plot_description, figsize=(3, 2.25))
+    plot = _plot_cat_dist(plot_description, figsize=(3, 2.25))
+    return plot_360_n0sc0pe(config)
+
+
+@manage_matplotlib_context()
+def plot_cat_log_odds(
+    config: Settings,
+    plot_description: BasePlotDescription,
+) -> str:
+    plot = _plot_cat_log_odds(plot_description, figsize=(3, 2.25))
     return plot_360_n0sc0pe(config)
 
 
@@ -174,7 +229,7 @@ def plot_histogram(
     config: Settings,
     plot_description: BasePlotDescription,
 ) -> str:
-    plot = _plot_histogram_so(plot_description, figsize=(3, 2.25))
+    plot = _plot_hist_dist(plot_description, figsize=(3, 2.25))
     return plot_360_n0sc0pe(config)
 
 

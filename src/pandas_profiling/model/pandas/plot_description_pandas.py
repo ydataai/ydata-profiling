@@ -21,9 +21,9 @@ class CategoricalPlotDescriptionPandas(BasePlotDescription):
             limit for plotting. If we have more categories, than max_cat_to_plot,
             all below threshold will be merged to other category
         """
+        data_col = data_col.astype(str)
         super().__init__(data_col, target_col)
 
-        __count_col_name = self.count_col_name
         self._other_placeholder = "other ..."
         self._max_cat_to_plot = max_cat_to_plot
 
@@ -31,21 +31,21 @@ class CategoricalPlotDescriptionPandas(BasePlotDescription):
         if target_col is not None and self.data_col_name != self.target_col_name:
             # join columns by id
             data = data_col.to_frame().join(target_col, how="inner").astype(str)
-            preprocessed = data.groupby(data.columns.to_list()).size().reset_index()
-            preprocessed.rename(columns={0: __count_col_name}, inplace=True)
+            distribution = data.groupby(data.columns.to_list()).size().reset_index()
+            distribution.rename(columns={0: self.count_col_name}, inplace=True)
         else:
-            preprocessed = data_col.groupby(data_col).size()
-            preprocessed = preprocessed.rename(index=__count_col_name).reset_index()
+            distribution = data_col.groupby(data_col).size()
+            distribution = distribution.rename(index=self.count_col_name).reset_index()
 
         # sorts plot
-        preprocessed.sort_values(by=__count_col_name, inplace=True, ascending=False)
+        distribution.sort_values(by=self.count_col_name, inplace=True, ascending=False)
 
         # limit the count of plotted categories
-        preprocessed = self._limit_count(preprocessed)
+        distribution = self._limit_count(distribution)
 
         # add column for label position
-        preprocessed = self._add_labels_location(preprocessed)
-        self._set_preprocessed_data(preprocessed)
+        distribution = self._add_labels_location(distribution)
+        self._validate(distribution)
 
     def _limit_count(self, df: pd.DataFrame) -> pd.DataFrame:
         """Limit count of displayed categories to max_cat.
@@ -111,15 +111,13 @@ class NumericPlotDescriptionPandas(BasePlotDescription):
         max_bar_count = min(max_bar_count, data_col.nunique())
         # we have target column and one different column
         if target_col is not None and self.data_col_name != self.target_col_name:
-            preprocessed_plot = pd.DataFrame()
+            distribution = pd.DataFrame()
             for target_value in target_col.unique():
                 tmp = get_hist(data_col[target_col == target_value])
                 tmp[self.target_col_name] = target_value
-                preprocessed_plot = pd.concat([preprocessed_plot, tmp])
+                distribution = pd.concat([distribution, tmp])
         else:
-            preprocessed_plot = get_hist(data_col)
+            distribution = get_hist(data_col)
 
-        preprocessed_plot.sort_values(
-            by=__count_col_name, ascending=False, inplace=True
-        )
-        self._set_preprocessed_data(preprocessed_plot)
+        distribution.sort_values(by=__count_col_name, ascending=False, inplace=True)
+        self._validate(distribution)

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 class SerializableInterface(ABC):
@@ -7,4 +7,4 @@ class SerializableInterface(ABC):
 
     @abstractmethod
     def to_dict(self) -> Dict[str, Any]:
-        pass
+        raise NotImplementedError()
