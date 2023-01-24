@@ -73,11 +73,9 @@ def spark_missing_bar(config: Settings, df: DataFrame) -> str:
         ),
     )
 
-
 @missing_matrix.register
 def spark_missing_matrix(config: Settings, df: DataFrame) -> str:
     return plot_missing_matrix(config, MissingnoBarSparkPatch(df))
-
 
 @missing_heatmap.register
 def spark_missing_heatmap(config: Settings, df: DataFrame) -> str:

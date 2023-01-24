@@ -12,7 +12,7 @@ from pandas_profiling.model.summary_algorithms import (
 
 
 def date_stats_spark(df: DataFrame, summary: dict) -> dict:
-    print("calculate stats for date/datetime")
+    print('calculate stats for date/datetime')
     column = df.columns[0]
 
     expr = [
@@ -21,7 +21,6 @@ def date_stats_spark(df: DataFrame, summary: dict) -> dict:
     ]
 
     return df.agg(*expr).first().asDict()
-
 
 @describe_date_1d.register
 def describe_date_1d_spark(

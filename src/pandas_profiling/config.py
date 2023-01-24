@@ -317,8 +317,6 @@ class Settings(BaseSettings):
         "kendall": Correlation(key="kendall", calculate=False),
     }
 
-    correlation_table: bool = True
-
     interactions: Interactions = Interactions()
 
     categorical_maximum_correlation_distinct: int = 100
@@ -403,15 +401,13 @@ class SparkSettings(Settings):
     correlations: Dict[str, Correlation] = {
         "spearman": Correlation(key="spearman"),
         "pearson": Correlation(key="pearson"),
-        "kendall": Correlation(key="kendall"),
-        "cramers": Correlation(key="cramers"),
-        "phi_k": Correlation(key="phi_k"),
+        "auto": Correlation(key="auto")
     }
     correlations["pearson"].calculate = True
     correlations["spearman"].calculate = True
-    correlations["kendall"].calculate = False
-    correlations["cramers"].calculate = False
-    correlations["phi_k"].calculate = False
+    correlations["auto"].calculate = False
+
+    correlation_table: bool = True
 
     interactions: Interactions = Interactions()
     interactions.continuous = False
