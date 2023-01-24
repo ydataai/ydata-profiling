@@ -231,6 +231,7 @@ class Correlation(BaseModel):
 class Correlations(BaseModel):
     pearson: Correlation = Correlation(key="pearson")
     spearman: Correlation = Correlation(key="spearman")
+    auto: Correlation = Correlation(key="auto")
 
 
 class Interactions(BaseModel):
@@ -305,11 +306,13 @@ class Settings(BaseSettings):
         "heatmap": True,
     }
 
+    correlation_table: bool = True
+
     correlations: Dict[str, Correlation] = {
         "auto": Correlation(key="auto"),
+        "spearman": Correlation(key="spearman"),
+        "pearson": Correlation(key="pearson"),
     }
-
-    correlation_table: bool = True
 
     interactions: Interactions = Interactions()
 
@@ -362,15 +365,13 @@ class SparkSettings(Settings):
     correlations: Dict[str, Correlation] = {
         "spearman": Correlation(key="spearman"),
         "pearson": Correlation(key="pearson"),
-        "kendall": Correlation(key="kendall"),
-        "cramers": Correlation(key="cramers"),
-        "phi_k": Correlation(key="phi_k"),
+        "auto": Correlation(key="auto")
     }
     correlations["pearson"].calculate = True
     correlations["spearman"].calculate = True
-    correlations["kendall"].calculate = False
-    correlations["cramers"].calculate = False
-    correlations["phi_k"].calculate = False
+    correlations["auto"].calculate = False
+
+    correlation_table: bool = True
 
     interactions: Interactions = Interactions()
     interactions.continuous = False

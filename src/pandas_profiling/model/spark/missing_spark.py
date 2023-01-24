@@ -5,13 +5,11 @@ from pyspark.sql import DataFrame
 from pandas_profiling.config import Settings
 from pandas_profiling.model.missing import (
     missing_bar,
-    missing_dendrogram,
     missing_heatmap,
     missing_matrix,
 )
 from pandas_profiling.visualisation.missing import (
     plot_missing_bar,
-    plot_missing_dendrogram,
     plot_missing_heatmap,
     plot_missing_matrix,
 )
@@ -79,17 +77,10 @@ def spark_missing_bar(config: Settings, df: DataFrame) -> str:
         ),
     )
 
-
 @missing_matrix.register
 def spark_missing_matrix(config: Settings, df: DataFrame) -> str:
     return plot_missing_matrix(config, MissingnoBarSparkPatch(df))
 
-
 @missing_heatmap.register
 def spark_missing_heatmap(config: Settings, df: DataFrame) -> str:
     return plot_missing_heatmap(config, MissingnoBarSparkPatch(df))
-
-
-@missing_dendrogram.register
-def spark_missing_dendrogram(config: Settings, df: DataFrame) -> str:
-    return plot_missing_dendrogram(config, MissingnoBarSparkPatch(df))

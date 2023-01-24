@@ -43,10 +43,12 @@ def spark_describe_1d(
     else:
         # Detect variable types from pandas dataframe (df.dtypes).
         # [new dtypes, changed using `astype` function are now considered]
+
         if str(series.schema[0].dataType).startswith("ArrayType"):
             dtype = "ArrayType"
         else:
-            dtype = str(series.schema[0].dataType)
+            dtype = str(series.schema[0].dataType)[:-2]
+
         vtype = {
             "IntegerType": "Numeric",
             "LongType": "Numeric",

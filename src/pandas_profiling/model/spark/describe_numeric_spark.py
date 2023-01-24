@@ -10,7 +10,6 @@ from pandas_profiling.model.summary_algorithms import (
     histogram_compute,
 )
 
-
 def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
     column = df.columns[0]
 
