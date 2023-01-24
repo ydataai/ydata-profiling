@@ -85,8 +85,6 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
     Returns:
         The percentage with 1 point precision.
     """
-    if not (1.0 >= value >= 0.0):
-        raise ValueError(f"Value '{value}' should be a ratio between 1 and 0.")
     if edge_cases and round(value, 3) == 0 and value > 0:
         return "< 0.1%"
     if edge_cases and round(value, 3) == 1 and value < 1:
@@ -315,7 +313,7 @@ def help(title: str, url: Optional[str] = None) -> str:
         HTML formatted help badge
     """
     if url is not None:
-        return f'<a title="{title}" href="{url}" target="_blank"><span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span></a>'
+        return f'<a title="{title}" href="{url}"><span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span></a>'
     else:
         return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
 

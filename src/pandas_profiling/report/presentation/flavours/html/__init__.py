@@ -1,6 +1,9 @@
 from pandas_profiling.report.presentation.flavours.html.alerts import HTMLAlerts
 from pandas_profiling.report.presentation.flavours.html.collapse import HTMLCollapse
 from pandas_profiling.report.presentation.flavours.html.container import HTMLContainer
+from pandas_profiling.report.presentation.flavours.html.correlation_table import (
+    HTMLCorrelationTable,
+)
 from pandas_profiling.report.presentation.flavours.html.dropdown import HTMLDropdown
 from pandas_profiling.report.presentation.flavours.html.duplicate import HTMLDuplicate
 from pandas_profiling.report.presentation.flavours.html.frequency_table import (
@@ -38,4 +41,5 @@ __all__ = [
     "HTMLVariable",
     "HTMLVariableInfo",
     "HTMLAlerts",
+    "HTMLCorrelationTable",
 ]

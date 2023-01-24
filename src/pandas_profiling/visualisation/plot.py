@@ -47,19 +47,17 @@ def _plot_histogram(
     # we have precomputed the histograms...
     if isinstance(bins, list):
         n_labels = len(config.html.style._labels)
-        fig, ax = plt.subplots(
-            nrows=n_labels, ncols=1, sharex=True, sharey=True, figsize=(6, 6)
-        )
+        fig = plt.figure(figsize=figsize)
+        plot = fig.add_subplot(111)
 
-        for idx in range(n_labels):
-            plot = ax[idx]
-
+        for idx in reversed(list(range(n_labels))):
             diff = np.diff(bins[idx])
             plot.bar(
                 bins[idx][:-1] + diff / 2,  # type: ignore
                 series[idx],
                 diff,
                 facecolor=config.html.style.primary_colors[idx],
+                alpha=0.6,
             )
 
             if date:
@@ -120,7 +118,7 @@ def histogram(
       The resulting histogram encoded as a string.
 
     """
-    plot = _plot_histogram(config, series, bins, date=date)
+    plot = _plot_histogram(config, series, bins, date=date, figsize=(7, 3))
     plot.xaxis.set_tick_params(rotation=90 if date else 45)
     plot.figure.tight_layout()
     return plot_360_n0sc0pe(config)
@@ -342,8 +340,7 @@ def scatter_pairwise(
 
 
 def _plot_stacked_barh(
-    data: pd.Series,
-    colors: List,
+    data: pd.Series, colors: List, hide_legend: bool = False
 ) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
     """Plot a stacked horizontal bar chart to show category frequency.
     Works for boolean and categorical features.
@@ -351,6 +348,7 @@ def _plot_stacked_barh(
     Args:
         data (pd.Series): category frequencies with category names as index
         colors (list): list of colors in a valid matplotlib format
+        hide_legend (bool): if true, the legend is omitted
 
     Returns:
         ax: Stacked bar plot (matplotlib.axes)
@@ -391,16 +389,17 @@ def _plot_stacked_barh(
 
         starts += x
 
-    legend = ax.legend(
-        ncol=1, bbox_to_anchor=(0, 0), fontsize="xx-large", loc="upper left"
-    )
+    legend = None
+    if not hide_legend:
+        legend = ax.legend(
+            ncol=1, bbox_to_anchor=(0, 0), fontsize="xx-large", loc="upper left"
+        )
 
     return ax, legend
 
 
 def _plot_pie_chart(
-    data: pd.Series,
-    colors: List,
+    data: pd.Series, colors: List, hide_legend: bool = False
 ) -> Tuple[plt.Axes, matplotlib.legend.Legend]:
     """Plot a pie chart to show category frequency.
     Works for boolean and categorical features.
@@ -408,6 +407,7 @@ def _plot_pie_chart(
     Args:
         data (pd.Series): category frequencies with category names as index
         colors (list): list of colors in a valid matplotlib format
+        hide_legend (bool): if true, the legend is omitted
 
     Returns:
         ax: pie chart (matplotlib.axes)
@@ -429,13 +429,16 @@ def _plot_pie_chart(
         textprops={"color": "w"},
         colors=colors,
     )
-    legend = plt.legend(
-        wedges,
-        data.index.values,
-        fontsize="large",
-        bbox_to_anchor=(0, 0),
-        loc="upper left",
-    )
+
+    legend = None
+    if not hide_legend:
+        legend = plt.legend(
+            wedges,
+            data.index.values,
+            fontsize="large",
+            bbox_to_anchor=(0, 0),
+            loc="upper left",
+        )
 
     return ax, legend
 
@@ -476,12 +479,16 @@ def cat_frequency_plot(
     if plot_type == "bar":
         if isinstance(data, list):
             for v in data:
-                plot, legend = _plot_stacked_barh(v, colors)
+                plot, legend = _plot_stacked_barh(
+                    v, colors, hide_legend=config.vars.cat.redact
+                )
         else:
-            plot, legend = _plot_stacked_barh(data, colors)
+            plot, legend = _plot_stacked_barh(
+                data, colors, hide_legend=config.vars.cat.redact
+            )
 
     elif plot_type == "pie":
-        plot, legend = _plot_pie_chart(data, colors)
+        plot, legend = _plot_pie_chart(data, colors, hide_legend=config.vars.cat.redact)
 
     else:
         msg = (
@@ -493,9 +500,7 @@ def cat_frequency_plot(
 
     return plot_360_n0sc0pe(
         config,
-        bbox_extra_artists=[
-            legend,
-        ],
+        bbox_extra_artists=[] if legend is None else [legend],
         bbox_inches="tight",
     )
 

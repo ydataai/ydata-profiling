@@ -84,7 +84,9 @@ def describe(
             if type_name != "Unsupported"
         ]
         interval_columns = [
-            column for column, type_name in variables.items() if type_name == "Numeric"
+            column
+            for column, type_name in variables.items()
+            if type_name in {"Numeric", "TimeSeries"}
         ]
         pbar.update()
 

@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.pandas.imbalance_pandas import column_imbalance_score
 from pandas_profiling.model.pandas.utils_pandas import weighted_median
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
@@ -228,6 +229,8 @@ def pandas_describe_categorical_1d(
     # Only run if at least 1 non-missing value
     value_counts = summary["value_counts_without_nan"]
     value_counts.index = value_counts.index.astype(str)
+
+    summary["imbalance"] = column_imbalance_score(value_counts, len(value_counts))
 
     redact = config.vars.cat.redact
     if not redact:

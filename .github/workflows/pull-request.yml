@@ -2,11 +2,13 @@ name: Pull Request
 
 
 on:
+  push:
+    branches:
+    - renovate/**
   pull_request:
 
 jobs:
   commitlint:
-    if: github.actor != 'dependabot[bot]'
     name: Lint commit message
     runs-on: ubuntu-latest
 
@@ -16,9 +18,9 @@ jobs:
         fetch-depth: 0
 
     - uses: wagoid/commitlint-github-action@v5
-
+    
   lint:
-    if: github.actor != 'dependabot[bot]'
+    if: github.actor != 'renovate[bot]'
     name: Lint source code
     runs-on: ubuntu-latest
 

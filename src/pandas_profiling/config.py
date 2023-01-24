@@ -1,7 +1,9 @@
 """Configuration for the package."""
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
+import yaml
 from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
 
 
@@ -48,6 +50,7 @@ class CatVars(BaseModel):
     characters: bool = True
     words: bool = True
     cardinality_threshold: int = 50
+    imbalance_threshold: float = 0.5
     n_obs: int = 5
     # Set to zero to disable
     chi_squared_threshold: float = 0.999
@@ -59,6 +62,7 @@ class CatVars(BaseModel):
 
 class BoolVars(BaseModel):
     n_obs: int = 3
+    imbalance_threshold: float = 0.5
 
     # string to boolean mapping dict
     mappings: Dict[str, bool] = {
@@ -303,12 +307,9 @@ class Settings(BaseSettings):
 
     correlations: Dict[str, Correlation] = {
         "auto": Correlation(key="auto"),
-        "spearman": Correlation(key="spearman"),
-        "pearson": Correlation(key="pearson"),
-        "kendall": Correlation(key="kendall"),
-        "cramers": Correlation(key="cramers"),
-        "phi_k": Correlation(key="phi_k"),
     }
+
+    correlation_table: bool = True
 
     interactions: Interactions = Interactions()
 
@@ -334,6 +335,20 @@ class Settings(BaseSettings):
     def update(self, updates: dict) -> "Settings":
         update = _merge_dictionaries(self.dict(), updates)
         return self.parse_obj(self.copy(update=update))
+
+    @staticmethod
+    def from_file(config_file: Union[Path, str]) -> "Settings":
+        """Create a Settings object from a yaml file.
+
+        Args:
+            config_file: yaml file path
+        Returns:
+            Settings
+        """
+        with open(config_file) as f:
+            data = yaml.safe_load(f)
+
+        return Settings().parse_obj(data)
 
 
 class Config:
@@ -399,6 +414,7 @@ class Config:
             "phi_k": {"calculate": False},
             "cramers": {"calculate": False},
         },
+        "correlation_table": True,
     }
 
     @staticmethod

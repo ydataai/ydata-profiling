@@ -40,6 +40,16 @@ if __name__ == "__main__":
     # Saving the data profiling report with the 'auto' correlation matrix to a html file
     profile.to_file(Path("auto_uci_bank_marketing_report.html"))
 
+    # The 'Auto' correlation is also the only correlation computed when no configuration
+    # file is specified.
+
+    profile = ProfileReport(
+        df,
+        title="Profile Report of the UCI Bank Marketing Dataset",
+    )
+
+    profile.to_file(Path("auto_no_config_uci_bank_marketing_report.html"))
+
     # The default configuration only computes the 'Auto' correlation.
     # To deactivate this setting and instead calculate other types of correlations such as Pearson's
     # and Cramer's V we can do the following:

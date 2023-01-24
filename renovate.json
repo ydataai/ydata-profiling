@@ -1,0 +1,9 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>ydataai/renovate-config"
+  ],
+  "baseBranches": [
+    "develop"
+  ]
+}
