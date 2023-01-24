@@ -51,7 +51,7 @@ def chi_square(
     values: Optional[np.ndarray] = None, histogram: Optional[np.ndarray] = None
 ) -> dict:
     if histogram is None:
-        bins = bins = np.histogram_bin_edges(values, bins="auto")
+        bins = np.histogram_bin_edges(values, bins="auto")
         histogram, _ = np.histogram(values, bins=bins)
     return dict(chisquare(histogram)._asdict())
 
