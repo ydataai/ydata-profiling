@@ -5,8 +5,11 @@ https://github.com/ydataai/pandas-profiling/issues/915
 Error for series with large integers.
 """
 import fnmatch
+
 import pandas as pd
+
 from pandas_profiling import ProfileReport
+
 
 def test_issue915():
     df = pd.DataFrame({"col": pd.Series([716277643516076032 + i for i in range(100)])})
