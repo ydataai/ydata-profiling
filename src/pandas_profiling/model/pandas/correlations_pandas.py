@@ -164,7 +164,7 @@ def pandas_auto_compute(
     numerical_columns = [
         key
         for key, value in summary.items()
-        if value["type"] == "Numeric" and value["n_distinct"] > 1
+        if value["type"] in {"Numeric", "TimeSeries"} and value["n_distinct"] > 1
     ]
     categorical_columns = [
         key
