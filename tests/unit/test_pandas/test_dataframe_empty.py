@@ -13,11 +13,5 @@ from pandas_profiling import ProfileReport
     ],
 )
 def test_empty(test_data):
-    profile = ProfileReport(test_data, progress_bar=False)
-    description = profile.get_description()
-
-    assert len(description["correlations"]) == 0
-    assert len(description["missing"]) == 0
-
-    html = profile.to_html()
-    assert "Dataset is empty" in html
+    with pytest.raises(ValueError):
+        ProfileReport(test_data, progress_bar=False)
