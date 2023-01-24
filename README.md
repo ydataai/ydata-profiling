@@ -1,6 +1,4 @@
-# `pandas-profiling`
-
-![Pandas Profiling Logo Header](https://pandas-profiling.ydata.ai/docs/assets/logo_header.png)
+# `ydata-profiling`
 
 [![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
 [![PyPI download month](https://img.shields.io/pypi/dm/pandas-profiling.svg)](https://pypi.python.org/pypi/pandas-profiling/)
@@ -10,6 +8,8 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
+
+![YData Profiling Logo Header](https://assets.ydata.ai/oss/ydata-profiling_black.png)
 
 <p align="center">
   <a href="https://pandas-profiling.ydata.ai/docs/master/">Documentation</a>
@@ -26,11 +26,17 @@
   Do you like this project? Show us your love and <a href="https://engage.ydata.ai">give feedback!</a>
 </p>
 
-`pandas-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, pandas-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
+`ydata-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while allowing the data analysis to be exported in different formats such as **html** and **json**.
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**. 
 
-### Key features
+### 🎊 New year new face, more functionalities! 
+> - Want to scale? Check the latest release with ⭐ [Spark support]()! 
+> - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
+> - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
+
+
+## Key features
 - **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
 - **Warnings**: A summary of the problems/challenges in the data that you might need to work on (*missing data*, *inaccuracies*, *skewness*, etc.)
 - **Univariate analysis**: including descriptive statistics (mean, median, mode, etc) and informative visualizations such as distribution histograms
@@ -47,24 +53,26 @@ The report contains three additional sections:
 - **Alerts**: a comprehensive and automatic list of potential data quality issues (high correlation, skewness, uniformity, zeros, missing values, constant values, between others)
 - **Reproduction**: technical details about the analysis (time, version and configuration)
 
-> ### 🎁 Latest features 
+> ### 🎁 Latest features
+> - Want to scale? Check the latest release with ⭐⚡[Spark support]()! 
 > - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
 > - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
 
+### ⚡ Spark
+> Spark release has been released, but we are always looking for an extra pair of hands 👐.
+> [Check current work in progress!](https://github.com/ydataai/ydata-profiling/projects/3).
+
 ## 📝 Use cases
+YData-profiling can be used to deliver a variety of different use-case. The documentation includes guides, tips and tricks for tackling them:
 
-Pandas-profiling can be used to deliver a variety of different use-case. The documentation includes guides, tips and tricks for tackling them:
-
-| Use case | Description                                                                                    |
-|----------|----------------------------------------------------------------------------------------------|
-| [Comparing datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset                                                 |
-| [Profiling a Time-Series dataset](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/time_series_datasets.html)               | Generating a report for a time-series dataset with a single line of code                       |
-|[Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `pandas-profiling` for working with large datasets   |
-| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset                 |
-| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries            |
-| [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations               |
-
-> ⚡ Looking for a Spark backend to profile large datasets? It's [work in progress](https://github.com/ydataai/pandas-profiling/projects/3).
+| Use case | Description                                                                                 |
+|----------|---------------------------------------------------------------------------------------------|
+| [Comparing datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset                                              |
+| [Profiling a Time-Series dataset](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/time_series_datasets.html)               | Generating a report for a time-series dataset with a single line of code                    |
+|[Profiling large datasets](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
+| [Handling sensitive data](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset              |
+| [Dataset metadata and data dictionaries](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries         |
+| [Customizing the report's appearance](https://pandas-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations            |
 
 ## ▶️ Quickstart
 
@@ -73,7 +81,7 @@ Start by loading your pandas `DataFrame` as you normally would, e.g. by using:
 ```python
 import numpy as np
 import pandas as pd
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 ```
@@ -81,7 +89,7 @@ df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 To generate the standard profiling report, merely run:
 
 ```python
-profile = ProfileReport(df, title="Pandas Profiling Report")
+profile = ProfileReport(df, title="Profiling Report")
 ```
 
 ### Using inside Jupyter Notebooks
@@ -152,7 +160,6 @@ The following example reports showcase the potentialities of the package across 
 * [HCC](https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
 
 ## 🛠️ Installation
-
 Additional details, including information about widget support, are available [on the documentation](https://pandas-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
 
 ### Using pip
@@ -163,7 +170,7 @@ Additional details, including information about widget support, are available [o
 You can install using the `pip` package manager by running:
 
 ```sh
-pip install -U pandas-profiling
+pip install -U ydata-profiling
 ```
 
 #### Extras
@@ -172,11 +179,12 @@ The package declares "extras", sets of additional dependencies.
 
 * `[notebook]`: support for rendering the report in Jupyter notebook widgets.
 * `[unicode]`: support for more detailed Unicode analysis, at the expense of additional disk space.
+* `[pyspark]`: support for pyspark for big dataset analysis
 
 Install these with e.g.
 
 ```sh
-pip install -U pandas-profiling[notebook,unicode]
+pip install -U ydata-profiling[notebook,unicode,pyspark]
 ```
 
 
@@ -188,7 +196,7 @@ pip install -U pandas-profiling[notebook,unicode]
 You can install using the `conda` package manager by running:
 
 ```sh
-conda install -c conda-forge pandas-profiling
+conda install -c conda-forge ydata-profiling
 ```
 
 ### From source (development)
@@ -229,11 +237,11 @@ To maximize its usefulness in real world contexts, `pandas-profiling` has a set 
 Need help? Want to share a perspective? Report a bug? Ideas for collaborations? Reach out via the following channels:
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
-- [GitHub Issues](https://github.com/ydataai/pandas-profiling/issues): bugs, proposals for changes, feature requests
+- [GitHub Issues](https://github.com/ydataai/ydata-profiling/issues): bugs, proposals for changes, feature requests
 - [Discord](https://discord.com/invite/mw7xjJ7b7s): ideal for projects discussions, ask questions, collaborations, general chat
 - [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
 
-> ❗ Before reporting an issue on GitHub, check out [Common Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
+> ❗ Before reporting an issue on GitHub, check out [Common Issues](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
 
 ## 🤝🏽 Contributing
 
