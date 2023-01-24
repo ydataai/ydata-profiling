@@ -41,8 +41,8 @@ def histogram_compute(
 
     max_bins = config.plot.histogram.max_bins
     if bins_arg == "auto" and len(stats[name][1]) > max_bins:
-        bins_arg = np.histogram_bin_edges(finite_values, bins=max_bins)
-        stats[name] = np.histogram(finite_values, bins=bins_arg, weights=None)
+        bins = np.histogram_bin_edges(finite_values, bins=max_bins)
+        stats[name] = np.histogram(finite_values, bins=bins, weights=None)
 
     return stats
 
