@@ -23,14 +23,17 @@ from pandas_profiling.model.correlations import (
 SPARK_CORRELATION_PEARSON = "pearson"
 SPARK_CORRELATION_SPEARMAN = "spearman"
 
+
 def _get_numerical_cols_name(df_dtypes: list):
-    return [col for col,dtype in df_dtypes if dtype in ['double', 'bigint']]
+    return [col for col, dtype in df_dtypes if dtype in ["double", "bigint"]]
+
+
 @Spearman.compute.register(Settings, DataFrame, dict)
 def spark_spearman_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
-    #Get the numerical cols for index and column names
-    #Spark only computes Spearman natively for the above dtypes
+    # Get the numerical cols for index and column names
+    # Spark only computes Spearman natively for the above dtypes
     matrix, num_cols = _compute_spark_corr_natively(
         df, summary, corr_type=SPARK_CORRELATION_SPEARMAN
     )

@@ -365,7 +365,7 @@ class SparkSettings(Settings):
     correlations: Dict[str, Correlation] = {
         "spearman": Correlation(key="spearman"),
         "pearson": Correlation(key="pearson"),
-        "auto": Correlation(key="auto")
+        "auto": Correlation(key="auto"),
     }
     correlations["pearson"].calculate = True
     correlations["spearman"].calculate = True

@@ -3,11 +3,7 @@ from typing import Any, List, Optional
 from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.missing import (
-    missing_bar,
-    missing_heatmap,
-    missing_matrix,
-)
+from pandas_profiling.model.missing import missing_bar, missing_heatmap, missing_matrix
 from pandas_profiling.visualisation.missing import (
     plot_missing_bar,
     plot_missing_heatmap,
@@ -77,9 +73,11 @@ def spark_missing_bar(config: Settings, df: DataFrame) -> str:
         ),
     )
 
+
 @missing_matrix.register
 def spark_missing_matrix(config: Settings, df: DataFrame) -> str:
     return plot_missing_matrix(config, MissingnoBarSparkPatch(df))
+
 
 @missing_heatmap.register
 def spark_missing_heatmap(config: Settings, df: DataFrame) -> str:

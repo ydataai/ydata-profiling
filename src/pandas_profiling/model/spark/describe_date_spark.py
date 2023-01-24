@@ -1,17 +1,18 @@
 from typing import Tuple
 
-from numpy import inf, array
-
-from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
+from numpy import array, inf
+from pyspark.sql import DataFrame
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.summary_algorithms import (
-    describe_date_1d, histogram_compute
+    describe_date_1d,
+    histogram_compute,
 )
 
+
 def date_stats_spark(df: DataFrame, summary: dict) -> dict:
-    print('calculate stats for date/datetime')
+    print("calculate stats for date/datetime")
     column = df.columns[0]
 
     expr = [
@@ -20,6 +21,7 @@ def date_stats_spark(df: DataFrame, summary: dict) -> dict:
     ]
 
     return df.agg(*expr).first().asDict()
+
 
 @describe_date_1d.register
 def describe_date_1d_spark(
@@ -37,24 +39,19 @@ def describe_date_1d_spark(
     col_name = df.columns[0]
     stats = date_stats_spark(df, summary)
 
-    summary.update(
-        {
-            "min": stats['min'],
-            "max": stats['max']
-        }
-    )
+    summary.update({"min": stats["min"], "max": stats["max"]})
 
     summary["range"] = summary["max"] - summary["min"]
 
-    #Convert date to numeric so we can compute the histogram
+    # Convert date to numeric so we can compute the histogram
     df = df.withColumn(col_name, F.unix_timestamp(df[col_name]))
 
-    #Get the number of bins
+    # Get the number of bins
     bins = config.plot.histogram.bins
     bins_arg = "auto" if bins == 0 else min(bins, summary["n_distinct"])
 
-    #Run the histogram
+    # Run the histogram
     bin_edges, hist = df.select(col_name).rdd.flatMap(lambda x: x).histogram(bins_arg)
 
-    summary.update({'histogram': (array(hist), array(bin_edges))})
+    summary.update({"histogram": (array(hist), array(bin_edges))})
     return config, df, summary
