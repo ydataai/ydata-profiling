@@ -231,6 +231,7 @@ class Correlation(BaseModel):
 class Correlations(BaseModel):
     pearson: Correlation = Correlation(key="pearson")
     spearman: Correlation = Correlation(key="spearman")
+    auto: Correlation = Correlation(key="auto")
 
 
 class Interactions(BaseModel):
@@ -305,11 +306,13 @@ class Settings(BaseSettings):
         "heatmap": True,
     }
 
+    correlation_table: bool = True
+
     correlations: Dict[str, Correlation] = {
         "auto": Correlation(key="auto"),
+        "spearman": Correlation(key="spearman"),
+        "pearson": Correlation(key="pearson"),
     }
-
-    correlation_table: bool = True
 
     interactions: Interactions = Interactions()
 
@@ -349,6 +352,40 @@ class Settings(BaseSettings):
             data = yaml.safe_load(f)
 
         return Settings().parse_obj(data)
+
+
+class SparkSettings(Settings):
+    # TO-DO write description
+    vars: Univariate = Univariate()
+
+    vars.num.low_categorical_threshold = 0
+
+    infer_dtypes = False
+
+    correlations: Dict[str, Correlation] = {
+        "spearman": Correlation(key="spearman"),
+        "pearson": Correlation(key="pearson"),
+        "auto": Correlation(key="auto")
+    }
+    correlations["pearson"].calculate = True
+    correlations["spearman"].calculate = True
+    correlations["auto"].calculate = False
+
+    correlation_table: bool = True
+
+    interactions: Interactions = Interactions()
+    interactions.continuous = False
+
+    missing_diagrams: Dict[str, bool] = {
+        "bar": False,
+        "matrix": False,
+        "dendrogram": False,
+        "heatmap": False,
+    }
+
+    samples: Samples = Samples()
+    samples.tail = 0
+    samples.random = 0
 
 
 class Config:

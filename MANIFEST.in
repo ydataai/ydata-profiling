@@ -13,6 +13,9 @@ recursive-include src/pandas_profiling/report/presentation/flavours/html/templat
 # Configuration
 include src/pandas_profiling/*.yaml
 
+# Spark Dev venv
+recursive-include venv *.yml
+
 # Exclude development, docs, testing and example code
 exclude .pre-commit-config.yaml
 exclude commitlint.config.js
