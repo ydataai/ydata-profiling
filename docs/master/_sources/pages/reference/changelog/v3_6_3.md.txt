@@ -1,0 +1,7 @@
+### Changelog v3.6.3
+
+
+#### 🐛 Bug fixes
+
+* issue[#1104](https://github.com/ydataai/pandas-profiling/issues/1104) empty dataframe ([#1238](https://github.com/ydataai/pandas-profiling/issues/1238)) ([db60d48](https://github.com/ydataai/pandas-profiling/commit/db60d48383acd70f6c5c09dc6b9c98e0a7dce57b))
+* time series vars excluded from some plots ([#1243](https://github.com/ydataai/pandas-profiling/issues/1243)) ([906591e](https://github.com/ydataai/pandas-profiling/commit/906591ef64da9766deefa7e1e8841080ca2a905e))
