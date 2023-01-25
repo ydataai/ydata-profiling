@@ -9,10 +9,12 @@ Streamlit
 
 `Streamlit <https://www.streamlit.io>`_ is an open-source Python library made to build web-apps for machine learning and data science.
 
+.. NOTE::
+    This feature is only available for versions previous to ydata-profiling (<=3.6.2).
+
 .. image:: https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif
 
 .. code-block:: python
-
   import pandas as pd
   import pandas_profiling
   import streamlit as st
@@ -23,7 +25,7 @@ Streamlit
   )
   pr = df.profile_report()
 
-  st.title("Pandas Profiling in Streamlit")
+  st.title("Profiling in Streamlit")
   st.write(df)
   st_profile_report(pr)
 
@@ -37,7 +39,7 @@ You can install the `pandas-profiling component <https://github.com/Ghasel/strea
 Dash
 ----
 
-`Dash <hhttps://github.com/plotly/dash>`_ is a Python framework for building machine learning & data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where ``pandas-profiling`` also focuses. Inline access to the insights provided by ``pandas-profiling`` can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist: 
+`Dash <hhttps://github.com/plotly/dash>`_ is a Python framework for building machine learning & data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where ``ydata-profiling`` also focuses. Inline access to the insights provided by ``pandas-profiling`` can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:
 
 Load HTML version of report as an asset 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -80,7 +82,7 @@ And configure the Dash app as in the following snippet:
 .. code-block:: python
 
     import pandas as pd
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
     import dash
     from dash import html
     import dash_dangerously_set_inner_html
@@ -114,4 +116,4 @@ When running ``python app.py``, a Dash app with the report embedded will be avai
 Panel
 -----
 
-For more information on how to use ``pandas-profiling`` in Panel, see `this GitHub issue <https://github.com/ydataai/pandas-profiling/issues/491>`_ and `this integration example <https://awesome-panel.org/pandas_profiling_app>`_.
+For more information on how to use ``ydata-profiling`` in Panel, see `this GitHub issue <https://github.com/ydataai/ydata-profiling/issues/491>`_ and `this integration example <https://awesome-panel.org/pandas_profiling_app>`_.
