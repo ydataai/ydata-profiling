@@ -11,7 +11,7 @@ if not ("sdist" in sys.argv or "bdist_wheel" in sys.argv):
 
     if accept_deprecated_pandas_profiling_package_install != "true":
         raise SystemExit(
-            "*** The ´pandas-profiling' PyPI package is deprecated, please install 'ydata-profiling' instead ***"
+            "*** The 'pandas-profiling' PyPI package is deprecated, please install 'ydata-profiling' instead ***"
         )
 
 # Read the contents of README file
