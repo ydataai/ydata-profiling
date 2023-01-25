@@ -2,7 +2,13 @@
 
 ---
 
-⚠️ **`pandas-profiling` package naming was changed. To continue profiling data use [`ydata-profiling`](https://github.com/ydataai/ydata-profiling) instead!** 
+⚠️ **The `pandas-profiling` package changed naming. To continue profiling data use [`ydata-profiling`](https://github.com/ydataai/ydata-profiling) instead!** ⚠️
+
+---
+
+
+![Pandas Profiling Logo Header](https://pandas-profiling.ydata.ai/docs/assets/logo_header.png)
+
 
 This repo implements the brownout strategy for deprecating the pandas-profiling package on PyPI.⚠️
 
