@@ -1,6 +1,18 @@
+import os
+import sys
 from pathlib import Path
 
 from setuptools import find_packages, setup
+
+if not ("sdist" in sys.argv or "bdist_wheel" in sys.argv):
+    accept_deprecated_pandas_profiling_package_install = os.environ.get(
+        "ALLOW_DEPRECATED_PANDAS_PROFILING_PACKAGE_INSTALL", ""
+    ).lower()
+
+    if accept_deprecated_pandas_profiling_package_install != "true":
+        raise SystemExit(
+            "*** The ´pandas-profiling' PyPI package is deprecated, please install 'ydata-profiling' instead ***"
+        )
 
 # Read the contents of README file
 source_root = Path(".")
