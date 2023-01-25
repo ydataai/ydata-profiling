@@ -3,7 +3,9 @@
 
 #### 🐛 Bug fixes
 
-* comparison alerts ([#1229](https://github.com/ydataai/pandas-profiling/issues/1229)) ([bbca61b](https://github.com/ydataai/pandas-profiling/commit/bbca61b0b5e109563aee88a245d6b776d1b65d9b))
-* comparison histogram ([#1228](https://github.com/ydataai/pandas-profiling/issues/1228)) ([0081581](https://github.com/ydataai/pandas-profiling/commit/0081581c67d0667ad869677a5b9b29d276d5a461))
-* comparison report style issues ([a465cdd](https://github.com/ydataai/pandas-profiling/commit/a465cddc88091ed99485b7e34d4c037faf37f6d3))
-* update the link for the people-example.csv ([2bb5043](https://github.com/ydataai/pandas-profiling/commit/2bb5043fd147a289cfe54a9feddcb9693275e13d))
+* comparison alerts ([#1229](https://github.com/ydataai/pandas-profiling/issues/1229)) ([6f6baf2](https://github.com/ydataai/pandas-profiling/commit/6f6baf2db01d1802eef8ce3ebc0612a37cffa3cf))
+* comparison histogram ([#1228](https://github.com/ydataai/pandas-profiling/issues/1228)) ([09ccae6](https://github.com/ydataai/pandas-profiling/commit/09ccae66aad9a16528ac6eda755475cb76ca8228))
+* comparison report style issues ([34431a1](https://github.com/ydataai/pandas-profiling/commit/34431a13d39fe0b9a5f58a6c739120a9df0e90c0))
+* issue[#1104](https://github.com/ydataai/pandas-profiling/issues/1104) empty dataframe ([#1238](https://github.com/ydataai/pandas-profiling/issues/1238)) ([db60d48](https://github.com/ydataai/pandas-profiling/commit/db60d48383acd70f6c5c09dc6b9c98e0a7dce57b))
+* time series vars excluded from some plots ([#1243](https://github.com/ydataai/pandas-profiling/issues/1243)) ([906591e](https://github.com/ydataai/pandas-profiling/commit/906591ef64da9766deefa7e1e8841080ca2a905e))
+* update the link for the people-example.csv ([37cd822](https://github.com/ydataai/pandas-profiling/commit/37cd822fc8fea7b3a4c9ea456fbd01be76f8391c))
