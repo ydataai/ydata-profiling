@@ -54,7 +54,7 @@ The report contains three additional sections:
 - **Reproduction**: technical details about the analysis (time, version and configuration)
 
 > ### 🎁 Latest features
-> - Want to scale? Check the latest release with ⭐⚡[Spark support]()! 
+> - Want to scale? Check the latest release with ⭐⚡[Spark support](https://pandas-profiling.ydata.ai/docs/master/pages/integrations/pypspark.html)! 
 > - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
 > - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
 
