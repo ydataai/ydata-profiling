@@ -2,6 +2,15 @@
 ⚡ Pyspark
 ============
 
+Data Profiling is a core step in the process of developing AI solutions.
+For small datasets, the data can be loaded into memory and easily accessed with Python and pandas dataframes.
+However for larger datasets what can be done?
+
+Big data engines, that distribute the workload through different machines, are the answer.
+Particularly, Spark rose as one of the most used and adopted engines by the data community.
+``ydata-profiling`` provides an ease-to-use interface to generate complete and comprehensive
+data profiling out of your Spark dataframes with a single line of code.
+
 Getting started
 ---------
 
@@ -56,7 +65,8 @@ Install ydata-profiling
 
 Profiling with Spark DataFrames
 -------------------------------
-Add here a small description of Spark Profiling and the importance of this feature.
+
+A quickstart example to profile data from a CSV leveraging Pyspark engine and ``ydata-profiling``.
 
 .. code-block::
     from pyspark.sql import SparkSession
