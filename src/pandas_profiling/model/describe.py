@@ -22,6 +22,7 @@ from pandas_profiling.model.summary import get_series_descriptions
 from pandas_profiling.model.table import get_table_stats
 from pandas_profiling.utils.progress_bar import progress
 
+
 def describe(
     config: Settings,
     df: pd.DataFrame,
@@ -47,9 +48,6 @@ def describe(
             - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
-
-    if df is None:
-        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
     check_dataframe(df)
     df = preprocess(config, df)
@@ -95,6 +93,7 @@ def describe(
 
         # Get correlations
         if table_stats["n"] != 0:
+            print(table_stats["n"])
             correlation_names = get_active_correlations(config)
             pbar.total += len(correlation_names)
 
@@ -157,7 +156,7 @@ def describe(
 
         pbar.set_postfix_str("Get reproduction details")
         package = {
-            "pandas_profiling_version": '3.1',
+            "pandas_profiling_version": "3.1",
             "pandas_profiling_config": config.json(),
         }
         pbar.update()
