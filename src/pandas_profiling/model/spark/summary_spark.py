@@ -47,17 +47,18 @@ def spark_describe_1d(
         if str(series.schema[0].dataType).startswith("ArrayType"):
             dtype = "ArrayType"
         else:
-            dtype = str(series.schema[0].dataType)[:-2]
+            dtype = series.schema[0].dataType.simpleString()
 
         vtype = {
-            "IntegerType": "Numeric",
-            "LongType": "Numeric",
-            "DoubleType": "Numeric",
-            "StringType": "Categorical",
+            "float": "Numeric",
+            "int": "Numeric",
+            "bigint": "Numeric",
+            "double": "Numeric",
+            "string": "Categorical",
             "ArrayType": "Categorical",
-            "BooleanType": "Boolean",
-            "DateType": "DateTime",
-            "TimestampType": "DateTime",
+            "boolean": "Boolean",
+            "date": "DateTime",
+            "timestamp": "DateTime",
         }[dtype]
 
     return summarizer.summarize(config, series, dtype=vtype)
