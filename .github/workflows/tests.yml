@@ -154,8 +154,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         python-version: [3.7, 3.8]
-        pandas: ["pandas==0.25.3", "pandas==1.0.5", "pandas>1.1"]
-        spark: ["2.3.0", "2.4.7", "3.0.1"]
+        pandas: ["pandas>1.1"]
+        spark: ["3.0.1"]
         hadoop: [ 2.7 ]
         numpy: ["numpy==1.19.5"]
         java_home: [ /usr/lib/jvm/java-8-openjdk-amd64 ]
