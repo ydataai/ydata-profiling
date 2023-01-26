@@ -48,9 +48,6 @@ def describe(
             - package: package details.
     """
 
-    if df is None:
-        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
-
     check_dataframe(df)
     df = preprocess(config, df)
 
@@ -95,6 +92,7 @@ def describe(
 
         # Get correlations
         if table_stats["n"] != 0:
+            print(table_stats['n'])
             correlation_names = get_active_correlations(config)
             pbar.total += len(correlation_names)
 
