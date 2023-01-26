@@ -21,7 +21,6 @@ from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.model.summary import get_series_descriptions
 from pandas_profiling.model.table import get_table_stats
 from pandas_profiling.utils.progress_bar import progress
-from pandas_profiling.version import __version__
 
 
 def describe(
@@ -49,9 +48,6 @@ def describe(
             - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
-
-    if df is None:
-        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
     check_dataframe(df)
     df = preprocess(config, df)
@@ -90,21 +86,31 @@ def describe(
         ]
         pbar.update()
 
+        # Table statistics
+        table_stats = progress(get_table_stats, pbar, "Get dataframe statistics")(
+            config, df, series_description
+        )
+
         # Get correlations
-        correlation_names = get_active_correlations(config)
-        pbar.total += len(correlation_names)
+        if table_stats["n"] != 0:
+            correlation_names = get_active_correlations(config)
+            pbar.total += len(correlation_names)
 
-        correlations = {
-            correlation_name: progress(
-                calculate_correlation, pbar, f"Calculate {correlation_name} correlation"
-            )(config, df, correlation_name, series_description)
-            for correlation_name in correlation_names
-        }
+            correlations = {
+                correlation_name: progress(
+                    calculate_correlation,
+                    pbar,
+                    f"Calculate {correlation_name} correlation",
+                )(config, df, correlation_name, series_description)
+                for correlation_name in correlation_names
+            }
 
-        # make sure correlations is not None
-        correlations = {
-            key: value for key, value in correlations.items() if value is not None
-        }
+            # make sure correlations is not None
+            correlations = {
+                key: value for key, value in correlations.items() if value is not None
+            }
+        else:
+            correlations = {}
 
         # Scatter matrix
         pbar.set_postfix_str("Get scatter matrix")
@@ -117,11 +123,6 @@ def describe(
             scatter_matrix[x][y] = progress(
                 get_scatter_plot, pbar, f"scatter {x}, {y}"
             )(config, df, x, y, interval_columns)
-
-        # Table statistics
-        table_stats = progress(get_table_stats, pbar, "Get dataframe statistics")(
-            config, df, series_description
-        )
 
         # missing diagrams
         missing_map = get_missing_active(config, table_stats)
@@ -154,7 +155,7 @@ def describe(
 
         pbar.set_postfix_str("Get reproduction details")
         package = {
-            "pandas_profiling_version": __version__,
+            "pandas_profiling_version": "3.1",
             "pandas_profiling_config": config.json(),
         }
         pbar.update()
