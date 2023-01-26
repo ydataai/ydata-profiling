@@ -135,7 +135,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if tsmode and sortby:
             report_config.vars.timeseries.sortby = sortby
 
-        # self.config = self.__initialize_config(config_file)
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
         self._df_hash = None
@@ -166,7 +165,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                     "Time-Series dataset analysis is not yet supported for Spark DataFrames"
                 )
 
-            if df.rdd.isEmpty(): #df.isEmpty is only support by 3.3.0 pyspark version
+            if df.rdd.isEmpty():  # df.isEmpty is only support by 3.3.0 pyspark version
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
                 )
