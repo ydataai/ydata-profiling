@@ -49,6 +49,9 @@ def describe(
             - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
+    
+    if df is None:
+        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
     check_dataframe(df)
     df = preprocess(config, df)
