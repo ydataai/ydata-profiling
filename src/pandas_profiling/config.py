@@ -376,13 +376,8 @@ class SparkSettings(Settings):
     infer_dtypes = False
 
     correlations: Dict[str, Correlation] = {
-        "spearman": Correlation(key="spearman", calculate=True),
         "pearson": Correlation(key="pearson", calculate=True),
     }
-
-    correlation_table: bool = True
-
-    interactions: Interactions = Interactions()
     interactions.continuous = False
 
     missing_diagrams: Dict[str, bool] = {
