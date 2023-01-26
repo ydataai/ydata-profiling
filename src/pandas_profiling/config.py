@@ -312,9 +312,9 @@ class Settings(BaseSettings):
         "auto": Correlation(key="auto"),
         "spearman": Correlation(key="spearman"),
         "pearson": Correlation(key="pearson"),
-        "phi_k": Correlation(key='phi_k'),
-        "cramers": Correlation(key='cramers'),
-        "kendall": Correlation(key='kendall')
+        "phi_k": Correlation(key="phi_k"),
+        "cramers": Correlation(key="cramers"),
+        "kendall": Correlation(key="kendall"),
     }
 
     correlations["auto"].calculate = True
@@ -377,7 +377,7 @@ class SparkSettings(Settings):
 
     correlations: Dict[str, Correlation] = {
         "spearman": Correlation(key="spearman"),
-        "pearson": Correlation(key="pearson")
+        "pearson": Correlation(key="pearson"),
     }
     correlations["pearson"].calculate = True
     correlations["spearman"].calculate = True
