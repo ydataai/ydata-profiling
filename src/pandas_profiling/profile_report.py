@@ -165,7 +165,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                     "Time-Series dataset analysis is not yet supported for Spark DataFrames"
                 )
 
-            if df is not None and df.rdd.isEmpty():  # df.isEmpty is only support by 3.3.0 pyspark version
+            if (
+                df is not None and df.rdd.isEmpty()
+            ):  # df.isEmpty is only support by 3.3.0 pyspark version
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
                 )
