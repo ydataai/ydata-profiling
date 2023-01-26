@@ -360,9 +360,10 @@ class Settings(BaseSettings):
 
 class SparkSettings(Settings):
     """
-        Setting class with the standard report configuration for Spark DataFrames
-        All the supported analysis are set to true
+    Setting class with the standard report configuration for Spark DataFrames
+    All the supported analysis are set to true
     """
+
     vars: Univariate = Univariate()
 
     vars.num.low_categorical_threshold = 0
@@ -392,6 +393,7 @@ class SparkSettings(Settings):
     samples: Samples = Samples()
     samples.tail = 0
     samples.random = 0
+
 
 class Config:
     arg_groups: Dict[str, Any] = {

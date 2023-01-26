@@ -8,7 +8,8 @@ try:
     from pyspark.sql import DataFrame as sDataFrame
 except:
     from typing import TypeVar
-    sDataFrame = TypeVar('sDataFrame')
+
+    sDataFrame = TypeVar("sDataFrame")
 
 import numpy as np
 import pandas as pd
@@ -36,12 +37,14 @@ from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
+
 @typechecked
 class ProfileReport(SerializeReport, ExpectationsReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used as is, it will output its content as an HTML report in a Jupyter notebook.
     """
+
     _description_set = None
     _report = None
     _html = None
@@ -51,7 +54,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def __init__(
         self,
-        df: Optional[Union[pd.DataFrame, sDataFrame]]=None,
+        df: Optional[Union[pd.DataFrame, sDataFrame]] = None,
         minimal: bool = False,
         tsmode: bool = False,
         sortby: Optional[str] = None,
@@ -88,8 +91,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             summarizer: optional user summarizer to generate custom summary output
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
-        self.__validate_inputs(df, minimal, tsmode,
-                               config_file, lazy)
+        self.__validate_inputs(df, minimal, tsmode, config_file, lazy)
 
         if config_file or minimal:
             if not config_file:
@@ -133,7 +135,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if tsmode and sortby:
             report_config.vars.timeseries.sortby = sortby
 
-        #self.config = self.__initialize_config(config_file)
+        # self.config = self.__initialize_config(config_file)
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
         self._df_hash = None
@@ -146,10 +148,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             _ = self.report
 
     @staticmethod
-    def __validate_inputs(df,minimal,tsmode,
-                           config_file,lazy):
+    def __validate_inputs(df, minimal, tsmode, config_file, lazy):
 
-        #Lazy profile cannot be set if no DataFrame is provided
+        # Lazy profile cannot be set if no DataFrame is provided
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
 
@@ -158,28 +159,30 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 "Arguments `config_file` and `minimal` are mutually exclusive."
             )
 
-        #Spark Dataframe validations
+        # Spark Dataframe validations
         if isinstance(df, sDataFrame):
             if tsmode:
-                raise NotImplementedError("Time-Series dataset analysis is not yet supported for Spark DataFrames")
+                raise NotImplementedError(
+                    "Time-Series dataset analysis is not yet supported for Spark DataFrames"
+                )
 
             if df.isEmpty():
-                raise ValueError("DataFrame is empty. Please"
-                                "provide a non-empty DataFrame.")
+                raise ValueError(
+                    "DataFrame is empty. Please" "provide a non-empty DataFrame."
+                )
         else:
             if df.empty:
-                raise ValueError("DataFrame is empty. Please"
-                                 "provide a non-empty DataFrame.")
+                raise ValueError(
+                    "DataFrame is empty. Please" "provide a non-empty DataFrame."
+                )
 
     @staticmethod
     def __initialize_config(config_file: Optional[Union[Path, str]]):
-        #Ainda validar se vamos avançar
+        # Ainda validar se vamos avançar
         return
 
     @staticmethod
-    def __initialize_dataframe(
-        df: [pd.DataFrame, sDataFrame], report_config: Settings
-    ):
+    def __initialize_dataframe(df: [pd.DataFrame, sDataFrame], report_config: Settings):
         if (
             df is not None
             and isinstance(df, pd.DataFrame)
