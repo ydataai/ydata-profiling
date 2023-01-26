@@ -317,9 +317,11 @@ class Settings(BaseSettings):
         "kendall": Correlation(key="kendall", calculate=False),
     }
 
-    correlations["pearson"].calculate = False
-    correlations["spearman"].calculate = False
     correlations["auto"].calculate = True
+    correlations["pearson"].calculate = False
+    correlations["phi_k"].calculate = False
+    correlations["cramers"].calculate = False
+    correlations["kendall"].calculate = False
 
     interactions: Interactions = Interactions()
 
