@@ -314,6 +314,10 @@ class Settings(BaseSettings):
         "pearson": Correlation(key="pearson"),
     }
 
+    correlations["pearson"].calculate = False
+    correlations["spearman"].calculate = False
+    correlations["auto"].calculate = True
+
     interactions: Interactions = Interactions()
 
     categorical_maximum_correlation_distinct: int = 100
@@ -355,7 +359,10 @@ class Settings(BaseSettings):
 
 
 class SparkSettings(Settings):
-    # TO-DO write description
+    """
+        Setting class with the standard report configuration for Spark DataFrames
+        All the supported analysis are set to true
+    """
     vars: Univariate = Univariate()
 
     vars.num.low_categorical_threshold = 0
@@ -382,11 +389,9 @@ class SparkSettings(Settings):
         "dendrogram": False,
         "heatmap": False,
     }
-
     samples: Samples = Samples()
     samples.tail = 0
     samples.random = 0
-
 
 class Config:
     arg_groups: Dict[str, Any] = {

@@ -4,6 +4,12 @@ import warnings
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
+try:
+    from pyspark.sql import DataFrame as sDataFrame
+except:
+    from typing import TypeVar
+    sDataFrame = TypeVar('sDataFrame')
+
 import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
@@ -30,14 +36,12 @@ from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
-
 @typechecked
 class ProfileReport(SerializeReport, ExpectationsReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used as is, it will output its content as an HTML report in a Jupyter notebook.
     """
-
     _description_set = None
     _report = None
     _html = None
@@ -47,14 +51,14 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def __init__(
         self,
-        df: Optional[pd.DataFrame] = None,
+        df: Optional[Union[pd.DataFrame, sDataFrame]]=None,
         minimal: bool = False,
-        explorative: bool = False,
-        sensitive: bool = False,
-        dark_mode: bool = False,
-        orange_mode: bool = False,
         tsmode: bool = False,
         sortby: Optional[str] = None,
+        sensitive: bool = False,
+        explorative: bool = False,
+        dark_mode: bool = False,
+        orange_mode: bool = False,
         sample: Optional[dict] = None,
         config_file: Union[Path, str] = None,
         lazy: bool = True,
@@ -63,7 +67,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         config: Optional[Settings] = None,
         **kwargs,
     ):
-        """Generate a ProfileReport based on a pandas DataFrame
+        """Generate a ProfileReport based on a pandas or spark.sql DataFrame
 
         Config processing order (in case of duplicate entries, entries later in the order are retained):
         - config presets (e.g. `config_file`, `minimal` arguments)
@@ -72,8 +76,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         - custom settings **kwargs (e.g. `title`)
 
         Args:
-            df: the pandas DataFrame
+            df: a pandas or spark.sql DataFrame
             minimal: minimal mode is a default configuration with minimal computation
+            ts_mode: activates time-series analysis for all the numerical variables from the dataset. Only available for pd.DataFrame
+            sort_by: ignored if ts_mode=False. Order the dataset by a provided column.
+            sensitive: hides the values for categorical and text variables for report privacy
             config_file: a config file (.yml), mutually exclusive with `minimal`
             lazy: compute when needed
             sample: optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())
@@ -81,27 +88,21 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             summarizer: optional user summarizer to generate custom summary output
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
-
-        if df is None and not lazy:
-            raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
-
-        if df is not None and df.empty:
-            raise ValueError(
-                "DataFrame is empty. Please provide a non-empty DataFrame."
-            )
-
-        if config_file is not None and minimal:
-            raise ValueError(
-                "Arguments `config_file` and `minimal` are mutually exclusive."
-            )
+        self.__validate_inputs(df, minimal, tsmode,
+                               config_file, lazy)
 
         if config_file or minimal:
             if not config_file:
                 config_file = get_config("config_minimal.yaml")
 
             report_config = Settings().from_file(config_file)
+        elif config is not None:
+            report_config = config
         else:
-            report_config = Settings()
+            if isinstance(df, sDataFrame):
+                report_config = SparkSettings()
+            else:
+                report_config = Settings()
 
         groups = [
             (explorative, "explorative"),
@@ -109,6 +110,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             (dark_mode, "dark_mode"),
             (orange_mode, "orange_mode"),
         ]
+
         if any(condition for condition, _ in groups):
             cfg = Settings()
             for condition, key in groups:
@@ -124,10 +126,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 .update(report_config.dict(exclude_defaults=True))
             )
 
-        if config is not None:
-            report_config = report_config.update(config.dict())
-            report_config.html.style._labels = config.html.style._labels
-
         if kwargs:
             report_config = report_config.update(kwargs)
 
@@ -135,6 +133,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if tsmode and sortby:
             report_config.vars.timeseries.sortby = sortby
 
+        #self.config = self.__initialize_config(config_file)
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
         self._df_hash = None
@@ -147,11 +146,43 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             _ = self.report
 
     @staticmethod
+    def __validate_inputs(df,minimal,tsmode,
+                           config_file,lazy):
+
+        #Lazy profile cannot be set if no DataFrame is provided
+        if df is None and not lazy:
+            raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
+
+        if config_file is not None and minimal:
+            raise ValueError(
+                "Arguments `config_file` and `minimal` are mutually exclusive."
+            )
+
+        #Spark Dataframe validations
+        if isinstance(df, sDataFrame):
+            if tsmode:
+                raise NotImplementedError("Time-Series dataset analysis is not yet supported for Spark DataFrames")
+
+            if df.isEmpty():
+                raise ValueError("DataFrame is empty. Please"
+                                "provide a non-empty DataFrame.")
+        else:
+            if df.empty:
+                raise ValueError("DataFrame is empty. Please"
+                                 "provide a non-empty DataFrame.")
+
+    @staticmethod
+    def __initialize_config(config_file: Optional[Union[Path, str]]):
+        #Ainda validar se vamos avançar
+        return
+
+    @staticmethod
     def __initialize_dataframe(
-        df: Optional[pd.DataFrame], report_config: Settings
-    ) -> Optional[pd.DataFrame]:
+        df: [pd.DataFrame, sDataFrame], report_config: Settings
+    ):
         if (
             df is not None
+            and isinstance(df, pd.DataFrame)
             and report_config.vars.timeseries.active
             and report_config.vars.timeseries.sortby
         ):
