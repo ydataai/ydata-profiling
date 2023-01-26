@@ -27,7 +27,7 @@ setup(
     description="Deprecated 'pandas-profiling' package, use 'ydata-profiling' instead",
     python_requires=">=3.7, <3.11",
     install_requires=[
-        "ydata-profiling==4.0.0",
+        "ydata-profiling",
     ],
     extras_require={
         "notebook": [
