@@ -37,14 +37,12 @@ from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
 
-
 @typechecked
 class ProfileReport(SerializeReport, ExpectationsReport):
     """Generate a profile report from a Dataset stored as a pandas `DataFrame`.
 
     Used as is, it will output its content as an HTML report in a Jupyter notebook.
     """
-
     _description_set = None
     _report = None
     _html = None
@@ -135,6 +133,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if tsmode and sortby:
             report_config.vars.timeseries.sortby = sortby
 
+        #self.config = self.__initialize_config(config_file)
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
         self._df_hash = None

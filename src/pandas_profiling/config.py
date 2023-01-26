@@ -317,6 +317,10 @@ class Settings(BaseSettings):
         "kendall": Correlation(key="kendall", calculate=False),
     }
 
+    correlations["pearson"].calculate = False
+    correlations["spearman"].calculate = False
+    correlations["auto"].calculate = True
+
     interactions: Interactions = Interactions()
 
     categorical_maximum_correlation_distinct: int = 100
@@ -385,40 +389,6 @@ class SparkSettings(Settings):
         "dendrogram": False,
         "heatmap": False,
     }
-    samples: Samples = Samples()
-    samples.tail = 0
-    samples.random = 0
-
-
-class SparkSettings(Settings):
-    # TO-DO write description
-    vars: Univariate = Univariate()
-
-    vars.num.low_categorical_threshold = 0
-
-    infer_dtypes = False
-
-    correlations: Dict[str, Correlation] = {
-        "spearman": Correlation(key="spearman"),
-        "pearson": Correlation(key="pearson"),
-        "auto": Correlation(key="auto"),
-    }
-    correlations["pearson"].calculate = True
-    correlations["spearman"].calculate = True
-    correlations["auto"].calculate = False
-
-    correlation_table: bool = True
-
-    interactions: Interactions = Interactions()
-    interactions.continuous = False
-
-    missing_diagrams: Dict[str, bool] = {
-        "bar": False,
-        "matrix": False,
-        "dendrogram": False,
-        "heatmap": False,
-    }
-
     samples: Samples = Samples()
     samples.tail = 0
     samples.random = 0
