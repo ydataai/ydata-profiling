@@ -8,7 +8,6 @@ from pandas_profiling.model.dataframe import check_dataframe, preprocess
 
 @check_dataframe.register
 def spark_check_dataframe(df: DataFrame) -> None:
-    # FIXME: never...
     if not isinstance(df, DataFrame):
         warnings.warn("df is not of type pyspark.sql.dataframe.DataFrame")
 
@@ -39,7 +38,7 @@ def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
     # raise warning and filter if this isn't empty
     if columns_to_remove:
         warnings.warn(
-            f"""spark-profiling does not handle MapTypes. Column(s) { ','.join(columns_to_remove) } will be ignored.
+            f"""spark dataframes profiling does not handle MapTypes. Column(s) { ','.join(columns_to_remove) } will be ignored.
             To fix this, consider converting your MapType into a StructTypes of StructFields i.e.
             {{'key1':'value1',...}} -> [('key1','value1'), ...], or extracting the key,value pairs out
             into individual columns using pyspark.sql.functions.explode.
