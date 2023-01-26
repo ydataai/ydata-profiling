@@ -7,10 +7,6 @@ source_root = Path(".")
 with (source_root / "README.md").open(encoding="utf-8") as f:
     long_description = f.read()
 
-# Read the requirements
-with (source_root / "requirements.txt").open(encoding="utf8") as f:
-    requirements = f.readlines()
-
 try:
     version = (source_root / "VERSION").read_text().rstrip("\n")
 except FileNotFoundError:
@@ -28,9 +24,11 @@ setup(
     package_dir={"": "src"},
     url="https://github.com/ydataai/pandas-profiling",
     license="MIT",
-    description="Generate profile report for pandas DataFrame",
+    description="Deprecated 'pandas-profiling' package, use 'ydata-profiling' instead",
     python_requires=">=3.7, <3.11",
-    install_requires=requirements,
+    install_requires=[
+        "ydata-profiling==4.0.0",
+    ],
     extras_require={
         "notebook": [
             "jupyter-client>=5.3.4",
@@ -58,10 +56,6 @@ setup(
         "Topic :: Scientific/Engineering",
         "Framework :: IPython",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
     ],
     keywords="pandas data-science data-analysis python jupyter ipython",
     long_description=long_description,
