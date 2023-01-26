@@ -177,7 +177,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
                 )
 
-
     @staticmethod
     def __initialize_config(config_file: Optional[Union[Path, str]]):
         # Ainda validar se vamos avançar
