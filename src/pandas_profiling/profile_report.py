@@ -159,7 +159,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             )
 
         # Spark Dataframe validations
-        if isinstance(df, sDataFrame):
+        if isinstance(df, pd.DataFrame):
+            if df is not None and df.empty:
+                raise ValueError(
+                    "DataFrame is empty. Please" "provide a non-empty DataFrame."
+                )
+        else:
             if tsmode:
                 raise NotImplementedError(
                     "Time-Series dataset analysis is not yet supported for Spark DataFrames"
@@ -169,11 +174,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
                 )
-        else:
-            if df is not None and df.empty:
-                raise ValueError(
-                    "DataFrame is empty. Please" "provide a non-empty DataFrame."
-                )
+
 
     @staticmethod
     def __initialize_config(config_file: Optional[Union[Path, str]]):
