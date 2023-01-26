@@ -34,15 +34,15 @@ The following example reports showcase the potentialities of the package across 
 
 .. |nasa_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
- :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb
+ :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites%5Fcloud.ipynb
 .. |nasa_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
- :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/meteorites/meteorites.ipynb
+ :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/meteorites/meteorites_cloud.ipynb
 
 .. |titanic_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
- :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb
+ :target: https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic%5Fcloud.ipynb
 
 .. |titanic_colab| image:: https://colab.research.google.com/assets/colab-badge.svg
  :alt: Open in Colab
- :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic.ipynb
+ :target: https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic_cloud.ipynb

@@ -22,6 +22,7 @@ from pandas_profiling.model.summary import get_series_descriptions
 from pandas_profiling.model.table import get_table_stats
 from pandas_profiling.utils.progress_bar import progress
 
+
 def describe(
     config: Settings,
     df: pd.DataFrame,
@@ -155,7 +156,7 @@ def describe(
 
         pbar.set_postfix_str("Get reproduction details")
         package = {
-            "pandas_profiling_version": '3.1',
+            "pandas_profiling_version": "3.1",
             "pandas_profiling_config": config.json(),
         }
         pbar.update()
