@@ -231,6 +231,7 @@ class Correlation(BaseModel):
 class Correlations(BaseModel):
     pearson: Correlation = Correlation(key="pearson")
     spearman: Correlation = Correlation(key="spearman")
+    auto: Correlation = Correlation(key="auto")
 
 
 class Interactions(BaseModel):
@@ -305,11 +306,22 @@ class Settings(BaseSettings):
         "heatmap": True,
     }
 
+    correlation_table: bool = True
+
     correlations: Dict[str, Correlation] = {
         "auto": Correlation(key="auto"),
+        "spearman": Correlation(key="spearman"),
+        "pearson": Correlation(key="pearson"),
+        "phi_k": Correlation(key='phi_k'),
+        "cramers": Correlation(key='cramers'),
+        "kendall": Correlation(key='kendall')
     }
 
-    correlation_table: bool = True
+    correlations["auto"].calculate = True
+    correlations["pearson"].calculate = False
+    correlations["phi_k"].calculate = False
+    correlations["cramers"].calculate = False
+    correlations["kendall"].calculate = False
 
     interactions: Interactions = Interactions()
 
@@ -349,6 +361,41 @@ class Settings(BaseSettings):
             data = yaml.safe_load(f)
 
         return Settings().parse_obj(data)
+
+
+class SparkSettings(Settings):
+    """
+    Setting class with the standard report configuration for Spark DataFrames
+    All the supported analysis are set to true
+    """
+
+    vars: Univariate = Univariate()
+
+    vars.num.low_categorical_threshold = 0
+
+    infer_dtypes = False
+
+    correlations: Dict[str, Correlation] = {
+        "spearman": Correlation(key="spearman"),
+        "pearson": Correlation(key="pearson")
+    }
+    correlations["pearson"].calculate = True
+    correlations["spearman"].calculate = True
+
+    correlation_table: bool = True
+
+    interactions: Interactions = Interactions()
+    interactions.continuous = False
+
+    missing_diagrams: Dict[str, bool] = {
+        "bar": False,
+        "matrix": False,
+        "dendrogram": False,
+        "heatmap": False,
+    }
+    samples: Samples = Samples()
+    samples.tail = 0
+    samples.random = 0
 
 
 class Config:
