@@ -20,13 +20,13 @@ with open(source_root / "src/pandas_profiling/version.py", "w") as version_file:
     version_file.write(f"__version__ = '{version}'")
 
 setup(
-    name="pandas-profiling",
+    name="ydata-profiling",
     version=version,
     author="YData Labs Inc",
     author_email="opensource@ydata.ai",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    url="https://github.com/ydataai/pandas-profiling",
+    url="https://github.com/ydataai/ydata-profiling",
     license="MIT",
     description="Generate profile report for pandas DataFrame",
     python_requires=">=3.7, <3.11",
