@@ -101,10 +101,10 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         elif config is not None:
             report_config = config
         else:
-            if isinstance(df, sDataFrame):
-                report_config = SparkSettings()
-            else:
+            if isinstance(df, pd.DataFrame):
                 report_config = Settings()
+            else:
+                report_config = SparkSettings()
 
         groups = [
             (explorative, "explorative"),
@@ -176,7 +176,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
                 )
-
 
     @staticmethod
     def __initialize_config(config_file: Optional[Union[Path, str]]):
