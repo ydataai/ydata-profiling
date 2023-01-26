@@ -21,7 +21,6 @@ from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.model.summary import get_series_descriptions
 from pandas_profiling.model.table import get_table_stats
 from pandas_profiling.utils.progress_bar import progress
-
 from pandas_profiling.version import __version__
 
 
