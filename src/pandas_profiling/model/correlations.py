@@ -89,10 +89,6 @@ def calculate_correlation(
     Returns:
         The correlation matrices for the given correlation measures. Return None if correlation is empty.
     """
-
-    if len(df) == 0:
-        return None
-
     correlation_measures = {
         "auto": Auto,
         "pearson": Pearson,

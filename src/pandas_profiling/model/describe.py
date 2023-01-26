@@ -49,7 +49,7 @@ def describe(
             - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
-
+    
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
@@ -90,21 +90,31 @@ def describe(
         ]
         pbar.update()
 
+        # Table statistics
+        table_stats = progress(get_table_stats, pbar, "Get dataframe statistics")(
+            config, df, series_description
+        )
+
         # Get correlations
-        correlation_names = get_active_correlations(config)
-        pbar.total += len(correlation_names)
+        if table_stats["n"] != 0:
+            correlation_names = get_active_correlations(config)
+            pbar.total += len(correlation_names)
 
-        correlations = {
-            correlation_name: progress(
-                calculate_correlation, pbar, f"Calculate {correlation_name} correlation"
-            )(config, df, correlation_name, series_description)
-            for correlation_name in correlation_names
-        }
+            correlations = {
+                correlation_name: progress(
+                    calculate_correlation,
+                    pbar,
+                    f"Calculate {correlation_name} correlation",
+                )(config, df, correlation_name, series_description)
+                for correlation_name in correlation_names
+            }
 
-        # make sure correlations is not None
-        correlations = {
-            key: value for key, value in correlations.items() if value is not None
-        }
+            # make sure correlations is not None
+            correlations = {
+                key: value for key, value in correlations.items() if value is not None
+            }
+        else:
+            correlations = {}
 
         # Scatter matrix
         pbar.set_postfix_str("Get scatter matrix")
@@ -117,11 +127,6 @@ def describe(
             scatter_matrix[x][y] = progress(
                 get_scatter_plot, pbar, f"scatter {x}, {y}"
             )(config, df, x, y, interval_columns)
-
-        # Table statistics
-        table_stats = progress(get_table_stats, pbar, "Get dataframe statistics")(
-            config, df, series_description
-        )
 
         # missing diagrams
         missing_map = get_missing_active(config, table_stats)
