@@ -309,19 +309,13 @@ class Settings(BaseSettings):
     correlation_table: bool = True
 
     correlations: Dict[str, Correlation] = {
-        "auto": Correlation(key="auto"),
-        "spearman": Correlation(key="spearman"),
-        "pearson": Correlation(key="pearson"),
-        "phi_k": Correlation(key="phi_k"),
-        "cramers": Correlation(key="cramers"),
-        "kendall": Correlation(key="kendall"),
+        "auto": Correlation(key="auto", calculate=True),
+        "spearman": Correlation(key="spearman", calculate=False),
+        "pearson": Correlation(key="pearson", calculate=False),
+        "phi_k": Correlation(key="phi_k", calculate=False),
+        "cramers": Correlation(key="cramers", calculate=False),
+        "kendall": Correlation(key="kendall", calculate=False),
     }
-
-    correlations["auto"].calculate = True
-    correlations["pearson"].calculate = False
-    correlations["phi_k"].calculate = False
-    correlations["cramers"].calculate = False
-    correlations["kendall"].calculate = False
 
     interactions: Interactions = Interactions()
 
@@ -376,11 +370,9 @@ class SparkSettings(Settings):
     infer_dtypes = False
 
     correlations: Dict[str, Correlation] = {
-        "spearman": Correlation(key="spearman"),
-        "pearson": Correlation(key="pearson"),
+        "spearman": Correlation(key="spearman", calculate=True),
+        "pearson": Correlation(key="pearson", calculate=True),
     }
-    correlations["pearson"].calculate = True
-    correlations["spearman"].calculate = True
 
     correlation_table: bool = True
 
