@@ -93,7 +93,6 @@ def describe(
 
         # Get correlations
         if table_stats["n"] != 0:
-            print(table_stats["n"])
             correlation_names = get_active_correlations(config)
             pbar.total += len(correlation_names)
 
