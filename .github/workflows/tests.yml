@@ -151,7 +151,7 @@ jobs:
         os: [ ubuntu-latest ]
         python-version: [3.7, 3.8, 3.9, "3.10"]
         pandas: ["pandas>1.1"]
-        spark: ["pyspark==3.3.0"]
+        spark: ["3.3.0"]
         hadoop: [ 2.7 ]
         numpy: ["numpy==1.19.5"]
         java_home: [ /usr/lib/jvm/java-8-openjdk-amd64 ]
