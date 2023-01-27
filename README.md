@@ -30,11 +30,13 @@
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**. 
 
-### 🎊 New year new face, more functionalities! 
-> - Want to scale? Check the latest release with ⭐ [Spark support]()! 
-> - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
-> - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
-
+### 🎊 New year, new face, more functionalities! 
+> Thank you for using and following ``pandas-profiling`` developments. Yet, we have a new exciting feature - we are now thrilled to announce
+> that <u>Spark</u> is now part of the Data Profiling family from version 4.0.0 onwards
+> 
+> With its introduction, there was also the need for a new naming, one that will allow to decouple the concept of profiling from the Pandas Dataframes - `ydata-profiling`! 
+> 
+> But fear not, `pip install pandas-profiling` will still be a valid for a while, and we will keep investing in growing the best open-source for data profiling, so you can use it for even more use cases.
 
 ## Key features
 - **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
