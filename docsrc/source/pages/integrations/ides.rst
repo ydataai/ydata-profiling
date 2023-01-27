@@ -14,15 +14,15 @@ PyCharm
 
   .. code-block:: console
 
-    $ which pandas_profiling
-    (example) /usr/local/bin/pandas_profiling
+    $ which ydata_profiling
+    (example) /usr/local/bin/ydata_profiling
 
   On Windows:
 
   .. code-block:: console
 
-    $ where pandas_profiling
-    (example) C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe
+    $ where ydata_profiling
+    (example) C:\ProgramData\Anaconda3\Scripts\ydata_profiling.exe
 
 3. In PyCharm, go to *Settings* (or *Preferences* on macOS) > *Tools* > *External tools*
 4. Click the **+** icon to add a new external tool

@@ -3,8 +3,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from pandas_profiling.utils.compat import pandas_version_info
-from pandas_profiling.utils.dataframe import (
+from ydata_profiling.utils.compat import pandas_version_info
+from ydata_profiling.utils.dataframe import (
     expand_mixed,
     read_pandas,
     uncompressed_extension,

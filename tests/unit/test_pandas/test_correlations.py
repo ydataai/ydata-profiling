@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling.config import Settings
-from pandas_profiling.model.pandas.correlations_pandas import (
+from ydata_profiling.config import Settings
+from ydata_profiling.model.pandas.correlations_pandas import (
     pandas_auto_compute,
     pandas_cramers_compute,
     pandas_spearman_compute,

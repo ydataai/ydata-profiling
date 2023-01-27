@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.utils.cache
 =============================
 
-.. automodule:: pandas_profiling.utils.cache
+.. automodule:: ydata_profiling.utils.cache
 
    
    

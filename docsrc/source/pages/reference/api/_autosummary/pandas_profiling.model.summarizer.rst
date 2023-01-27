@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.summarizer
 ==================================
 
-.. automodule:: pandas_profiling.model.summarizer
+.. automodule:: ydata_profiling.model.summarizer
 
    
    

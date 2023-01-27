@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.controller.console
 ====================================
 
-.. automodule:: pandas_profiling.controller.console
+.. automodule:: ydata_profiling.controller.console
 
    
    

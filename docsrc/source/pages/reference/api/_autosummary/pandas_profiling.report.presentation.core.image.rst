@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.report.presentation.core.image
 ================================================
 
-.. automodule:: pandas_profiling.report.presentation.core.image
+.. automodule:: ydata_profiling.report.presentation.core.image
 
    
    

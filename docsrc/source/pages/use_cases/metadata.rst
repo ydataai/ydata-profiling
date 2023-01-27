@@ -60,7 +60,7 @@ Alternatively, column descriptions can be loaded from a JSON file:
 
         import json
         import pandas as pd
-        import pandas_profiling
+        import ydata_profiling
 
         definition_file = dataset_column_definition.json
 

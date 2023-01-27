@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.utils.cache import cache_zipped_file
+from ydata_profiling import ProfileReport
+from ydata_profiling.utils.cache import cache_zipped_file
 
 """
 The "Auto" correlation is an interpretable pairwise column metric of the following mapping:
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     profile = ProfileReport(
         df,
         title="Profile Report of the UCI Bank Marketing Dataset",
-        config_file="src/pandas_profiling/config_default.yaml",
+        config_file="src/ydata_profiling/config_default.yaml",
         correlations={
             "auto": {"n_bins": 8},
         },
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     no_auto_profile = ProfileReport(
         df,
         title="Profile Report of the UCI Bank Marketing Dataset",
-        config_file="src/pandas_profiling/config_default.yaml",
+        config_file="src/ydata_profiling/config_default.yaml",
         correlations={
             "auto": {"calculate": False},
             "pearson": {"calculate": True},

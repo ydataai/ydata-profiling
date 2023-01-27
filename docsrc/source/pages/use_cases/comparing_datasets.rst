@@ -10,7 +10,7 @@ The following syntax can be used to compare two datasets:
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     train_df = pd.read_csv("train.csv")
     train_report = ProfileReport(train_df, title="Train")
@@ -30,7 +30,7 @@ In order to compare more than two reports, the following syntax can be used:
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport, compare
+    from ydata_profiling import ProfileReport, compare
 
     comparison_report = compare([train_report, validation_report, test_report])
 

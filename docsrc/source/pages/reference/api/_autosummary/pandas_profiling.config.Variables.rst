@@ -1,6 +1,6 @@
 ﻿pandas\_profiling.config.Variables
 ==================================
 
-.. currentmodule:: pandas_profiling.config
+.. currentmodule:: ydata_profiling.config
 
 .. autopydantic_model:: Variables

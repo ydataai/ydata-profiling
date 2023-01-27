@@ -19,7 +19,7 @@ This is the recommended starting point for larger datasets.
 
 *(minimal mode was introduced in version v2.4.0)*
 
-This configuration file can be found here: `config_minimal.yaml <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_. More details on settings and configuration are available in :doc:`../advanced_usage/available_settings`.
+This configuration file can be found here: `config_minimal.yaml <https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_minimal.yaml>`_. More details on settings and configuration are available in :doc:`../advanced_usage/available_settings`.
 
 Sample the dataset
 ------------------
@@ -54,7 +54,7 @@ To decrease the computational burden in particularly large datasets but still ma
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
     import pandas as pd
 
     # Reading the data

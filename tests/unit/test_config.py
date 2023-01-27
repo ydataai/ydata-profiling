@@ -1,4 +1,4 @@
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 def test_set_variable():

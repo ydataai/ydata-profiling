@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.utils.dataframe
 =================================
 
-.. automodule:: pandas_profiling.utils.dataframe
+.. automodule:: ydata_profiling.utils.dataframe
 
    
    

@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.summary
 ===============================
 
-.. automodule:: pandas_profiling.model.summary
+.. automodule:: ydata_profiling.model.summary
 
    
    

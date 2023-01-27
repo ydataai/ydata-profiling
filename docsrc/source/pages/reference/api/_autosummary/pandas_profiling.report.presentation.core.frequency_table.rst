@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.report.presentation.core.frequency\_table
 ===========================================================
 
-.. automodule:: pandas_profiling.report.presentation.core.frequency_table
+.. automodule:: ydata_profiling.report.presentation.core.frequency_table
 
    
    

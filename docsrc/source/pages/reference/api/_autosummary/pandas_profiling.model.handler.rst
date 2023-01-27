@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.handler
 ===============================
 
-.. automodule:: pandas_profiling.model.handler
+.. automodule:: ydata_profiling.model.handler
 
    
    

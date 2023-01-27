@@ -33,7 +33,7 @@ If you would like to use the additional features such as saving the Suite and bu
 .. code-block:: python
 
     import pandas as pd
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     df = pd.read_csv("titanic.csv")
 
@@ -102,7 +102,7 @@ The ``to_expectation_suite`` method returns a default set of Expectations if ``p
 * ``expect_file_to_exist``
 
 
-The default logic is straight forward and can be found in `expectation_algorithms.py <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/model/expectation_algorithms.py>`_.
+The default logic is straight forward and can be found in `expectation_algorithms.py <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/model/expectation_algorithms.py>`_.
 
 Rolling your own Expectation Generation Logic
 ---------------------------------------------

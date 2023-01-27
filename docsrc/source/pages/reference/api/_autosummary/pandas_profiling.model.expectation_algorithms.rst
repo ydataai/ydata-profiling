@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.expectation\_algorithms
 ===============================================
 
-.. automodule:: pandas_profiling.model.expectation_algorithms
+.. automodule:: ydata_profiling.model.expectation_algorithms
 
    
    

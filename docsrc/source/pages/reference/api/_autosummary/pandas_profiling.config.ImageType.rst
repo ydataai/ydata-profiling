@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.config.ImageType
 ==================================
 
-.. currentmodule:: pandas_profiling.config
+.. currentmodule:: ydata_profiling.config
 
 .. autoclass:: ImageType
 

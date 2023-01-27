@@ -11,9 +11,9 @@ from visions.test.utils import (
     infers,
 )
 
-from pandas_profiling.config import Settings
-from pandas_profiling.model.typeset import ProfilingTypeSet
 from tests.unit.test_utils import patch_arg
+from ydata_profiling.config import Settings
+from ydata_profiling.model.typeset import ProfilingTypeSet
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 

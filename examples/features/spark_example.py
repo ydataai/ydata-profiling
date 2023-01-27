@@ -9,8 +9,8 @@ from pyspark.sql import SparkSession
 logging.basicConfig(level=logging.INFO)
 import pandas as pd
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.config import Settings
+from ydata_profiling import ProfileReport
+from ydata_profiling.config import Settings
 
 spark_session = (
     SparkSession.builder.appName("SparkProfiling").master("local[*]").getOrCreate()

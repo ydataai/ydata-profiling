@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.typeset\_relations
 ==========================================
 
-.. automodule:: pandas_profiling.model.typeset_relations
+.. automodule:: ydata_profiling.model.typeset_relations
 
    
    

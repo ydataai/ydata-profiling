@@ -2,7 +2,7 @@
 Utils
 =====
 
-.. currentmodule:: pandas_profiling.utils
+.. currentmodule:: ydata_profiling.utils
 .. toctree::
 
 .. autosummary::

@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.visualisation.utils
 =====================================
 
-.. automodule:: pandas_profiling.visualisation.utils
+.. automodule:: ydata_profiling.visualisation.utils
 
    
    

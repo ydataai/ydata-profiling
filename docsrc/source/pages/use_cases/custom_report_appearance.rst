@@ -59,7 +59,7 @@ The palettes used in visualizations like correlation matrices and missing values
 
 .. code-block:: python
 
-  from pandas_profiling import ProfileReport
+  from ydata_profiling import ProfileReport
 
   profile = ProfileReport(
       df,
@@ -72,7 +72,7 @@ Similarly, the palette for *Missing values* can be changed using ``missing`` arg
 
 .. code-block:: python
 
-  from pandas_profiling import ProfileReport
+  from ydata_profiling import ProfileReport
 
   profile = ProfileReport(
       df,

@@ -50,14 +50,14 @@ Through a custom configuration file
 
 To control ``pandas-profiling`` through a custom file, you can start with one of the sample configuration files below:
 
-- `default configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_ (default)
-- `minimal configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
+- `default configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_default.yaml>`_ (default)
+- `minimal configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
 
 Change the configuration to your liking and point towards that configuration file when computing the report:  
 
 .. code-block:: python
 
-  from pandas_profiling import ProfileReport
+  from ydata_profiling import ProfileReport
 
   profile = ProfileReport(df, config_file="your_config.yml")
   profile.to_file("report.html")
@@ -70,7 +70,7 @@ Any configuration setting can also be read from environment variables. For examp
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     profile = ProfileReport(df, title="My Custom Pandas Profiling Report")
 
@@ -84,6 +84,6 @@ and then running
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     profile = ProfileReport(df)

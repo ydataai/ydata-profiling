@@ -47,7 +47,7 @@ A memory error that comes up when profiling datasets with large outliers (even i
 
 Related StackOverflow questions:
 
-- `MemoryError when using pandas_profiling profile_report <https://stackoverflow.com/questions/67342168/memoryerror-when-using-pandas-profiling-profile-report>`_
+- `MemoryError when using ydata_profiling profile_report <https://stackoverflow.com/questions/67342168/memoryerror-when-using-pandas-profiling-profile-report>`_
 
 
 TypeError: concat() got an unexpected keyword argument 'join_axes'

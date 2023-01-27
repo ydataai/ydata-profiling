@@ -4,12 +4,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling.config import SparkSettings
-from pandas_profiling.model.describe import describe
-from pandas_profiling.model.summary import *
-from pandas_profiling.model.typeset import ProfilingTypeSet
+from ydata_profiling.config import SparkSettings
+from ydata_profiling.model.describe import describe
 
-check_is_NaN = "pandas_profiling.check_is_NaN"
+check_is_NaN = "ydata_profiling.check_is_NaN"
 
 
 @pytest.fixture
@@ -143,7 +141,6 @@ def expected_results():
             "cv": check_is_NaN,
         },
         "y": {
-            "n": "9",
             "n": 9,
             "count": 9,
             "p_missing": 0.0,
@@ -373,7 +370,9 @@ def test_describe_spark_df(
     if column == "mixed":
         describe_data[column] = [str(i) for i in describe_data[column]]
     if column == "bool_tf_with_nan":
-        describe_data[column] = [True if i else False for i in describe_data[column]]
+        describe_data[column] = [
+            True if i else False for i in describe_data[column]  # noqa: SIM210
+        ]
     sdf = spark_session.createDataFrame(pd.DataFrame({column: describe_data[column]}))
 
     results = describe(cfg, sdf, summarizer, typeset)

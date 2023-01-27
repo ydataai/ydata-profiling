@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 if __name__ == "__main__":
     df = pd.read_csv(

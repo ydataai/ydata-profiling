@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.correlations
 ====================================
 
-.. automodule:: pandas_profiling.model.correlations
+.. automodule:: ydata_profiling.model.correlations
 
    
    

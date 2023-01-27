@@ -4,7 +4,7 @@ https://github.com/ydataai/pandas-profiling/issues/147
 """
 import pandas as pd
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 def test_issue147(get_data_file):

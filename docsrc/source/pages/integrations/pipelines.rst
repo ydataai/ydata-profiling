@@ -14,19 +14,19 @@ Integration with Airflow can be easily achieved through the `BashOperator <https
   # Using the command line interface
   profiling_task = BashOperator(
       task_id="Profile Data",
-      bash_command="pandas_profiling dataset.csv report.html",
+      bash_command="ydata_profiling dataset.csv report.html",
       dag=dag,
   )
 
 .. code-block:: python
 
   # Using the Python interface
-  import pandas_profiling
+  import ydata_profiling
 
 
   def profile_data(file_name, report_file):
       df = pd.read_csv(file_name)
-      report = pandas_profiling.ProfileReport(df, title="Profiling Report in Airflow")
+      report = ydata_profiling.ProfileReport(df, title="Profiling Report in Airflow")
       report.to_file(report_file)
 
       return "Report generated at {}".format(report_file)

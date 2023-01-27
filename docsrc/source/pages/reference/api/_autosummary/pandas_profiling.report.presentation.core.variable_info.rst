@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.report.presentation.core.variable\_info
 =========================================================
 
-.. automodule:: pandas_profiling.report.presentation.core.variable_info
+.. automodule:: ydata_profiling.report.presentation.core.variable_info
 
    
    

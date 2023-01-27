@@ -10,7 +10,7 @@ The following syntax can be used to generate a profile under the assumption that
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     df = pd.read_csv("ts_data.csv")
     profile = ProfileReport(df, ts_mode=True, sortby="Date", title="Time-Series EDA")

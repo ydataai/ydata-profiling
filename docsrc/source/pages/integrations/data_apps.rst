@@ -14,9 +14,9 @@ Streamlit
 .. code-block:: python
 
   import pandas as pd
-  import pandas_profiling
+  import ydata_profiling
   import streamlit as st
-  from streamlit_pandas_profiling import st_profile_report
+  from streamlit_ydata_profiling import st_profile_report
 
   df = pd.read_csv(
       "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
@@ -80,7 +80,7 @@ And configure the Dash app as in the following snippet:
 .. code-block:: python
 
     import pandas as pd
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
     import dash
     from dash import html
     import dash_dangerously_set_inner_html
@@ -114,4 +114,4 @@ When running ``python app.py``, a Dash app with the report embedded will be avai
 Panel
 -----
 
-For more information on how to use ``pandas-profiling`` in Panel, see `this GitHub issue <https://github.com/ydataai/pandas-profiling/issues/491>`_ and `this integration example <https://awesome-panel.org/pandas_profiling_app>`_.
+For more information on how to use ``pandas-profiling`` in Panel, see `this GitHub issue <https://github.com/ydataai/pandas-profiling/issues/491>`_ and `this integration example <https://awesome-panel.org/ydata_profiling_app>`_.

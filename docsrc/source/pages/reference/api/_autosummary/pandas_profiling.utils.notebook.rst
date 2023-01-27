@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.utils.notebook
 ================================
 
-.. automodule:: pandas_profiling.utils.notebook
+.. automodule:: ydata_profiling.utils.notebook
 
    
    

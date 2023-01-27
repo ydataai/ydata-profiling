@@ -16,7 +16,7 @@ try:
 except FileNotFoundError:
     version = "0.0.dev0"
 
-with open(source_root / "src/pandas_profiling/version.py", "w") as version_file:
+with open(source_root / "src/ydata_profiling/version.py", "w") as version_file:
     version_file.write(f"__version__ = '{version}'")
 
 setup(
@@ -42,7 +42,7 @@ setup(
         ],
     },
     package_data={
-        "pandas_profiling": ["py.typed"],
+        "ydata_profiling": ["py.typed"],
     },
     include_package_data=True,
     classifiers=[
@@ -67,9 +67,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     entry_points={
-        "console_scripts": [
-            "pandas_profiling = pandas_profiling.controller.console:main"
-        ]
+        "console_scripts": ["ydata_profiling = ydata_profiling.controller.console:main"]
     },
     options={"bdist_wheel": {"universal": True}},
 )

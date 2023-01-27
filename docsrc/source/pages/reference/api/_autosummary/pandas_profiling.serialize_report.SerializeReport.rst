@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.serialize\_report.SerializeReport
 ===================================================
 
-.. currentmodule:: pandas_profiling.serialize_report
+.. currentmodule:: ydata_profiling.serialize_report
 
 .. autoclass:: SerializeReport
 

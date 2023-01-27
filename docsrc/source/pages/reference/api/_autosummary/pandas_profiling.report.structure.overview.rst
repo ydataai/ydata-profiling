@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.report.structure.overview
 ===========================================
 
-.. automodule:: pandas_profiling.report.structure.overview
+.. automodule:: ydata_profiling.report.structure.overview
 
    
    

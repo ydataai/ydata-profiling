@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.profile\_report.ProfileReport
 ===============================================
 
-.. currentmodule:: pandas_profiling.profile_report
+.. currentmodule:: ydata_profiling.profile_report
 
 .. autoclass:: ProfileReport
 

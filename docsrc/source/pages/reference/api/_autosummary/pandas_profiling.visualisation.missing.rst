@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.visualisation.missing
 =======================================
 
-.. automodule:: pandas_profiling.visualisation.missing
+.. automodule:: ydata_profiling.visualisation.missing
 
    
    

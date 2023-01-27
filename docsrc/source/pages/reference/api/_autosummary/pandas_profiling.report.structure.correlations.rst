@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.report.structure.correlations
 ===============================================
 
-.. automodule:: pandas_profiling.report.structure.correlations
+.. automodule:: ydata_profiling.report.structure.correlations
 
    
    

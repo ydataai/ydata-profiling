@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.utils.common
 ==============================
 
-.. automodule:: pandas_profiling.utils.common
+.. automodule:: ydata_profiling.utils.common
 
    
    

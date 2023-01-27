@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.utils.paths
 =============================
 
-.. automodule:: pandas_profiling.utils.paths
+.. automodule:: ydata_profiling.utils.paths
 
    
    

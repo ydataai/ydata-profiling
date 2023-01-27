@@ -73,7 +73,7 @@ Start by loading your pandas `DataFrame` as you normally would, e.g. by using:
 ```python
 import numpy as np
 import pandas as pd
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 ```
@@ -124,10 +124,10 @@ profile.to_file("your_report.json")
 
 ### Using in the command line
 
-For standard formatted CSV files (which can be read directly by pandas without additional settings), the `pandas_profiling` executable can be used in the command line. The example below generates a report named _Example Profiling Report_, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
+For standard formatted CSV files (which can be read directly by pandas without additional settings), the `ydata_profiling` executable can be used in the command line. The example below generates a report named _Example Profiling Report_, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
 
 ```sh
-pandas_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
+ydata_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
 ```
 
 Additional details on the CLI are available [on the documentation](https://pandas-profiling.ydata.ai/docs/master/pages/getting_started/quickstart.html#command-line-usage).

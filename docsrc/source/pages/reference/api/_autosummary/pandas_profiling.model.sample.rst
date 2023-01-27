@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.sample
 ==============================
 
-.. automodule:: pandas_profiling.model.sample
+.. automodule:: ydata_profiling.model.sample
 
    
    

@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.model.alerts
 ==============================
 
-.. automodule:: pandas_profiling.model.alerts
+.. automodule:: ydata_profiling.model.alerts
 
    
    

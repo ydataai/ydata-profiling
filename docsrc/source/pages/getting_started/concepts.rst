@@ -17,7 +17,7 @@ Types, when going beyond the the logical data types such as integer, floats, etc
 - File
 - Image
 
-Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``pandas-profiling``'s default typeset `here <https://github.com/ydataai/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py>`_. 
+Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``pandas-profiling``'s default typeset `here <https://github.com/ydataai/pandas-profiling/blob/develop/src/ydata_profiling/model/typeset.py>`_. 
 
 Data quality alerts
 -------------------

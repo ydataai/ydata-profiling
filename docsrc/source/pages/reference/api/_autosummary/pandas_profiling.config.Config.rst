@@ -1,7 +1,7 @@
 ﻿pandas\_profiling.config.Config
 ===============================
 
-.. currentmodule:: pandas_profiling.config
+.. currentmodule:: ydata_profiling.config
 
 .. autoclass:: Config
 
