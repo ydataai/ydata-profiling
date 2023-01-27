@@ -34,6 +34,7 @@
    pages/integrations/pipelines
    pages/integrations/cloud_services
    pages/integrations/ides
+   pages/integrations/pyspark
 
 
 .. toctree::

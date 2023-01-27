@@ -58,7 +58,7 @@ At the time of writing, ``pandas-profiling`` is receiving a new face and name
 we have decided to move from `pandas` to a name that opens the possibility of
 new integrations and developments.
 
-As one of the primary tools for data exploration in Python, with > 10k Github stars,
+This is the most popular tool in the world for data exploration in Python, counting with > 10k Github stars,
 50 million downloads and users working in any industry, including many at FAANG,
 banks and insurance companies, startups and universities.
 
@@ -69,6 +69,5 @@ a Data-Centric approach towards the development of AI.
 Continuous development and support will to be part of the development of
 one of the most beloved open-sources by the data science community.
 
-New features related with Time-Series analysis and Spark support are expected,
-but most importantly we want to understand your needs and how can ``ydata-profiling``
-best support your developments!
+New features are expected and it will be important to learn from you your needs and expectations so the future can be even brighter.
+Join the `DCAI community <https://datacentricai.community/>`__ and let us know your thoughts.
