@@ -6,9 +6,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        You are very much welcome in sharing what functionality is missing in `pandas-profiling`.
+        You are very much welcome in sharing what functionality is missing in `ydata-profiling`.
         Provide a concise summary of the feature in the title field above.
-        The [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html) contains instructions on contributing to this package.
+        The [documentation](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html) contains instructions on contributing to this package.
 
   - type: textarea
     id: missing-functionality

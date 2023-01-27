@@ -12,7 +12,7 @@ If the problem can be replicated in the new environment, then it likely is a sof
 Reporting a bug
 ---------------
 
-To ensure the bug was not already reported by searching on Github under `Issues <https://github.com/ydataai/pandas-profiling/issues>`_. If you're unable to find an open issue addressing the problem, `open a new one <https://github.com/ydataai/pandas-profiling/issues/new/choose>`_. If possible, use the relevant bug report templates to create the issue.
+To ensure the bug was not already reported by searching on Github under `Issues <https://github.com/ydataai/ydata-profiling/issues>`_. If you're unable to find an open issue addressing the problem, `open a new one <https://github.com/ydataai/ydata-profiling/issues/new/choose>`_. If possible, use the relevant bug report templates to create the issue.
 
 You should provide the **minimal information to reproduce this bug**. `This guide <http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports>`_ can help in crafting a minimal bug report. Please include:
 
@@ -42,11 +42,11 @@ To craft helpful and easily readable issues, two formatting tricks are recommend
 Using Stack Overflow
 --------------------
 
-Users with a request for help on how to use ``pandas-profiling`` should consider asking their question on Stack Overflow, under the dedicated ``pandas-profiling`` tag:
+Users with a request for help on how to use ``ydata-profiling`` should consider asking their question on Stack Overflow, under the dedicated ``ydata-profiling`` tag:
 
 .. image:: https://img.shields.io/badge/stackoverflow%20tag-pandas%20profiling-yellow
-  :alt: Questions: Stackoverflow "pandas-profiling"
-  :target: https://stackoverflow.com/questions/tagged/pandas-profiling
+  :alt: Questions: Stackoverflow "ydata-profiling"
+  :target: https://stackoverflow.com/questions/tagged/ydata-profiling
 
 Slack community
 ---------------

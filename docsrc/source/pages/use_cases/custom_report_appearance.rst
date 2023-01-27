@@ -2,7 +2,7 @@
 Customizing the report's appearance
 ===================================
 
-In some situations, a user might want to customize the appearance of the report to match personal preferences or a corporate brand. ``pandas-profiling`` offers two major customization dimensions: the **styling of the HTML report** and the **styling of the visualizations and plots** contained within. 
+In some situations, a user might want to customize the appearance of the report to match personal preferences or a corporate brand. ``ydata-profiling`` offers two major customization dimensions: the **styling of the HTML report** and the **styling of the visualizations and plots** contained within. 
 
 Customizing the report's theme
 ------------------------------
@@ -81,4 +81,4 @@ Similarly, the palette for *Missing values* can be changed using ``missing`` arg
       plot={"missing": {"cmap": "RdBu_r"}},
   )
 
-``pandas-profiling`` accepts all ``cmap`` values (colormaps) accepted by ``matplotlib``. The list of available colourmaps can `be accessed here <https://matplotlib.org/stable/tutorials/colors/colormaps.html>`_. Alternatively, it is possible to create `custom palettes <https://matplotlib.org/stable/gallery/color/custom_cmap.html>`_.
+``ydata-profiling`` accepts all ``cmap`` values (colormaps) accepted by ``matplotlib``. The list of available colourmaps can `be accessed here <https://matplotlib.org/stable/tutorials/colors/colormaps.html>`_. Alternatively, it is possible to create `custom palettes <https://matplotlib.org/stable/gallery/color/custom_cmap.html>`_.

@@ -1,6 +1,6 @@
 """
 Test for issue 502:
-https://github.com/ydataai/pandas-profiling/issues/502
+https://github.com/ydataai/ydata-profiling/issues/502
 """
 import pandas as pd
 

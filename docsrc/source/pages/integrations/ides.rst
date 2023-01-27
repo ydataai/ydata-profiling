@@ -7,8 +7,8 @@ The package can be directly consumed in some Integrated Development Environments
 PyCharm
 -------
 
-1. Install ``pandas-profiling`` via :doc:`../getting_started/installation`
-2. Locate your ``pandas-profiling`` executable.
+1. Install ``ydata-profiling`` via :doc:`../getting_started/installation`
+2. Locate your ``ydata-profiling`` executable.
 
   On macOS / Linux / BSD:
 
@@ -35,7 +35,7 @@ PyCharm
     - Working Directory: ``$ProjectFileDir$``
 
 
-.. image:: https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png
+.. image:: https://ydata-profiling.ydata.ai/docs/assets/pycharm-integration.png
   :alt: PyCharm Integration
   :width: 400
   :align: center

@@ -5,30 +5,30 @@ Installation
 Using pip
 ---------
 
-.. image:: https://pepy.tech/badge/pandas-profiling
+.. image:: https://pepy.tech/badge/ydata-profiling
   :alt: PyPi Total Downloads
-  :target: https://pepy.tech/project/pandas-profiling
+  :target: https://pepy.tech/project/ydata-profiling
 
-.. image:: https://pepy.tech/badge/pandas-profiling/month
+.. image:: https://pepy.tech/badge/ydata-profiling/month
   :alt: PyPi Monthly Downloads
-  :target: https://pepy.tech/project/pandas-profiling/month
+  :target: https://pepy.tech/project/ydata-profiling/month
 
-.. image:: https://badge.fury.io/py/pandas-profiling.svg
+.. image:: https://badge.fury.io/py/ydata-profiling.svg
   :alt: PyPi Version
-  :target: https://pypi.org/project/pandas-profiling/
+  :target: https://pypi.org/project/ydata-profiling/
 
 You can install using the ``pip`` package manager by running:
 
 .. code-block:: console
 
-    pip install -U pandas-profiling
+    pip install -U ydata-profiling
 
 If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can run:
 
 .. code-block::
 
     import sys
-    !{sys.executable} -m pip install -U pandas-profiling[notebook]
+    !{sys.executable} -m pip install -U ydata-profiling[notebook]
     !jupyter nbextension enable --py widgetsnbextension
 
 You may have to restart the kernel or runtime for the package to work.
@@ -36,21 +36,21 @@ You may have to restart the kernel or runtime for the package to work.
 Using conda
 -----------
 
-.. image:: https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg
+.. image:: https://img.shields.io/conda/dn/conda-forge/ydata-profiling.svg
   :alt: Conda Total Downloads
-  :target: https://anaconda.org/conda-forge/pandas-profiling
+  :target: https://anaconda.org/conda-forge/ydata-profiling
 
-.. image:: https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg
+.. image:: https://img.shields.io/conda/vn/conda-forge/ydata-profiling.svg
   :alt: Conda Version
-  :target: https://anaconda.org/conda-forge/pandas-profiling
+  :target: https://anaconda.org/conda-forge/ydata-profiling
 
 A new conda environment containing the module can be created via: 
 
 .. code-block:: console
 
-    conda env create -n pandas-profiling
-    conda activate pandas-profiling
-    conda install -c conda-forge pandas-profiling
+    conda env create -n ydata-profiling
+    conda activate ydata-profiling
+    conda install -c conda-forge ydata-profiling
 
 .. hint::
 
@@ -64,7 +64,7 @@ This can be done via ``pip``:
 
 .. code-block::
 
-  pip install pandas-profiling[notebook]
+  pip install ydata-profiling[notebook]
   jupyter nbextension enable --py widgetsnbextension
 
 Or via ``conda``: 
@@ -79,7 +79,7 @@ environment configurations, refer to `the official ipywidgets documentation <htt
 From source
 -----------
 
-Download the source code by cloning the repository or by clicking on `'Download ZIP' <https://github.com/ydataai/pandas-profiling/archive/master.zip>`_.
+Download the source code by cloning the repository or by clicking on `'Download ZIP' <https://github.com/ydataai/ydata-profiling/archive/master.zip>`_.
 Install it by navigating to the uncompressed directory and running:
 
 .. code-block:: console
@@ -90,7 +90,7 @@ This can also be done via the following one-liner:
 
 .. code-block:: console
 
-    pip install https://github.com/ydataai/pandas-profiling/archive/master.zip
+    pip install https://github.com/ydataai/ydata-profiling/archive/master.zip
 
 Extras
 ------
@@ -104,4 +104,4 @@ Install these with e.g.
 
 .. code-block:: console
 
-    pip install -U pandas-profiling[notebook,unicode]
+    pip install -U ydata-profiling[notebook,unicode]

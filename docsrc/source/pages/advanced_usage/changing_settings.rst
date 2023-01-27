@@ -48,10 +48,10 @@ Some related settings are grouped together in configuration shorthands, making i
 Through a custom configuration file
 -----------------------------------
 
-To control ``pandas-profiling`` through a custom file, you can start with one of the sample configuration files below:
+To control ``ydata-profiling`` through a custom file, you can start with one of the sample configuration files below:
 
-- `default configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_default.yaml>`_ (default)
-- `minimal configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
+- `default configuration file <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_default.yaml>`_ (default)
+- `minimal configuration file <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
 
 Change the configuration to your liking and point towards that configuration file when computing the report:  
 

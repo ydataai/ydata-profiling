@@ -2,30 +2,30 @@
 Overview
 ========
 
-.. image:: https://ydataai.github.io/pandas-profiling/docs/assets/logo_header.png
+.. image:: https://ydataai.github.io/ydata-profiling/docs/assets/logo_header.png
   :alt: Pandas Profiling Logo Header
 
-.. image:: https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master
+.. image:: https://github.com/ydataai/ydata-profiling/actions/workflows/tests.yml/badge.svg?branch=master
   :alt: Build Status
-  :target: https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml
+  :target: https://github.com/ydataai/ydata-profiling/actions/workflows/tests.yml
 
-.. image:: https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF
+.. image:: https://codecov.io/gh/ydataai/ydata-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF
   :alt: Code Coverage
-  :target: https://codecov.io/gh/ydataai/pandas-profiling
+  :target: https://codecov.io/gh/ydataai/ydata-profiling
 
-.. image:: https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg
+.. image:: https://img.shields.io/github/release/ydata-profiling/ydata-profiling.svg
   :alt: Release Version
-  :target: https://github.com/ydataai/pandas-profiling/releases
+  :target: https://github.com/ydataai/ydata-profiling/releases
 
-.. image:: https://img.shields.io/pypi/pyversions/pandas-profiling
+.. image:: https://img.shields.io/pypi/pyversions/ydata-profiling
   :alt: Python Version
-  :target: https://pypi.org/project/pandas-profiling/
+  :target: https://pypi.org/project/ydata-profiling/
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
   :alt: Code style: black
   :target: https://github.com/python/black
 
-``pandas-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, pandas-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
+``ydata-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 

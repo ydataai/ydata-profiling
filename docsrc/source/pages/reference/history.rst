@@ -1,11 +1,11 @@
 History
 =======
 
-The ``pandas-profiling`` project became what it is today due to the
+The ``ydata-profiling`` project became what it is today due to the
 work of the creators to make it successful. This page aims to highlights
 a bit of the development history. For the full picture, have a look at
 the `contributor
-history <https://github.com/ydataai/pandas-profiling/graphs/contributors>`__.
+history <https://github.com/ydataai/ydata-profiling/graphs/contributors>`__.
 
 Inception
 ---------
@@ -14,7 +14,7 @@ In 2016, `Jos Polfliet`_ was working for SAS Institute and was getting
 bored with doing the same types of exploratory data analysis over and
 over again. Automating his own logic, he noticed it was useful and
 decided to open-source it under the MIT License. The package was named
-``pandas-profiling`` as a contraction of *pandas* and *data profiling*.
+``ydata-profiling`` as a contraction of *pandas* and *data profiling*.
 The idea was to enable the user to perform automated exploratory data
 analysis, beyond what the ``df.describe()`` function was offering and by
 abusing Jupyter's HTML output. Since that start, human years of
@@ -39,17 +39,17 @@ changed) and two major releases, and great collaborations, most notably with
 Where are we now?
 -----------------
 
-At the time of writing, ``pandas-profiling`` is one of the primary tools
+At the time of writing, ``ydata-profiling`` is one of the primary tools
 for data exploration in Python, with > 8k GitHub stars, 30 million
 downloads and users working in any industry, including many at FAANG,
-banks and insurance companies, startups and universities. ``pandas-profiling``
+banks and insurance companies, startups and universities. ``ydata-profiling``
 has been named one of the Top 20 ML packages by Google.
 
 What's next?
 ------------
 
-``pandas-profiling`` will be part of a bigger mission, the Data-Centric AI
+``ydata-profiling`` will be part of a bigger mission, the Data-Centric AI
 movement spearheaded by YData. The tech startup YData will be the
-prominent force that will help make ``pandas-profiling`` the standard
+prominent force that will help make ``ydata-profiling`` the standard
 profiling library among data scientists, by introducing new features through a
 bigger team and enterprise support.

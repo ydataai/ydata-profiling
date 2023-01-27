@@ -5,7 +5,7 @@ Concepts
 Data types
 ----------
 
-Types, when going beyond the the logical data types such as integer, floats, etc,  are a powerful abstraction for effective data analysis, allowing analysis under higher level lenses. ``pandas-profiling`` is backed by a powerful type system developed specifically for data analysis: `visions <https://github.com/dylan-profiler/visions>`_. Currently, ``pandas-profiling`` recognizes the following types: 
+Types, when going beyond the the logical data types such as integer, floats, etc,  are a powerful abstraction for effective data analysis, allowing analysis under higher level lenses. ``ydata-profiling`` is backed by a powerful type system developed specifically for data analysis: `visions <https://github.com/dylan-profiler/visions>`_. Currently, ``ydata-profiling`` recognizes the following types: 
 
 - Boolean
 - Numerical
@@ -17,7 +17,7 @@ Types, when going beyond the the logical data types such as integer, floats, etc
 - File
 - Image
 
-Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``pandas-profiling``'s default typeset `here <https://github.com/ydataai/pandas-profiling/blob/develop/src/ydata_profiling/model/typeset.py>`_. 
+Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``ydata-profiling``'s default typeset `here <https://github.com/ydataai/ydata-profiling/blob/develop/src/ydata_profiling/model/typeset.py>`_. 
 
 Data quality alerts
 -------------------

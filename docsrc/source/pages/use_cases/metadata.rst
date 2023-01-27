@@ -4,7 +4,7 @@ Dataset metadata and data dictionaries
 
 Dataset metadata
 ----------------
-When sharing reports with coworkers or publishing online, it might be important to include metadata of the dataset, such as author, copyright holder or descriptions. ``pandas-profiling`` allows complementing a report with that information. Inspired by `schema.org's Dataset <https://schema.org/Dataset>`_, the currently supported properties are *description*, *creator*, *author*, *url*, *copyright_year* and *copyright_holder*.
+When sharing reports with coworkers or publishing online, it might be important to include metadata of the dataset, such as author, copyright holder or descriptions. ``ydata-profiling`` allows complementing a report with that information. Inspired by `schema.org's Dataset <https://schema.org/Dataset>`_, the currently supported properties are *description*, *creator*, *author*, *url*, *copyright_year* and *copyright_holder*.
 
 The following example shows how to generate a report with a *description*, *copyright_holder* *copyright_year*, *creator* and *url*. In the generated report, these properties are found in the *Overview*, under *About*.
 
@@ -25,7 +25,7 @@ The following example shows how to generate a report with a *description*, *copy
 Column descriptions
 -------------------
 
-In addition to providing dataset details, often users want to include column-specific descriptions when sharing reports with team members and stakeholders. ``pandas-profiling`` supports creating these descriptions, so that the report includes a built-in data dictionary. By default, the descriptions are presented in the *Overview* section of the report, next to each variable.
+In addition to providing dataset details, often users want to include column-specific descriptions when sharing reports with team members and stakeholders. ``ydata-profiling`` supports creating these descriptions, so that the report includes a built-in data dictionary. By default, the descriptions are presented in the *Overview* section of the report, next to each variable.
 
 .. code-block:: python
     :caption: Generate a report with per-variable descriptions

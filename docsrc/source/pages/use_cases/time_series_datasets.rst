@@ -2,7 +2,7 @@
 Time-Series data
 ==================
 
-``pandas-profiling`` can be used for a quick Exploratory Data Analysis on time-series data. This is useful for a quick understading on the behaviour of time dependent variables regarding behaviours such as time plots, seasonality, trends and stationarity.
+``ydata-profiling`` can be used for a quick Exploratory Data Analysis on time-series data. This is useful for a quick understading on the behaviour of time dependent variables regarding behaviours such as time plots, seasonality, trends and stationarity.
 
 Combined with the profiling reports compare, you're able to compare the evolution and data behaviour through time, in terms of time-series specific statistics such as PACF and ACF plots.
 

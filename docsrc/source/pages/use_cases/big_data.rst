@@ -2,13 +2,13 @@
 Profiling large datasets
 ========================
 
-By default, ``pandas-profiling`` comprehensively summarizes the input dataset in a way that gives the most insights for data analysis. For small datasets, these computations can be performed in *quasi* real-time. For larger datasets, deciding upfront which calculations to make might be required.
-Whether a computation scales to a large datasets not only depends on the exact size of the detaset, but also on its complexity and on whether fast computations are available. If the computation time of the profiling becomes a bottleneck, ``pandas-profiling`` offers several alternatives to overcome it.
+By default, ``ydata-profiling`` comprehensively summarizes the input dataset in a way that gives the most insights for data analysis. For small datasets, these computations can be performed in *quasi* real-time. For larger datasets, deciding upfront which calculations to make might be required.
+Whether a computation scales to a large datasets not only depends on the exact size of the detaset, but also on its complexity and on whether fast computations are available. If the computation time of the profiling becomes a bottleneck, ``ydata-profiling`` offers several alternatives to overcome it.
 
 Minimal mode
 ------------
 
-``pandas-profiling`` includes a minimal configuration file where the most expensive computations are turned off by default.
+``ydata-profiling`` includes a minimal configuration file where the most expensive computations are turned off by default.
 This is the recommended starting point for larger datasets.
 
 .. code-block:: python
@@ -19,7 +19,7 @@ This is the recommended starting point for larger datasets.
 
 *(minimal mode was introduced in version v2.4.0)*
 
-This configuration file can be found here: `config_minimal.yaml <https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_minimal.yaml>`_. More details on settings and configuration are available in :doc:`../advanced_usage/available_settings`.
+This configuration file can be found here: `config_minimal.yaml <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_minimal.yaml>`_. More details on settings and configuration are available in :doc:`../advanced_usage/available_settings`.
 
 Sample the dataset
 ------------------
@@ -75,7 +75,7 @@ The setting controlling this, ``ìnteractions.targets``, can be changed via mult
 Concurrency
 -----------
 
-``pandas-profiling`` is a project under active development. One of the highly desired features is the addition of a scalable backend such as `Modin <https://github.com/modin-project/modin>`_, `Spark <https://spark.apache.org/>`_ or `Dask <https://dask.org/>`_.
+``ydata-profiling`` is a project under active development. One of the highly desired features is the addition of a scalable backend such as `Modin <https://github.com/modin-project/modin>`_, `Spark <https://spark.apache.org/>`_ or `Dask <https://dask.org/>`_.
 
 
-Keep an eye on the `GitHub <https://github.com/ydataai/pandas-profiling/issues>`_ page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is `currently underway <https://github.com/ydataai/pandas-profiling/projects/3>`_.
+Keep an eye on the `GitHub <https://github.com/ydataai/ydata-profiling/issues>`_ page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is `currently underway <https://github.com/ydataai/ydata-profiling/projects/3>`_.

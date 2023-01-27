@@ -1,6 +1,6 @@
 """
 Test for issue 388:
-https://github.com/ydataai/pandas-profiling/issues/388
+https://github.com/ydataai/ydata-profiling/issues/388
 """
 import pytest
 

@@ -2,7 +2,7 @@
 Dataset Comparison
 ==================
 
-``pandas-profiling`` can be used to compare multiple version of the same dataset.
+``ydata-profiling`` can be used to compare multiple version of the same dataset.
 This is useful when comparing data from multiple time periods, such as two years.
 Another common scenario is to view the dataset profile for training, validation and test sets in machine learning.
 
