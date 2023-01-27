@@ -1,0 +1,5 @@
+# this provides the recommended pyspark and pyarrow versions for spark to work on pandas-profiling
+# note that if you are using pyspark 2.3 or 2.4 and pyarrow >= 0.15, you might need to
+# set ARROW_PRE_0_15_IPC_FORMAT=1 in your conf/spark-env.sh for toPandas functions to work properly
+pyspark>=2.3.0
+pyarrow>=2.0.0
