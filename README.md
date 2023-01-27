@@ -1,4 +1,4 @@
-# `ydata-profiling`
+# ydata-profiling
 
 [![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
 [![PyPI download month](https://img.shields.io/pypi/dm/pandas-profiling.svg)](https://pypi.python.org/pypi/pandas-profiling/)
@@ -8,8 +8,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
-
-![YData Profiling Logo Header](https://assets.ydata.ai/oss/ydata-profiling_black.png)
+<p align="center"><img width="500" src="https://assets.ydata.ai/oss/ydata-profiling_black.png" alt="YData Profiling Logo"></p>
 
 <p align="center">
   <a href="https://pandas-profiling.ydata.ai/docs/master/">Documentation</a>
@@ -61,7 +60,7 @@ The report contains three additional sections:
 > - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
 
 ### ⚡ Spark
-> Spark release has been released, but we are always looking for an extra pair of hands 👐.
+> Spark support has been released, but we are always looking for an extra pair of hands 👐.
 > [Check current work in progress!](https://github.com/ydataai/ydata-profiling/projects/3).
 
 ## 📝 Use cases
