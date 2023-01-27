@@ -183,7 +183,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return
 
     @staticmethod
-    def __initialize_dataframe(df: [pd.DataFrame, sDataFrame], report_config: Settings):
+    def __initialize_dataframe(df: Union[pd.DataFrame, sDataFrame], report_config: Settings):
         if (
             df is not None
             and isinstance(df, pd.DataFrame)
