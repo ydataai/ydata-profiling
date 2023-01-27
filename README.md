@@ -8,7 +8,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
-<p align="center"><img width="500" src="https://assets.ydata.ai/oss/ydata-profiling_black.png" alt="YData Profiling Logo"></p>
+<p align="center"><img width="300" src="https://assets.ydata.ai/oss/ydata-profiling_black.png" alt="YData Profiling Logo"></p>
 
 <p align="center">
   <a href="https://pandas-profiling.ydata.ai/docs/master/">Documentation</a>
