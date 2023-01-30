@@ -25,7 +25,7 @@ repos:
     -   id: pyupgrade
         args: ['--py37-plus','--exit-zero-even-if-changed']
 -   repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
       - id: isort
         files: '.*'
