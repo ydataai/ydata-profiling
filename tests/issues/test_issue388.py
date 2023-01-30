@@ -1,10 +1,10 @@
 """
 Test for issue 388:
-https://github.com/ydataai/pandas-profiling/issues/388
+https://github.com/ydataai/ydata-profiling/issues/388
 """
 import pytest
 
-from pandas_profiling.controller import console
+from ydata_profiling.controller import console
 
 
 def test_issue388(get_data_file, test_output_dir):

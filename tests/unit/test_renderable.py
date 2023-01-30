@@ -1,8 +1,8 @@
-from pandas_profiling.report.presentation.flavours.html.frequency_table import (
+from ydata_profiling.report.presentation.flavours.html.frequency_table import (
     HTMLFrequencyTable,
 )
-from pandas_profiling.report.presentation.flavours.html.html import HTMLHTML
-from pandas_profiling.report.presentation.flavours.html.image import HTMLImage
+from ydata_profiling.report.presentation.flavours.html.html import HTMLHTML
+from ydata_profiling.report.presentation.flavours.html.image import HTMLImage
 
 
 def test_html_frequency_table():

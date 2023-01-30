@@ -1,11 +1,11 @@
 """
 Test for issue XXX:
-https://github.com/ydataai/pandas-profiling/issues/XXX
+https://github.com/ydataai/ydata-profiling/issues/XXX
 """
 import pandas as pd
 import pytest
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 @pytest.mark.skip()

@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling.model.duplicates import get_duplicates
+from ydata_profiling.model.duplicates import get_duplicates
 
 
 @pytest.fixture(scope="module")

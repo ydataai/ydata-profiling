@@ -16,7 +16,7 @@ repos:
     hooks:
     - id: nbqa-black
     - id: nbqa-isort
-      args: [ --profile=black, --project=pandas_profiling ]
+      args: [ --profile=black, --project=ydata_profiling ]
     - id: nbqa-pyupgrade
       args: [ --py36-plus ]
 -   repo: https://github.com/asottile/pyupgrade
@@ -25,16 +25,16 @@ repos:
     -   id: pyupgrade
         args: ['--py37-plus','--exit-zero-even-if-changed']
 -   repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
       - id: isort
         files: '.*'
-        args: [ --profile=black, --project=pandas_profiling ]
+        args: [ --profile=black, --project=ydata_profiling ]
 -   repo: https://github.com/mgedmin/check-manifest
     rev: "0.47"
     hooks:
     -   id: check-manifest
-        args: [ "--ignore=src/pandas_profiling/version.py" ]
+        args: [ "--ignore=src/ydata_profiling/version.py" ]
         stages: [manual]
 -   repo: https://github.com/PyCQA/flake8
     rev: "4.0.1"
@@ -60,8 +60,8 @@ repos:
           (?x)(
             ^tests/|
             ^docsrc/|
-            ^src/pandas_profiling/utils/common.py|
-            ^src/pandas_profiling/utils/imghdr_patch.py
+            ^src/ydata_profiling/utils/common.py|
+            ^src/ydata_profiling/utils/imghdr_patch.py
           )
 -   repo: https://github.com/asottile/blacken-docs
     rev: v1.12.1

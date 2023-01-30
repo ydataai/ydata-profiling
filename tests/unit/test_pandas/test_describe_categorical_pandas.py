@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from pandas_profiling.model.pandas.describe_categorical_pandas import word_summary_vc
+from ydata_profiling.model.pandas.describe_categorical_pandas import word_summary_vc
 
 value_counts_w_words = pd.Series(index=["The dog", "is hungry"], data=[2, 1])
 

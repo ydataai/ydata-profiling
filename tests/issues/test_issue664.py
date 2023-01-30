@@ -1,11 +1,11 @@
 """
 Test for issue 664:
-https://github.com/ydataai/pandas-profiling/issues/664
+https://github.com/ydataai/ydata-profiling/issues/664
 """
 import numpy as np
 import pandas as pd
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 def test_issue664():

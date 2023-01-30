@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling.model.summary_algorithms import (
+from ydata_profiling.model.summary_algorithms import (
     describe_counts,
     describe_generic,
     describe_supported,

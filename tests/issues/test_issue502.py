@@ -1,10 +1,10 @@
 """
 Test for issue 502:
-https://github.com/ydataai/pandas-profiling/issues/502
+https://github.com/ydataai/ydata-profiling/issues/502
 """
 import pandas as pd
 
-from pandas_profiling.model.summary import describe_1d
+from ydata_profiling.model.summary import describe_1d
 
 
 def test_issue502(config, summarizer, typeset):

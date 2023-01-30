@@ -1,10 +1,10 @@
 """
 Test for issue 215:
-https://github.com/ydataai/pandas-profiling/issues/215
+https://github.com/ydataai/ydata-profiling/issues/215
 """
 import pytest
 
-from pandas_profiling.report.formatters import fmt_percent
+from ydata_profiling.report.formatters import fmt_percent
 
 
 @pytest.mark.parametrize(
