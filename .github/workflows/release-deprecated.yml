@@ -40,6 +40,9 @@ jobs:
     
     - name: Install
       run: make install
+
+    - name: Lint
+      run: make lint
     
     - name:  Build package
       run: make package version=${{ github.event.inputs.version }}
@@ -66,4 +69,4 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
-        repository_url: https://pypi.org/project/pandas-profiling/
+        repository_url: https://pypi.org/project/pandas-profiling
