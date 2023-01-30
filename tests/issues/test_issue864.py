@@ -9,7 +9,7 @@ import random
 
 import pandas as pd
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 def test_issue864():

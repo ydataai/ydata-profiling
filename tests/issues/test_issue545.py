@@ -6,8 +6,8 @@ https://github.com/ydataai/pandas-profiling/issues/545
 import pandas as pd
 import pytest
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.utils.compat import pandas_version_info
+from ydata_profiling import ProfileReport
+from ydata_profiling.utils.compat import pandas_version_info
 
 
 @pytest.mark.skipif(

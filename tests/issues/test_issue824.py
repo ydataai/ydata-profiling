@@ -13,8 +13,8 @@ Field will be marked once is labelled as highly correlated for any calculation
 import pandas as pd
 import pytest
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.model.alerts import AlertType
+from ydata_profiling import ProfileReport
+from ydata_profiling.model.alerts import AlertType
 
 
 @pytest.mark.skip()

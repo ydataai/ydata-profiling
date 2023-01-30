@@ -10,17 +10,17 @@ test:
 	pytest tests/unit/
 	pytest tests/issues/
 	pytest --nbval tests/notebooks/
-	pandas_profiling -h
+	ydata_profiling -h
 
 test_spark:
 	pytest --spark_home=${SPARK_HOME} tests/backends/spark_backend/
-	pandas_profiling -h
+	ydata_profiling -h
 
 test_cov:
 	pytest --cov=. tests/unit/
 	pytest --cov=. --cov-append tests/issues/
 	pytest --cov=. --cov-append --nbval tests/notebooks/
-	pandas_profiling -h
+	ydata_profiling -h
 
 examples:
 	find ./examples -maxdepth 2 -type f -name "*.py" -execdir python {} \;

@@ -1,8 +1,8 @@
 import kaggle
 import pandas as pd
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.utils.paths import get_data_path
+from ydata_profiling import ProfileReport
+from ydata_profiling.utils.paths import get_data_path
 
 # The dataset in this example is obtained using the `kaggle` api.
 # If you haven't done so already, you should set up the api credentials:

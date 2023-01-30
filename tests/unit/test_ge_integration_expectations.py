@@ -2,7 +2,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pandas_profiling.model.expectation_algorithms import (
+from ydata_profiling.model.expectation_algorithms import (
     categorical_expectations,
     datetime_expectations,
     file_expectations,

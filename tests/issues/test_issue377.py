@@ -8,8 +8,8 @@ import pandas as pd
 import pytest
 import requests
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.utils.cache import cache_zipped_file
+from ydata_profiling import ProfileReport
+from ydata_profiling.utils.cache import cache_zipped_file
 
 
 @pytest.fixture()

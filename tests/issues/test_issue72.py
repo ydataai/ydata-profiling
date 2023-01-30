@@ -5,14 +5,14 @@ https://github.com/ydataai/pandas-profiling/issues/72
 import numpy as np
 import pandas as pd
 
-import pandas_profiling
+import ydata_profiling
 
 
 def test_issue72_higher():
     # Showcase (and test) different ways of interfacing with config/profiling report
     df = pd.DataFrame({"A": [1, 2, 3, 3]})
     df["B"] = df["A"].apply(str)
-    report = pandas_profiling.ProfileReport(df, correlations=None)
+    report = ydata_profiling.ProfileReport(df, correlations=None)
     report.config.vars.num.low_categorical_threshold = 2
     # 3 > 2, so numerical
     assert report.get_description()["variables"]["A"]["type"] == "Numeric"
@@ -23,7 +23,7 @@ def test_issue72_higher():
 def test_issue72_equal():
     df = pd.DataFrame({"A": [1, 2, 3, 3]})
     df["B"] = df["A"].apply(str)
-    report = pandas_profiling.ProfileReport(
+    report = ydata_profiling.ProfileReport(
         df,
         vars={"num": {"low_categorical_threshold": 3}},
         correlations=None,

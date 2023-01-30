@@ -1,13 +1,13 @@
 import pandas as pd
 import pytest
 
-from pandas_profiling.config import Settings
-from pandas_profiling.model.correlations import Kendall
-from pandas_profiling.model.pandas.correlations_pandas import (
+from ydata_profiling.config import Settings
+from ydata_profiling.model.correlations import Kendall
+from ydata_profiling.model.pandas.correlations_pandas import (
     pandas_pearson_compute,
     pandas_spearman_compute,
 )
-from pandas_profiling.model.spark.correlations_spark import (
+from ydata_profiling.model.spark.correlations_spark import (
     spark_pearson_compute,
     spark_spearman_compute,
 )

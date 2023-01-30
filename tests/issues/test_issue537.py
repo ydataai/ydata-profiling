@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from pandas_profiling.model.summary import describe_1d
+from ydata_profiling.model.summary import describe_1d
 
 
 def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:

@@ -3,9 +3,9 @@
 """
 import pandas as pd
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.utils.cache import cache_file
-from pandas_profiling.visualisation.plot import timeseries_heatmap
+from ydata_profiling import ProfileReport
+from ydata_profiling.utils.cache import cache_file
+from ydata_profiling.visualisation.plot import timeseries_heatmap
 
 if __name__ == "__main__":
 
