@@ -218,4 +218,3 @@ jobs:
       - run: make install
       - run: make install-spark-ci
       - run: make test_spark
-
