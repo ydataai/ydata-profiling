@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.join("..", "..", "src", "ydata_profiling"))
 
 # -- Project information -----------------------------------------------------
 
-project = "pandas-profiling"
+project = "ydata-profiling"
 year = date.today().year
 copyright = f"{year}, YData Labs Inc"
 author = "YData Labs Inc"
@@ -31,7 +31,7 @@ author = "YData Labs Inc"
 def _GetApiWrapperVersion():
     import pkg_resources
 
-    return pkg_resources.get_distribution("pandas-profiling").version
+    return pkg_resources.get_distribution("ydata-profiling").version
 
 
 release = _GetApiWrapperVersion()
