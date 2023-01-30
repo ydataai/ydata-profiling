@@ -115,7 +115,9 @@ jobs:
         pip install -r requirements-test.txt
 
     - name: Install the package
-      run: make install
+      run: |
+        make install
+        make install-spark-ci
 
     - name: Update examples
       run: make examples
