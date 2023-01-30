@@ -1,0 +1,72 @@
+name: Release Deprecated PP
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+        default: '3.6.4'
+
+
+jobs:
+  package:
+    name: Build and Package
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.8"
+      
+    - uses: actions/cache@v3
+      name: Cache pip dependencies
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -r requirements-dev.txt
+        python -m pip install -r requirements-test.txt
+    
+    - name: Install
+      run: make install
+
+    - name: Lint
+      run: make lint
+    
+    - name:  Build package
+      run: make package version=${{ github.event.inputs.version }}
+
+    - name: Upload Pipeline Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: built-artifacts
+        path: dist/
+  
+  publish-pypi:
+    name: Publish packages to PyPi
+    runs-on: ubuntu-20.04
+
+    needs: package
+
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: built-artifacts
+        path: dist/
+
+    - uses: pypa/gh-action-pypi-publish@v1.6.4
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        repository_url: https://pypi.org/project/pandas-profiling
