@@ -41,7 +41,7 @@ body:
       description: A minimal standalone code sample that reproduces the bug
       placeholder: |
         import pandas as pd
-        from pandas_profiling import ProfileReport
+        from ydata_profiling import ProfileReport
 
         df = pd.read_parquet(r"<file>")
         report = ProfileReport(df, title="bug report")

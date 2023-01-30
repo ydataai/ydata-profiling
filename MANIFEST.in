@@ -5,13 +5,13 @@ include requirements*.txt
 include LICENSE
 include *.md
 include mypy.ini
-include src/pandas_profiling/py.typed
+include src/ydata_profiling/py.typed
 
 # Templates and static resources
-recursive-include src/pandas_profiling/report/presentation/flavours/html/templates *.html *.js *.css
+recursive-include src/ydata_profiling/report/presentation/flavours/html/templates *.html *.js *.css
 
 # Configuration
-include src/pandas_profiling/*.yaml
+include src/ydata_profiling/*.yaml
 
 # Spark Dev venv
 recursive-include venv *.yml

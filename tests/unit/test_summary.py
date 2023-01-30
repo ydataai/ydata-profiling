@@ -1,6 +1,6 @@
 import pandas as pd
 
-from pandas_profiling.model.table import get_table_stats
+from ydata_profiling.model.table import get_table_stats
 
 
 def test_get_table_stats_empty_df(config):

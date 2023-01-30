@@ -15,7 +15,7 @@ import sys
 from datetime import date
 
 sys.path.insert(0, os.path.join("..", "..", "src"))
-sys.path.insert(0, os.path.join("..", "..", "src", "pandas_profiling"))
+sys.path.insert(0, os.path.join("..", "..", "src", "ydata_profiling"))
 
 
 # -- Project information -----------------------------------------------------

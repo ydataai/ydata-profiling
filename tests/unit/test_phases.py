@@ -1,6 +1,6 @@
 import pytest
 
-from pandas_profiling.profile_report import ProfileReport
+from ydata_profiling.profile_report import ProfileReport
 
 
 def test_phases_empty():

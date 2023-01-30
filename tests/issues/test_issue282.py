@@ -1,10 +1,10 @@
 """
 Test for issue 282:
-https://github.com/ydataai/pandas-profiling/issues/282
+https://github.com/ydataai/ydata-profiling/issues/282
 """
 import pandas as pd
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 def test_issue282():

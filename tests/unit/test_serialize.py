@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 def test_load(get_data_file, test_output_dir):

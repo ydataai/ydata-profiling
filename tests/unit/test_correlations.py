@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.report.presentation.core import CorrelationTable, Image
-from pandas_profiling.report.structure.correlations import get_correlation_items
+from ydata_profiling import ProfileReport
+from ydata_profiling.report.presentation.core import CorrelationTable, Image
+from ydata_profiling.report.structure.correlations import get_correlation_items
 
 
 @pytest.mark.skip

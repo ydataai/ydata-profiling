@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 # Generating dummy data

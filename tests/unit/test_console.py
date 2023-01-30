@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from pandas_profiling.controller import console
-from pandas_profiling.utils.paths import get_config
+from ydata_profiling.controller import console
+from ydata_profiling.utils.paths import get_config
 
 
 @pytest.fixture

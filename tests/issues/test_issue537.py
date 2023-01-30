@@ -1,6 +1,6 @@
 """
 Test for issue 537:
-https://github.com/ydataai/pandas-profiling/issues/537
+https://github.com/ydataai/ydata-profiling/issues/537
 
 ValueError: shape mismatch: value array of shape (136,) could not be broadcast to indexing result of shape (135,)
 
@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from pandas_profiling.model.summary import describe_1d
+from ydata_profiling.model.summary import describe_1d
 
 
 def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:

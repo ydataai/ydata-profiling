@@ -1,11 +1,11 @@
 """
 Test for issue 397 (actually a PR, but ok):
-https://github.com/ydataai/pandas-profiling/pull/397
+https://github.com/ydataai/ydata-profiling/pull/397
 """
 import numpy as np
 import pandas as pd
 
-import pandas_profiling
+import ydata_profiling
 
 
 def test_issue397():
@@ -20,7 +20,7 @@ def test_issue397():
         }
     )
 
-    report = pandas_profiling.ProfileReport(
+    report = ydata_profiling.ProfileReport(
         df, vars={"num": {"low_categorical_threshold": 0}}
     )
     assert report.config.vars.num.low_categorical_threshold == 0

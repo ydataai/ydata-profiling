@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from pandas_profiling.config import Settings
-from pandas_profiling.model.spark.duplicates_spark import spark_get_duplicates
+from ydata_profiling.config import Settings
+from ydata_profiling.model.spark.duplicates_spark import spark_get_duplicates
 
 
 @pytest.fixture

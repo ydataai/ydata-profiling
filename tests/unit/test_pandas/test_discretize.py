@@ -1,6 +1,6 @@
 import pandas as pd
 
-from pandas_profiling.model.pandas.discretize_pandas import (
+from ydata_profiling.model.pandas.discretize_pandas import (
     DiscretizationType,
     Discretizer,
 )
