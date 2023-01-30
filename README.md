@@ -9,7 +9,7 @@ This repo implements the brownout strategy for deprecating the pandas-profriling
 ---
 
 
-<p align="center"><img width="500" src="https://pandas-profiling.ydata.ai/docs/assets/logo_header.png" alt="Pandas Profiling Logo"></p>
+<p align="center"><img width="500" src="https://ydata-profiling.ydata.ai/docs/assets/logo_header.png" alt="Pandas Profiling Logo"></p>
 
 ### 🎊 New year, new face, more functionalities! 
 > Thank you for using and following ``pandas-profiling`` developments. Yet, we have a new exciting feature - we are now thrilled to announce
