@@ -530,9 +530,3 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         from pandas_profiling.compare_reports import compare
 
         return compare([self, other], config if config is not None else self.config)
-
-    def get_default_settings(self, df: Any) -> BaseSettings:
-        if isinstance(df, (pd.DataFrame, pd.Series)):
-            return Settings()
-        else:
-            return SparkSettings()
