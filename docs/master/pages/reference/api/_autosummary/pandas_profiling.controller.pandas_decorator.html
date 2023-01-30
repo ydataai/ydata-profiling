@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.controller.pandas_decorator &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>pandas_profiling.controller.pandas_decorator &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -21,9 +21,7 @@
         <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Model" href="../model.html" />
-    <link rel="prev" title="pandas_profiling.controller.console" href="pandas_profiling.controller.console.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,7 +29,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -65,6 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -80,22 +79,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../support_contrib/contribution_guidelines.html">Contribution Guidelines</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../profile_report.html">Profile Report</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../settings.html">Settings</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../controller.html">Controller</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.controller.console.html">pandas_profiling.controller.console</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.controller.pandas_decorator</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../model.html">Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../report.html">Report</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../visualisation.html">Visualisation</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../announcements.html">Past Announcements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../resources.html">Resources</a></li>
@@ -107,7 +93,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">pandas-profiling</a>
+          <a href="../../../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -115,8 +101,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../api.html">API</a></li>
-          <li class="breadcrumb-item"><a href="../controller.html">Controller</a></li>
       <li class="breadcrumb-item active">pandas_profiling.controller.pandas_decorator</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/pages/reference/api/_autosummary/pandas_profiling.controller.pandas_decorator.rst.txt" rel="nofollow"> View page source</a>
@@ -127,30 +111,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pandas_profiling.controller.pandas_decorator">
-<span id="pandas-profiling-controller-pandas-decorator"></span><h1>pandas_profiling.controller.pandas_decorator<a class="headerlink" href="#module-pandas_profiling.controller.pandas_decorator" title="Permalink to this heading"></a></h1>
-<p>This file add the decorator on the DataFrame object.</p>
-<p class="rubric">Functions</p>
-<table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">profile_report</span></code>(df, **kwargs)</p></td>
-<td><p>Profile a DataFrame.</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="pandas-profiling-controller-pandas-decorator">
+<h1>pandas_profiling.controller.pandas_decorator<a class="headerlink" href="#pandas-profiling-controller-pandas-decorator" title="Permalink to this heading"></a></h1>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pandas_profiling.controller.console.html" class="btn btn-neutral float-left" title="pandas_profiling.controller.console" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../model.html" class="btn btn-neutral float-right" title="Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

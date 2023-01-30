@@ -1,0 +1,31 @@
+# [4.0.0](https://github.com/ydataai/ydata-profiling/compare/v3.6.3...v4.0.0) (2023-01-30)
+
+
+#### 🐛 Bug fixes
+
+* __version__ bug and incorporate feedback ([3fe3aee](https://github.com/ydataai/ydata-profiling/commit/3fe3aeef71074aa1160eadbb44bfd2f020c653e9))
+* add css to cope with large tables ([7e51e77](https://github.com/ydataai/ydata-profiling/commit/7e51e77e5196a6d135ddc44a315a50a69ff9ce27))
+* add ProfileReport validations and configuration file ([175798e](https://github.com/ydataai/ydata-profiling/commit/175798edd97712a9db715ae786a0559f52617675))
+* add Report configurations for correlations ([9339a2d](https://github.com/ydataai/ydata-profiling/commit/9339a2d90faac5734e045da226de273fa93c5286))
+* add union to typecheck ([351b17f](https://github.com/ydataai/ydata-profiling/commit/351b17f3ca86d34864980bd6c46f714a7d5c13d1))
+* change dataframe empy check method ([0f474ae](https://github.com/ydataai/ydata-profiling/commit/0f474ae51745b51d382ef80bffd9eef278faaf38))
+* df validation ([b834214](https://github.com/ydataai/ydata-profiling/commit/b834214995e583e0fb2f003e71db53e4e7c63699))
+* fix date and datetime histogram. Fix Spearman and Pearson's correlations ([0c77695](https://github.com/ydataai/ydata-profiling/commit/0c77695ea3878a41754e3f33bd7231a2cce61c72))
+* fix merge issues ([3cf3cc4](https://github.com/ydataai/ydata-profiling/commit/3cf3cc4fcf132019078a77b7dd61cbe4d69052b6))
+* improve description and correct plot for ‘auto’ correlation ([#1119](https://github.com/ydataai/ydata-profiling/issues/1119)) ([a105d32](https://github.com/ydataai/ydata-profiling/commit/a105d32128fb3b0bf4332b3e027b28e340f1c14f))
+* isinstance ([ce81102](https://github.com/ydataai/ydata-profiling/commit/ce81102f9f994a48ff3539b6019a540ecc0a9fc1))
+* isinstance ([c6a6daa](https://github.com/ydataai/ydata-profiling/commit/c6a6daa768a3f06bf09a65f4358e860c4206cf81))
+* move file example. remove unused prints ([4f794cd](https://github.com/ydataai/ydata-profiling/commit/4f794cde3e333764c00fd47c9aa41e9df9c6e5e8))
+* re-introduce to prevent cases where the profilereport is init with no DF ([b12f45f](https://github.com/ydataai/ydata-profiling/commit/b12f45f2b5e92c5fa815d9e8a540d42ca3b231e0))
+* remove get_default_settings ([9f4f8f9](https://github.com/ydataai/ydata-profiling/commit/9f4f8f93eba7a4c77a920827e12881e9ac1313e6))
+* solve mypy error ([35d9827](https://github.com/ydataai/ydata-profiling/commit/35d982731b597e1f8e613f8c1b97c6120f6ea3bd))
+* uses colors from the specified config ([74041c7](https://github.com/ydataai/ydata-profiling/commit/74041c78d48242fb3debcd2a0b52be29be72fe68))
+
+
+#### 🎉 Features
+
+* add heatmap values as a table under correlations ([5268544](https://github.com/ydataai/ydata-profiling/commit/5268544120d0b3d17934b89e49152e874259f406))
+* design improvements on the correlations section ([5facb7b](https://github.com/ydataai/ydata-profiling/commit/5facb7b793982c8eeda1fbf51b6346c437c8623d))
+* minimal spark deployment ([#1132](https://github.com/ydataai/ydata-profiling/issues/1132)) ([4113389](https://github.com/ydataai/ydata-profiling/commit/4113389aa13b3b8304967fa90e31d49519be5753))
+* **setup:** change package naming ([#1254](https://github.com/ydataai/ydata-profiling/issues/1254)) ([99e2e9f](https://github.com/ydataai/ydata-profiling/commit/99e2e9f39aa1f50afce7cf8aab38d3f1d7a2040c))
+* update variables layout ([#1207](https://github.com/ydataai/ydata-profiling/issues/1207)) ([34e19a7](https://github.com/ydataai/ydata-profiling/commit/34e19a7a1e47b9d540914dfcaed2c2a951445e6b))

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quickstart &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>Quickstart &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -100,7 +101,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -123,7 +124,7 @@
 <p>Start by loading your pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> as you normally would, e.g. by using:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">])</span>
 </pre></div>
@@ -163,12 +164,12 @@
 </section>
 <section id="command-line-usage">
 <h2>Command line usage<a class="headerlink" href="#command-line-usage" title="Permalink to this heading"></a></h2>
-<p>For standard formatted CSV files (which can be read directly by pandas without additional settings), the <code class="docutils literal notranslate"><span class="pre">pandas_profiling</span></code> executable can be used in the command line. The example below generates a report named <em>Example Profiling Report</em>, using a configuration file called <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code>, in the file <code class="docutils literal notranslate"><span class="pre">report.html</span></code> by processing a <code class="docutils literal notranslate"><span class="pre">data.csv</span></code> dataset.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pandas_profiling<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;Example Profiling Report&quot;</span><span class="w"> </span>--config_file<span class="w"> </span>default.yaml<span class="w"> </span>data.csv<span class="w"> </span>report.html
+<p>For standard formatted CSV files (which can be read directly by pandas without additional settings), the <code class="docutils literal notranslate"><span class="pre">ydata_profiling</span></code> executable can be used in the command line. The example below generates a report named <em>Example Profiling Report</em>, using a configuration file called <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code>, in the file <code class="docutils literal notranslate"><span class="pre">report.html</span></code> by processing a <code class="docutils literal notranslate"><span class="pre">data.csv</span></code> dataset.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ydata_profiling<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;Example Profiling Report&quot;</span><span class="w"> </span>--config_file<span class="w"> </span>default.yaml<span class="w"> </span>data.csv<span class="w"> </span>report.html
 </pre></div>
 </div>
 <p>Information about all available options and arguments can be viewed through the command below. The CLI allows defining input and output filenames, setting a custom report title, specifying <a class="reference internal" href="../advanced_usage/changing_settings.html"><span class="doc">a configuration file for custom behaviour</span></a> and control other advanced aspects of the experience.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pandas_profiling<span class="w"> </span>-h
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ydata_profiling<span class="w"> </span>-h
 </pre></div>
 </div>
 <figure class="align-center" id="id1">
@@ -180,13 +181,13 @@
 </section>
 <section id="deeper-profiling">
 <h2>Deeper profiling<a class="headerlink" href="#deeper-profiling" title="Permalink to this heading"></a></h2>
-<p>The contents, behaviour and appearance of the report are easily customizable. The example code below loads the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_explorative.yaml">explorative configuration file</a>,
+<p>The contents, behaviour and appearance of the report are easily customizable. The example code below loads the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_explorative.yaml">explorative configuration file</a>,
 which includes many features for text analysis (length distribution, word distribution and character/unicode information), files (file size, creation time) and images (dimensions, EXIF information).
-The exact settings used in this explorative configuration file can be compared with the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml">default configuration file</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pandas Profiling Report&quot;</span><span class="p">,</span> <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+The exact settings used in this explorative configuration file can be compared with the <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_default.yaml">default configuration file</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Profiling Report&quot;</span><span class="p">,</span> <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>On the CLI utility <code class="docutils literal notranslate"><span class="pre">pandas_profiling</span></code>, this mode can be activated with the <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag. Learn more about configuring <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> on the <a class="reference internal" href="../advanced_usage/available_settings.html"><span class="doc">Available settings</span></a>.</p>
+<p>On the CLI utility <code class="docutils literal notranslate"><span class="pre">ydata_profiling</span></code>, this mode can be activated with the <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag. Learn more about configuring <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> on the <a class="reference internal" href="../advanced_usage/available_settings.html"><span class="doc">Available settings</span></a>.</p>
 </section>
 </section>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.serialize_report &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>ydata_profiling.serialize_report &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -17,7 +17,6 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -28,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -62,6 +61,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pages/integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pages/integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pages/integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -91,7 +91,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -100,7 +100,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">pandas_profiling.serialize_report</li>
+      <li class="breadcrumb-item active">ydata_profiling.serialize_report</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -109,21 +109,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for pandas_profiling.serialize_report</h1><div class="highlight"><pre>
+  <h1>Source code for ydata_profiling.serialize_report</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pandas_profiling.profile_report</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+    <span class="kn">from</span> <span class="nn">ydata_profiling.profile_report</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
-<span class="kn">from</span> <span class="nn">pandas_profiling.config</span> <span class="kn">import</span> <span class="n">Settings</span>
-<span class="kn">from</span> <span class="nn">pandas_profiling.report.presentation.core</span> <span class="kn">import</span> <span class="n">Root</span>
-<span class="kn">from</span> <span class="nn">pandas_profiling.version</span> <span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling.config</span> <span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling.report.presentation.core</span> <span class="kn">import</span> <span class="n">Root</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling.version</span> <span class="kn">import</span> <span class="n">__version__</span>
 
 
-<div class="viewcode-block" id="SerializeReport"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/pandas_profiling.serialize_report.SerializeReport.html#pandas_profiling.serialize_report.SerializeReport">[docs]</a><span class="k">class</span> <span class="nc">SerializeReport</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extend the report to be able to dump and load reports.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SerializeReport"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/ydata_profiling.serialize_report.SerializeReport.html#ydata_profiling.serialize_report.SerializeReport">[docs]</a><span class="k">class</span> <span class="nc">SerializeReport</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Extend the report to be able to dump and load reports.&quot;&quot;&quot;</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">config</span> <span class="o">=</span> <span class="kc">None</span>
@@ -136,7 +136,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Serialize ProfileReport and return bytes for reproducing ProfileReport or Caching.</span>
 
 <span class="sd">        Returns:</span>
@@ -155,7 +155,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="s2">&quot;SerializeReport&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deserialize the serialized report</span>
 
 <span class="sd">        Args:</span>
@@ -213,12 +213,12 @@
             <span class="c1"># warn if version not equal</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">loaded_description_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="n">loaded_description_set</span><span class="p">[</span><span class="s2">&quot;package&quot;</span><span class="p">][</span><span class="s2">&quot;pandas_profiling_version&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="n">loaded_description_set</span><span class="p">[</span><span class="s2">&quot;package&quot;</span><span class="p">][</span><span class="s2">&quot;ydata_profiling_version&quot;</span><span class="p">]</span>
                 <span class="o">!=</span> <span class="n">__version__</span>
             <span class="p">):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;The package version specified in the loaded data is not equal to the version installed. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Currently running on pandas-profiling </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2"> , while loaded data is generated by pandas_profiling, </span><span class="si">{</span><span class="n">loaded_description_set</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">][</span><span class="s1">&#39;pandas_profiling_version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Currently running on ydata-profiling </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2"> , while loaded data is generated by ydata_profiling, </span><span class="si">{</span><span class="n">loaded_description_set</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">][</span><span class="s1">&#39;ydata_profiling_version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
 
             <span class="c1"># set df_hash</span>
@@ -229,7 +229,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dump ProfileReport to file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
@@ -241,7 +241,7 @@
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">load_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;ProfileReport&quot;</span><span class="p">,</span> <span class="s2">&quot;SerializeReport&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load ProfileReport from file</span>
 
 <span class="sd">        Raises:</span>

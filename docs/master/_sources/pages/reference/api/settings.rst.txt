@@ -2,7 +2,7 @@
 Settings
 ========
 
-.. currentmodule:: pandas_profiling.config
+.. currentmodule:: ydata_profiling.config
 .. toctree::
 
 .. autosummary::

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Other DataFrame libraries &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>Other DataFrame libraries &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -65,6 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -94,7 +95,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -114,32 +115,25 @@
              
   <section id="other-dataframe-libraries">
 <h1>Other DataFrame libraries<a class="headerlink" href="#other-dataframe-libraries" title="Permalink to this heading"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is built on <code class="docutils literal notranslate"><span class="pre">pandas</span></code> and <code class="docutils literal notranslate"><span class="pre">numpy</span></code>.
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> is built on <code class="docutils literal notranslate"><span class="pre">pandas</span></code> and <code class="docutils literal notranslate"><span class="pre">numpy</span></code>.
 Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata. Read more on <a class="reference external" href="https://pandas.pydata.org/docs/user_guide/io.html">supported formats by Pandas</a>.</p>
-<p>If you have data in another framework of the Python Data ecosystem, you can use <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> by converting to a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>, as direct integrations are not yet supported. Large datasets might require sampling (as seen in <a class="reference internal" href="../use_cases/big_data.html"><span class="doc">Profiling large datasets</span></a>).</p>
+<p>If you have data in another framework of the Python Data ecosystem, you can use <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> by converting to a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>, as direct integrations are not yet supported. Large datasets might require sampling (as seen in <a class="reference internal" href="../use_cases/big_data.html"><span class="doc">Profiling large datasets</span></a>).</p>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">PySpark to Pandas</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Convert spark RDD to a pandas DataFrame</span>
- <span class="n">df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Dask to Pandas</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Dask to Pandas</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Convert dask DataFrame to a pandas DataFrame</span>
  <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Vaex to Pandas</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Vaex to Pandas</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Convert vaex DataFrame to a pandas DataFrame</span>
  <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_pandas_df</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Modin to Pandas</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Modin to Pandas</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert modin DataFrame to pandas DataFrame</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">_to_pandas</span><span class="p">()</span>
 

@@ -14,7 +14,6 @@
    .. autosummary::
    
       alert_value
-      boolean_alerts
       categorical_alerts
       check_correlation_alerts
       check_table_alerts
@@ -24,7 +23,6 @@
       numeric_alerts
       skewness_alert
       supported_alerts
-      timeseries_alerts
       type_date_alert
       unsupported_alerts
    

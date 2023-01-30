@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Report &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>Report &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="pandas_profiling.report.structure.report" href="_autosummary/pandas_profiling.report.structure.report.html" />
-    <link rel="prev" title="pandas_profiling.model.expectation_algorithms" href="_autosummary/pandas_profiling.model.expectation_algorithms.html" /> 
+    <link rel="next" title="ydata_profiling.report.structure.report" href="_autosummary/ydata_profiling.report.structure.report.html" />
+    <link rel="prev" title="ydata_profiling.model.expectation_algorithms" href="_autosummary/ydata_profiling.model.expectation_algorithms.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -65,6 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -89,28 +90,28 @@
 <li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Report</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#structure">Structure</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.structure.report.html">pandas_profiling.report.structure.report</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.structure.overview.html">pandas_profiling.report.structure.overview</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.structure.correlations.html">pandas_profiling.report.structure.correlations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.structure.report.html">ydata_profiling.report.structure.report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.structure.overview.html">ydata_profiling.report.structure.overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.structure.correlations.html">ydata_profiling.report.structure.correlations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#components">Components</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.renderable.html">pandas_profiling.report.presentation.core.renderable</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.item_renderer.html">pandas_profiling.report.presentation.core.item_renderer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.collapse.html">pandas_profiling.report.presentation.core.collapse</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.container.html">pandas_profiling.report.presentation.core.container</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.duplicate.html">pandas_profiling.report.presentation.core.duplicate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.frequency_table.html">pandas_profiling.report.presentation.core.frequency_table</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.frequency_table_small.html">pandas_profiling.report.presentation.core.frequency_table_small</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.html.html">pandas_profiling.report.presentation.core.html</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.image.html">pandas_profiling.report.presentation.core.image</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.root.html">pandas_profiling.report.presentation.core.root</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.sample.html">pandas_profiling.report.presentation.core.sample</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.table.html">pandas_profiling.report.presentation.core.table</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.toggle_button.html">pandas_profiling.report.presentation.core.toggle_button</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.variable.html">pandas_profiling.report.presentation.core.variable</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.variable_info.html">pandas_profiling.report.presentation.core.variable_info</a></li>
-<li class="toctree-l4"><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.alerts.html">pandas_profiling.report.presentation.core.alerts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.renderable.html">ydata_profiling.report.presentation.core.renderable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.item_renderer.html">ydata_profiling.report.presentation.core.item_renderer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.collapse.html">ydata_profiling.report.presentation.core.collapse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.container.html">ydata_profiling.report.presentation.core.container</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.duplicate.html">ydata_profiling.report.presentation.core.duplicate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.frequency_table.html">ydata_profiling.report.presentation.core.frequency_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.frequency_table_small.html">ydata_profiling.report.presentation.core.frequency_table_small</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.html.html">ydata_profiling.report.presentation.core.html</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.image.html">ydata_profiling.report.presentation.core.image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.root.html">ydata_profiling.report.presentation.core.root</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.sample.html">ydata_profiling.report.presentation.core.sample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.table.html">ydata_profiling.report.presentation.core.table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.toggle_button.html">ydata_profiling.report.presentation.core.toggle_button</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.variable.html">ydata_profiling.report.presentation.core.variable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.variable_info.html">ydata_profiling.report.presentation.core.variable_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.alerts.html">ydata_profiling.report.presentation.core.alerts</a></li>
 </ul>
 </li>
 </ul>
@@ -130,7 +131,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">pandas-profiling</a>
+          <a href="../../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -161,13 +162,13 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.structure.report.html#module-pandas_profiling.report.structure.report" title="pandas_profiling.report.structure.report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">report</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.structure.report.html#module-ydata_profiling.report.structure.report" title="ydata_profiling.report.structure.report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">report</span></code></a></p></td>
 <td><p>Generate the report.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.structure.overview.html#module-pandas_profiling.report.structure.overview" title="pandas_profiling.report.structure.overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overview</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.structure.overview.html#module-ydata_profiling.report.structure.overview" title="ydata_profiling.report.structure.overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overview</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.structure.correlations.html#module-pandas_profiling.report.structure.correlations" title="pandas_profiling.report.structure.correlations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlations</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.structure.correlations.html#module-ydata_profiling.report.structure.correlations" title="ydata_profiling.report.structure.correlations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlations</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -183,52 +184,52 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.renderable.html#module-pandas_profiling.report.presentation.core.renderable" title="pandas_profiling.report.presentation.core.renderable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renderable</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.renderable.html#module-ydata_profiling.report.presentation.core.renderable" title="ydata_profiling.report.presentation.core.renderable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renderable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.item_renderer.html#module-pandas_profiling.report.presentation.core.item_renderer" title="pandas_profiling.report.presentation.core.item_renderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">item_renderer</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.item_renderer.html#module-ydata_profiling.report.presentation.core.item_renderer" title="ydata_profiling.report.presentation.core.item_renderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">item_renderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.collapse.html#module-pandas_profiling.report.presentation.core.collapse" title="pandas_profiling.report.presentation.core.collapse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collapse</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.collapse.html#module-ydata_profiling.report.presentation.core.collapse" title="ydata_profiling.report.presentation.core.collapse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collapse</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.container.html#module-pandas_profiling.report.presentation.core.container" title="pandas_profiling.report.presentation.core.container"><code class="xref py py-obj docutils literal notranslate"><span class="pre">container</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.container.html#module-ydata_profiling.report.presentation.core.container" title="ydata_profiling.report.presentation.core.container"><code class="xref py py-obj docutils literal notranslate"><span class="pre">container</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.duplicate.html#module-pandas_profiling.report.presentation.core.duplicate" title="pandas_profiling.report.presentation.core.duplicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">duplicate</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.duplicate.html#module-ydata_profiling.report.presentation.core.duplicate" title="ydata_profiling.report.presentation.core.duplicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">duplicate</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.frequency_table.html#module-pandas_profiling.report.presentation.core.frequency_table" title="pandas_profiling.report.presentation.core.frequency_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_table</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.frequency_table.html#module-ydata_profiling.report.presentation.core.frequency_table" title="ydata_profiling.report.presentation.core.frequency_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_table</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.frequency_table_small.html#module-pandas_profiling.report.presentation.core.frequency_table_small" title="pandas_profiling.report.presentation.core.frequency_table_small"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_table_small</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.frequency_table_small.html#module-ydata_profiling.report.presentation.core.frequency_table_small" title="ydata_profiling.report.presentation.core.frequency_table_small"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_table_small</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.html.html#module-pandas_profiling.report.presentation.core.html" title="pandas_profiling.report.presentation.core.html"><code class="xref py py-obj docutils literal notranslate"><span class="pre">html</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.html.html#module-ydata_profiling.report.presentation.core.html" title="ydata_profiling.report.presentation.core.html"><code class="xref py py-obj docutils literal notranslate"><span class="pre">html</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.image.html#module-pandas_profiling.report.presentation.core.image" title="pandas_profiling.report.presentation.core.image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.image.html#module-ydata_profiling.report.presentation.core.image" title="ydata_profiling.report.presentation.core.image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.root.html#module-pandas_profiling.report.presentation.core.root" title="pandas_profiling.report.presentation.core.root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">root</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.root.html#module-ydata_profiling.report.presentation.core.root" title="ydata_profiling.report.presentation.core.root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">root</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.sample.html#module-pandas_profiling.report.presentation.core.sample" title="pandas_profiling.report.presentation.core.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.sample.html#module-ydata_profiling.report.presentation.core.sample" title="ydata_profiling.report.presentation.core.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.table.html#module-pandas_profiling.report.presentation.core.table" title="pandas_profiling.report.presentation.core.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.table.html#module-ydata_profiling.report.presentation.core.table" title="ydata_profiling.report.presentation.core.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.toggle_button.html#module-pandas_profiling.report.presentation.core.toggle_button" title="pandas_profiling.report.presentation.core.toggle_button"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toggle_button</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.toggle_button.html#module-ydata_profiling.report.presentation.core.toggle_button" title="ydata_profiling.report.presentation.core.toggle_button"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toggle_button</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.variable.html#module-pandas_profiling.report.presentation.core.variable" title="pandas_profiling.report.presentation.core.variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.variable.html#module-ydata_profiling.report.presentation.core.variable" title="ydata_profiling.report.presentation.core.variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.variable_info.html#module-pandas_profiling.report.presentation.core.variable_info" title="pandas_profiling.report.presentation.core.variable_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_info</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.variable_info.html#module-ydata_profiling.report.presentation.core.variable_info" title="ydata_profiling.report.presentation.core.variable_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_info</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pandas_profiling.report.presentation.core.alerts.html#module-pandas_profiling.report.presentation.core.alerts" title="pandas_profiling.report.presentation.core.alerts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alerts</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/ydata_profiling.report.presentation.core.alerts.html#module-ydata_profiling.report.presentation.core.alerts" title="ydata_profiling.report.presentation.core.alerts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alerts</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -240,8 +241,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="_autosummary/pandas_profiling.model.expectation_algorithms.html" class="btn btn-neutral float-left" title="pandas_profiling.model.expectation_algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="_autosummary/pandas_profiling.report.structure.report.html" class="btn btn-neutral float-right" title="pandas_profiling.report.structure.report" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_autosummary/ydata_profiling.model.expectation_algorithms.html" class="btn btn-neutral float-left" title="ydata_profiling.model.expectation_algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_autosummary/ydata_profiling.report.structure.report.html" class="btn btn-neutral float-right" title="ydata_profiling.report.structure.report" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

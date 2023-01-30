@@ -14,7 +14,6 @@
    .. autosummary::
    
       ~ProfileReport.__init__
-      ~ProfileReport.compare
       ~ProfileReport.dump
       ~ProfileReport.dumps
       ~ProfileReport.get_description

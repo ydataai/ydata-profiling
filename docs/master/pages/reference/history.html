@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>History &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>History &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -23,7 +23,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Past Announcements" href="announcements.html" />
-    <link rel="prev" title="pandas_profiling.visualisation.utils" href="api/_autosummary/pandas_profiling.visualisation.utils.html" /> 
+    <link rel="prev" title="ydata_profiling.visualisation.utils" href="api/_autosummary/ydata_profiling.visualisation.utils.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -65,6 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -86,6 +87,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">History</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#inception">Inception</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#second-life">Second life</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profiling-as-part-of-data-centric-ai">Profiling as part of Data-Centric AI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#where-are-we-now">Where are we now?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-s-next">What’s next?</a></li>
 </ul>
@@ -100,7 +102,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -120,7 +122,7 @@
              
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Permalink to this heading"></a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> project became what it is today due to the
+<p>The <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> project became what it is today due to the
 work of the creators to make it successful. This page aims to highlights
 a bit of the development history. For the full picture, have a look at
 the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/graphs/contributors">contributor
@@ -149,21 +151,40 @@ changed) and two major releases, and great collaborations, most notably with
 <a class="reference external" href="https://github.com/ieaves">Ian Eaves</a> in
 <a class="reference external" href="https://github.com/dylan-profiler/visions">visions</a>.</p>
 </section>
+<section id="profiling-as-part-of-data-centric-ai">
+<h2>Profiling as part of Data-Centric AI<a class="headerlink" href="#profiling-as-part-of-data-centric-ai" title="Permalink to this heading"></a></h2>
+<p>Since February 2022, YData as committed to continuous support and improvement
+of <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code>. Our drive as maintainers of the package is to make data
+scientist fall in love by the ease and quality of profiling
+delivered by one of the best profiling packages.
+Since 2022, <a href="#id1"><span class="problematic" id="id2">`YData&lt;https://ydata.ai/&gt;`__</span></a> team have already delivered several new releases,
+that included major features such as Time-Series
+datasets analysis, compare of 2 datasets and most recently
+integration with big data engine, Spark.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> has been named one of the Top 20 ML packages by Google.</p>
+<p>A huge thank you to 2 of the most iconic contributors who made possible
+to compare 2 dataset <a class="reference external" href="https://linkedin.com/in/simonbrugman">Simon Brugman</a>,
+and to take the scale of profiling to another level with Spark <a class="reference external" href="https://www.linkedin.com/in/edwin-chan/">Edwin
+Chan</a>.</p>
+</section>
 <section id="where-are-we-now">
 <h2>Where are we now?<a class="headerlink" href="#where-are-we-now" title="Permalink to this heading"></a></h2>
-<p>At the time of writing, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is one of the primary tools
-for data exploration in Python, with &gt; 8k GitHub stars, 30 million
-downloads and users working in any industry, including many at FAANG,
-banks and insurance companies, startups and universities. <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code>
-has been named one of the Top 20 ML packages by Google.</p>
+<p>At the time of writing, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is receiving a new face and name
+<code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code>. Derived from the most recent and major feature, Spark support,
+we have decided to move from <cite>pandas</cite> to a name that opens the possibility of
+new integrations and developments.</p>
+<p>This is the most popular tool in the world for data exploration in Python, counting with &gt; 10k Github stars,
+50 million downloads and users working in any industry, including many at FAANG,
+banks and insurance companies, startups and universities.</p>
 </section>
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> will be part of a bigger mission, the Data-Centric AI
-movement spearheaded by YData. The tech startup YData will be the
-prominent force that will help make <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> the standard
-profiling library among data scientists, by introducing new features through a
-bigger team and enterprise support.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> is committed to the mission of helping data-scientists to adopt
+a Data-Centric approach towards the development of AI.
+Continuous development and support will to be part of the development of
+one of the most beloved open-sources by the data science community.</p>
+<p>New features are expected and it will be important to learn from you your needs and expectations so the future can be even brighter.
+Join the <a class="reference external" href="https://datacentricai.community/">DCAI community</a> and let us know your thoughts.</p>
 </section>
 </section>
 
@@ -171,7 +192,7 @@ bigger team and enterprise support.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="api/_autosummary/pandas_profiling.visualisation.utils.html" class="btn btn-neutral float-left" title="pandas_profiling.visualisation.utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/_autosummary/ydata_profiling.visualisation.utils.html" class="btn btn-neutral float-left" title="ydata_profiling.visualisation.utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="announcements.html" class="btn btn-neutral float-right" title="Past Announcements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

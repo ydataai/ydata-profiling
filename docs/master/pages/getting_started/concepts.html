@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Concepts &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>Concepts &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -69,6 +69,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -98,7 +99,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -120,7 +121,7 @@
 <h1>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading"></a></h1>
 <section id="data-types">
 <h2>Data types<a class="headerlink" href="#data-types" title="Permalink to this heading"></a></h2>
-<p>Types, when going beyond the the logical data types such as integer, floats, etc,  are a powerful abstraction for effective data analysis, allowing analysis under higher level lenses. <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is backed by a powerful type system developed specifically for data analysis: <a class="reference external" href="https://github.com/dylan-profiler/visions">visions</a>. Currently, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> recognizes the following types:</p>
+<p>Types, when going beyond the the logical data types such as integer, floats, etc,  are a powerful abstraction for effective data analysis, allowing analysis under higher level lenses. <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> is backed by a powerful type system developed specifically for data analysis: <a class="reference external" href="https://github.com/dylan-profiler/visions">visions</a>. Currently, <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> recognizes the following types:</p>
 <ul class="simple">
 <li><p>Boolean</p></li>
 <li><p>Numerical</p></li>
@@ -132,7 +133,7 @@
 <li><p>File</p></li>
 <li><p>Image</p></li>
 </ul>
-<p>Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code>’s default typeset <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/develop/src/pandas_profiling/model/typeset.py">here</a>.</p>
+<p>Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code>’s default typeset <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/develop/src/pandas_profiling/model/typeset.py">here</a>.</p>
 </section>
 <section id="data-quality-alerts">
 <h2>Data quality alerts<a class="headerlink" href="#data-quality-alerts" title="Permalink to this heading"></a></h2>

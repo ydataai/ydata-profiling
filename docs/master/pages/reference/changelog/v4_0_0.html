@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.0.0 (2023-01-30) &mdash; ydata-profiling 0.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #e32212" >
+            <a href="../../../index.html" class="icon icon-home"> ydata-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use cases</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/big_data.html">Profiling large datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/other_dataframe_libraries.html">Other DataFrame libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/great_expectations.html">Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/data_apps.html">Interactive applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/pipelines.html">Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/cloud_services.html">Cloud services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/pyspark.html">⚡ Pyspark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/available_settings.html">Available settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/changing_settings.html">Changing settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/multiple_runs.html">Caching results throughout multiple runs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/corr_mat_access.html">Accessing the values of correlation matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support_contrib/help_troubleshoot.html">Help &amp; Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support_contrib/common_issues.html">Common issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support_contrib/contribution_guidelines.html">Contribution Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../announcements.html">Past Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ydata-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">4.0.0 (2023-01-30)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/pages/reference/changelog/v4_0_0.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><a class="reference external" href="https://github.com/ydataai/ydata-profiling/compare/v3.6.3...v4.0.0">4.0.0</a> (2023-01-30)<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h1>
+<section id="bug-fixes">
+<h2>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>version</strong> bug and incorporate feedback (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/3fe3aeef71074aa1160eadbb44bfd2f020c653e9">3fe3aee</a>)</p></li>
+<li><p>add css to cope with large tables (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/7e51e77e5196a6d135ddc44a315a50a69ff9ce27">7e51e77</a>)</p></li>
+<li><p>add ProfileReport validations and configuration file (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/175798edd97712a9db715ae786a0559f52617675">175798e</a>)</p></li>
+<li><p>add Report configurations for correlations (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/9339a2d90faac5734e045da226de273fa93c5286">9339a2d</a>)</p></li>
+<li><p>add union to typecheck (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/351b17f3ca86d34864980bd6c46f714a7d5c13d1">351b17f</a>)</p></li>
+<li><p>change dataframe empy check method (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/0f474ae51745b51d382ef80bffd9eef278faaf38">0f474ae</a>)</p></li>
+<li><p>df validation (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/b834214995e583e0fb2f003e71db53e4e7c63699">b834214</a>)</p></li>
+<li><p>fix date and datetime histogram. Fix Spearman and Pearson’s correlations (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/0c77695ea3878a41754e3f33bd7231a2cce61c72">0c77695</a>)</p></li>
+<li><p>fix merge issues (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/3cf3cc4fcf132019078a77b7dd61cbe4d69052b6">3cf3cc4</a>)</p></li>
+<li><p>improve description and correct plot for ‘auto’ correlation (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1119">#1119</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/a105d32128fb3b0bf4332b3e027b28e340f1c14f">a105d32</a>)</p></li>
+<li><p>isinstance (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/ce81102f9f994a48ff3539b6019a540ecc0a9fc1">ce81102</a>)</p></li>
+<li><p>isinstance (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/c6a6daa768a3f06bf09a65f4358e860c4206cf81">c6a6daa</a>)</p></li>
+<li><p>move file example. remove unused prints (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/4f794cde3e333764c00fd47c9aa41e9df9c6e5e8">4f794cd</a>)</p></li>
+<li><p>re-introduce to prevent cases where the profilereport is init with no DF (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/b12f45f2b5e92c5fa815d9e8a540d42ca3b231e0">b12f45f</a>)</p></li>
+<li><p>remove get_default_settings (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/9f4f8f93eba7a4c77a920827e12881e9ac1313e6">9f4f8f9</a>)</p></li>
+<li><p>solve mypy error (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/35d982731b597e1f8e613f8c1b97c6120f6ea3bd">35d9827</a>)</p></li>
+<li><p>uses colors from the specified config (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/74041c78d48242fb3debcd2a0b52be29be72fe68">74041c7</a>)</p></li>
+</ul>
+</section>
+<section id="features">
+<h2>🎉 Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>add heatmap values as a table under correlations (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/5268544120d0b3d17934b89e49152e874259f406">5268544</a>)</p></li>
+<li><p>design improvements on the correlations section (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/5facb7b793982c8eeda1fbf51b6346c437c8623d">5facb7b</a>)</p></li>
+<li><p>minimal spark deployment (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1132">#1132</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/4113389aa13b3b8304967fa90e31d49519be5753">4113389</a>)</p></li>
+<li><p><strong>setup:</strong> change package naming (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1254">#1254</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/99e2e9f39aa1f50afce7cf8aab38d3f1d7a2040c">99e2e9f</a>)</p></li>
+<li><p>update variables layout (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1207">#1207</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/34e19a7a1e47b9d540914dfcaed2c2a951445e6b">34e19a7</a>)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, YData Labs Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

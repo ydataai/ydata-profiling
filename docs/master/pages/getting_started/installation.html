@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>Installation &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -72,6 +72,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -101,7 +102,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -127,12 +128,12 @@
 <a class="reference external image-reference" href="https://pepy.tech/project/pandas-profiling/month"><img alt="PyPi Monthly Downloads" src="https://pepy.tech/badge/pandas-profiling/month" /></a>
 <a class="reference external image-reference" href="https://pypi.org/project/pandas-profiling/"><img alt="PyPi Version" src="https://badge.fury.io/py/pandas-profiling.svg" /></a>
 <p>You can install using the <code class="docutils literal notranslate"><span class="pre">pip</span></code> package manager by running:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U pandas-profiling</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U ydata-profiling</span>
 </pre></div>
 </div>
 <p>If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import sys
-!{sys.executable} -m pip install -U pandas-profiling[notebook]
+!{sys.executable} -m pip install -U ydata-profiling[notebook]
 !jupyter nbextension enable --py widgetsnbextension
 </pre></div>
 </div>
@@ -143,9 +144,9 @@
 <a class="reference external image-reference" href="https://anaconda.org/conda-forge/pandas-profiling"><img alt="Conda Total Downloads" src="https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg" /></a>
 <a class="reference external image-reference" href="https://anaconda.org/conda-forge/pandas-profiling"><img alt="Conda Version" src="https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg" /></a>
 <p>A new conda environment containing the module can be created via:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda env create -n pandas-profiling</span>
-<span class="go">conda activate pandas-profiling</span>
-<span class="go">conda install -c conda-forge pandas-profiling</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda env create -n ydata-profiling</span>
+<span class="go">conda activate ydata-profiling</span>
+<span class="go">conda install -c conda-forge ydata-profiling</span>
 </pre></div>
 </div>
 <div class="admonition hint">
@@ -170,13 +171,13 @@ environment configurations, refer to <a class="reference external" href="https:/
 </section>
 <section id="from-source">
 <h2>From source<a class="headerlink" href="#from-source" title="Permalink to this heading"></a></h2>
-<p>Download the source code by cloning the repository or by clicking on <a class="reference external" href="https://github.com/ydataai/pandas-profiling/archive/master.zip">‘Download ZIP’</a>.
+<p>Download the source code by cloning the repository or by clicking on <a class="reference external" href="https://github.com/ydataai/ydata-profiling/archive/master.zip">‘Download ZIP’</a>.
 Install it by navigating to the uncompressed directory and running:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python setup.py install</span>
 </pre></div>
 </div>
 <p>This can also be done via the following one-liner:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install https://github.com/ydataai/pandas-profiling/archive/master.zip</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install https://github.com/ydataai/ydata-profiling/archive/master.zip</span>
 </pre></div>
 </div>
 </section>
@@ -186,9 +187,10 @@ Install it by navigating to the uncompressed directory and running:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[notebook]</span></code>: support for rendering the report in Jupyter notebook widgets.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">[unicode]</span></code>: support for more detailed Unicode analysis, at the expense of additional disk space.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[pyspark]</span></code>: support for pyspark engine to run the profile on big datasets</p></li>
 </ul>
 <p>Install these with e.g.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U pandas-profiling[notebook,unicode]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U ydata-profiling[notebook,unicode, pyspark]</span>
 </pre></div>
 </div>
 </section>

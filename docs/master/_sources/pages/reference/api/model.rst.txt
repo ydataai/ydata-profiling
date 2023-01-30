@@ -2,7 +2,7 @@
 Model
 =====
 
-.. currentmodule:: pandas_profiling.model
+.. currentmodule:: ydata_profiling.model
 .. toctree::
 
 .. autosummary::

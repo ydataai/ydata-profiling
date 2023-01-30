@@ -2,7 +2,7 @@
 Available settings
 ==================
 
-A set of options is available in order to customize the behaviour of ``pandas-profiling`` and the appearance of the generated report. The depth of customization allows the creation of behaviours highly targeted at the specific dataset being analysed. The available settings are listed below. To learn how to change them, check :doc:`changing_settings`. 
+A set of options is available in order to customize the behaviour of ``ydata-profiling`` and the appearance of the generated report. The depth of customization allows the creation of behaviours highly targeted at the specific dataset being analysed. The available settings are listed below. To learn how to change them, check :doc:`changing_settings`.
 
 General settings
 ----------------

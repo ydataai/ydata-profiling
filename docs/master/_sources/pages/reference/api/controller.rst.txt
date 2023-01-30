@@ -2,7 +2,7 @@
 Controller
 ==========
 
-.. currentmodule:: pandas_profiling.controller
+.. currentmodule:: ydata_profiling.controller
 .. toctree::
 
 .. autosummary::

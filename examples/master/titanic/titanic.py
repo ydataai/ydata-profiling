@@ -1,7 +1,7 @@
 import pandas as pd
 
-from pandas_profiling import ProfileReport
-from pandas_profiling.utils.cache import cache_file
+from ydata_profiling import ProfileReport
+from ydata_profiling.utils.cache import cache_file
 
 if __name__ == "__main__":
     file_name = cache_file(

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive applications &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>Interactive applications &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -74,6 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -103,7 +104,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -127,22 +128,11 @@
 <section id="id1">
 <h2>Streamlit<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://www.streamlit.io">Streamlit</a> is an open-source Python library made to build web-apps for machine learning and data science.</p>
-<img alt="https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif" src="https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">pandas_profiling</span>
-<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
-<span class="kn">from</span> <span class="nn">streamlit_pandas_profiling</span> <span class="kn">import</span> <span class="n">st_profile_report</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-    <span class="s2">&quot;https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv&quot;</span>
-<span class="p">)</span>
-<span class="n">pr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">()</span>
-
-<span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Pandas Profiling in Streamlit&quot;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="n">st_profile_report</span><span class="p">(</span><span class="n">pr</span><span class="p">)</span>
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This feature is only available for versions previous to ydata-profiling (&lt;=3.6.2).</p>
 </div>
+<img alt="https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif" src="https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif" />
 <p>You can install the <a class="reference external" href="https://github.com/Ghasel/streamlit-pandas-profiling">pandas-profiling component</a> for Streamlit with pip:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install streamlit-pandas-profiling</span>
 </pre></div>
@@ -150,7 +140,7 @@
 </section>
 <section id="dash">
 <h2>Dash<a class="headerlink" href="#dash" title="Permalink to this heading"></a></h2>
-<p><a class="reference external" href="hhttps://github.com/plotly/dash">Dash</a> is a Python framework for building machine learning &amp; data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> also focuses. Inline access to the insights provided by <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:</p>
+<p><a class="reference external" href="hhttps://github.com/plotly/dash">Dash</a> is a Python framework for building machine learning &amp; data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> also focuses. Inline access to the insights provided by <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:</p>
 <section id="load-html-version-of-report-as-an-asset">
 <h3>Load HTML version of report as an asset<a class="headerlink" href="#load-html-version-of-report-as-an-asset" title="Permalink to this heading"></a></h3>
 <p>Assuming the HTML version of the report is in <code class="docutils literal notranslate"><span class="pre">report.html</span></code>, move it to a folder called <code class="docutils literal notranslate"><span class="pre">assets</span></code>. The snippet below shows a simple Dash app, <code class="docutils literal notranslate"><span class="pre">app.py</span></code>, embedding this report:</p>
@@ -182,7 +172,7 @@
 </div>
 <p>And configure the Dash app as in the following snippet:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 <span class="kn">import</span> <span class="nn">dash</span>
 <span class="kn">from</span> <span class="nn">dash</span> <span class="kn">import</span> <span class="n">html</span>
 <span class="kn">import</span> <span class="nn">dash_dangerously_set_inner_html</span>
@@ -215,7 +205,7 @@
 </section>
 <section id="id6">
 <h2>Panel<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
-<p>For more information on how to use <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> in Panel, see <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues/491">this GitHub issue</a> and <a class="reference external" href="https://awesome-panel.org/pandas_profiling_app">this integration example</a>.</p>
+<p>For more information on how to use <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> in Panel, see <a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/491">this GitHub issue</a> and <a class="reference external" href="https://awesome-panel.org/pandas_profiling_app">this integration example</a>.</p>
 </section>
 </section>
 

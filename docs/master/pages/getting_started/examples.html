@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Examples &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>Examples &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -65,6 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -94,7 +95,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -116,19 +117,19 @@
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h1>
 <p>The following example reports showcase the potentialities of the package across a wide range of dataset and data types:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/census/census_report.html">Census Income</a> (US Adult Census data relating income with other demographic properties)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/meteorites/meteorites_report.html">NASA Meteorites</a> (comprehensive set of meteorite landing - object properties and locations) <a class="reference external" href="https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites%5Fcloud.ipynb"><img alt="Open in Binder" src="https://mybinder.org/badge_logo.svg" /></a> <a class="reference external" href="https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/meteorites/meteorites_cloud.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/titanic/titanic_report.html">Titanic</a> (the “Wonderwall” of datasets) <a class="reference external" href="https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic%5Fcloud.ipynb"><img alt="Open in Binder" src="https://mybinder.org/badge_logo.svg" /></a> <a class="reference external" href="https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic_cloud.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/nza/nza_report.html">NZA</a> (open data from the Dutch Healthcare Authority)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/stata_auto/stata_auto_report.html">Stata Auto</a> (1978 Automobile data, Stata format)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/colors/colors_report.html">Colors</a> (a simple colors dataset)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/vektis/vektis_report.html">Vektis</a> (Vektis Dutch Healthcare data)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html">UCI Bank Dataset</a> (marketing dataset from a bank)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/features/russian_vocabulary.html">Russian Vocabulary</a> (100 most common Russian words, showcasing unicode text analysis)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html">Website Inaccessibility</a> (website accessibility analysis, showcasing support for URL data)</p></li>
-<li><p><a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/features/united_report.html">Orange prices</a> and <a class="reference external" href="https://pandas-profiling.ydata.ai/examples/master/features/flatly_report.html">Coal prices</a> (simple pricing evolution datasets, showcasing the theming options)</p></li>
-<li><p><a class="reference external" href="https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality)">USA Air Quality</a> (Time-series air quality dataset EDA example)</p></li>
-<li><p><a class="reference external" href="https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc">HCC</a> (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/census/census_report.html">Census Income</a> (US Adult Census data relating income with other demographic properties)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/meteorites/meteorites_report.html">NASA Meteorites</a> (comprehensive set of meteorite landing - object properties and locations) <a class="reference external" href="https://mybinder.org/v2/gh/ydataai/ydata-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb"><img alt="Open in Binder" src="https://mybinder.org/badge_logo.svg" /></a> <a class="reference external" href="https://colab.research.google.com/github/ydataai/ydata-profiling/blob/master/examples/meteorites/meteorites.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/titanic/titanic_report.html">Titanic</a> (the “Wonderwall” of datasets) <a class="reference external" href="https://mybinder.org/v2/gh/ydataai/ydata-profiling/master?filepath=examples%2Ftitanic%2Ftitanic.ipynb"><img alt="Open in Binder" src="https://mybinder.org/badge_logo.svg" /></a> <a class="reference external" href="https://colab.research.google.com/github/ydataai/ydata-profiling/blob/master/examples/titanic/titanic.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/nza/nza_report.html">NZA</a> (open data from the Dutch Healthcare Authority)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/stata_auto/stata_auto_report.html">Stata Auto</a> (1978 Automobile data, Stata format)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/colors/colors_report.html">Colors</a> (a simple colors dataset)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/vektis/vektis_report.html">Vektis</a> (Vektis Dutch Healthcare data)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html">UCI Bank Dataset</a> (marketing dataset from a bank)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/features/russian_vocabulary.html">Russian Vocabulary</a> (100 most common Russian words, showcasing unicode text analysis)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html">Website Inaccessibility</a> (website accessibility analysis, showcasing support for URL data)</p></li>
+<li><p><a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/features/united_report.html">Orange prices</a> and <a class="reference external" href="https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html">Coal prices</a> (simple pricing evolution datasets, showcasing the theming options)</p></li>
+<li><p><a class="reference external" href="https://github.com/ydataai/ydata-profiling/tree/master/examples/usaairquality)">USA Air Quality</a> (Time-series air quality dataset EDA example)</p></li>
+<li><p><a class="reference external" href="https://github.com/ydataai/ydata-profiling/tree/master/examples/hcc">HCC</a> (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)</p></li>
 </ul>
 </section>
 

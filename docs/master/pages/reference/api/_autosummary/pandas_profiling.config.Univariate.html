@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pandas_profiling.config.Univariate &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>pandas_profiling.config.Univariate &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
@@ -21,9 +21,7 @@
         <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="pandas_profiling.config.NumVars" href="pandas_profiling.config.NumVars.html" />
-    <link rel="prev" title="pandas_profiling.config.Variables" href="pandas_profiling.config.Variables.html" /> 
+    <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,7 +29,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -65,6 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../integrations/pipelines.html">Pipelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../integrations/cloud_services.html">Cloud services</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../integrations/pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -80,48 +79,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../support_contrib/contribution_guidelines.html">Contribution Guidelines</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../profile_report.html">Profile Report</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../settings.html">Settings</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Settings.html">pandas_profiling.config.Settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Config.html">pandas_profiling.config.Config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Correlation.html">pandas_profiling.config.Correlation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CorrelationPlot.html">pandas_profiling.config.CorrelationPlot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.MissingPlot.html">pandas_profiling.config.MissingPlot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageType.html">pandas_profiling.config.ImageType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Dataset.html">pandas_profiling.config.Dataset</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Duplicates.html">pandas_profiling.config.Duplicates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Html.html">pandas_profiling.config.Html</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Interactions.html">pandas_profiling.config.Interactions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Plot.html">pandas_profiling.config.Plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Theme.html">pandas_profiling.config.Theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Style.html">pandas_profiling.config.Style</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Samples.html">pandas_profiling.config.Samples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Report.html">pandas_profiling.config.Report</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Variables.html">pandas_profiling.config.Variables</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">pandas_profiling.config.Univariate</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#pandas_profiling.config.Univariate"><code class="docutils literal notranslate"><span class="pre">Univariate</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.NumVars.html">pandas_profiling.config.NumVars</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.CatVars.html">pandas_profiling.config.CatVars</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.ImageVars.html">pandas_profiling.config.ImageVars</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.BoolVars.html">pandas_profiling.config.BoolVars</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.PathVars.html">pandas_profiling.config.PathVars</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.FileVars.html">pandas_profiling.config.FileVars</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.UrlVars.html">pandas_profiling.config.UrlVars</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pandas_profiling.config.Histogram.html">pandas_profiling.config.Histogram</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../controller.html">Controller</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../model.html">Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../report.html">Report</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../visualisation.html">Visualisation</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../announcements.html">Past Announcements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../resources.html">Resources</a></li>
@@ -133,7 +93,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">pandas-profiling</a>
+          <a href="../../../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -141,8 +101,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../api.html">API</a></li>
-          <li class="breadcrumb-item"><a href="../settings.html">Settings</a></li>
       <li class="breadcrumb-item active">pandas_profiling.config.Univariate</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/pages/reference/api/_autosummary/pandas_profiling.config.Univariate.rst.txt" rel="nofollow"> View page source</a>
@@ -155,76 +113,12 @@
              
   <section id="pandas-profiling-config-univariate">
 <h1>pandas_profiling.config.Univariate<a class="headerlink" href="#pandas-profiling-config-univariate" title="Permalink to this heading"></a></h1>
-<dl class="py class pydantic_model">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pandas_profiling.config.</span></span><span class="sig-name descname"><span class="pre">Univariate</span></span><a class="reference internal" href="../../../../_modules/pandas_profiling/config.html#Univariate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pandas_profiling.config.Univariate" title="Permalink to this definition"></a></dt>
-<dd><p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Fields</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.bool" title="pandas_profiling.config.Univariate.bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span> <span class="pre">(pandas_profiling.config.BoolVars)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.cat" title="pandas_profiling.config.Univariate.cat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cat</span> <span class="pre">(pandas_profiling.config.CatVars)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.file" title="pandas_profiling.config.Univariate.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span> <span class="pre">(pandas_profiling.config.FileVars)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.image" title="pandas_profiling.config.Univariate.image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image</span> <span class="pre">(pandas_profiling.config.ImageVars)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.num" title="pandas_profiling.config.Univariate.num"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num</span> <span class="pre">(pandas_profiling.config.NumVars)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.path" title="pandas_profiling.config.Univariate.path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span> <span class="pre">(pandas_profiling.config.PathVars)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.timeseries" title="pandas_profiling.config.Univariate.timeseries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timeseries</span> <span class="pre">(pandas_profiling.config.TimeseriesVars)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pandas_profiling.config.Univariate.url" title="pandas_profiling.config.Univariate.url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">url</span> <span class="pre">(pandas_profiling.config.UrlVars)</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.bool">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bool</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.BoolVars.html#pandas_profiling.config.BoolVars" title="pandas_profiling.config.BoolVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoolVars</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">BoolVars(n_obs=3,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">mappings={'t':</span> <span class="pre">True,</span> <span class="pre">'f':</span> <span class="pre">False,</span> <span class="pre">'yes':</span> <span class="pre">True,</span> <span class="pre">'no':</span> <span class="pre">False,</span> <span class="pre">'y':</span> <span class="pre">True,</span> <span class="pre">'n':</span> <span class="pre">False,</span> <span class="pre">'true':</span> <span class="pre">True,</span> <span class="pre">'false':</span> <span class="pre">False})</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.bool" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.cat">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.CatVars.html#pandas_profiling.config.CatVars" title="pandas_profiling.config.CatVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatVars</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">CatVars(length=True,</span> <span class="pre">characters=True,</span> <span class="pre">words=True,</span> <span class="pre">cardinality_threshold=50,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">n_obs=5,</span> <span class="pre">chi_squared_threshold=0.999,</span> <span class="pre">coerce_str_to_date=False,</span> <span class="pre">redact=False,</span> <span class="pre">histogram_largest=50,</span> <span class="pre">stop_words=[])</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.cat" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.file">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.FileVars.html#pandas_profiling.config.FileVars" title="pandas_profiling.config.FileVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileVars</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">FileVars(active=False)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.file" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.image">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.ImageVars.html#pandas_profiling.config.ImageVars" title="pandas_profiling.config.ImageVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageVars</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">ImageVars(active=False,</span> <span class="pre">exif=True,</span> <span class="pre">hash=True)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.image" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.num">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.NumVars.html#pandas_profiling.config.NumVars" title="pandas_profiling.config.NumVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">NumVars</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">NumVars(quantiles=[0.05,</span> <span class="pre">0.25,</span> <span class="pre">0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.95],</span> <span class="pre">skewness_threshold=20,</span> <span class="pre">low_categorical_threshold=5,</span> <span class="pre">chi_squared_threshold=0.999)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.num" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.path">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.PathVars.html#pandas_profiling.config.PathVars" title="pandas_profiling.config.PathVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathVars</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PathVars(active=False)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.path" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.timeseries">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timeseries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeseriesVars</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">TimeseriesVars(active=False,</span> <span class="pre">sortby=None,</span> <span class="pre">autocorrelation=0.7,</span> <span class="pre">lags=[1,</span> <span class="pre">7,</span> <span class="pre">12,</span> <span class="pre">24,</span> <span class="pre">30],</span> <span class="pre">significance=0.05,</span> <span class="pre">pacf_acf_lag=100)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.timeseries" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute pydantic_field">
-<dt class="sig sig-object py" id="pandas_profiling.config.Univariate.url">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pandas_profiling.config.UrlVars.html#pandas_profiling.config.UrlVars" title="pandas_profiling.config.UrlVars"><code class="xref py py-class docutils literal notranslate"><span class="pre">UrlVars</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">UrlVars(active=False)</span></em><a class="headerlink" href="#pandas_profiling.config.Univariate.url" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pandas_profiling.config.Variables.html" class="btn btn-neutral float-left" title="pandas_profiling.config.Variables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pandas_profiling.config.NumVars.html" class="btn btn-neutral float-right" title="pandas_profiling.config.NumVars" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IDEs &mdash; pandas-profiling 0.0.dev0 documentation</title>
+  <title>IDEs &mdash; ydata-profiling 0.0.dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/autodoc_pydantic.css" type="text/css" />
@@ -22,7 +22,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Available settings" href="../advanced_usage/available_settings.html" />
+    <link rel="next" title="⚡ Pyspark" href="pyspark.html" />
     <link rel="prev" title="Cloud services" href="cloud_services.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> pandas-profiling
+            <a href="../../index.html" class="icon icon-home"> ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -68,6 +68,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#id1">PyCharm</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="pyspark.html">⚡ Pyspark</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
 <ul>
@@ -97,7 +98,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pandas-profiling</a>
+          <a href="../../index.html">ydata-profiling</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -121,18 +122,18 @@
 <section id="id1">
 <h2>PyCharm<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p>Install <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> via <a class="reference internal" href="../getting_started/installation.html"><span class="doc">Installation</span></a></p></li>
-<li><p>Locate your <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> executable.</p></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> via <a class="reference internal" href="../getting_started/installation.html"><span class="doc">Installation</span></a></p></li>
+<li><p>Locate your <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> executable.</p></li>
 </ol>
 <blockquote>
 <div><p>On macOS / Linux / BSD:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>which<span class="w"> </span>pandas_profiling
-<span class="gp gp-VirtualEnv">(example)</span> <span class="go">/usr/local/bin/pandas_profiling</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>which<span class="w"> </span>ydata_profiling
+<span class="gp gp-VirtualEnv">(example)</span> <span class="go">/usr/local/bin/ydata_profiling</span>
 </pre></div>
 </div>
 <p>On Windows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>where<span class="w"> </span>pandas_profiling
-<span class="gp gp-VirtualEnv">(example)</span> <span class="go">C:\ProgramData\Anaconda3\Scripts\pandas_profiling.exe</span>
+<span class="gp gp-VirtualEnv">(example)</span> <span class="go">C:\ProgramData\Anaconda3\Scripts\ydata_profiling.exe</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -143,7 +144,7 @@
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>Name: <code class="docutils literal notranslate"><span class="pre">Pandas</span> <span class="pre">Profiling</span></code></p>
+<li><p>Name: <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Profiling</span></code></p>
 <ul>
 <li><p>Program: <em>The location obtained in step 2</em></p></li>
 <li><p>Arguments: <code class="docutils literal notranslate"><span class="pre">&quot;$FilePath$&quot;</span> <span class="pre">&quot;$FileDir$/$FileNameWithoutAllExtensions$_report.html&quot;</span></code></p></li>
@@ -152,11 +153,11 @@
 </li>
 </ul>
 </div></blockquote>
-<a class="reference internal image-reference" href="https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png"><img alt="PyCharm Integration" class="align-center" src="https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png##changethisimage"><img alt="PyCharm Integration" class="align-center" src="https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png##changethisimage" style="width: 400px;" /></a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>To use the PyCharm Integration, right click on any dataset file and <em>External Tools</em> &gt; <em>Pandas Profiling</em>.</p>
+<p>To use the PyCharm Integration, right click on any dataset file and <em>External Tools</em> &gt; <em>Data Profiling</em>.</p>
 </section>
 </section>
 
@@ -165,7 +166,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="cloud_services.html" class="btn btn-neutral float-left" title="Cloud services" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../advanced_usage/available_settings.html" class="btn btn-neutral float-right" title="Available settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pyspark.html" class="btn btn-neutral float-right" title="⚡ Pyspark" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
