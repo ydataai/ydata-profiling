@@ -1,6 +1,6 @@
 """
 Test for issue 94:
-https://github.com/ydataai/pandas-profiling/issues/94
+https://github.com/ydataai/ydata-profiling/issues/94
 
 Test based on:
 https://stackoverflow.com/questions/52926527/pandas-profiling-1-4-1-throws-zerodivisionerror-for-valid-data-set-which-pandas

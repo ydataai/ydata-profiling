@@ -154,7 +154,7 @@ def get_dataset_reproduction(config: Settings, summary: dict) -> Renderable:
 
     @list_args
     def fmt_version(version: str) -> str:
-        return f'<a href="https://github.com/pandas-profiling/pandas-profiling">pandas-profiling v{version}</a>'
+        return f'<a href="https://github.com/ydataai/ydata-profiling">ydata-profiling v{version}</a>'
 
     @list_args
     def fmt_config(config: str) -> str:

@@ -1,4 +1,4 @@
-"""Main module of pandas-profiling.
+"""Main module of ydata-profiling.
 
 .. include:: ../../README.md
 """

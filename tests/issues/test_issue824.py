@@ -1,6 +1,6 @@
 """
 Test for issue 824:
-https://github.com/ydataai/pandas-profiling/issues/824
+https://github.com/ydataai/ydata-profiling/issues/824
 
 High correlation warning printed multiple times
 
