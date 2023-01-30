@@ -21,14 +21,14 @@ You can install using the ``pip`` package manager by running:
 
 .. code-block:: console
 
-    pip install -U pandas-profiling
+    pip install -U ydata-profiling
 
 If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can run:
 
 .. code-block::
 
     import sys
-    !{sys.executable} -m pip install -U pandas-profiling[notebook]
+    !{sys.executable} -m pip install -U ydata-profiling[notebook]
     !jupyter nbextension enable --py widgetsnbextension
 
 You may have to restart the kernel or runtime for the package to work.
@@ -48,9 +48,9 @@ A new conda environment containing the module can be created via:
 
 .. code-block:: console
 
-    conda env create -n pandas-profiling
-    conda activate pandas-profiling
-    conda install -c conda-forge pandas-profiling
+    conda env create -n ydata-profiling
+    conda activate ydata-profiling
+    conda install -c conda-forge ydata-profiling
 
 .. hint::
 
@@ -79,7 +79,7 @@ environment configurations, refer to `the official ipywidgets documentation <htt
 From source
 -----------
 
-Download the source code by cloning the repository or by clicking on `'Download ZIP' <https://github.com/ydataai/pandas-profiling/archive/master.zip>`_.
+Download the source code by cloning the repository or by clicking on `'Download ZIP' <https://github.com/ydataai/ydata-profiling/archive/master.zip>`_.
 Install it by navigating to the uncompressed directory and running:
 
 .. code-block:: console
@@ -90,7 +90,7 @@ This can also be done via the following one-liner:
 
 .. code-block:: console
 
-    pip install https://github.com/ydataai/pandas-profiling/archive/master.zip
+    pip install https://github.com/ydataai/ydata-profiling/archive/master.zip
 
 Extras
 ------
@@ -99,9 +99,10 @@ The package declares some "extras", sets of additional dependencies.
 
 * ``[notebook]``: support for rendering the report in Jupyter notebook widgets.
 * ``[unicode]``: support for more detailed Unicode analysis, at the expense of additional disk space.
+* ``[pyspark]``: support for pyspark engine to run the profile on big datasets
 
 Install these with e.g.
 
 .. code-block:: console
 
-    pip install -U pandas-profiling[notebook,unicode]
+    pip install -U ydata-profiling[notebook,unicode, pyspark]

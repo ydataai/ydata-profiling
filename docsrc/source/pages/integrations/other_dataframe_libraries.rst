@@ -2,32 +2,21 @@
 Other DataFrame libraries
 =========================
 
-``pandas-profiling`` is built on ``pandas`` and ``numpy``.
+``ydata-profiling`` is built on ``pandas`` and ``numpy``.
 Pandas supports a wide range of data formats including CSV, XLSX, SQL, JSON, HDF5, SAS, BigQuery and Stata. Read more on `supported formats by Pandas <https://pandas.pydata.org/docs/user_guide/io.html>`_. 
 
-If you have data in another framework of the Python Data ecosystem, you can use ``pandas-profiling`` by converting to a pandas ``DataFrame``, as direct integrations are not yet supported. Large datasets might require sampling (as seen in :doc:`../use_cases/big_data`).
-
-.. code-block:: python
-  :caption: PySpark to Pandas
-
-   # Convert spark RDD to a pandas DataFrame
-   df = spark_df.toPandas()
-
+If you have data in another framework of the Python Data ecosystem, you can use ``ydata-profiling`` by converting to a pandas ``DataFrame``, as direct integrations are not yet supported. Large datasets might require sampling (as seen in :doc:`../use_cases/big_data`).
 
 .. code-block:: python
   :caption: Dask to Pandas
 
    # Convert dask DataFrame to a pandas DataFrame
    df = df.compute()
-
-
 .. code-block:: python
   :caption: Vaex to Pandas
 
    # Convert vaex DataFrame to a pandas DataFrame
    df = df.to_pandas_df()
-
-
 .. code-block:: python
   :caption: Modin to Pandas
 

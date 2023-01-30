@@ -5,7 +5,7 @@ Profile Report
 ProfileReport
 =============
 
-.. currentmodule:: pandas_profiling
+.. currentmodule:: ydata_profiling
 .. toctree::
 
 .. autosummary::

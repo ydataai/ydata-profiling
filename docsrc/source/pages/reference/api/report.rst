@@ -5,7 +5,7 @@ Report
 Structure
 ---------
 
-.. currentmodule:: pandas_profiling.report.structure
+.. currentmodule:: ydata_profiling.report.structure
 .. toctree::
 
 .. autosummary::
@@ -18,7 +18,7 @@ Structure
 Components
 ----------
 
-.. currentmodule:: pandas_profiling.report.presentation.core
+.. currentmodule:: ydata_profiling.report.presentation.core
 .. toctree::
 
 .. autosummary::
