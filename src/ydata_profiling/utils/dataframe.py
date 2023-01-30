@@ -21,7 +21,7 @@ def warn_read(extension: str) -> None:
 To prevent this warning from showing up, please rename the file to any of the extensions supported by pandas
 (docs: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html)
 If you think this extension should be supported, please report this as an issue:
-https://github.com/ydataai/pandas-profiling/issues"""
+https://github.com/ydataai/ydata-profiling/issues"""
     )
 
 

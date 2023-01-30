@@ -80,7 +80,7 @@ def handle_missing(name: str, fn: Callable) -> Callable:
 To hide this warning, disable the calculation
 (using `df.profile_report(missing_diagrams={{"{missing_name}": False}}`)
 If this is problematic for your use case, please report this as an issue:
-https://github.com/ydataai/pandas-profiling/issues
+https://github.com/ydataai/ydata-profiling/issues
 (include the error message: '{error}')"""
             )
 
