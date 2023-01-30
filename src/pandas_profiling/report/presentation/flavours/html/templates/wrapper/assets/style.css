@@ -281,11 +281,6 @@ a.anchor-pos-variable{
     overflow: auto;
 }
 
-#correlation-table-container {
-    max-height: 400px;
-    overflow: auto;
-}
-
 #overview-content td, #overview-content th{
     border-top: 0;
     line-height: 1;
