@@ -69,3 +69,4 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
+        repository_url: https://pypi.org/project/pandas-profiling
