@@ -67,7 +67,10 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     entry_points={
-        "console_scripts": ["ydata_profiling = ydata_profiling.controller.console:main"]
+        "console_scripts": [
+            "ydata_profiling = ydata_profiling.controller.console:main",
+            "pandas_profiling = ydata_profiling.controller.console:main",
+        ]
     },
     options={"bdist_wheel": {"universal": True}},
 )
