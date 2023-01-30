@@ -16,7 +16,7 @@ Through code
    :caption: Configuration example
 
     # Create the ProfileReport object without specifying a DataFrame
-    profile = df.profile_report(title="Pandas Profiling Report", pool_size=1)
+    profile = df.profile_report(title="Profiling Report", pool_size=1)
 
     # Change the configuration as desired
     profile.config.html.minify_html = False
@@ -50,14 +50,14 @@ Through a custom configuration file
 
 To control ``pandas-profiling`` through a custom file, you can start with one of the sample configuration files below:
 
-- `default configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml>`_ (default)
-- `minimal configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
+- `default configuration file <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_default.yaml>`_ (default)
+- `minimal configuration file <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_minimal.yaml>`_ (minimal computation, optimized for performance)
 
 Change the configuration to your liking and point towards that configuration file when computing the report:  
 
 .. code-block:: python
 
-  from pandas_profiling import ProfileReport
+  from ydata_profiling import ProfileReport
 
   profile = ProfileReport(df, config_file="your_config.yml")
   profile.to_file("report.html")
@@ -70,20 +70,20 @@ Any configuration setting can also be read from environment variables. For examp
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
-    profile = ProfileReport(df, title="My Custom Pandas Profiling Report")
+    profile = ProfileReport(df, title="My Custom Profiling Report")
 
 is equivalent to setting the title as an environment variable
 
 .. code-block:: console
 
-    export PROFILE_TITLE="My Custom Pandas Profiling Report"
+    export PROFILE_TITLE="My Custom Profiling Report"
 
 and then running
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     profile = ProfileReport(df)

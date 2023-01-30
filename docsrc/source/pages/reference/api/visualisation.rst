@@ -5,7 +5,7 @@ Visualisation
 Plot
 ----
 
-.. currentmodule:: pandas_profiling.visualisation
+.. currentmodule:: ydata_profiling.visualisation
 .. toctree::
 
 .. autosummary::
@@ -16,7 +16,7 @@ Plot
 Missing
 -------
 
-.. currentmodule:: pandas_profiling.visualisation
+.. currentmodule:: ydata_profiling.visualisation
 .. toctree::
 
 .. autosummary::
@@ -28,7 +28,7 @@ Missing
 Utils
 -----
 
-.. currentmodule:: pandas_profiling.visualisation
+.. currentmodule:: ydata_profiling.visualisation
 .. toctree::
 
 .. autosummary::
