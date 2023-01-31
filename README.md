@@ -241,7 +241,7 @@ To maximize its usefulness in real world contexts, `pandas-profiling` has a set 
 ## 🙋 Support
 Need help? Want to share a perspective? Report a bug? Ideas for collaborations? Reach out via the following channels:
 
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling): ideal for asking questions on how to use the package
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling): ideal for asking questions on how to use the package
 - [GitHub Issues](https://github.com/ydataai/ydata-profiling/issues): bugs, proposals for changes, feature requests
 - [Discord](https://discord.com/invite/mw7xjJ7b7s): ideal for projects discussions, ask questions, collaborations, general chat
 - [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
