@@ -1,11 +1,11 @@
 # ydata-profiling
 
 [![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
-[![PyPI download month](https://img.shields.io/pypi/dm/pandas-profiling.svg)](https://pypi.python.org/pypi/pandas-profiling/)
-[![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
+[![PyPI download month](https://img.shields.io/pypi/dm/ydata-profiling.svg)](https://pypi.python.org/pypi/ydata-profiling/)
+[![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/ydata-profiling/)
 [![Code Coverage](https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/ydataai/pandas-profiling)
 [![Release Version](https://img.shields.io/github/release/ydataai/pandas-profiling.svg)](https://github.com/ydataai/pandas-profiling/releases)
-[![Python Version](https://img.shields.io/pypi/pyversions/pandas-profiling)](https://pypi.org/project/pandas-profiling/)
+[![Python Version](https://img.shields.io/pypi/pyversions/ydata-profiling)](https://pypi.org/project/ydata-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 <p align="center"><img width="300" src="https://assets.ydata.ai/oss/ydata-profiling_black.png" alt="YData Profiling Logo"></p>
@@ -15,7 +15,7 @@
   |
   <a href="https://discord.com/invite/mw7xjJ7b7s">Discord</a>
   | 
-  <a href="https://stackoverflow.com/questions/tagged/pandas-profiling">Stack Overflow</a>
+  <a href="https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling">Stack Overflow</a>
   |
   <a href="https://ydata-profiling.ydata.ai/docs/master/pages/reference/changelog.html#changelog">Latest changelog</a>
 
@@ -168,9 +168,9 @@ The following example reports showcase the potentialities of the package across 
 Additional details, including information about widget support, are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
 
 ### Using pip
-[![PyPi Downloads](https://pepy.tech/badge/pandas-profiling)](https://pepy.tech/project/pandas-profiling)
-[![PyPi Monthly Downloads](https://pepy.tech/badge/pandas-profiling/month)](https://pepy.tech/project/pandas-profiling/month)
-[![PyPi Version](https://badge.fury.io/py/pandas-profiling.svg)](https://pypi.org/project/pandas-profiling/)
+[![PyPi Downloads](https://pepy.tech/badge/ydata-profiling)](https://pepy.tech/project/ydata-profiling)
+[![PyPi Monthly Downloads](https://pepy.tech/badge/pandas-profiling/month)](https://pepy.tech/project/ydata-profiling/month)
+[![PyPi Version](https://badge.fury.io/py/ydata-profiling.svg)](https://pypi.org/project/ydata-profiling/)
 
 You can install using the `pip` package manager by running:
 
