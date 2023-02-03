@@ -1,12 +1,10 @@
-from typing import Any, Callable, Dict, List, Type, Optional, Union
+from dataclasses import asdict, is_dataclass
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 import numpy as np
 import pandas as pd
-from visions import VisionsBaseType, VisionsTypeset
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.base.base_description import BaseDescription
-from pandas_profiling.model.base.serializable import SerializableInterface
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -21,6 +19,7 @@ from pandas_profiling.model.summary_algorithms import (
     describe_timeseries_1d,
     describe_url_1d,
 )
+from visions import VisionsBaseType, VisionsTypeset
 
 
 class BaseSummarizer(Handler):
@@ -98,13 +97,13 @@ def format_summary(summary: Union[BaseDescription, dict]) -> Dict:
             and all(isinstance(x, np.ndarray) for x in v)
         ):
             return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
-        if isinstance(v, SerializableInterface):
-            v2 = v.to_dict()
+        if is_dataclass(v):
+            v2 = asdict(v)
             return fmt(v2)
         return v
 
     if isinstance(summary, BaseDescription):
-        summary = summary.to_dict()
+        summary = asdict(summary)
 
     summary = {k: fmt(v) for k, v in summary.items()}
 

@@ -1,11 +1,12 @@
+from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 import numpy as np
 import pandas as pd
-from pandas_profiling.model.base.serializable import SerializableInterface
 
 
-class BasePlotDescription(SerializableInterface):
+@dataclass
+class BasePlotDescription:
     """Base class for all plot descriptions.
 
     Attributes
@@ -22,9 +23,12 @@ class BasePlotDescription(SerializableInterface):
 
     """
 
-    _count_col_name = "count"
-    _log_odds_col_name = "log_odds"
+    __data_col_name: str
+    __target_col_name: str
     __distribution: pd.DataFrame
+
+    _count_col_name: str = "count"
+    _log_odds_col_name: str = "log_odds"
     __log_odds: Optional[pd.DataFrame] = None
 
     def __init__(self, data_col: pd.Series, target_col: Optional[pd.Series]) -> None:
@@ -95,13 +99,6 @@ class BasePlotDescription(SerializableInterface):
         if target_col.name is None:
             target_col.name = "target_col"
         self.__target_col_name = str(target_col.name)
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "distribution": self.distribution,
-            "target_col": self.target_col_name,
-            "data_col": self.data_col_name,
-        }
 
     def __check_columns(self, df: pd.DataFrame):
         """Checks if df contains all columns (data_col, target_col, count_col)

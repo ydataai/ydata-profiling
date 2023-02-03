@@ -1,7 +1,8 @@
+from dataclasses import asdict
+
 import numpy as np
 import pandas as pd
 import pytest
-
 from pandas_profiling import ProfileReport
 
 
@@ -52,7 +53,7 @@ def test_modular_description_set(tdf):
     )
 
     description = profile.get_description()
-    assert len(description.to_dict()) > 0
+    assert len(asdict(description)) > 0
 
 
 def test_modular_absent(tdf):

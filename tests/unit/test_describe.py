@@ -1,9 +1,9 @@
 import datetime
+from dataclasses import asdict
 
 import numpy as np
 import pandas as pd
 import pytest
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
@@ -47,7 +47,7 @@ def test_describe_unique(data, expected, summarizer, typeset):
     """Test the unique feature of 1D data"""
     config = Settings()
     config.vars.num.low_categorical_threshold = 0
-    
+
     desc_1d = describe_1d(config, data, summarizer, typeset)
     if expected["is_unique"] is not None:
         assert (
@@ -555,7 +555,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
         "package",
         "sample",
         "duplicates",
-    } == set(results.to_dict().keys()), "Not in results"
+    } == set(asdict(results).keys()), "Not in results"
 
     # Loop over variables
     for k, v in expected_results[column].items():
