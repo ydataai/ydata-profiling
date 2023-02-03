@@ -376,6 +376,8 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                     name="Variables",
                     anchor_id="variables-dropdown",
                     id="variables-dropdown",
+                    is_row=True,
+                    classes=["btn", "btn-secondary", "dropdown-toggle"],
                     items=list(summary["variables"]),
                     item=Container(
                         render_variables_section(config, summary),
