@@ -56,7 +56,11 @@ def _plot_cat_log_odds(
             text=plot_description.log_odds_col_name,
         )
     )
-    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
+    p = (
+        p.layout(size=figsize)
+        .theme({"axes.facecolor": "w"})
+        .label(title="log odds", x="", y="")
+    )
     return p.plot(pyplot=True)
 
 
@@ -66,26 +70,38 @@ def _plot_cat_dist(
 ) -> Plotter:
     _text_color = {"left": "black", "right": "white"}
     _text_position = {"left": "left", "right": "right"}
-    p = so.Plot(
-        plot_description.distribution,
-        x=plot_description.count_col_name,
-        y=plot_description.data_col_name,
-    )
+
     # supervised plot
     if (
         plot_description.target_col_name is not None
         and plot_description.target_col_name != plot_description.data_col_name
     ):
-
-        p = p.add(
-            so.Bar(alpha=1),
-            so.Dodge(),
-            color=plot_description.target_col_name,
+        p = (
+            so.Plot(
+                plot_description.distribution,
+                x=plot_description.count_col_name,
+                y=plot_description.data_col_name,
+                color=plot_description.target_col_name,
+            )
+            .add(so.Bar(alpha=1), so.Dodge())
+            .add(
+                so.Text(
+                    {"fontweight": "bold", "clip_on": False},
+                    halign="left",
+                ),
+                so.Dodge(by=["color"]),
+                text=plot_description.count_col_name,
+            )
         )
     # unsupervised plot
     else:
         p = (
-            p.add(so.Bar(alpha=1))
+            so.Plot(
+                plot_description.distribution,
+                x=plot_description.count_col_name,
+                y=plot_description.data_col_name,
+            )
+            .add(so.Bar(alpha=1))
             .add(
                 so.Text({"fontweight": "bold"}),
                 text=plot_description.count_col_name,
@@ -127,27 +143,34 @@ def _plot_hist_dist(
     plot_description: BasePlotDescription,
     figsize: Tuple[float, float] = (6, 4),
 ) -> Plotter:
-    p = so.Plot(
-        plot_description.distribution,
-        x=plot_description.data_col_name,
-        y=plot_description.count_col_name,
-    )
+
     # supervised
     if plot_description.target_col_name is not None:
-        p = p.add(
-            so.Bar(alpha=1), so.Dodge(), color=plot_description.target_col_name
-        ).add(
-            so.Text(
-                {"fontweight": "bold", "clip_on": False},
-                valign="bottom",
-                halign="center",
-            ),
-            so.Dodge(),
-            color=plot_description.target_col_name,
-            text=plot_description.count_col_name,
+        p = (
+            so.Plot(
+                plot_description.distribution,
+                x=plot_description.data_col_name,
+                y=plot_description.count_col_name,
+                color=plot_description.target_col_name,
+            )
+            .add(so.Bar(alpha=1), so.Dodge())
+            .add(
+                so.Text(
+                    {"fontweight": "bold", "clip_on": False, "rotation": 90},
+                    valign="bottom",
+                    halign="center",
+                ),
+                so.Dodge(by=["color"]),
+                text=plot_description.count_col_name,
+            )
         )
+    # unsupervised
     else:
-        p = p.add(so.Bars(alpha=1))
+        p = so.Plot(
+            plot_description.distribution,
+            x=plot_description.data_col_name,
+            y=plot_description.count_col_name,
+        ).add(so.Bars(alpha=1))
     p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
     return p.plot(pyplot=True)
 

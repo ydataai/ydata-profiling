@@ -393,7 +393,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     )
 
     mini_freq_table = Image(
-        plot_cat_dist(config, summary["plot_description"]),
+        plot_cat_dist(config, summary["plot_description"], mini=True),
         image_format=image_format,
         alt="Mini histogram",
     )
