@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pandas as pd
 
@@ -8,8 +8,11 @@ from pandas_profiling.model.summary_algorithms import describe_counts
 
 @describe_counts.register
 def pandas_describe_counts(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Counts the values in a series (with and without NaN, distinct).
 
     Args:
@@ -59,4 +62,4 @@ def pandas_describe_counts(
     summary["ordering"] = ordering
     summary["n_missing"] = n_missing
 
-    return config, series, summary
+    return config, series, summary, target_col

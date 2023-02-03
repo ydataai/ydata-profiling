@@ -1,11 +1,10 @@
-from typing import Any, Callable, Dict, List, Type, Optional, Union
+from dataclasses import asdict, is_dataclass
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 import numpy as np
 import pandas as pd
-from visions import VisionsBaseType, VisionsTypeset
-
 from pandas_profiling.config import Settings
-from pandas_profiling.model.base_classes.base_description import BaseDescription
+from pandas_profiling.model.base.base_description import BaseDescription
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -20,6 +19,7 @@ from pandas_profiling.model.summary_algorithms import (
     describe_timeseries_1d,
     describe_url_1d,
 )
+from visions import VisionsBaseType, VisionsTypeset
 
 
 class BaseSummarizer(Handler):
@@ -29,14 +29,20 @@ class BaseSummarizer(Handler):
     """
 
     def summarize(
-        self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
+        self,
+        config: Settings,
+        series: pd.Series,
+        dtype: Type[VisionsBaseType],
+        target_col: Optional[pd.Series] = None,
     ) -> dict:
         """
 
         Returns:
             object:
         """
-        _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
+        _, _, summary, _ = self.handle(
+            str(dtype), config, series, {"type": str(dtype)}, target_col
+        )
         return summary
 
 
@@ -79,26 +85,26 @@ class PandasProfilingSummarizer(BaseSummarizer):
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
-def format_summary(summary: Union[BaseDescription, dict]) -> BaseDescription:
+def format_summary(summary: Union[BaseDescription, dict]) -> Dict:
     def fmt(v: Any) -> Any:
         if isinstance(v, dict):
             return {k: fmt(va) for k, va in v.items()}
-        else:
-            if isinstance(v, pd.Series):
-                return fmt(v.to_dict())
-            elif (
-                isinstance(v, tuple)
-                and len(v) == 2
-                and all(isinstance(x, np.ndarray) for x in v)
-            ):
-                return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
-            else:
-                return v
+        if isinstance(v, pd.Series):
+            return fmt(v.to_dict())
+        if (
+            isinstance(v, tuple)
+            and len(v) == 2
+            and all(isinstance(x, np.ndarray) for x in v)
+        ):
+            return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
+        if is_dataclass(v):
+            v2 = asdict(v)
+            return fmt(v2)
+        return v
 
     if isinstance(summary, BaseDescription):
-        for k, v in summary.to_dict().items():
-            setattr(summary, k, fmt(v))
-    elif isinstance(summary, dict):
-        for k, v in summary.items():
-            summary[k] = fmt(v)
+        summary = asdict(summary)
+
+    summary = {k: fmt(v) for k, v in summary.items()}
+
     return summary

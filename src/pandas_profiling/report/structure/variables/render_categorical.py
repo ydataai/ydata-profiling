@@ -1,7 +1,6 @@
 from typing import List, Tuple, Union
 
 import pandas as pd
-
 from pandas_profiling.config import Settings
 from pandas_profiling.report.formatters import (
     fmt,
@@ -23,7 +22,12 @@ from pandas_profiling.report.presentation.core import (
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.frequency_table_utils import freq_table
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import cat_frequency_plot, histogram
+from pandas_profiling.visualisation.plot import (
+    cat_frequency_plot,
+    histogram,
+    plot_cat_dist,
+    plot_cat_log_odds,
+)
 
 
 def render_categorical_frequency(
@@ -388,9 +392,18 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         redact=config.vars.cat.redact,
     )
 
-    template_variables["top"] = Container([info, table, fqm], sequence_type="grid")
+    mini_freq_table = Image(
+        plot_cat_dist(config, summary["plot_description"], mini=True),
+        image_format=image_format,
+        alt="Mini histogram",
+    )
 
-    # ============================================================================================
+    template_variables["top"] = Container(
+        [info, table, fqm, mini_freq_table], sequence_type="grid"
+    )
+
+    # bottom
+    # ==================================================================================
 
     frequency_table = FrequencyTable(
         template_variables["freq_table_rows"],
@@ -445,6 +458,40 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         overview_items.append(sample)
 
     string_items: List[Renderable] = [frequency_table]
+
+    # distribution
+    distribution = Image(
+        plot_cat_dist(config, summary["plot_description"]),
+        image_format=image_format,
+        alt="Histogram",
+        name="Distribution",
+    )
+
+    # log odds
+    if (
+        summary["plot_description"].target_col_name is not None
+        and summary["plot_description"].data_col_name
+        != summary["plot_description"].target_col_name
+    ):
+        log_odds = Image(
+            plot_cat_log_odds(config, summary["plot_description"]),
+            image_format=image_format,
+            alt="Log odds",
+            name="Log Odds",
+        )
+        plots = [distribution, log_odds]
+    else:
+        plots = [distribution]
+
+    string_items.append(
+        Container(
+            plots,
+            sequence_type="grid",
+            name="Distribution",
+            anchor_id=f"{varid}histogram2",
+        )
+    )
+
     if length:
         string_items.append(length_histo)
 

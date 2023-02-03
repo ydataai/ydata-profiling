@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pandas as pd
 
@@ -12,8 +12,11 @@ from pandas_profiling.model.summary_algorithms import (
 @describe_supported.register
 @series_hashable
 def pandas_describe_supported(
-    config: Settings, series: pd.Series, series_description: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    series_description: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Describe a supported series.
 
     Args:
@@ -41,4 +44,4 @@ def pandas_describe_supported(
     }
     stats.update(series_description)
 
-    return config, series, stats
+    return config, series, stats, target_col

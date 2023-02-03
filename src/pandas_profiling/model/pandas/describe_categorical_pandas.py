@@ -1,13 +1,16 @@
 import contextlib
 import string
 from collections import Counter
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.pandas.utils_pandas import weighted_median
+from pandas_profiling.model.pandas.plot_description_pandas import (
+    CategoricalPlotDescriptionPandas,
+)
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
     describe_categorical_1d,
@@ -209,8 +212,11 @@ def length_summary_vc(vc: pd.Series) -> dict:
 @series_hashable
 @series_handle_nulls
 def pandas_describe_categorical_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Describe a categorical series.
 
     Args:
@@ -255,4 +261,8 @@ def pandas_describe_categorical_1d(
     if config.vars.cat.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
-    return config, series, summary
+    summary["plot_description"] = CategoricalPlotDescriptionPandas(
+        series, target_col, config.vars.cat.n_obs
+    )
+
+    return config, series, summary, target_col

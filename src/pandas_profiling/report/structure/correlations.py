@@ -10,7 +10,7 @@ from pandas_profiling.report.presentation.core import (
 )
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
-from pandas_profiling.model.base_classes.base_description import BaseDescription
+from pandas_profiling.model.base.base_description import BaseDescription
 
 
 def get_correlation_items(

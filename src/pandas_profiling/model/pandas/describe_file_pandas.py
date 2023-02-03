@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pandas as pd
 
@@ -39,8 +39,11 @@ def file_summary(series: pd.Series) -> dict:
 
 @describe_file_1d.register
 def pandas_describe_file_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     if series.hasnans:
         raise ValueError("May not contain NaNs")
     if not hasattr(series, "str"):
@@ -56,4 +59,4 @@ def pandas_describe_file_1d(
         )
     )
 
-    return config, series, summary
+    return config, series, summary, target_col

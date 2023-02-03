@@ -14,7 +14,12 @@ from pandas_profiling.report.presentation.core import (
     VariableInfo,
 )
 from pandas_profiling.report.structure.variables.render_common import render_common
-from pandas_profiling.visualisation.plot import histogram, mini_histogram
+from pandas_profiling.visualisation.plot import (
+    histogram,
+    mini_histogram,
+    plot_hist_dist,
+    plot_hist_log_odds,
+)
 
 
 def render_real(config: Settings, summary: dict) -> dict:
@@ -135,9 +140,17 @@ def render_real(config: Settings, summary: dict) -> dict:
             alt="Mini histogram",
         )
 
-    template_variables["top"] = Container(
-        [info, table1, table2, mini_histo], sequence_type="grid"
+    mini_histo_so = Image(
+        plot_hist_dist(config, summary["plot_description"], mini=True),
+        image_format=image_format,
+        alt="Mini histogram",
     )
+
+    template_variables["top"] = Container(
+        [info, table1, table2, mini_histo, mini_histo_so], sequence_type="grid"
+    )
+
+    # ==================================================================================
 
     quantile_statistics = Table(
         [
@@ -254,6 +267,27 @@ def render_real(config: Settings, summary: dict) -> dict:
         hist_data = histogram(config, *summary["histogram"])
         hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"
 
+    # distribution
+    distribution = Image(
+        plot_hist_dist(config, summary["plot_description"]),
+        image_format=image_format,
+        alt="Distribution histogram",
+        caption=hist_caption,
+        name="Distribution",
+    )
+
+    # log odds
+    if summary["plot_description"].target_col_name is not None:
+        log_odds = Image(
+            plot_hist_log_odds(config, summary["plot_description"]),
+            image_format=image_format,
+            alt="Mini histogram",
+            name="Log Odds",
+        )
+        plots = [distribution, log_odds]
+    else:
+        plots = [distribution]
+
     hist = Image(
         hist_data,
         image_format=image_format,
@@ -261,6 +295,13 @@ def render_real(config: Settings, summary: dict) -> dict:
         caption=hist_caption,
         name="Histogram",
         anchor_id=f"{varid}histogram",
+    )
+
+    hist2 = Container(
+        plots,
+        sequence_type="grid",
+        name="Histogram2",
+        anchor_id=f"{varid}histogram2",
     )
 
     fq = FrequencyTable(
@@ -291,7 +332,7 @@ def render_real(config: Settings, summary: dict) -> dict:
     )
 
     template_variables["bottom"] = Container(
-        [statistics, hist, fq, evs],
+        [statistics, hist, hist2, fq, evs],
         sequence_type="tabs",
         anchor_id=f"{varid}bottom",
     )

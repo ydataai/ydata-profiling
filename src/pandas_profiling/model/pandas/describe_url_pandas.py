@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 from urllib.parse import urlsplit
 
 import pandas as pd
@@ -29,8 +29,11 @@ def url_summary(series: pd.Series) -> dict:
 
 @describe_url_1d.register
 def pandas_describe_url_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Describe a url series.
 
     Args:
@@ -54,4 +57,4 @@ def pandas_describe_url_1d(
     # Update
     summary.update(url_summary(series))
 
-    return config, series, summary
+    return config, series, summary, target_col

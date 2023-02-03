@@ -54,32 +54,50 @@ def chi_square(
 
 
 def series_hashable(
-    fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
-) -> Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]:
+    fn: Callable[
+        [Settings, pd.Series, dict, Optional[pd.Series]],
+        Tuple[Settings, pd.Series, dict, Optional[pd.Series]],
+    ]
+) -> Callable[
+    [Settings, pd.Series, dict, Optional[pd.Series]],
+    Tuple[Settings, pd.Series, dict, Optional[pd.Series]],
+]:
     @functools.wraps(fn)
     def inner(
-        config: Settings, series: pd.Series, summary: dict
+        config: Settings,
+        series: pd.Series,
+        summary: dict,
+        target_col: Optional[pd.Series] = None,
     ) -> Tuple[Settings, pd.Series, dict]:
         if not summary["hashable"]:
-            return config, series, summary
-        return fn(config, series, summary)
+            return config, series, summary, target_col
+        return fn(config, series, summary, target_col)
 
     return inner
 
 
 def series_handle_nulls(
-    fn: Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]
-) -> Callable[[Settings, pd.Series, dict], Tuple[Settings, pd.Series, dict]]:
+    fn: Callable[
+        [Settings, pd.Series, dict, Optional[pd.Series]],
+        Tuple[Settings, pd.Series, dict, Optional[pd.Series]],
+    ]
+) -> Callable[
+    [Settings, pd.Series, dict, Optional[pd.Series]],
+    Tuple[Settings, pd.Series, dict, Optional[pd.Series]],
+]:
     """Decorator for nullable series"""
 
     @functools.wraps(fn)
     def inner(
-        config: Settings, series: pd.Series, summary: dict
-    ) -> Tuple[Settings, pd.Series, dict]:
+        config: Settings,
+        series: pd.Series,
+        summary: dict,
+        target_col: Optional[pd.Series] = None,
+    ) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
         if series.hasnans:
             series = series.dropna()
 
-        return fn(config, series, summary)
+        return fn(config, series, summary, target_col)
 
     return inner
 
@@ -97,83 +115,83 @@ def named_aggregate_summary(series: pd.Series, key: str) -> dict:
 
 @multimethod
 def describe_counts(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_supported(
-    config: Settings, series: Any, series_description: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_generic(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_numeric_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_date_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_categorical_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_url_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_file_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_path_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_image_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_boolean_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
 @multimethod
 def describe_timeseries_1d(
-    config: Settings, series: Any, summary: dict
-) -> Tuple[Settings, Any, dict]:
+    config: Settings, series: Any, summary: dict, target_col: Any
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()

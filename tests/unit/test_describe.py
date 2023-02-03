@@ -1,9 +1,9 @@
 import datetime
+from dataclasses import asdict
 
 import numpy as np
 import pandas as pd
 import pytest
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.describe import describe
 from pandas_profiling.model.summary import describe_1d
@@ -555,7 +555,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
         "package",
         "sample",
         "duplicates",
-    } == set(results.to_dict().keys()), "Not in results"
+    } == set(asdict(results).keys()), "Not in results"
 
     # Loop over variables
     for k, v in expected_results[column].items():
@@ -568,7 +568,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
 
         assert (
             test_condition
-        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+        ), f"Value `{results.variables[column][k]}` for key `{k}` in column `{column}` is not NaN"
 
     if results.variables[column]["type"] in ["Numeric", "DateTime"]:
         assert (

@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pandas as pd
 
@@ -39,8 +39,11 @@ def path_summary(series: pd.Series) -> dict:
 
 @describe_path_1d.register
 def pandas_describe_path_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings,
+    series: pd.Series,
+    summary: dict,
+    target_col: Optional[pd.Series] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
     """Describe a path series.
 
     Args:
@@ -60,4 +63,4 @@ def pandas_describe_path_1d(
 
     summary.update(path_summary(series))
 
-    return config, series, summary
+    return config, series, summary, target_col
