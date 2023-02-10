@@ -53,6 +53,10 @@ def _cramers_corrected_stat(confusion_matrix: pd.DataFrame, correction: bool) ->
     Returns:
         The Cramer's V corrected stat for the two variables.
     """
+    # handles empty crosstab
+    if confusion_matrix.empty:
+        return 0
+
     chi2 = stats.chi2_contingency(confusion_matrix, correction=correction)[0]
     n = confusion_matrix.sum().sum()
     phi2 = chi2 / n
