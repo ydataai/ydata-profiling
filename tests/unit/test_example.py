@@ -51,4 +51,5 @@ def test_example(get_data_file, test_output_dir):
         type(profile.get_description()) == BaseDescription
         and len(asdict(profile.get_description()).items()) == 10
     ), "Unexpected result"
-    assert "<span class=badge>12</span>" in profile.to_html()
+    # number of asserts
+    assert "<span class=badge>9</span>" in profile.to_html()

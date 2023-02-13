@@ -43,11 +43,18 @@ class NumVars(BaseModel):
     chi_squared_threshold: float = 0.999
 
 
+class StrVars(BaseModel):
+    length: bool = True
+    words: bool = True
+    characters: bool = True
+
+
 class CatVars(BaseModel):
     length: bool = True
     characters: bool = True
     words: bool = True
     cardinality_threshold: int = 50
+    unique_percentage_threshold: float = 0.5
     n_obs: int = 5
     # Set to zero to disable
     chi_squared_threshold: float = 0.999
@@ -102,6 +109,7 @@ class TimeseriesVars(BaseModel):
 
 class Univariate(BaseModel):
     num: NumVars = NumVars()
+    str: StrVars = StrVars()
     cat: CatVars = CatVars()
     image: ImageVars = ImageVars()
     bool: BoolVars = BoolVars()
