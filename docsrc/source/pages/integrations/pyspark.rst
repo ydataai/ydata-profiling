@@ -2,6 +2,10 @@
 ⚡ Pyspark
 ============
 
+.. NOTE::
+   **Spark dataframes support**
+    - Spark Dataframes profiling was introduced in v4.0.0
+
 Data Profiling is a core step in the process of developing AI solutions.
 For small datasets, the data can be loaded into memory and easily accessed with Python and pandas dataframes.
 However for larger datasets what can be done?
