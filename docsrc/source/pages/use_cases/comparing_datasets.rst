@@ -2,6 +2,12 @@
 Dataset Comparison
 ==================
 
+.. NOTE::
+   **Dataframes compare support**
+    - Profiling compare is supported from ydata-profiling version 3.5.0 onwards
+    - Profiling compare is not *(yet!)* available for Spark Dataframes
+
+
 ``pandas-profiling`` can be used to compare multiple version of the same dataset.
 This is useful when comparing data from multiple time periods, such as two years.
 Another common scenario is to view the dataset profile for training, validation and test sets in machine learning.

@@ -2,8 +2,14 @@
 Great Expectations
 ==================
 
-`Great Expectations <https://www.greatexpectations.io>`_ is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically *unit tests for your data*. ``pandas-profiling`` features a method to create a suite of Expectations based on the results of your ``ProfileReport``!
+.. NOTE::
+   **Great expectation integration**
+    - Great expectations integration is not longer supported.
+    - You can recreate the integration with the follow packages versions:
+     - pandas-profiling==2.1.0
+     - great-expectations==0.13.4
 
+`Great Expectations <https://www.greatexpectations.io>`_ is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically *unit tests for your data*. ``pandas-profiling`` features a method to create a suite of Expectations based on the results of your ``ProfileReport``!
 
 About Great Expectations
 -------------------------
