@@ -2,6 +2,10 @@
 ⚡ Pyspark
 ============
 
+.. NOTE::
+   **Spark dataframes support**
+    - Spark Dataframes profiling is available from ydata-profiling version 4.0.0 onwards
+
 Data Profiling is a core step in the process of developing AI solutions.
 For small datasets, the data can be loaded into memory and easily accessed with Python and pandas dataframes.
 However for larger datasets what can be done?
@@ -81,3 +85,12 @@ A quickstart example to profile data from a CSV leveraging Pyspark engine and ``
 
     a = ProfileReport(df)
     a.to_file("spark_profile.html")
+
+ydata-profiling in Databricks
+---------
+
+Yes! We have fantastic new coming with a full tutorial on how you can use ydata-profiling in Databricks Notebooks.
+
+The notebook example can be found `here <https://github.com/ydataai/ydata-profiling/tree/master/examples/integrations/databricks_example.ipynb>`_.
+
+Stay tuned - we are going to update the documentation soon!
