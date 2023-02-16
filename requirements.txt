@@ -21,3 +21,4 @@ multimethod>=1.4, <1.10
 statsmodels>=0.13.2, <0.14
 # type checking
 typeguard>=2.13.2, <2.14
+imagehash==4.3.1
