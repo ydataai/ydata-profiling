@@ -392,14 +392,14 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         redact=config.vars.cat.redact,
     )
 
-    mini_freq_table = Image(
+    mini_cat_dist = Image(
         plot_cat_dist(config, summary["plot_description"], mini=True),
         image_format=image_format,
         alt="Mini histogram",
     )
 
     template_variables["top"] = Container(
-        [info, table, fqm, mini_freq_table], sequence_type="grid"
+        [info, table, mini_cat_dist], sequence_type="grid"
     )
 
     # bottom
@@ -487,7 +487,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         Container(
             plots,
             sequence_type="grid",
-            name="Distribution",
+            name="Visualization",
             anchor_id=f"{varid}histogram2",
         )
     )

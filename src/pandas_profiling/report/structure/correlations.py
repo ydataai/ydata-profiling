@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -10,7 +11,6 @@ from pandas_profiling.report.presentation.core import (
 )
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.visualisation import plot
-from pandas_profiling.model.base.base_description import BaseDescription
 
 
 def get_correlation_items(

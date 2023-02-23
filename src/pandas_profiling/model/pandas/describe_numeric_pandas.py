@@ -2,7 +2,6 @@ from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
-
 from pandas_profiling.utils.compat import pandas_version_info
 
 if pandas_version_info() >= (1, 5):
@@ -11,7 +10,7 @@ else:
     from pandas.core.arrays.integer import _IntegerDtype as IntegerDtype
 
 from pandas_profiling.config import Settings
-from pandas_profiling.model.pandas.plot_description_pandas import (
+from pandas_profiling.model.pandas.description_plot_pandas import (
     NumericPlotDescriptionPandas,
 )
 from pandas_profiling.model.summary_algorithms import (
@@ -166,8 +165,15 @@ def pandas_describe_numeric_1d(
         )
     )
 
+    if target_col is None:
+        plot_bins = config.plot.histogram.bins
+    else:
+        plot_bins = config.plot.histogram.bins_supervised
     stats["plot_description"] = NumericPlotDescriptionPandas(
-        series, target_col, config.plot.histogram.bins
+        series,
+        target_col,
+        config.positive_target_value,
+        plot_bins,
     )
 
     return config, series, stats, target_col

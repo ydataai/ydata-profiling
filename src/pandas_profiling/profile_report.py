@@ -15,7 +15,7 @@ from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.describe import describe as describe_df
-from pandas_profiling.model.base.base_description import BaseDescription
+from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.sample import Sample
 from pandas_profiling.model.summarizer import (
     BaseSummarizer,

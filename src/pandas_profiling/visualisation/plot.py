@@ -13,7 +13,7 @@ from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap,
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from pandas_profiling.config import Settings
-from pandas_profiling.model.base.plot_description import BasePlotDescription
+from pandas_profiling.model.description_plot import BasePlotDescription
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
@@ -21,6 +21,9 @@ from seaborn._core.plot import Plotter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from typeguard import typechecked
 from wordcloud import WordCloud
+
+FIG_SIZE = (6, 4)
+MINI_FIG_SIZE = (3, 2.25)
 
 
 def format_fn(tick_val: int, tick_pos: Any) -> str:
@@ -34,145 +37,213 @@ I'm able co color bars, or the text, but not both at once.
 """
 
 
+def supervised_plot(func):
+    def inner(config: Settings, desc_plot: BasePlotDescription, mini: bool):
+        if not desc_plot.is_supervised():
+            raise ValueError(
+                "Plot description is not supervised. '{}'".format(
+                    desc_plot.data_col_name
+                )
+            )
+        return func(config, desc_plot, mini)
+
+    return inner
+
+
+@supervised_plot
 def _plot_cat_log_odds(
-    plot_description: BasePlotDescription,
-    figsize: Tuple[float, float] = (6, 4),
+    config: Settings, desc_plot: BasePlotDescription, mini: bool
 ) -> Plotter:
-    """Creates log odds plot for categorical column
+    """Create log odds plot for categorical column.
+
+    Parameters
+    ----------
+    config : Setting
+        Config of report. Used for colors.
+    desc_plot : BasePlotDescription
+        Plot description, with prepared log2 odds DataFrame.
+    figsize : Tuple
+        Size of graph.
 
     Returns
     -------
     Plotter
         Generated plot.
     """
+    _text_position = {"left": "left", "right": "right"}
+    color = config.html.style.primary_colors[2]
     p = (
         so.Plot(
-            plot_description.log_odds,
-            x=plot_description.log_odds_col_name,
-            y=plot_description.data_col_name,
+            desc_plot.log_odds,
+            x=desc_plot.log_odds_col_name,
+            y=desc_plot.data_col_name,
         )
-        .add(so.Bar(color="green"))
+        .add(so.Bar(alpha=1, color=color))
         .add(
-            so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
-            text=plot_description.log_odds_col_name,
+            so.Text(
+                {"fontweight": "bold", "clip_on": False}, color="black", halign="left"
+            ),
+            text=desc_plot.log_odds_col_name,
         )
-    )
-    p = (
-        p.layout(size=figsize)
+        .scale(x=so.Continuous().tick(count=0))
         .theme({"axes.facecolor": "w"})
-        .label(title="log odds", x="", y="")
     )
+    if mini:
+        p = p.layout(size=MINI_FIG_SIZE).label(title="", x="", y="")
+    else:
+        p = p.layout(size=FIG_SIZE).label(title="Log2 odds", x="", y="")
+
     return p.plot(pyplot=True)
 
 
 def _plot_cat_dist(
-    plot_description: BasePlotDescription,
-    figsize: Tuple[float, float] = (6, 4),
+    config: Settings, desc_plot: BasePlotDescription, mini: bool
 ) -> Plotter:
-    _text_color = {"left": "black", "right": "white"}
-    _text_position = {"left": "left", "right": "right"}
+    """Create distribution categorical plot.
 
+    Parameters
+    ----------
+    config : Setting
+        Config of report. Used for colors.
+    desc_plot : BasePlotDescription
+        Plot description, with prepared log2 odds DataFrame.
+    figsize : Tuple
+        Size of graph.
+    """
+    color_positive = config.html.style.primary_colors[1]
+    color_negative = config.html.style.primary_color
+
+    p = so.Plot(
+        desc_plot.distribution,
+        x=desc_plot.count_col_name,
+        y=desc_plot.data_col_name,
+        color=desc_plot.target_col_name,
+    )
     # supervised plot
-    if (
-        plot_description.target_col_name is not None
-        and plot_description.target_col_name != plot_description.data_col_name
-    ):
-        p = (
-            so.Plot(
-                plot_description.distribution,
-                x=plot_description.count_col_name,
-                y=plot_description.data_col_name,
-                color=plot_description.target_col_name,
-            )
-            .add(so.Bar(alpha=1), so.Dodge())
-            .add(
-                so.Text(
-                    {"fontweight": "bold", "clip_on": False},
-                    halign="left",
-                ),
-                so.Dodge(by=["color"]),
-                text=plot_description.count_col_name,
-            )
+    if desc_plot.is_supervised():
+        p = p.add(so.Bar(alpha=1), so.Dodge(), legend=False).add(
+            so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
+            so.Dodge(by=["color"]),
+            text=desc_plot.count_col_name,
         )
+
     # unsupervised plot
     else:
-        p = (
-            so.Plot(
-                plot_description.distribution,
-                x=plot_description.count_col_name,
-                y=plot_description.data_col_name,
-            )
-            .add(so.Bar(alpha=1))
-            .add(
-                so.Text({"fontweight": "bold"}),
-                text=plot_description.count_col_name,
-                color="labels_location",
-                halign="labels_location",
-            )
-            .scale(
-                color=_text_color,
-                halign=_text_position,
-                x=so.Continuous().tick(count=0),
-            )
+        p = p.add(so.Bar(alpha=1), legend=False).add(
+            so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
+            text=desc_plot.count_col_name,
         )
 
-    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
+    p = p.scale(
+        x=so.Continuous().tick(count=0),
+        color={
+            desc_plot.p_target_value: color_positive,
+            desc_plot.n_target_value: color_negative,
+        },
+    ).theme({"axes.facecolor": "w"})
+
+    if mini:
+        p = p.layout(size=MINI_FIG_SIZE).label(title="", x="", y="")
+    else:
+        p = p.layout(size=FIG_SIZE).label(title="Distribution", x="", y="")
+
     return p.plot(pyplot=True)
 
 
+@supervised_plot
 def _plot_hist_log_odds(
-    plot_description: BasePlotDescription,
-    figsize: Tuple[float, float] = (6, 4),
+    config: Settings, desc_plot: BasePlotDescription, mini: bool
 ) -> Plotter:
+    """Create log2 odds graph for numeric variable.
+
+    Parameters
+    ----------
+    config : Setting
+        Config of report. Used for colors.
+    desc_plot : BasePlotDescription
+        Plot description, with prepared log2 odds DataFrame.
+    figsize : Tuple
+        Size of graph.
+    """
+    color = config.html.style.primary_colors[2]
+
     p = (
         so.Plot(
-            plot_description.log_odds,
-            x=plot_description.data_col_name,
-            y=plot_description.log_odds_col_name,
+            desc_plot.log_odds,
+            x=desc_plot.data_col_name,
+            y=desc_plot.log_odds_col_name,
         )
-        .add(so.Bar(color="green"))
+        .add(so.Bar(alpha=1, color=color))
         .add(
-            so.Text({"fontweight": "bold", "clip_on": False}, valign="bottom"),
+            so.Text(
+                {"fontweight": "bold", "clip_on": False},
+                valign="bottom",
+                color="black",
+            ),
             text="log_odds",
         )
     )
-    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="log odds")
+    p = p.scale(y=so.Continuous().tick(count=0)).theme({"axes.facecolor": "w"})
+
+    if mini:
+        p = p.layout(size=MINI_FIG_SIZE).label(title="", x="", y="")
+    else:
+        p = p.layout(size=FIG_SIZE).label(title="Log2 odds", x="", y="")
+
     return p.plot(pyplot=True)
 
 
 def _plot_hist_dist(
-    plot_description: BasePlotDescription,
-    figsize: Tuple[float, float] = (6, 4),
+    config: Settings, desc_plot: BasePlotDescription, mini: bool
 ) -> Plotter:
+    """Plot distribution of numeric variable.
 
+    Parameters
+    ----------
+    config : Setting
+        Config of report. Used for colors.
+    desc_plot : BasePlotDescription
+        Plot description, with prepared log2 odds DataFrame.
+    figsize : Tuple
+        Size of graph.
+    """
+    color_positive = config.html.style.primary_colors[1]
+    color_negative = config.html.style.primary_color
+    p = so.Plot(
+        desc_plot.distribution,
+        x=desc_plot.data_col_name,
+        y=desc_plot.count_col_name,
+        color=desc_plot.target_col_name,
+    )
     # supervised
-    if plot_description.target_col_name is not None:
-        p = (
-            so.Plot(
-                plot_description.distribution,
-                x=plot_description.data_col_name,
-                y=plot_description.count_col_name,
-                color=plot_description.target_col_name,
-            )
-            .add(so.Bar(alpha=1), so.Dodge())
-            .add(
-                so.Text(
-                    {"fontweight": "bold", "clip_on": False, "rotation": 90},
-                    valign="bottom",
-                    halign="center",
-                ),
-                so.Dodge(by=["color"]),
-                text=plot_description.count_col_name,
-            )
+    if desc_plot.is_supervised():
+        p = p.add(so.Bar(alpha=1), so.Dodge(), legend=False).add(
+            so.Text(
+                {"fontweight": "bold", "clip_on": False, "rotation": 45},
+                valign="bottom",
+                halign="center",
+            ),
+            so.Dodge(by=["color"]),
+            text=desc_plot.count_col_name,
         )
     # unsupervised
     else:
-        p = so.Plot(
-            plot_description.distribution,
-            x=plot_description.data_col_name,
-            y=plot_description.count_col_name,
-        ).add(so.Bars(alpha=1))
-    p = p.layout(size=figsize).theme({"axes.facecolor": "w"}).label(x="", y="")
+        p = p.add(so.Bars(alpha=1))
+        p = p.scale(x=so.Continuous().tick())
+
+    p = p.scale(
+        y=so.Continuous().tick(count=0),
+        color={
+            desc_plot.p_target_value: color_positive,
+            desc_plot.n_target_value: color_negative,
+        },
+    ).theme({"axes.facecolor": "w"})
+
+    if mini:
+        p = p.layout(size=MINI_FIG_SIZE).label(title="", x="", y="")
+    else:
+        p = p.layout(size=FIG_SIZE).label(title="Distribution", x="", y="")
+
     return p.plot(pyplot=True)
 
 
@@ -180,6 +251,15 @@ def _plot_word_cloud(
     series: pd.Series,
     figsize: tuple = (6, 4),
 ) -> plt.Figure:
+    """Plot word cloud for string variable.
+
+    Parameters
+    ----------
+    series : pd.Series
+        Series with words as keys and count as values.
+    figsize : Tuple
+        Size of graph.
+    """
     word_dict = series.to_dict()
     wordcloud = WordCloud(
         background_color="white", random_state=123
@@ -272,10 +352,7 @@ def plot_cat_dist(
     config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots categorical distribution"""
-    if mini:
-        plot = _plot_cat_dist(plot_description, figsize=(3, 2.25))
-    else:
-        plot = _plot_cat_dist(plot_description)
+    plot = _plot_cat_dist(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 
@@ -284,10 +361,7 @@ def plot_cat_log_odds(
     config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots categorical log odds graph"""
-    if mini:
-        plot = _plot_cat_log_odds(plot_description, figsize=(3, 2.25))
-    else:
-        plot = _plot_cat_log_odds(plot_description)
+    plot = _plot_cat_log_odds(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 
@@ -296,10 +370,10 @@ def plot_hist_dist(
     config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots histogram for continuos data"""
-    if mini:
-        plot = _plot_hist_dist(plot_description, figsize=(3, 2.25))
+    if plot_description.is_supervised():
+        plot = _plot_cat_dist(config, plot_description, mini)
     else:
-        plot = _plot_hist_dist(plot_description)
+        plot = _plot_hist_dist(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 
@@ -308,10 +382,10 @@ def plot_hist_log_odds(
     config: Settings, plot_description: BasePlotDescription, mini: bool = False
 ) -> str:
     """Plots continuous log odds graph"""
-    if mini:
-        plot = _plot_hist_log_odds(plot_description, figsize=(3, 2.25))
+    if plot_description.is_supervised():
+        plot = _plot_cat_log_odds(config, plot_description, mini)
     else:
-        plot = _plot_hist_log_odds(plot_description)
+        plot = _plot_hist_log_odds(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 

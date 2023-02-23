@@ -2,11 +2,10 @@ import functools
 from typing import Callable, Dict
 
 import numpy as np
-from pandas_profiling.config import Settings
-from visions.backends.pandas.series_utils import series_handle_nulls
-
 import pandas as pd
 from pandas.api import types as pdt
+from pandas_profiling.config import Settings
+from visions.backends.pandas.series_utils import series_handle_nulls
 
 
 def is_nullable(series: pd.Series, state: dict) -> bool:
@@ -72,8 +71,8 @@ def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
     - (distinct values / count of all values) is less than threshold
     - is not bool"""
     n_unique = series.nunique()
-    unique_threshold = k.vars.cat.unique_percentage_threshold
-    threshold = k.vars.cat.cardinality_threshold
+    unique_threshold = k.vars.str.percentage_cat_threshold
+    threshold = k.vars.str.categorical_threshold
     return (
         1 <= n_unique <= threshold
         and n_unique / series.size < unique_threshold

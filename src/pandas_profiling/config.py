@@ -47,6 +47,10 @@ class StrVars(BaseModel):
     length: bool = True
     words: bool = True
     characters: bool = True
+    # threshold for text var to be category
+    categorical_threshold: int = 50
+    # percentage threshold for text
+    percentage_cat_threshold: float = 0.5
 
 
 class CatVars(BaseModel):
@@ -54,7 +58,6 @@ class CatVars(BaseModel):
     characters: bool = True
     words: bool = True
     cardinality_threshold: int = 50
-    unique_percentage_threshold: float = 0.5
     n_obs: int = 5
     # Set to zero to disable
     chi_squared_threshold: float = 0.999
@@ -138,6 +141,8 @@ class CorrelationPlot(BaseModel):
 class Histogram(BaseModel):
     # Number of bins (set to 0 to automatically detect the bin size)
     bins: int = 50
+    # Number of bins for supervised histogram
+    bins_supervised: int = 5
     # Maximum number of bins (when bins=0)
     max_bins: int = 250
     x_axis_labels: bool = True
@@ -290,6 +295,7 @@ class Settings(BaseSettings):
 
     # column name for supervised profiling
     target_col: Optional[str] = None
+    positive_target_value: Optional[str] = None
 
     # Show the description at each variable (in addition to the overview tab)
     show_variable_description: bool = True

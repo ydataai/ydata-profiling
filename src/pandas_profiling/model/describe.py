@@ -3,21 +3,14 @@ from datetime import datetime
 from typing import Any, Dict, Optional
 
 import pandas as pd
-from tqdm.auto import tqdm
-from visions import VisionsTypeset
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import get_alerts
 from pandas_profiling.model.correlations import (
     calculate_correlation,
     get_active_correlations,
 )
-
-from pandas_profiling.model.base.base_description import (
-    BaseDescription,
-    BaseAnalysis,
-)
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
+from pandas_profiling.model.description import BaseAnalysis, BaseDescription
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
 from pandas_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
@@ -27,6 +20,8 @@ from pandas_profiling.model.summary import get_series_descriptions
 from pandas_profiling.model.table import get_table_stats
 from pandas_profiling.utils.progress_bar import progress
 from pandas_profiling.version import __version__
+from tqdm.auto import tqdm
+from visions import VisionsTypeset
 
 
 def describe(

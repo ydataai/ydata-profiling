@@ -2,11 +2,9 @@
 from typing import List, Sequence
 
 import pandas as pd
-from pandas_profiling.model.base.base_description import BaseDescription
-from tqdm.auto import tqdm
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import AlertType
+from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.handler import get_render_map
 from pandas_profiling.report.presentation.core import (
     HTML,
@@ -22,6 +20,7 @@ from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.utils.dataframe import slugify
+from tqdm.auto import tqdm
 
 
 def get_missing_items(config: Settings, summary: BaseDescription) -> list:

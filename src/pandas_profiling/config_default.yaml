@@ -38,6 +38,9 @@ vars:
         low_categorical_threshold: 5
         # Set to zero to disable
         chi_squared_threshold: 0.999
+    str:
+        categorical_threshold: 50
+        percentage_cat_threshold: 0.5
     cat:
         length: true
         characters: true

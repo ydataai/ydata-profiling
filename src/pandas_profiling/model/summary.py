@@ -1,13 +1,12 @@
 """Compute statistical description of datasets."""
 
-from typing import Any
+from typing import Any, Dict
 
 from multimethod import multimethod
-from tqdm import tqdm
-from visions import VisionsTypeset
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.summarizer import BaseSummarizer
+from tqdm import tqdm
+from visions import VisionsTypeset
 
 
 @multimethod
@@ -28,5 +27,5 @@ def get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> dict:
+) -> Dict[str, Any]:
     raise NotImplementedError()

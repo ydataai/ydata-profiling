@@ -5,12 +5,11 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
-
 from pandas_profiling.config import Settings
-from pandas_profiling.model.pandas.utils_pandas import weighted_median
-from pandas_profiling.model.pandas.plot_description_pandas import (
+from pandas_profiling.model.pandas.description_plot_pandas import (
     CategoricalPlotDescriptionPandas,
 )
+from pandas_profiling.model.pandas.utils_pandas import weighted_median
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
     describe_categorical_1d,
@@ -57,13 +56,8 @@ def counter_to_series(counter: Counter) -> pd.Series:
 
 def unicode_summary_vc(vc: pd.Series) -> dict:
     try:
-        from tangled_up_in_unicode import (  # type: ignore
-            block,
-            block_abbr,
-            category,
-            category_long,
-            script,
-        )
+        from tangled_up_in_unicode import block_abbr  # type: ignore
+        from tangled_up_in_unicode import block, category, category_long, script
     except ImportError:
         from unicodedata import category as _category  # pylint: disable=import-error
 
@@ -262,7 +256,10 @@ def pandas_describe_categorical_1d(
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     summary["plot_description"] = CategoricalPlotDescriptionPandas(
-        series, target_col, config.vars.cat.n_obs
+        series,
+        target_col,
+        config.positive_target_value,
+        config.vars.cat.n_obs,
     )
 
     return config, series, summary, target_col

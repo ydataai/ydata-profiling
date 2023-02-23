@@ -1,9 +1,8 @@
 import numpy as np
 import pandas as pd
 import pytest
-
 from pandas_profiling import ProfileReport
-from pandas_profiling.model.base.base_description import BaseDescription
+from pandas_profiling.model.description import BaseDescription
 
 
 def test_load(get_data_file, test_output_dir):
@@ -61,7 +60,7 @@ def test_load(get_data_file, test_output_dir):
     assert profile2._report is None
 
     json2 = profile2.to_json()
-    
+
     # both profile should generate same output
     assert json1 == json2
 

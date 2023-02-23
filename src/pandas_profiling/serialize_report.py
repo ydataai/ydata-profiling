@@ -2,13 +2,12 @@ import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
-
 if TYPE_CHECKING:
     from pandas_profiling.profile_report import ProfileReport
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.report.presentation.core import Root
-from pandas_profiling.model.base.base_description import BaseDescription
 from pandas_profiling.version import __version__
 
 

@@ -3,6 +3,7 @@ from urllib.parse import quote
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import AlertType
+from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.report.formatters import (
     fmt,
     fmt_bytesize,
@@ -14,7 +15,6 @@ from pandas_profiling.report.formatters import (
 )
 from pandas_profiling.report.presentation.core import Alerts, Container, Table
 from pandas_profiling.report.presentation.core.renderable import Renderable
-from pandas_profiling.model.base.base_description import BaseDescription
 
 
 def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderable:

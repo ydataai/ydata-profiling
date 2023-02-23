@@ -3,9 +3,8 @@ Test for issue 282:
 https://github.com/ydataai/pandas-profiling/issues/282
 """
 import pandas as pd
-
 from pandas_profiling import ProfileReport
-from pandas_profiling.model.base.base_description import BaseDescription
+from pandas_profiling.model.description import BaseDescription
 
 
 def test_issue282():

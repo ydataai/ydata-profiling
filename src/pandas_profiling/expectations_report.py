@@ -1,12 +1,13 @@
 from typing import Any, Optional
 
 import pandas as pd
+from visions import VisionsTypeset
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
-from pandas_profiling.model.base.base_description import BaseDescription
+from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.utils.dataframe import slugify
-from visions import VisionsTypeset
 
 
 class ExpectationHandler(Handler):
