@@ -2,8 +2,8 @@ from typing import Optional, Tuple
 from urllib.parse import urlsplit
 
 import pandas as pd
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import describe_url_1d
 
 
@@ -32,8 +32,8 @@ def pandas_describe_url_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     """Describe a url series.
 
     Args:
@@ -57,4 +57,4 @@ def pandas_describe_url_1d(
     # Update
     summary.update(url_summary(series))
 
-    return config, series, summary, target_col
+    return config, series, summary, target_description

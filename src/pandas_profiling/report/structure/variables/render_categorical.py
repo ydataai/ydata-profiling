@@ -342,7 +342,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
     length = config.vars.cat.length
 
     template_variables = render_common(config, summary)
-
+    top_items = []
     info = VariableInfo(
         summary["varid"],
         summary["varname"],
@@ -351,6 +351,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         summary["description"],
         style=config.html.style,
     )
+    top_items.append(info)
 
     table = Table(
         [
@@ -382,6 +383,50 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         ],
         style=config.html.style,
     )
+    top_items.append(table)
+
+    if "target" in summary and summary["target"]:
+        table_target = Table(
+            [
+                {
+                    "name": "Positive Values",
+                    "value": fmt(summary["positive_vals"]),
+                    "alert": False,
+                },
+                {
+                    "name": "Positive Values count",
+                    "value": fmt(summary["n_positive_vals"]),
+                    "alert": False,
+                },
+                {
+                    "name": "Positive Values (%)",
+                    "value": fmt_percent(summary["p_positive_vals"]),
+                    "alert": False,
+                },
+                {
+                    "name": "Negative Values",
+                    "value": fmt(summary["negative_vals"]),
+                    "alert": False,
+                },
+                {
+                    "name": "Negative Values count",
+                    "value": fmt(summary["n_negative_vals"]),
+                    "alert": False,
+                },
+                {
+                    "name": "Negative Values (%)",
+                    "value": fmt_percent(summary["p_negative_vals"]),
+                    "alert": False,
+                },
+                {
+                    "name": "Mean",
+                    "value": fmt_number(summary["target_mean"]),
+                    "alert": False,
+                },
+            ],
+            style=config.html.style,
+        )
+        top_items.append(table_target)
 
     fqm = FrequencyTableSmall(
         freq_table(
@@ -397,10 +442,9 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         image_format=image_format,
         alt="Mini histogram",
     )
+    top_items.append(mini_cat_dist)
 
-    template_variables["top"] = Container(
-        [info, table, mini_cat_dist], sequence_type="grid"
-    )
+    template_variables["top"] = Container(top_items, sequence_type="grid")
 
     # bottom
     # ==================================================================================

@@ -2,7 +2,6 @@ import json
 
 import pandas as pd
 import pytest
-
 from pandas_profiling import ProfileReport
 
 
@@ -17,6 +16,8 @@ def test_json(data: pd.DataFrame):
     data = json.loads(report_json)
     assert set(data.keys()) == {
         "analysis",
+        "target",
+        "variables",
         "correlations",
         "duplicates",
         "alerts",
@@ -25,7 +26,6 @@ def test_json(data: pd.DataFrame):
         "sample",
         "scatter",
         "table",
-        "variables",
     }
 
 

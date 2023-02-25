@@ -11,6 +11,7 @@ from pandas_profiling.model.correlations import (
 )
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.model.description import BaseAnalysis, BaseDescription
+from pandas_profiling.model.description_target import TargetDescription, describe_target
 from pandas_profiling.model.duplicates import get_duplicates
 from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
 from pandas_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
@@ -53,8 +54,8 @@ def describe(
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    check_dataframe(df)
-    df = preprocess(config, df)
+    check_dataframe(config, df)
+    df = preprocess(df)
 
     number_of_tasks = 5
 
@@ -66,10 +67,17 @@ def describe(
     ) as pbar:
         date_start = datetime.utcnow()
 
+        # target description
+        target_description: Optional[TargetDescription]
+        if config.target.col_name is not None:
+            target_description = describe_target(config.target, df)
+        else:
+            target_description = None
+
         # Variable-specific
         pbar.total += len(df.columns)
         series_description = get_series_descriptions(
-            config, df, summarizer, typeset, pbar
+            config, df, summarizer, typeset, pbar, target_description
         )
 
         pbar.set_postfix_str("Get variable types")
@@ -161,18 +169,26 @@ def describe(
 
         date_end = datetime.utcnow()
 
+    # update target description and remove target from variables
+    if target_description:
+        target_description.description.update(
+            series_description[target_description.name]
+        )
+        del series_description[target_description.name]
+
     analysis = BaseAnalysis(config.title, date_start, date_end)
 
     description = BaseDescription(
-        analysis,
-        table_stats,
-        series_description,
-        scatter_matrix,
-        correlations,
-        missing,
-        alerts,
-        package,
-        samples,
-        duplicates,
+        analysis=analysis,
+        table=table_stats,
+        target=target_description,
+        variables=series_description,
+        scatter=scatter_matrix,
+        correlations=correlations,
+        missing=missing,
+        alerts=alerts,
+        package=package,
+        sample=samples,
+        duplicates=duplicates,
     )
     return description

@@ -1,8 +1,8 @@
 from typing import Optional, Tuple
 
 import pandas as pd
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import (
     describe_boolean_1d,
     series_hashable,
@@ -15,8 +15,8 @@ def pandas_describe_boolean_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     """Describe a boolean series.
 
     Args:
@@ -31,4 +31,4 @@ def pandas_describe_boolean_1d(
     value_counts = summary["value_counts_without_nan"]
     summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
 
-    return config, series, summary, target_col
+    return config, series, summary, target_description

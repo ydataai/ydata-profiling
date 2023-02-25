@@ -7,7 +7,6 @@ from sklearn.impute import SimpleImputer
 from pandas_profiling import ProfileReport
 
 if __name__ == "__main__":
-
     # Load the dataset
     df = pd.read_csv("hcc.csv")
 

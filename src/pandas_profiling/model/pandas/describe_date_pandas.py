@@ -2,8 +2,8 @@ from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
     describe_date_1d,
@@ -20,8 +20,8 @@ def pandas_describe_date_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     """Describe a date series.
 
     Args:
@@ -47,4 +47,4 @@ def pandas_describe_date_1d(
         summary["chi_squared"] = chi_square(values)
 
     summary.update(histogram_compute(config, values, summary["n_distinct"]))
-    return config, values, summary, target_col
+    return config, values, summary, target_description

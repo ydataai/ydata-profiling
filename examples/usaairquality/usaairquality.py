@@ -8,7 +8,6 @@ from pandas_profiling.utils.cache import cache_file
 from pandas_profiling.visualisation.plot import timeseries_heatmap
 
 if __name__ == "__main__":
-
     file_name = cache_file(
         "pollution_us_2000_2016.csv",
         "https://query.data.world/s/mz5ot3l4zrgvldncfgxu34nda45kvb",

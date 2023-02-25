@@ -2,6 +2,7 @@ from typing import Optional, Tuple
 
 import pandas as pd
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.pandas.describe_categorical_pandas import (
     length_summary_vc,
     unicode_summary_vc,
@@ -22,8 +23,8 @@ def pandas_describe_string_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     """Describe string series.
 
     Args:
@@ -61,4 +62,4 @@ def pandas_describe_string_1d(
     if config.vars.str.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
-    return config, series, summary, target_col
+    return config, series, summary, target_description

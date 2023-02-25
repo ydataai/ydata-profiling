@@ -19,7 +19,6 @@ from pandas_profiling.model.alerts import AlertType
 
 @pytest.mark.skip()
 def test_issue824():
-
     # Minimal reproducible code
 
     df = pd.DataFrame.from_dict(

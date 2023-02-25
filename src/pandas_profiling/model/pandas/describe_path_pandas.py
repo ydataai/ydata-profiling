@@ -2,8 +2,8 @@ import os
 from typing import Optional, Tuple
 
 import pandas as pd
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import describe_path_1d
 
 
@@ -42,8 +42,8 @@ def pandas_describe_path_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     """Describe a path series.
 
     Args:
@@ -63,4 +63,4 @@ def pandas_describe_path_1d(
 
     summary.update(path_summary(series))
 
-    return config, series, summary, target_col
+    return config, series, summary, target_description

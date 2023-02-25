@@ -5,14 +5,14 @@ from typing import Optional, Tuple, Union
 
 import imagehash
 import pandas as pd
-from PIL import ExifTags, Image
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import (
     describe_image_1d,
     named_aggregate_summary,
 )
 from pandas_profiling.utils.imghdr_patch import *  # noqa: F401,F403
+from PIL import ExifTags, Image
 
 
 def open_image(path: Path) -> Optional[Image.Image]:
@@ -246,8 +246,8 @@ def pandas_describe_image_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     if series.hasnans:
         raise ValueError("May not contain NaNs")
     if not hasattr(series, "str"):
@@ -255,4 +255,4 @@ def pandas_describe_image_1d(
 
     summary.update(image_summary(series, config.vars.image.exif))
 
-    return config, series, summary, target_col
+    return config, series, summary, target_description

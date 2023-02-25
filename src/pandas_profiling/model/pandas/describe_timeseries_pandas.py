@@ -2,17 +2,17 @@ from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
-from scipy.fft import _pocketfft
-from scipy.signal import find_peaks
-from statsmodels.tsa.stattools import adfuller
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import (
     describe_numeric_1d,
     describe_timeseries_1d,
     series_handle_nulls,
     series_hashable,
 )
+from scipy.fft import _pocketfft
+from scipy.signal import find_peaks
+from statsmodels.tsa.stattools import adfuller
 
 
 def stationarity_test(config: Settings, series: pd.Series) -> Tuple[bool, float]:
@@ -148,8 +148,8 @@ def pandas_describe_timeseries_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     """Describe a timeseries.
 
     Args:
@@ -168,4 +168,4 @@ def pandas_describe_timeseries_1d(
     stats["addfuller"] = p_value
     stats["series"] = series
 
-    return config, series, stats, target_col
+    return config, series, stats, target_description

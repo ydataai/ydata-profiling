@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
+from pandas_profiling.model.description_target import TargetDescription
 
 import pandas as pd
 
@@ -27,13 +28,10 @@ class BasePlotDescription:
     """
 
     data_col_name: str
-    target_col_name: Optional[str]
+    target_description: Optional[TargetDescription]
 
     __distribution: pd.DataFrame
     __log_odds: Optional[pd.DataFrame] = None
-
-    p_target_value: Optional[str] = None  # positive target value
-    n_target_value: Optional[str] = None  # negative target value
 
     count_col_name: str = "count"
     log_odds_col_name: str = "log_odds"
@@ -44,9 +42,7 @@ class BasePlotDescription:
     def __init__(
         self,
         data_col_name: str,
-        target_col_name: Optional[str],
-        target_positive_value: Optional[str] = None,
-        target_negative_value: Optional[str] = None,
+        target_description: Optional[TargetDescription],
     ) -> None:
         """Setup basic parameters for plot description.s
 
@@ -62,22 +58,25 @@ class BasePlotDescription:
             Negative value of target column, if target column is set.
         """
         self.data_col_name = data_col_name
-        self.target_col_name = target_col_name
-        if target_col_name is not None:
-            if target_positive_value is None:
-                raise ValueError(
-                    "Positive target value not set, on target column '{}'.".format(
-                        self.target_col_name
-                    )
-                )
-            if target_negative_value is None:
-                raise ValueError(
-                    "Negative target value not set, on target column '{}'.".format(
-                        self.target_col_name
-                    )
-                )
-            self.p_target_value = target_positive_value
-            self.n_target_value = target_negative_value
+        self.target_description = target_description
+
+    @property
+    def target_col_name(self) -> Optional[str]:
+        if self.target_description:
+            return self.target_description.name
+        return None
+
+    @property
+    def p_target_value(self) -> Optional[str]:
+        if self.target_description:
+            return self.target_description.positive_values[0]
+        return None
+
+    @property
+    def n_target_value(self) -> Optional[str]:
+        if self.target_description:
+            return self.target_description.negative_values[0]
+        return None
 
     @property
     def distribution(self) -> pd.DataFrame:
@@ -108,11 +107,10 @@ class BasePlotDescription:
 
     def is_supervised(self) -> bool:
         """Return, if plot should be plotted as supervised, or not.
-        Supervised for all values, with target col.
-        Unsupervised when target_col is None or if data_col == target_col"""
+        Plot is supervised, if target description is not None."""
         return (
-            self.target_col_name is not None
-            and self.target_col_name != self.data_col_name
+            self.target_description is not None
+            and self.target_description.name != self.data_col_name
         )
 
     def __generate_log_odds(self):
@@ -121,13 +119,17 @@ class BasePlotDescription:
             self.distribution,
             values=self.count_col_name,
             index=self.data_col_name,
-            columns=self.target_col_name,
+            columns=self.target_description.name,
             sort=False,
         ).reset_index()
         log_odds.columns.name = ""
         # counts log2 odds
+        # TODO change to support multiple values
         log_odds["log_odds"] = round(
-            np.log2(log_odds[self.p_target_value] / log_odds[self.n_target_value]),
+            np.log2(
+                log_odds[self.target_description.positive_values[0]]
+                / log_odds[self.target_description.negative_values[0]]
+            ),
             2,
         )
         # replace all special values with 0
@@ -151,7 +153,7 @@ class BasePlotDescription:
         self.__distribution = distribution.reset_index(drop=True)
 
         # generate log_odds just for supervised report
-        if self.target_col_name is not None:
+        if self.is_supervised():
             self.__generate_log_odds()
 
     def __check_columns(self, df: pd.DataFrame):
@@ -160,9 +162,11 @@ class BasePlotDescription:
             raise ValueError(
                 "Data column '{}' not in DataFrame.".format(self.data_col_name)
             )
-        if (self.target_col_name is not None) and (self.target_col_name not in df):
+        if self.is_supervised() and (self.target_description.name not in df):
             raise ValueError(
-                "Target column '{}' not in DataFrame.".format(self.target_col_name)
+                "Target column '{}' not in DataFrame.".format(
+                    self.target_description.name
+                )
             )
         if self.count_col_name not in df:
             raise ValueError(

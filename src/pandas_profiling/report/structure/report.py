@@ -1,5 +1,5 @@
 """Generate the report."""
-from typing import List, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 import pandas as pd
 from pandas_profiling.config import Settings
@@ -66,6 +66,128 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
     return items
 
 
+def render_variable(
+    config: Settings,
+    dataframe_summary: BaseDescription,
+    idx: str,
+    summary: Dict[str, Any],
+) -> Renderable:
+    """Create renderable item for one variable.
+
+    Parameters
+    ----------
+    config : Settings
+        Config of report.
+    dataframe_summary : BaseDescription
+        Description of whole DataFrame.
+    idx : str
+        Name of variable (column).
+    summary : Dict[str, Any]
+        Summary of variable (column).
+
+    Returns
+    -------
+    Renderable
+        Renderable item of variable.
+    """
+    descriptions = config.variables.descriptions
+    show_description = config.show_variable_description
+    reject_variables = config.reject_variables
+
+    render_map = get_render_map()
+
+    # Common template variables
+    if not isinstance(dataframe_summary.alerts, tuple):
+        alerts = [
+            alert.fmt()
+            for alert in dataframe_summary.alerts
+            if alert.column_name == idx
+        ]
+
+        alert_fields = {
+            field
+            for alert in dataframe_summary.alerts
+            if alert.column_name == idx
+            for field in alert.fields
+        }
+
+        alert_types = {
+            alert.alert_type
+            for alert in dataframe_summary.alerts
+            if alert.column_name == idx
+        }
+    else:
+        alerts = tuple(
+            [alert.fmt() for alert in summary_alerts if alert.column_name == idx]
+            for summary_alerts in dataframe_summary.alerts
+        )  # type: ignore
+
+        alert_fields = {
+            field
+            for summary_alerts in dataframe_summary.alerts
+            for alert in summary_alerts
+            if alert.column_name == idx
+            for field in alert.fields
+        }
+
+        alert_types = {
+            alert.alert_type
+            for summary_alerts in dataframe_summary.alerts
+            for alert in summary_alerts
+            if alert.column_name == idx
+        }
+
+    template_variables = {
+        "varname": idx,
+        "varid": hash(idx),
+        "alerts": alerts,
+        "description": descriptions.get(idx, "") if show_description else "",
+        "alert_fields": alert_fields,
+    }
+
+    template_variables.update(summary)
+
+    # Per type template variables
+    if isinstance(summary["type"], list):
+        types = set(summary["type"])
+        if len(types) == 1:
+            variable_type = list(types)[0]
+        else:
+            # This logic may be treated by the typeset
+            if (types == {"Numeric", "Categorical"}) or types == {
+                "Categorical",
+                "Unsupported",
+            }:
+                # Treating numeric as categorical, if one is unsupported, still render as categorical
+                variable_type = "Categorical"
+            else:
+                raise ValueError(f"Types for {idx} are not compatible: {types}")
+    else:
+        variable_type = summary["type"]
+    render_map_type = render_map.get(variable_type, render_map["Unsupported"])
+    template_variables.update(render_map_type(config, template_variables))
+
+    # Ignore these
+    if reject_variables:
+        ignore = AlertType.REJECTED in alert_types
+    else:
+        ignore = False
+
+    bottom = None
+    if "bottom" in template_variables and template_variables["bottom"] is not None:
+        btn = ToggleButton("More details", anchor_id=template_variables["varid"])
+        bottom = Collapse(btn, template_variables["bottom"])
+
+    var = Variable(
+        template_variables["top"],
+        bottom=bottom,
+        anchor_id=template_variables["varid"],
+        name=idx,
+        ignore=ignore,
+    )
+    return var
+
+
 def render_variables_section(
     config: Settings, dataframe_summary: BaseDescription
 ) -> list:
@@ -81,104 +203,8 @@ def render_variables_section(
 
     templs = []
 
-    descriptions = config.variables.descriptions
-    show_description = config.show_variable_description
-    reject_variables = config.reject_variables
-
-    render_map = get_render_map()
-
     for idx, summary in dataframe_summary.variables.items():
-
-        # Common template variables
-        if not isinstance(dataframe_summary.alerts, tuple):
-            alerts = [
-                alert.fmt()
-                for alert in dataframe_summary.alerts
-                if alert.column_name == idx
-            ]
-
-            alert_fields = {
-                field
-                for alert in dataframe_summary.alerts
-                if alert.column_name == idx
-                for field in alert.fields
-            }
-
-            alert_types = {
-                alert.alert_type
-                for alert in dataframe_summary.alerts
-                if alert.column_name == idx
-            }
-        else:
-            alerts = tuple(
-                [alert.fmt() for alert in summary_alerts if alert.column_name == idx]
-                for summary_alerts in dataframe_summary.alerts
-            )  # type: ignore
-
-            alert_fields = {
-                field
-                for summary_alerts in dataframe_summary.alerts
-                for alert in summary_alerts
-                if alert.column_name == idx
-                for field in alert.fields
-            }
-
-            alert_types = {
-                alert.alert_type
-                for summary_alerts in dataframe_summary.alerts
-                for alert in summary_alerts
-                if alert.column_name == idx
-            }
-
-        template_variables = {
-            "varname": idx,
-            "varid": hash(idx),
-            "alerts": alerts,
-            "description": descriptions.get(idx, "") if show_description else "",
-            "alert_fields": alert_fields,
-        }
-
-        template_variables.update(summary)
-
-        # Per type template variables
-        if isinstance(summary["type"], list):
-            types = set(summary["type"])
-            if len(types) == 1:
-                variable_type = list(types)[0]
-            else:
-                # This logic may be treated by the typeset
-                if (types == {"Numeric", "Categorical"}) or types == {
-                    "Categorical",
-                    "Unsupported",
-                }:
-                    # Treating numeric as categorical, if one is unsupported, still render as categorical
-                    variable_type = "Categorical"
-                else:
-                    raise ValueError(f"Types for {idx} are not compatible: {types}")
-        else:
-            variable_type = summary["type"]
-        render_map_type = render_map.get(variable_type, render_map["Unsupported"])
-        template_variables.update(render_map_type(config, template_variables))
-
-        # Ignore these
-        if reject_variables:
-            ignore = AlertType.REJECTED in alert_types
-        else:
-            ignore = False
-
-        bottom = None
-        if "bottom" in template_variables and template_variables["bottom"] is not None:
-            btn = ToggleButton("More details", anchor_id=template_variables["varid"])
-            bottom = Collapse(btn, template_variables["bottom"])
-
-        var = Variable(
-            template_variables["top"],
-            bottom=bottom,
-            anchor_id=template_variables["varid"],
-            name=idx,
-            ignore=ignore,
-        )
-
+        var = render_variable(config, dataframe_summary, idx, summary)
         templs.append(var)
 
     return templs
@@ -368,7 +394,26 @@ def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
                 anchor_id="overview",
             ),
         ]
+        # target
+        if summary.target:
+            target_description = summary.target.description
+            section_items.append(
+                Container(
+                    [
+                        render_variable(
+                            config,
+                            summary,
+                            summary.target.name,
+                            target_description,
+                        )
+                    ],
+                    name="Target",
+                    sequence_type="accordion",
+                    anchor_id="target",
+                )
+            )
 
+        # variables
         if len(summary.variables) > 0:
             section_items.append(
                 Dropdown(

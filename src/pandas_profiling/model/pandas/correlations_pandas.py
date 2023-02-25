@@ -186,7 +186,6 @@ def pandas_auto_compute(
         columns=columns_tested,
     )
     for col_1_name, col_2_name in itertools.combinations(columns_tested, 2):
-
         method = (
             _pairwise_spearman
             if col_1_name and col_2_name not in categorical_columns

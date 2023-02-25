@@ -7,6 +7,10 @@ from typing import Any, Dict, Optional, Tuple
 import numpy as np
 import pandas as pd
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
+from pandas_profiling.model.pandas.description_target_pandas import (
+    TargetDescriptionPandas,
+)
 from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.model.summary import describe_1d, get_series_descriptions
 from pandas_profiling.utils.dataframe import sort_column_names
@@ -20,7 +24,7 @@ def pandas_describe_1d(
     series: pd.Series,
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
-    target_col: Optional[pd.Series] = None,
+    target_description: Optional[TargetDescription] = None,
 ) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
@@ -47,7 +51,9 @@ def pandas_describe_1d(
         # [new dtypes, changed using `astype` function are now considered]
         vtype = typeset.detect_type(series)
 
-    return summarizer.summarize(config, series, dtype=vtype, target_col=target_col)
+    return summarizer.summarize(
+        config, series, dtype=vtype, target_description=target_description
+    )
 
 
 @get_series_descriptions.register
@@ -57,6 +63,7 @@ def pandas_get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
+    target_description: Optional[TargetDescription],
 ) -> Dict[str, Any]:
     def multiprocess_1d(args: Tuple[str, pd.Series]) -> Tuple[str, dict]:
         """Wrapper to process series in parallel.
@@ -69,14 +76,11 @@ def pandas_get_series_descriptions(
             A tuple with column and the series description.
         """
         column, series = args
-        return column, describe_1d(config, series, summarizer, typeset, target_col)
+        return column, describe_1d(
+            config, series, summarizer, typeset, target_description
+        )
 
     pool_size = config.pool_size
-
-    if config.target_col is not None:
-        target_col = df[config.target_col].astype(str)
-    else:
-        target_col = None
 
     # Multiprocessing of Describe 1D for each column
     if pool_size <= 0:

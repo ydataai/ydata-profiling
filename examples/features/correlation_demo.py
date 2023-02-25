@@ -16,7 +16,6 @@ The "Auto" correlation is an interpretable pairwise column metric of the followi
 """
 
 if __name__ == "__main__":
-
     # Download the UCI Bank Marketing Dataset- as seen in examples/bank_marketing_data/banking_data.py
     file_name = cache_zipped_file(
         "bank-full.csv",

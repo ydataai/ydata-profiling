@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+
+from pandas_profiling.model.description_target import TargetDescription
 
 
 @dataclass
@@ -34,7 +36,7 @@ class BaseAnalysis:
 
 @dataclass
 class BaseDescription:
-    """Description of dataframe.
+    """Description of DataFrame.
 
     Attributes
     ----------
@@ -64,6 +66,7 @@ class BaseDescription:
 
     analysis: BaseAnalysis
     table: Any
+    target: Optional[TargetDescription]
     variables: Dict[str, Any]
     scatter: Any
     correlations: Any

@@ -547,6 +547,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
     assert {
         "analysis",
         "table",
+        "target",
         "variables",
         "scatter",
         "correlations",

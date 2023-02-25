@@ -2,15 +2,11 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
 import yaml
-from tqdm.auto import tqdm
-from typeguard import typechecked
-from visions import VisionsTypeset
-
 from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
@@ -32,6 +28,9 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
+from tqdm.auto import tqdm
+from typeguard import typechecked
+from visions import VisionsTypeset
 
 
 @typechecked
@@ -64,6 +63,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         typeset: Optional[VisionsTypeset] = None,
         summarizer: Optional[BaseSummarizer] = None,
         config: Optional[Settings] = None,
+        target_col: Optional[str] = None,
+        target_positive_values: Optional[List[str]] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -135,6 +136,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         report_config.vars.timeseries.active = tsmode
         if tsmode and sortby:
             report_config.vars.timeseries.sortby = sortby
+
+        if target_col:
+            report_config.target.col_name = target_col
+            if target_positive_values:
+                report_config.target.positive_values = target_positive_values
 
         self.df = self.__initialize_dataframe(df, report_config)
         self.config = report_config
@@ -441,7 +447,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
         from IPython.core.display import display
-
         from pandas_profiling.report.presentation.flavours.widget.notebook import (
             get_notebook_iframe,
         )

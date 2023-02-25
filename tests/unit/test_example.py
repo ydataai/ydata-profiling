@@ -47,9 +47,9 @@ def test_example(get_data_file, test_output_dir):
     )
     profile.to_file(output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
+    assert type(profile.get_description()) == BaseDescription, "Description wrong type."
     assert (
-        type(profile.get_description()) == BaseDescription
-        and len(asdict(profile.get_description()).items()) == 10
-    ), "Unexpected result"
+        len(asdict(profile.get_description()).items()) == 11
+    ), "Description wrong len."
     # number of asserts
     assert "<span class=badge>9</span>" in profile.to_html()

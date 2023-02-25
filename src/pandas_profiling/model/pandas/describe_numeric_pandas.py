@@ -10,6 +10,7 @@ else:
     from pandas.core.arrays.integer import _IntegerDtype as IntegerDtype
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.pandas.description_plot_pandas import (
     NumericPlotDescriptionPandas,
 )
@@ -74,8 +75,8 @@ def pandas_describe_numeric_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
-    target_col: Optional[pd.Series] = None,
-) -> Tuple[Settings, pd.Series, dict, Optional[pd.Series]]:
+    target_description: Optional[TargetDescription] = None,
+) -> Tuple[Settings, pd.Series, dict, Optional[TargetDescription]]:
     """Describe a numeric series.
 
     Args:
@@ -165,15 +166,14 @@ def pandas_describe_numeric_1d(
         )
     )
 
-    if target_col is None:
+    if target_description is None:
         plot_bins = config.plot.histogram.bins
     else:
         plot_bins = config.plot.histogram.bins_supervised
     stats["plot_description"] = NumericPlotDescriptionPandas(
         series,
-        target_col,
-        config.positive_target_value,
+        target_description,
         plot_bins,
     )
 
-    return config, series, stats, target_col
+    return config, series, stats, target_description

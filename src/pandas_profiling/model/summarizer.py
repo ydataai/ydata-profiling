@@ -2,9 +2,9 @@ from dataclasses import asdict, is_dataclass
 from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 import numpy as np
-import pandas as pd
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description import BaseDescription
+from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.model.summary_algorithms import (
     describe_categorical_1d,
@@ -22,6 +22,8 @@ from pandas_profiling.model.summary_algorithms import (
 )
 from visions import VisionsBaseType, VisionsTypeset
 
+import pandas as pd
+
 
 class BaseSummarizer(Handler):
     """A base summarizer
@@ -34,7 +36,7 @@ class BaseSummarizer(Handler):
         config: Settings,
         series: pd.Series,
         dtype: Type[VisionsBaseType],
-        target_col: Optional[pd.Series] = None,
+        target_description: Optional[TargetDescription] = None,
     ) -> dict:
         """
 
@@ -42,7 +44,7 @@ class BaseSummarizer(Handler):
             object:
         """
         _, _, summary, _ = self.handle(
-            str(dtype), config, series, {"type": str(dtype)}, target_col
+            str(dtype), config, series, {"type": str(dtype)}, target_description
         )
         return summary
 
