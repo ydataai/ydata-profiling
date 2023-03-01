@@ -1,9 +1,10 @@
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
-import pandas as pd
 from pandas_profiling.config import Target
 from pandas_profiling.model.description_target import TargetDescription, describe_target
+
+import pandas as pd
 
 
 class TargetDescriptionPandas(TargetDescription):
@@ -39,8 +40,8 @@ class TargetDescriptionPandas(TargetDescription):
 
     def _get_bin_target(self) -> pd.Series:
         _bin_target = self.series.copy()
-        _bin_target.replace(self.positive_values, 1, inplace=True)
-        _bin_target.replace(self.negative_values, -1, inplace=True)
+        _bin_target.replace(self.positive_values, self.bin_positive, inplace=True)
+        _bin_target.replace(self.negative_values, self.bin_negative, inplace=True)
         return _bin_target
 
     def _get_advanced_description(self) -> Dict[str, Any]:

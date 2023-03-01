@@ -31,14 +31,23 @@ class TargetDescription(metaclass=ABCMeta):
         self.series_binary = self._get_bin_target()
         self._update_description_base()
 
+    @property
+    def bin_positive(self) -> int:
+        """Positive value for series_binary."""
+        return 1
+
+    @property
+    def bin_negative(self) -> int:
+        """Negative value for series_binary."""
+        return 0
+
     @abstractmethod
     def _infer_target_values(self) -> Tuple[List[str], List[str]]:
         """Infer positive and negative values in target column.
 
-        Returns
-        -------
-        positive, negative : Tuple[List[str], List[str]]
-            Positive and negative values.
+        Returns:
+            positive, negative (Tuple[List[str], List[str]]):
+                Positive and negative values.
         """
         pass
 

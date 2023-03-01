@@ -8,6 +8,9 @@ from pandas_profiling.model.pandas.describe_categorical_pandas import (
     unicode_summary_vc,
     word_summary_vc,
 )
+from pandas_profiling.model.pandas.description_plot_pandas import (
+    TextPlotDescriptionPandas,
+)
 from pandas_profiling.model.summary_algorithms import (
     describe_string_1d,
     histogram_compute,
@@ -61,5 +64,9 @@ def pandas_describe_string_1d(
 
     if config.vars.str.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
+
+    summary["plot_description"] = TextPlotDescriptionPandas(
+        series, target_description, config.vars.cat.stop_words
+    )
 
     return config, series, summary, target_description

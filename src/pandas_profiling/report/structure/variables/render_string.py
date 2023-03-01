@@ -62,7 +62,9 @@ class RenderString(BaseRenderVariable):
 
         if self.config.vars.str.words:
             mini_wordcloud = Image(
-                plot_word_cloud(self.config, self.summary["word_counts"], mini=True),
+                plot_word_cloud(
+                    self.config, self.summary["plot_description"], mini=True
+                ),
                 image_format=self.config.plot.image_format,
                 alt="Mini wordcloud",
             )
@@ -146,7 +148,7 @@ class RenderString(BaseRenderVariable):
         )
 
         image = Image(
-            plot_word_cloud(self.config, self.summary["word_counts"]),
+            plot_word_cloud(self.config, self.summary["plot_description"]),
             image_format=self.config.plot.image_format,
             alt="Wordcloud",
         )
