@@ -13,6 +13,7 @@ try:
 except ImportError:
     from pandas.errors import DataError
 
+
 class Correlation:
     @staticmethod
     def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
