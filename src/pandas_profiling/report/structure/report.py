@@ -20,6 +20,7 @@ from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.utils.dataframe import slugify
+from pandas_profiling.visualisation.missing import plot_confusion_matrix
 from tqdm.auto import tqdm
 
 
@@ -33,35 +34,65 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
     Returns:
         A list with the missing diagrams
     """
-    items = [
-        ImageWidget(
-            item["matrix"],
-            image_format=config.plot.image_format,
-            alt=item["name"],
-            name=item["name"],
-            anchor_id=key,
-            caption=item["caption"],
+    items = []
+
+    # missing vs. target
+    if summary.target:
+        conf_matrix_items = []
+        for name, value in summary.missing["target"].missing_target.items():
+            one_conf_matrix = ImageWidget(
+                plot_confusion_matrix(config, value),
+                image_format=config.plot.image_format,
+                alt="Mini histogram",
+                anchor_id="{}_missing_conf_matrix".format(name),
+                name=name,
+            )
+            conf_matrix_items.append(one_conf_matrix)
+
+        items.append(
+            Container(
+                conf_matrix_items,
+                sequence_type="tabs",
+                anchor_id="missing_conf_matrix",
+                name="Missing on target",
+            )
         )
-        if isinstance(item["name"], str)
-        else Container(
-            [
+
+    # other missing modules
+    for key, item in summary.missing.items():
+        if not isinstance(item, dict):
+            continue
+        elif isinstance(item["name"], str):
+            items.append(
                 ImageWidget(
-                    item["matrix"][i],
+                    item["matrix"],
                     image_format=config.plot.image_format,
-                    alt=item["name"][i],
-                    name=config.html.style._labels[i],
+                    alt=item["name"],
+                    name=item["name"],
                     anchor_id=key,
-                    caption=item["caption"][i],
+                    caption=item["caption"],
                 )
-                for i in range(len(item["name"]))
-            ],
-            sequence_type="batch_grid",
-            batch_size=len(config.html.style._labels),
-            anchor_id=key,
-            name=item["name"][0],
-        )
-        for key, item in summary.missing.items()
-    ]
+            )
+        else:
+            items.append(
+                Container(
+                    [
+                        ImageWidget(
+                            item["matrix"][i],
+                            image_format=config.plot.image_format,
+                            alt=item["name"][i],
+                            name=config.html.style._labels[i],
+                            anchor_id=key,
+                            caption=item["caption"][i],
+                        )
+                        for i in range(len(item["name"]))
+                    ],
+                    sequence_type="batch_grid",
+                    batch_size=len(config.html.style._labels),
+                    anchor_id=key,
+                    name=item["name"][0],
+                )
+            )
 
     return items
 

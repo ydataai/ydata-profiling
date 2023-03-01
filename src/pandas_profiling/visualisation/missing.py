@@ -1,8 +1,9 @@
 """Plotting functions for the missing values diagrams"""
 import pandas as pd
+import seaborn as sns
 from matplotlib import pyplot as plt
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.plot import (
     missing_bar,
@@ -10,6 +11,25 @@ from pandas_profiling.visualisation.plot import (
     missing_matrix,
 )
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
+
+
+def _plot_conf_matrix(conf_matrix: MissingConfMatrix):
+    labels = conf_matrix.plot_labels
+    sns.heatmap(conf_matrix.relative_counts, annot=labels, fmt="", vmin=0, vmax=1)
+
+
+def plot_confusion_matrix(config: Settings, conf_matrix: MissingConfMatrix):
+    """Plot confusion matrix.
+
+    Parameters
+    ----------
+    config : Settings
+        Setting of report.
+    conf_matrix : pd.DataFrame
+        Prepared data for confusion matrix plot in absolute numbers.
+    """
+    _plot_conf_matrix(conf_matrix)
+    return plot_360_n0sc0pe(config)
 
 
 def get_font_size(data: pd.DataFrame) -> float:

@@ -1,10 +1,66 @@
 import warnings
+from abc import ABCMeta, abstractmethod
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, Optional
 
-import pandas as pd
+import numpy as np
 from multimethod import multimethod
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
+
+import pandas as pd
+
+
+@dataclass
+class MissingConfMatrix:
+    """Class for confusion matrix in absolute and relative numbers.
+
+    Args:
+        absolute_counts (pd.DataFrame): absolute counts of missing.
+        relative_counts (pd.DataFrame): relative counts of missing.
+    """
+
+    absolute_counts: pd.DataFrame
+    relative_counts: pd.DataFrame
+
+    @property
+    def plot_labels(self) -> list:
+        """Labels for confusion matrix.
+        Contain relative count and absolute count of values."""
+        flat_abs = self.absolute_counts.values.flatten()
+        flat_rel = self.relative_counts.values.flatten()
+        labels = []
+        for abs, rel in zip(flat_abs, flat_rel):
+            labels.append("{0:.2%}\n{1}".format(rel, abs))
+        return np.asarray(labels).reshape(self.absolute_counts.shape)
+
+
+@dataclass
+class MissingDescription(metaclass=ABCMeta):
+    """Description of missing dependency on target.
+
+    Args:
+        missing_target: Dict[str, MissingConfMatrix]
+            Confusion matrixes target x missing for variables with missing values.
+            key: column name
+            value: confusion matrix of missing vs target
+    """
+
+    missing_target: Dict[str, MissingConfMatrix]
+
+
+@multimethod
+def get_missing_description(
+    config: Settings, df: Any, target_description: TargetDescription
+) -> MissingDescription:
+    """Describe relationship between missing values in variable and target variable.
+
+    Args:
+        config (Setting): Config of report
+        df: (Any): Data, we are exploring.
+        target_description (TargetDescription): Description of target column.
+    """
+    raise NotImplementedError
 
 
 @multimethod

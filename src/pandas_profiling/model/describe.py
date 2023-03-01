@@ -13,7 +13,11 @@ from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.model.description import BaseAnalysis, BaseDescription
 from pandas_profiling.model.description_target import TargetDescription, describe_target
 from pandas_profiling.model.duplicates import get_duplicates
-from pandas_profiling.model.missing import get_missing_active, get_missing_diagram
+from pandas_profiling.model.missing import (
+    get_missing_active,
+    get_missing_description,
+    get_missing_diagram,
+)
 from pandas_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
 from pandas_profiling.model.sample import get_custom_sample, get_sample
 from pandas_profiling.model.summarizer import BaseSummarizer
@@ -139,6 +143,8 @@ def describe(
             for name, settings in missing_map.items()
         }
         missing = {name: value for name, value in missing.items() if value is not None}
+        if target_description:
+            missing["target"] = get_missing_description(config, df, target_description)
 
         # Sample
         pbar.set_postfix_str("Take sample")
