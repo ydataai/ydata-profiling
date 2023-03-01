@@ -7,11 +7,10 @@ import pandas as pd
 from multimethod import multimethod
 
 from ydata_profiling.config import Settings
-from ydata_profiling.utils.compat import pandas_version_info
 
 try:
     from pandas.core.base import DataError
-except:
+except ImportError:
     from pandas.errors import DataError
 
 class Correlation:
