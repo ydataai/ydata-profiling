@@ -7,7 +7,15 @@ from ydata_profiling.report.presentation.core.renderable import Renderable
 
 class Dropdown(ItemRenderer):
     def __init__(
-        self, name: str, id: str, items: list, item: Container, anchor_id: str, classes: list, is_row: bool, **kwargs
+        self,
+        name: str,
+        id: str,
+        items: list,
+        item: Container,
+        anchor_id: str,
+        classes: list,
+        is_row: bool,
+        **kwargs
     ):
         super().__init__(
             "dropdown",
