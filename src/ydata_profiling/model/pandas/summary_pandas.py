@@ -12,6 +12,7 @@ from visions import VisionsTypeset
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summarizer import BaseSummarizer
 from ydata_profiling.model.summary import describe_1d, get_series_descriptions
+from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.utils.dataframe import sort_column_names
 
 
@@ -37,8 +38,13 @@ def pandas_describe_1d(
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
 
-    # get `infer_dtypes` (bool) from config
-    if config.infer_dtypes:
+    if (
+        isinstance(typeset, ProfilingTypeSet)
+        and typeset.type_schema
+        and series.name in typeset.type_schema
+    ):
+        vtype = typeset.type_schema[series.name]
+    elif config.infer_dtypes:
         # Infer variable types
         vtype = typeset.infer_type(series)
         series = typeset.cast_to_inferred(series)
@@ -47,6 +53,7 @@ def pandas_describe_1d(
         # [new dtypes, changed using `astype` function are now considered]
         vtype = typeset.detect_type(series)
 
+    typeset.type_schema[series.name] = vtype
     return summarizer.summarize(config, series, dtype=vtype)
 
 
