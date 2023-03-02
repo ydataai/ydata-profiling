@@ -44,6 +44,10 @@ jobs:
             python-version: "3.10"
             pandas: "pandas>1.1"
             numpy: "numpy"
+          - os: ubuntu-latest
+            python-version: "3.11"
+            pandas: "pandas>1.1"
+            numpy: "numpy"
 
     steps:
     - uses: actions/checkout@v3
