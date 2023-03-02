@@ -1,6 +1,6 @@
 """Configuration for the package."""
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
 
@@ -113,7 +113,7 @@ class TimeseriesVars(BaseModel):
 class Target(BaseModel):
     col_name: Optional[str] = None
     # positive values set by user
-    positive_values: Optional[List[str]] = None
+    positive_values: Optional[Union[str, List[str]]] = None
     # positive values for inferring
     inferred_positive_values: List[str] = ["true", "1"]
 

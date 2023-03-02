@@ -7,6 +7,10 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 import pandas as pd
 import yaml
+from tqdm.auto import tqdm
+from typeguard import typechecked
+from visions import VisionsTypeset
+
 from pandas_profiling.config import Config, Settings
 from pandas_profiling.expectations_report import ExpectationsReport
 from pandas_profiling.model.alerts import AlertType
@@ -28,9 +32,6 @@ from pandas_profiling.report.presentation.flavours.html.templates import (
 from pandas_profiling.serialize_report import SerializeReport
 from pandas_profiling.utils.dataframe import hash_dataframe
 from pandas_profiling.utils.paths import get_config
-from tqdm.auto import tqdm
-from typeguard import typechecked
-from visions import VisionsTypeset
 
 
 @typechecked
@@ -64,7 +65,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         summarizer: Optional[BaseSummarizer] = None,
         config: Optional[Settings] = None,
         target_col: Optional[str] = None,
-        target_positive_values: Optional[List[str]] = None,
+        target_positive_values: Optional[Union[str, List[str]]] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas DataFrame
@@ -411,7 +412,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             total=1, desc="Render JSON", disable=not self.config.progress_bar
         ) as pbar:
             description = format_summary(description)
-            print(description.keys())
             description = encode_it(description)
             data = json.dumps(description, indent=4)
             pbar.update()
@@ -447,6 +447,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
         from IPython.core.display import display
+
         from pandas_profiling.report.presentation.flavours.widget.notebook import (
             get_notebook_iframe,
         )

@@ -22,12 +22,12 @@ def compare_distribution_supervised(
     # check distribution
     dist = plot_description.distribution
     expected_dist["data"] = expected_dist["data"].astype(str)
-    expected_dist["target"] = expected_dist["target"].astype(str)
+    expected_dist["target"] = expected_dist["target"].astype(int)
     expected_dist["count"] = expected_dist["count"].astype(int)
 
     # check types of columns
     assert dist[plot_description.data_col_name].dtype == "object"
-    assert dist[plot_description.target_col_name].dtype == "object"
+    assert dist[plot_description.target_col_name].dtype == "int"
     assert dist[plot_description.count_col_name].dtype == "int"
     # check if all columns are present
     for index, row in expected_dist.iterrows():

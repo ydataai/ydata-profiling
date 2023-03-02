@@ -109,6 +109,11 @@ def _plot_cat_dist_supervised(
     Returns:
         Plotter: Generated plot.
     """
+    if not desc_plot.target_description:
+        raise ValueError(
+            "Target description not found in '{}'".format(desc_plot.data_col_name)
+        )
+
     color_positive = config.html.style.primary_colors[1]
     color_negative = config.html.style.primary_color
 
@@ -120,23 +125,38 @@ def _plot_cat_dist_supervised(
     )
     # supervised plot
     if desc_plot.is_supervised():
-        p = p.add(so.Bar(alpha=1), so.Dodge(), legend=False).add(
-            so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
-            so.Dodge(by=["color"]),
-            text=desc_plot.count_col_name,
+        p = (
+            p.add(so.Bar(alpha=1), so.Dodge(), legend=False)
+            .add(
+                so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
+                so.Dodge(by=["color"]),
+                text=desc_plot.count_col_name,
+            )
+            .scale(
+                color={
+                    desc_plot.p_target_value: color_positive,
+                    desc_plot.n_target_value: color_negative,
+                },
+            )
         )
-    # unsupervised plot in supervised report (target plot)
+    # target plot (same plot without dodge and with different color mapping)
     else:
-        p = p.add(so.Bar(alpha=1), legend=False).add(
-            so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
-            text=desc_plot.count_col_name,
+        colors = {}
+        for value in desc_plot.target_description.positive_values:
+            colors[value] = color_positive
+        for value in desc_plot.target_description.negative_values:
+            colors[value] = color_negative
+
+        p = (
+            p.add(so.Bar(alpha=1), legend=False)
+            .add(
+                so.Text({"fontweight": "bold", "clip_on": False}, halign="left"),
+                text=desc_plot.count_col_name,
+            )
+            .scale(color=colors)
         )
 
     p = p.scale(
-        color={
-            desc_plot.p_target_value: color_positive,
-            desc_plot.n_target_value: color_negative,
-        },
         x=so.Continuous().tick(count=0),
     ).theme({"axes.facecolor": "w"})
 

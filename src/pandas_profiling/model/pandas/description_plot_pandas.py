@@ -2,6 +2,7 @@ import string
 from typing import List, Optional, Tuple
 
 import numpy as np
+import pandas as pd
 from pandas_profiling.model.description_plot import (
     BasePlotDescription,
     CategoricPlotDescription,
@@ -10,8 +11,6 @@ from pandas_profiling.model.description_plot import (
 from pandas_profiling.model.pandas.description_target_pandas import (
     TargetDescriptionPandas,
 )
-
-import pandas as pd
 
 
 class PlotDescriptionPandas(BasePlotDescription):
@@ -69,14 +68,11 @@ class CategoricalPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescr
                 limit for plotting. If we have more categories, than max_cat_to_plot,
                 all below threshold will be merged to other category
         """
+        self._max_cat_to_plot = max_cat_to_plot
         data_col = data_col.astype(str)
         super().__init__(
             self._prepare_data_col_name(data_col), data_col, target_description
         )
-
-        self._max_cat_to_plot = max_cat_to_plot
-        distribution = self._get_distribution()
-        self._set_distribution(distribution)
 
     def _limit_count(self, df: pd.DataFrame) -> pd.DataFrame:
         """Limit count of displayed categories to max_cat.
@@ -109,7 +105,7 @@ class CategoricalPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescr
             df = pd.concat([df, other])
         return df
 
-    def _get_distribution(self) -> pd.DataFrame:
+    def _generate_distribution(self) -> pd.DataFrame:
         """Generate grouped distribution DataFrame.
         Limit count of showed categories. Other are merged and showed as last.
 
@@ -119,10 +115,8 @@ class CategoricalPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescr
         # we have 2 different columns
         if self.is_supervised():
             # join columns by id
-            data = (
-                self.data_col.to_frame()
-                .join(self.target_description.series, how="inner")
-                .astype(str)
+            data = self.data_col.to_frame().join(
+                self.target_description.series_binary, how="inner"
             )
             distribution = data.groupby(data.columns.to_list()).size()
             # add zero values
@@ -160,15 +154,12 @@ class NumericPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescripti
         target_description: Optional[TargetDescriptionPandas],
         bar_count: int,
     ) -> None:
+        self._bars = bar_count
         super().__init__(
             self._prepare_data_col_name(data_col), data_col, target_description
         )
-        self._bars = bar_count
 
-        distribution = self._get_distribution()
-        self._set_distribution(distribution)
-
-    def _get_distribution(self) -> pd.DataFrame:
+    def _generate_distribution(self) -> pd.DataFrame:
         """Cut continuous variable to bins.
         For supervised, data_col set to range '[10, 20]'.
         For unsupervised, data_col set to mid of range '15'.
@@ -190,7 +181,7 @@ class NumericPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescripti
                     Column count_col contains counts for every target data combination.
                     Even zero values.
             """
-            data = data.join(self.target_description.series, how="left")
+            data = data.join(self.target_description.series_binary, how="left")
             sub = [self.data_col_name, self.target_description.name]
             # aggregate bins
             data_series = data.groupby(sub)[self.count_col_name].size()

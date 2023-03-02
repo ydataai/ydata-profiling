@@ -1,10 +1,9 @@
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
+import pandas as pd
 from pandas_profiling.config import Target
 from pandas_profiling.model.description_target import TargetDescription, describe_target
-
-import pandas as pd
 
 
 class TargetDescriptionPandas(TargetDescription):
@@ -24,7 +23,16 @@ class TargetDescriptionPandas(TargetDescription):
         unique_vals = self.series.dropna().unique()
         # user defined positive values
         if self.config.positive_values is not None:
-            positive_vals = self.config.positive_values
+            if isinstance(self.config.positive_values, str):
+                positive_vals = [self.config.positive_values]
+            elif isinstance(self.config.positive_values, list):
+                positive_vals = self.config.positive_values
+            else:
+                raise ValueError(
+                    "positive_values have wrong type '{}'".format(
+                        type(self.config.positive_values)
+                    )
+                )
         # positive values are not defined
         else:
             positive_vals = []
@@ -35,6 +43,7 @@ class TargetDescriptionPandas(TargetDescription):
             if len(positive_vals) == 0:
                 positive_vals.append(unique_vals[0])
 
+        # all values, that are not in positive assign to negative
         negative_vals = np.setdiff1d(unique_vals, positive_vals)
         return positive_vals, list(negative_vals)
 
@@ -74,5 +83,9 @@ def describe_target_pandas(
 ) -> TargetDescription:
     if config.col_name is None:
         raise ValueError("Target not defined.")
+    if not config.col_name in data_frame:
+        raise ValueError(
+            "Target column {} not found in DataFrame.".format(config.col_name)
+        )
     series = data_frame[config.col_name]
     return TargetDescriptionPandas(config, series)

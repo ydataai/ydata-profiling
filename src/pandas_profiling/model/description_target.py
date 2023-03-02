@@ -8,7 +8,18 @@ from pandas_profiling.config import Target
 
 @dataclass
 class TargetDescription(metaclass=ABCMeta):
-    """Description for target column."""
+    """Description for target column.
+
+    Attributes:
+        series (Any): Column with original data.
+        series_binary (Any): Original column, transformed by positive/negative values.
+        config (Target): Config of target column. Contains column name,
+            user defined positive values etc.
+        positive_values: (List[str]): Values from original series,
+            that represents positive outcome.
+        negative_values (List[str]): Values from original series,
+            that represents negative outcome.
+    """
 
     series: Any
     series_binary: Any
@@ -23,6 +34,8 @@ class TargetDescription(metaclass=ABCMeta):
         target_config: Target,
         series: Any,
     ) -> None:
+        if not target_config.col_name:
+            raise ValueError("Target col name should be defined.")
         self.series = series
         self.config = target_config
         self.name = target_config.col_name
@@ -44,6 +57,8 @@ class TargetDescription(metaclass=ABCMeta):
     @abstractmethod
     def _infer_target_values(self) -> Tuple[List[str], List[str]]:
         """Infer positive and negative values in target column.
+        If Target.positive_values not None, use them as positive values.
+        Other values set as negative.
 
         Returns:
             positive, negative (Tuple[List[str], List[str]]):
@@ -54,7 +69,8 @@ class TargetDescription(metaclass=ABCMeta):
     @abstractmethod
     def _get_bin_target(self) -> Any:
         """Create binary target from column and positive/negative values.
-        Positive values replace with 1, negative with -1."""
+        Positive values replace with self.bin_positive, negative with self.bin_negative.
+        """
         pass
 
     @abstractmethod

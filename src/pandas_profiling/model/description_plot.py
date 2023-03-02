@@ -48,14 +48,20 @@ class BasePlotDescription(metaclass=ABCMeta):
 
     @property
     def p_target_value(self) -> Optional[str]:
+        """Positive target values if target exists.
+        Positive value is positive from binary target column.
+        """
         if self.target_description:
-            return self.target_description.positive_values[0]
+            return self.target_description.bin_positive
         return None
 
     @property
     def n_target_value(self) -> Optional[str]:
+        """Negative target values if target exists. None otherwise.
+        Negative value is negative from binary target column.
+        """
         if self.target_description:
-            return self.target_description.negative_values[0]
+            return self.target_description.bin_negative
         return None
 
     def is_supervised(self) -> bool:
@@ -90,6 +96,8 @@ class CategoricPlotDescription(BasePlotDescription):
         target_description: Optional[TargetDescription],
     ) -> None:
         super().__init__(data_col_name, data_col, target_description)
+        distribution = self._generate_distribution()
+        self.__validate_distribution(distribution)
 
     @property
     def distribution(self) -> pd.DataFrame:
@@ -118,23 +126,39 @@ class CategoricPlotDescription(BasePlotDescription):
         """
         return self.__log_odds
 
+    @abstractmethod
+    def _generate_distribution(self) -> pd.DataFrame:
+        """Generate distribution of variable.
+        Distribution contains following columns:
+            self.data_col_name: column with categories
+            self.target_col_name: column with target binary values
+            self.count_col_name: column with counts.
+        Distribution DataFrame should contain all data_col and target_col combinations,
+        even if count is 0.
+
+        Examples:
+            col_name,       target_name,    count
+            1               0               10
+            1               1               5
+            2               0               8
+            2               1               0
+        """
+        pass
+
     def __generate_log_odds(self):
         """Generates log2 odds preprocessed DataFrame based on distribution."""
         log_odds = pd.pivot_table(
             self.distribution,
             values=self.count_col_name,
             index=self.data_col_name,
-            columns=self.target_description.name,
+            columns=self.target_col_name,
             sort=False,
         ).reset_index()
         log_odds.columns.name = ""
         # counts log2 odds
         # TODO change to support multiple values
         log_odds["log_odds"] = round(
-            np.log2(
-                log_odds[self.target_description.positive_values[0]]
-                / log_odds[self.target_description.negative_values[0]]
-            ),
+            np.log2(log_odds[self.p_target_value] / log_odds[self.n_target_value]),
             2,
         )
         # replace all special values with 0
@@ -148,9 +172,13 @@ class CategoricPlotDescription(BasePlotDescription):
         ] = "right"
         self.__log_odds = log_odds
 
-    def _set_distribution(self, distribution: pd.DataFrame) -> None:
+    def __validate_distribution(self, distribution: pd.DataFrame) -> None:
         """Validate and set distribution DataFrame.
         - check if there are all needed columns
+        - if report is supervised, generate log_odds
+
+        Args:
+            distribution (pd.DataFrame) : DataFrame, we want to validate.
         """
         if not isinstance(distribution, pd.DataFrame):
             raise ValueError("Preprocessed plot must be pd.DataFrame instance.")
