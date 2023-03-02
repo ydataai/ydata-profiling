@@ -47,19 +47,15 @@ class BasePlotDescription(metaclass=ABCMeta):
         return None
 
     @property
-    def p_target_value(self) -> Optional[str]:
-        """Positive target values if target exists.
-        Positive value is positive from binary target column.
-        """
+    def p_target_value(self) -> Optional[int]:
+        """Positive target values if target exists. None otherwise."""
         if self.target_description:
             return self.target_description.bin_positive
         return None
 
     @property
-    def n_target_value(self) -> Optional[str]:
-        """Negative target values if target exists. None otherwise.
-        Negative value is negative from binary target column.
-        """
+    def n_target_value(self) -> Optional[int]:
+        """Negative target values if target exists. None otherwise."""
         if self.target_description:
             return self.target_description.bin_negative
         return None
@@ -155,6 +151,12 @@ class CategoricPlotDescription(BasePlotDescription):
             sort=False,
         ).reset_index()
         log_odds.columns.name = ""
+
+        # there is possibility, that positive, or negative values will not be present
+        if not self.p_target_value in log_odds:
+            log_odds[self.p_target_value] = 0
+        if not self.n_target_value in log_odds:
+            log_odds[self.n_target_value] = 0
         # counts log2 odds
         # TODO change to support multiple values
         log_odds["log_odds"] = round(

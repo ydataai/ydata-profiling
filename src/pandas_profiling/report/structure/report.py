@@ -49,14 +49,15 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
             )
             conf_matrix_items.append(one_conf_matrix)
 
-        items.append(
-            Container(
-                conf_matrix_items,
-                sequence_type="tabs",
-                anchor_id="missing_conf_matrix",
-                name="Missing on target",
+        if conf_matrix_items:
+            items.append(
+                Container(
+                    conf_matrix_items,
+                    sequence_type="tabs",
+                    anchor_id="missing_conf_matrix",
+                    name="Missing on target",
+                )
             )
-        )
 
     # other missing modules
     for key, item in summary.missing.items():
