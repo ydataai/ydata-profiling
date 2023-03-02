@@ -43,7 +43,7 @@ class NumVars(BaseModel):
     chi_squared_threshold: float = 0.999
 
 
-class StrVars(BaseModel):
+class TextVars(BaseModel):
     length: bool = True
     words: bool = True
     characters: bool = True
@@ -120,7 +120,7 @@ class Target(BaseModel):
 
 class Univariate(BaseModel):
     num: NumVars = NumVars()
-    str: StrVars = StrVars()
+    text: TextVars = TextVars()
     cat: CatVars = CatVars()
     image: ImageVars = ImageVars()
     bool: BoolVars = BoolVars()

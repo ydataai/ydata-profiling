@@ -4,7 +4,6 @@ from typing import Any, List, Optional, Tuple, Union
 
 import pandas as pd
 from dacite import from_dict
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.profile_report import ProfileReport

@@ -12,17 +12,17 @@ from pandas_profiling.model.pandas.description_plot_pandas import (
     TextPlotDescriptionPandas,
 )
 from pandas_profiling.model.summary_algorithms import (
-    describe_string_1d,
+    describe_text_1d,
     histogram_compute,
     series_handle_nulls,
     series_hashable,
 )
 
 
-@describe_string_1d.register
+@describe_text_1d.register
 @series_hashable
 @series_handle_nulls
-def pandas_describe_string_1d(
+def pandas_describe_text_1d(
     config: Settings,
     series: pd.Series,
     summary: dict,
@@ -47,7 +47,7 @@ def pandas_describe_string_1d(
 
     summary.update({"first_rows": series.head(5)})
 
-    if config.vars.str.length:
+    if config.vars.text.length:
         summary.update(length_summary_vc(value_counts))
         summary.update(
             histogram_compute(
@@ -59,10 +59,10 @@ def pandas_describe_string_1d(
             )
         )
 
-    if config.vars.str.characters:
+    if config.vars.text.characters:
         summary.update(unicode_summary_vc(value_counts))
 
-    if config.vars.str.words:
+    if config.vars.text.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     summary["plot_description"] = TextPlotDescriptionPandas(

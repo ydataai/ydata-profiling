@@ -1,13 +1,12 @@
 from typing import Any, Optional
 
 import pandas as pd
-from visions import VisionsTypeset
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model import expectation_algorithms
 from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.handler import Handler
 from pandas_profiling.utils.dataframe import slugify
+from visions import VisionsTypeset
 
 
 class ExpectationHandler(Handler):
@@ -16,7 +15,7 @@ class ExpectationHandler(Handler):
     def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
         mapping = {
             "Unsupported": [expectation_algorithms.generic_expectations],
-            "String": [expectation_algorithms.categorical_expectations],
+            "Text": [expectation_algorithms.categorical_expectations],
             "Categorical": [expectation_algorithms.categorical_expectations],
             "Boolean": [expectation_algorithms.categorical_expectations],
             "Numeric": [expectation_algorithms.numeric_expectations],

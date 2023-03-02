@@ -25,7 +25,7 @@ my_typeset_default = ProfilingTypeSet(my_config)
 
 type_map = {str(k): k for k in my_typeset_default.types}
 Numeric = type_map["Numeric"]
-String = type_map["String"]
+Text = type_map["Text"]
 Categorical = type_map["Categorical"]
 Boolean = type_map["Boolean"]
 DateTime = type_map["DateTime"]
@@ -58,7 +58,7 @@ contains_map = {
         "complex_series_float",
         "complex_series_py_float",
     },
-    String: {
+    Text: {
         "timestamp_string_series",
         "string_with_sep_num_nan",
         "string_series",
@@ -197,21 +197,21 @@ inference_map = {
     "inf_series": Numeric,
     "nan_series": Unsupported,
     "nan_series_2": Unsupported,
-    "string_series": String,
+    "string_series": Text,
     "categorical_string_series": Categorical,
     "timestamp_string_series": DateTime,
-    "string_with_sep_num_nan": String,  # TODO: Introduce thousands separator
-    "string_unicode_series": String,
-    "string_np_unicode_series": String,
+    "string_with_sep_num_nan": Text,  # TODO: Introduce thousands separator
+    "string_unicode_series": Text,
+    "string_np_unicode_series": Text,
     "string_num_nan": Numeric,
     "string_num": Numeric,
     "string_flt_nan": Numeric,
     "string_flt": Numeric,
-    "string_str_nan": String,
+    "string_str_nan": Text,
     "string_bool_nan": Boolean,
     "int_str_range": Numeric,
     "string_date": DateTime,
-    "str_url": String,
+    "str_url": Text,
     "bool_series": Boolean,
     "bool_nan_series": Boolean,
     "nullable_bool_series": Boolean,
@@ -233,9 +233,9 @@ inference_map = {
     "geometry_series": Unsupported,
     "path_series_linux": Unsupported,
     "path_series_linux_missing": Unsupported,
-    "path_series_linux_str": String,
+    "path_series_linux_str": Text,
     "path_series_windows": Unsupported,
-    "path_series_windows_str": String,
+    "path_series_windows_str": Text,
     "url_series": Unsupported,
     "url_nan_series": Unsupported,
     "url_none_series": Unsupported,
@@ -254,16 +254,16 @@ inference_map = {
     "empty_int64": Unsupported,
     "empty_object": Unsupported,
     "ip": Unsupported,
-    "ip_str": String,
+    "ip_str": Text,
     "ip_missing": Unsupported,
     "date_series_nat": DateTime,
     "date": Unsupported,
     "time": Unsupported,
     "categorical_char": Categorical,
     "ordinal": Categorical,
-    "str_complex": String,
+    "str_complex": Text,
     "uuid_series": Unsupported,
-    "uuid_series_str": String,
+    "uuid_series_str": Text,
     "uuid_series_missing": Unsupported,
     "ip_mixed_v4andv6": Unsupported,
     "file_test_py": Unsupported,
@@ -274,17 +274,17 @@ inference_map = {
     "str_int_leading_zeros": Numeric,
     "str_float_non_leading_zeros": Numeric,
     "str_int_zeros": Numeric,
-    "email_address_str": String,
-    "str_complex_nan": String,
+    "email_address_str": Text,
+    "str_complex_nan": Text,
     "email_address": Unsupported,
     "email_address_missing": Unsupported,
     "all_null_nat": Unsupported,
-    "all_null_empty_str": String,
+    "all_null_empty_str": Text,
     "py_datetime_str": DateTime,
     "all_null_none": Unsupported,
     "complex_series_py_float": Numeric,
     "all_null_nan": Unsupported,
-    "string_dtype_series": String,
+    "string_dtype_series": Text,
 }
 
 
@@ -310,7 +310,7 @@ convert_map = [
     (Categorical, Numeric, {"mixed"}),
     (
         Numeric,
-        String,
+        Text,
         {
             "string_flt",
             "string_num_nan",
@@ -330,7 +330,7 @@ convert_map = [
     ),
     (
         Boolean,
-        String,
+        Text,
         {
             "string_bool_nan",
             "nullable_bool_series",
@@ -338,10 +338,10 @@ convert_map = [
     ),
     (
         DateTime,
-        String,
+        Text,
         {"py_datetime_str", "timestamp_string_series", "string_date"},
     ),
-    (Categorical, String, {"categorical_string_series"}),
+    (Categorical, Text, {"categorical_string_series"}),
     (Categorical, Numeric, {"categorical_float_series"}),
 ]
 

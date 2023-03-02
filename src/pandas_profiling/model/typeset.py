@@ -78,7 +78,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
             return [
                 IdentityRelation(Unsupported),
                 InferenceRelation(
-                    String,
+                    Text,
                     relationship=lambda x, y: partial(string_is_numeric, k=config)(
                         x, y
                     ),
@@ -93,7 +93,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         def contains_op(series: pd.Series, state: dict) -> bool:
             return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
 
-    class String(visions.VisionsBaseType):
+    class Text(visions.VisionsBaseType):
         """Type for plaintext columns.
         Like name, note, string identifier, residence etc.
 
@@ -127,7 +127,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
             return [
                 IdentityRelation(Unsupported),
                 InferenceRelation(
-                    String,
+                    Text,
                     relationship=lambda x, y: partial(string_is_datetime)(x, y),
                     transformer=string_to_datetime,
                 ),
@@ -177,7 +177,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
                     transformer=to_category,
                 ),
                 InferenceRelation(
-                    String,
+                    Text,
                     relationship=lambda x, y: partial(string_is_category, k=config)(
                         x, y
                     ),
@@ -208,7 +208,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
             return [
                 IdentityRelation(Unsupported),
                 InferenceRelation(
-                    String,
+                    Text,
                     relationship=lambda x, y: partial(string_is_bool, k=mapping)(x, y),
                     transformer=lambda s, st: to_bool(
                         partial(string_to_bool, k=mapping)(s, st)
@@ -232,7 +232,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
     class URL(visions.VisionsBaseType):
         @staticmethod
         def get_relations() -> Sequence[TypeRelation]:
-            return [IdentityRelation(String)]
+            return [IdentityRelation(Text)]
 
         @staticmethod
         @multimethod
@@ -248,7 +248,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
     class Path(visions.VisionsBaseType):
         @staticmethod
         def get_relations() -> Sequence[TypeRelation]:
-            return [IdentityRelation(String)]
+            return [IdentityRelation(Text)]
 
         @staticmethod
         @multimethod
@@ -307,7 +307,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
             is_numeric = pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
             return is_numeric and is_timedependent(series)
 
-    types = {Unsupported, Boolean, Numeric, String, Categorical, DateTime}
+    types = {Unsupported, Boolean, Numeric, Text, Categorical, DateTime}
     if config.vars.path.active:
         types.add(Path)
         if config.vars.file.active:

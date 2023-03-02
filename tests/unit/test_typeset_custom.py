@@ -146,7 +146,7 @@ my_typeset = ProfilingTypeSet(config)
 
 type_map = {str(k): k for k in my_typeset.types}
 Numeric = type_map["Numeric"]
-String = type_map["String"]
+Text = type_map["Text"]
 Categorical = type_map["Categorical"]
 Boolean = type_map["Boolean"]
 DateTime = type_map["DateTime"]
@@ -157,7 +157,7 @@ config2.vars.num.low_categorical_threshold = 2
 typeset2 = ProfilingTypeSet(config2)
 type_map2 = {str(k): k for k in typeset2.types}
 Numeric2 = type_map2["Numeric"]
-String2 = type_map2["String"]
+Text2 = type_map2["Text"]
 Categorical2 = type_map2["Categorical"]
 DateTime2 = type_map2["DateTime"]
 Boolean2 = type_map2["Boolean"]
@@ -176,7 +176,7 @@ contains_map = {
         "inf_only",
         "nullable_int",
     },
-    String: {
+    Text: {
         "str",
         "str_cat",
         "str_num",
@@ -231,14 +231,14 @@ inference_map = {
     "integers_nan": Numeric,
     "bool_01": Numeric,
     "bool_01_with_nan": Numeric,
-    "id": String,
+    "id": Text,
     "str_cat": Categorical,
     "str_num": Numeric,
     "str_date": DateTime,
     "str_date2": DateTime,
     "s2": Categorical,
     "date_str": DateTime,
-    "str": String,
+    "str": Text,
     "cat": Categorical,
     "bool_tf": Boolean,
     "bool_tf_with_nan": Boolean,
@@ -296,7 +296,7 @@ convert_map = [
     ),
     (
         Boolean2,
-        String2,
+        Text2,
         {
             "str_yes_no",
             "str_yes_no_mixed",
@@ -308,14 +308,14 @@ convert_map = [
     ),
     (
         Categorical2,
-        String2,
+        Text2,
         {
             "str_cat",
             "s2",
         },
     ),
-    (Numeric2, String2, {"str_num", "catnum"}),
-    (DateTime2, String2, {"str_date", "str_date2", "date_str"}),
+    (Numeric2, Text2, {"str_num", "catnum"}),
+    (DateTime2, Text2, {"str_date", "str_date2", "date_str"}),
 ]
 
 

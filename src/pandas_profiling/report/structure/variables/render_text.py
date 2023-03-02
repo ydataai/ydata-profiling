@@ -18,7 +18,7 @@ from pandas_profiling.report.structure.variables.render_categorical import (
 from pandas_profiling.visualisation.plot import plot_word_cloud
 
 
-class RenderString(BaseRenderVariable):
+class RenderText(BaseRenderVariable):
     def _get_top(self) -> Container:
         """Render top of string variable.
 
@@ -60,7 +60,7 @@ class RenderString(BaseRenderVariable):
         )
         top_items.append(table)
 
-        if self.config.vars.str.words:
+        if self.config.vars.text.words:
             mini_wordcloud = Image(
                 plot_word_cloud(
                     self.config, self.summary["plot_description"], mini=True
@@ -168,7 +168,7 @@ class RenderString(BaseRenderVariable):
         - words container"""
         bottom_items = []
         bottom_items.append(self._get_overview())
-        if self.config.vars.str.words:
+        if self.config.vars.text.words:
             bottom_items.append(self._get_words())
 
         return Container(
@@ -178,6 +178,6 @@ class RenderString(BaseRenderVariable):
         )
 
 
-def render_string(config: Settings, summary: Dict[str, Any]):
-    render = RenderString(config, summary).render()
+def render_text(config: Settings, summary: Dict[str, Any]):
+    render = RenderText(config, summary).render()
     return render

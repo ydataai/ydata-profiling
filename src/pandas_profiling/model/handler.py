@@ -80,7 +80,7 @@ def get_render_map() -> Dict[str, Callable[[Settings, Dict[str, Any]], Dict]]:
         "Boolean": render_algorithms.render_boolean,
         "Numeric": render_algorithms.render_real,
         "Complex": render_algorithms.render_complex,
-        "String": render_algorithms.render_string,
+        "Text": render_algorithms.render_text,
         "DateTime": render_algorithms.render_date,
         "Categorical": render_algorithms.render_categorical,
         "URL": render_algorithms.render_url,

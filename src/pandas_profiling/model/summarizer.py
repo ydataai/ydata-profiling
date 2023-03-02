@@ -2,6 +2,7 @@ from dataclasses import asdict, is_dataclass
 from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 import numpy as np
+import pandas as pd
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.description_target import TargetDescription
@@ -15,14 +16,12 @@ from pandas_profiling.model.summary_algorithms import (
     describe_image_1d,
     describe_numeric_1d,
     describe_path_1d,
-    describe_string_1d,
     describe_supported,
+    describe_text_1d,
     describe_timeseries_1d,
     describe_url_1d,
 )
 from visions import VisionsBaseType, VisionsTypeset
-
-import pandas as pd
 
 
 class BaseSummarizer(Handler):
@@ -65,8 +64,8 @@ class PandasProfilingSummarizer(BaseSummarizer):
             "DateTime": [
                 describe_date_1d,
             ],
-            "String": [
-                describe_string_1d,
+            "Text": [
+                describe_text_1d,
             ],
             "Categorical": [
                 describe_categorical_1d,

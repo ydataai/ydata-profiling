@@ -71,8 +71,8 @@ def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
     - (distinct values / count of all values) is less than threshold
     - is not bool"""
     n_unique = series.nunique()
-    unique_threshold = k.vars.str.percentage_cat_threshold
-    threshold = k.vars.str.categorical_threshold
+    unique_threshold = k.vars.text.percentage_cat_threshold
+    threshold = k.vars.text.categorical_threshold
     return (
         1 <= n_unique <= threshold
         and n_unique / series.size < unique_threshold
