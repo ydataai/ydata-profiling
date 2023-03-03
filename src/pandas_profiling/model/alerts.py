@@ -4,10 +4,11 @@ from enum import Enum, auto, unique
 from typing import Any, Dict, List, Optional, Set
 
 import numpy as np
-import pandas as pd
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import perform_check_correlation
+from pandas_profiling.model.missing import MissingConfMatrix
+
+import pandas as pd
 
 
 @unique
@@ -37,6 +38,9 @@ class AlertType(Enum):
 
     MISSING = auto()
     """This variable contains missing values."""
+
+    MISSING_ON_TARGET = auto()
+    """This variable missing values are related to target variable."""
 
     INFINITE = auto()
     """This variable contains infinite values."""
@@ -333,13 +337,48 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
     return alerts
 
 
+def check_missing_alerts(config: Settings, missing: dict):
+    """Check alerts from missing module.
+    - check if missing are depend on target
+    """
+    alerts = []
+    if "target" in missing.keys():
+        conf_lvl = config.alerts.missing_confidence_level
+        col: str
+        value: MissingConfMatrix
+        for col, value in missing["target"].missing_target.items():
+            if 1 - value.p_value > conf_lvl:
+                alerts.append(
+                    Alert(
+                        column_name=col,
+                        alert_type=AlertType.MISSING_ON_TARGET,
+                        values={"confidence_lvl": conf_lvl},
+                    )
+                )
+    return alerts
+
+
 def get_alerts(
-    config: Settings, table_stats: dict, series_description: dict, correlations: dict
+    config: Settings,
+    table_stats: dict,
+    series_description: dict,
+    correlations: dict,
+    missing: dict,
 ) -> List[Alert]:
+    """Return alerts from description.
+
+    Args:
+        config (Setting): Report setting.
+        table_stats (dict): Description of DataFrame statistic.
+        series_description (dict): Description of variables.
+        correlations (dict): Description of correlations
+        missing (dict): description of missing values.
+    """
     alerts = check_table_alerts(table_stats)
     for col, description in series_description.items():
         alerts += check_variable_alerts(config, col, description)
     alerts += check_correlation_alerts(config, correlations)
+    alerts += check_missing_alerts(config, missing)
     alerts.sort(key=lambda alert: str(alert.alert_type))
     return alerts
 

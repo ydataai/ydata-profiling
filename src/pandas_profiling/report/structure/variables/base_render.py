@@ -9,6 +9,13 @@ from pandas_profiling.report.structure.variables import render_common
 
 @dataclass
 class BaseRenderVariable(metaclass=ABCMeta):
+    """Base class for render variable.
+
+    Args:
+        config (Settings): Profile report setting.
+        summary (dict): Summary of one variable.
+    """
+
     config: Settings
     summary: Dict[str, Any]
 

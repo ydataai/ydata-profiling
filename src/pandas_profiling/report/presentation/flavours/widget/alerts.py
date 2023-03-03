@@ -1,7 +1,6 @@
 from typing import List
 
 from ipywidgets import HTML, Button, widgets
-
 from pandas_profiling.report.presentation.core import Alerts
 from pandas_profiling.report.presentation.flavours.html import templates
 
@@ -24,6 +23,7 @@ class WidgetAlerts(Alerts):
             "zeros": "info",
             "truncated": "info",
             "missing": "info",
+            "missing_on_target": "info",
             "skewed": "info",
             "high_correlation": "",
             "duplicates": "",

@@ -6,6 +6,7 @@ from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.handler import get_render_map
+from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -39,11 +40,16 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
     # missing vs. target
     if summary.target:
         conf_matrix_items = []
+        name: str
+        value: MissingConfMatrix
         for name, value in summary.missing["target"].missing_target.items():
             one_conf_matrix = ImageWidget(
                 plot_confusion_matrix(config, value),
                 image_format=config.plot.image_format,
                 alt="Mini histogram",
+                caption="p-value for the chi-square test is {}".format(
+                    round(value.p_value, 4)
+                ),
                 anchor_id="{}_missing_conf_matrix".format(name),
                 name=name,
             )
@@ -104,7 +110,7 @@ def render_variable(
     idx: str,
     summary: Dict[str, Any],
 ) -> Renderable:
-    """Create renderable item for one variable.
+    """Create renderable item for one variable. Adds alerts to variable description.
 
     Parameters
     ----------
@@ -115,7 +121,7 @@ def render_variable(
     idx : str
         Name of variable (column).
     summary : Dict[str, Any]
-        Summary of variable (column).
+        Summary of one variable (column).
 
     Returns
     -------

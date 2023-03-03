@@ -179,5 +179,11 @@ class RenderText(BaseRenderVariable):
 
 
 def render_text(config: Settings, summary: Dict[str, Any]):
+    """Return render for Text variable.
+
+    Args:
+        config (Settings): Setting of profile report.
+        summary (dict): Summary of rendered variable.
+    """
     render = RenderText(config, summary).render()
     return render

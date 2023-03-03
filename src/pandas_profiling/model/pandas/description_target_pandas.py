@@ -37,7 +37,7 @@ class TargetDescriptionPandas(TargetDescription):
         else:
             positive_vals = []
             for value in unique_vals:
-                if str(value).lower() in self.config.inferred_positive_values:
+                if str(value).lower() in self.config.possible_positive_values:
                     positive_vals.append(value)
 
             if len(positive_vals) == 0:

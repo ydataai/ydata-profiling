@@ -114,8 +114,8 @@ class Target(BaseModel):
     col_name: Optional[str] = None
     # positive values set by user
     positive_values: Optional[Union[str, List[str]]] = None
-    # positive values for inferring
-    inferred_positive_values: List[str] = ["true", "1"]
+    # possible positive values. Used to find positive values in target column.
+    possible_positive_values: List[str] = ["true", "1"]
 
 
 class Univariate(BaseModel):
@@ -289,6 +289,11 @@ class Report(BaseModel):
     precision: int = 8
 
 
+class Alerts(BaseModel):
+    # confidence level for missing on target to show alert
+    missing_confidence_level: float = 0.95
+
+
 class Settings(BaseSettings):
     # Default prefix to avoid collisions with environment variables
     class Config:
@@ -342,6 +347,7 @@ class Settings(BaseSettings):
     plot: Plot = Plot()
     duplicates: Duplicates = Duplicates()
     samples: Samples = Samples()
+    alerts: Alerts = Alerts()
 
     reject_variables: bool = True
 

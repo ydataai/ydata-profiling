@@ -6,6 +6,7 @@ from pandas_profiling.config import Settings
 from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.plot import (
+    get_cmap_half,
     missing_bar,
     missing_heatmap,
     missing_matrix,
@@ -13,9 +14,11 @@ from pandas_profiling.visualisation.plot import (
 from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
-def _plot_conf_matrix(conf_matrix: MissingConfMatrix):
+def _plot_conf_matrix(conf_matrix: MissingConfMatrix, cmap):
     labels = conf_matrix.plot_labels
-    sns.heatmap(conf_matrix.relative_counts, annot=labels, fmt="", vmin=0, vmax=1)
+    sns.heatmap(
+        conf_matrix.relative_counts, annot=labels, fmt="", vmin=0, vmax=1, cmap=cmap
+    )
 
 
 def plot_confusion_matrix(config: Settings, conf_matrix: MissingConfMatrix):
@@ -28,7 +31,9 @@ def plot_confusion_matrix(config: Settings, conf_matrix: MissingConfMatrix):
     conf_matrix : pd.DataFrame
         Prepared data for confusion matrix plot in absolute numbers.
     """
-    _plot_conf_matrix(conf_matrix)
+    cmap = plt.get_cmap(config.plot.correlation.cmap)
+    cmap = get_cmap_half(cmap)
+    _plot_conf_matrix(conf_matrix, cmap)
     return plot_360_n0sc0pe(config)
 
 

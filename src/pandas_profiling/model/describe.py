@@ -161,7 +161,7 @@ def describe(
         table_stats.update(metrics)
 
         alerts = progress(get_alerts, pbar, "Get alerts")(
-            config, table_stats, series_description, correlations
+            config, table_stats, series_description, correlations, missing
         )
 
         pbar.set_postfix_str("Get reproduction details")

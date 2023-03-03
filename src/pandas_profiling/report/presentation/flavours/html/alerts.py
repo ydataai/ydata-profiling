@@ -16,6 +16,7 @@ class HTMLAlerts(Alerts):
             "zeros": "info",
             "truncated": "info",
             "missing": "info",
+            "missing_on_target": "info",
             "skewed": "info",
             "high_correlation": "default",
             "duplicates": "default",
