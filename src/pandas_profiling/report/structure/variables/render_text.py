@@ -79,10 +79,11 @@ class RenderText(BaseRenderVariable):
         - unique statistic
         - sample of data"""
         overview_items = []
-        length_table, length_histo = render_categorical_length(
-            self.config, self.summary, self.summary["varid"]
-        )
-        overview_items.append(length_table)
+        if self.config.vars.text.length:
+            length_table, length_histo = render_categorical_length(
+                self.config, self.summary, self.summary["varid"]
+            )
+            overview_items.append(length_table)
 
         unique_stats = render_categorical_frequency(
             self.config, self.summary, self.summary["varid"]

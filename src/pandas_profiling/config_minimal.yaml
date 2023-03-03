@@ -25,6 +25,10 @@ pool_size: 0
 # Show the progress bar
 progress_bar: true
 
+# target setting
+target:
+  possible_positive_values: ["true", "1"]
+
 # Per variable type description settings
 vars:
     num:
@@ -38,7 +42,10 @@ vars:
         low_categorical_threshold: 5
         # Set to zero to disable
         chi_squared_threshold: 0.0
-    str:
+    text:
+        length: false
+        words: true
+        characters: false
         categorical_threshold: 50
         percentage_cat_threshold: 0.5
     cat:

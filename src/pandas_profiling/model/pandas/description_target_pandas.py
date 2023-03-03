@@ -87,5 +87,6 @@ def describe_target_pandas(
         raise ValueError(
             "Target column {} not found in DataFrame.".format(config.col_name)
         )
+    data_frame[config.col_name] = data_frame[config.col_name].astype("category")
     series = data_frame[config.col_name]
     return TargetDescriptionPandas(config, series)

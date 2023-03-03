@@ -459,7 +459,7 @@ def plot_hist_dist(
     config: Settings, plot_description: CategoricPlotDescription, mini: bool = False
 ) -> str:
     """Plot histogram for continuos data."""
-    if plot_description.is_supervised():
+    if plot_description.target_description:
         plot = _plot_cat_dist_supervised(config, plot_description, mini)
     else:
         plot = _plot_hist_dist(config, plot_description, mini)

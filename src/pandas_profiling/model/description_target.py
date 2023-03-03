@@ -124,5 +124,7 @@ def describe_target(
     config: Target,
     data_frame: Any,
 ) -> TargetDescription:
-    """Generate target description."""
+    """Generate target description.
+    Change type of target column to category.
+    """
     raise NotImplementedError()

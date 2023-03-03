@@ -276,7 +276,7 @@ def render_real(config: Settings, summary: dict) -> dict:
     )
 
     # log odds
-    if summary["plot_description"].target_col_name is not None:
+    if summary["plot_description"].is_supervised():
         log_odds = Image(
             plot_hist_log_odds(config, summary["plot_description"]),
             image_format=image_format,
