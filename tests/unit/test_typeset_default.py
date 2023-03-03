@@ -1,5 +1,7 @@
 import os
 
+import numpy as np
+import pandas as pd
 import pytest
 from visions.test.series import get_series
 from visions.test.utils import (
@@ -14,6 +16,7 @@ from visions.test.utils import (
 from tests.unit.test_utils import patch_arg
 from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
+from ydata_profiling.profile_report import ProfileReport
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -161,7 +164,7 @@ contains_map = {
     )
 )
 def test_contains(name, series, contains_type, member):
-    """Test the generated combinations for "series in type"
+    """Test the generated combinations for "series in type".
 
     Args:
         series: the series to test
@@ -349,3 +352,35 @@ def test_conversion(name, source_type, relation_type, series, member):
     """
     result, message = convert(name, source_type, relation_type, series, member)
     assert result, message
+
+
+@pytest.fixture
+def dataframe(size: int = 1000) -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "boolean": np.random.choice([True, False], size=size),
+            "numeric": np.random.rand(size),
+            "categorical": np.random.choice(np.arange(5), size=size),
+            "timeseries": np.arange(size),
+        }
+    )
+
+
+def convertion_map() -> list:
+    types = {
+        "boolean": ["Categorical", "Unsupported"],
+        "numeric": ["Categorical", "Boolean", "Unsupported"],
+        "categorical": ["Numeric", "Boolean", "TimeSeries", "Unsupported"],
+        "timeseries": ["Numeric", "Boolean", "Categorical", "Unsupported"],
+    }
+    return [(k, {k: i}) for k, v in types.items() for i in v]
+
+
+@pytest.mark.parametrize("column,type_schema", convertion_map())
+def test_type_schema(dataframe: pd.DataFrame, column: str, type_schema: dict):
+    prof = ProfileReport(dataframe[[column]], tsmode=True, type_schema=type_schema)
+    prof.get_description()
+    assert isinstance(prof.typeset, ProfilingTypeSet)
+    assert prof.typeset.type_schema[column] == prof.typeset._get_type(
+        type_schema[column]
+    )
