@@ -164,7 +164,7 @@ contains_map = {
     )
 )
 def test_contains(name, series, contains_type, member):
-    """Test the generated combinations for "series in type"
+    """Test the generated combinations for "series in type".
 
     Args:
         series: the series to test
