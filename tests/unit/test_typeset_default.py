@@ -339,7 +339,7 @@ convert_map = [
 
 @pytest.mark.parametrize(**get_convert_cases(series, convert_map, my_typeset_default))
 def test_conversion(name, source_type, relation_type, series, member):
-    """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type"
+    """Test the generated combinations for "convert(series) == type" and "infer(series) = source_type."
 
     Args:
         name: the test name
