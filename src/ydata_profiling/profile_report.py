@@ -68,6 +68,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         typeset: Optional[VisionsTypeset] = None,
         summarizer: Optional[BaseSummarizer] = None,
         config: Optional[Settings] = None,
+        type_schema: Optional[dict] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas or spark.sql DataFrame
@@ -89,6 +90,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             sample: optional dict(name="Sample title", caption="Caption", data=pd.DataFrame())
             typeset: optional user typeset to use for type inference
             summarizer: optional user summarizer to generate custom summary output
+            type_schema: optional dict containing pairs of `column name`: `type`
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
         self.__validate_inputs(df, minimal, tsmode, config_file, lazy)
@@ -139,6 +141,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         self.config = report_config
         self._df_hash = None
         self._sample = sample
+        self._type_schema = type_schema
         self._typeset = typeset
         self._summarizer = summarizer
 
@@ -230,7 +233,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     @property
     def typeset(self) -> Optional[VisionsTypeset]:
         if self._typeset is None:
-            self._typeset = ProfilingTypeSet(self.config)
+            self._typeset = ProfilingTypeSet(self.config, self._type_schema)
         return self._typeset
 
     @property

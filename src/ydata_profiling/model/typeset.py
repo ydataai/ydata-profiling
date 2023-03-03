@@ -241,7 +241,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
 
 
 class ProfilingTypeSet(visions.VisionsTypeset):
-    def __init__(self, config: Settings):
+    def __init__(self, config: Settings, type_schema: dict = None):
         self.config = config
 
         types = typeset_types(config)
@@ -249,3 +249,14 @@ class ProfilingTypeSet(visions.VisionsTypeset):
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=UserWarning)
             super().__init__(types)
+
+        self.type_schema = self._init_type_schema(type_schema or {})
+
+    def _init_type_schema(self, type_schema: dict) -> dict:
+        return {k: self._get_type(v) for k, v in type_schema.items()}
+
+    def _get_type(self, type_name: str) -> visions.VisionsBaseType:
+        for t in self.types:
+            if t.__name__.lower() == type_name.lower():
+                return t
+        raise ValueError(f"Type [{type_name}] not found.")
