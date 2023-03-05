@@ -81,6 +81,20 @@ def parse_args(args: Optional[List[Any]] = None) -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--target_col",
+        type=str,
+        default=None,
+        help="Name of target column.",
+    )
+
+    parser.add_argument(
+        "--target_positive_values",
+        type=str,
+        default=None,
+        help="Positive values in target column.",
+    )
+
+    parser.add_argument(
         "input_file",
         type=str,
         help="CSV file (or other file type supported by pandas) to profile",

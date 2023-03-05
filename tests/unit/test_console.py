@@ -1,7 +1,6 @@
 import os
 
 import pytest
-
 from pandas_profiling.controller import console
 from pandas_profiling.utils.paths import get_config
 
@@ -11,6 +10,14 @@ def console_data(get_data_file):
     return get_data_file(
         "meteorites.csv",
         "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+    )
+
+
+@pytest.fixture
+def console_supervised_data(get_data_file):
+    return get_data_file(
+        "titanic.csv",
+        "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv",
     )
 
 
@@ -58,3 +65,17 @@ def test_double_config(console_data, test_output_dir):
     assert (
         str(e.value) == "Arguments `config_file` and `minimal` are mutually exclusive."
     )
+
+
+def test_supervised_console(console_supervised_data, test_output_dir):
+    report = test_output_dir / "test_supervised.html"
+    console.main(
+        [
+            "--target_col",
+            "Survived",
+            "--infer_dtypes",
+            str(console_supervised_data),
+            str(report),
+        ]
+    )
+    assert report.exists(), "Report should exist"
