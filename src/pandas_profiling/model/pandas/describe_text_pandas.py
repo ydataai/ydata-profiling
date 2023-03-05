@@ -66,7 +66,7 @@ def pandas_describe_text_1d(
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     summary["plot_description"] = TextPlotDescriptionPandas(
-        series, target_description, config.vars.cat.stop_words
+        config.vars, series, target_description, config.vars.cat.stop_words
     )
 
     return config, series, summary, target_description

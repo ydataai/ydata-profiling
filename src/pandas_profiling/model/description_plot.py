@@ -3,8 +3,10 @@ from dataclasses import dataclass
 from typing import Any, List, Optional
 
 import numpy as np
-import pandas as pd
+from pandas_profiling.config import Univariate
 from pandas_profiling.model.description_target import TargetDescription
+
+import pandas as pd
 
 
 @dataclass
@@ -12,6 +14,7 @@ class BasePlotDescription(metaclass=ABCMeta):
     """Base class for plot description.
 
     Attributes:
+        config (Univariate): Setting of variables description.
         data_col_name (str): Name of data column.
         target_col_name (str or None): Name of target column.
         data_col (Any): Column with data values.
@@ -19,12 +22,14 @@ class BasePlotDescription(metaclass=ABCMeta):
             if exists.
     """
 
+    config: Univariate
     data_col_name: str
     data_col: Any
     target_description: Optional[TargetDescription]
 
     def __init__(
         self,
+        config: Univariate,
         data_col_name: str,
         data_col: Any,
         target_description: Optional[TargetDescription],
@@ -36,6 +41,7 @@ class BasePlotDescription(metaclass=ABCMeta):
             data_col (Any): Column with data values.
             target_col_name (str or None): Name of target column.
         """
+        self.config = config
         self.data_col_name = data_col_name
         self.data_col = data_col
         self.target_description = target_description
@@ -47,18 +53,26 @@ class BasePlotDescription(metaclass=ABCMeta):
         return None
 
     @property
-    def p_target_value(self) -> Optional[int]:
-        """Positive target values if target exists. None otherwise."""
+    def p_target_value(self) -> int:
+        """Positive binary target value."""
         if self.target_description:
             return self.target_description.bin_positive
-        return None
+        raise ValueError(
+            "target description is not defined at '{}' column".format(
+                self.data_col_name
+            )
+        )
 
     @property
-    def n_target_value(self) -> Optional[int]:
-        """Negative target values if target exists. None otherwise."""
+    def n_target_value(self) -> int:
+        """Negative binary target value."""
         if self.target_description:
             return self.target_description.bin_negative
-        return None
+        raise ValueError(
+            "target description is not defined at '{}' column".format(
+                self.data_col_name
+            )
+        )
 
     def is_supervised(self) -> bool:
         """Return, if plot should be plotted as supervised, or not.
@@ -81,17 +95,18 @@ class CategoricPlotDescription(BasePlotDescription):
     __log_odds: Optional[pd.DataFrame] = None
 
     count_col_name: str = "count"
-    log_odds_col_name: str = "log_odds"
+    log_odds_col_name: str = "log_odds_ratio"
 
     log_odds_text_col: str = "text_position"
 
     def __init__(
         self,
+        config: Univariate,
         data_col_name: str,
         data_col: Any,
         target_description: Optional[TargetDescription],
     ) -> None:
-        super().__init__(data_col_name, data_col, target_description)
+        super().__init__(config, data_col_name, data_col, target_description)
         distribution = self._generate_distribution()
         self.__validate_distribution(distribution)
 
@@ -141,8 +156,11 @@ class CategoricPlotDescription(BasePlotDescription):
         """
         pass
 
-    def __generate_log_odds(self):
-        """Generates log2 odds preprocessed DataFrame based on distribution."""
+    def __generate_log_odds_ratio(self):
+        """Generates log2 odds ratio preprocessed DataFrame based on distribution.
+        Compute odds for whole population and for every category.
+        From that compute log odds ratio.
+        """
         log_odds = pd.pivot_table(
             self.distribution,
             values=self.count_col_name,
@@ -157,12 +175,29 @@ class CategoricPlotDescription(BasePlotDescription):
             log_odds[self.p_target_value] = 0
         if not self.n_target_value in log_odds:
             log_odds[self.n_target_value] = 0
-        # counts log2 odds
-        # TODO change to support multiple values
-        log_odds["log_odds"] = round(
-            np.log2(log_odds[self.p_target_value] / log_odds[self.n_target_value]),
-            2,
+
+        # Laplace smoothing for odds
+        laplace_smoothing_alpha = self.config.base.log_odds_laplace_smoothing_alpha
+
+        population_odds = (
+            log_odds[self.p_target_value].sum() + laplace_smoothing_alpha
+        ) / (log_odds[self.n_target_value].sum() + laplace_smoothing_alpha)
+
+        # odds of groups
+        _odds_col_name = "odds"
+        log_odds[_odds_col_name] = (
+            log_odds[self.p_target_value] + laplace_smoothing_alpha
+        ) / (log_odds[self.n_target_value] + laplace_smoothing_alpha)
+
+        # odds ratio
+        _odds_ratio_col_name = "odds_ratio"
+        log_odds[_odds_ratio_col_name] = log_odds[_odds_col_name] / population_odds
+
+        # log odds ratio
+        log_odds[self.log_odds_col_name] = round(
+            np.log2(log_odds[_odds_ratio_col_name]), 2
         )
+
         # replace all special values with 0
         log_odds.fillna(0, inplace=True)
         log_odds.replace([np.inf, -np.inf], 0, inplace=True)
@@ -189,7 +224,7 @@ class CategoricPlotDescription(BasePlotDescription):
 
         # generate log_odds just for supervised report
         if self.is_supervised():
-            self.__generate_log_odds()
+            self.__generate_log_odds_ratio()
 
     def __check_columns(self, df: pd.DataFrame):
         """Checks if df contains all columns (data_col, target_col, count_col)."""
@@ -220,11 +255,12 @@ class TextPlotDescription(BasePlotDescription):
 
     def __init__(
         self,
+        config: Univariate,
         data_col_name: str,
         data_col: Any,
         target_description: Optional[TargetDescription],
     ) -> None:
-        super().__init__(data_col_name, data_col, target_description)
+        super().__init__(config, data_col_name, data_col, target_description)
         if self.target_description:
             self._words_counts = self.get_word_counts_supervised()
         else:

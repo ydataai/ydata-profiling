@@ -24,6 +24,7 @@ class WidgetAlerts(Alerts):
             "truncated": "info",
             "missing": "info",
             "missing_on_target": "info",
+            "log_odds_ratio": "info",
             "skewed": "info",
             "high_correlation": "",
             "duplicates": "",

@@ -35,6 +35,13 @@ class Dataset(BaseModel):
     url: str = ""
 
 
+class BaseVars(BaseModel):
+    """Setting that is applied to all variable types descriptions."""
+
+    # alpha to smooth log odds plots
+    log_odds_laplace_smoothing_alpha: int = 20
+
+
 class NumVars(BaseModel):
     quantiles: List[float] = [0.05, 0.25, 0.5, 0.75, 0.95]
     skewness_threshold: int = 20
@@ -119,6 +126,9 @@ class Target(BaseModel):
 
 
 class Univariate(BaseModel):
+    """Setting for variables description."""
+
+    base: BaseVars = BaseVars()
     num: NumVars = NumVars()
     text: TextVars = TextVars()
     cat: CatVars = CatVars()
@@ -292,6 +302,8 @@ class Report(BaseModel):
 class Alerts(BaseModel):
     # confidence level for missing on target to show alert
     missing_confidence_level: float = 0.95
+    # threshold for log odds ratio to show as alert
+    log_odds_ratio_threshold: float = 1.5
 
 
 class Settings(BaseSettings):
@@ -315,7 +327,7 @@ class Settings(BaseSettings):
     # Show the progress bar
     progress_bar: bool = True
 
-    # target description
+    # target description setting
     target: Target = Target()
 
     # Per variable type description settings

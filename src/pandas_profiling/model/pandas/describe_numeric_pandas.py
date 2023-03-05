@@ -171,6 +171,7 @@ def pandas_describe_numeric_1d(
     else:
         plot_bins = config.plot.histogram.bins_supervised
     stats["plot_description"] = NumericPlotDescriptionPandas(
+        config.vars,
         series,
         target_description,
         plot_bins,

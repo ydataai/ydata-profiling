@@ -1,8 +1,7 @@
 import string
 from typing import List, Optional, Tuple
 
-import numpy as np
-import pandas as pd
+from pandas_profiling.config import Univariate
 from pandas_profiling.model.description_plot import (
     BasePlotDescription,
     CategoricPlotDescription,
@@ -11,6 +10,8 @@ from pandas_profiling.model.description_plot import (
 from pandas_profiling.model.pandas.description_target_pandas import (
     TargetDescriptionPandas,
 )
+
+import pandas as pd
 
 
 class PlotDescriptionPandas(BasePlotDescription):
@@ -28,6 +29,7 @@ class PlotDescriptionPandas(BasePlotDescription):
 
     def __init__(
         self,
+        config: Univariate,
         data_col_name: str,
         data_col: pd.Series,
         target_description: Optional[TargetDescriptionPandas],
@@ -35,7 +37,7 @@ class PlotDescriptionPandas(BasePlotDescription):
         data_col_name = self._prepare_data_col_name(data_col)
         self._data_col = data_col
 
-        super().__init__(data_col_name, data_col, target_description)
+        super().__init__(config, data_col_name, data_col, target_description)
 
     @staticmethod
     def _prepare_data_col_name(data_col: pd.Series) -> str:
@@ -54,6 +56,7 @@ class CategoricalPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescr
 
     def __init__(
         self,
+        config: Univariate,
         data_col: pd.Series,
         target_description: Optional[TargetDescriptionPandas],
         max_cat_to_plot: int,
@@ -71,7 +74,7 @@ class CategoricalPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescr
         self._max_cat_to_plot = max_cat_to_plot
         data_col = data_col.astype(str)
         super().__init__(
-            self._prepare_data_col_name(data_col), data_col, target_description
+            config, self._prepare_data_col_name(data_col), data_col, target_description
         )
 
     def _limit_count(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -150,13 +153,14 @@ class NumericPlotDescriptionPandas(PlotDescriptionPandas, CategoricPlotDescripti
 
     def __init__(
         self,
+        config: Univariate,
         data_col: pd.Series,
         target_description: Optional[TargetDescriptionPandas],
         bar_count: int,
     ) -> None:
         self._bars = bar_count
         super().__init__(
-            self._prepare_data_col_name(data_col), data_col, target_description
+            config, self._prepare_data_col_name(data_col), data_col, target_description
         )
 
     def _generate_distribution(self) -> pd.DataFrame:
@@ -233,12 +237,13 @@ class TextPlotDescriptionPandas(PlotDescriptionPandas, TextPlotDescription):
 
     def __init__(
         self,
+        config: Univariate,
         data_col: pd.Series,
         target_description: Optional[TargetDescriptionPandas],
         stop_words: List[str] = [],
     ) -> None:
         super().__init__(
-            self._prepare_data_col_name(data_col), data_col, target_description
+            config, self._prepare_data_col_name(data_col), data_col, target_description
         )
         self.stop_words = stop_words
 

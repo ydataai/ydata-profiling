@@ -55,15 +55,15 @@ def supervised_plot(func):
 
 
 @supervised_plot
-def _plot_cat_log_odds(
+def _plot_cat_log_odds_ratio(
     config: Settings, desc_plot: CategoricPlotDescription, mini: bool
 ) -> Plotter:
-    """Create log odds plot for categorical column.
+    """Create log odds ratio plot for categorical column.
 
     Args:
         config (Setting): Config of report. Used for colors.
         desc_plot (CategoricPlotDescription):
-            Plot description, with prepared log2 odds DataFrame.
+            Plot description, with prepared log2 odds ratio DataFrame.
         mini (bool): Index, if plot is normal size, or mini.
 
     Returns:
@@ -90,7 +90,7 @@ def _plot_cat_log_odds(
     if mini:
         p = p.layout(size=MINI_FIG_SIZE).label(title="", x="", y="")
     else:
-        p = p.layout(size=FIG_SIZE).label(title="Log2 odds", x="", y="")
+        p = p.layout(size=FIG_SIZE).label(title="Log2 odds ratio", x="", y="")
 
     return p.plot(pyplot=True)
 
@@ -103,7 +103,7 @@ def _plot_cat_dist_supervised(
     Args:
         config (Setting): Config of report. Used for colors.
         desc_plot (CategoricPlotDescription):
-            Plot description, with prepared log2 odds DataFrame.
+            Plot description, with prepared distribution DataFrame.
         mini (bool): Index, if plot is normal size, or mini.
 
     Returns:
@@ -176,7 +176,7 @@ def _plot_cat_dist_unsupervised(
     Args:
         config (Setting): Config of report. Used for colors.
         desc_plot (CategoricPlotDescription):
-            Plot description, with prepared log2 odds DataFrame.
+            Plot description, with prepared distribution DataFrame.
         mini (bool): Index, if plot is normal size, or mini.
 
     Returns:
@@ -208,15 +208,15 @@ def _plot_cat_dist_unsupervised(
 
 
 @supervised_plot
-def _plot_hist_log_odds(
+def _plot_hist_log_odds_ratio(
     config: Settings, desc_plot: CategoricPlotDescription, mini: bool
 ) -> Plotter:
-    """Create log2 odds graph for numeric variable.
+    """Create log2 odds ratio graph for numeric variable.
 
     Args:
         config (Setting): Config of report. Used for colors.
         desc_plot (CategoricPlotDescription):
-            Plot description, with prepared log2 odds DataFrame.
+            Plot description, with prepared log2 odds ratio DataFrame.
         mini (bool): Index, if plot is normal size, or mini.
 
     Returns:
@@ -245,7 +245,7 @@ def _plot_hist_log_odds(
     if mini:
         p = p.layout(size=MINI_FIG_SIZE).label(title="", x="", y="")
     else:
-        p = p.layout(size=FIG_SIZE).label(title="Log2 odds", x="", y="")
+        p = p.layout(size=FIG_SIZE).label(title="Log2 odds ratio", x="", y="")
 
     return p.plot(pyplot=True)
 
@@ -258,7 +258,7 @@ def _plot_hist_dist(
     Args:
         config (Setting): Config of report. Used for colors.
         desc_plot (CategoricPlotDescription):
-            Plot description, with prepared log2 odds DataFrame.
+            Plot description, with prepared distribution DataFrame.
         mini (bool): Index, if plot is normal size, or mini.
 
     Returns:
@@ -274,15 +274,25 @@ def _plot_hist_dist(
     )
     # supervised
     if desc_plot.is_supervised():
-        p = p.add(so.Bar(alpha=1), so.Dodge(), legend=False).add(
-            so.Text(
-                {"fontweight": "bold", "clip_on": False, "rotation": 45},
-                valign="bottom",
-                halign="center",
-            ),
-            so.Dodge(by=["color"]),
-            text=desc_plot.count_col_name,
+        p = (
+            p.add(so.Bar(alpha=1), so.Dodge(), legend=False)
+            .add(
+                so.Text(
+                    {"fontweight": "bold", "clip_on": False, "rotation": 45},
+                    valign="bottom",
+                    halign="center",
+                ),
+                so.Dodge(by=["color"]),
+                text=desc_plot.count_col_name,
+            )
+            .scale(
+                color={
+                    desc_plot.p_target_value: color_positive,
+                    desc_plot.n_target_value: color_negative,
+                },
+            )
         )
+
     # unsupervised
     else:
         p = p.add(so.Bars(alpha=1, color=config.html.style.primary_color))
@@ -290,10 +300,6 @@ def _plot_hist_dist(
 
     p = p.scale(
         y=so.Continuous().tick(count=0),
-        color={
-            desc_plot.p_target_value: color_positive,
-            desc_plot.n_target_value: color_negative,
-        },
     ).theme({"axes.facecolor": "w"})
 
     if mini:
@@ -312,7 +318,7 @@ def _plot_word_cloud(
     Args:
         config (Setting): Config of report. Used for colors.
         desc_plot (CategoricPlotDescription):
-            Plot description, with prepared log2 odds DataFrame.
+            Plot description, with prepared words DataFrame.
         mini (bool): Index, if plot is normal size, or mini.
 
     Returns:
@@ -450,7 +456,7 @@ def plot_cat_log_odds(
     config: Settings, plot_description: CategoricPlotDescription, mini: bool = False
 ) -> str:
     """Plot categorical log odds graph."""
-    plot = _plot_cat_log_odds(config, plot_description, mini)
+    plot = _plot_cat_log_odds_ratio(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 
@@ -472,9 +478,9 @@ def plot_hist_log_odds(
 ) -> str:
     """Plot continuous log odds graph."""
     if plot_description.is_supervised():
-        plot = _plot_cat_log_odds(config, plot_description, mini)
+        plot = _plot_cat_log_odds_ratio(config, plot_description, mini)
     else:
-        plot = _plot_hist_log_odds(config, plot_description, mini)
+        plot = _plot_hist_log_odds_ratio(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 

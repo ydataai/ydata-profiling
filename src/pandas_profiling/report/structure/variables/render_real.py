@@ -282,6 +282,9 @@ def render_real(config: Settings, summary: dict) -> dict:
             image_format=image_format,
             alt="Mini histogram",
             name="Log Odds",
+            caption="Log2 odds with Laplace smoothing. alpha={}".format(
+                config.vars.base.log_odds_laplace_smoothing_alpha
+            ),
         )
         plots = [distribution, log_odds]
     else:

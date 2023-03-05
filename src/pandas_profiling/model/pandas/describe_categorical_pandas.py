@@ -257,6 +257,7 @@ def pandas_describe_categorical_1d(
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     summary["plot_description"] = CategoricalPlotDescriptionPandas(
+        config.vars,
         series,
         target_description,
         config.vars.cat.n_obs,
