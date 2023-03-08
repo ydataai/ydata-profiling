@@ -240,9 +240,11 @@ def render_variables_section(
     """
 
     templs = []
-
-    for idx, summary in dataframe_summary.variables.items():
-        var = render_variable(config, dataframe_summary, idx, summary)
+    for i, (var_name, summary) in enumerate(dataframe_summary.variables.items()):
+        # limit count of rendered variables by config
+        if config.report.max_vars_count and i == config.report.max_vars_count:
+            break
+        var = render_variable(config, dataframe_summary, var_name, summary)
         templs.append(var)
 
     return templs

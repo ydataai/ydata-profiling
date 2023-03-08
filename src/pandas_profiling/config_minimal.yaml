@@ -199,6 +199,11 @@ notebook:
         # or 'src'
         attribute: 'srcdoc'
 
+report:
+  precision: 8
+  # limit count of variables in report
+  max_vars_count: 100
+
 html:
     # Minify the html
     minify_html: true

@@ -118,6 +118,7 @@ class TimeseriesVars(BaseModel):
 
 
 class Target(BaseModel):
+    # name of target column
     col_name: Optional[str] = None
     # positive values set by user
     positive_values: Optional[Union[str, List[str]]] = None
@@ -297,9 +298,14 @@ class Notebook(BaseModel):
 class Report(BaseModel):
     # Numeric precision for displaying statistics
     precision: int = 8
+    # limit count of variables in report
+    # for dataframes with 200+ columns is report unusable
+    max_vars_count: Optional[int] = None
 
 
 class Alerts(BaseModel):
+    """Setting for alerts module."""
+
     # confidence level for missing on target to show alert
     missing_confidence_level: float = 0.95
     # threshold for log odds ratio to show as alert
@@ -307,6 +313,10 @@ class Alerts(BaseModel):
 
 
 class Settings(BaseSettings):
+    """Settings for whole report.
+    From description to HTML render.
+    """
+
     # Default prefix to avoid collisions with environment variables
     class Config:
         env_prefix = "profile_"
