@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profiling large datasets &mdash; ydata-profiling 0.0.dev0 documentation</title>
@@ -13,10 +13,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -31,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> ydata-profiling
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,6 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#minimal-mode">Minimal mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-the-dataset">Sample the dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#disable-expensive-computations">Disable expensive computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyspark">Pyspark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#concurrency">Concurrency</a></li>
 </ul>
 </li>
@@ -108,7 +111,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Profiling large datasets</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/pages/use_cases/big_data.rst.txt" rel="nofollow"> View page source</a>
@@ -121,17 +124,25 @@
              
   <section id="profiling-large-datasets">
 <h1>Profiling large datasets<a class="headerlink" href="#profiling-large-datasets" title="Permalink to this heading"></a></h1>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> comprehensively summarizes the input dataset in a way that gives the most insights for data analysis. For small datasets, these computations can be performed in <em>quasi</em> real-time. For larger datasets, deciding upfront which calculations to make might be required.
-Whether a computation scales to a large datasets not only depends on the exact size of the detaset, but also on its complexity and on whether fast computations are available. If the computation time of the profiling becomes a bottleneck, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> offers several alternatives to overcome it.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> comprehensively summarizes the input dataset in a way that gives the most insights for data analysis. For small datasets, these computations can be performed in <em>quasi</em> real-time. For larger datasets, deciding upfront which calculations to make might be required.
+Whether a computation scales to a large datasets not only depends on the exact size of the detaset, but also on its complexity and on whether fast computations are available. If the computation time of the profiling becomes a bottleneck, <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> offers several alternatives to overcome it.</p>
 <section id="minimal-mode">
 <h2>Minimal mode<a class="headerlink" href="#minimal-mode" title="Permalink to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> includes a minimal configuration file where the most expensive computations are turned off by default.
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> includes a minimal configuration file where the most expensive computations are turned off by default.
 This is the recommended starting point for larger datasets.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">large_dataset</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><em>(minimal mode was introduced in version v2.4.0)</em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><strong>Minimal mode</strong></dt><dd><ul class="simple">
+<li><p>This mode was introduced in version v2.4.0</p></li>
+</ul>
+</dd>
+</dl>
+</div>
 <p>This configuration file can be found here: <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml">config_minimal.yaml</a>. More details on settings and configuration are available in <a class="reference internal" href="../advanced_usage/available_settings.html"><span class="doc">Available settings</span></a>.</p>
 </section>
 <section id="sample-the-dataset">
@@ -157,7 +168,7 @@ This is the recommended starting point for larger datasets.</p>
 <section id="disable-expensive-computations">
 <h2>Disable expensive computations<a class="headerlink" href="#disable-expensive-computations" title="Permalink to this heading"></a></h2>
 <p>To decrease the computational burden in particularly large datasets but still maintain some information of interest that may stem from them, some computations can be filtered only for certain columns. Particularly, a list of targets can be provided to <strong>Interactions</strong>, so that only the interactions with these variables in specific are computed.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># Reading the data</span>
@@ -176,9 +187,32 @@ This is the recommended starting point for larger datasets.</p>
 </div>
 <p>The setting controlling this, <code class="docutils literal notranslate"><span class="pre">ìnteractions.targets</span></code>, can be changed via multiple interfaces (configuration files or environment variables). For details, see <a class="reference internal" href="../advanced_usage/changing_settings.html"><span class="doc">Changing settings</span></a>.</p>
 </section>
+<section id="pyspark">
+<h2>Pyspark<a class="headerlink" href="#pyspark" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://spark.apache.org/">Spark</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><strong>Minimal mode</strong></dt><dd><ul class="simple">
+<li><p>This mode was introduced in version v4.0.0</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> now supports Spark Dataframes profiling. You can find an example of the integration <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/master/examples/features/spark_example.py">here</a>.</p>
+<p><strong>Features supported:</strong>
+- Univariate variables analysis
+- Head and Tail dataset sample
+- Correlation matrices: Pearson and Spearman</p>
+<p><em>Coming soon</em>
+- Missing values analysis
+- Interactions
+- Improved histogram computation</p>
+<p>Keep an eye on the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues">GitHub</a> page to follow the updates on the implementation of <a class="reference external" href="https://github.com/orgs/ydataai/projects/16/views/2">Pyspark Dataframes support</a>.</p>
+</section>
 <section id="concurrency">
 <h2>Concurrency<a class="headerlink" href="#concurrency" title="Permalink to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> is a project under active development. One of the highly desired features is the addition of a scalable backend such as <a class="reference external" href="https://github.com/modin-project/modin">Modin</a>, <a class="reference external" href="https://spark.apache.org/">Spark</a> or <a class="reference external" href="https://dask.org/">Dask</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> is a project under active development. One of the highly desired features is the addition of a scalable backend such as <a class="reference external" href="https://github.com/modin-project/modin">Modin</a> or <a class="reference external" href="https://dask.org/">Dask</a>.</p>
 <p>Keep an eye on the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues">GitHub</a> page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is <a class="reference external" href="https://github.com/ydataai/pandas-profiling/projects/3">currently underway</a>.</p>
 </section>
 </section>

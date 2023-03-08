@@ -1,0 +1,17 @@
+# [4.1.0](https://github.com/ydataai/ydata-profiling/compare/v4.0.0...v4.1.0) (2023-03-08)
+
+
+#### 🐛 Bug fixes
+
+* add imagehash requirements ([0a8c5de](https://github.com/ydataai/ydata-profiling/commit/0a8c5deb1c5b2e414ba657b7513cc9559828a536))
+* correlation between columns w/o nonnull row ([cfda278](https://github.com/ydataai/ydata-profiling/commit/cfda2786d81825269a72dc87829f68b1097c48f4))
+* removed irregular spacing ([#1252](https://github.com/ydataai/ydata-profiling/issues/1252)) ([8aff455](https://github.com/ydataai/ydata-profiling/commit/8aff4556dcafc8ae6b7589caddd2aa03e9b81a4a))
+* update links and alignment in README ([efd633a](https://github.com/ydataai/ydata-profiling/commit/efd633a86d4a7f811725ae6dcdbb41c09654789e))
+* update pypi links ([1c84e89](https://github.com/ydataai/ydata-profiling/commit/1c84e89183a0beffab19c16ce1d659e8c4f65d6e))
+* update Stack Overlow to link to use both tags ([79202f7](https://github.com/ydataai/ydata-profiling/commit/79202f78f09f0b68ba183883ffdb1336ac93bcde))
+
+
+#### 🎉 Features
+
+* add type schema ([#1274](https://github.com/ydataai/ydata-profiling/issues/1274)) ([b722b70](https://github.com/ydataai/ydata-profiling/commit/b722b7070bf1519132112eb277b40b0b0965478e))
+* support for Python 3.11 ([#1273](https://github.com/ydataai/ydata-profiling/issues/1273)) ([cf9dac7](https://github.com/ydataai/ydata-profiling/commit/cf9dac7b2932d7723442b741d409e3bf40b2ab21))

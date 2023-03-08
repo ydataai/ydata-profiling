@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>⚡ Pyspark &mdash; ydata-profiling 0.0.dev0 documentation</title>
@@ -13,10 +13,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -31,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../index.html" class="icon icon-home"> ydata-profiling
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -73,6 +75,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#profiling-with-spark-dataframes">Profiling with Spark DataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ydata-profiling-in-databricks">ydata-profiling in Databricks</a></li>
 </ul>
 </li>
 </ul>
@@ -111,7 +114,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">⚡ Pyspark</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/pages/integrations/pyspark.rst.txt" rel="nofollow"> View page source</a>
@@ -124,6 +127,15 @@
              
   <section id="pyspark">
 <h1>⚡ Pyspark<a class="headerlink" href="#pyspark" title="Permalink to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><strong>Spark dataframes support</strong></dt><dd><ul class="simple">
+<li><p>Spark Dataframes profiling is available from ydata-profiling version 4.0.0 onwards</p></li>
+</ul>
+</dd>
+</dl>
+</div>
 <p>Data Profiling is a core step in the process of developing AI solutions.
 For small datasets, the data can be loaded into memory and easily accessed with Python and pandas dataframes.
 However for larger datasets what can be done?</p>
@@ -169,6 +181,12 @@ A more detailed tutorial for the installation can be found <a class="reference e
 <section id="profiling-with-spark-dataframes">
 <h2>Profiling with Spark DataFrames<a class="headerlink" href="#profiling-with-spark-dataframes" title="Permalink to this heading"></a></h2>
 <p>A quickstart example to profile data from a CSV leveraging Pyspark engine and <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code>.</p>
+</section>
+<section id="ydata-profiling-in-databricks">
+<h2>ydata-profiling in Databricks<a class="headerlink" href="#ydata-profiling-in-databricks" title="Permalink to this heading"></a></h2>
+<p>Yes! We have fantastic new coming with a full tutorial on how you can use ydata-profiling in Databricks Notebooks.</p>
+<p>The notebook example can be found <a class="reference external" href="https://github.com/ydataai/ydata-profiling/tree/master/examples/integrations/databricks_example.ipynb">here</a>.</p>
+<p>Stay tuned - we are going to update the documentation soon!</p>
 </section>
 </section>
 

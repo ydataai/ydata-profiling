@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ydata_profiling.config.Settings &mdash; ydata-profiling 0.0.dev0 documentation</title>
@@ -13,10 +13,8 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -31,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #e32212" >
-            <a href="../../../../index.html" class="icon icon-home"> ydata-profiling
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            ydata-profiling
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -141,7 +143,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../api.html">API</a></li>
           <li class="breadcrumb-item"><a href="../settings.html">Settings</a></li>
       <li class="breadcrumb-item active">ydata_profiling.config.Settings</li>
@@ -1373,12 +1375,12 @@
 </pre></div>
 </div>
 </details></p><dl class="field-list simple">
-<dt class="field-odd">Config</dt>
+<dt class="field-odd">Config<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>env_prefix</strong>: <em>str = profile_</em></p></li>
 </ul>
 </dd>
-<dt class="field-even">Fields</dt>
+<dt class="field-even">Fields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.categorical_maximum_correlation_distinct" title="ydata_profiling.config.Settings.categorical_maximum_correlation_distinct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">categorical_maximum_correlation_distinct</span> <span class="pre">(int)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.correlation_table" title="ydata_profiling.config.Settings.correlation_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlation_table</span> <span class="pre">(bool)</span></code></a></p></li>
@@ -1400,7 +1402,7 @@
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.report" title="ydata_profiling.config.Settings.report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">report</span> <span class="pre">(ydata_profiling.config.Report)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.samples" title="ydata_profiling.config.Settings.samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">samples</span> <span class="pre">(ydata_profiling.config.Samples)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.show_variable_description" title="ydata_profiling.config.Settings.show_variable_description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_variable_description</span> <span class="pre">(bool)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#ydata_profiling.config.Settings.sort" title="ydata_profiling.config.Settings.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#ydata_profiling.config.Settings.sort" title="ydata_profiling.config.Settings.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span> <span class="pre">(str</span> <span class="pre">|</span> <span class="pre">None)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.title" title="ydata_profiling.config.Settings.title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title</span> <span class="pre">(str)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.variables" title="ydata_profiling.config.Settings.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span> <span class="pre">(ydata_profiling.config.Variables)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#ydata_profiling.config.Settings.vars" title="ydata_profiling.config.Settings.vars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vars</span> <span class="pre">(ydata_profiling.config.Univariate)</span></code></a></p></li>
@@ -1532,13 +1534,13 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ydata_profiling/config.html#Settings.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ydata_profiling.config.Settings.from_file" title="Permalink to this definition"></a></dt>
 <dd><p>Create a Settings object from a yaml file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config_file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – yaml file path</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#ydata_profiling.config.Settings" title="ydata_profiling.config.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Settings</p>
 </dd>
 </dl>
@@ -1548,7 +1550,7 @@
 <dt class="sig sig-object py" id="ydata_profiling.config.Settings.update">
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ydata_profiling/config.html#Settings.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ydata_profiling.config.Settings.update" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#ydata_profiling.config.Settings" title="ydata_profiling.config.Settings"><code class="xref py py-class docutils literal notranslate"><span class="pre">Settings</span></code></a></p>
 </dd>
 </dl>

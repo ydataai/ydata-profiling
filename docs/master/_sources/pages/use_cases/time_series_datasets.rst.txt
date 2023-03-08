@@ -13,7 +13,7 @@ The following syntax can be used to generate a profile under the assumption that
     from pandas_profiling import ProfileReport
 
     df = pd.read_csv("ts_data.csv")
-    profile = ProfileReport(df, ts_mode=True, sortby="Date", title="Time-Series EDA")
+    profile = ProfileReport(df, tsmode=True, sortby="Date", title="Time-Series EDA")
 
     profile.to_file("report_timeseries.html")
 
