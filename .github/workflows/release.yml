@@ -117,7 +117,6 @@ jobs:
     - name: Install the package
       run: |
         make install
-        make install-spark-ci
 
     - name: Update examples
       run: make examples
