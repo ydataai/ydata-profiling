@@ -133,8 +133,7 @@ interactions:
 # For categorical
 categorical_maximum_correlation_distinct: 100
 
-report:
-  precision: 10
+
 
 # Plot-specific settings
 plot:
@@ -199,8 +198,16 @@ notebook:
         # or 'src'
         attribute: 'srcdoc'
 
+
+# Setting for generating report from description.
 report:
   precision: 8
+  # variables module setting
+  vars:
+    # display distribution at top of variable section
+    distribution_on_top: True
+    # display distribution at top of variable section
+    log_odds_on_top: False
   # limit count of variables in report
   max_vars_count: null
 

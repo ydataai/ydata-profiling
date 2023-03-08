@@ -295,9 +295,20 @@ class Notebook(BaseModel):
     iframe: Iframe = Iframe()
 
 
+class ReportVariables(BaseModel):
+    # display distribution at top of variable section
+    distribution_on_top = True
+    # display distribution at top of variable section
+    log_odds_on_top = False
+
+
 class Report(BaseModel):
+    """Setting for generating report from description."""
+
     # Numeric precision for displaying statistics
     precision: int = 8
+    # variables module setting
+    vars: ReportVariables = ReportVariables()
     # limit count of variables in report
     # for dataframes with 200+ columns is report unusable
     max_vars_count: Optional[int] = None

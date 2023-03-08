@@ -19,6 +19,23 @@ from pandas_profiling.visualisation.plot import plot_word_cloud
 
 
 class RenderText(BaseRenderVariable):
+    def __get_wordcloud(self, mini=True):
+        """Render word cloud.
+
+        Args:
+            mini (bool): If plot is normal size, or mini size
+        """
+        if mini:
+            alt = "Mini wordcloud"
+        else:
+            alt = "Wordcloud"
+
+        return Image(
+            plot_word_cloud(self.config, self.summary["plot_description"], mini),
+            image_format=self.config.plot.image_format,
+            alt=alt,
+        )
+
     def _get_top(self) -> Container:
         """Render top of string variable.
 
@@ -60,15 +77,12 @@ class RenderText(BaseRenderVariable):
         )
         top_items.append(table)
 
-        if self.config.vars.text.words:
-            mini_wordcloud = Image(
-                plot_word_cloud(
-                    self.config, self.summary["plot_description"], mini=True
-                ),
-                image_format=self.config.plot.image_format,
-                alt="Mini wordcloud",
-            )
-            top_items.append(mini_wordcloud)
+        # we dont have log odds plot -> plot distribution if dist or logodds enabled
+        if self.config.vars.text.words and (
+            self.config.report.vars.distribution_on_top
+            or self.config.report.vars.log_odds_on_top
+        ):
+            top_items.append(self.__get_wordcloud(True))
         return Container(top_items, sequence_type="grid")
 
     def _get_overview(self) -> Container:
@@ -148,11 +162,7 @@ class RenderText(BaseRenderVariable):
             redact=self.config.vars.cat.redact,
         )
 
-        image = Image(
-            plot_word_cloud(self.config, self.summary["plot_description"]),
-            image_format=self.config.plot.image_format,
-            alt="Wordcloud",
-        )
+        image = self.__get_wordcloud(False)
 
         return Container(
             [fqwo, image],

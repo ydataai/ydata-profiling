@@ -437,12 +437,24 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         redact=config.vars.cat.redact,
     )
 
-    mini_cat_dist = Image(
-        plot_cat_dist(config, summary["plot_description"], mini=True),
-        image_format=image_format,
-        alt="Mini histogram",
-    )
-    top_items.append(mini_cat_dist)
+    if config.report.vars.distribution_on_top:
+        mini_cat_dist = Image(
+            plot_cat_dist(config, summary["plot_description"], mini=True),
+            image_format=image_format,
+            alt="Mini histogram",
+        )
+        top_items.append(mini_cat_dist)
+
+    if (
+        config.report.vars.log_odds_on_top
+        and summary["plot_description"].is_supervised()
+    ):
+        mini_cat_log_odds = Image(
+            plot_cat_log_odds(config, summary["plot_description"], mini=True),
+            image_format=image_format,
+            alt="Mini histogram",
+        )
+        top_items.append(mini_cat_log_odds)
 
     template_variables["top"] = Container(top_items, sequence_type="grid")
 

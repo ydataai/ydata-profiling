@@ -29,6 +29,7 @@ def render_real(config: Settings, summary: dict) -> dict:
 
     name = "Real number (&Ropf;)"
 
+    top_items = []
     # Top
     info = VariableInfo(
         summary["varid"],
@@ -38,6 +39,7 @@ def render_real(config: Settings, summary: dict) -> dict:
         summary["description"],
         style=config.html.style,
     )
+    top_items.append(info)
 
     table1 = Table(
         [
@@ -81,6 +83,7 @@ def render_real(config: Settings, summary: dict) -> dict:
         ],
         style=config.html.style,
     )
+    top_items.append(table1)
 
     table2 = Table(
         [
@@ -122,33 +125,28 @@ def render_real(config: Settings, summary: dict) -> dict:
         ],
         style=config.html.style,
     )
+    top_items.append(table2)
 
-    if isinstance(summary["histogram"], list):
-        mini_histo = Image(
-            mini_histogram(
-                config,
-                [x[0] for x in summary["histogram"]],
-                [x[1] for x in summary["histogram"]],
-            ),
+    if config.report.vars.distribution_on_top:
+        mini_real_dist = Image(
+            plot_hist_dist(config, summary["plot_description"], mini=True),
             image_format=image_format,
             alt="Mini histogram",
         )
-    else:
-        mini_histo = Image(
-            mini_histogram(config, *summary["histogram"]),
+        top_items.append(mini_real_dist)
+
+    if (
+        config.report.vars.log_odds_on_top
+        and summary["plot_description"].is_supervised()
+    ):
+        mini_real_log_odds = Image(
+            plot_hist_log_odds(config, summary["plot_description"], mini=True),
             image_format=image_format,
             alt="Mini histogram",
         )
+        top_items.append(mini_real_log_odds)
 
-    mini_real_dist = Image(
-        plot_hist_dist(config, summary["plot_description"], mini=True),
-        image_format=image_format,
-        alt="Mini histogram",
-    )
-
-    template_variables["top"] = Container(
-        [info, table1, table2, mini_real_dist], sequence_type="grid"
-    )
+    template_variables["top"] = Container(top_items, sequence_type="grid")
 
     # ==================================================================================
 
