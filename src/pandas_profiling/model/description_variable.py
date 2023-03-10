@@ -152,7 +152,8 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
 
     __log_odds: pd.DataFrame
     log_odds_col_name: str = "log_odds_ratio"
-    log_odds_text_col: str = "text_position"
+    _odds_col_name = "odds"
+    _odds_ratio_col_name = "odds_ratio"
 
     @property
     def log_odds(self) -> pd.DataFrame:
@@ -163,13 +164,29 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
             female      2
         """
         if not hasattr(self, "__log_odds"):
-            self.__generate_log_odds_ratio()
+            self._generate_log_odds_ratio()
         return self.__log_odds
 
-    def __generate_log_odds_ratio(self):
-        """Generates log2 odds ratio preprocessed DataFrame based on distribution.
-        Compute odds for whole population and for every category.
-        From that compute log odds ratio.
+    def _generate_dist_pivot_table(self) -> pd.DataFrame:
+        """Generate pivot table from distribution.
+        transforms distribution:
+            col_name,       target_name,    count
+            1               0               10
+            1               1               5
+            2               0               8
+            2               1               0
+
+
+        to distribution pivot table:
+            col_name,       p_target_value, n_target_value
+            1               5               10
+            2               0               8
+            - data_col_name is column with data categories
+            - p_target_value is count of positive values
+            - n_target_value is count of negative values for category
+
+        Returns:
+            pd.DataFrame: Distribution as pivot table.
         """
         log_odds = pd.pivot_table(
             self.distribution,
@@ -177,6 +194,7 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
             index=self.data_col_name,
             columns=self.target_col_name,
             sort=False,
+            aggfunc=np.sum,
         ).reset_index()
         log_odds.columns.name = ""
 
@@ -185,37 +203,60 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
             log_odds[self.p_target_value] = 0
         if not self.n_target_value in log_odds:
             log_odds[self.n_target_value] = 0
+        return log_odds
 
-        # Laplace smoothing for odds
+    def _generate_odds_ratio(self):
+        """Generate odds ratio from distribution pivot table.
+        Apply Laplace smoothing with alpha from setting.
+        - add alpha new records to every group in data
+        - distribution of new records is same as distribution in whole population
+        - create odds for every group with laplace smoothing
+        """
+        log_odds = self._generate_dist_pivot_table()
+        # Laplace smoothing alpha
         laplace_smoothing_alpha = self.config.base.log_odds_laplace_smoothing_alpha
 
+        # get distribution of added records P(positive) + P(negative) = 1
+        # P(pos) = sum(positive) / sum(all)
+        pos_prob = (log_odds[self.p_target_value].sum()) / (
+            log_odds[self.p_target_value].sum() + log_odds[self.n_target_value].sum()
+        )
+        neg_prob = 1 - pos_prob
+
+        # odds of groups with smoothing
+        log_odds[self._odds_col_name] = (
+            log_odds[self.p_target_value] + pos_prob * laplace_smoothing_alpha
+        ) / (log_odds[self.n_target_value] + neg_prob * laplace_smoothing_alpha)
+
+        # laplace smoothing to whole population
+        groups = log_odds.shape[0]
         population_odds = (
-            log_odds[self.p_target_value].sum() + laplace_smoothing_alpha
-        ) / (log_odds[self.n_target_value].sum() + laplace_smoothing_alpha)
+            log_odds[self.p_target_value].sum()
+            + groups * pos_prob * laplace_smoothing_alpha
+        ) / (
+            log_odds[self.n_target_value].sum()
+            + groups * neg_prob * laplace_smoothing_alpha
+        )
 
-        # odds of groups
-        _odds_col_name = "odds"
-        log_odds[_odds_col_name] = (
-            log_odds[self.p_target_value] + laplace_smoothing_alpha
-        ) / (log_odds[self.n_target_value] + laplace_smoothing_alpha)
+        # odds ratio = group odds / population odds
+        log_odds[self._odds_ratio_col_name] = (
+            log_odds[self._odds_col_name] / population_odds
+        )
+        return log_odds
 
-        # odds ratio
-        _odds_ratio_col_name = "odds_ratio"
-        log_odds[_odds_ratio_col_name] = log_odds[_odds_col_name] / population_odds
-
+    def _generate_log_odds_ratio(self):
+        """Generates log2 odds ratio preprocessed DataFrame based on distribution.
+        Compute odds for whole population and for every category.
+        From that compute log odds ratio.
+        """
+        log_odds = self._generate_odds_ratio()
         # log odds ratio
-        log_odds[self.log_odds_col_name] = np.log2(log_odds[_odds_ratio_col_name])
+        log_odds[self.log_odds_col_name] = np.log2(log_odds[self._odds_ratio_col_name])
         log_odds[self.log_odds_col_name] = log_odds[self.log_odds_col_name].round(2)
 
         # replace all special values with 0
         log_odds.fillna(0, inplace=True)
         log_odds.replace([np.inf, -np.inf], 0, inplace=True)
-
-        # add text position for log2odds
-        log_odds[self.log_odds_text_col] = "left"
-        log_odds.loc[
-            log_odds[self.log_odds_col_name] < 0, self.log_odds_text_col
-        ] = "right"
         self.__log_odds = log_odds
 
     def _check_columns(self, df: pd.DataFrame):
