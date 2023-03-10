@@ -20,7 +20,7 @@ This is the recommended starting point for larger datasets.
    **Minimal mode**
     - This mode was introduced in version v2.4.0
 
-This configuration file can be found here: `config_minimal.yaml <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_. More details on settings and configuration are available in :doc:`../advanced_usage/available_settings`.
+This configuration file can be found here: `config_minimal.yaml <https://github.com/ydataai/ydata-profiling/blob/master/src/pandas_profiling/config_minimal.yaml>`_. More details on settings and configuration are available in :doc:`../advanced_usage/available_settings`.
 
 Sample the dataset
 ------------------
@@ -94,7 +94,7 @@ Pyspark
 - Interactions
 - Improved histogram computation
 
-Keep an eye on the `GitHub <https://github.com/ydataai/pandas-profiling/issues>`_ page to follow the updates on the implementation of `Pyspark Dataframes support <https://github.com/orgs/ydataai/projects/16/views/2>`_.
+Keep an eye on the `GitHub <https://github.com/ydataai/ydata-profiling/issues>`_ page to follow the updates on the implementation of `Pyspark Dataframes support <https://github.com/orgs/ydataai/projects/16/views/2>`_.
 
 Concurrency
 -----------
@@ -102,4 +102,4 @@ Concurrency
 ``ydata-profiling`` is a project under active development. One of the highly desired features is the addition of a scalable backend such as `Modin <https://github.com/modin-project/modin>`_ or `Dask <https://dask.org/>`_.
 
 
-Keep an eye on the `GitHub <https://github.com/ydataai/pandas-profiling/issues>`_ page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is `currently underway <https://github.com/ydataai/pandas-profiling/projects/3>`_.
+Keep an eye on the `GitHub <https://github.com/ydataai/ydata-profiling/issues>`_ page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is `currently underway <https://github.com/ydataai/ydata-profiling/projects/3>`_.

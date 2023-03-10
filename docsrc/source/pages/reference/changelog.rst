@@ -58,4 +58,4 @@ Changelog
 Prior to v2.7.0
 ---------------
 
-Previously, there was no explicit changelog. However, changes were included in the release description on GitHub, which you can find `in this page <https://github.com/ydataai/pandas-profiling/releases>`_.
+Previously, there was no explicit changelog. However, changes were included in the release description on GitHub, which you can find `in this page <https://github.com/ydataai/ydata-profiling/releases>`_.

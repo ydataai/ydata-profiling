@@ -3,15 +3,15 @@ Changelog v3.2.0
 
 🎉 Features
 ^^^^^^^^^^^
-- Add stop words to word_summary_vc `[#863] <https://github.com/ydataai/pandas-profiling/issues/863>`_
+- Add stop words to word_summary_vc `[#863] <https://github.com/ydataai/ydata-profiling/issues/863>`_
 - show categorical freq with stacked barh instead of pie
 - Make pie plot colors customizable
 
 🐛 Bug fixes
 ^^^^^^^^^^^^
-- Fix pandas 1.4.x compatibility `[#911] <https://github.com/ydataai/pandas-profiling/issues/911>`_
+- Fix pandas 1.4.x compatibility `[#911] <https://github.com/ydataai/ydata-profiling/issues/911>`_
 - Omit setting of mpl backend (special thanks to `Jake Odom <https://github.com/jodom961>`_
-- Character counts bugfix `[#842] <https://github.com/ydataai/pandas-profiling/issues/842>`_
+- Character counts bugfix `[#842] <https://github.com/ydataai/ydata-profiling/issues/842>`_
 - Default type for render map (Unsupported)
 
 👷‍♂️ Internal Improvements

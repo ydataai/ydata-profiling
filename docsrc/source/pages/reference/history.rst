@@ -5,7 +5,7 @@ The ``ydata-profiling`` project became what it is today due to the
 work of the creators to make it successful. This page aims to highlights
 a bit of the development history. For the full picture, have a look at
 the `contributor
-history <https://github.com/ydataai/pandas-profiling/graphs/contributors>`__.
+history <https://github.com/ydataai/ydata-profiling/graphs/contributors>`__.
 
 Inception
 ---------

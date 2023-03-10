@@ -7,8 +7,8 @@ Changelog v3.3.0
 
 🐛 Bug fixes
 ^^^^^^^^^^^^
-- High correlation warning printed multiple time `[#1019] <https://github.com/ydataai/pandas-profiling/issues/1019>`_  `[#824] <https://github.com/ydataai/pandas-profiling/issues/824>`_
-- Incorrect duplicated rows count `[#1012] <https://github.com/ydataai/pandas-profiling/issues/1012>`_
+- High correlation warning printed multiple time `[#1019] <https://github.com/ydataai/ydata-profiling/issues/1019>`_  `[#824] <https://github.com/ydataai/ydata-profiling/issues/824>`_
+- Incorrect duplicated rows count `[#1012] <https://github.com/ydataai/ydata-profiling/issues/1012>`_
 
 👷‍♂️ Internal Improvements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
