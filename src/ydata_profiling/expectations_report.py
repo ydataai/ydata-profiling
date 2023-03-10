@@ -15,6 +15,7 @@ class ExpectationHandler(Handler):
     def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
         mapping = {
             "Unsupported": [expectation_algorithms.generic_expectations],
+            "String": [expectation_algorithms.categorical_expectations],
             "Categorical": [expectation_algorithms.categorical_expectations],
             "Boolean": [expectation_algorithms.categorical_expectations],
             "Numeric": [expectation_algorithms.numeric_expectations],

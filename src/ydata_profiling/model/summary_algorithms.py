@@ -2,11 +2,11 @@ import functools
 from typing import Any, Callable, Optional, Tuple, TypeVar
 
 import numpy as np
-import pandas as pd
 from multimethod import multimethod
 from scipy.stats import chisquare
-
 from ydata_profiling.config import Settings
+
+import pandas as pd
 
 T = TypeVar("T")
 
@@ -120,6 +120,13 @@ def describe_generic(
 def describe_numeric_1d(
     config: Settings, series: Any, summary: dict
 ) -> Tuple[Settings, Any, dict]:
+    raise NotImplementedError()
+
+
+@multimethod
+def describe_string_1d(
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, dict, Any]:
     raise NotImplementedError()
 
 
