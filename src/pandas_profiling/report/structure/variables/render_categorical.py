@@ -2,6 +2,10 @@ from typing import List, Tuple, Union
 
 import pandas as pd
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_variable import (
+    CatDescription,
+    CatDescriptionSupervised,
+)
 from pandas_profiling.report.formatters import (
     fmt,
     fmt_bytesize,
@@ -445,9 +449,8 @@ def render_categorical(config: Settings, summary: dict) -> dict:
         )
         top_items.append(mini_cat_dist)
 
-    if (
-        config.report.vars.log_odds_on_top
-        and summary["plot_description"].is_supervised()
+    if config.report.vars.log_odds_on_top and isinstance(
+        summary["plot_description"], CatDescriptionSupervised
     ):
         mini_cat_log_odds = Image(
             plot_cat_log_odds(config, summary["plot_description"], mini=True),
@@ -515,9 +518,12 @@ def render_categorical(config: Settings, summary: dict) -> dict:
 
     string_items: List[Renderable] = [frequency_table]
 
+    description: Union[CatDescription, CatDescriptionSupervised] = summary[
+        "plot_description"
+    ]
     # distribution
     distribution = Image(
-        plot_cat_dist(config, summary["plot_description"]),
+        plot_cat_dist(config, description),
         image_format=image_format,
         alt="Histogram",
         name="Distribution",
@@ -525,9 +531,8 @@ def render_categorical(config: Settings, summary: dict) -> dict:
 
     # log odds
     if (
-        summary["plot_description"].target_col_name is not None
-        and summary["plot_description"].data_col_name
-        != summary["plot_description"].target_col_name
+        isinstance(description, CatDescriptionSupervised)
+        and description.data_col_name != description.target_col_name
     ):
         log_odds = Image(
             plot_cat_log_odds(config, summary["plot_description"]),

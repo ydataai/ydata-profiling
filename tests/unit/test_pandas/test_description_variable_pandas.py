@@ -4,19 +4,18 @@ import numpy as np
 import pandas as pd
 import pytest
 from pandas_profiling.config import Target, Univariate
-from pandas_profiling.model.pandas.description_plot_pandas import (
-    BasePlotDescription,
-    CategoricalPlotDescriptionPandas,
-    CategoricPlotDescription,
-    NumericPlotDescriptionPandas,
-)
 from pandas_profiling.model.pandas.description_target_pandas import (
     TargetDescriptionPandas,
+)
+from pandas_profiling.model.pandas.description_variable_pandas import (
+    CatDescriptionSupervised,
+    CatDescriptionSupervisedPandas,
+    NumDescriptionSupervisedPandas,
 )
 
 
 def compare_distribution_supervised(
-    plot_description: CategoricPlotDescription, expected_dist: pd.DataFrame
+    plot_description: CatDescriptionSupervised, expected_dist: pd.DataFrame
 ):
     assert plot_description.target_col_name, "Target shouldn't be None."
     # check distribution
@@ -64,8 +63,8 @@ def test_categorical_plot_description(test_data, expected_distribution):
     target_setting.col_name = "target"
     df = pd.DataFrame.from_records(test_data, columns=["data", "target"])
     target_description = TargetDescriptionPandas(target_setting, df["target"])
-    description = CategoricalPlotDescriptionPandas(
-        Univariate(), df["data"], target_description, 5
+    description = CatDescriptionSupervisedPandas(
+        Univariate(), df["data"], target_description
     )
     expected = pd.DataFrame(expected_distribution, columns=["data", "target", "count"])
     compare_distribution_supervised(description, expected)
@@ -94,8 +93,8 @@ def test_numeric_plot_description(test_data, expected_distribution):
     target_setting.col_name = "target"
     df = pd.DataFrame.from_records(test_data, columns=["data", "target"])
     target_description = TargetDescriptionPandas(target_setting, df["target"])
-    description = NumericPlotDescriptionPandas(
-        Univariate(), df["data"], target_description, 2
+    description = NumDescriptionSupervisedPandas(
+        Univariate(), df["data"], 2, target_description
     )
     expected = pd.DataFrame(expected_distribution, columns=["data", "target", "count"])
     compare_distribution_supervised(description, expected)

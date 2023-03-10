@@ -1,4 +1,5 @@
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_variable import CatDescriptionSupervised
 from pandas_profiling.report.formatters import (
     fmt,
     fmt_bytesize,
@@ -135,9 +136,8 @@ def render_real(config: Settings, summary: dict) -> dict:
         )
         top_items.append(mini_real_dist)
 
-    if (
-        config.report.vars.log_odds_on_top
-        and summary["plot_description"].is_supervised()
+    if config.report.vars.log_odds_on_top and isinstance(
+        summary["plot_description"], CatDescriptionSupervised
     ):
         mini_real_log_odds = Image(
             plot_hist_log_odds(config, summary["plot_description"], mini=True),
@@ -274,7 +274,7 @@ def render_real(config: Settings, summary: dict) -> dict:
     )
 
     # log odds
-    if summary["plot_description"].is_supervised():
+    if isinstance(summary["plot_description"], CatDescriptionSupervised):
         log_odds = Image(
             plot_hist_log_odds(config, summary["plot_description"]),
             image_format=image_format,

@@ -7,8 +7,9 @@ import numpy as np
 import pandas as pd
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
-from pandas_profiling.model.pandas.description_plot_pandas import (
-    CategoricalPlotDescriptionPandas,
+from pandas_profiling.model.pandas.description_variable_pandas import (
+    CatDescriptionPandas,
+    CatDescriptionSupervisedPandas,
 )
 from pandas_profiling.model.pandas.utils_pandas import weighted_median
 from pandas_profiling.model.summary_algorithms import (
@@ -256,11 +257,16 @@ def pandas_describe_categorical_1d(
     if config.vars.cat.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
-    summary["plot_description"] = CategoricalPlotDescriptionPandas(
-        config.vars,
-        series,
-        target_description,
-        config.vars.cat.n_obs,
-    )
+    if target_description:
+        summary["plot_description"] = CatDescriptionSupervisedPandas(
+            config.vars,
+            series,
+            target_description,
+        )
+    else:
+        summary["plot_description"] = CatDescriptionPandas(
+            config.vars,
+            series,
+        )
 
     return config, series, summary, target_description

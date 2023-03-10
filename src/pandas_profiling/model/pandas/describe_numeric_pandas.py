@@ -11,8 +11,9 @@ else:
 
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
-from pandas_profiling.model.pandas.description_plot_pandas import (
-    NumericPlotDescriptionPandas,
+from pandas_profiling.model.pandas.description_variable_pandas import (
+    NumDescriptionPandas,
+    NumDescriptionSupervisedPandas,
 )
 from pandas_profiling.model.summary_algorithms import (
     chi_square,
@@ -168,13 +169,11 @@ def pandas_describe_numeric_1d(
 
     if target_description is None:
         plot_bins = config.plot.histogram.bins
+        stats["plot_description"] = NumDescriptionPandas(config.vars, series, plot_bins)
     else:
         plot_bins = config.plot.histogram.bins_supervised
-    stats["plot_description"] = NumericPlotDescriptionPandas(
-        config.vars,
-        series,
-        target_description,
-        plot_bins,
-    )
+        stats["plot_description"] = NumDescriptionSupervisedPandas(
+            config.vars, series, plot_bins, target_description
+        )
 
     return config, series, stats, target_description
