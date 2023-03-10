@@ -42,10 +42,13 @@ class AlertType(Enum):
     MISSING = auto()
     """This variable contains missing values."""
 
-    MISSING_ON_TARGET = auto()
+    MISSING_CORRELATED_WITH_TARGET = auto()
     """This variable missing values are related to target variable."""
 
-    LOG_ODDS_RATIO = auto()
+    LOW_LOG_ODDS_RATIO = auto()
+    """This variable has low log odds ratio for some value."""
+
+    HIGH_LOG_ODDS_RATIO = auto()
     """This variable has high log odds ratio for some value."""
 
     INFINITE = auto()
@@ -123,6 +126,12 @@ class Alert:
             title = ", ".join(self.values["fields"])
             corr = self.values["corr"]
             name = f'<abbr title="This variable has a high {corr} correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
+        elif "LOG ODDS RATIO" in name:
+            log_odds_val = self.values["log_odds_ratio"]
+            cat = self.values["category"]
+            side = "low" if log_odds_val < 0 else "high"
+            name = f"<abbr title=\"This variable has {side} log2 odds ratio for '{cat}'\">{name}</abbr>"
+
         return name
 
     def __repr__(self):
@@ -183,7 +192,9 @@ def log_odds_ratio_alert(config: Settings, summary: dict) -> List[Alert]:
         if abs(_log_odds_ratio) > threshold:
             alerts.append(
                 Alert(
-                    alert_type=AlertType.LOG_ODDS_RATIO,
+                    alert_type=AlertType.HIGH_LOG_ODDS_RATIO
+                    if _log_odds_ratio > 0
+                    else AlertType.LOW_LOG_ODDS_RATIO,
                     values={
                         "category": row[_description.data_col_name],
                         "log_odds_ratio": _log_odds_ratio,
@@ -402,7 +413,7 @@ def check_missing_alerts(config: Settings, missing: dict):
                 alerts.append(
                     Alert(
                         column_name=col,
-                        alert_type=AlertType.MISSING_ON_TARGET,
+                        alert_type=AlertType.MISSING_CORRELATED_WITH_TARGET,
                         values={"confidence_lvl": conf_lvl},
                     )
                 )
