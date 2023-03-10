@@ -394,7 +394,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             [
                 {
                     "name": "Positive Values",
-                    "value": fmt(summary["positive_vals"]),
+                    "value": fmt(", ".join(summary["positive_vals"])),
                     "alert": False,
                 },
                 {
@@ -409,7 +409,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
                 },
                 {
                     "name": "Negative Values",
-                    "value": fmt(summary["negative_vals"]),
+                    "value": fmt(", ".join(summary["negative_vals"])),
                     "alert": False,
                 },
                 {
