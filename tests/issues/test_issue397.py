@@ -4,7 +4,6 @@ https://github.com/ydataai/ydata-profiling/pull/397
 """
 import numpy as np
 import pandas as pd
-
 import ydata_profiling
 
 
@@ -27,7 +26,7 @@ def test_issue397():
 
     description = report.description_set
 
-    assert description["table"]["types"] == {"Categorical": 1, "Numeric": 4}
+    assert description["table"]["types"] == {"String": 1, "Numeric": 4}
 
     assert description["variables"]["float-inf"]["p_infinite"] == 0.5
     assert description["variables"]["float-inf"]["n_infinite"] == 2
