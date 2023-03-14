@@ -19,8 +19,7 @@ def describe_string_1d_spark(
         A dict containing calculated series description values.
     """
 
-    # FIXME: cat description
-    redact = config.vars.cat.redact
+    redact = config.vars.str.redact
     if not redact:
         summary["first_rows"] = df.limit(5).toPandas().squeeze("columns")
 
