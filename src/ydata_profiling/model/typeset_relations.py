@@ -36,7 +36,7 @@ def string_is_bool(series: pd.Series, state: dict, k: Dict[str, bool]) -> bool:
     return tester(series, state)
 
 
-def string_to_bool(series: pd.Series, state: dict, k: Settings) -> pd.Series:
+def string_to_bool(series: pd.Series, state: dict, k: Dict[str, bool]) -> pd.Series:
     return series.str.lower().map(k)
 
 
