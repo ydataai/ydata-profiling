@@ -20,12 +20,12 @@ from ydata_profiling.report.structure.variables.render_common import render_comm
 from ydata_profiling.visualisation.plot import plot_word_cloud
 
 
-def render_string(config: Settings, summary: Dict[str, Any]):
+def render_text(config: Settings, summary: Dict[str, Any]):
     varid = summary["varid"]
     image_format = config.plot.image_format
-    words = config.vars.str.words
-    characters = config.vars.str.characters
-    length = config.vars.str.length
+    words = config.vars.text.words
+    characters = config.vars.text.characters
+    length = config.vars.text.length
 
     template_variables = render_common(config, summary)
 
@@ -99,7 +99,7 @@ def render_string(config: Settings, summary: Dict[str, Any]):
     unique_stats = render_categorical_frequency(config, summary, varid)
     overview_items.append(unique_stats)
 
-    if not config.vars.str.redact:
+    if not config.vars.text.redact:
         rows = ("1st row", "2nd row", "3rd row", "4th row", "5th row")
 
         if isinstance(summary["first_rows"], list):
@@ -150,7 +150,7 @@ def render_string(config: Settings, summary: Dict[str, Any]):
             woc,
             name="Common words",
             anchor_id=f"{varid}cwo",
-            redact=config.vars.str.redact,
+            redact=config.vars.text.redact,
         )
 
         image = Image(

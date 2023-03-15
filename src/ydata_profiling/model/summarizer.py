@@ -1,9 +1,7 @@
 from typing import Any, Callable, Dict, List, Type
 
 import numpy as np
-import pandas as pd
 from visions import VisionsBaseType, VisionsTypeset
-
 from ydata_profiling.config import Settings
 from ydata_profiling.model.handler import Handler
 from ydata_profiling.model.summary_algorithms import (
@@ -16,11 +14,13 @@ from ydata_profiling.model.summary_algorithms import (
     describe_image_1d,
     describe_numeric_1d,
     describe_path_1d,
-    describe_string_1d,
     describe_supported,
+    describe_text_1d,
     describe_timeseries_1d,
     describe_url_1d,
 )
+
+import pandas as pd
 
 
 class BaseSummarizer(Handler):
@@ -57,8 +57,8 @@ class PandasProfilingSummarizer(BaseSummarizer):
             "DateTime": [
                 describe_date_1d,
             ],
-            "String": [
-                describe_string_1d,
+            "Text": [
+                describe_text_1d,
             ],
             "Categorical": [
                 describe_categorical_1d,
