@@ -3,7 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 import pytest
-from tests.unit.test_utils import patch_arg
 from visions.test.series import get_series
 from visions.test.utils import (
     contains,
@@ -13,6 +12,8 @@ from visions.test.utils import (
     get_inference_cases,
     infers,
 )
+
+from tests.unit.test_utils import patch_arg
 from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.profile_report import ProfileReport

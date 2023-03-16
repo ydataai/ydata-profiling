@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from multimethod import multimethod
 from scipy.stats import chisquare
+
 from ydata_profiling.config import Settings
 
 T = TypeVar("T")

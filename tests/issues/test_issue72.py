@@ -4,6 +4,7 @@ https://github.com/ydataai/ydata-profiling/issues/72
 """
 import numpy as np
 import pandas as pd
+
 import ydata_profiling
 
 

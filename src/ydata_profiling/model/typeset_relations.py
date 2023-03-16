@@ -2,11 +2,11 @@ import functools
 from typing import Callable, Dict
 
 import numpy as np
-from visions.backends.pandas.series_utils import series_handle_nulls
-from ydata_profiling.config import Settings
-
 import pandas as pd
 from pandas.api import types as pdt
+from visions.backends.pandas.series_utils import series_handle_nulls
+
+from ydata_profiling.config import Settings
 
 
 def is_nullable(series: pd.Series, state: dict) -> bool:
@@ -85,10 +85,8 @@ def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
 def string_is_datetime(series: pd.Series, state: dict) -> bool:
     """If we can transform data to datetime and at least one is valid date."""
     try:
-        if series.astype("datetime64").isna().all():
-            return False
-        return True
-    except:
+        return not series.astype("datetime64").isna().all()
+    except:  # noqa: E722
         return False
 
 

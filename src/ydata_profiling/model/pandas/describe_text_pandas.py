@@ -1,5 +1,7 @@
 from typing import Tuple
 
+import pandas as pd
+
 from ydata_profiling.config import Settings
 from ydata_profiling.model.pandas.describe_categorical_pandas import (
     length_summary_vc,
@@ -12,8 +14,6 @@ from ydata_profiling.model.summary_algorithms import (
     series_handle_nulls,
     series_hashable,
 )
-
-import pandas as pd
 
 
 @describe_text_1d.register

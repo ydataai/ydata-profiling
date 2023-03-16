@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from ydata_profiling.config import Settings
 from ydata_profiling.report.formatters import fmt, fmt_bytesize, fmt_percent
@@ -20,16 +20,15 @@ from ydata_profiling.report.structure.variables.render_common import render_comm
 from ydata_profiling.visualisation.plot import plot_word_cloud
 
 
-def render_text(config: Settings, summary: Dict[str, Any]):
+def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
     varid = summary["varid"]
-    image_format = config.plot.image_format
     words = config.vars.text.words
     characters = config.vars.text.characters
     length = config.vars.text.length
 
     template_variables = render_common(config, summary)
 
-    top_items = []
+    top_items: List[Any] = []
     var_info = VariableInfo(
         anchor_id=varid,
         var_name=summary["varname"],

@@ -5,10 +5,13 @@ from functools import partial, wraps
 from typing import Callable, Sequence, Set
 from urllib.parse import urlparse
 
+import pandas as pd
 import visions
 from multimethod import multimethod
+from pandas.api import types as pdt
 from visions.backends.pandas.series_utils import series_not_empty
 from visions.relations import IdentityRelation, InferenceRelation, TypeRelation
+
 from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset_relations import (
     numeric_is_category,
@@ -23,9 +26,6 @@ from ydata_profiling.model.typeset_relations import (
     to_bool,
     to_category,
 )
-
-import pandas as pd
-from pandas.api import types as pdt
 
 pandas_has_string_dtype_flag = hasattr(pdt, "is_string_dtype")
 
