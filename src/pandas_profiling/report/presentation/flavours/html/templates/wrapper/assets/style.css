@@ -328,7 +328,7 @@ select.multiple{
     opacity: .1;
 }
 
-{% for idx in range(style._labels | length + 1) %}
+{% for idx in range(style.primary_colors | length ) %}
     .freq.table-{{ idx }} .bar {
         background-color: {{ style.primary_colors[idx] }};
     }

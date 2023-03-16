@@ -145,7 +145,7 @@ class TestCat:
             desc.p_target_value
         ].astype(int)
 
-        pivot_table = desc._generate_dist_pivot_table()
+        pivot_table = desc.get_dist_pivot_table()
         assert pivot_table.shape[0] == len(expected_pivot), "Incorrect number of rows."
         assert pivot_table.compare(
             expected_pivot_pd

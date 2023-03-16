@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
+import pandas as pd
 from pandas_profiling.config import Univariate
 from pandas_profiling.model.description_target import TargetDescription
-
-import pandas as pd
 
 
 @dataclass
@@ -49,6 +48,10 @@ class VariableDescriptionSupervised(VariableDescription):
         n_target_value (int): Negative value of target column.
     """
 
+    log_odds_col_name: str = "log_odds_ratio"
+    _odds_col_name = "odds"
+    _odds_ratio_col_name = "odds_ratio"
+
     @property
     @abstractmethod
     def target_description(self) -> TargetDescription:
@@ -67,6 +70,70 @@ class VariableDescriptionSupervised(VariableDescription):
     def n_target_value(self) -> int:
         """Negative binary target value."""
         return self.target_description.bin_negative
+
+    @abstractmethod
+    def get_dist_pivot_table(self) -> pd.DataFrame:
+        """Method to get distribution pivot table in following format:
+
+        | col_name  | p_target_value  | n_target_value |
+        | --------- | --------------- | -------------- |
+        | 1         | 5               | 10             |
+        | 2         | 0               | 8              |
+        """
+
+    def _generate_odds_ratio(self):
+        """Generate odds ratio from distribution pivot table.
+        Apply Laplace smoothing with alpha from setting.
+        - add alpha new records to every group in data
+        - distribution of new records is same as distribution in whole population
+        - create odds for every group with laplace smoothing
+        """
+        log_odds = self.get_dist_pivot_table()
+        # Laplace smoothing alpha
+        laplace_smoothing_alpha = self.config.base.log_odds_laplace_smoothing_alpha
+
+        # get distribution of added records P(positive) + P(negative) = 1
+        # P(pos) = sum(positive) / sum(all)
+        pos_prob = (log_odds[self.p_target_value].sum()) / (
+            log_odds[self.p_target_value].sum() + log_odds[self.n_target_value].sum()
+        )
+        neg_prob = 1 - pos_prob
+
+        # odds of groups with smoothing
+        log_odds[self._odds_col_name] = (
+            log_odds[self.p_target_value] + pos_prob * laplace_smoothing_alpha
+        ) / (log_odds[self.n_target_value] + neg_prob * laplace_smoothing_alpha)
+
+        # laplace smoothing to whole population
+        groups = log_odds.shape[0]
+        population_odds = (
+            log_odds[self.p_target_value].sum()
+            + groups * pos_prob * laplace_smoothing_alpha
+        ) / (
+            log_odds[self.n_target_value].sum()
+            + groups * neg_prob * laplace_smoothing_alpha
+        )
+
+        # odds ratio = group odds / population odds
+        log_odds[self._odds_ratio_col_name] = (
+            log_odds[self._odds_col_name] / population_odds
+        )
+        return log_odds
+
+    def _get_log_odds_ratio(self) -> pd.DataFrame:
+        """Generates log2 odds ratio preprocessed DataFrame based on distribution.
+        Compute odds for whole population and for every category.
+        From that compute log odds ratio.
+        """
+        log_odds = self._generate_odds_ratio()
+        # log odds ratio
+        log_odds[self.log_odds_col_name] = np.log2(log_odds[self._odds_ratio_col_name])
+        log_odds[self.log_odds_col_name] = log_odds[self.log_odds_col_name].round(2)
+
+        # replace all special values with 0
+        log_odds.fillna(0, inplace=True)
+        log_odds.replace([np.inf, -np.inf], 0, inplace=True)
+        return log_odds
 
 
 class CatDescription(VariableDescription):
@@ -150,37 +217,40 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
         log_odds_col_name (str): Column name for count column.
     """
 
-    __log_odds: pd.DataFrame
-    log_odds_col_name: str = "log_odds_ratio"
-    _odds_col_name = "odds"
-    _odds_ratio_col_name = "odds_ratio"
+    __log_odds: Optional[pd.DataFrame] = None
 
     @property
     def log_odds(self) -> pd.DataFrame:
         """Returns DataFrame with relative log2odds for data column.
         format:
-            col_name,   log_odds
-            male        -2
-            female      2
+        | col_name | log_odds |
+        | -------- | -------- |
+        | male     | -2       |
+        | female   | 2        |
         """
-        if not hasattr(self, "__log_odds"):
-            self._generate_log_odds_ratio()
+        if self.__log_odds is None:
+            self.__log_odds = self._get_log_odds_ratio()
         return self.__log_odds
 
-    def _generate_dist_pivot_table(self) -> pd.DataFrame:
+    def get_dist_pivot_table(self) -> pd.DataFrame:
         """Generate pivot table from distribution.
         transforms distribution:
-            col_name,       target_name,    count
-            1               0               10
-            1               1               5
-            2               0               8
-            2               1               0
+
+        | col_name  | target_name  | count |
+        | --------- | ------------ | ----- |
+        | 1         | 0            | 10    |
+        | 1         | 1            | 5     |
+        | 2         | 0            | 8     |
+        | 2         | 1            | 0     |
 
 
         to distribution pivot table:
-            col_name,       p_target_value, n_target_value
-            1               5               10
-            2               0               8
+
+        | col_name | p_target_value | n_target_value |
+        | -------- | -------------- | -------------- |
+        | 1        | 5              | 10             |
+        | 2        | 0              | 8              |
+
             - data_col_name is column with data categories
             - p_target_value is count of positive values
             - n_target_value is count of negative values for category
@@ -188,7 +258,7 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
         Returns:
             pd.DataFrame: Distribution as pivot table.
         """
-        log_odds = pd.pivot_table(
+        dist_pivot_table = pd.pivot_table(
             self.distribution,
             values=self.count_col_name,
             index=self.data_col_name,
@@ -196,68 +266,14 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
             sort=False,
             aggfunc=np.sum,
         ).reset_index()
-        log_odds.columns.name = ""
+        dist_pivot_table.columns.name = ""
 
         # there is possibility, that positive, or negative values will not be present
-        if not self.p_target_value in log_odds:
-            log_odds[self.p_target_value] = 0
-        if not self.n_target_value in log_odds:
-            log_odds[self.n_target_value] = 0
-        return log_odds
-
-    def _generate_odds_ratio(self):
-        """Generate odds ratio from distribution pivot table.
-        Apply Laplace smoothing with alpha from setting.
-        - add alpha new records to every group in data
-        - distribution of new records is same as distribution in whole population
-        - create odds for every group with laplace smoothing
-        """
-        log_odds = self._generate_dist_pivot_table()
-        # Laplace smoothing alpha
-        laplace_smoothing_alpha = self.config.base.log_odds_laplace_smoothing_alpha
-
-        # get distribution of added records P(positive) + P(negative) = 1
-        # P(pos) = sum(positive) / sum(all)
-        pos_prob = (log_odds[self.p_target_value].sum()) / (
-            log_odds[self.p_target_value].sum() + log_odds[self.n_target_value].sum()
-        )
-        neg_prob = 1 - pos_prob
-
-        # odds of groups with smoothing
-        log_odds[self._odds_col_name] = (
-            log_odds[self.p_target_value] + pos_prob * laplace_smoothing_alpha
-        ) / (log_odds[self.n_target_value] + neg_prob * laplace_smoothing_alpha)
-
-        # laplace smoothing to whole population
-        groups = log_odds.shape[0]
-        population_odds = (
-            log_odds[self.p_target_value].sum()
-            + groups * pos_prob * laplace_smoothing_alpha
-        ) / (
-            log_odds[self.n_target_value].sum()
-            + groups * neg_prob * laplace_smoothing_alpha
-        )
-
-        # odds ratio = group odds / population odds
-        log_odds[self._odds_ratio_col_name] = (
-            log_odds[self._odds_col_name] / population_odds
-        )
-        return log_odds
-
-    def _generate_log_odds_ratio(self):
-        """Generates log2 odds ratio preprocessed DataFrame based on distribution.
-        Compute odds for whole population and for every category.
-        From that compute log odds ratio.
-        """
-        log_odds = self._generate_odds_ratio()
-        # log odds ratio
-        log_odds[self.log_odds_col_name] = np.log2(log_odds[self._odds_ratio_col_name])
-        log_odds[self.log_odds_col_name] = log_odds[self.log_odds_col_name].round(2)
-
-        # replace all special values with 0
-        log_odds.fillna(0, inplace=True)
-        log_odds.replace([np.inf, -np.inf], 0, inplace=True)
-        self.__log_odds = log_odds
+        if not self.p_target_value in dist_pivot_table:
+            dist_pivot_table[self.p_target_value] = 0
+        if not self.n_target_value in dist_pivot_table:
+            dist_pivot_table[self.n_target_value] = 0
+        return dist_pivot_table
 
     def _check_columns(self, df: pd.DataFrame):
         """Checks if df contains all columns (data_col, target_col, count_col)."""
@@ -305,9 +321,9 @@ class TextDescription(VariableDescription):
         """Generate word counts for input series.
 
         Returns:
-            Series with unique words as index and the computed frequency as value.
+            DataFrame with one column.
+            unique words as index and count_col with computed frequency as value.
         """
-        pass
 
 
 class TextDescriptionSupervised(TextDescription, VariableDescriptionSupervised):
@@ -319,12 +335,32 @@ class TextDescriptionSupervised(TextDescription, VariableDescriptionSupervised):
         negative_col_name (str): Name of column with word count for negative outcome.
     """
 
-    @property
-    def positive_col_name(self) -> str:
-        """Name of column with count of word for positive target."""
-        return "positive"
+    __log_odds: Optional[pd.DataFrame] = None
 
     @property
-    def negative_col_name(self) -> str:
-        """Name of column with count of word for negative target."""
-        return "negative"
+    def log_odds(self) -> pd.DataFrame:
+        """Returns DataFrame with relative log2odds for data column.
+        format:
+        | col_name | log_odds |
+        | -------- | -------- |
+        | male     | -2       |
+        | female   | 2        |
+        """
+        if self.__log_odds is None:
+            self.__log_odds = self._get_log_odds_ratio()
+            self.__log_odds = self.__log_odds.sort_values(
+                by=self.log_odds_col_name, ascending=False
+            )
+        return self.__log_odds
+
+    @abstractmethod
+    def _get_word_counts(self) -> pd.DataFrame:
+        """Generate word counts for input series and target.
+
+        Returns:
+            DataFrame with two columns.
+            unique words as index and count_col with computed frequency as value.
+        """
+
+    def get_dist_pivot_table(self) -> pd.DataFrame:
+        return self.words_counts

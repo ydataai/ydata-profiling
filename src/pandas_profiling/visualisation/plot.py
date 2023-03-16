@@ -323,10 +323,10 @@ def _plot_word_cloud(
         if not isinstance(plot_description, TextDescriptionSupervised):
             return config.html.style.primary_color
         positive_count = int(
-            plot_description.words_counts.loc[word, plot_description.positive_col_name]
+            plot_description.words_counts.loc[word, plot_description.p_target_value]
         )
         negative_count = int(
-            plot_description.words_counts.loc[word, plot_description.negative_col_name]
+            plot_description.words_counts.loc[word, plot_description.n_target_value]
         )
         _pos = np.multiply(positive_count, positive_color)
         _neg = np.multiply(negative_count, negative_color)

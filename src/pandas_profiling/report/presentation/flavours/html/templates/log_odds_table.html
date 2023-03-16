@@ -1,0 +1,42 @@
+<table class="freq table table-hover table-striped{% if idx is defined %} table-{{ idx }}{% endif %}">
+    <thead>
+        <tr>
+            <td>Value</td>
+            <td>Positive</td>
+            <td>Negative</td>
+            <td>Log2 odds ratio</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% if rows | length > 0 %}
+        {% for row in rows %}
+        <tr class="{{ row['extra_class'] }}">
+            {% if row['extra_class'] | length == 0 and redact %}
+            <td title="Redacted value">
+                <div class="text-placeholder"></div>
+            </td>
+            {% else %}
+            <td title="{{ row['label'] | fmt }}">
+                {{ row['label'] | fmt }}
+            </td>
+            {% endif %}
+            <td>{{ row['positive_count'] }}</td>
+            <td>{{ row['negative_count'] }}</td>
+            <td>
+                <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">
+                    {% if row['width'] > 0.40 %}
+                    {{ row['log_odds_ratio'] }}
+                    {% else %}
+                    &nbsp;
+                    {% endif %}
+                </div>
+                {% if row['width'] <= 0.40 %} {{ row['log_odds_ratio'] }} {% endif %} </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">No values found.</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>

@@ -1,13 +1,16 @@
 from typing import Any, Dict
 
 from pandas_profiling.config import Settings
+from pandas_profiling.model.description_variable import TextDescriptionSupervised
 from pandas_profiling.report.formatters import fmt, fmt_bytesize, fmt_percent
 from pandas_profiling.report.presentation.core import (
     Container,
     FrequencyTable,
     Image,
+    LogOddsTable,
     Table,
 )
+from pandas_profiling.report.presentation.log_odds_utils import log_odds_table
 from pandas_profiling.report.structure.variables.base_render import BaseRenderVariable
 from pandas_profiling.report.structure.variables.render_categorical import (
     _get_n,
@@ -33,6 +36,7 @@ class RenderText(BaseRenderVariable):
         return Image(
             plot_word_cloud(self.config, self.summary["plot_description"], mini),
             image_format=self.config.plot.image_format,
+            name="word cloud",
             alt=alt,
         )
 
@@ -149,26 +153,43 @@ class RenderText(BaseRenderVariable):
         Contains
         - frequency table of words
         - word map"""
-        woc = freq_table(
-            freqtable=self.summary["word_counts"],
-            n=_get_n(self.summary["word_counts"]),
-            max_number_to_print=10,
-        )
+        items = []
 
-        fqwo = FrequencyTable(
-            woc,
-            name="Common words",
-            anchor_id="{}cwo".format(self.summary["varid"]),
-            redact=self.config.vars.cat.redact,
-        )
+        if isinstance(self.summary["plot_description"], TextDescriptionSupervised):
+            lo_table = log_odds_table(
+                self.summary["plot_description"], self.config.n_freq_table_max
+            )
+            items.append(
+                LogOddsTable(
+                    lo_table,
+                    name="Log odds words (with Laplace smoothing alpha = {})".format(
+                        self.config.vars.base.log_odds_laplace_smoothing_alpha
+                    ),
+                    anchor_id="{}cwo".format(self.summary["varid"]),
+                    redact=self.config.vars.cat.redact,
+                )
+            )
+        else:
+            woc = freq_table(
+                freqtable=self.summary["word_counts"],
+                n=_get_n(self.summary["word_counts"]),
+                max_number_to_print=10,
+            )
+            fqwo = FrequencyTable(
+                woc,
+                name="Common words",
+                anchor_id="{}cwo".format(self.summary["varid"]),
+                redact=self.config.vars.cat.redact,
+            )
+            items.append(fqwo)
 
-        image = self.__get_wordcloud(False)
+        items.append(self.__get_wordcloud(False))
 
         return Container(
-            [fqwo, image],
+            items,
             name="Words",
             anchor_id="{}word".format(self.summary["varid"]),
-            sequence_type="grid",
+            sequence_type="named_list",
         )
 
     def _get_bottom(self) -> Container:

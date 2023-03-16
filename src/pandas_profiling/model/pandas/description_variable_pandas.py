@@ -462,7 +462,9 @@ class TextDescriptionSupervisedPandas(
     def _get_word_counts_supervised(self) -> pd.DataFrame:
         if not self.target_description:
             raise ValueError("target not found in {}".format(self.data_col_name))
+        # join data and target col
         data = self.data_col.to_frame().join(self.target_description.series_binary)
+        # split data col by target to positive and negative
         positive_vals = data.loc[
             data[self.target_description.name] == self.target_description.bin_positive,
             self.data_col_name,
@@ -473,14 +475,17 @@ class TextDescriptionSupervisedPandas(
         ]
         positive_counts = self._prepare_word_counts(
             positive_vals, self.stop_words
-        ).to_frame(name=self.positive_col_name)
+        ).to_frame(name=self.p_target_value)
         negative_counts = self._prepare_word_counts(
             negative_vals, self.stop_words
-        ).to_frame(name=self.negative_col_name)
-        word_counts = positive_counts.join(negative_counts)
+        ).to_frame(name=self.n_target_value)
+        # join positive and negative word counts
+        word_counts = positive_counts.join(negative_counts, how="outer")
         word_counts.fillna(0, inplace=True)
+        word_counts[self.p_target_value] = word_counts[self.p_target_value].astype(int)
+        word_counts[self.n_target_value] = word_counts[self.n_target_value].astype(int)
         word_counts[self.count_col_name] = (
-            word_counts[self.positive_col_name] + word_counts[self.negative_col_name]
+            word_counts[self.p_target_value] + word_counts[self.n_target_value]
         )
         return word_counts.sort_values(by=self.count_col_name, ascending=False)
 
