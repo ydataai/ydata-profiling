@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional, Tuple
 
 import pandas as pd
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import (

@@ -2,6 +2,7 @@
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.visualisation.context import manage_matplotlib_context

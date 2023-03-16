@@ -2,6 +2,8 @@
 from typing import Any, Dict, List, Optional, Sequence
 
 import pandas as pd
+from tqdm.auto import tqdm
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.description import BaseDescription
@@ -22,7 +24,6 @@ from pandas_profiling.report.structure.correlations import get_correlation_items
 from pandas_profiling.report.structure.overview import get_dataset_items
 from pandas_profiling.utils.dataframe import slugify
 from pandas_profiling.visualisation.missing import plot_confusion_matrix
-from tqdm.auto import tqdm
 
 
 def get_missing_items(config: Settings, summary: BaseDescription) -> list:

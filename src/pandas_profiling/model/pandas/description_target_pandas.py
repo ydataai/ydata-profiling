@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
+
 from pandas_profiling.config import Target
 from pandas_profiling.model.description_target import TargetDescription, describe_target
 

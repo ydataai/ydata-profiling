@@ -1,6 +1,7 @@
 from typing import Any, Dict, List
 
 import pandas as pd
+
 from pandas_profiling.model.description_variable import TextDescriptionSupervised
 
 

@@ -1,6 +1,7 @@
 from typing import Any
 
 from multimethod import multimethod
+
 from pandas_profiling.config import Settings
 
 

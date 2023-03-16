@@ -3,6 +3,8 @@ from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 import numpy as np
 import pandas as pd
+from visions import VisionsBaseType, VisionsTypeset
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.description_target import TargetDescription
@@ -21,7 +23,6 @@ from pandas_profiling.model.summary_algorithms import (
     describe_timeseries_1d,
     describe_url_1d,
 )
-from visions import VisionsBaseType, VisionsTypeset
 
 
 class BaseSummarizer(Handler):

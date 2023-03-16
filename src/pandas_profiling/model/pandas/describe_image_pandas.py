@@ -5,6 +5,8 @@ from typing import Optional, Tuple, Union
 
 import imagehash
 import pandas as pd
+from PIL import ExifTags, Image
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import (
@@ -12,7 +14,6 @@ from pandas_profiling.model.summary_algorithms import (
     named_aggregate_summary,
 )
 from pandas_profiling.utils.imghdr_patch import *  # noqa: F401,F403
-from PIL import ExifTags, Image
 
 
 def open_image(path: Path) -> Optional[Image.Image]:

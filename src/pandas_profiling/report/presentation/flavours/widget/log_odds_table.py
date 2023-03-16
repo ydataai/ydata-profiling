@@ -1,6 +1,7 @@
 from typing import List, Tuple
 
 from ipywidgets import GridspecLayout, VBox, widgets
+
 from pandas_profiling.report.presentation.core import LogOddsTable
 
 

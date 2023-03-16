@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.pandas.description_variable_pandas import (

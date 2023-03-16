@@ -1,6 +1,7 @@
 import warnings
 
 import pandas as pd
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.utils.dataframe import rename_index

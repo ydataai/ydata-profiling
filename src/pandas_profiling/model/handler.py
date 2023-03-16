@@ -3,8 +3,9 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 
 import networkx as nx
 import pandas as pd
-from pandas_profiling.config import Settings
 from visions import VisionsTypeset
+
+from pandas_profiling.config import Settings
 
 
 def compose(functions: Sequence[Callable]) -> Callable:

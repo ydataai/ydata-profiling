@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
 
 from multimethod import multimethod
+
 from pandas_profiling.config import Target
 
 

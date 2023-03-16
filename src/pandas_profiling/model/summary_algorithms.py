@@ -2,12 +2,12 @@ import functools
 from typing import Any, Callable, Optional, Tuple, TypeVar
 
 import numpy as np
+import pandas as pd
 from multimethod import multimethod
-from pandas_profiling.config import Settings
-from pandas_profiling.model.description_target import TargetDescription
 from scipy.stats import chisquare
 
-import pandas as pd
+from pandas_profiling.config import Settings
+from pandas_profiling.model.description_target import TargetDescription
 
 T = TypeVar("T")
 

@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
+
 from pandas_profiling.config import Univariate
 from pandas_profiling.model.description_target import TargetDescription
 

@@ -3,11 +3,12 @@
 from typing import Any, Dict, Optional
 
 from multimethod import multimethod
+from tqdm import tqdm
+from visions import VisionsTypeset
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summarizer import BaseSummarizer
-from tqdm import tqdm
-from visions import VisionsTypeset
 
 
 @multimethod

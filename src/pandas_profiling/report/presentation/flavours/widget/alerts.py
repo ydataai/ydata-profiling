@@ -1,6 +1,7 @@
 from typing import List
 
 from ipywidgets import HTML, Button, widgets
+
 from pandas_profiling.report.presentation.core import Alerts
 from pandas_profiling.report.presentation.flavours.html import templates
 

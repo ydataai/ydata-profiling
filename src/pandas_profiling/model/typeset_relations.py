@@ -4,8 +4,9 @@ from typing import Callable, Dict
 import numpy as np
 import pandas as pd
 from pandas.api import types as pdt
-from pandas_profiling.config import Settings
 from visions.backends.pandas.series_utils import series_handle_nulls
+
+from pandas_profiling.config import Settings
 
 
 def is_nullable(series: pd.Series, state: dict) -> bool:

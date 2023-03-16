@@ -2,6 +2,10 @@ from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+from scipy.fft import _pocketfft
+from scipy.signal import find_peaks
+from statsmodels.tsa.stattools import adfuller
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.summary_algorithms import (
@@ -10,9 +14,6 @@ from pandas_profiling.model.summary_algorithms import (
     series_handle_nulls,
     series_hashable,
 )
-from scipy.fft import _pocketfft
-from scipy.signal import find_peaks
-from statsmodels.tsa.stattools import adfuller
 
 
 def stationarity_test(config: Settings, series: pd.Series) -> Tuple[bool, float]:

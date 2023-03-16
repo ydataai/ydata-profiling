@@ -12,6 +12,12 @@ from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
+from PIL import ImageColor
+from seaborn._core.plot import Plotter
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from typeguard import typechecked
+from wordcloud import WordCloud
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_variable import (
     CatDescription,
@@ -22,11 +28,6 @@ from pandas_profiling.model.description_variable import (
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
-from PIL import ImageColor
-from seaborn._core.plot import Plotter
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-from typeguard import typechecked
-from wordcloud import WordCloud
 
 FIG_SIZE = (6, 4)
 MINI_FIG_SIZE = (3, 2.25)

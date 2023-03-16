@@ -1,6 +1,7 @@
 from typing import List, Tuple, Union
 
 import pandas as pd
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_variable import (
     CatDescription,

@@ -2,6 +2,7 @@ import string
 from typing import List
 
 import pandas as pd
+
 from pandas_profiling.config import Univariate
 from pandas_profiling.model.description_variable import (
     CatDescription,

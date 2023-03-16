@@ -6,9 +6,10 @@ from typing import Any, Callable, Dict, Optional
 import numpy as np
 import pandas as pd
 from multimethod import multimethod
+from scipy.stats import chi2_contingency
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
-from scipy.stats import chi2_contingency
 
 
 @dataclass

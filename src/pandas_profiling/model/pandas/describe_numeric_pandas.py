@@ -2,6 +2,7 @@ from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+
 from pandas_profiling.utils.compat import pandas_version_info
 
 if pandas_version_info() >= (1, 5):

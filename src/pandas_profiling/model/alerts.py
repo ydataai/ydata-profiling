@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Set, Union
 
 import numpy as np
 import pandas as pd
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.correlations import perform_check_correlation
 from pandas_profiling.model.description_variable import (
