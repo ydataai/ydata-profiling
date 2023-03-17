@@ -1,0 +1,6 @@
+### Changelog v4.1.1
+
+
+#### 🐛 Bug fixes
+
+* variables dropdown wrong color on mouse hover ([#1286](https://github.com/ydataai/ydata-profiling/issues/1286)) ([05aaf87](https://github.com/ydataai/ydata-profiling/commit/05aaf87142eb0d9f7d12dd35ff502dc09e62c97c))

@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -150,7 +149,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – a pandas or spark.sql DataFrame</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">sDataFrame</span></code>), <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – a pandas or spark.sql DataFrame</p></li>
 <li><p><strong>minimal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – minimal mode is a default configuration with minimal computation</p></li>
 <li><p><strong>ts_mode</strong> – activates time-series analysis for all the numerical variables from the dataset. Only available for pd.DataFrame</p></li>
 <li><p><strong>sort_by</strong> – ignored if ts_mode=False. Order the dataset by a provided column.</p></li>
@@ -177,7 +176,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – a pandas or spark.sql DataFrame</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">sDataFrame</span></code>), <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – a pandas or spark.sql DataFrame</p></li>
 <li><p><strong>minimal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – minimal mode is a default configuration with minimal computation</p></li>
 <li><p><strong>ts_mode</strong> – activates time-series analysis for all the numerical variables from the dataset. Only available for pd.DataFrame</p></li>
 <li><p><strong>sort_by</strong> – ignored if ts_mode=False. Order the dataset by a provided column.</p></li>
