@@ -29,8 +29,24 @@ def test_compare_two(reports):
     assert len(result_description["table"]["n"]) == 2
 
 
+def test_compare_two_description(reports):
+    args = [r.get_description() for r in reports[:2]]
+    assert len(args) == 2
+    result = compare(args)
+    result_description = result.get_description()
+    assert len(result_description["table"]["n"]) == 2
+
+
 def test_compare_three(reports):
     args = reports[:3]
+    assert len(args) == 3
+    result = compare(args)
+    result_description = result.get_description()
+    assert len(result_description["table"]["n"]) == 3
+
+
+def test_compare_three_description(reports):
+    args = [r.get_description() for r in reports[:3]]
     assert len(args) == 3
     result = compare(args)
     result_description = result.get_description()

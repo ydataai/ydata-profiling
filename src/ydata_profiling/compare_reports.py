@@ -1,3 +1,4 @@
+import json
 import warnings
 from typing import Any, List, Optional, Tuple, Union
 
@@ -154,7 +155,7 @@ def _compare_dataset_description_preprocess(
 
 
 def validate_reports(
-    reports: List[ProfileReport],
+    reports: Union[List[ProfileReport], List[dict]], configs: List[dict]
 ) -> None:
     """Validate if the reports are comparable.
 
@@ -171,17 +172,22 @@ def validate_reports(
             "Reports may be produced, but may yield unexpected formatting."
         )
 
-    report_types = [r.config.vars.timeseries.active for r in reports]
+    report_types = [c.vars.timeseries.active for c in configs]  # type: ignore
     if all(report_types) != any(report_types):
         raise ValueError(
             "Comparison between timeseries and tabular reports is not supported."
         )
 
-    is_df_available = [r.df is not None for r in reports]
-    if not all(is_df_available):
-        raise ValueError("Reports where not initialized with a DataFrame.")
+    if isinstance(reports[0], ProfileReport):
+        is_df_available = [r.df is not None for r in reports]  # type: ignore
+        if not all(is_df_available):
+            raise ValueError("Reports where not initialized with a DataFrame.")
 
-    features = [set(r.df.columns) for r in reports]  # type: ignore
+    if isinstance(reports[0], ProfileReport):
+        features = [set(r.df.columns) for r in reports]  # type: ignore
+    else:
+        features = [set(r["variables"].keys()) for r in reports]  # type: ignore
+
     if not all(features[0] == x for x in features):
         warnings.warn(
             "The datasets being profiled have a different set of columns. "
@@ -250,7 +256,7 @@ def _create_placehoder_alerts(report_alerts: tuple) -> tuple:
 
 
 def compare(
-    reports: List[ProfileReport],
+    reports: Union[List[ProfileReport], List[dict]],
     config: Optional[Settings] = None,
     compute: bool = False,
 ) -> ProfileReport:
@@ -265,38 +271,77 @@ def compare(
                  recommended in cases where the reports were created using different settings
 
     """
-    validate_reports(reports)
-    base_features = reports[0].df.columns  # type: ignore
-    for report in reports[1:]:
-        cols_2_compare = [col for col in base_features if col in report.df.columns]  # type: ignore
-        report.df = report.df.loc[:, cols_2_compare]  # type: ignore
-    reports = [r for r in reports if not r.df.empty]  # type: ignore
-    if len(reports) == 1:
-        return reports[0]
+    if len(reports) == 0:
+        raise ValueError("No reports available for comparison.")
+
+    report_dtypes = [type(r) for r in reports]
+    if len(set(report_dtypes)) > 1:
+        raise TypeError(
+            "The input must have the same data type for all reports. Comparing ProfileReport objects to summaries obtained from the get_description() method is not supported."
+        )
+
+    if isinstance(reports[0], ProfileReport):
+        all_configs = [r.config for r in reports]  # type: ignore
+    else:
+        configs_str = [
+            json.loads(r["package"]["ydata_profiling_config"]) for r in reports  # type: ignore
+        ]
+        all_configs = []
+        for c_str in configs_str:
+            c_setting = Settings()
+            c_setting = c_setting.update(c_str)
+            all_configs.append(c_setting)
+
+    validate_reports(reports=reports, configs=all_configs)
+
+    if isinstance(reports[0], ProfileReport):
+        base_features = reports[0].df.columns  # type: ignore
+        for report in reports[1:]:
+            cols_2_compare = [col for col in base_features if col in report.df.columns]  # type: ignore
+            report.df = report.df.loc[:, cols_2_compare]  # type: ignore
+        reports = [r for r in reports if not r.df.empty]  # type: ignore
+        if len(reports) == 1:
+            return reports[0]  # type: ignore
+    else:
+        base_features = list(reports[0]["variables"].keys())
+        non_empty_reports = 0
+        for report in reports[1:]:
+            cols_2_compare = [
+                col for col in base_features if col in list(report["variables"].keys())  # type: ignore
+            ]
+            if len(cols_2_compare) > 0:
+                non_empty_reports += 1
+        if non_empty_reports == 0:
+            profile = ProfileReport(None, config=all_configs[0])
+            profile._description_set = reports[0]
+            return profile
 
     _config = None
     if config is None:
-        _config = reports[0].config.copy()
+        _config = all_configs[0].copy()
     else:
         _config = config.copy()
-        for report in reports:
-            tsmode = report.config.vars.timeseries.active
-            title = report.config.title
-            report.config = config.copy()
-            report.config.title = title
-            report.config.vars.timeseries.active = tsmode
-            if compute:
-                report._description_set = None
+        if isinstance(reports[0], ProfileReport):
+            for report in reports:
+                tsmode = report.config.vars.timeseries.active  # type: ignore
+                title = report.config.title  # type: ignore
+                report.config = config.copy()  # type: ignore
+                report.config.title = title  # type: ignore
+                report.config.vars.timeseries.active = tsmode  # type: ignore
+                if compute:
+                    report._description_set = None  # type: ignore
 
     if all(isinstance(report, ProfileReport) for report in reports):
         # Type ignore is needed as mypy does not pick up on the type narrowing
         # Consider using TypeGuard (3.10): https://docs.python.org/3/library/typing.html#typing.TypeGuard
-        _update_titles(reports)
+        _update_titles(reports)  # type: ignore
         labels, descriptions = _compare_profile_report_preprocess(reports, _config)  # type: ignore
     elif all(isinstance(report, dict) for report in reports):
         labels, descriptions = _compare_dataset_description_preprocess(reports)  # type: ignore
     else:
-        raise TypeError("")
+        raise TypeError(
+            "The input must have the same data type for all reports. Comparing ProfileReport objects to summaries obtained from the get_description() method is not supported."
+        )
 
     _config.html.style._labels = labels
 

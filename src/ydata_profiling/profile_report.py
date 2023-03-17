@@ -151,7 +151,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @staticmethod
     def __validate_inputs(
-        df: Union[pd.DataFrame, sDataFrame],
+        df: Optional[Union[pd.DataFrame, sDataFrame]],
         minimal: bool,
         tsmode: bool,
         config_file: Optional[Union[Path, str]],
@@ -188,8 +188,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @staticmethod
     def __initialize_dataframe(
-        df: Union[pd.DataFrame, sDataFrame], report_config: Settings
-    ) -> Union[pd.DataFrame, sDataFrame]:
+        df: Optional[Union[pd.DataFrame, sDataFrame]], report_config: Settings
+    ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
         if (
             df is not None
             and isinstance(df, pd.DataFrame)
