@@ -27,21 +27,21 @@
 
 `ydata-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while allowing the data analysis to be exported in different formats such as **html** and **json**.
 
-The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
+The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**. 
 
-### 🎊 New year, new face, more functionalities!
+### 🎊 New year, new face, more functionalities! 
 
-Thank you for using and following `pandas-profiling` developments. Yet, we have a new exciting feature - we are now thrilled to announce
+Thank you for using and following ``pandas-profiling`` developments. Yet, we have a new exciting feature - we are now thrilled to announce
 that <u>Spark</u> is now part of the Data Profiling family from version 4.0.0 onwards
-
-With its introduction, there was also the need for a new naming, one that will allow to decouple the concept of profiling from the Pandas Dataframes - `ydata-profiling`!
-
+ 
+With its introduction, there was also the need for a new naming, one that will allow to decouple the concept of profiling from the Pandas Dataframes - `ydata-profiling`! 
+ 
 But fear not, `pip install pandas-profiling` will still be a valid for a while, and we will keep investing in growing the best open-source for data profiling, so you can use it for even more use cases.
 
 ## Key features
 
-- **Type inference**: automatic detection of columns' data types (_Categorical_, _Numerical_, _Date_, etc.)
-- **Warnings**: A summary of the problems/challenges in the data that you might need to work on (_missing data_, _inaccuracies_, _skewness_, etc.)
+- **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
+- **Warnings**: A summary of the problems/challenges in the data that you might need to work on (*missing data*, *inaccuracies*, *skewness*, etc.)
 - **Univariate analysis**: including descriptive statistics (mean, median, mode, etc) and informative visualizations such as distribution histograms
 - **Multivariate analysis**: including correlations, a detailed analysis of missing data, duplicate rows, and visual support for variables pairwise interaction
 - **Time-Series**: including different statistical information relative to time dependent data such as auto-correlation and seasonality, along ACF and PACF plots.
@@ -58,7 +58,7 @@ The report contains three additional sections:
 
 ### 🎁 Latest features
 
-- Want to scale? Check the latest release with ⭐⚡[Spark support](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pypspark.html)!
+- Want to scale? Check the latest release with ⭐⚡[Spark support](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pypspark.html)! 
 - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
 - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
 
@@ -68,17 +68,16 @@ Spark support has been released, but we are always looking for an extra pair of 
 [Check current work in progress!](https://github.com/ydataai/ydata-profiling/projects/3).
 
 ## 📝 Use cases
-
 YData-profiling can be used to deliver a variety of different use-case. The documentation includes guides, tips and tricks for tackling them:
 
-| Use case                                                                                                                          | Description                                                                                 |
-| --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| [Comparing datasets](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html)                        | Comparing multiple version of the same dataset                                              |
-| [Profiling a Time-Series dataset](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/time_series_datasets.html)         | Generating a report for a time-series dataset with a single line of code                    |
-| [Profiling large datasets](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html)                            | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
-| [Handling sensitive data](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html)                       | Generating reports which are mindful about sensitive data in the input dataset              |
-| [Dataset metadata and data dictionaries](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)              | Complementing the report with dataset details and column-specific data dictionaries         |
-| [Customizing the report's appearance](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html) | Changing the appearance of the report's page and of the contained visualizations            |
+| Use case | Description                                                                                 |
+|----------|---------------------------------------------------------------------------------------------|
+| [Comparing datasets](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset                                              |
+| [Profiling a Time-Series dataset](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/time_series_datasets.html)               | Generating a report for a time-series dataset with a single line of code                    |
+|[Profiling large datasets](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
+| [Handling sensitive data](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset              |
+| [Dataset metadata and data dictionaries](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries         |
+| [Customizing the report's appearance](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations            |
 
 ## ▶️ Quickstart
 
@@ -150,27 +149,25 @@ Additional details on the CLI are available [on the documentation](https://ydata
 
 The following example reports showcase the potentialities of the package across a wide range of dataset and data types:
 
-- [Census Income](https://ydata-profiling.ydata.ai/examples/master/census/census_report.html) (US Adult Census data relating income with other demographic properties)
-- [NASA Meteorites](https://ydata-profiling.ydata.ai/examples/master/meteorites/meteorites_report.html) (comprehensive set of meteorite landing - object properties and locations) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/meteorites/meteorites_cloud.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites%5Fcloud.ipynb)
-- [Titanic](https://ydata-profiling.ydata.ai/examples/master/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic_cloud.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic%5Fcloud.ipynb)
-- [NZA](https://ydata-profiling.ydata.ai/examples/master/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
-- [Stata Auto](https://ydata-profiling.ydata.ai/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
-- [Colors](https://ydata-profiling.ydata.ai/examples/master/colors/colors_report.html) (a simple colors dataset)
-- [Vektis](https://ydata-profiling.ydata.ai/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
-- [UCI Bank Dataset](https://ydata-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (marketing dataset from a bank)
-- [Russian Vocabulary](https://ydata-profiling.ydata.ai/examples/master/features/russian_vocabulary.html) (100 most common Russian words, showcasing unicode text analysis)
-- [Website Inaccessibility](https://ydata-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
-- [Orange prices](https://ydata-profiling.ydata.ai/examples/master/features/united_report.html) and
-- [Coal prices](https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
-- [USA Air Quality](https://github.com/ydataai/ydata-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
-- [HCC](https://github.com/ydataai/ydata-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
+* [Census Income](https://ydata-profiling.ydata.ai/examples/master/census/census_report.html) (US Adult Census data relating income with other demographic properties)
+* [NASA Meteorites](https://ydata-profiling.ydata.ai/examples/master/meteorites/meteorites_report.html) (comprehensive set of meteorite landing - object properties and locations) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/meteorites/meteorites_cloud.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites%5Fcloud.ipynb)
+* [Titanic](https://ydata-profiling.ydata.ai/examples/master/titanic/titanic_report.html) (the "Wonderwall" of datasets) [![Open In Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/github/ydataai/pandas-profiling/blob/master/examples/titanic/titanic_cloud.ipynb) [![Binder](https://camo.githubusercontent.com/483bae47a175c24dfbfc57390edd8b6982ac5fb3/68747470733a2f2f6d7962696e6465722e6f72672f62616467655f6c6f676f2e737667)](https://mybinder.org/v2/gh/ydataai/pandas-profiling/master?filepath=examples%2Ftitanic%2Ftitanic%5Fcloud.ipynb)
+* [NZA](https://ydata-profiling.ydata.ai/examples/master/nza/nza_report.html) (open data from the Dutch Healthcare Authority)
+* [Stata Auto](https://ydata-profiling.ydata.ai/examples/master/stata_auto/stata_auto_report.html) (1978 Automobile data)
+* [Colors](https://ydata-profiling.ydata.ai/examples/master/colors/colors_report.html) (a simple colors dataset)
+* [Vektis](https://ydata-profiling.ydata.ai/examples/master/vektis/vektis_report.html) (Vektis Dutch Healthcare data)
+* [UCI Bank Dataset](https://ydata-profiling.ydata.ai/examples/master/bank_marketing_data/uci_bank_marketing_report.html) (marketing dataset from a bank)
+* [Russian Vocabulary](https://ydata-profiling.ydata.ai/examples/master/features/russian_vocabulary.html) (100 most common Russian words, showcasing unicode text analysis)
+* [Website Inaccessibility](https://ydata-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
+* [Orange prices](https://ydata-profiling.ydata.ai/examples/master/features/united_report.html) and 
+* [Coal prices](https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
+* [USA Air Quality](https://github.com/ydataai/ydata-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
+* [HCC](https://github.com/ydataai/ydata-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
 
 ## 🛠️ Installation
-
 Additional details, including information about widget support, are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
 
 ### Using pip
-
 [![PyPi Downloads](https://pepy.tech/badge/ydata-profiling)](https://pepy.tech/project/ydata-profiling)
 [![PyPi Monthly Downloads](https://pepy.tech/badge/pandas-profiling/month)](https://pepy.tech/project/ydata-profiling/month)
 [![PyPi Version](https://badge.fury.io/py/ydata-profiling.svg)](https://pypi.org/project/ydata-profiling/)
@@ -185,9 +182,9 @@ pip install -U ydata-profiling
 
 The package declares "extras", sets of additional dependencies.
 
-- `[notebook]`: support for rendering the report in Jupyter notebook widgets.
-- `[unicode]`: support for more detailed Unicode analysis, at the expense of additional disk space.
-- `[pyspark]`: support for pyspark for big dataset analysis
+* `[notebook]`: support for rendering the report in Jupyter notebook widgets.
+* `[unicode]`: support for more detailed Unicode analysis, at the expense of additional disk space.
+* `[pyspark]`: support for pyspark for big dataset analysis
 
 Install these with e.g.
 
@@ -195,10 +192,11 @@ Install these with e.g.
 pip install -U ydata-profiling[notebook,unicode,pyspark]
 ```
 
-### Using conda
 
+### Using conda
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
-[![Conda Version](https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/pandas-profiling.svg)](https://anaconda.org/conda-forge/pandas-profiling) 
+
 
 You can install using the `conda` package manager by running:
 
@@ -216,32 +214,31 @@ Install it by navigating to the proper directory and running:
 pip install -e .
 ```
 
-The profiling report is written in HTML and CSS, which means a modern browser is required.
+The profiling report is written in HTML and CSS, which means a modern browser is required. 
 
 You need [Python 3](https://python3statement.org/) to run the package. Other dependencies can be found in the requirements files:
 
-| Filename                                                                                              | Requirements                  |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------- |
-| [requirements.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements.txt)           | Package requirements          |
-| [requirements-dev.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements-dev.txt)   | Requirements for development  |
-| [requirements-test.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements-test.txt) | Requirements for testing      |
-| [setup.py](https://github.com/ydataai/ydata-profiling/blob/master/setup.py)                           | Requirements for widgets etc. |
+| Filename | Requirements|
+|----------|-------------|
+| [requirements.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements.txt) | Package requirements|
+| [requirements-dev.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements-dev.txt)  |  Requirements for development|
+| [requirements-test.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements-test.txt) | Requirements for testing|
+| [setup.py](https://github.com/ydataai/ydata-profiling/blob/master/setup.py) | Requirements for widgets etc. |
 
 ## 🔗 Integrations
 
-To maximize its usefulness in real world contexts, `pandas-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem:
+To maximize its usefulness in real world contexts, `pandas-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
 
-| Integration type                                                                                                            | Description                                                                                                                                                                                                                                                                                                           |
-| --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Other DataFrame libraries](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/other_dataframe_libraries.html) | How to compute the profiling of data stored in libraries other than pandas                                                                                                                                                                                                                                            |
-| [Great Expectations](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html)               | Generating [Great Expectations](https://greatexpectations.io) expectations suites directly from a profiling report                                                                                                                                                                                                    |
-| [Interactive applications](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/data_apps.html)                  | Embedding profiling reports in [Streamlit](http://streamlit.io), [Dash](http://dash.plotly.com) or [Panel](https://panel.holoviz.org) applications                                                                                                                                                                    |
-| [Pipelines](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pipelines.html)                                 | Integration with DAG workflow execution tools like [Airflow](https://airflow.apache.org) or [Kedro](https://kedro.org)                                                                                                                                                                                                |
-| [Cloud services](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html)                       | Using `pandas-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
-| [IDEs](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/ides.html)                                           | Using `pandas-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/)                                                                                                                                                                                      |
+| Integration type | Description |
+|---|---|
+| [Other DataFrame libraries](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/other_dataframe_libraries.html) | How to compute the profiling of data stored in libraries other than pandas |
+| [Great Expectations](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html) | Generating [Great Expectations](https://greatexpectations.io) expectations suites directly from a profiling report |
+| [Interactive applications](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/data_apps.html) | Embedding profiling reports in [Streamlit](http://streamlit.io), [Dash](http://dash.plotly.com) or [Panel](https://panel.holoviz.org) applications |
+| [Pipelines](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pipelines.html) | Integration with DAG workflow execution tools like [Airflow](https://airflow.apache.org) or [Kedro](https://kedro.org) |
+| [Cloud services](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html) | Using `pandas-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
+| [IDEs](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/ides.html) | Using `pandas-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/) |
 
 ## 🙋 Support
-
 Need help? Want to share a perspective? Report a bug? Ideas for collaborations? Reach out via the following channels:
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling): ideal for asking questions on how to use the package
