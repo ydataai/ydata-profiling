@@ -761,7 +761,8 @@ def _set_visibility(
 
 
 def missing_bar(
-    data: pd.DataFrame,
+    notnull_counts: pd.Series,
+    nrows: int,
     figsize: Tuple[float, float] = (25, 10),
     fontsize: float = 16,
     labels: bool = True,
@@ -774,7 +775,8 @@ def missing_bar(
     Inspired by https://github.com/ResidentMario/missingno
 
     Args:
-        data: The input DataFrame.
+        notnull_counts: Number of nonnull values per column.
+        nrows: Number of rows in the dataframe.
         figsize: The size of the figure to display.
         fontsize: The figure's font size. This default to 16.
         labels: Whether or not to display the column names. Would need to be turned off on particularly large
@@ -784,12 +786,10 @@ def missing_bar(
     Returns:
         The plot axis.
     """
-    null_counts = len(data) - data.isnull().sum()
-    values = null_counts.values
-    null_counts = null_counts / len(data)
+    percentage = notnull_counts / nrows
 
-    if len(values) <= 50:
-        ax0 = null_counts.plot.bar(figsize=figsize, fontsize=fontsize, color=color)
+    if len(notnull_counts) <= 50:
+        ax0 = percentage.plot.bar(figsize=figsize, fontsize=fontsize, color=color)
         ax0.set_xticklabels(
             ax0.get_xticklabels(),
             ha="right",
@@ -801,17 +801,17 @@ def missing_bar(
         ax1.set_xticks(ax0.get_xticks())
         ax1.set_xlim(ax0.get_xlim())
         ax1.set_xticklabels(
-            values, ha="left", fontsize=fontsize, rotation=label_rotation
+            notnull_counts, ha="left", fontsize=fontsize, rotation=label_rotation
         )
     else:
-        ax0 = null_counts.plot.barh(figsize=figsize, fontsize=fontsize, color=color)
+        ax0 = percentage.plot.barh(figsize=figsize, fontsize=fontsize, color=color)
         ylabels = ax0.get_yticklabels() if labels else []
         ax0.set_yticklabels(ylabels, fontsize=fontsize)
 
         ax1 = ax0.twinx()
         ax1.set_yticks(ax0.get_yticks())
         ax1.set_ylim(ax0.get_ylim())
-        ax1.set_yticklabels(values, fontsize=fontsize)
+        ax1.set_yticklabels(notnull_counts, fontsize=fontsize)
 
     for ax in [ax0, ax1]:
         ax = _set_visibility(ax)
@@ -820,7 +820,9 @@ def missing_bar(
 
 
 def missing_matrix(
-    data: pd.DataFrame,
+    notnull: Any,
+    columns: List[str],
+    height: int,
     figsize: Tuple[float, float] = (25, 10),
     color: Tuple[float, ...] = (0.41, 0.41, 0.41),
     fontsize: float = 16,
@@ -833,7 +835,9 @@ def missing_matrix(
     Inspired by https://github.com/ResidentMario/missingno
 
     Args:
-        data: The input DataFrame.
+        notnull: Missing data indicator matrix.
+        columns: List of column names.
+        height: Number of rows in the dataframe.
         figsize: The size of the figure to display.
         fontsize: The figure's font size. Default to 16.
         labels: Whether or not to display the column names when there is more than 50 columns.
@@ -842,9 +846,7 @@ def missing_matrix(
     Returns:
         The plot axis.
     """
-    height, width = data.shape
-
-    notnull = data.notnull().values
+    width = len(columns)
     missing_grid = np.zeros((height, width, 3), dtype=np.float32)
 
     missing_grid[notnull] = color
@@ -860,9 +862,7 @@ def missing_matrix(
 
     ha = "left"
     ax.set_xticks(list(range(0, width)))
-    ax.set_xticklabels(
-        list(data.columns), rotation=label_rotation, ha=ha, fontsize=fontsize
-    )
+    ax.set_xticklabels(columns, rotation=label_rotation, ha=ha, fontsize=fontsize)
     ax.set_yticks([0, height - 1])
     ax.set_yticklabels([1, height], fontsize=fontsize)
 
@@ -878,7 +878,8 @@ def missing_matrix(
 
 
 def missing_heatmap(
-    data: pd.DataFrame,
+    corr_mat: Any,
+    mask: Any,
     figsize: Tuple[float, float] = (20, 12),
     fontsize: float = 16,
     labels: bool = True,
@@ -895,7 +896,8 @@ def missing_heatmap(
     Inspired by https://github.com/ResidentMario/missingno
 
     Args:
-        data: The input DataFrame.
+        corr_mat: correlation matrix.
+        mask: Upper-triangle mask.
         figsize: The size of the figure to display. Defaults to (20, 12).
         fontsize: The figure's font size.
         labels: Whether or not to label each matrix entry with its correlation (default is True).
@@ -906,15 +908,6 @@ def missing_heatmap(
         The plot axis.
     """
     _, ax = plt.subplots(1, 1, figsize=figsize)
-
-    # Remove completely filled or completely empty variables.
-    columns = [i for i, n in enumerate(np.var(data.isnull(), axis="rows")) if n > 0]
-    data = data.iloc[:, columns]
-
-    # Create and mask the correlation matrix. Construct the base heatmap.
-    corr_mat = data.isnull().corr()
-    mask = np.zeros_like(corr_mat)
-    mask[np.triu_indices_from(mask)] = True
     norm_args = {"vmin": -1, "vmax": 1} if normalized_cmap else {}
 
     if labels:
