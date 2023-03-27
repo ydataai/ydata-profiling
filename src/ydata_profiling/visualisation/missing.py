@@ -1,5 +1,6 @@
 """Plotting functions for the missing values diagrams"""
-import pandas as pd
+from typing import Any, List
+
 from matplotlib import pyplot as plt
 
 from ydata_profiling.config import Settings
@@ -12,22 +13,22 @@ from ydata_profiling.visualisation.plot import (
 from ydata_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 
-def get_font_size(data: pd.DataFrame) -> float:
+def get_font_size(columns: List[str]) -> float:
     """Calculate font size based on number of columns
 
     Args:
-        data: DataFrame
+        columns: List of column names.
 
     Returns:
         Font size for missing values plots.
     """
-    max_label_length = max(len(label) for label in data.columns)
+    max_label_length = max(len(label) for label in columns)
 
-    if len(data.columns) < 20:
+    if len(columns) < 20:
         font_size = 13.0
-    elif 20 <= len(data.columns) < 40:
+    elif 20 <= len(columns) < 40:
         font_size = 12.0
-    elif 40 <= len(data.columns) < 60:
+    elif 40 <= len(columns) < 60:
         font_size = 10.0
     else:
         font_size = 8.0
@@ -37,21 +38,27 @@ def get_font_size(data: pd.DataFrame) -> float:
 
 
 @manage_matplotlib_context()
-def plot_missing_matrix(config: Settings, data: pd.DataFrame) -> str:
+def plot_missing_matrix(
+    config: Settings, notnull: Any, columns: List[str], nrows: int
+) -> str:
     """Generate missing values matrix plot
 
     Args:
         config: report Settings object
-        data: Pandas DataFrame to generate missing values matrix from.
+        notnull: Missing data indicator matrix.
+        columns: List of column names.
+        nrows: Number of rows in the dataframe.
 
     Returns:
         The resulting missing values matrix encoded as a string.
     """
 
     missing_matrix(
-        data,
+        notnull=notnull,
+        height=nrows,
+        columns=columns,
         figsize=(10, 4),
-        fontsize=get_font_size(data) / 20 * 16,
+        fontsize=get_font_size(columns) / 20 * 16,
         color=hex_to_rgb(config.html.style.primary_colors[0]),
         labels=config.plot.missing.force_labels,
     )
@@ -60,20 +67,25 @@ def plot_missing_matrix(config: Settings, data: pd.DataFrame) -> str:
 
 
 @manage_matplotlib_context()
-def plot_missing_bar(config: Settings, data: pd.DataFrame) -> str:
+def plot_missing_bar(
+    config: Settings, notnull_counts: list, nrows: int, columns: List[str]
+) -> str:
     """Generate missing values bar plot.
 
     Args:
         config: report Settings object
-        data: Pandas DataFrame to generate missing values bar plot from.
+        notnull_counts: Number of nonnull values per column.
+        nrows: Number of rows in the dataframe.
+        columns: List of column names.
 
     Returns:
         The resulting missing values bar plot encoded as a string.
     """
     missing_bar(
-        data,
+        notnull_counts=notnull_counts,
+        nrows=nrows,
         figsize=(10, 5),
-        fontsize=get_font_size(data),
+        fontsize=get_font_size(columns),
         color=hex_to_rgb(config.html.style.primary_colors[0]),
         labels=config.plot.missing.force_labels,
     )
@@ -85,35 +97,40 @@ def plot_missing_bar(config: Settings, data: pd.DataFrame) -> str:
 
 
 @manage_matplotlib_context()
-def plot_missing_heatmap(config: Settings, data: pd.DataFrame) -> str:
+def plot_missing_heatmap(
+    config: Settings, corr_mat: Any, mask: Any, columns: List[str]
+) -> str:
     """Generate missing values heatmap plot.
 
     Args:
         config: report Settings object
-        data: Pandas DataFrame to generate missing values heatmap plot from.
+        corr_mat: Correlation matrix.
+        maks: Upper-triangle mask.
+        columns: List of column names.
 
     Returns:
         The resulting missing values heatmap plot encoded as a string.
     """
 
     height = 4
-    if len(data.columns) > 10:
-        height += int((len(data.columns) - 10) / 5)
+    if len(columns) > 10:
+        height += int((len(columns) - 10) / 5)
     height = min(height, 10)
 
-    font_size = get_font_size(data)
-    if len(data.columns) > 40:
+    font_size = get_font_size(columns)
+    if len(columns) > 40:
         font_size /= 1.4
 
     missing_heatmap(
-        data,
+        corr_mat=corr_mat,
+        mask=mask,
         figsize=(10, height),
         fontsize=font_size,
         cmap=config.plot.missing.cmap,
         labels=config.plot.missing.force_labels,
     )
 
-    if len(data.columns) > 40:
+    if len(columns) > 40:
         plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
     else:
         plt.subplots_adjust(left=0.2, right=0.9, top=0.8, bottom=0.3)
