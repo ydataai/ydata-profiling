@@ -3,14 +3,14 @@ Changelog v2.12.0
 
 🎉 Features
 ^^^^^^^^^^^
-- Add the number and the percentage of negative values for numerical variables `[695] <https://github.com/ydataai/pandas-profiling/issues/695>`_ (contributed by @gverbock)
+- Add the number and the percentage of negative values for numerical variables `[695] <https://github.com/ydataai/ydata-profiling/issues/695>`_ (contributed by @gverbock)
 - Enable setting of typeset/summarizer (contributed by @ieaves)
-- Allow empty data frames `[678] <https://github.com/ydataai/pandas-profiling/issues/678>`_ (contributed by @spbail, @fwd2020-c)
+- Allow empty data frames `[678] <https://github.com/ydataai/ydata-profiling/issues/678>`_ (contributed by @spbail, @fwd2020-c)
 
 🐛 Bug fixes
 ^^^^^^^^^^^^
-- Patch args for great_expectations datetime profiler `[727] <https://github.com/ydataai/pandas-profiling/issues/727>`_ (contributed by @jstammers)
-- Negative exponent formatting `[723]  <https://github.com/ydataai/pandas-profiling/issues/723>`_ (reported by @rdpapworth)
+- Patch args for great_expectations datetime profiler `[727] <https://github.com/ydataai/ydata-profiling/issues/727>`_ (contributed by @jstammers)
+- Negative exponent formatting `[723]  <https://github.com/ydataai/ydata-profiling/issues/723>`_ (reported by @rdpapworth)
 
 📖 Documentation
 ^^^^^^^^^^^^^^^^

@@ -5,9 +5,9 @@ Overview
 .. image:: https://ydataai.github.io/pandas-profiling/docs/assets/logo_header.png
   :alt: Pandas Profiling Logo Header
 
-.. image:: https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master
+.. image:: https://github.com/ydataai/ydata-profiling/actions/workflows/tests.yml/badge.svg?branch=master
   :alt: Build Status
-  :target: https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml
+  :target: https://github.com/ydataai/ydata-profiling/actions/workflows/tests.yml
 
 .. image:: https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF
   :alt: Code Coverage
@@ -15,7 +15,7 @@ Overview
 
 .. image:: https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg
   :alt: Release Version
-  :target: https://github.com/ydataai/pandas-profiling/releases
+  :target: https://github.com/ydataai/ydata-profiling/releases
 
 .. image:: https://img.shields.io/pypi/pyversions/pandas-profiling
   :alt: Python Version

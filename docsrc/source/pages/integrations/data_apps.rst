@@ -39,7 +39,7 @@ You can install the `pandas-profiling component <https://github.com/Ghasel/strea
 Dash
 ----
 
-`Dash <hhttps://github.com/plotly/dash>`_ is a Python framework for building machine learning & data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where ``ydata-profiling`` also focuses. Inline access to the insights provided by ``pandas-profiling`` can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:
+`Dash <https://github.com/plotly/dash>`_ is a Python framework for building machine learning & data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where ``ydata-profiling`` also focuses. Inline access to the insights provided by ``pandas-profiling`` can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:
 
 Load HTML version of report as an asset 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

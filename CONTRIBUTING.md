@@ -17,7 +17,7 @@ In line with our aim, we identify the following themes:
   time series analysis, 
   or even images (e.g. dimensions, EXIF).
   
-  _Related_: [#7][i7], [#129][i129], [#190][i190], [#204][i204] or [create one](https://github.com/ydataai/pandas-profiling/issues/new/choose).
+  _Related_: [#7][i7], [#129][i129], [#190][i190], [#204][i204] or [create one](https://github.com/ydataai/ydata-profiling/issues/new/choose).
 
 - **Stability, Performance and Restricted environment compatibility:** 
   Data exploration takes place in all kinds of conditions, on the latest machine learning platforms with enormous dataset to managed environments in large corporations.
@@ -28,9 +28,9 @@ In line with our aim, we identify the following themes:
   Perform concurrency analysis or profile execution times and leverage the gained insights for improved performance (e.g. multiprocessing, cython, numba) or test the performance of `pandas-profiling` with [big data sets](https://www.stats.govt.nz/large-datasets/csv-files-for-download/) and corresponding commonly used data formats (such as parquet). 
   
   _Suggestions for contribution (Stability)_: 
-  Either review the code and add tests or watch the [issues page](https://github.com/ydataai/pandas-profiling/issues) and [Stackoverflow tag](https://stackoverflow.com/questions/tagged/pandas-profiling) to find current issues.
+  Either review the code and add tests or watch the [issues page](https://github.com/ydataai/ydata-profiling/issues) and [Stackoverflow tag](https://stackoverflow.com/questions/tagged/pandas-profiling) to find current issues.
      
-  _Related_: [#98][i98], [#122][i122] or [create one](https://github.com/ydataai/pandas-profiling/issues/new/choose).
+  _Related_: [#98][i98], [#122][i122] or [create one](https://github.com/ydataai/ydata-profiling/issues/new/choose).
 
 - **Interaction, presentation and user experience**: 
   As `pandas-profiling` eases exploratory data analysis, working with the package should reflect that.
@@ -46,7 +46,7 @@ In line with our aim, we identify the following themes:
   Other forms of distribution than HTML (for example PDF or packaged as an GUI application via [PyQt](https://riverbankcomputing.com/software/pyqt/intro))
   Users should be able to share reports (improve size of labels in graph, add explanations to correlation matrices and allow for styling/branding).
 
-  _Related_: [#161][i161], [#175][i175], [#191][i191] or [create one](https://github.com/ydataai/pandas-profiling/issues/new/choose).
+  _Related_: [#161][i161], [#175][i175], [#191][i191] or [create one](https://github.com/ydataai/ydata-profiling/issues/new/choose).
 
 - **Community**: 
   The success of this package demonstrates the power of sharing and working together.
@@ -56,20 +56,20 @@ In line with our aim, we identify the following themes:
   Share with us if this package is of value to you, let us know [in our community](https://discord.com/invite/mw7xjJ7b7s).
   We are interested in how you use `pandas-profiling` in your work.
   
-  _Related_: [#87][i87] or [create one](https://github.com/ydataai/pandas-profiling/issues/new/choose).
+  _Related_: [#87][i87] or [create one](https://github.com/ydataai/ydata-profiling/issues/new/choose).
 
 - **Machine learning:** 
   `pandas-profiling` is not a machine learning package, even though many of our users use EDA as a step prior to developing their models.
   Our focus lies in the exploratory data analysis.
   Any functionality that enables machine learning applications by more effective data profiling, is welcome.
 
-  _Related_: [#124][i124], [#173][i173], [#198][i198] or [create one](https://github.com/ydataai/pandas-profiling/issues/new/choose).
+  _Related_: [#124][i124], [#173][i173], [#198][i198] or [create one](https://github.com/ydataai/ydata-profiling/issues/new/choose).
 
 #### **Did you find a bug?**
 
-* **Ensure the bug was not already reported** by searching on Github under [Issues](https://github.com/ydataai/pandas-profiling/issues).
+* **Ensure the bug was not already reported** by searching on Github under [Issues](https://github.com/ydataai/ydata-profiling/issues).
 
-* If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/ydataai/pandas-profiling/issues/new/choose). 
+* If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/ydataai/ydata-profiling/issues/new/choose). 
 If possible, use the relevant bug report templates to create the issue. 
 
 #### **Did you write a patch that fixes a bug?**
@@ -84,19 +84,19 @@ Include the relevant issue number if applicable.
 
 We would like to thank everyone who has helped getting us to where we are now.
 
-See the [Contributor Graph](https://github.com/ydataai/pandas-profiling/graphs/contributors)
+See the [Contributor Graph](https://github.com/ydataai/ydata-profiling/graphs/contributors)
 
-[i7]: https://github.com/ydataai/pandas-profiling/issues/7
-[i129]: https://github.com/ydataai/pandas-profiling/issues/129
-[i190]: https://github.com/ydataai/pandas-profiling/issues/190
-[i204]: https://github.com/ydataai/pandas-profiling/issues/204
-[i98]: https://github.com/ydataai/pandas-profiling/issues/98
-[i122]: https://github.com/ydataai/pandas-profiling/issues/122
-[i124]: https://github.com/ydataai/pandas-profiling/issues/24
-[i173]: https://github.com/ydataai/pandas-profiling/issues/173
-[i198]: https://github.com/ydataai/pandas-profiling/issues/198
-[i87]: https://github.com/ydataai/pandas-profiling/issues/87
-[i161]: https://github.com/ydataai/pandas-profiling/issues/161
-[i175]: https://github.com/ydataai/pandas-profiling/issues/175
-[i191]: https://github.com/ydataai/pandas-profiling/issues/191
+[i7]: https://github.com/ydataai/ydata-profiling/issues/7
+[i129]: https://github.com/ydataai/ydata-profiling/issues/129
+[i190]: https://github.com/ydataai/ydata-profiling/issues/190
+[i204]: https://github.com/ydataai/ydata-profiling/issues/204
+[i98]: https://github.com/ydataai/ydata-profiling/issues/98
+[i122]: https://github.com/ydataai/ydata-profiling/issues/122
+[i124]: https://github.com/ydataai/ydata-profiling/issues/24
+[i173]: https://github.com/ydataai/ydata-profiling/issues/173
+[i198]: https://github.com/ydataai/ydata-profiling/issues/198
+[i87]: https://github.com/ydataai/ydata-profiling/issues/87
+[i161]: https://github.com/ydataai/ydata-profiling/issues/161
+[i175]: https://github.com/ydataai/ydata-profiling/issues/175
+[i191]: https://github.com/ydataai/ydata-profiling/issues/191
 

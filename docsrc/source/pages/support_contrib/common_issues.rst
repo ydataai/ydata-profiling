@@ -13,11 +13,11 @@ More information on installing Python packages directly from a notebook: `'Insta
 
 Related GitHub issues:
 
-- `[950] <https://github.com/ydataai/pandas-profiling/issues/950>`_ 
-- `[939] <https://github.com/ydataai/pandas-profiling/issues/939>`_ 
-- `[528] <https://github.com/ydataai/pandas-profiling/issues/528>`_ 
-- `[485] <https://github.com/ydataai/pandas-profiling/issues/485>`_ 
-- `[396] <https://github.com/ydataai/pandas-profiling/issues/396>`_
+- `[950] <https://github.com/ydataai/ydata-profiling/issues/950>`_ 
+- `[939] <https://github.com/ydataai/ydata-profiling/issues/939>`_ 
+- `[528] <https://github.com/ydataai/ydata-profiling/issues/528>`_ 
+- `[485] <https://github.com/ydataai/ydata-profiling/issues/485>`_ 
+- `[396] <https://github.com/ydataai/ydata-profiling/issues/396>`_
 
 Conda installation defaults to v1.4.1
 -------------------------------------
@@ -26,13 +26,13 @@ Some users experience that ``conda install -c conda-forge pandas-profiling`` def
 
 If creating a new environment with a fresh installation does not resolve this issue, or the current environment must be kept, installing a specific version is one alternative to try: ``conda install -c conda-forge pandas-profiling=3.2.0``. 
 If it fails with an ``UnsatisfiableError`` that suggests dependent packages are either missing or incompatible, then further intervention is required to resolve the *environment* issue. However, *conda* error messages in this regard may be too cryptic or insufficient to pinpoint the culprit, therefore you may have to resort to an alternate means of troubleshooting e.g using the `Mamba Package Manager <https://github.com/mamba-org/mamba.git>`_.
-For an illustration of this approach see `this issue <https://github.com/ydataai/pandas-profiling/issues/655>`_.
+For an illustration of this approach see `this issue <https://github.com/ydataai/ydata-profiling/issues/655>`_.
 
 Related GitHub issues: 
 
 - `[22] <https://github.com/conda-forge/pandas-profiling-feedstock/issues/22>`_ 
-- `[448] <https://github.com/ydataai/pandas-profiling/issues/448>`_
-- `[563] <https://github.com/ydataai/pandas-profiling/issues/563>`_
+- `[448] <https://github.com/ydataai/ydata-profiling/issues/448>`_
+- `[563] <https://github.com/ydataai/ydata-profiling/issues/563>`_
 
 
 Jupyter "IntSlider(value=0)"
@@ -59,4 +59,4 @@ This is due to an incompatibility in an old package version (particularly 1.4.1,
 
 Related GitHub issues:
 
-- `[981] <https://github.com/ydataai/pandas-profiling/issues/981>`_
+- `[981] <https://github.com/ydataai/ydata-profiling/issues/981>`_

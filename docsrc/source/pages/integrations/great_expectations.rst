@@ -75,7 +75,7 @@ You can also configure each feature individually in the function call:
         handler=handler,
     )
 
-See `the Great Expectations Examples <https://github.com/ydataai/pandas-profiling/blob/master/examples/features/great_expectations_example.py>`_ for complete examples.
+See `the Great Expectations Examples <https://github.com/ydataai/ydata-profiling/blob/master/examples/features/great_expectations_example.py>`_ for complete examples.
 
 
 Included Expectation types
@@ -108,7 +108,7 @@ The ``to_expectation_suite`` method returns a default set of Expectations if ``p
 * ``expect_file_to_exist``
 
 
-The default logic is straight forward and can be found in `expectation_algorithms.py <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/model/expectation_algorithms.py>`_.
+The default logic is straight forward and can be found in `expectation_algorithms.py <https://github.com/ydataai/ydata-profiling/blob/master/src/pandas_profiling/model/expectation_algorithms.py>`_.
 
 Rolling your own Expectation Generation Logic
 ---------------------------------------------

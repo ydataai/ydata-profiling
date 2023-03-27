@@ -11,8 +11,8 @@ This is the first release to adhere to the `SemVer <https://semver.org/>`_ and `
 🐛 Bug fixes
 ^^^^^^^^^^^^
 
-- Various issues could not be (easily) solved in the previous configuration architecture, are fixed in this release (`[584] <https://github.com/ydataai/pandas-profiling/issues/584>`_, `[644] <https://github.com/ydataai/pandas-profiling/issues/644>`_, `[698] <https://github.com/ydataai/pandas-profiling/issues/698>`_, `[720] <https://github.com/ydataai/pandas-profiling/issues/720>`_ and `[724] <https://github.com/ydataai/pandas-profiling/issues/724>`_)
-- Fix crash with exotic characters (`[707] <https://github.com/ydataai/pandas-profiling/issues/707>`_)
+- Various issues could not be (easily) solved in the previous configuration architecture, are fixed in this release (`[584] <https://github.com/ydataai/ydata-profiling/issues/584>`_, `[644] <https://github.com/ydataai/ydata-profiling/issues/644>`_, `[698] <https://github.com/ydataai/ydata-profiling/issues/698>`_, `[720] <https://github.com/ydataai/ydata-profiling/issues/720>`_ and `[724] <https://github.com/ydataai/ydata-profiling/issues/724>`_)
+- Fix crash with exotic characters (`[707] <https://github.com/ydataai/ydata-profiling/issues/707>`_)
 - Fixed the way (sub)titles were shown in the report grids.
 
 📖 Documentation

@@ -21,4 +21,4 @@ The Google Cloud Platform documentation features an article that uses ``ydata-pr
 Kaggle
 ------
 
-``ydata-profiling`` is available in `Kaggle notebooks <https://www.kaggle.com/notebooks>`_ by default, as it is included in the `standard Kaggle image <https://github.com/Kaggle/docker-python/blob/master/Dockerfile>`_.
+``ydata-profiling`` is available in `Kaggle notebooks <https://www.kaggle.com/notebooks>`_ by default, as it is included in the `standard Kaggle image <https://github.com/benhamner/docker-python-1/blob/master/Dockerfile>`_.

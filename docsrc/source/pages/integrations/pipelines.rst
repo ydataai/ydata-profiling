@@ -7,7 +7,7 @@ With Python, command-line and Jupyter interfaces, ``pandas-profiling`` integrate
 Airflow
 -------
 
-Integration with Airflow can be easily achieved through the `BashOperator <https://airflow.apache.org/docs/stable/_api/airflow/operators/bash_operator/index.html>`_ or the `PythonOperator <https://airflow.apache.org/docs/stable/_api/airflow/operators/python_operator/index.html#airflow.operators.python_operator.PythonOperator>`_.
+Integration with Airflow can be easily achieved through the `BashOperator <https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/operators/bash/index.html>`_ or the `PythonOperator <https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/operators/python/index.html#airflow.operators.python_operator.PythonOperator>`_.
 
 .. code-block:: python
 

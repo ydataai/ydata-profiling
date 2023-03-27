@@ -1,10 +1,10 @@
 # ydata-profiling
 
-[![Build Status](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/pandas-profiling/actions/workflows/tests.yml)
+[![Build Status](https://github.com/ydataai/ydata-profiling/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/ydataai/ydata-profiling/actions/workflows/tests.yml)
 [![PyPI download month](https://img.shields.io/pypi/dm/ydata-profiling.svg)](https://pypi.python.org/pypi/ydata-profiling/)
 [![](https://pepy.tech/badge/pandas-profiling)](https://pypi.org/project/ydata-profiling/)
 [![Code Coverage](https://codecov.io/gh/ydataai/pandas-profiling/branch/master/graph/badge.svg?token=gMptB4YUnF)](https://codecov.io/gh/ydataai/pandas-profiling)
-[![Release Version](https://img.shields.io/github/release/ydataai/pandas-profiling.svg)](https://github.com/ydataai/pandas-profiling/releases)
+[![Release Version](https://img.shields.io/github/release/ydataai/pandas-profiling.svg)](https://github.com/ydataai/ydata-profiling/releases)
 [![Python Version](https://img.shields.io/pypi/pyversions/ydata-profiling)](https://pypi.org/project/ydata-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
@@ -161,8 +161,8 @@ The following example reports showcase the potentialities of the package across 
 * [Website Inaccessibility](https://ydata-profiling.ydata.ai/examples/master/features/website_inaccessibility_report.html) (website accessibility analysis, showcasing support for URL data)
 * [Orange prices](https://ydata-profiling.ydata.ai/examples/master/features/united_report.html) and 
 * [Coal prices](https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
-* [USA Air Quality](https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
-* [HCC](https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
+* [USA Air Quality](https://github.com/ydataai/ydata-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
+* [HCC](https://github.com/ydataai/ydata-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
 
 ## 🛠️ Installation
 Additional details, including information about widget support, are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
@@ -206,7 +206,7 @@ conda install -c conda-forge ydata-profiling
 
 ### From source (development)
 
-Download the source code by cloning the repository or click on [Download ZIP](https://github.com/ydataai/pandas-profiling/archive/master.zip) to download the latest stable version.
+Download the source code by cloning the repository or click on [Download ZIP](https://github.com/ydataai/ydata-profiling/archive/master.zip) to download the latest stable version.
 
 Install it by navigating to the proper directory and running:
 
@@ -220,10 +220,10 @@ You need [Python 3](https://python3statement.org/) to run the package. Other dep
 
 | Filename | Requirements|
 |----------|-------------|
-| [requirements.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements.txt) | Package requirements|
-| [requirements-dev.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-dev.txt)  |  Requirements for development|
-| [requirements-test.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-test.txt) | Requirements for testing|
-| [setup.py](https://github.com/ydataai/pandas-profiling/blob/master/setup.py) | Requirements for widgets etc. |
+| [requirements.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements.txt) | Package requirements|
+| [requirements-dev.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements-dev.txt)  |  Requirements for development|
+| [requirements-test.txt](https://github.com/ydataai/ydata-profiling/blob/master/requirements-test.txt) | Requirements for testing|
+| [setup.py](https://github.com/ydataai/ydata-profiling/blob/master/setup.py) | Requirements for widgets etc. |
 
 ## 🔗 Integrations
 
