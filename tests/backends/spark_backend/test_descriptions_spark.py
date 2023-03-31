@@ -1,4 +1,5 @@
 import datetime
+from dataclasses import asdict
 
 import numpy as np
 import pandas as pd
@@ -360,7 +361,6 @@ def test_describe_spark_df(
     typeset,
     spark_session,
 ):
-
     cfg = SparkSettings()
 
     # disable correlations for description test
@@ -388,21 +388,21 @@ def test_describe_spark_df(
         "sample",
         "duplicates",
         "alerts",
-    } == set(results.keys()), "Not in results"
+    } == set(asdict(results).keys()), "Not in results"
     # Loop over variables
     for k, v in expected_results[column].items():
         if v == check_is_NaN:
             # test_condition should be True if column not in results, or the result is a nan value
-            test_condition = k not in results["variables"][column] or pd.isna(
-                results["variables"][column].get(k, np.NaN)
+            test_condition = k not in results.variables[column] or pd.isna(
+                results.variables[column].get(k, np.NaN)
             )
         elif isinstance(v, float):
             test_condition = (
-                pytest.approx(v, nan_ok=True) == results["variables"][column][k]
+                pytest.approx(v, nan_ok=True) == results.variables[column][k]
             )
         else:
-            test_condition = v == results["variables"][column][k]
+            test_condition = v == results.variables[column][k]
 
         assert (
             test_condition
-        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not check_is_NaN"
+        ), f"Value `{results.variables[column][k]}` for key `{k}` in column `{column}` is not check_is_NaN"

@@ -1,4 +1,5 @@
 import datetime
+from dataclasses import asdict
 
 import numpy as np
 import pandas as pd
@@ -554,24 +555,24 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
         "package",
         "sample",
         "duplicates",
-    } == set(results.keys()), "Not in results"
+    } == set(asdict(results).keys()), "Not in results"
 
     # Loop over variables
     for k, v in expected_results[column].items():
         if v == check_is_NaN:
-            test_condition = k not in results["variables"][column]
+            test_condition = k not in results.variables[column]
         elif isinstance(v, float):
-            test_condition = pytest.approx(v) == results["variables"][column][k]
+            test_condition = pytest.approx(v) == results.variables[column][k]
         else:
-            test_condition = v == results["variables"][column][k]
+            test_condition = v == results.variables[column][k]
 
         assert (
             test_condition
-        ), f"Value `{results['variables'][column][k]}` for key `{k}` in column `{column}` is not NaN"
+        ), f"Value `{results.variables[column][k]}` for key `{k}` in column `{column}` is not NaN"
 
-    if results["variables"][column]["type"] in ["Numeric", "DateTime"]:
+    if results.variables[column]["type"] in ["Numeric", "DateTime"]:
         assert (
-            "histogram" in results["variables"][column]
+            "histogram" in results.variables[column]
         ), f"Histogram missing for column {column}"
 
 
