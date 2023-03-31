@@ -5,6 +5,7 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
 from ydata_profiling.model.handler import get_render_map
 from ydata_profiling.report.presentation.core import (
@@ -23,7 +24,7 @@ from ydata_profiling.report.structure.overview import get_dataset_items
 from ydata_profiling.utils.dataframe import slugify
 
 
-def get_missing_items(config: Settings, summary: dict) -> list:
+def get_missing_items(config: Settings, summary: BaseDescription) -> list:
     """Return the missing diagrams
 
     Args:
@@ -60,13 +61,15 @@ def get_missing_items(config: Settings, summary: dict) -> list:
             anchor_id=key,
             name=item["name"][0],
         )
-        for key, item in summary["missing"].items()
+        for key, item in summary.missing.items()
     ]
 
     return items
 
 
-def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
+def render_variables_section(
+    config: Settings, dataframe_summary: BaseDescription
+) -> list:
     """Render the HTML for each of the variables in the DataFrame.
 
     Args:
@@ -85,37 +88,36 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
 
     render_map = get_render_map()
 
-    for idx, summary in dataframe_summary["variables"].items():
-
+    for idx, summary in dataframe_summary.variables.items():
         # Common template variables
-        if not isinstance(dataframe_summary["alerts"], tuple):
+        if not isinstance(dataframe_summary.alerts, tuple):
             alerts = [
                 alert.fmt()
-                for alert in dataframe_summary["alerts"]
+                for alert in dataframe_summary.alerts
                 if alert.column_name == idx
             ]
 
             alert_fields = {
                 field
-                for alert in dataframe_summary["alerts"]
+                for alert in dataframe_summary.alerts
                 if alert.column_name == idx
                 for field in alert.fields
             }
 
             alert_types = {
                 alert.alert_type
-                for alert in dataframe_summary["alerts"]
+                for alert in dataframe_summary.alerts
                 if alert.column_name == idx
             }
         else:
             alerts = tuple(
                 [alert.fmt() for alert in summary_alerts if alert.column_name == idx]
-                for summary_alerts in dataframe_summary["alerts"]
+                for summary_alerts in dataframe_summary.alerts
             )  # type: ignore
 
             alert_fields = {
                 field
-                for summary_alerts in dataframe_summary["alerts"]
+                for summary_alerts in dataframe_summary.alerts
                 for alert in summary_alerts
                 if alert.column_name == idx
                 for field in alert.fields
@@ -123,7 +125,7 @@ def render_variables_section(config: Settings, dataframe_summary: dict) -> list:
 
             alert_types = {
                 alert.alert_type
-                for summary_alerts in dataframe_summary["alerts"]
+                for summary_alerts in dataframe_summary.alerts
                 for alert in summary_alerts
                 if alert.column_name == idx
             }
@@ -345,7 +347,7 @@ def get_interactions(config: Settings, interactions: dict) -> list:
     return titems
 
 
-def get_report_structure(config: Settings, summary: dict) -> Root:
+def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
     """Generate a HTML report from summary statistics and a given sample.
 
     Args:
@@ -359,7 +361,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
     with tqdm(
         total=1, desc="Generate report structure", disable=disable_progress_bar
     ) as pbar:
-        alerts = summary["alerts"]
+        alerts = summary.alerts
 
         section_items: List[Renderable] = [
             Container(
@@ -370,7 +372,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
             ),
         ]
 
-        if len(summary["variables"]) > 0:
+        if len(summary.variables) > 0:
             section_items.append(
                 Dropdown(
                     name="Variables",
@@ -378,7 +380,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                     id="variables-dropdown",
                     is_row=True,
                     classes=["dropdown-toggle"],
-                    items=list(summary["variables"]),
+                    items=list(summary.variables),
                     item=Container(
                         render_variables_section(config, summary),
                         sequence_type="accordion",
@@ -388,7 +390,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 )
             )
 
-        scatter_items = get_interactions(config, summary["scatter"])
+        scatter_items = get_interactions(config, summary.scatter)
         if len(scatter_items) > 0:
             section_items.append(
                 Container(
@@ -414,7 +416,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 )
             )
 
-        sample_items = get_sample_items(config, summary["sample"])
+        sample_items = get_sample_items(config, summary.sample)
         if len(sample_items) > 0:
             section_items.append(
                 Container(
@@ -425,7 +427,7 @@ def get_report_structure(config: Settings, summary: dict) -> Root:
                 )
             )
 
-        duplicate_items = get_duplicates_items(config, summary["duplicates"])
+        duplicate_items = get_duplicates_items(config, summary.duplicates)
         if len(duplicate_items) > 0:
             section_items.append(
                 Container(
