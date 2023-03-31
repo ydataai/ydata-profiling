@@ -111,4 +111,4 @@ def test_issue282():
     )
     report = ProfileReport(df, progress_bar=False)
     description = report.get_description()
-    assert type(description) == BaseDescription
+    assert isinstance(description, BaseDescription)
