@@ -63,9 +63,9 @@ class BaseDescription:
     table: Any
     variables: Dict[str, Any]
     scatter: Any
-    correlations: Any
-    missing: Any
+    correlations: Dict[str, Any]
+    missing: Dict[str, Any]
     alerts: Any
-    package: Any
+    package: Dict[str, str]
     sample: Any
     duplicates: Any
