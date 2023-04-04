@@ -2,7 +2,6 @@
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.visualisation.context import manage_matplotlib_context
@@ -17,9 +16,12 @@ from pandas_profiling.visualisation.utils import hex_to_rgb, plot_360_n0sc0pe
 
 def _plot_conf_matrix(conf_matrix: MissingConfMatrix, cmap):
     labels = conf_matrix.plot_labels
-    sns.heatmap(
+    ax = sns.heatmap(
         conf_matrix.relative_counts, annot=labels, fmt="", vmin=0, vmax=1, cmap=cmap
     )
+    cbar = ax.collections[0].colorbar
+    cbar.set_ticks([0, 0.2, 0.4, 0.6, 0.8, 1])
+    cbar.set_ticklabels(["low", "20%", "40%", "60%", "80%", "100%"])
 
 
 def plot_confusion_matrix(config: Settings, conf_matrix: MissingConfMatrix):
