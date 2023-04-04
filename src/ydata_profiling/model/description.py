@@ -9,13 +9,9 @@ class BaseAnalysis:
     Overall info about report.
 
     Attributes
-    ----------
-    title : str
-        Title of report.
-    date_start : datetime
-        Start of generating description.
-    date_end : datetime
-        End of generating description.
+        title (str): Title of report.
+        date_start (Union[datetime, List[datetime]]): Start of generating description.
+        date_end (Union[datetime, List[datetime]]): End of generating description.
     """
 
     title: str
@@ -51,10 +47,10 @@ class BaseDescription:
         table (Any): DataFrame statistic. Base information about DataFrame.
         variables (Dict[str, Any]): Description of variables (columns) of DataFrame. Key is column name, value is description dictionary.
         scatter (Any): Pairwise scatter for all variables. Plot interactions between variables.
-        correlations (Any): Prepare correlation matrix for DataFrame
-        missing (Any): Describe missing values.
+        correlations (Dict[str, Any]): Prepare correlation matrix for DataFrame
+        missing (Dict[str, Any]): Describe missing values.
         alerts (Any): Take alerts from all modules (variables, scatter, correlations), and group them.
-        package (Any): Contains version of pandas profiling and config.
+        package (Dict[str, str]): Contains version of pandas profiling and config.
         sample (Any): Sample of data.
         duplicates (Any): Description of duplicates.
     """
