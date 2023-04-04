@@ -50,7 +50,7 @@ class BaseDescription:
         correlations (Dict[str, Any]): Prepare correlation matrix for DataFrame
         missing (Dict[str, Any]): Describe missing values.
         alerts (Any): Take alerts from all modules (variables, scatter, correlations), and group them.
-        package (Dict[str, str]): Contains version of pandas profiling and config.
+        package (Dict[str, Any]): Contains version of pandas profiling and config.
         sample (Any): Sample of data.
         duplicates (Any): Description of duplicates.
     """
@@ -62,6 +62,6 @@ class BaseDescription:
     correlations: Dict[str, Any]
     missing: Dict[str, Any]
     alerts: Any
-    package: Dict[str, str]
+    package: Dict[str, Any]
     sample: Any
     duplicates: Any
