@@ -2,15 +2,16 @@
     <thead>
         <tr>
             <td>Value</td>
-            <td>Positive</td>
-            <td>Negative</td>
-            <td>Log2 odds ratio</td>
+            <td style="width:200px;">Positive count</td>
+            <td style="width:200px;">Negative count</td>
+            <td style="width:auto; text-align:center;", colspan="2">Log2 odds ratio</td>
         </tr>
     </thead>
     <tbody>
         {% if rows | length > 0 %}
         {% for row in rows %}
         <tr class="{{ row['extra_class'] }}">
+            <!-- value -->
             {% if row['extra_class'] | length == 0 and redact %}
             <td title="Redacted value">
                 <div class="text-placeholder"></div>
@@ -20,17 +21,38 @@
                 {{ row['label'] | fmt }}
             </td>
             {% endif %}
+            <!-- positive count -->
             <td>{{ row['positive_count'] }}</td>
+            <!-- negative count -->
             <td>{{ row['negative_count'] }}</td>
-            <td>
-                <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">
-                    {% if row['width'] > 0.40 %}
-                    {{ row['log_odds_ratio'] }}
-                    {% else %}
-                    &nbsp;
-                    {% endif %}
-                </div>
-                {% if row['width'] <= 0.40 %} {{ row['log_odds_ratio'] }} {% endif %} </td>
+            <!-- negative visualization -->
+            <td style="padding-right:0px">
+                {% if row['log_odds_ratio'] and row['log_odds_ratio'] < 0 %}
+                    <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}; float:right; margin-left:4px; margin-right:0px">
+                        {% if row['width'] > 0.40 %}
+                        {{ row['log_odds_ratio'] }}
+                        {% else %}
+                        &nbsp;
+                        {% endif %}
+                    </div>
+                    <div style="float:right;">
+                        {% if row['width'] <= 0.40 %} {{ row['log_odds_ratio'] }} {% endif %} 
+                    </div>
+                {% endif %} 
+            </td>
+            <!-- positive visualization -->
+            <td style="padding-left:0px">
+                {% if row['log_odds_ratio'] and row['log_odds_ratio'] > 0 %}
+                    <div class="bar" style="width:{{ row['width'] | fmt_percent(edge_cases=False) }}">
+                        {% if row['width'] > 0.40 %}
+                        {{ row['log_odds_ratio'] }}
+                        {% else %}
+                        &nbsp;
+                        {% endif %}
+                    </div>
+                    {% if row['width'] <= 0.40 %} {{ row['log_odds_ratio'] }} {% endif %} 
+                {% endif %} 
+            </td>
         </tr>
         {% endfor %}
         {% else %}

@@ -1,7 +1,6 @@
 from typing import Any, Dict, List
 
 import pandas as pd
-
 from pandas_profiling.model.description_variable import TextDescriptionSupervised
 
 
@@ -40,8 +39,8 @@ def log_odds_table(
 
     data = _limit_count_log_odds_table(description.log_odds, number_to_print)
     max_val = description.log_odds[description.log_odds_col_name].max()
-    min_va = description.log_odds[description.log_odds_col_name].min()
-    max_val = max(abs(max_val), abs(min_va))
+    min_val = description.log_odds[description.log_odds_col_name].min()
+    max_val = max(abs(max_val), abs(min_val))
 
     ret = []
     for index, row in data.iterrows():
@@ -51,8 +50,10 @@ def log_odds_table(
         row_dict["label"] = index
         row_dict["positive_count"] = row[description.p_target_value]
         row_dict["negative_count"] = row[description.n_target_value]
-        row_dict["log_odds_ratio"] = row_log_odds_ratio
-        row_dict["max"] = max_val
+        if isinstance(row_log_odds_ratio, float):
+            row_dict["log_odds_ratio"] = row_log_odds_ratio
+        else:
+            row_dict["log_odds_ratio"] = 0
 
         # width of displayed bar
         if isinstance(row_log_odds_ratio, float):
