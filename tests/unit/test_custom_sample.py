@@ -38,7 +38,7 @@ def test_custom_sample():
         minimal=True,
     )
 
-    samples = report.get_description()["sample"]
+    samples = report.get_description().sample
     assert len(samples) == 1
     sample = samples[0]
     assert sample.id == "custom"

@@ -1,10 +1,13 @@
 import json
 import warnings
+from dataclasses import asdict
 from typing import Any, List, Optional, Tuple, Union
 
 import pandas as pd
+from dacite import from_dict
 
 from ydata_profiling.config import Correlation, Settings
+from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import Alert
 from ydata_profiling.profile_report import ProfileReport
 
@@ -79,24 +82,24 @@ def _update_merge(d1: Optional[dict], d2: dict) -> dict:
     return _update_merge_dict(d1, d2)
 
 
-def _placeholders(*reports: dict) -> None:
+def _placeholders(reports: List[BaseDescription]) -> None:
     """Generates placeholders in the dataset descriptions where needed"""
 
-    keys = {v for r in reports for v in r["scatter"]}
-    type_keys = {v for r in reports for v in r["table"]["types"]}
+    keys = {v for r in reports for v in r.scatter}
+    type_keys = {v for r in reports for v in r.table["types"]}
     for report in reports:
         # Interactions
         for k1 in keys:
             for k2 in keys:
-                if k1 not in report["scatter"]:
-                    report["scatter"][k1] = {}
-                if k2 not in report["scatter"][k1]:
-                    report["scatter"][k1][k2] = ""
+                if k1 not in report.scatter:
+                    report.scatter[k1] = {}
+                if k2 not in report.scatter[k1]:
+                    report.scatter[k1][k2] = ""
 
         # Types
         for type_key in type_keys:
-            if type_key not in report["table"]["types"]:
-                report["table"]["types"][type_key] = 0
+            if type_key not in report.table["types"]:
+                report.table["types"][type_key] = 0
 
 
 def _update_titles(reports: List[ProfileReport]) -> None:
@@ -117,7 +120,7 @@ def _compare_title(titles: List[str]) -> str:
 def _compare_profile_report_preprocess(
     reports: List[ProfileReport],
     config: Optional[Settings] = None,
-) -> Tuple[List[str], List[dict]]:
+) -> Tuple[List[str], List[BaseDescription]]:
     # Use titles as labels
     labels = [report.config.title for report in reports]
 
@@ -142,20 +145,20 @@ def _compare_profile_report_preprocess(
     # Obtain description sets
     descriptions = [report.get_description() for report in reports]
     for label, description in zip(labels, descriptions):
-        description["analysis"]["title"] = label
+        description.analysis.title = label
 
     return labels, descriptions
 
 
 def _compare_dataset_description_preprocess(
-    reports: List[dict],
-) -> Tuple[List[str], List[dict]]:
-    labels = [report["analysis"]["title"] for report in reports]
+    reports: List[BaseDescription],
+) -> Tuple[List[str], List[BaseDescription]]:
+    labels = [report.analysis.title for report in reports]
     return labels, reports
 
 
 def validate_reports(
-    reports: Union[List[ProfileReport], List[dict]], configs: List[dict]
+    reports: Union[List[ProfileReport], List[BaseDescription]], configs: List[dict]
 ) -> None:
     """Validate if the reports are comparable.
 
@@ -186,7 +189,7 @@ def validate_reports(
     if isinstance(reports[0], ProfileReport):
         features = [set(r.df.columns) for r in reports]  # type: ignore
     else:
-        features = [set(r["variables"].keys()) for r in reports]  # type: ignore
+        features = [set(r.variables.keys()) for r in reports]  # type: ignore
 
     if not all(features[0] == x for x in features):
         warnings.warn(
@@ -195,7 +198,7 @@ def validate_reports(
         )
 
 
-def _apply_config(description: dict, config: Settings) -> dict:
+def _apply_config(description: BaseDescription, config: Settings) -> BaseDescription:
     """Apply the configuration for visualilzation purposes.
 
     This handles the cases in which the report description
@@ -208,25 +211,23 @@ def _apply_config(description: dict, config: Settings) -> dict:
     Returns:
         the updated description
     """
-    description["missing"] = {
-        k: v for k, v in description["missing"].items() if config.missing_diagrams[k]
+    description.missing = {
+        k: v for k, v in description.missing.items() if config.missing_diagrams[k]
     }
 
-    description["correlations"] = {
+    description.correlations = {
         k: v
-        for k, v in description["correlations"].items()
+        for k, v in description.correlations.items()
         if config.correlations.get(k, Correlation(calculate=False).calculate)
     }
 
     samples = [config.samples.head, config.samples.tail, config.samples.random]
     samples = [s > 0 for s in samples]
-    description["sample"] = description["sample"] if any(samples) else []
-    description["duplicates"] = (
-        description["duplicates"] if config.duplicates.head > 0 else None
+    description.sample = description.sample if any(samples) else []
+    description.duplicates = (
+        description.duplicates if config.duplicates.head > 0 else None
     )
-    description["scatter"] = (
-        description["scatter"] if config.interactions.continuous else {}
-    )
+    description.scatter = description.scatter if config.interactions.continuous else {}
 
     return description
 
@@ -256,7 +257,7 @@ def _create_placehoder_alerts(report_alerts: tuple) -> tuple:
 
 
 def compare(
-    reports: Union[List[ProfileReport], List[dict]],
+    reports: Union[List[ProfileReport], List[BaseDescription]],
     config: Optional[Settings] = None,
     compute: bool = False,
 ) -> ProfileReport:
@@ -284,7 +285,7 @@ def compare(
         all_configs = [r.config for r in reports]  # type: ignore
     else:
         configs_str = [
-            json.loads(r["package"]["ydata_profiling_config"]) for r in reports  # type: ignore
+            json.loads(r.package["ydata_profiling_config"]) for r in reports  # type: ignore
         ]
         all_configs = []
         for c_str in configs_str:
@@ -303,11 +304,11 @@ def compare(
         if len(reports) == 1:
             return reports[0]  # type: ignore
     else:
-        base_features = list(reports[0]["variables"].keys())
+        base_features = list(reports[0].variables.keys())
         non_empty_reports = 0
         for report in reports[1:]:
             cols_2_compare = [
-                col for col in base_features if col in list(report["variables"].keys())  # type: ignore
+                col for col in base_features if col in list(report.variables.keys())  # type: ignore
             ]
             if len(cols_2_compare) > 0:
                 non_empty_reports += 1
@@ -336,7 +337,7 @@ def compare(
         # Consider using TypeGuard (3.10): https://docs.python.org/3/library/typing.html#typing.TypeGuard
         _update_titles(reports)  # type: ignore
         labels, descriptions = _compare_profile_report_preprocess(reports, _config)  # type: ignore
-    elif all(isinstance(report, dict) for report in reports):
+    elif all(isinstance(report, BaseDescription) for report in reports):
         labels, descriptions = _compare_dataset_description_preprocess(reports)  # type: ignore
     else:
         raise TypeError(
@@ -345,16 +346,16 @@ def compare(
 
     _config.html.style._labels = labels
 
-    _placeholders(*descriptions)
+    _placeholders(descriptions)
 
-    descriptions = [_apply_config(d, _config) for d in descriptions]
+    descriptions_dict = [asdict(_apply_config(d, _config)) for d in descriptions]
 
-    res: dict = _update_merge(None, descriptions[0])
-    for r in descriptions[1:]:
+    res: dict = _update_merge(None, descriptions_dict[0])
+    for r in descriptions_dict[1:]:
         res = _update_merge(res, r)
 
     res["analysis"]["title"] = _compare_title(res["analysis"]["title"])
     res["alerts"] = _create_placehoder_alerts(res["alerts"])
     profile = ProfileReport(None, config=_config)
-    profile._description_set = res
+    profile._description_set = from_dict(data_class=BaseDescription, data=res)
     return profile

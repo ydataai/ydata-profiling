@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -51,8 +53,8 @@ def test_modular_description_set(tdf):
         pool_size=1,
     )
 
-    html = profile.get_description()
-    assert len(html) > 0
+    description = profile.get_description()
+    assert len(asdict(description)) > 0
 
 
 def test_modular_absent(tdf):
