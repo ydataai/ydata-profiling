@@ -1,10 +1,12 @@
-from typing import Any, Callable, Dict, List, Type
+from dataclasses import asdict
+from typing import Any, Callable, Dict, List, Type, Union
 
 import numpy as np
 import pandas as pd
 from visions import VisionsBaseType, VisionsTypeset
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.handler import Handler
 from ydata_profiling.model.summary_algorithms import (
     describe_boolean_1d,
@@ -81,7 +83,16 @@ class PandasProfilingSummarizer(BaseSummarizer):
         super().__init__(summary_map, typeset, *args, **kwargs)
 
 
-def format_summary(summary: dict) -> dict:
+def format_summary(summary: Union[BaseDescription, dict]) -> dict:
+    """Prepare summary for export to json file.
+
+    Args:
+        summary (Union[BaseDescription, dict]): summary to export
+
+    Returns:
+        dict: summary as dict
+    """
+
     def fmt(v: Any) -> Any:
         if isinstance(v, dict):
             return {k: fmt(va) for k, va in v.items()}
@@ -96,6 +107,9 @@ def format_summary(summary: dict) -> dict:
                 return {"counts": v[0].tolist(), "bin_edges": v[1].tolist()}
             else:
                 return v
+
+    if isinstance(summary, BaseDescription):
+        summary = asdict(summary)
 
     summary = {k: fmt(v) for k, v in summary.items()}
     return summary

@@ -2,6 +2,7 @@ from typing import List
 from urllib.parse import quote
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
 from ydata_profiling.report.formatters import (
     fmt,
@@ -16,48 +17,48 @@ from ydata_profiling.report.presentation.core import Alerts, Container, Table
 from ydata_profiling.report.presentation.core.renderable import Renderable
 
 
-def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
+def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderable:
     table_metrics = [
         {
             "name": "Number of variables",
-            "value": fmt_number(summary["table"]["n_var"]),
+            "value": fmt_number(summary.table["n_var"]),
         },
         {
             "name": "Number of observations",
-            "value": fmt_number(summary["table"]["n"]),
+            "value": fmt_number(summary.table["n"]),
         },
         {
             "name": "Missing cells",
-            "value": fmt_number(summary["table"]["n_cells_missing"]),
+            "value": fmt_number(summary.table["n_cells_missing"]),
         },
         {
             "name": "Missing cells (%)",
-            "value": fmt_percent(summary["table"]["p_cells_missing"]),
+            "value": fmt_percent(summary.table["p_cells_missing"]),
         },
     ]
-    if "n_duplicates" in summary["table"]:
+    if "n_duplicates" in summary.table:
         table_metrics.extend(
             [
                 {
                     "name": "Duplicate rows",
-                    "value": fmt_number(summary["table"]["n_duplicates"]),
+                    "value": fmt_number(summary.table["n_duplicates"]),
                 },
                 {
                     "name": "Duplicate rows (%)",
-                    "value": fmt_percent(summary["table"]["p_duplicates"]),
+                    "value": fmt_percent(summary.table["p_duplicates"]),
                 },
             ]
         )
-    if "memory_size" in summary["table"]:
+    if "memory_size" in summary.table:
         table_metrics.extend(
             [
                 {
                     "name": "Total size in memory",
-                    "value": fmt_bytesize(summary["table"]["memory_size"]),
+                    "value": fmt_bytesize(summary.table["memory_size"]),
                 },
                 {
                     "name": "Average record size in memory",
-                    "value": fmt_bytesize(summary["table"]["record_size"]),
+                    "value": fmt_bytesize(summary.table["record_size"]),
                 },
             ]
         )
@@ -72,7 +73,7 @@ def get_dataset_overview(config: Settings, summary: dict) -> Renderable:
                 "name": str(type_name),
                 "value": fmt_numeric(count, precision=config.report.precision),
             }
-            for type_name, count in summary["table"]["types"].items()
+            for type_name, count in summary.table["types"].items()
         ],
         name="Variable types",
         style=config.html.style,
@@ -135,7 +136,7 @@ def get_dataset_schema(config: Settings, metadata: dict) -> Container:
     )
 
 
-def get_dataset_reproduction(config: Settings, summary: dict) -> Renderable:
+def get_dataset_reproduction(config: Settings, summary: BaseDescription) -> Renderable:
     """Dataset reproduction part of the report
 
     Args:
@@ -146,11 +147,11 @@ def get_dataset_reproduction(config: Settings, summary: dict) -> Renderable:
         A renderable object
     """
 
-    version = summary["package"]["ydata_profiling_version"]
-    config_file = summary["package"]["ydata_profiling_config"]
-    date_start = summary["analysis"]["date_start"]
-    date_end = summary["analysis"]["date_end"]
-    duration = summary["analysis"]["duration"]
+    version = summary.package["ydata_profiling_version"]
+    config_file = summary.package["ydata_profiling_config"]
+    date_start = summary.analysis.date_start
+    date_end = summary.analysis.date_end
+    duration = summary.analysis.duration
 
     @list_args
     def fmt_version(version: str) -> str:
@@ -265,7 +266,7 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
     )
 
 
-def get_dataset_items(config: Settings, summary: dict, alerts: list) -> list:
+def get_dataset_items(config: Settings, summary: BaseDescription, alerts: list) -> list:
     """Returns the dataset overview (at the top of the report)
 
     Args:

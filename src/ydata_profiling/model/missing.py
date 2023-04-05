@@ -22,7 +22,7 @@ def missing_heatmap(config: Settings, df: Any) -> str:
     raise NotImplementedError()
 
 
-def get_missing_active(config: Settings, table_stats: dict) -> Dict[Any, Any]:
+def get_missing_active(config: Settings, table_stats: dict) -> Dict[str, Any]:
     """
 
     Args:
