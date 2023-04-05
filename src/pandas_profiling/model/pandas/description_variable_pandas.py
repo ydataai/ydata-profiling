@@ -1,8 +1,6 @@
 import string
 from typing import List
 
-import pandas as pd
-
 from pandas_profiling.config import Univariate
 from pandas_profiling.model.description_variable import (
     CatDescription,
@@ -15,6 +13,8 @@ from pandas_profiling.model.description_variable import (
 from pandas_profiling.model.pandas.description_target_pandas import (
     TargetDescriptionPandas,
 )
+
+import pandas as pd
 
 
 class VariableDescriptionPandas(VariableDescription):
@@ -301,22 +301,8 @@ class NumDescriptionPandas(VariableDescriptionPandas, CatDescription):
 
         # join columns by id
         data = pd.DataFrame()
-        # TODO probably delete
-        # set precision for col
-        # range > 100 -> precision = 1
-        # range < 100 -> precision = 2
-        # range < 10 -> precision = 3
-        range = self.data_col.max() - self.data_col.min()
-        if range < 10:
-            precision = 3
-        elif range < 100:
-            precision = 2
-        else:
-            precision = 1
         # add bins to data_col
-        data[self.data_col_name] = pd.cut(
-            self.data_col, bins=self._bars, precision=precision
-        )
+        data[self.data_col_name] = pd.cut(self.data_col, bins=self._bars)
         data[self.count_col_name] = 0
         # group data
         data = self._group_distribution(data)
@@ -365,22 +351,8 @@ class NumDescriptionSupervisedPandas(
 
         # join columns by id
         data = pd.DataFrame()
-        # TODO probably delete
-        # set precision for col
-        # range > 100 -> precision = 1
-        # range < 100 -> precision = 2
-        # range < 10 -> precision = 3
-        range = self.data_col.max() - self.data_col.min()
-        if range < 10:
-            precision = 3
-        elif range < 100:
-            precision = 2
-        else:
-            precision = 1
         # add bins to data_col
-        data[self.data_col_name] = pd.cut(
-            self.data_col, bins=self._bars, precision=precision
-        )
+        data[self.data_col_name] = pd.cut(self.data_col, bins=self._bars)
         data[self.count_col_name] = 0
         # group data
         data = self._group_distribution(data)
@@ -399,6 +371,9 @@ class NumDescriptionSupervisedPandas(
                 Column count_col contains counts for every target data combination.
                 Even zero values.
         """
+        data[self.data_col_name] = data[self.data_col_name].apply(lambda x: x.mid)
+        data[self.data_col_name] = data[self.data_col_name].astype(float)
+
         data = data.join(self.target_description.series_binary, how="left")
         sub = [self.data_col_name, self.target_description.name]
         # aggregate bins
@@ -406,7 +381,6 @@ class NumDescriptionSupervisedPandas(
         # add zero values
         data = data_series.unstack(fill_value=0).stack().reset_index()
         data.rename(columns={0: self.count_col_name}, inplace=True)
-        data[self.data_col_name] = data[self.data_col_name].astype(str)
         return data
 
 

@@ -217,7 +217,7 @@ def _plot_hist_log_odds_ratio(
                 valign="bottom",
                 color="black",
             ),
-            text="log_odds",
+            text=desc_plot.log_odds_col_name,
         )
     )
     p = p.scale(y=so.Continuous().tick(count=0)).theme({"axes.facecolor": "w"})
@@ -230,7 +230,58 @@ def _plot_hist_log_odds_ratio(
     return p.plot(pyplot=True)
 
 
-def _plot_hist_dist(
+def _plot_hist_dist_supervised(
+    config: Settings,
+    desc_plot: CatDescriptionSupervised,
+    mini: bool,
+):
+    """Plot distribution of numeric supervised variable.
+
+    Args:
+        config (Setting): Config of report. Used for colors.
+        desc_plot (CatDescriptionSupervised):
+            Plot description, with prepared distribution DataFrame.
+        mini (bool): Index, if plot is normal size, or mini.
+
+    Returns:
+        Plotter: Generated plot.
+    """
+    color_palette = {
+        desc_plot.p_target_value: config.html.style.primary_colors[1],
+        desc_plot.n_target_value: config.html.style.primary_color,
+    }
+    p = (
+        so.Plot(
+            desc_plot.distribution,
+            x=desc_plot.data_col_name,
+            y=desc_plot.count_col_name,
+            color=desc_plot.target_col_name,
+        )
+        .add(
+            so.Bar(alpha=1),
+            so.Dodge(),
+            legend=False,
+        )
+        .scale(
+            color=color_palette,
+            x=so.Continuous().tick().label(unit=""),
+        )
+        .theme({"axes.facecolor": "w"})
+    )
+
+    if mini:
+        p = (
+            p.layout(size=MINI_FIG_SIZE)
+            .label(title="", x="", y="")
+            .scale(y=so.Continuous().tick(count=0))
+        )
+    else:
+        p = p.layout(size=FIG_SIZE).label(title="Distribution", x="", y="")
+
+    return p.plot(pyplot=True)
+
+
+def _plot_hist_dist_unsupervised(
     config: Settings,
     desc_plot: Union[CatDescriptionSupervised, CatDescription],
     mini: bool,
@@ -246,49 +297,23 @@ def _plot_hist_dist(
     Returns:
         Plotter: Generated plot.
     """
-    color_positive = config.html.style.primary_colors[1]
-    color_negative = config.html.style.primary_color
-    p = so.Plot(
-        desc_plot.distribution,
-        x=desc_plot.data_col_name,
-        y=desc_plot.count_col_name,
-    )
-    # supervised
-    if isinstance(desc_plot, CatDescriptionSupervised):
-        color_palette = {
-            desc_plot.p_target_value: color_positive,
-            desc_plot.n_target_value: color_negative,
-        }
-        p = (
-            p.add(
-                so.Bar(alpha=1),
-                so.Dodge(),
-                legend=False,
-                color=desc_plot.target_col_name,
-            )
-            .add(
-                so.Text(
-                    {"fontweight": "bold", "clip_on": False, "rotation": 45},
-                    valign="bottom",
-                    halign="center",
-                ),
-                so.Dodge(by=["color"]),
-                text=desc_plot.count_col_name,
-            )
-            .scale(color=color_palette)
+    p = (
+        so.Plot(
+            desc_plot.distribution,
+            x=desc_plot.data_col_name,
+            y=desc_plot.count_col_name,
         )
-
-    # unsupervised
-    else:
-        p = p.add(so.Bars(alpha=1, color=config.html.style.primary_color))
-        p = p.scale(x=so.Continuous().tick())
-
-    p = p.scale(
-        y=so.Continuous().tick(count=0),
-    ).theme({"axes.facecolor": "w"})
+        .add(so.Bars(alpha=1, color=config.html.style.primary_color))
+        .scale(x=so.Continuous().tick().label(unit=""))
+        .theme({"axes.facecolor": "w"})
+    )
 
     if mini:
-        p = p.layout(size=MINI_FIG_SIZE).label(title="", x="", y="")
+        p = (
+            p.layout(size=MINI_FIG_SIZE)
+            .label(title="", x="", y="")
+            .scale(y=so.Continuous().tick(count=0))
+        )
     else:
         p = p.layout(size=FIG_SIZE).label(title="Distribution", x="", y="")
 
@@ -457,9 +482,9 @@ def plot_hist_dist(
 ) -> str:
     """Plot histogram for continuos data."""
     if isinstance(plot_description, CatDescriptionSupervised):
-        plot = _plot_cat_dist_supervised(config, plot_description, mini)
+        _plot_hist_dist_supervised(config, plot_description, mini)
     else:
-        plot = _plot_hist_dist(config, plot_description, mini)
+        _plot_hist_dist_unsupervised(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 
@@ -468,7 +493,7 @@ def plot_hist_log_odds(
     config: Settings, plot_description: CatDescriptionSupervised, mini: bool = False
 ) -> str:
     """Plot continuous log odds graph."""
-    plot = _plot_cat_log_odds_ratio(config, plot_description, mini)
+    _plot_hist_log_odds_ratio(config, plot_description, mini)
     return plot_360_n0sc0pe(config)
 
 
