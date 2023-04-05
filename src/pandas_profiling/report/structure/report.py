@@ -48,7 +48,7 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
                 plot_confusion_matrix(config, value),
                 image_format=config.plot.image_format,
                 alt="Mini histogram",
-                caption="p-value for the chi-square test is {}".format(
+                caption="p-value for the chi-square independence test is {}".format(
                     round(value.p_value, 4)
                 ),
                 anchor_id="{}_missing_conf_matrix".format(name),
