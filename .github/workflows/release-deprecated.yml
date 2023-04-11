@@ -50,6 +50,7 @@ jobs:
     - name: Upload Pipeline Artifacts
       uses: actions/upload-artifact@v3
       with:
+        retention-days: 1
         name: built-artifacts
         path: dist/
   
