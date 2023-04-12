@@ -27,6 +27,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
+        ref: ${{ github.head_ref }}
         fetch-depth: 0
         persist-credentials: false
 
@@ -69,7 +70,7 @@ jobs:
         if [[ `git status --porcelain --untracked-files=no` ]]; then
           echo "CHANGES=true" >> $GITHUB_OUTPUT
           git add -u
-          git commit -m "fix: code formatting" -a
+          git commit -m "fix(linting): code formatting" -a
         else
           echo "CHANGES=false" >> $GITHUB_OUTPUT
         fi
