@@ -10,7 +10,7 @@ on:
 jobs:
   commitlint:
     name: Lint commit message
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -22,7 +22,7 @@ jobs:
   lint:
     if: github.actor != 'renovate[bot]'
     name: Lint source code
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -68,7 +68,7 @@ jobs:
         if [[ `git status --porcelain --untracked-files=no` ]]; then
           echo "CHANGES=true" >> $GITHUB_OUTPUT
           git add -u
-          git commit -m "[skip ci] Code formatting" -a
+          git commit -m "fix(linting): code formatting" -a
         else
           echo "CHANGES=false" >> $GITHUB_OUTPUT
         fi
