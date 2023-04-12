@@ -69,7 +69,7 @@ jobs:
         if [[ `git status --porcelain --untracked-files=no` ]]; then
           echo "CHANGES=true" >> $GITHUB_OUTPUT
           git add -u
-          git commit -m "fix(linting): code formatting" -a
+          git commit -m "fix: code formatting" -a
         else
           echo "CHANGES=false" >> $GITHUB_OUTPUT
         fi
