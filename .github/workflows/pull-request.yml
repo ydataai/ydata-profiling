@@ -27,8 +27,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.pull_request.head.ref }}
         fetch-depth: 0
+        persist-credentials: false
 
     - name: Configurating Git
       run: |
@@ -75,6 +75,8 @@ jobs:
         fi
 
     - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
       if: always() && steps.commit.outputs.CHANGES == 'true'
-      run: |
-        git push
+      with:
+        branch: ${{ github.head_ref }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}
