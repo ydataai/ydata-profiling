@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-22.04 ]
         python-version: [ 3.8 ]
         pandas: ["pandas>1.1"]
         numpy: ["numpy"]
@@ -28,23 +28,23 @@ jobs:
 #            python-version: 3.6
 #            pandas: "pandas>1.1"
 #            numpy: "numpy"
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             python-version: 3.7
             pandas: "pandas>1.1"
             numpy: "numpy"
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             python-version: 3.8
             pandas: "pandas>1.1"
             numpy: "numpy"
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             python-version: 3.9
             pandas: "pandas>1.1"
             numpy: "numpy"
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             python-version: "3.10"
             pandas: "pandas>1.1"
             numpy: "numpy"
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             python-version: "3.11"
             pandas: "pandas>1.1"
             numpy: "numpy"
@@ -92,7 +92,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-22.04 ]
         python-version: [ 3.8 ]
         pandas: [ "pandas>1.1"]
         numpy: ["numpy"]
@@ -156,7 +156,7 @@ jobs:
     continue-on-error: True
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-22.04 ]
         python-version: [3.7, 3.8]
         pandas: ["pandas==0.25.3", "pandas==1.0.5", "pandas>1.1"]
         spark: ["2.3.0", "2.4.7", "3.0.1"]
