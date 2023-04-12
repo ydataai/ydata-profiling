@@ -10,7 +10,7 @@ on:
 jobs:
   package:
     name: Build and Package
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -57,7 +57,7 @@ jobs:
 
   upload-assets:
     name: Upload Assets to Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs: package
 
@@ -75,7 +75,7 @@ jobs:
   
   publish-pypi:
     name: Publish packages to PyPi
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs: package
 
@@ -92,7 +92,7 @@ jobs:
 
   docs_and_examples:
     name: Documentation and Examples
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     - uses: actions/checkout@v3
