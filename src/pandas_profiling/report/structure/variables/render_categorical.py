@@ -424,7 +424,7 @@ def render_categorical(config: Settings, summary: dict) -> dict:
                     "alert": False,
                 },
                 {
-                    "name": "Mean",
+                    "name": "Mean (prior)",
                     "value": fmt_number(summary["target_mean"]),
                     "alert": False,
                 },
