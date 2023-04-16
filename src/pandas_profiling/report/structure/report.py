@@ -9,6 +9,7 @@ from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.handler import get_render_map
 from pandas_profiling.model.missing import MissingConfMatrix
+from pandas_profiling.report.formatters import fmt_percent
 from pandas_profiling.report.presentation.core import (
     HTML,
     Collapse,
@@ -42,15 +43,23 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
     if summary.target:
         conf_matrix_items = []
         name: str
-        value: MissingConfMatrix
-        for name, value in summary.missing["target"].missing_target.items():
+        missing_matrix: MissingConfMatrix
+        for name, missing_matrix in summary.missing["target"].missing_target.items():
+            caption = "P-value for the chi-square independence test is {}.".format(
+                round(missing_matrix.p_value, 4)
+            )
+
+            conf_lvl = config.alerts.missing_confidence_level
+            if 1 - missing_matrix.p_value > conf_lvl:
+                caption += " Missing values and target variable are related at {} confidence level.".format(
+                    fmt_percent(conf_lvl)
+                )
+
             one_conf_matrix = ImageWidget(
-                plot_confusion_matrix(config, value),
+                plot_confusion_matrix(config, missing_matrix),
                 image_format=config.plot.image_format,
                 alt="Mini histogram",
-                caption="p-value for the chi-square independence test is {}".format(
-                    round(value.p_value, 4)
-                ),
+                caption=caption,
                 anchor_id="{}_missing_conf_matrix".format(name),
                 name=name,
             )
