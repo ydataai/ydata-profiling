@@ -44,6 +44,10 @@ class MockCatDescription(CatDescriptionSupervised):
     def target_description(self) -> TargetDescription:
         return self._target_desc
 
+    @property
+    def p_value_of_independence(sef):
+        pass
+
     def _generate_distribution(self):
         pass
 
