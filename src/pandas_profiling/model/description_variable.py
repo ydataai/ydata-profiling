@@ -233,6 +233,18 @@ class CatDescriptionSupervised(CatDescription, VariableDescriptionSupervised):
             self.__log_odds = self._get_log_odds_ratio()
         return self.__log_odds
 
+    @property
+    @abstractmethod
+    def p_value_of_independence(self) -> float:
+        """P value of independence between subpopulations.
+        For numeric variables:
+            p value of student t-test to compare means.
+        For categorical values:
+            p value of chi square independence test.
+
+        H0: There is no difference.
+        """
+
     def get_dist_pivot_table(self) -> pd.DataFrame:
         """Generate pivot table from distribution.
         transforms distribution:

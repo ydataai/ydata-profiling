@@ -17,6 +17,8 @@ class HTMLAlerts(Alerts):
             "truncated": "info",
             "missing": "info",
             "missing_correlated_with_target": "info",
+            "dependent_categories": "info",
+            "dependent_mean": "info",
             "low_log_odds_ratio": "info",
             "high_log_odds_ratio": "info",
             "skewed": "info",

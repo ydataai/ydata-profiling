@@ -319,6 +319,8 @@ class Alerts(BaseModel):
 
     # confidence level for missing on target to show alert
     missing_confidence_level: float = 0.95
+    # confidence level for independency tests to show alert
+    independence_confidence_level: float = 0.95
     # threshold for log odds ratio to show as alert
     log_odds_ratio_threshold: float = 1.5
 

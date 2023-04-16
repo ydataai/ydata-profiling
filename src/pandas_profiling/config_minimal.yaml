@@ -184,6 +184,15 @@ samples:
     tail: 0
     random: 0
 
+# thresholds to show alerts
+alerts:
+    # confidence level for missing on target to show alert
+    missing_confidence_level: 0.95
+    # confidence level for independency tests to show alert
+    independence_confidence_level: 0.95
+    # threshold for log odds ratio to show as alert
+    log_odds_ratio_threshold: 1.5
+
 # Configuration related to the rejection of variables
 reject_variables: true
 

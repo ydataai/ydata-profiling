@@ -46,6 +46,12 @@ class AlertType(Enum):
     MISSING_CORRELATED_WITH_TARGET = auto()
     """This variable missing values are related to target variable."""
 
+    DEPENDENT_MEAN = auto()
+    """This variable mean is dependent on target."""
+
+    DEPENDENT_CATEGORIES = auto()
+    """This variable categories are dependent on target."""
+
     LOW_LOG_ODDS_RATIO = auto()
     """This variable has low log odds ratio for some value."""
 
@@ -244,6 +250,22 @@ def numeric_alerts(config: Settings, summary: dict) -> List[Alert]:
 
     alerts += log_odds_ratio_alert(config, summary)
 
+    # check if mean test is significant and means are dependent on target
+    description = summary["plot_description"]
+    if isinstance(description, CatDescriptionSupervised):
+        if (
+            description.p_value_of_independence
+            < 1 - config.alerts.independence_confidence_level
+        ):
+            alerts.append(
+                Alert(
+                    alert_type=AlertType.DEPENDENT_MEAN,
+                    values={
+                        "confidence_lvl": config.alerts.independence_confidence_level
+                    },
+                )
+            )
+
     return alerts
 
 
@@ -290,6 +312,21 @@ def categorical_alerts(config: Settings, summary: dict) -> List[Alert]:
         )
 
     alerts += log_odds_ratio_alert(config, summary)
+
+    description = summary["plot_description"]
+    if isinstance(description, CatDescriptionSupervised):
+        if (
+            description.p_value_of_independence
+            < 1 - config.alerts.independence_confidence_level
+        ):
+            alerts.append(
+                Alert(
+                    alert_type=AlertType.DEPENDENT_CATEGORIES,
+                    values={
+                        "confidence_lvl": config.alerts.independence_confidence_level
+                    },
+                )
+            )
 
     return alerts
 

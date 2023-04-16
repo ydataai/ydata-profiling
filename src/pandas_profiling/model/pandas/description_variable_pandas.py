@@ -1,6 +1,9 @@
 import string
 from typing import List
 
+import pandas as pd
+from scipy.stats import chi2_contingency, ttest_ind
+
 from pandas_profiling.config import Univariate
 from pandas_profiling.model.description_variable import (
     CatDescription,
@@ -13,8 +16,6 @@ from pandas_profiling.model.description_variable import (
 from pandas_profiling.model.pandas.description_target_pandas import (
     TargetDescriptionPandas,
 )
-
-import pandas as pd
 
 
 class VariableDescriptionPandas(VariableDescription):
@@ -180,6 +181,7 @@ class CatDescriptionSupervisedPandas(
 
     _other_placeholder: str = "other ..."
     _max_cat_to_plot: int
+    _p_value_chi_sqrt_independent: float
 
     def __init__(
         self,
@@ -200,6 +202,20 @@ class CatDescriptionSupervisedPandas(
         )
         self._max_cat_to_plot = self.config.cat.n_obs
         self.log_odds
+
+    @property
+    def p_value_of_independence(self) -> float:
+        if not hasattr(self, "_p_value_chi_sqrt_independent"):
+            contingency_table = pd.crosstab(
+                self.target_description.series_binary,
+                self.data_col,
+                rownames=[self.target_col_name],
+                colnames=[self.data_col_name],
+            )
+            self._p_value_chi_sqrt_independent = chi2_contingency(
+                contingency_table, correction=False
+            )[1]
+        return self._p_value_chi_sqrt_independent
 
     def _limit_count(self, df: pd.DataFrame) -> pd.DataFrame:
         """Limit count of displayed categories to max_cat.
@@ -317,6 +333,9 @@ class NumDescriptionSupervisedPandas(
     """
 
     _bars: int
+    _p_val_mean_independent: float
+    _positive_mean: float
+    _negative_mean: float
 
     def __init__(
         self,
@@ -340,6 +359,24 @@ class NumDescriptionSupervisedPandas(
             target_description=target_description,
         )
         self.log_odds
+
+    @property
+    def p_value_of_independence(self) -> float:
+        """P value of t-test independent."""
+
+        if not hasattr(self, "_p_val_mean_independent"):
+            res = ttest_ind(
+                self.data_col[
+                    self.target_description.series_binary == self.p_target_value
+                ],
+                self.data_col[
+                    self.target_description.series_binary == self.n_target_value
+                ],
+                nan_policy="omit",
+                equal_var=False,
+            )
+            self._p_val_mean_independent = res.pvalue
+        return self._p_val_mean_independent
 
     def _generate_distribution(self) -> pd.DataFrame:
         """Cut continuous variable to bins.

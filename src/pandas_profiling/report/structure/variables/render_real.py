@@ -42,48 +42,54 @@ def render_real(config: Settings, summary: dict) -> dict:
     )
     top_items.append(info)
 
-    table1 = Table(
-        [
+    rows = [
+        {
+            "name": "Distinct",
+            "value": fmt(summary["n_distinct"]),
+            "alert": "n_distinct" in summary["alert_fields"],
+        },
+        {
+            "name": "Distinct (%)",
+            "value": fmt_percent(summary["p_distinct"]),
+            "alert": "p_distinct" in summary["alert_fields"],
+        },
+        {
+            "name": "Missing",
+            "value": fmt(summary["n_missing"]),
+            "alert": "n_missing" in summary["alert_fields"],
+        },
+        {
+            "name": "Missing (%)",
+            "value": fmt_percent(summary["p_missing"]),
+            "alert": "p_missing" in summary["alert_fields"],
+        },
+        {
+            "name": "Infinite",
+            "value": fmt(summary["n_infinite"]),
+            "alert": "n_infinite" in summary["alert_fields"],
+        },
+        {
+            "name": "Infinite (%)",
+            "value": fmt_percent(summary["p_infinite"]),
+            "alert": "p_infinite" in summary["alert_fields"],
+        },
+        {
+            "name": "Mean",
+            "value": fmt_numeric(summary["mean"], precision=config.report.precision),
+            "alert": False,
+        },
+    ]
+    if isinstance(summary["plot_description"], CatDescriptionSupervised):
+        p_value_of_independence = summary["plot_description"].p_value_of_independence
+        rows.append(
             {
-                "name": "Distinct",
-                "value": fmt(summary["n_distinct"]),
-                "alert": "n_distinct" in summary["alert_fields"],
-            },
-            {
-                "name": "Distinct (%)",
-                "value": fmt_percent(summary["p_distinct"]),
-                "alert": "p_distinct" in summary["alert_fields"],
-            },
-            {
-                "name": "Missing",
-                "value": fmt(summary["n_missing"]),
-                "alert": "n_missing" in summary["alert_fields"],
-            },
-            {
-                "name": "Missing (%)",
-                "value": fmt_percent(summary["p_missing"]),
-                "alert": "p_missing" in summary["alert_fields"],
-            },
-            {
-                "name": "Infinite",
-                "value": fmt(summary["n_infinite"]),
-                "alert": "n_infinite" in summary["alert_fields"],
-            },
-            {
-                "name": "Infinite (%)",
-                "value": fmt_percent(summary["p_infinite"]),
-                "alert": "p_infinite" in summary["alert_fields"],
-            },
-            {
-                "name": "Mean",
-                "value": fmt_numeric(
-                    summary["mean"], precision=config.report.precision
-                ),
-                "alert": False,
-            },
-        ],
-        style=config.html.style,
-    )
+                "name": "identic mean p-value",
+                "value": round(p_value_of_independence, config.report.precision),
+                "alert": p_value_of_independence
+                < (1 - config.alerts.independence_confidence_level),
+            }
+        )
+    table1 = Table(rows, style=config.html.style)
     top_items.append(table1)
 
     table2 = Table(
