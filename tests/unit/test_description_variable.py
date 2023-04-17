@@ -4,6 +4,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import pytest
+
 from pandas_profiling.config import Settings, Univariate
 from pandas_profiling.model.description_variable import CatDescriptionSupervised
 from pandas_profiling.model.pandas.description_target_pandas import (
@@ -17,10 +18,10 @@ class MockCatDescription(CatDescriptionSupervised):
     _dist: pd.DataFrame
     _target_desc: TargetDescriptionPandas
 
-    def __init__(self, dist: pd.DataFrame, laplace_alpha: int):
+    def __init__(self, dist: pd.DataFrame, beta_param: int):
         self._config = Settings()
         self._config.target.col_name = "target"
-        self._config.vars.base.log_odds_laplace_smoothing_alpha = laplace_alpha
+        self._config.vars.base.smoothing_parameter = beta_param
         self._dist = dist
         self._target_desc = TargetDescriptionPandas(self._config.target, dist["data"])
 
@@ -53,7 +54,7 @@ class MockCatDescription(CatDescriptionSupervised):
 
 
 @pytest.mark.parametrize(
-    "distribution, expected_pivot, expected_odds, expected_odds_ratio, expected_log_odds_ratio, laplace_alpha",
+    "distribution, expected_pivot, expected_odds, expected_odds_ratio, expected_log_odds_ratio, beta_param",
     [
         (
             # distribution
@@ -69,7 +70,7 @@ class MockCatDescription(CatDescriptionSupervised):
             np.array([("male", 0.6), ("female", 3)]),
             # expected_log_odds_ratio
             np.array([("male", log2(0.6)), ("female", log2(3))]),
-            # laplace_alpha
+            # beta_param
             0,
         ),
         (
@@ -86,7 +87,7 @@ class MockCatDescription(CatDescriptionSupervised):
             np.array([("male", 2), ("female", 0.5)]),
             # expected_log_odds_ratio
             np.array([("male", 1), ("female", -1)]),
-            # laplace_alpha
+            # beta_param
             0,
         ),
         (
@@ -103,7 +104,7 @@ class MockCatDescription(CatDescriptionSupervised):
             np.array([("male", 0.4), ("female", 2)]),
             # expected_log_odds_ratio
             np.array([("male", log2(0.4)), ("female", log2(2))]),
-            # laplace_alpha
+            # beta_param
             0,
         ),
         (
@@ -122,7 +123,7 @@ class MockCatDescription(CatDescriptionSupervised):
             np.array(
                 [("male", log2((10 / 35) / 0.5)), ("female", log2((20 / 25) / 0.5))]
             ),
-            # laplace_alpha
+            # beta_param
             15,
         ),
     ],
@@ -135,9 +136,9 @@ class TestCat:
         expected_odds,
         expected_odds_ratio,
         expected_log_odds_ratio,
-        laplace_alpha,
+        beta_param,
     ):
-        desc = MockCatDescription(distribution, laplace_alpha)
+        desc = MockCatDescription(distribution, beta_param)
         expected_pivot_pd = pd.DataFrame(
             expected_pivot,
             columns=[desc.data_col_name, desc.n_target_value, desc.p_target_value],
@@ -162,9 +163,9 @@ class TestCat:
         expected_odds: np.ndarray,
         expected_odds_ratio,
         expected_log_odds_ratio,
-        laplace_alpha,
+        beta_param,
     ):
-        desc = MockCatDescription(distribution, laplace_alpha)
+        desc = MockCatDescription(distribution, beta_param)
         expected_odds_pd = pd.DataFrame(
             expected_odds,
             columns=[desc.data_col_name, desc._odds_col_name],
@@ -187,9 +188,9 @@ class TestCat:
         expected_odds,
         expected_odds_ratio: np.ndarray,
         expected_log_odds_ratio,
-        laplace_alpha,
+        beta_param,
     ):
-        desc = MockCatDescription(distribution, laplace_alpha)
+        desc = MockCatDescription(distribution, beta_param)
         expected_odds_ratio_pd = pd.DataFrame(
             expected_odds_ratio,
             columns=[desc.data_col_name, desc._odds_ratio_col_name],
@@ -214,9 +215,9 @@ class TestCat:
         expected_odds,
         expected_odds_ratio,
         expected_log_odds_ratio: np.ndarray,
-        laplace_alpha,
+        beta_param,
     ):
-        desc = MockCatDescription(distribution, laplace_alpha)
+        desc = MockCatDescription(distribution, beta_param)
         expected_log_odds_ratio_pd = pd.DataFrame(
             expected_log_odds_ratio,
             columns=[desc.data_col_name, desc.log_odds_col_name],

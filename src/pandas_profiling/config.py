@@ -38,8 +38,9 @@ class Dataset(BaseModel):
 class BaseVars(BaseModel):
     """Setting that is applied to all variable types descriptions."""
 
-    # alpha to smooth log odds plots
-    log_odds_laplace_smoothing_alpha: int = 20
+    # smoothing parameter for version of beta smoothing.
+    # alpha + beta = smoothing_parameter
+    smoothing_parameter: int = 20
 
 
 class NumVars(BaseModel):

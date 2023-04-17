@@ -84,14 +84,15 @@ class VariableDescriptionSupervised(VariableDescription):
 
     def _generate_odds_ratio(self):
         """Generate odds ratio from distribution pivot table.
-        Apply Laplace smoothing with alpha from setting.
+        Apply Beta smoothing with alpha + beta is defined from setting
+        and alpha/(alpha + beta) = prior.
         - add alpha new records to every group in data
         - distribution of new records is same as distribution in whole population
-        - create odds for every group with laplace smoothing
+        - create odds for every group with beta smoothing
         """
         log_odds = self.get_dist_pivot_table()
-        # Laplace smoothing alpha
-        laplace_smoothing_alpha = self.config.base.log_odds_laplace_smoothing_alpha
+        # beta smoothing alpha + beta
+        imaginary_observations_count = self.config.base.smoothing_parameter
 
         # get distribution of added records P(positive) + P(negative) = 1
         # P(pos) = sum(positive) / sum(all)
@@ -102,17 +103,17 @@ class VariableDescriptionSupervised(VariableDescription):
 
         # odds of groups with smoothing
         log_odds[self._odds_col_name] = (
-            log_odds[self.p_target_value] + pos_prob * laplace_smoothing_alpha
-        ) / (log_odds[self.n_target_value] + neg_prob * laplace_smoothing_alpha)
+            log_odds[self.p_target_value] + pos_prob * imaginary_observations_count
+        ) / (log_odds[self.n_target_value] + neg_prob * imaginary_observations_count)
 
-        # laplace smoothing to whole population
+        # beta smoothing to whole population
         groups = log_odds.shape[0]
         population_odds = (
             log_odds[self.p_target_value].sum()
-            + groups * pos_prob * laplace_smoothing_alpha
+            + groups * pos_prob * imaginary_observations_count
         ) / (
             log_odds[self.n_target_value].sum()
-            + groups * neg_prob * laplace_smoothing_alpha
+            + groups * neg_prob * imaginary_observations_count
         )
 
         # odds ratio = group odds / population odds

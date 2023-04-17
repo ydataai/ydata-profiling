@@ -555,8 +555,8 @@ def render_categorical(config: Settings, summary: dict) -> dict:
             image_format=image_format,
             alt="Log odds",
             name="Log Odds",
-            caption="Log2 odds with Laplace smoothing. alpha={}".format(
-                config.vars.base.log_odds_laplace_smoothing_alpha
+            caption="Log2 odds with Beta smoothing. alpha + beta = {}".format(
+                config.vars.base.smoothing_parameter
             ),
         )
         plots = [distribution, log_odds]
