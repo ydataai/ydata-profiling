@@ -51,13 +51,13 @@ class AlertType(Enum):
     """This variable has unique values."""
 
     CONSTANT_LENGTH = auto()
-    """This variable has a constant length"""
+    """This variable has a constant length."""
 
     REJECTED = auto()
     """Variables are rejected if we do not want to consider them for further analysis."""
 
     UNIFORM = auto()
-    """The variable is uniformly distributed"""
+    """The variable is uniformly distributed."""
 
     NON_STATIONARY = auto()
     """The variable is a non-stationary series."""
@@ -66,7 +66,7 @@ class AlertType(Enum):
     """The variable is a seasonal time series."""
 
     EMPTY = auto()
-    """The DataFrame is empty"""
+    """The DataFrame is empty."""
 
 
 class Alert:
