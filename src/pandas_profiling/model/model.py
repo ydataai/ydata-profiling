@@ -5,8 +5,8 @@ from typing import Any, Optional
 import pandas as pd
 from multimethod import multimethod
 from pandas_profiling.config import Settings
+from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.description_target import TargetDescription
-from pandas_profiling.model.missing import MissingConfMatrix
 
 
 @dataclass
@@ -17,7 +17,7 @@ class ModelEvaluation:
     precision: float
     recall: float
     f1_score: float
-    confusion_matrix: MissingConfMatrix
+    confusion_matrix: ConfMatrixData
 
     @property
     def quality(self) -> float:

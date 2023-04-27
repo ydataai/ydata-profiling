@@ -1,10 +1,9 @@
 from typing import Dict
 
 import pandas as pd
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.missing import (
-    MissingConfMatrix,
     MissingDescription,
     get_missing_description,
     missing_bar,
@@ -23,7 +22,7 @@ from pandas_profiling.visualisation.missing import (
 
 class MissingDescriptionPandas(MissingDescription):
     def __init__(self, df: pd.DataFrame, target_description: TargetDescriptionPandas):
-        missing_target: Dict[str, MissingConfMatrix] = {}
+        missing_target: Dict[str, ConfMatrixData] = {}
 
         _target_name = "Target ({})".format(target_description.name)
         for col_name in df.columns:
@@ -51,7 +50,7 @@ class MissingDescriptionPandas(MissingDescription):
                     normalize="index",
                 )
 
-                missing_target[col_name] = MissingConfMatrix(
+                missing_target[col_name] = ConfMatrixData(
                     absolute_conf_matrix, relative_conf_matrix
                 )
 

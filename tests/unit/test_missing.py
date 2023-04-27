@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from pandas_profiling.model.missing import MissingConfMatrix
+from pandas_profiling.model.data import ConfMatrixData
 
 test_data = [
     (
@@ -13,5 +13,5 @@ test_data = [
 
 @pytest.mark.parametrize("absolute_data, relative_data, expected_p_value", test_data)
 def test_missing_conf_matrix(absolute_data, relative_data, expected_p_value):
-    missing_conf = MissingConfMatrix(absolute_data, relative_data)
+    missing_conf = ConfMatrixData(absolute_data, relative_data)
     assert round(missing_conf.p_value, 3) == expected_p_value

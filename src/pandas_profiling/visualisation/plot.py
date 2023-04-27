@@ -13,13 +13,13 @@ from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap,
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from pandas_profiling.config import Settings
+from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.description_variable import (
     CatDescription,
     CatDescriptionSupervised,
     TextDescription,
     TextDescriptionSupervised,
 )
-from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
@@ -508,13 +508,16 @@ def plot_word_cloud(
     return plot_360_n0sc0pe(config)
 
 
-def plot_conf_matrix(config: Settings, conf_matrix: MissingConfMatrix):
+def plot_conf_matrix(config: Settings, conf_matrix: ConfMatrixData):
     cmap = plt.get_cmap(config.plot.correlation.cmap)
     cmap = get_cmap_half(cmap)
     labels = conf_matrix.plot_labels
-    sns.heatmap(
+    ax = sns.heatmap(
         conf_matrix.relative_counts, annot=labels, fmt="", vmin=0, vmax=1, cmap=cmap
     )
+    cbar = ax.collections[0].colorbar
+    cbar.set_ticks([0, 0.2, 0.4, 0.6, 0.8, 1])
+    cbar.set_ticklabels(["low", "20%", "40%", "60%", "80%", "100%"])
     return plot_360_n0sc0pe(config)
 
 

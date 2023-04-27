@@ -4,9 +4,9 @@ from typing import Any, Dict, List, Optional, Sequence
 import pandas as pd
 from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import AlertType
+from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.handler import get_render_map
-from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.report.formatters import fmt_percent
 from pandas_profiling.report.presentation.core import (
     HTML,
@@ -26,7 +26,7 @@ from pandas_profiling.report.structure.transformations_render import (
     render_transformations_module,
 )
 from pandas_profiling.utils.dataframe import slugify
-from pandas_profiling.visualisation.missing import plot_confusion_matrix
+from pandas_profiling.visualisation.plot import plot_conf_matrix
 from tqdm.auto import tqdm
 
 
@@ -46,7 +46,7 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
     if summary.target:
         conf_matrix_items = []
         name: str
-        missing_matrix: MissingConfMatrix
+        missing_matrix: ConfMatrixData
         for name, missing_matrix in summary.missing["target"].missing_target.items():
             caption = "P-value for the chi-square independence test is {}.".format(
                 round(missing_matrix.p_value, 4)
@@ -59,7 +59,7 @@ def get_missing_items(config: Settings, summary: BaseDescription) -> list:
                 )
 
             one_conf_matrix = ImageWidget(
-                plot_confusion_matrix(config, missing_matrix),
+                plot_conf_matrix(config, missing_matrix),
                 image_format=config.plot.image_format,
                 alt="Mini histogram",
                 caption=caption,

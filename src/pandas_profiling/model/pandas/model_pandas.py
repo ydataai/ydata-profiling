@@ -3,8 +3,8 @@ from __future__ import annotations
 import pandas as pd
 from lightgbm import LGBMClassifier
 from pandas_profiling.config import Settings
+from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.description_target import TargetDescription
-from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.model.model import (
     Model,
     ModelData,
@@ -82,7 +82,7 @@ class ModelDataPandas(ModelData):
             colnames=["Predicted value"],
             normalize="index",
         )
-        conf_matrix = MissingConfMatrix(conf_matrix, conf_matrix_relative)
+        conf_matrix = ConfMatrixData(conf_matrix, conf_matrix_relative)
 
         return ModelEvaluation(
             accuracy=float(accuracy),

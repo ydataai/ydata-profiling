@@ -6,50 +6,10 @@ from typing import Any, Callable, Dict, Optional
 import numpy as np
 import pandas as pd
 from multimethod import multimethod
-from scipy.stats import chi2_contingency
-
 from pandas_profiling.config import Settings
+from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.description_target import TargetDescription
-
-
-@dataclass
-class MissingConfMatrix:
-    """Class for confusion matrix in absolute and relative numbers.
-
-    Args:
-        absolute_counts (pd.DataFrame): Absolute counts of missing.
-        relative_counts (pd.DataFrame): Relative counts of missing. Row sums at 100%.
-    """
-
-    absolute_counts: pd.DataFrame
-    relative_counts: pd.DataFrame
-    _p_value: Optional[float] = None
-    _expected_counts: Optional[np.ndarray] = None
-
-    @property
-    def p_value(self) -> float:
-        """P value from chi-square test of variables from contingency table."""
-        if not self._p_value:
-            self._p_value = chi2_contingency(self.absolute_counts, correction=False)[1]
-        return self._p_value
-
-    @property
-    def expected_counts(self):
-        """Matrix of expected frequencies, based on the marginal sums of the table."""
-        if not self._expected_counts:
-            self._expected_counts = chi2_contingency(self.absolute_counts)[3]
-        return self._expected_counts
-
-    @property
-    def plot_labels(self) -> list:
-        """Labels for confusion matrix.
-        Contain relative count and absolute count of values."""
-        flat_abs = self.absolute_counts.values.flatten()
-        flat_rel = self.relative_counts.values.flatten()
-        labels = []
-        for abs, rel in zip(flat_abs, flat_rel):
-            labels.append("{0:.2%}\n{1}".format(rel, abs))
-        return np.asarray(labels).reshape(self.absolute_counts.shape)
+from scipy.stats import chi2_contingency
 
 
 @dataclass
@@ -57,13 +17,13 @@ class MissingDescription(metaclass=ABCMeta):
     """Description of missing dependency on target.
 
     Args:
-        missing_target: Dict[str, MissingConfMatrix]
+        missing_target: Dict[str, ConfMatrixData]
             Confusion matrixes target x missing for variables with missing values.
             key: column name
             value: confusion matrix of missing vs target
     """
 
-    missing_target: Dict[str, MissingConfMatrix]
+    missing_target: Dict[str, ConfMatrixData]
 
 
 @multimethod
