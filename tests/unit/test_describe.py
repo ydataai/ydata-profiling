@@ -4,8 +4,10 @@ from dataclasses import asdict
 import numpy as np
 import pandas as pd
 import pytest
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.describe import describe
+from pandas_profiling.model.description import BaseDescription
 from pandas_profiling.model.summary import describe_1d
 from pandas_profiling.model.typeset import ProfilingTypeSet
 
@@ -544,19 +546,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
 
     results = describe(config, describe_data_frame, summarizer, typeset)
 
-    assert {
-        "analysis",
-        "table",
-        "target",
-        "variables",
-        "scatter",
-        "correlations",
-        "missing",
-        "alerts",
-        "package",
-        "sample",
-        "duplicates",
-    } == set(asdict(results).keys()), "Not in results"
+    assert isinstance(results, BaseDescription)
 
     # Loop over variables
     for k, v in expected_results[column].items():

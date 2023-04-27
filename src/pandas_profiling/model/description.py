@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from pandas_profiling.model.description_target import TargetDescription
+from pandas_profiling.model.model import ModelModule
+from pandas_profiling.model.transformations import TransformationData
 
 
 @dataclass
@@ -75,3 +77,5 @@ class BaseDescription:
     package: Any
     sample: Any
     duplicates: Any
+    transformations: Optional[List[TransformationData]]
+    model: Optional[ModelModule]

@@ -17,9 +17,11 @@ from pandas_profiling.model.pandas import (
     description_target_pandas,
     duplicates_pandas,
     missing_pandas,
+    model_pandas,
     sample_pandas,
     summary_pandas,
     table_pandas,
+    transformations_pandas,
 )
 
 __all__ = [
@@ -41,8 +43,10 @@ __all__ = [
     "description_target_pandas",
     "duplicates_pandas",
     "missing_pandas",
+    "model_pandas",
     "sample_pandas",
     "sample_pandas",
     "summary_pandas",
     "table_pandas",
+    "transformations_pandas",
 ]

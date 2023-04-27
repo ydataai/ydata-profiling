@@ -12,12 +12,6 @@ from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
-from PIL import ImageColor
-from seaborn._core.plot import Plotter
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-from typeguard import typechecked
-from wordcloud import WordCloud
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_variable import (
     CatDescription,
@@ -25,9 +19,15 @@ from pandas_profiling.model.description_variable import (
     TextDescription,
     TextDescriptionSupervised,
 )
+from pandas_profiling.model.missing import MissingConfMatrix
 from pandas_profiling.utils.common import convert_timestamp_to_datetime
 from pandas_profiling.visualisation.context import manage_matplotlib_context
 from pandas_profiling.visualisation.utils import plot_360_n0sc0pe
+from PIL import ImageColor
+from seaborn._core.plot import Plotter
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from typeguard import typechecked
+from wordcloud import WordCloud
 
 FIG_SIZE = (6, 4)
 MINI_FIG_SIZE = (3, 2.25)
@@ -505,6 +505,16 @@ def plot_word_cloud(
 ) -> str:
     """Plot word cloud for text column."""
     plot = _plot_word_cloud(config, plot_description, mini)
+    return plot_360_n0sc0pe(config)
+
+
+def plot_conf_matrix(config: Settings, conf_matrix: MissingConfMatrix):
+    cmap = plt.get_cmap(config.plot.correlation.cmap)
+    cmap = get_cmap_half(cmap)
+    labels = conf_matrix.plot_labels
+    sns.heatmap(
+        conf_matrix.relative_counts, annot=labels, fmt="", vmin=0, vmax=1, cmap=cmap
+    )
     return plot_360_n0sc0pe(config)
 
 

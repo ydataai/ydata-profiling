@@ -26,6 +26,8 @@ def test_json(data: pd.DataFrame):
         "sample",
         "scatter",
         "table",
+        "model",
+        "transformations",
     }
 
 

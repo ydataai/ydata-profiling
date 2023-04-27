@@ -3,9 +3,6 @@ from datetime import datetime
 from typing import Any, Dict, Optional
 
 import pandas as pd
-from tqdm.auto import tqdm
-from visions import VisionsTypeset
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import get_alerts
 from pandas_profiling.model.correlations import (
@@ -21,13 +18,17 @@ from pandas_profiling.model.missing import (
     get_missing_description,
     get_missing_diagram,
 )
+from pandas_profiling.model.model import ModelModule, get_model_module
 from pandas_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
 from pandas_profiling.model.sample import get_custom_sample, get_sample
 from pandas_profiling.model.summarizer import BaseSummarizer
 from pandas_profiling.model.summary import get_series_descriptions
 from pandas_profiling.model.table import get_table_stats
+from pandas_profiling.model.transformations import get_transformations_module
 from pandas_profiling.utils.progress_bar import progress
 from pandas_profiling.version import __version__
+from tqdm.auto import tqdm
+from visions import VisionsTypeset
 
 
 def describe(
@@ -174,14 +175,32 @@ def describe(
 
         pbar.set_postfix_str("Completed")
 
-        date_end = datetime.utcnow()
+        transformations = None
+        model: Optional[ModelModule] = None
+        if target_description:
+            # update target description and remove target from variables
+            target_description.description.update(
+                series_description[target_description.name]
+            )
+            del series_description[target_description.name]
 
-    # update target description and remove target from variables
-    if target_description:
-        target_description.description.update(
-            series_description[target_description.name]
-        )
-        del series_description[target_description.name]
+            # model module
+            if config.report.model_module:
+                model = progress(get_model_module, pbar, "Get model")(
+                    config, target_description, df
+                )
+
+            # transformations module
+            if config.report.transform_module:
+                base_model = None
+                if model is not None:
+                    base_model = model.default_model
+
+                transformations = progress(
+                    get_transformations_module, pbar, "Get transformations"
+                )(config, series_description, target_description, df, base_model)
+
+        date_end = datetime.utcnow()
 
     analysis = BaseAnalysis(config.title, date_start, date_end)
 
@@ -197,5 +216,7 @@ def describe(
         package=package,
         sample=samples,
         duplicates=duplicates,
+        transformations=transformations,
+        model=model,
     )
     return description

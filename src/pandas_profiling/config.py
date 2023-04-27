@@ -313,6 +313,10 @@ class Report(BaseModel):
     # limit count of variables in report
     # for dataframes with 200+ columns is report unusable
     max_vars_count: Optional[int] = None
+    # create model module
+    model_module: bool = False
+    # create transformations module
+    transform_module: bool = False
 
 
 class Alerts(BaseModel):
@@ -391,6 +395,8 @@ class Settings(BaseSettings):
     n_obs_unique: int = 10
     n_freq_table_max: int = 10
     n_extreme_obs: int = 10
+
+    model_seed: int = 123456
 
     # Report rendering
     report: Report = Report()

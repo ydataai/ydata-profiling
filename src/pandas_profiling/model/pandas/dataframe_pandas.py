@@ -1,7 +1,6 @@
 import warnings
 
 import pandas as pd
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.dataframe import check_dataframe, preprocess
 from pandas_profiling.utils.dataframe import rename_index
@@ -35,7 +34,7 @@ def pandas_preprocess(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         The preprocessed DataFrame
     """
-
+    df = df.copy()
     # Rename reserved column names
     df = rename_index(df)
 

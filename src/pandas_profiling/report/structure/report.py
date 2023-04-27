@@ -2,8 +2,6 @@
 from typing import Any, Dict, List, Optional, Sequence
 
 import pandas as pd
-from tqdm.auto import tqdm
-
 from pandas_profiling.config import Settings
 from pandas_profiling.model.alerts import AlertType
 from pandas_profiling.model.description import BaseDescription
@@ -22,9 +20,14 @@ from pandas_profiling.report.presentation.core import Sample, ToggleButton, Vari
 from pandas_profiling.report.presentation.core.renderable import Renderable
 from pandas_profiling.report.presentation.core.root import Root
 from pandas_profiling.report.structure.correlations import get_correlation_items
+from pandas_profiling.report.structure.model_render import render_model_module
 from pandas_profiling.report.structure.overview import get_dataset_items
+from pandas_profiling.report.structure.transformations_render import (
+    render_transformations_module,
+)
 from pandas_profiling.utils.dataframe import slugify
 from pandas_profiling.visualisation.missing import plot_confusion_matrix
+from tqdm.auto import tqdm
 
 
 def get_missing_items(config: Settings, summary: BaseDescription) -> list:
@@ -506,6 +509,17 @@ def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
                 )
             )
 
+        # Transformations
+        if config.report.transform_module and summary.transformations is not None:
+            section_items.append(
+                render_transformations_module(config, summary.transformations)
+            )
+
+        # Model
+        if config.report.model_module and summary.model is not None:
+            section_items.append(render_model_module(config, summary.model))
+
+        # Samples
         sample_items = get_sample_items(config, summary.sample)
         if len(sample_items) > 0:
             section_items.append(
