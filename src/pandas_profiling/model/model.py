@@ -54,7 +54,7 @@ class Model(ABC):
         pass
 
 
-class ModelData:
+class ModelData(ABC):
     X_train: Any
     X_test: Any
     y_train: Any
@@ -65,7 +65,7 @@ class ModelData:
     test_records: int
     n_of_features: int
 
-    model_name: str
+    boosting_type: str
     model_source: str
 
     @abstractmethod

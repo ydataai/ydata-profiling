@@ -45,9 +45,34 @@ def _get_model_setting_table(config: Settings, model_data: ModelData):
                 "value": model_data.model_source,
             },
             {
+                "name": "Boosting type",
+                "value": model_data.boosting_type,
+            },
+            {
+                "name": "Maximum tree depth",
+                "value": fmt_number(config.model.max_depth),
+            },
+            {
+                "name": "Number of boosted trees",
+                "value": fmt_number(config.model.n_estimators),
+            },
+            {
+                "name": "Maximum tree leaves",
+                "value": fmt_number(config.model.num_leaves),
+            },
+            {
                 "name": "Model seed",
                 "value": fmt_number(config.model.model_seed),
             },
+        ],
+        style=config.html.style,
+        name="Model setting",
+    )
+
+
+def _get_train_test_setting_table(config: Settings, model_data: ModelData):
+    return Table(
+        [
             {
                 "name": "Train test split policy",
                 "value": model_data.train_test_split_policy,
@@ -66,7 +91,7 @@ def _get_model_setting_table(config: Settings, model_data: ModelData):
             },
         ],
         style=config.html.style,
-        name="Model setting",
+        name="Train test setting",
     )
 
 
@@ -86,7 +111,16 @@ def render_model(config: Settings, model_data: ModelData, name: str) -> Containe
     items = []
 
     items.append(_get_model_setting_table(config, model_data))
+    items.append(_get_train_test_setting_table(config, model_data))
     items.append(_get_evaluation_table(config, model_evaluation))
+
+    top_section = Container(
+        items,
+        sequence_type="batch_grid",
+        name="Model info top",
+        batch_size=len(items),
+        titles=False,
+    )
 
     conf_matrix = Image(
         plot_conf_matrix(config, model_evaluation.confusion_matrix),
@@ -95,12 +129,12 @@ def render_model(config: Settings, model_data: ModelData, name: str) -> Containe
         anchor_id="{}_predict_conf_matrix".format(name),
         name=name,
     )
-    items.append(conf_matrix)
 
     return Container(
-        items,
-        sequence_type="grid",
+        [top_section, conf_matrix],
+        sequence_type="list",
         name="Model info",
+        anchor_id="{}_model".format(name),
     )
 
 

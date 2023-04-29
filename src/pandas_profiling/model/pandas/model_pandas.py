@@ -62,7 +62,7 @@ class ModelDataPandas(ModelData):
     y_train: pd.Series
     y_test: pd.Series
     train_test_split_policy: str = "random"
-    model_name: str = "Gradient Boosting Decision Tree"
+    boosting_type: str = "Gradient Boosting Decision Tree"
     model_source: str = "lightgbm.LGBMClassifier"
 
     def __init__(
