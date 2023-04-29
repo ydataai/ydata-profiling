@@ -310,6 +310,12 @@ class Model(BaseModel):
     model_seed: int = 123456
     # evaluation of model. Valid options: "accuracy", "precision", "recall", "f1_score"
     evaluation_metric: str = "accuracy"
+    # Maximum tree depth for base learners, <=0 means no limit.
+    max_depth: int = 3
+    # Number of boosted trees to fit.
+    n_estimators: int = 10
+    # Maximum tree leaves for base learners.
+    num_leaves: int = 10
 
 
 class Report(BaseModel):

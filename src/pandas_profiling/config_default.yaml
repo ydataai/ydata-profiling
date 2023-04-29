@@ -200,6 +200,12 @@ model:
   model_seed: 123456
   # evaluation of model. Valid options: "accuracy", "precision", "recall", "f1_score"
   evaluation_metric: "accuracy"
+  # Maximum tree depth for base learners, <=0 means no limit.
+  max_depth: 3
+  # Number of boosted trees to fit.
+  n_estimators: 10
+  # Maximum tree leaves for base learners.
+  num_leaves: 10
 
 # Configuration related to the rejection of variables
 reject_variables: true

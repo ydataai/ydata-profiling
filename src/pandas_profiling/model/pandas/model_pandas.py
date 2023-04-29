@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import sys
+
 import pandas as pd
 from lightgbm import LGBMClassifier
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 
+from pandas_profiling.config import Model as ModelConfig
 from pandas_profiling.config import Settings
 from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.description_target import TargetDescription
@@ -36,13 +39,13 @@ def get_train_test_split_pandas(
 class ModelPandas(Model):
     model: LGBMClassifier
 
-    def __init__(self, seed: int) -> None:
+    def __init__(self, model_config: ModelConfig) -> None:
         self.model = LGBMClassifier(
-            max_depth=3,
-            n_estimators=10,
-            num_leaves=10,
-            subsample_for_bin=None,
-            random_state=seed,
+            max_depth=model_config.max_depth,
+            n_estimators=model_config.n_estimators,
+            num_leaves=model_config.num_leaves,
+            random_state=model_config.model_seed,
+            importance_type="gain",
         )
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> None:
@@ -76,7 +79,7 @@ class ModelDataPandas(ModelData):
         self.y_test = y_test
         self.train_records = X_train.shape[0]
         self.test_records = X_test.shape[0]
-        self.model = ModelPandas(config.model.model_seed)
+        self.model = ModelPandas(config.model)
         self.model.fit(X_train, y_train)
         self.y_pred = self.model.transform(X_test)
 
@@ -142,6 +145,4 @@ def get_model_module_pandas(
     target_description: TargetDescription,
     df: pd.DataFrame,
 ) -> ModelModule:
-    object_cols = df.select_dtypes(include=["object"]).columns
-    df[object_cols] = df[object_cols].astype("category")
     return ModelModulePandas(config, target_description, df)
