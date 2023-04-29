@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import sys
+from typing import List, Tuple
 
 import pandas as pd
 from lightgbm import LGBMClassifier
@@ -25,9 +25,6 @@ from pandas_profiling.model.model import (
 def get_train_test_split_pandas(
     seed: int, df: pd.DataFrame, target_description: TargetDescription, test_size: float
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
-    object_cols = df.select_dtypes(include=["object"]).columns
-    df[object_cols] = df[object_cols].astype("category")
-
     X = df.drop(columns=target_description.name)
     y = target_description.series_binary
     X_train, X_test, y_train, y_test = train_test_split(
@@ -49,9 +46,11 @@ class ModelPandas(Model):
         )
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> None:
+        X = X.select_dtypes(exclude=["object"])
         self.model.fit(X, y)
 
     def transform(self, X: pd.DataFrame):
+        X = X.select_dtypes(exclude=["object"])
         return self.model.predict(X)
 
 
@@ -112,6 +111,13 @@ class ModelDataPandas(ModelData):
             f1_score=float(f1),
             confusion_matrix=conf_matrix,
         )
+
+    def get_feature_importances(self) -> List[Tuple[float, str]]:
+        importances = self.model.model.feature_importances_
+        names = self.model.model.feature_name_
+        importance_feature = list(zip(importances, names))
+        importance_feature.sort(key=lambda x: x[0], reverse=True)
+        return importance_feature
 
     @classmethod
     def get_model_from_df(
