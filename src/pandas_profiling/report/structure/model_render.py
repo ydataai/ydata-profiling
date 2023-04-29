@@ -33,9 +33,25 @@ def _get_evaluation_table(config: Settings, model_evaluation: ModelEvaluation):
     )
 
 
-def _get_train_test_table(config: Settings, model_data: ModelData):
+def _get_model_info_table(config: Settings, model_data: ModelData):
     return Table(
         [
+            {
+                "name": "Used model",
+                "value": model_data.model_source,
+            },
+            {
+                "name": "Model seed",
+                "value": fmt_number(config.model.model_seed),
+            },
+            {
+                "name": "Train test split policy",
+                "value": model_data.train_test_split_policy,
+            },
+            {
+                "name": "Test size (%)",
+                "value": fmt_percent(config.model.test_size),
+            },
             {
                 "name": "Train records count",
                 "value": fmt_number(model_data.train_records),
@@ -46,7 +62,7 @@ def _get_train_test_table(config: Settings, model_data: ModelData):
             },
         ],
         style=config.html.style,
-        name="Train-test info",
+        name="Model info",
     )
 
 
@@ -65,8 +81,8 @@ def render_model(config: Settings, model_data: ModelData, name: str) -> Containe
 
     items = []
 
+    items.append(_get_model_info_table(config, model_data))
     items.append(_get_evaluation_table(config, model_evaluation))
-    items.append(_get_train_test_table(config, model_data))
 
     conf_matrix = Image(
         plot_conf_matrix(config, model_evaluation.confusion_matrix),
@@ -92,7 +108,7 @@ def render_model_module(config: Settings, model_module: ModelModule) -> Containe
         Container(
             [def_model_tab],
             name="Base model",
-            sequence_type="named_list",
+            sequence_type="list",
             anchor_id="model_tab_base_model",
         )
     )

@@ -303,6 +303,13 @@ class ReportVariables(BaseModel):
     log_odds_on_top = False
 
 
+class Model(BaseModel):
+    # size of test data
+    test_size: float = 0.25
+    # seed used in all models
+    model_seed: int = 123456
+
+
 class Report(BaseModel):
     """Setting for generating report from description."""
 
@@ -388,6 +395,7 @@ class Settings(BaseSettings):
     duplicates: Duplicates = Duplicates()
     samples: Samples = Samples()
     alerts: Alerts = Alerts()
+    model: Model = Model()
 
     reject_variables: bool = True
 
@@ -395,8 +403,6 @@ class Settings(BaseSettings):
     n_obs_unique: int = 10
     n_freq_table_max: int = 10
     n_extreme_obs: int = 10
-
-    model_seed: int = 123456
 
     # Report rendering
     report: Report = Report()

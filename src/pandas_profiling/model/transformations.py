@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Hashable, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from multimethod import multimethod
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
-from pandas_profiling.model.model import ModelData, ModelEvaluation
+from pandas_profiling.model.model import ModelData, get_train_test_split
 
 
 @dataclass
@@ -86,11 +87,6 @@ class TfIdfTransformation(Transformation):
 
 
 @multimethod
-def get_train_test_split(seed: int, df: Any, target_description: TargetDescription):
-    raise NotImplementedError
-
-
-@multimethod
 def get_best_transformation(
     config: Settings,
     X_train: Any,
@@ -133,7 +129,7 @@ def get_transformations_module(
     transformations = []
     transform_map = get_transformations_map()
     X_train, X_test, y_train, y_test = get_train_test_split(
-        config.model_seed, df, target_desc
+        config.model.model_seed, df, target_desc, config.model.test_size
     )
     for var_name, var_desc in variables_desc.items():
         var_type = var_desc["type"]

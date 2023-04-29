@@ -1,6 +1,10 @@
 from typing import Callable, List, Optional
 
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import KBinsDiscretizer, OneHotEncoder, StandardScaler
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.description_target import TargetDescription
 from pandas_profiling.model.pandas.model_pandas import ModelDataPandas
@@ -12,11 +16,7 @@ from pandas_profiling.model.transformations import (  # Transformation,; Transfo
     Transformation,
     TransformationData,
     get_best_transformation,
-    get_train_test_split,
 )
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import KBinsDiscretizer, OneHotEncoder, StandardScaler
 
 
 # NormalizeTransformation ==============================================================
@@ -89,21 +89,6 @@ def transform_tf_idf_transform_pandas(self: TfIdfTransformation, X: pd.Series):
     return data.add_prefix("{}_".format(X.name))
 
 
-@get_train_test_split.register
-def get_train_test_split_pandas(
-    seed: int, df: pd.DataFrame, target_description: TargetDescription
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
-    object_cols = df.select_dtypes(include=["object"]).columns
-    df[object_cols] = df[object_cols].astype("category")
-
-    X = df.drop(columns=target_description.name)
-    y = target_description.series_binary
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.25, random_state=seed
-    )
-    return X_train, X_test, y_train, y_test
-
-
 @get_best_transformation.register
 def get_best_transformation_pandas(
     config: Settings,
@@ -117,7 +102,7 @@ def get_best_transformation_pandas(
     best_transform = None
 
     for transform_class in transformations:
-        transformer: Transformation = transform_class(config.model_seed)
+        transformer: Transformation = transform_class(config.model.model_seed)
         # if data contains nan and transformation doesn't support nan, skip
         if (
             X_train[col_name].isnull().any() or X_test[col_name].isnull().any()

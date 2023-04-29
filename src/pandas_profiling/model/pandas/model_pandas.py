@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import pandas as pd
 from lightgbm import LGBMClassifier
+from sklearn import metrics
+from sklearn.model_selection import train_test_split
+
 from pandas_profiling.config import Settings
 from pandas_profiling.model.data import ConfMatrixData
 from pandas_profiling.model.description_target import TargetDescription
@@ -11,10 +14,23 @@ from pandas_profiling.model.model import (
     ModelEvaluation,
     ModelModule,
     get_model_module,
+    get_train_test_split,
 )
-from pandas_profiling.model.transformations import get_train_test_split
-from sklearn import metrics
-from sklearn.model_selection import train_test_split
+
+
+@get_train_test_split.register
+def get_train_test_split_pandas(
+    seed: int, df: pd.DataFrame, target_description: TargetDescription, test_size: float
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    object_cols = df.select_dtypes(include=["object"]).columns
+    df[object_cols] = df[object_cols].astype("category")
+
+    X = df.drop(columns=target_description.name)
+    y = target_description.series_binary
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=seed
+    )
+    return X_train, X_test, y_train, y_test
 
 
 class ModelPandas(Model):
@@ -42,7 +58,9 @@ class ModelDataPandas(ModelData):
     X_test: pd.DataFrame
     y_train: pd.Series
     y_test: pd.Series
+    train_test_split_policy: str = "random"
     model_name: str = "Gradient Boosting Decision Tree"
+    model_source: str = "lightgbm.LGBMClassifier"
 
     def __init__(
         self,
@@ -58,7 +76,7 @@ class ModelDataPandas(ModelData):
         self.y_test = y_test
         self.train_records = X_train.shape[0]
         self.test_records = X_test.shape[0]
-        self.model = ModelPandas(config.model_seed)
+        self.model = ModelPandas(config.model.model_seed)
         self.model.fit(X_train, y_train)
         self.y_pred = self.model.transform(X_test)
 
@@ -100,7 +118,7 @@ class ModelDataPandas(ModelData):
         df: pd.DataFrame,
     ) -> ModelDataPandas:
         X_train, X_test, y_train, y_test = get_train_test_split(
-            config.model_seed, df, target_description
+            config.model.model_seed, df, target_description, config.model.test_size
         )
         return ModelDataPandas(config, X_train, X_test, y_train, y_test)
 
