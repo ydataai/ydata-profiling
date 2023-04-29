@@ -26,9 +26,16 @@ class ModelEvaluation:
     f1_score: float
     confusion_matrix: ConfMatrixData
 
-    @property
-    def quality(self) -> float:
-        return self.accuracy + self.precision + self.recall + self.f1_score
+    def get_evaluation_metric(self, config: Settings) -> float:
+        match config.model.evaluation_metric:
+            case "accuracy":
+                return self.accuracy
+            case "precision":
+                return self.precision
+            case "recall":
+                return self.recall
+            case "f1_score":
+                return self.f1_score
 
 
 class Model(ABC):

@@ -308,6 +308,8 @@ class Model(BaseModel):
     test_size: float = 0.25
     # seed used in all models
     model_seed: int = 123456
+    # evaluation of model. Valid options: "accuracy", "precision", "recall", "f1_score"
+    evaluation_metric: str = "accuracy"
 
 
 class Report(BaseModel):

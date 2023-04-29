@@ -14,18 +14,22 @@ def _get_evaluation_table(config: Settings, model_evaluation: ModelEvaluation):
             {
                 "name": "Accuracy (%)",
                 "value": fmt_percent(model_evaluation.accuracy),
+                "alert": config.model.evaluation_metric == "accuracy",
             },
             {
                 "name": "Precision (%)",
                 "value": fmt_percent(model_evaluation.precision),
+                "alert": config.model.evaluation_metric == "precision",
             },
             {
                 "name": "Recall (%)",
                 "value": fmt_percent(model_evaluation.recall),
+                "alert": config.model.evaluation_metric == "recall",
             },
             {
                 "name": "F1 score (%)",
                 "value": fmt_percent(model_evaluation.f1_score),
+                "alert": config.model.evaluation_metric == "f1_score",
             },
         ],
         style=config.html.style,
@@ -33,7 +37,7 @@ def _get_evaluation_table(config: Settings, model_evaluation: ModelEvaluation):
     )
 
 
-def _get_model_info_table(config: Settings, model_data: ModelData):
+def _get_model_setting_table(config: Settings, model_data: ModelData):
     return Table(
         [
             {
@@ -62,7 +66,7 @@ def _get_model_info_table(config: Settings, model_data: ModelData):
             },
         ],
         style=config.html.style,
-        name="Model info",
+        name="Model setting",
     )
 
 
@@ -81,7 +85,7 @@ def render_model(config: Settings, model_data: ModelData, name: str) -> Containe
 
     items = []
 
-    items.append(_get_model_info_table(config, model_data))
+    items.append(_get_model_setting_table(config, model_data))
     items.append(_get_evaluation_table(config, model_evaluation))
 
     conf_matrix = Image(
@@ -96,7 +100,7 @@ def render_model(config: Settings, model_data: ModelData, name: str) -> Containe
     return Container(
         items,
         sequence_type="grid",
-        name=model_data.model_name,
+        name="Model info",
     )
 
 

@@ -198,6 +198,8 @@ model:
   test_size: 0.25
   # seed used in all models
   model_seed: 123456
+  # evaluation of model. Valid options: "accuracy", "precision", "recall", "f1_score"
+  evaluation_metric: "accuracy"
 
 # Configuration related to the rejection of variables
 reject_variables: true

@@ -134,5 +134,5 @@ def get_best_transformation_pandas(
 
         if best_transform is None:
             best_transform = transformation
-        best_transform = best_transform.get_better(transformation)
+        best_transform = best_transform.get_better(transformation, config)
     return best_transform

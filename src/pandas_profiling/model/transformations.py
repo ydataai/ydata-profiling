@@ -22,10 +22,14 @@ class TransformationData:
     transform_desc: str
     model_data: ModelData
 
-    def get_better(self, other: TransformationData) -> TransformationData:
-        model_evaluation = self.model_data.evaluate()
-        model_evaluation_other = other.model_data.evaluate()
-        if model_evaluation.quality > model_evaluation_other.quality:
+    def get_better(
+        self, other: TransformationData, config: Settings
+    ) -> TransformationData:
+        model_evaluation = self.model_data.evaluate().get_evaluation_metric(config)
+        model_evaluation_other = other.model_data.evaluate().get_evaluation_metric(
+            config
+        )
+        if model_evaluation > model_evaluation_other:
             return self
         return other
 
@@ -144,12 +148,15 @@ def get_transformations_module(
                 transform_map[var_type],
             )
             if best_transformation is not None:
-                if (
-                    base_model is not None
-                    and base_model.evaluate().quality
-                    >= best_transformation.model_data.evaluate().quality
-                ):
-                    continue
+                if base_model is not None:
+                    base_metric = base_model.evaluate().get_evaluation_metric(config)
+                    transform_metric = (
+                        best_transformation.model_data.evaluate().get_evaluation_metric(
+                            config
+                        )
+                    )
+                    if base_metric >= transform_metric:
+                        continue
                 transformations.append(best_transformation)
 
     return transformations
