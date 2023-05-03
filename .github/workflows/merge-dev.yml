@@ -10,7 +10,7 @@ on:
 jobs:
   prepare:
     name: Calculate Version and Build Number
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     outputs:
       version: ${{ steps.version.outputs.value }}
@@ -46,7 +46,7 @@ jobs:
 
   prerelease-tag:
     name: Create Prerelease Tag
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs:
     - prepare

@@ -3,6 +3,7 @@ import pandas as pd
 import pytest
 
 from ydata_profiling import ProfileReport
+from ydata_profiling.model import BaseDescription
 
 
 def test_load(get_data_file, test_output_dir):
@@ -54,7 +55,7 @@ def test_load(get_data_file, test_output_dir):
 
     profile2 = ProfileReport(df, progress_bar=False).load(test_output_path)
     # json1 are compute before dumps, so _description_set should be the same
-    assert isinstance(profile2._description_set, dict)
+    assert isinstance(profile2._description_set, BaseDescription)
 
     # profile1 is lazy, html1 are compute after dumps, so report should be None
     assert profile2._report is None

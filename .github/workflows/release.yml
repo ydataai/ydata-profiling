@@ -10,7 +10,7 @@ on:
 jobs:
   package:
     name: Build and Package
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -51,12 +51,13 @@ jobs:
     - name: Upload Pipeline Artifacts
       uses: actions/upload-artifact@v3
       with:
+        retention-days: 1
         name: built-artifacts
         path: dist/
 
   upload-assets:
     name: Upload Assets to Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs: package
 
@@ -74,7 +75,7 @@ jobs:
   
   publish-pypi:
     name: Publish packages to PyPi
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     needs: package
 
@@ -84,14 +85,14 @@ jobs:
         name: built-artifacts
         path: dist/
 
-    - uses: pypa/gh-action-pypi-publish@v1.6.4
+    - uses: pypa/gh-action-pypi-publish@v1.8.5
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
 
   docs_and_examples:
     name: Documentation and Examples
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     - uses: actions/checkout@v3

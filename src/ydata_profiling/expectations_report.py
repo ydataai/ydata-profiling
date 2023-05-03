@@ -4,7 +4,7 @@ import pandas as pd
 from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model import expectation_algorithms
+from ydata_profiling.model import BaseDescription, expectation_algorithms
 from ydata_profiling.model.handler import Handler
 from ydata_profiling.utils.dataframe import slugify
 
@@ -87,10 +87,10 @@ class ExpectationsReport:
         batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
 
         # Obtain the profiling summary
-        summary = self.get_description()  # type: ignore
+        summary: BaseDescription = self.get_description()  # type: ignore
 
         # Dispatch to expectations per semantic variable type
-        for name, variable_summary in summary["variables"].items():
+        for name, variable_summary in summary.variables.items():
             handler.handle(variable_summary["type"], name, variable_summary, batch)
 
         # We don't actually update the suite object on the batch in place, so need

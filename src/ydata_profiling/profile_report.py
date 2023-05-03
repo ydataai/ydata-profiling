@@ -2,7 +2,7 @@ import copy
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 try:
     from pyspark.sql import DataFrame as sDataFrame
@@ -10,6 +10,8 @@ except:  # noqa: E722
     from typing import TypeVar
 
     sDataFrame = TypeVar("sDataFrame")  # type: ignore
+
+from dataclasses import asdict, is_dataclass
 
 import numpy as np
 import pandas as pd
@@ -19,6 +21,7 @@ from visions import VisionsTypeset
 
 from ydata_profiling.config import Config, Settings, SparkSettings
 from ydata_profiling.expectations_report import ExpectationsReport
+from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
 from ydata_profiling.model.describe import describe as describe_df
 from ydata_profiling.model.sample import Sample
@@ -151,13 +154,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @staticmethod
     def __validate_inputs(
-        df: Union[pd.DataFrame, sDataFrame],
+        df: Optional[Union[pd.DataFrame, sDataFrame]],
         minimal: bool,
         tsmode: bool,
         config_file: Optional[Union[Path, str]],
         lazy: bool,
     ) -> None:
-
         # Lazy profile cannot be set if no DataFrame is provided
         if df is None and not lazy:
             raise ValueError("Can init a not-lazy ProfileReport with no DataFrame")
@@ -188,8 +190,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @staticmethod
     def __initialize_dataframe(
-        df: Union[pd.DataFrame, sDataFrame], report_config: Settings
-    ) -> Union[pd.DataFrame, sDataFrame]:
+        df: Optional[Union[pd.DataFrame, sDataFrame]], report_config: Settings
+    ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
         if (
             df is not None
             and isinstance(df, pd.DataFrame)
@@ -243,7 +245,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         return self._summarizer
 
     @property
-    def description_set(self) -> Dict[str, Any]:
+    def description_set(self) -> BaseDescription:
         if self._description_set is None:
             self._description_set = describe_df(
                 self.config,
@@ -281,8 +283,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     @property
     def widgets(self) -> Any:
         if (
-            isinstance(self.description_set["table"]["n"], list)
-            and len(self.description_set["table"]["n"]) > 1
+            isinstance(self.description_set.table["n"], list)
+            and len(self.description_set.table["n"]) > 1
         ):
             raise RuntimeError(
                 "Widgets interface not (yet) supported for comparing reports, please use the HTML rendering."
@@ -298,7 +300,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         Returns:
             A DataFrame with the duplicate rows and their counts.
         """
-        return self.description_set["duplicates"]
+        return self.description_set.duplicates
 
     def get_sample(self) -> dict:
         """Get head/tail samples based on the configuration
@@ -306,9 +308,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         Returns:
             A dict with the head and tail samples.
         """
-        return self.description_set["sample"]
+        return self.description_set.sample
 
-    def get_description(self) -> dict:
+    def get_description(self) -> BaseDescription:
         """Return the description (a raw statistical summary) of the dataset.
 
         Returns:
@@ -324,7 +326,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """
         return {
             alert.column_name
-            for alert in self.description_set["alerts"]
+            for alert in self.description_set.alerts
             if alert.alert_type == AlertType.REJECTED
         }
 
@@ -390,9 +392,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 primary_color=self.config.html.style.primary_colors[0],
                 logo=self.config.html.style.logo,
                 theme=self.config.html.style.theme,
-                title=self.description_set["analysis"]["title"],
-                date=self.description_set["analysis"]["date_start"],
-                version=self.description_set["package"]["ydata_profiling_version"],
+                title=self.description_set.analysis.title,
+                date=self.description_set.analysis.date_start,
+                version=self.description_set.package["ydata_profiling_version"],
             )
 
             if self.config.html.minify_html:
@@ -419,6 +421,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def _render_json(self) -> str:
         def encode_it(o: Any) -> Any:
+            if is_dataclass(o):
+                o = asdict(o)
             if isinstance(o, dict):
                 return {encode_it(k): encode_it(v) for k, v in o.items()}
             else:
@@ -444,9 +448,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         with tqdm(
             total=1, desc="Render JSON", disable=not self.config.progress_bar
         ) as pbar:
-            description = format_summary(description)
-            description = encode_it(description)
-            data = json.dumps(description, indent=4)
+            description_dict = format_summary(description)
+            description_dict = encode_it(description_dict)
+            data = json.dumps(description_dict, indent=4)
             pbar.update()
         return data
 

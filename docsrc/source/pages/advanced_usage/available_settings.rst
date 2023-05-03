@@ -74,7 +74,12 @@ Settings related with the missing data section and the visualizations it can inc
 Correlations
 ------------
 
-Settings regarding correlation metrics and thresholds.
+Settings regarding correlation metrics and thresholds.    
+The default value is `auto`. The `auto` correlation returns a comprehensive correlation matrix whose coefficients depend on the datatype of the columns:
+
+- numerical to numerical variable: Spearman correlation coefficient
+- categorical to categorical variable: Cramer's V association coefficient
+- numerical to categorical: Cramer's V association coefficient with the numerical variable discretized automatically
 
 .. csv-table::
    :file: ../tables/config_correlations.csv

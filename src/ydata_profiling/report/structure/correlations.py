@@ -1,12 +1,15 @@
 from typing import List, Optional
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model import BaseDescription
 from ydata_profiling.report.presentation.core import Container, CorrelationTable, Image
 from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.visualisation import plot
 
 
-def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderable]:
+def get_correlation_items(
+    config: Settings, summary: BaseDescription
+) -> Optional[Renderable]:
     """Create the list of correlation items
 
     Args:
@@ -29,7 +32,7 @@ def get_correlation_items(config: Settings, summary: dict) -> Optional[Renderabl
 
     image_format = config.plot.image_format
 
-    for key, item in summary["correlations"].items():
+    for key, item in summary.correlations.items():
         vmin, name = key_to_data[key]
 
         if isinstance(item, list):

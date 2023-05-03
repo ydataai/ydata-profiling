@@ -27,19 +27,19 @@ def test_issue397():
 
     description = report.description_set
 
-    assert description["table"]["types"] == {"Text": 1, "Numeric": 4}
+    assert description.table["types"] == {"Text": 1, "Numeric": 4}
 
-    assert description["variables"]["float-inf"]["p_infinite"] == 0.5
-    assert description["variables"]["float-inf"]["n_infinite"] == 2
+    assert description.variables["float-inf"]["p_infinite"] == 0.5
+    assert description.variables["float-inf"]["n_infinite"] == 2
 
-    assert description["variables"]["integer-inf"]["p_infinite"] == 0.25
-    assert description["variables"]["integer-inf"]["n_infinite"] == 1
+    assert description.variables["integer-inf"]["p_infinite"] == 0.25
+    assert description.variables["integer-inf"]["n_infinite"] == 1
 
-    assert description["variables"]["integer"]["p_infinite"] == 0
-    assert description["variables"]["integer"]["n_infinite"] == 0
+    assert description.variables["integer"]["p_infinite"] == 0
+    assert description.variables["integer"]["n_infinite"] == 0
 
-    assert description["variables"]["float"]["p_infinite"] == 0
-    assert description["variables"]["float"]["n_infinite"] == 0
+    assert description.variables["float"]["p_infinite"] == 0
+    assert description.variables["float"]["n_infinite"] == 0
 
-    assert "p_infinite" not in description["variables"]["cat"]
-    assert "n_infinite" not in description["variables"]["cat"]
+    assert "p_infinite" not in description.variables["cat"]
+    assert "n_infinite" not in description.variables["cat"]
