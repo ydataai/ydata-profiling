@@ -11,6 +11,7 @@ from ydata_profiling.report.structure.variables.render_generic import render_gen
 from ydata_profiling.report.structure.variables.render_image import render_image
 from ydata_profiling.report.structure.variables.render_path import render_path
 from ydata_profiling.report.structure.variables.render_real import render_real
+from ydata_profiling.report.structure.variables.render_text import render_text
 from ydata_profiling.report.structure.variables.render_timeseries import (
     render_timeseries,
 )
@@ -28,6 +29,7 @@ __all__ = [
     "render_image",
     "render_path",
     "render_real",
+    "render_text",
     "render_timeseries",
     "render_url",
 ]

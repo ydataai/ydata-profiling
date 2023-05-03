@@ -1,5 +1,4 @@
 import datetime
-from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -50,7 +49,7 @@ def get_profiling_series():
             15.9,
             13.5,
         ],
-        "cat": [
+        "str": [
             "a",
             "long text value",
             "Élysée",
@@ -61,8 +60,18 @@ def get_profiling_series():
             "c",
             "c",
         ],
+        "str_cat": pd.Series(
+            ["male", "male", None, "female", "female", "male", "male"]
+        ),
+        "str_num": ["1", "10", "3.14", "566"],
+        "str_date": ["2000/01/01", "2001/07/24", "2011/12/24", "1980/03/10"],
+        "str_date2": ["2000-01-01", "2001-07-24", "2011-12-24", "1980-03-10"],
         "s1": np.ones(9),
         "s2": ["some constant text $ % value {obj} " for _ in range(1, 10)],
+        "cat": pd.Series(
+            ["male", "male", None, "female", "female", "male", "male"],
+            dtype="category",
+        ),
         "somedate": [
             datetime.date(2011, 7, 4),
             datetime.datetime(2022, 1, 1, 13, 57),
@@ -137,6 +146,7 @@ my_typeset = ProfilingTypeSet(config)
 
 type_map = {str(k): k for k in my_typeset.types}
 Numeric = type_map["Numeric"]
+Text = type_map["Text"]
 Categorical = type_map["Categorical"]
 Boolean = type_map["Boolean"]
 DateTime = type_map["DateTime"]
@@ -147,22 +157,11 @@ config2.vars.num.low_categorical_threshold = 2
 typeset2 = ProfilingTypeSet(config2)
 type_map2 = {str(k): k for k in typeset2.types}
 Numeric2 = type_map2["Numeric"]
+Text2 = type_map2["Text"]
 Categorical2 = type_map2["Categorical"]
+DateTime2 = type_map2["DateTime"]
 Boolean2 = type_map2["Boolean"]
 
-
-@dataclass
-class DataTest:
-    def __init__(self, name, contains_type, infer_type, cast_result=None):
-        self.name = name
-        self.contains_type = contains_type
-        self.infer_type = infer_type
-        self.cast_result = cast_result
-
-
-cases = [
-    DataTest("x", Numeric, Numeric),
-]
 
 contains_map = {
     Numeric: {
@@ -177,19 +176,24 @@ contains_map = {
         "inf_only",
         "nullable_int",
     },
-    Categorical: {
-        "id",
-        "cat",
-        "s2",
-        "date_str",
+    Text: {
+        "str",
+        "str_cat",
+        "str_num",
+        "str_date",
+        "str_date2",
         "str_yes_no",
         "str_yes_no_mixed",
         "str_yes_no_nan",
         "str_true_false",
         "str_true_false_none",
         "str_true_false_nan",
+        "id",
         "catnum",
+        "date_str",
+        "s2",
     },
+    Categorical: {"cat"},
     Boolean: {
         "bool_tf",
         "bool_tf_with_nan",
@@ -227,10 +231,15 @@ inference_map = {
     "integers_nan": Numeric,
     "bool_01": Numeric,
     "bool_01_with_nan": Numeric,
-    "id": Categorical,
-    "cat": Categorical,
+    "id": Text,
+    "str_cat": Categorical,
+    "str_num": Numeric,
+    "str_date": DateTime,
+    "str_date2": DateTime,
     "s2": Categorical,
-    "date_str": Categorical,
+    "date_str": DateTime,
+    "str": Text,
+    "cat": Categorical,
     "bool_tf": Boolean,
     "bool_tf_with_nan": Boolean,
     "booleans_type": Boolean,
@@ -286,22 +295,27 @@ convert_map = [
         },
     ),
     (
-        Numeric2,
-        Categorical2,
-        {"catnum"},
-    ),
-    (
         Boolean2,
-        Categorical2,
+        Text2,
         {
-            "str_true_false",
             "str_yes_no",
             "str_yes_no_mixed",
             "str_yes_no_nan",
+            "str_true_false",
             "str_true_false_nan",
             "str_true_false_none",
         },
     ),
+    (
+        Categorical2,
+        Text2,
+        {
+            "str_cat",
+            "s2",
+        },
+    ),
+    (Numeric2, Text2, {"str_num", "catnum"}),
+    (DateTime2, Text2, {"str_date", "str_date2", "date_str"}),
 ]
 
 

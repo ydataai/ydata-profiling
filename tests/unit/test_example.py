@@ -47,4 +47,4 @@ def test_example(get_data_file, test_output_dir):
     profile.to_file(output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
     assert type(profile.get_description()) == BaseDescription, "Unexpected result"
-    assert "<span class=badge>14</span>" in profile.to_html()
+    assert "<span class=badge>9</span>" in profile.to_html()

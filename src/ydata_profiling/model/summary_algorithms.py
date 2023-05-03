@@ -127,6 +127,13 @@ def describe_numeric_1d(
 
 
 @multimethod
+def describe_text_1d(
+    config: Settings, series: Any, summary: dict
+) -> Tuple[Settings, Any, dict, Any]:
+    raise NotImplementedError()
+
+
+@multimethod
 def describe_date_1d(
     config: Settings, series: Any, summary: dict
 ) -> Tuple[Settings, Any, dict]:

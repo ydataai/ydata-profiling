@@ -1,5 +1,5 @@
 import functools
-from typing import Callable
+from typing import Callable, Dict
 
 import numpy as np
 import pandas as pd
@@ -24,7 +24,7 @@ def try_func(fn: Callable) -> Callable:
     return inner
 
 
-def string_is_bool(series: pd.Series, state: dict, k: Settings) -> bool:
+def string_is_bool(series: pd.Series, state: dict, k: Dict[str, bool]) -> bool:
     @series_handle_nulls
     @try_func
     def tester(s: pd.Series, state: dict) -> bool:
@@ -36,7 +36,7 @@ def string_is_bool(series: pd.Series, state: dict, k: Settings) -> bool:
     return tester(series, state)
 
 
-def string_to_bool(series: pd.Series, state: dict, k: Settings) -> pd.Series:
+def string_to_bool(series: pd.Series, state: dict, k: Dict[str, bool]) -> pd.Series:
     return series.str.lower().map(k)
 
 
@@ -66,7 +66,32 @@ def series_is_string(series: pd.Series, state: dict) -> bool:
 
 
 @series_handle_nulls
-def category_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
+def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
+    """String is category, if following conditions are met
+    - has at least one and less or equal distinct values as threshold
+    - (distinct values / count of all values) is less than threshold
+    - is not bool"""
+    n_unique = series.nunique()
+    unique_threshold = k.vars.text.percentage_cat_threshold
+    threshold = k.vars.text.categorical_threshold
+    return (
+        1 <= n_unique <= threshold
+        and n_unique / series.size < unique_threshold
+        and not string_is_bool(series, state, k.vars.bool.mappings)
+    )
+
+
+@series_handle_nulls
+def string_is_datetime(series: pd.Series, state: dict) -> bool:
+    """If we can transform data to datetime and at least one is valid date."""
+    try:
+        return not series.astype("datetime64").isna().all()
+    except:  # noqa: E722
+        return False
+
+
+@series_handle_nulls
+def string_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
     if pdt.is_bool_dtype(series) or object_is_bool(series, state):
         return False
 
@@ -81,7 +106,11 @@ def category_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
     return not numeric_is_category(series, state, k)
 
 
-def category_to_numeric(series: pd.Series, state: dict) -> pd.Series:
+def string_to_datetime(series: pd.Series, state: dict) -> pd.Series:
+    return series.astype("datetime64")
+
+
+def string_to_numeric(series: pd.Series, state: dict) -> pd.Series:
     return pd.to_numeric(series, errors="coerce")
 
 
