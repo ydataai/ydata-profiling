@@ -13,6 +13,7 @@ from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from typeguard import typechecked
+from wordcloud import WordCloud
 
 from ydata_profiling.config import Settings
 from ydata_profiling.utils.common import convert_timestamp_to_datetime
@@ -22,6 +23,20 @@ from ydata_profiling.visualisation.utils import plot_360_n0sc0pe
 
 def format_fn(tick_val: int, tick_pos: Any) -> str:
     return convert_timestamp_to_datetime(tick_val).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _plot_word_cloud(
+    series: pd.Series,
+    figsize: tuple = (6, 4),
+) -> plt.Figure:
+    word_dict = series.to_dict()
+    wordcloud = WordCloud(
+        background_color="white", random_state=123, width=300, height=200, scale=2
+    ).generate_from_frequencies(word_dict)
+    plt.figure(figsize=figsize)
+    plot = plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")
+    return plot
 
 
 def _plot_histogram(
@@ -97,6 +112,12 @@ def _plot_histogram(
             plot.set_xticklabels([])
 
     return plot
+
+
+@manage_matplotlib_context()
+def plot_word_cloud(config: Settings, word_counts: pd.Series) -> str:
+    _plot_word_cloud(series=word_counts)
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()

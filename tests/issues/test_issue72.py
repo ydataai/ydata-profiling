@@ -32,7 +32,7 @@ def test_issue72_equal():
     # 3 == 3, so categorical
     assert report.get_description().variables["A"]["type"] == "Categorical"
     # Strings are always categorical
-    assert report.get_description().variables["B"]["type"] == "Categorical"
+    assert report.get_description().variables["B"]["type"] == "Text"
 
 
 def test_issue72_lower():
@@ -44,4 +44,4 @@ def test_issue72_lower():
     # 3 < 10, so categorical
     assert report.get_description().variables["A"]["type"] == "Categorical"
     # Strings are always categorical
-    assert report.get_description().variables["B"]["type"] == "Categorical"
+    assert report.get_description().variables["B"]["type"] == "Text"

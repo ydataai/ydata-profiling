@@ -45,6 +45,17 @@ class NumVars(BaseModel):
     chi_squared_threshold: float = 0.999
 
 
+class TextVars(BaseModel):
+    length: bool = True
+    words: bool = True
+    characters: bool = True
+    redact: bool = False
+    # if text has more than threshold categories, its not category
+    categorical_threshold: int = 50
+    # if text has more than threshold % distinct values, its not category
+    percentage_cat_threshold: float = 0.5
+
+
 class CatVars(BaseModel):
     length: bool = True
     characters: bool = True
@@ -106,6 +117,7 @@ class TimeseriesVars(BaseModel):
 
 class Univariate(BaseModel):
     num: NumVars = NumVars()
+    text: TextVars = TextVars()
     cat: CatVars = CatVars()
     image: ImageVars = ImageVars()
     bool: BoolVars = BoolVars()
@@ -395,7 +407,7 @@ class Config:
         "sensitive": {
             "samples": None,
             "duplicates": None,
-            "vars": {"cat": {"redact": True}},
+            "vars": {"cat": {"redact": True}, "text": {"redact": True}},
         },
         "dark_mode": {
             "html": {

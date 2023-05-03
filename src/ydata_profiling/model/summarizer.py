@@ -19,6 +19,7 @@ from ydata_profiling.model.summary_algorithms import (
     describe_numeric_1d,
     describe_path_1d,
     describe_supported,
+    describe_text_1d,
     describe_timeseries_1d,
     describe_url_1d,
 )
@@ -57,6 +58,9 @@ class PandasProfilingSummarizer(BaseSummarizer):
             ],
             "DateTime": [
                 describe_date_1d,
+            ],
+            "Text": [
+                describe_text_1d,
             ],
             "Categorical": [
                 describe_categorical_1d,
