@@ -14,7 +14,7 @@ phik>=0.11.1,<0.13
 # Examples
 requests>=2.24.0, <2.29
 # Progress bar
-tqdm>=4.48.2, <4.65
+tqdm>=4.65, <4.66
 seaborn>=0.10.1, <0.13
 multimethod>=1.4, <1.10
 # metrics
