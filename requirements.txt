@@ -20,7 +20,7 @@ multimethod>=1.4, <1.10
 # metrics
 statsmodels>=0.13.2, <0.14
 # type checking
-typeguard>=2.13.2, <2.14
+typeguard>=3.0.2, <3.1
 imagehash==4.3.1
 wordcloud>=1.9.1
 dacite>=1.8
