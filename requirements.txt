@@ -18,7 +18,7 @@ tqdm>=4.48.2, <4.65
 seaborn>=0.10.1, <0.13
 multimethod>=1.4, <1.10
 # metrics
-statsmodels>=0.13.2, <0.14
+statsmodels>=0.14, <0.15
 # type checking
 typeguard>=2.13.2, <2.14
 imagehash==4.3.1
