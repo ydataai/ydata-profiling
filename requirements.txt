@@ -1,4 +1,4 @@
-scipy>=1.4.1
+scipy>=1.4.1, <1.10
 pandas>1.1, <1.6, !=1.4.0
 matplotlib>=3.2
 pydantic>=1.8.1
