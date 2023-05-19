@@ -1,26 +1,24 @@
 scipy>=1.4.1, <1.10
-pandas>1.1, <1.6, !=1.4.0
-matplotlib>=3.2
-pydantic>=1.8.1
-PyYAML>=5.0.0
+pandas>1.1, <1.x, !=1.4.0
+matplotlib>=3.2, <3.x
+pydantic>=1.8.1, <1.x
+PyYAML>=5.0.0, <6.x
 jinja2>=2.11.1, <3.2
 visions[type_image_path]==0.7.5
-numpy>=1.16.0
+numpy>=1.16.0,<1.x
 # Could be optional
 # Related to HTML report
 htmlmin==0.1.12
 # Correlations
 phik>=0.11.1,<0.13
 # Examples
-requests>=2.24.0
+requests>=2.24.0, <2.x
 # Progress bar
-tqdm>=4.48.2
-seaborn>=0.10.1
-multimethod>=1.4
+tqdm>=4.48.2, <4.x
+seaborn>=0.10.1, <0.13
+multimethod>=1.4, <1.x
 # metrics
-statsmodels>=0.13.2
+statsmodels>=0.13.2, <0.x
 # type checking
-typeguard>=2.13.2, <2.14
+typeguard>=2.13.2, <2.x
 imagehash==4.3.1
-wordcloud>=1.9.1
-dacite>=1.8
