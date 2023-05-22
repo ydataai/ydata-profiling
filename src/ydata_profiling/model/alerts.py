@@ -27,6 +27,7 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
 
     return f"{value*100:2.1f}%"
 
+
 @unique
 class AlertType(Enum):
     """Alert types"""
@@ -144,13 +145,14 @@ class ConstantLengthAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.CONSTANT_LENGTH,
-            values, column_name,
+            values,
+            column_name,
             fields={"composition_min_length", "composition_max_length"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -162,14 +164,14 @@ class ConstantAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.CONSTANT,
             values,
             column_name,
             fields={"n_distinct"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -181,13 +183,14 @@ class DuplicatesAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.DUPLICATES,
-            values, column_name,
+            values,
+            column_name,
             fields={"n_duplicates"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -199,13 +202,10 @@ class EmptyAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.EMPTY,
-            values, column_name,
-            fields={"n"},
-            is_empty=is_empty
+            AlertType.EMPTY, values, column_name, fields={"n"}, is_empty=is_empty
         )
 
     def _get_description(self) -> str:
@@ -217,13 +217,14 @@ class HighCardinalityAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.HIGH_CARDINALITY,
-            values, column_name,
+            values,
+            column_name,
             fields={"n_distinct"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -235,13 +236,10 @@ class HighCorrelationAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.HIGH_CORRELATION,
-            values, column_name,
-            set(),
-            is_empty
+            AlertType.HIGH_CORRELATION, values, column_name, set(), is_empty
         )
 
     def _get_description(self) -> str:
@@ -256,13 +254,14 @@ class ImbalanceAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.IMBALANCE,
-            values, column_name,
+            values,
+            column_name,
             fields={"imbalance"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -274,13 +273,14 @@ class InfiniteAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.INFINITE,
-            values, column_name,
+            values,
+            column_name,
             fields={"p_infinite", "n_infinite"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -292,13 +292,14 @@ class MissingAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.MISSING,
-            values, column_name,
+            values,
+            column_name,
             fields={"p_missing", "n_missing"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -310,14 +311,9 @@ class NonStationaryAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
-        super().__init__(
-            AlertType.NON_STATIONARY,
-            values, column_name,
-            set(),
-            is_empty
-        )
+        super().__init__(AlertType.NON_STATIONARY, values, column_name, set(), is_empty)
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is non stationary"
@@ -328,14 +324,9 @@ class SeasonalAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
-        super().__init__(
-            AlertType.SEASONAL,
-            values, column_name,
-            set(),
-            is_empty
-        )
+        super().__init__(AlertType.SEASONAL, values, column_name, set(), is_empty)
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is seasonal"
@@ -346,31 +337,28 @@ class SkewedAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.SKEWED,
-            values, column_name,
+            values,
+            column_name,
             fields={"skewness"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is highly skewed (\u03b31 = {self.values['skewness']})"
+
 
 class TypeDateAlert(Alert):
     def __init__(
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
-        super().__init__(
-            AlertType.TYPE_DATE,
-            values, column_name,
-            set(),
-            is_empty
-        )
+        super().__init__(AlertType.TYPE_DATE, values, column_name, set(), is_empty)
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] only contains datetime values, but is categorical. Consider applying `pd.to_datetime()`"
@@ -381,14 +369,9 @@ class UniformAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
-        super().__init__(
-            AlertType.UNIFORM,
-            values, column_name,
-            set(),
-            is_empty
-        )
+        super().__init__(AlertType.UNIFORM, values, column_name, set(), is_empty)
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is uniformly distributed"
@@ -399,14 +382,14 @@ class UniqueAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.UNIQUE,
             values,
             column_name,
             fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -418,14 +401,9 @@ class UnsupportedAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
-        super().__init__(
-            AlertType.UNSUPPORTED,
-            values, column_name,
-            set(),
-            is_empty
-        )
+        super().__init__(AlertType.UNSUPPORTED, values, column_name, set(), is_empty)
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is an unsupported type, check if it needs cleaning or further analysis"
@@ -436,13 +414,14 @@ class ZerosAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
         super().__init__(
             AlertType.ZEROS,
-            values, column_name,
+            values,
+            column_name,
             fields={"n_zeros", "p_zeros"},
-            is_empty=is_empty
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -454,14 +433,9 @@ class RejectedAlert(Alert):
         self,
         values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        is_empty: bool = False
+        is_empty: bool = False,
     ):
-        super().__init__(
-            AlertType.REJECTED,
-            values, column_name,
-            set(),
-            is_empty
-        )
+        super().__init__(AlertType.REJECTED, values, column_name, set(), is_empty)
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] was rejected"
