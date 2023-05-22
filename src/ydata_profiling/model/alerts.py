@@ -513,10 +513,10 @@ def categorical_alerts(config: Settings, summary: dict) -> List[Alert]:
         "chi_squared" in summary
         and summary["chi_squared"]["pvalue"] > config.vars.cat.chi_squared_threshold
     ):
-        alerts.append()
+        alerts.append(UniformAlert())
 
     if summary.get("date_warning"):
-        alerts.append()
+        alerts.append(TypeDateAlert())
 
     # Constant length
     if "composition" in summary and summary["min_length"] == summary["max_length"]:
