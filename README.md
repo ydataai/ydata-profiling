@@ -27,16 +27,7 @@
 
 `ydata-profiling` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while allowing the data analysis to be exported in different formats such as **html** and **json**.
 
-The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**. 
-
-### 🎊 New year, new face, more functionalities! 
-
-Thank you for using and following ``pandas-profiling`` developments. Yet, we have a new exciting feature - we are now thrilled to announce
-that <u>Spark</u> is now part of the Data Profiling family from version 4.0.0 onwards
- 
-With its introduction, there was also the need for a new naming, one that will allow to decouple the concept of profiling from the Pandas Dataframes - `ydata-profiling`! 
- 
-But fear not, `pip install pandas-profiling` will still be a valid for a while, and we will keep investing in growing the best open-source for data profiling, so you can use it for even more use cases.
+The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
 ## Key features
 
