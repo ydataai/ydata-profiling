@@ -27,7 +27,6 @@ def fmt_percent(value: float, edge_cases: bool = True) -> str:
 
     return f"{value*100:2.1f}%"
 
-
 @unique
 class AlertType(Enum):
     """Alert types"""
