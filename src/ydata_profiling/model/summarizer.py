@@ -117,3 +117,63 @@ def format_summary(summary: Union[BaseDescription, dict]) -> dict:
 
     summary = {k: fmt(v) for k, v in summary.items()}
     return summary
+
+
+def _redact_column(column: Dict[str, Any]) -> Dict[str, Any]:
+    def redact_key(data: Dict[str, Any]) -> Dict[str, Any]:
+        return {f"REDACTED_{i}": v for i, (_, v) in enumerate(data.items())}
+
+    def redact_value(data: Dict[str, Any]) -> Dict[str, Any]:
+        return {k: f"REDACTED_{i}" for i, (k, _) in enumerate(data.items())}
+
+    keys_to_redact = [
+        "block_alias_char_counts",
+        "block_alias_values",
+        "category_alias_char_counts",
+        "category_alias_values",
+        "character_counts",
+        "script_char_counts",
+        "value_counts_index_sorted",
+        "value_counts_without_nan",
+        "word_counts",
+    ]
+
+    values_to_redact = ["first_rows"]
+
+    for field in keys_to_redact:
+        if field not in column:
+            continue
+        is_dict = (isinstance(v, dict) for v in column[field].values())
+        if any(is_dict):
+            column[field] = {k: redact_key(v) for k, v in column[field].items()}
+        else:
+            column[field] = redact_key(column[field])
+
+    for field in values_to_redact:
+        if field not in column:
+            continue
+        is_dict = (isinstance(v, dict) for v in column[field].values())
+        if any(is_dict):
+            column[field] = {k: redact_value(v) for k, v in column[field].items()}
+        else:
+            column[field] = redact_value(column[field])
+
+    return column
+
+
+def redact_summary(summary: dict, config: Settings) -> dict:
+    """Redact summary to export to json file.
+
+    Args:
+        summary (dict): summary to redact
+
+    Returns:
+        dict: redacted summary
+    """
+    for _, col in summary["variables"].items():
+        if (config.vars.cat.redact and col["type"] == "Categorical") or (
+            config.vars.text.redact and col["type"] == "Text"
+        ):
+            col = _redact_column(col)
+
+    return summary
