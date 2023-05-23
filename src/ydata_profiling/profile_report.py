@@ -38,6 +38,7 @@ from ydata_profiling.report.presentation.flavours.html.templates import (
     create_html_assets,
 )
 from ydata_profiling.serialize_report import SerializeReport
+from ydata_profiling.utils import modin
 from ydata_profiling.utils.dataframe import hash_dataframe
 from ydata_profiling.utils.paths import get_config
 
@@ -58,7 +59,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     def __init__(
         self,
-        df: Optional[Union[pd.DataFrame, sDataFrame]] = None,
+        df: Optional[Union[pd.DataFrame, modin.DataFrame, sDataFrame]] = None,
         minimal: bool = False,
         tsmode: bool = False,
         sortby: Optional[str] = None,
@@ -107,7 +108,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         elif config is not None:
             report_config = config
         else:
-            if isinstance(df, pd.DataFrame):
+            if isinstance(df, (pd.DataFrame, modin.DataFrame)):
                 report_config = Settings()
             else:
                 report_config = SparkSettings()
@@ -155,7 +156,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @staticmethod
     def __validate_inputs(
-        df: Optional[Union[pd.DataFrame, sDataFrame]],
+        df: Optional[Union[pd.DataFrame, modin.DataFrame, sDataFrame]],
         minimal: bool,
         tsmode: bool,
         config_file: Optional[Union[Path, str]],
@@ -171,7 +172,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             )
 
         # Spark Dataframe validations
-        if isinstance(df, pd.DataFrame):
+        if isinstance(df, (pd.DataFrame, modin.DataFrame)):
             if df is not None and df.empty:
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
@@ -191,11 +192,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @staticmethod
     def __initialize_dataframe(
-        df: Optional[Union[pd.DataFrame, sDataFrame]], report_config: Settings
-    ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
+        df: Optional[Union[pd.DataFrame, modin.DataFrame, sDataFrame]],
+        report_config: Settings,
+    ) -> Optional[Union[pd.DataFrame, modin.DataFrame, sDataFrame]]:
         if (
             df is not None
-            and isinstance(df, pd.DataFrame)
+            and isinstance(df, (pd.DataFrame, modin.DataFrame))
             and report_config.vars.timeseries.active
             and report_config.vars.timeseries.sortby
         ):
@@ -295,7 +297,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             self._widgets = self._render_widgets()
         return self._widgets
 
-    def get_duplicates(self) -> Optional[pd.DataFrame]:
+    def get_duplicates(self) -> Optional[Union[pd.DataFrame, modin.DataFrame]]:
         """Get duplicate rows and counts based on the configuration
 
         Returns:
@@ -433,7 +435,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                     return [encode_it(v) for v in o]
                 elif isinstance(o, set):
                     return {encode_it(v) for v in o}
-                elif isinstance(o, (pd.DataFrame, pd.Series)):
+                elif isinstance(
+                    o, (pd.DataFrame, pd.Series, modin.DataFrame, modin.Series)
+                ):
                     return encode_it(o.to_dict(orient="records"))
                 elif isinstance(o, np.ndarray):
                     return encode_it(o.tolist())

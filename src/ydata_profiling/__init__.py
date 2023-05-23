@@ -11,6 +11,7 @@ from ydata_profiling.version import __version__
 
 # backend
 import ydata_profiling.model.pandas  # isort:skip  # noqa
+import ydata_profiling.model.modin  # isort:skip  # noqa
 
 spec = importlib.util.find_spec("pyspark")
 if spec is not None:
