@@ -148,9 +148,9 @@ class ConstantLengthAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.CONSTANT_LENGTH,
-            values,
-            column_name,
+            alert_type=AlertType.CONSTANT_LENGTH,
+            values=values,
+            column_name=column_name,
             fields={"composition_min_length", "composition_max_length"},
             is_empty=is_empty,
         )
@@ -167,9 +167,9 @@ class ConstantAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.CONSTANT,
-            values,
-            column_name,
+            alert_type=AlertType.CONSTANT,
+            values=values,
+            column_name=column_name,
             fields={"n_distinct"},
             is_empty=is_empty,
         )
@@ -186,9 +186,9 @@ class DuplicatesAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.DUPLICATES,
-            values,
-            column_name,
+            alert_type=AlertType.DUPLICATES,
+            values=values,
+            column_name=column_name,
             fields={"n_duplicates"},
             is_empty=is_empty,
         )
@@ -208,7 +208,11 @@ class EmptyAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.EMPTY, values, column_name, fields={"n"}, is_empty=is_empty
+            alert_type=AlertType.EMPTY,
+            values=values,
+            column_name=column_name,
+            fields={"n"},
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -223,9 +227,9 @@ class HighCardinalityAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.HIGH_CARDINALITY,
-            values,
-            column_name,
+            alert_type=AlertType.HIGH_CARDINALITY,
+            values=values,
+            column_name=column_name,
             fields={"n_distinct"},
             is_empty=is_empty,
         )
@@ -245,7 +249,10 @@ class HighCorrelationAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.HIGH_CORRELATION, values, column_name, set(), is_empty
+            alert_type=AlertType.HIGH_CORRELATION,
+            values=values,
+            column_name=column_name,
+            is_empty=is_empty,
         )
 
     def _get_description(self) -> str:
@@ -268,9 +275,9 @@ class ImbalanceAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.IMBALANCE,
-            values,
-            column_name,
+            alert_type=AlertType.IMBALANCE,
+            values=values,
+            column_name=column_name,
             fields={"imbalance"},
             is_empty=is_empty,
         )
@@ -291,9 +298,9 @@ class InfiniteAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.INFINITE,
-            values,
-            column_name,
+            alert_type=AlertType.INFINITE,
+            values=values,
+            column_name=column_name,
             fields={"p_infinite", "n_infinite"},
             is_empty=is_empty,
         )
@@ -313,9 +320,9 @@ class MissingAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.MISSING,
-            values,
-            column_name,
+            alert_type=AlertType.MISSING,
+            values=values,
+            column_name=column_name,
             fields={"p_missing", "n_missing"},
             is_empty=is_empty,
         )
@@ -334,7 +341,12 @@ class NonStationaryAlert(Alert):
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
-        super().__init__(AlertType.NON_STATIONARY, values, column_name, set(), is_empty)
+        super().__init__(
+            alert_type=AlertType.NON_STATIONARY,
+            values=values,
+            column_name=column_name,
+            is_empty=is_empty,
+        )
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is non stationary"
@@ -347,7 +359,12 @@ class SeasonalAlert(Alert):
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
-        super().__init__(AlertType.SEASONAL, values, column_name, set(), is_empty)
+        super().__init__(
+            alert_type=AlertType.SEASONAL,
+            values=values,
+            column_name=column_name,
+            is_empty=is_empty,
+        )
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is seasonal"
@@ -361,9 +378,9 @@ class SkewedAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.SKEWED,
-            values,
-            column_name,
+            alert_type=AlertType.SKEWED,
+            values=values,
+            column_name=column_name,
             fields={"skewness"},
             is_empty=is_empty,
         )
@@ -383,7 +400,12 @@ class TypeDateAlert(Alert):
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
-        super().__init__(AlertType.TYPE_DATE, values, column_name, set(), is_empty)
+        super().__init__(
+            alert_type=AlertType.TYPE_DATE,
+            values=values,
+            column_name=column_name,
+            is_empty=is_empty,
+        )
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] only contains datetime values, but is categorical. Consider applying `pd.to_datetime()`"
@@ -396,7 +418,12 @@ class UniformAlert(Alert):
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
-        super().__init__(AlertType.UNIFORM, values, column_name, set(), is_empty)
+        super().__init__(
+            alert_type=AlertType.UNIFORM,
+            values=values,
+            column_name=column_name,
+            is_empty=is_empty,
+        )
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is uniformly distributed"
@@ -410,9 +437,9 @@ class UniqueAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.UNIQUE,
-            values,
-            column_name,
+            alert_type=AlertType.UNIQUE,
+            values=values,
+            column_name=column_name,
             fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
             is_empty=is_empty,
         )
@@ -428,7 +455,12 @@ class UnsupportedAlert(Alert):
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
-        super().__init__(AlertType.UNSUPPORTED, values, column_name, set(), is_empty)
+        super().__init__(
+            alert_type=AlertType.UNSUPPORTED,
+            values=values,
+            column_name=column_name,
+            is_empty=is_empty,
+        )
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] is an unsupported type, check if it needs cleaning or further analysis"
@@ -442,9 +474,9 @@ class ZerosAlert(Alert):
         is_empty: bool = False,
     ):
         super().__init__(
-            AlertType.ZEROS,
-            values,
-            column_name,
+            alert_type=AlertType.ZEROS,
+            values=values,
+            column_name=column_name,
             fields={"n_zeros", "p_zeros"},
             is_empty=is_empty,
         )
@@ -463,7 +495,12 @@ class RejectedAlert(Alert):
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
-        super().__init__(AlertType.REJECTED, values, column_name, set(), is_empty)
+        super().__init__(
+            alert_type=AlertType.REJECTED,
+            values=values,
+            column_name=column_name,
+            is_empty=is_empty,
+        )
 
     def _get_description(self) -> str:
         return f"[{self.column_name}] was rejected"
