@@ -95,14 +95,14 @@ class Alert:
     def __init__(
         self,
         alert_type: AlertType,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
-        fields: Optional[Set] = set(),
+        fields: Optional[Set] = None,
         is_empty: bool = False,
     ):
-        self.fields = fields
+        self.fields = fields or set()
         self.alert_type = alert_type
-        self.values = values
+        self.values = values or {}
         self.column_name = column_name
         self._is_empty = is_empty
 
@@ -143,7 +143,7 @@ class Alert:
 class ConstantLengthAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -162,7 +162,7 @@ class ConstantLengthAlert(Alert):
 class ConstantAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -181,7 +181,7 @@ class ConstantAlert(Alert):
 class DuplicatesAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -203,7 +203,7 @@ class DuplicatesAlert(Alert):
 class EmptyAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -218,7 +218,7 @@ class EmptyAlert(Alert):
 class HighCardinalityAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -240,7 +240,7 @@ class HighCardinalityAlert(Alert):
 class HighCorrelationAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -263,7 +263,7 @@ class HighCorrelationAlert(Alert):
 class ImbalanceAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -286,7 +286,7 @@ class ImbalanceAlert(Alert):
 class InfiniteAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -308,7 +308,7 @@ class InfiniteAlert(Alert):
 class MissingAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -330,7 +330,7 @@ class MissingAlert(Alert):
 class NonStationaryAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -343,7 +343,7 @@ class NonStationaryAlert(Alert):
 class SeasonalAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -356,7 +356,7 @@ class SeasonalAlert(Alert):
 class SkewedAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -379,7 +379,7 @@ class SkewedAlert(Alert):
 class TypeDateAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -392,7 +392,7 @@ class TypeDateAlert(Alert):
 class UniformAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -405,7 +405,7 @@ class UniformAlert(Alert):
 class UniqueAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -424,7 +424,7 @@ class UniqueAlert(Alert):
 class UnsupportedAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -437,7 +437,7 @@ class UnsupportedAlert(Alert):
 class ZerosAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
@@ -459,7 +459,7 @@ class ZerosAlert(Alert):
 class RejectedAlert(Alert):
     def __init__(
         self,
-        values: Optional[Dict] = {},
+        values: Optional[Dict] = None,
         column_name: Optional[str] = None,
         is_empty: bool = False,
     ):
