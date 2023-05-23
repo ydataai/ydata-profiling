@@ -293,20 +293,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         @series_not_empty
         @series_handle_nulls
         def contains_op(series: pd.Series, state: dict) -> bool:
-            def is_timedependent(series: pd.Series) -> bool:
-                autocorrelation_threshold = config.vars.timeseries.autocorrelation
-                lags = config.vars.timeseries.lags
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore", RuntimeWarning)
-                    for lag in lags:
-                        autcorr = series.autocorr(lag=lag)
-                        if autcorr >= autocorrelation_threshold:
-                            return True
-
-                return False
-
-            is_numeric = pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
-            return is_numeric and is_timedependent(series)
+            return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
 
     types = {Unsupported, Boolean, Numeric, Text, Categorical, DateTime}
     if config.vars.path.active:
