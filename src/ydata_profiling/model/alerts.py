@@ -376,7 +376,6 @@ class SkewedAlert(Alert):
             return description
 
 
-
 class TypeDateAlert(Alert):
     def __init__(
         self,
