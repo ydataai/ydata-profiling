@@ -29,6 +29,35 @@
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
+
+## ▶️ Quickstart
+
+### Install
+```cmd
+pip install ydata-profiling
+```
+or
+```cmd
+conda install -c conda-forge ydata-profiling
+```
+### Start profiling
+
+Start by loading your pandas `DataFrame` as you normally would, e.g. by using:
+
+```python
+import numpy as np
+import pandas as pd
+from ydata_profiling import ProfileReport
+
+df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
+```
+
+To generate the standard profiling report, merely run:
+
+```python
+profile = ProfileReport(df, title="Profiling Report")
+```
+
 ## Key features
 
 - **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
@@ -69,24 +98,6 @@ YData-profiling can be used to deliver a variety of different use-case. The docu
 | [Handling sensitive data](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset              |
 | [Dataset metadata and data dictionaries](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries         |
 | [Customizing the report's appearance](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations            |
-
-## ▶️ Quickstart
-
-Start by loading your pandas `DataFrame` as you normally would, e.g. by using:
-
-```python
-import numpy as np
-import pandas as pd
-from ydata_profiling import ProfileReport
-
-df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
-```
-
-To generate the standard profiling report, merely run:
-
-```python
-profile = ProfileReport(df, title="Profiling Report")
-```
 
 ### Using inside Jupyter Notebooks
 
