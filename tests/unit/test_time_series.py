@@ -25,7 +25,7 @@ def html_profile() -> str:
             "constant": np.ones(size),
             "sin": [round(np.sin(x * np.pi / 180), 2) for x in time_steps],
             "cos": [round(np.cos(x * np.pi / 180), 2) for x in time_steps],
-            "uniform": [round(x, 2) for x in np.random.uniform(0, 10, size)],
+            "gaussian": [round(x, 2) for x in np.random.normal(0, 1, size)],
         }
     )
 

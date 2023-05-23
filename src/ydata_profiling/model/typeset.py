@@ -293,7 +293,11 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         @series_not_empty
         @series_handle_nulls
         def contains_op(series: pd.Series, state: dict) -> bool:
-            return pdt.is_numeric_dtype(series) and not pdt.is_bool_dtype(series)
+            return (
+                pdt.is_numeric_dtype(series)
+                and not pdt.is_bool_dtype(series)
+                and series.nunique() > 1
+            )
 
     types = {Unsupported, Boolean, Numeric, Text, Categorical, DateTime}
     if config.vars.path.active:
