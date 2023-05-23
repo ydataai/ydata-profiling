@@ -10,6 +10,24 @@ from ydata_profiling.config import Settings
 from ydata_profiling.model.correlations import perform_check_correlation
 
 
+def fmt_percent(value: float, edge_cases: bool = True) -> str:
+    """Format a ratio as a percentage.
+
+    Args:
+        edge_cases: Check for edge cases?
+        value: The ratio.
+
+    Returns:
+        The percentage with 1 point precision.
+    """
+    if edge_cases and round(value, 3) == 0 and value > 0:
+        return "< 0.1%"
+    if edge_cases and round(value, 3) == 1 and value < 1:
+        return "> 99.9%"
+
+    return f"{value*100:2.1f}%"
+
+
 @unique
 class AlertType(Enum):
     """Alert types"""
@@ -77,16 +95,11 @@ class Alert:
     def __init__(
         self,
         alert_type: AlertType,
-        values: Optional[Dict] = None,
+        values: Optional[Dict] = {},
         column_name: Optional[str] = None,
-        fields: Optional[Set] = None,
+        fields: Optional[Set] = set(),
         is_empty: bool = False,
     ):
-        if values is None:
-            values = {}
-        if fields is None:
-            fields = set()
-
         self.fields = fields
         self.alert_type = alert_type
         self.values = values
@@ -106,17 +119,354 @@ class Alert:
     def fmt(self) -> str:
         # TODO: render in template
         name = self.alert_type.name.replace("_", " ")
-        if name == "HIGH CORRELATION":
+        if name == "HIGH CORRELATION" and self.values is not None:
             num = len(self.values["fields"])
             title = ", ".join(self.values["fields"])
             corr = self.values["corr"]
             name = f'<abbr title="This variable has a high {corr} correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
         return name
 
-    def __repr__(self):
+    def _get_description(self) -> str:
+        """Return a human level description of the alert.
+
+        Returns:
+            str: alert description
+        """
         alert_type = self.alert_type.name
         column = self.column_name
         return f"[{alert_type}] alert on column {column}"
+
+    def __repr__(self):
+        return self._get_description()
+
+
+class ConstantLengthAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.CONSTANT_LENGTH,
+            values,
+            column_name,
+            fields={"composition_min_length", "composition_max_length"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] has a constant length"
+
+
+class ConstantAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.CONSTANT,
+            values,
+            column_name,
+            fields={"n_distinct"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] has a constant value"
+
+
+class DuplicatesAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.DUPLICATES,
+            values,
+            column_name,
+            fields={"n_duplicates"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            return f"Dataset has {self.values['n_duplicates']} ({fmt_percent(self.values['p_duplicates'])}) duplicate rows"
+        else:
+            return "Dataset has duplicated values"
+
+
+class EmptyAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.EMPTY, values, column_name, fields={"n"}, is_empty=is_empty
+        )
+
+    def _get_description(self) -> str:
+        return "Dataset is empty"
+
+
+class HighCardinalityAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.HIGH_CARDINALITY,
+            values,
+            column_name,
+            fields={"n_distinct"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            return f"[{self.column_name}] has {self.values['n_distinct']:} ({fmt_percent(self.values['p_distinct'])}) distinct values"
+        else:
+            return f"[{self.column_name}] has a high cardinality"
+
+
+class HighCorrelationAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.HIGH_CORRELATION, values, column_name, set(), is_empty
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            description = f"[{self.column_name}] is highly {self.values['corr']} correlated with [{self.values['fields'][0]}]"
+            if len(self.values["fields"]) > 1:
+                description += f" and {len(self.values['fields']) - 1} other fields"
+        else:
+            return (
+                f"[{self.column_name}] has a high correlation with one or more colums"
+            )
+        return description
+
+
+class ImbalanceAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.IMBALANCE,
+            values,
+            column_name,
+            fields={"imbalance"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        description = f"[{self.column_name}] is highly imbalanced"
+        if self.values is not None:
+            return description + f" ({self.values['imbalance']})"
+        else:
+            return description
+
+
+class InfiniteAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.INFINITE,
+            values,
+            column_name,
+            fields={"p_infinite", "n_infinite"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            return f"[{self.column_name}] has {self.values['n_infinite']} ({fmt_percent(self.values['p_infinite'])}) infinite values"
+        else:
+            return f"[{self.column_name}] has infinite values"
+
+
+class MissingAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.MISSING,
+            values,
+            column_name,
+            fields={"p_missing", "n_missing"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            return f"[{self.column_name}] {self.values['n_missing']} ({fmt_percent(self.values['p_missing'])}) missing values"
+        else:
+            return f"[{self.column_name}] has missing values"
+
+
+class NonStationaryAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(AlertType.NON_STATIONARY, values, column_name, set(), is_empty)
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] is non stationary"
+
+
+class SeasonalAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(AlertType.SEASONAL, values, column_name, set(), is_empty)
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] is seasonal"
+
+
+class SkewedAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.SKEWED,
+            values,
+            column_name,
+            fields={"skewness"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        description = f"[{self.column_name}] is highly skewed"
+        if self.values is not None:
+            return description + f"(\u03b31 = {self.values['skewness']})"
+        else:
+            return description
+
+
+class TypeDateAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(AlertType.TYPE_DATE, values, column_name, set(), is_empty)
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] only contains datetime values, but is categorical. Consider applying `pd.to_datetime()`"
+
+
+class UniformAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(AlertType.UNIFORM, values, column_name, set(), is_empty)
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] is uniformly distributed"
+
+
+class UniqueAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.UNIQUE,
+            values,
+            column_name,
+            fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] has unique values"
+
+
+class UnsupportedAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(AlertType.UNSUPPORTED, values, column_name, set(), is_empty)
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] is an unsupported type, check if it needs cleaning or further analysis"
+
+
+class ZerosAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            AlertType.ZEROS,
+            values,
+            column_name,
+            fields={"n_zeros", "p_zeros"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            return f"[{self.column_name}] has {self.values['n_zeros']} ({fmt_percent(self.values['p_zeros'])}) zeros"
+        else:
+            return f"[{self.column_name}] has predominantly zeros"
+
+
+class RejectedAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = {},
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(AlertType.REJECTED, values, column_name, set(), is_empty)
+
+    def _get_description(self) -> str:
+        return f"[{self.column_name}] was rejected"
 
 
 def check_table_alerts(table: dict) -> List[Alert]:
@@ -128,182 +478,122 @@ def check_table_alerts(table: dict) -> List[Alert]:
     Returns:
         A list of alerts.
     """
-    alerts = []
+    alerts: List[Alert] = []
     if alert_value(table.get("n_duplicates", np.nan)):
         alerts.append(
-            Alert(
-                alert_type=AlertType.DUPLICATES,
+            DuplicatesAlert(
                 values=table,
-                fields={"n_duplicates"},
             )
         )
     if table["n"] == 0:
         alerts.append(
-            Alert(
-                alert_type=AlertType.EMPTY,
+            EmptyAlert(
                 values=table,
-                fields={"n"},
             )
         )
     return alerts
 
 
 def numeric_alerts(config: Settings, summary: dict) -> List[Alert]:
-    alerts = []
+    alerts: List[Alert] = []
 
     # Skewness
     if skewness_alert(summary["skewness"], config.vars.num.skewness_threshold):
-        alerts.append(
-            Alert(
-                alert_type=AlertType.SKEWED,
-                fields={"skewness"},
-            )
-        )
+        alerts.append(SkewedAlert(summary))
 
     # Infinite values
     if alert_value(summary["p_infinite"]):
-        alerts.append(
-            Alert(
-                alert_type=AlertType.INFINITE,
-                fields={"p_infinite", "n_infinite"},
-            )
-        )
+        alerts.append(InfiniteAlert(summary))
 
     # Zeros
     if alert_value(summary["p_zeros"]):
-        alerts.append(
-            Alert(
-                alert_type=AlertType.ZEROS,
-                fields={"n_zeros", "p_zeros"},
-            )
-        )
+        alerts.append(ZerosAlert(summary))
 
     if (
         "chi_squared" in summary
         and summary["chi_squared"]["pvalue"] > config.vars.num.chi_squared_threshold
     ):
-        alerts.append(Alert(alert_type=AlertType.UNIFORM))
+        alerts.append(UniformAlert())
 
     return alerts
 
 
 def timeseries_alerts(config: Settings, summary: dict) -> List[Alert]:
-    alerts = numeric_alerts(config, summary)
+    alerts: List[Alert] = numeric_alerts(config, summary)
 
     if not summary["stationary"]:
-        alerts.append(Alert(alert_type=AlertType.NON_STATIONARY))
+        alerts.append(NonStationaryAlert())
 
     if summary["seasonal"]:
-        alerts.append(Alert(alert_type=AlertType.SEASONAL))
+        alerts.append(SeasonalAlert())
 
     return alerts
 
 
 def categorical_alerts(config: Settings, summary: dict) -> List[Alert]:
-    alerts = []
+    alerts: List[Alert] = []
 
     # High cardinality
     if summary.get("n_distinct", np.nan) > config.vars.cat.cardinality_threshold:
-        alerts.append(
-            Alert(
-                alert_type=AlertType.HIGH_CARDINALITY,
-                fields={"n_distinct"},
-            )
-        )
+        alerts.append(HighCardinalityAlert(summary))
 
     if (
         "chi_squared" in summary
         and summary["chi_squared"]["pvalue"] > config.vars.cat.chi_squared_threshold
     ):
-        alerts.append(Alert(alert_type=AlertType.UNIFORM))
+        alerts.append(UniformAlert())
 
     if summary.get("date_warning"):
-        alerts.append(Alert(alert_type=AlertType.TYPE_DATE))
+        alerts.append(TypeDateAlert())
 
     # Constant length
     if "composition" in summary and summary["min_length"] == summary["max_length"]:
-        alerts.append(
-            Alert(
-                alert_type=AlertType.CONSTANT_LENGTH,
-                fields={"composition_min_length", "composition_max_length"},
-            )
-        )
+        alerts.append(ConstantLengthAlert())
 
     # Imbalance
     if (
         "imbalance" in summary
         and summary["imbalance"] > config.vars.cat.imbalance_threshold
     ):
-        alerts.append(
-            Alert(
-                alert_type=AlertType.IMBALANCE,
-                fields={"imbalance"},
-            )
-        )
+        alerts.append(ImbalanceAlert(summary))
     return alerts
 
 
 def boolean_alerts(config: Settings, summary: dict) -> List[Alert]:
-    alerts = []
-    # Imbalance
+    alerts: List[Alert] = []
+
     if (
         "imbalance" in summary
         and summary["imbalance"] > config.vars.bool.imbalance_threshold
     ):
-        alerts.append(
-            Alert(
-                alert_type=AlertType.IMBALANCE,
-                fields={"imbalance"},
-            )
-        )
+        alerts.append(ImbalanceAlert())
     return alerts
 
 
 def generic_alerts(summary: dict) -> List[Alert]:
-    alerts = []
+    alerts: List[Alert] = []
 
     # Missing
     if alert_value(summary["p_missing"]):
-        alerts.append(
-            Alert(
-                alert_type=AlertType.MISSING,
-                fields={"p_missing", "n_missing"},
-            )
-        )
+        alerts.append(MissingAlert())
 
     return alerts
 
 
 def supported_alerts(summary: dict) -> List[Alert]:
-    alerts = []
+    alerts: List[Alert] = []
 
     if summary.get("n_distinct", np.nan) == summary["n"]:
-        alerts.append(
-            Alert(
-                alert_type=AlertType.UNIQUE,
-                fields={"n_distinct", "p_distinct", "n_unique", "p_unique"},
-            )
-        )
+        alerts.append(UniqueAlert())
     if summary.get("n_distinct", np.nan) == 1:
-        alerts.append(
-            Alert(
-                alert_type=AlertType.CONSTANT,
-                fields={"n_distinct"},
-            )
-        )
+        alerts.append(ConstantAlert(summary))
     return alerts
 
 
 def unsupported_alerts(summary: Dict[str, Any]) -> List[Alert]:
-    alerts = [
-        Alert(
-            alert_type=AlertType.UNSUPPORTED,
-            fields=set(),
-        ),
-        Alert(
-            alert_type=AlertType.REJECTED,
-            fields=set(),
-        ),
+    alerts: List[Alert] = [
+        UnsupportedAlert(),
+        RejectedAlert(),
     ]
     return alerts
 
@@ -318,7 +608,7 @@ def check_variable_alerts(config: Settings, col: str, description: dict) -> List
     Returns:
         A list of alerts.
     """
-    alerts = []
+    alerts: List[Alert] = []
 
     alerts += generic_alerts(description)
 
@@ -343,7 +633,7 @@ def check_variable_alerts(config: Settings, col: str, description: dict) -> List
 
 
 def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert]:
-    alerts = []
+    alerts: List[Alert] = []
 
     correlations_consolidated = {}
     for corr, matrix in correlations.items():
@@ -357,9 +647,8 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
     if len(correlations_consolidated) > 0:
         for col, fields in correlations_consolidated.items():
             alerts.append(
-                Alert(
+                HighCorrelationAlert(
                     column_name=col,
-                    alert_type=AlertType.HIGH_CORRELATION,
                     values={"corr": "overall", "fields": fields},
                 )
             )
@@ -369,7 +658,7 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
 def get_alerts(
     config: Settings, table_stats: dict, series_description: dict, correlations: dict
 ) -> List[Alert]:
-    alerts = check_table_alerts(table_stats)
+    alerts: List[Alert] = check_table_alerts(table_stats)
     for col, description in series_description.items():
         alerts += check_variable_alerts(config, col, description)
     alerts += check_correlation_alerts(config, correlations)
