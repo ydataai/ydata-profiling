@@ -29,6 +29,7 @@ from ydata_profiling.model.summarizer import (
     BaseSummarizer,
     PandasProfilingSummarizer,
     format_summary,
+    redact_summary,
 )
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.report import get_report_structure
@@ -450,6 +451,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         ) as pbar:
             description_dict = format_summary(description)
             description_dict = encode_it(description_dict)
+            description_dict = redact_summary(description_dict, self.config)
+
             data = json.dumps(description_dict, indent=4)
             pbar.update()
         return data
