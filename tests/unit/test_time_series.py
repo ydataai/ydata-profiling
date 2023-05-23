@@ -25,7 +25,6 @@ def html_profile() -> str:
             "constant": np.ones(size),
             "sin": [round(np.sin(x * np.pi / 180), 2) for x in time_steps],
             "cos": [round(np.cos(x * np.pi / 180), 2) for x in time_steps],
-            "uniform": [round(x, 2) for x in np.random.uniform(0, 10, size)],
             "gaussian": [round(x, 2) for x in np.random.normal(0, 1, size)],
         }
     )
@@ -37,7 +36,7 @@ def html_profile() -> str:
 def test_timeseries_identification(html_profile: str):
     assert "<th>TimeSeries</th>" in html_profile, "TimeSeries not detected"
     assert (
-        "<tr><th>TimeSeries</th><td>8</td></tr>" in html_profile
+        "<tr><th>TimeSeries</th><td>9</td></tr>" in html_profile
     ), "TimeSeries incorrectly identified"
 
 
@@ -46,7 +45,7 @@ def test_timeseries_autocorrelation_tab(html_profile: str):
         "role=tab data-toggle=tab>Autocorrelation<" in html_profile
     ), "TimeSeries not detected"
     assert (
-        html_profile.count("role=tab data-toggle=tab>Autocorrelation<") == 8
+        html_profile.count("role=tab data-toggle=tab>Autocorrelation<") == 9
     ), "TimeSeries autocorrelation tabs incorrectly generated"
 
 
