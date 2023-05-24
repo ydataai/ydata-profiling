@@ -1,4 +1,4 @@
-from . import (
+from ydata_profiling.model.modin import (
     correlations_modin,
     dataframe_modin,
     describe_boolean_modin,

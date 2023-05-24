@@ -10,4 +10,7 @@ from ydata_profiling.utils import modin
 def modin_get_duplicates(
     config: Settings, df: modin.DataFrame, supported_columns: Sequence
 ) -> Tuple[Dict[str, Any], Optional[modin.DataFrame]]:
-    return pandas_get_duplicates(config, df, supported_columns)
+    # FIXME: I don't think this is profiled,
+    # hence using pandas because there's an error if using modin.
+    # However, it's better to use modin for modin stuff.
+    return pandas_get_duplicates(config, df._to_pandas(), supported_columns)

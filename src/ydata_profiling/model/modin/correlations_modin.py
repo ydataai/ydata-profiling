@@ -1,5 +1,9 @@
 """Correlations between variables."""
-from typing import Optional
+import itertools
+from typing import Callable, Optional
+
+import numpy as np
+import pandas as pd
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.correlations import (
@@ -10,8 +14,10 @@ from ydata_profiling.model.correlations import (
     PhiK,
     Spearman,
 )
+from ydata_profiling.model.modin.discretize_modin import DiscretizationType, Discretizer
 from ydata_profiling.model.pandas.correlations_pandas import (
-    pandas_auto_compute,
+    _pairwise_cramers,
+    _pairwise_spearman,
     pandas_cramers_compute,
     pandas_kendall_compute,
     pandas_pearson_compute,
@@ -60,4 +66,51 @@ def modin_phik_compute(
 def modin_auto_compute(
     config: Settings, df: modin.DataFrame, summary: dict
 ) -> Optional[modin.DataFrame]:
-    return pandas_auto_compute(config, df, summary)
+    threshold = config.categorical_maximum_correlation_distinct
+    numerical_columns = [
+        key
+        for key, value in summary.items()
+        if value["type"] in {"Numeric", "TimeSeries"} and value["n_distinct"] > 1
+    ]
+    categorical_columns = [
+        key
+        for key, value in summary.items()
+        if value["type"] in {"Categorical", "Boolean"}
+        and 1 < value["n_distinct"] <= threshold
+    ]
+
+    if len(numerical_columns + categorical_columns) <= 1:
+        return None
+
+    df_discretized = Discretizer(
+        DiscretizationType.UNIFORM, n_bins=config.correlations["auto"].n_bins
+    ).discretize_dataframe(df)
+    columns_tested = numerical_columns + categorical_columns
+    correlation_matrix = modin.DataFrame(
+        np.ones((len(columns_tested), len(columns_tested))),
+        index=columns_tested,
+        columns=columns_tested,
+    )
+    for col_1_name, col_2_name in itertools.combinations(columns_tested, 2):
+        method = (
+            _pairwise_spearman
+            if col_1_name and col_2_name not in categorical_columns
+            else _pairwise_cramers
+        )
+
+        def f(col_name: str, method: Callable) -> pd.Series:
+            return (
+                df_discretized
+                if col_name in numerical_columns and method is _pairwise_cramers
+                else df
+            )
+
+        score = method(
+            f(col_1_name, method)[col_1_name], f(col_2_name, method)[col_2_name]
+        )
+        (
+            correlation_matrix.loc[col_1_name, col_2_name],
+            correlation_matrix.loc[col_2_name, col_1_name],
+        ) = (score, score)
+
+    return correlation_matrix

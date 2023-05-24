@@ -42,10 +42,9 @@ def pandas_get_duplicates(
 
             metrics["n_duplicates"] = len(duplicated_rows[duplicates_key])
             metrics["p_duplicates"] = metrics["n_duplicates"] / len(df)
-
             return (
                 metrics,
-                duplicated_rows.nlargest(n_head, duplicates_key),
+                duplicated_rows.astype(float).nlargest(n_head, duplicates_key),
             )
         else:
             metrics["n_duplicates"] = 0

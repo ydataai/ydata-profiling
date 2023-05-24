@@ -1,7 +1,7 @@
 import warnings
 
-from ydata_profiling.config import Settings
 from ydata_profiling.model.dataframe import check_dataframe, preprocess
+from ydata_profiling.model.modin import utils_modin
 from ydata_profiling.model.pandas.dataframe_pandas import pandas_preprocess
 from ydata_profiling.utils import modin
 
@@ -12,6 +12,4 @@ def modin_check_dataframe(df: modin.DataFrame) -> None:
         warnings.warn("df is not of type modin.DataFrame")
 
 
-@preprocess.register
-def modin_preprocess(config: Settings, df: modin.DataFrame) -> modin.DataFrame:
-    return pandas_preprocess(config, df)
+modin_preprocess = utils_modin.register(preprocess, pandas_preprocess)
