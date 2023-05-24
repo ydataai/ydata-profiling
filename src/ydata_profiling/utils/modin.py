@@ -13,6 +13,6 @@ else:
             "A fake modin dataframe. Any isinstance checks should fail."
 
         class Series:
-            "A fake modin. Any isinstance checks should fail."
+            "A fake modin series. Any isinstance checks should fail."
 
         cut = qcut = lambda *args, **kwargs: None
