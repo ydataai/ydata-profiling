@@ -13,6 +13,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -331,7 +333,13 @@
 </section>
 <section id="correlations">
 <h2>Correlations<a class="headerlink" href="#correlations" title="Permalink to this heading"></a></h2>
-<p>Settings regarding correlation metrics and thresholds.</p>
+<p>Settings regarding correlation metrics and thresholds.
+The default value is <cite>auto</cite>. The <cite>auto</cite> correlation returns a comprehensive correlation matrix whose coefficients depend on the datatype of the columns:</p>
+<ul class="simple">
+<li><p>numerical to numerical variable: Spearman correlation coefficient</p></li>
+<li><p>categorical to categorical variable: Cramer’s V association coefficient</p></li>
+<li><p>numerical to categorical: Cramer’s V association coefficient with the numerical variable discretized automatically</p></li>
+</ul>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 5%" />
@@ -347,92 +355,92 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.pearson.calculate</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.auto.calculate</span></code></p></td>
 <td><p>boolean</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p>Whether to calculate this coefficient</p></td>
+<td><p>Whether to compute ‘auto’ correlation</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.pearson.warn_high_correlations</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.auto.warn_high_correlations</span></code></p></td>
 <td><p>boolean</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
 <td><p>Show warning for correlations higher than the threshold</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.pearson.threshold</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.auto.threshold</span></code></p></td>
 <td><p>float</p></td>
 <td><p>0.9</p></td>
 <td><p>Warning threshold</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.spearman.calculate</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.pearson.calculate</span></code></p></td>
+<td><p>boolean</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>Whether to calculate Pearson correlation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.pearson.warn_high_correlations</span></code></p></td>
 <td><p>boolean</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p>Whether to calculate this coefficient</p></td>
+<td><p>Show warning for correlations higher than the threshold</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.spearman.warn_high_correlations</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.pearson.threshold</span></code></p></td>
+<td><p>float</p></td>
+<td><p>0.9</p></td>
+<td><p>Warning threshold</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.spearman.calculate</span></code></p></td>
+<td><p>boolean</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>Whether to calculate Spearman correlation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.spearman.warn_high_correlations</span></code></p></td>
 <td><p>boolean</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
 <td><p>Show warning for correlations higher than the threshold</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.spearman.threshold</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.spearman.threshold</span></code></p></td>
 <td><p>float</p></td>
 <td><p>0.9</p></td>
 <td><p>Warning threshold</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.kendall.calculate</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.kendall.calculate</span></code></p></td>
 <td><p>boolean</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p>Whether to calculate this coefficient</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>Whether to calculate Kendall rank correlation</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.kendall.warn_high_correlations</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.kendall.warn_high_correlations</span></code></p></td>
 <td><p>boolean</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
 <td><p>Show warning for correlations higher than the threshold</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.kendall.threshold</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.kendall.threshold</span></code></p></td>
 <td><p>float</p></td>
 <td><p>0.9</p></td>
 <td><p>Warning threshold</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.phi_k.calculate</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.phi_k.calculate</span></code></p></td>
 <td><p>boolean</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p>Whether to calculate this coefficient</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>Whether to calculate Phi K correlation</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.phi_k.warn_high_correlations</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.phi_k.warn_high_correlations</span></code></p></td>
 <td><p>boolean</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
 <td><p>Show warning for correlations higher than the threshold</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.phi_k.threshold</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.phi_k.threshold</span></code></p></td>
 <td><p>float</p></td>
 <td><p>0.9</p></td>
 <td><p>Warning threshold</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.cramers.calculate</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.cramers.calculate</span></code></p></td>
 <td><p>boolean</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p>Whether to calculate this coefficient</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p>Whether to calculate Cramer’s V association coefficient</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.cramers.warn_high_correlations</span></code></p></td>
-<td><p>boolean</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p>Show warning for correlations higher than the threshold</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.cramers.threshold</span></code></p></td>
-<td><p>float</p></td>
-<td><p>0.9</p></td>
-<td><p>Warning threshold</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.auto.calculate</span></code></p></td>
-<td><p>boolean</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
-<td><p>Whether to calculate this coefficient</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.auto.warn_high_correlations</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.cramers.warn_high_correlations</span></code></p></td>
 <td><p>boolean</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
 <td><p>Show warning for correlations higher than the threshold</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.auto.threshold</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">correlations.cramers.threshold</span></code></p></td>
 <td><p>float</p></td>
 <td><p>0.9</p></td>
 <td><p>Warning threshold</p></td>

@@ -12,6 +12,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -116,7 +118,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">DataFrame</span> <span class="k">as</span> <span class="n">sDataFrame</span>
@@ -124,6 +126,8 @@
     <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span>
 
     <span class="n">sDataFrame</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;sDataFrame&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">is_dataclass</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -133,6 +137,7 @@
 
 <span class="kn">from</span> <span class="nn">ydata_profiling.config</span> <span class="kn">import</span> <span class="n">Config</span><span class="p">,</span> <span class="n">Settings</span><span class="p">,</span> <span class="n">SparkSettings</span>
 <span class="kn">from</span> <span class="nn">ydata_profiling.expectations_report</span> <span class="kn">import</span> <span class="n">ExpectationsReport</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling.model</span> <span class="kn">import</span> <span class="n">BaseDescription</span>
 <span class="kn">from</span> <span class="nn">ydata_profiling.model.alerts</span> <span class="kn">import</span> <span class="n">AlertType</span>
 <span class="kn">from</span> <span class="nn">ydata_profiling.model.describe</span> <span class="kn">import</span> <span class="n">describe</span> <span class="k">as</span> <span class="n">describe_df</span>
 <span class="kn">from</span> <span class="nn">ydata_profiling.model.sample</span> <span class="kn">import</span> <span class="n">Sample</span>
@@ -140,6 +145,7 @@
     <span class="n">BaseSummarizer</span><span class="p">,</span>
     <span class="n">PandasProfilingSummarizer</span><span class="p">,</span>
     <span class="n">format_summary</span><span class="p">,</span>
+    <span class="n">redact_summary</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ydata_profiling.model.typeset</span> <span class="kn">import</span> <span class="n">ProfilingTypeSet</span>
 <span class="kn">from</span> <span class="nn">ydata_profiling.report</span> <span class="kn">import</span> <span class="n">get_report_structure</span>
@@ -271,7 +277,6 @@
         <span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
         <span class="n">lazy</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-
         <span class="c1"># Lazy profile cannot be set if no DataFrame is provided</span>
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lazy</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can init a not-lazy ProfileReport with no DataFrame&quot;</span><span class="p">)</span>
@@ -357,7 +362,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summarizer</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">description_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">description_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseDescription</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_description_set</span> <span class="o">=</span> <span class="n">describe_df</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
@@ -395,8 +400,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;n&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;table&quot;</span><span class="p">][</span><span class="s2">&quot;n&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s2">&quot;Widgets interface not (yet) supported for comparing reports, please use the HTML rendering.&quot;</span>
@@ -412,7 +417,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A DataFrame with the duplicate rows and their counts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;duplicates&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">duplicates</span>
 
     <span class="k">def</span> <span class="nf">get_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get head/tail samples based on the configuration</span>
@@ -420,9 +425,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A dict with the head and tail samples.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">sample</span>
 
-    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseDescription</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the description (a raw statistical summary) of the dataset.</span>
 
 <span class="sd">        Returns:</span>
@@ -438,7 +443,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="n">alert</span><span class="o">.</span><span class="n">column_name</span>
-            <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;alerts&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">alert</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">alerts</span>
             <span class="k">if</span> <span class="n">alert</span><span class="o">.</span><span class="n">alert_type</span> <span class="o">==</span> <span class="n">AlertType</span><span class="o">.</span><span class="n">REJECTED</span>
         <span class="p">}</span>
 
@@ -504,9 +509,9 @@
                 <span class="n">primary_color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">primary_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">logo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">logo</span><span class="p">,</span>
                 <span class="n">theme</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span>
-                <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;analysis&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
-                <span class="n">date</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;analysis&quot;</span><span class="p">][</span><span class="s2">&quot;date_start&quot;</span><span class="p">],</span>
-                <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="p">[</span><span class="s2">&quot;package&quot;</span><span class="p">][</span><span class="s2">&quot;ydata_profiling_version&quot;</span><span class="p">],</span>
+                <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                <span class="n">date</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">date_start</span><span class="p">,</span>
+                <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_set</span><span class="o">.</span><span class="n">package</span><span class="p">[</span><span class="s2">&quot;ydata_profiling_version&quot;</span><span class="p">],</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">minify_html</span><span class="p">:</span>
@@ -533,6 +538,8 @@
 
     <span class="k">def</span> <span class="nf">_render_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">encode_it</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+                <span class="n">o</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="k">return</span> <span class="p">{</span><span class="n">encode_it</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
             <span class="k">else</span><span class="p">:</span>
@@ -558,9 +565,11 @@
         <span class="k">with</span> <span class="n">tqdm</span><span class="p">(</span>
             <span class="n">total</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Render JSON&quot;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">progress_bar</span>
         <span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">:</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="n">format_summary</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            <span class="n">description_dict</span> <span class="o">=</span> <span class="n">format_summary</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+            <span class="n">description_dict</span> <span class="o">=</span> <span class="n">encode_it</span><span class="p">(</span><span class="n">description_dict</span><span class="p">)</span>
+            <span class="n">description_dict</span> <span class="o">=</span> <span class="n">redact_summary</span><span class="p">(</span><span class="n">description_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">description_dict</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
             <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">data</span>
 

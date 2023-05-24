@@ -13,6 +13,8 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -241,6 +243,14 @@
 <span class="w">               </span><span class="nt">&quot;skewness_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
 <span class="w">               </span><span class="nt">&quot;low_categorical_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
 <span class="w">               </span><span class="nt">&quot;chi_squared_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.999</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;length&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;words&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;characters&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;redact&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;categorical_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;percentage_cat_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span>
 <span class="w">            </span><span class="p">},</span>
 <span class="w">            </span><span class="nt">&quot;cat&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">               </span><span class="nt">&quot;length&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -631,6 +641,42 @@
 <span class="w">            </span><span class="p">}</span>
 <span class="w">         </span><span class="p">}</span>
 <span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;TextVars&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TextVars&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;length&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Length&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;words&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Words&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;characters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Characters&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;redact&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Redact&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;categorical_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Categorical Threshold&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;percentage_cat_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Percentage Cat Threshold&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">         </span><span class="p">}</span>
+<span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;CatVars&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">         </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CatVars&quot;</span><span class="p">,</span>
 <span class="w">         </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
@@ -847,6 +893,22 @@
 <span class="w">               </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">                  </span><span class="p">{</span>
 <span class="w">                     </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/NumVars&quot;</span>
+<span class="w">                  </span><span class="p">}</span>
+<span class="w">               </span><span class="p">]</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">               </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Text&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                  </span><span class="nt">&quot;length&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;words&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;characters&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;redact&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;categorical_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;percentage_cat_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span>
+<span class="w">               </span><span class="p">},</span>
+<span class="w">               </span><span class="nt">&quot;allOf&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                  </span><span class="p">{</span>
+<span class="w">                     </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/TextVars&quot;</span>
 <span class="w">                  </span><span class="p">}</span>
 <span class="w">               </span><span class="p">]</span>
 <span class="w">            </span><span class="p">},</span>
@@ -1525,7 +1587,7 @@
 
 <dl class="py attribute pydantic_field">
 <dt class="sig sig-object py" id="ydata_profiling.config.Settings.vars">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="ydata_profiling.config.Univariate.html#ydata_profiling.config.Univariate" title="ydata_profiling.config.Univariate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Univariate</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Univariate(num=NumVars(quantiles=[0.05,</span> <span class="pre">0.25,</span> <span class="pre">0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.95],</span> <span class="pre">skewness_threshold=20,</span> <span class="pre">low_categorical_threshold=5,</span> <span class="pre">chi_squared_threshold=0.999),</span> <span class="pre">cat=CatVars(length=True,</span> <span class="pre">characters=True,</span> <span class="pre">words=True,</span> <span class="pre">cardinality_threshold=50,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">n_obs=5,</span> <span class="pre">chi_squared_threshold=0.999,</span> <span class="pre">coerce_str_to_date=False,</span> <span class="pre">redact=False,</span> <span class="pre">histogram_largest=50,</span> <span class="pre">stop_words=[]),</span> <span class="pre">image=ImageVars(active=False,</span> <span class="pre">exif=True,</span> <span class="pre">hash=True),</span> <span class="pre">bool=BoolVars(n_obs=3,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">mappings={'t':</span> <span class="pre">True,</span> <span class="pre">'f':</span> <span class="pre">False,</span> <span class="pre">'yes':</span> <span class="pre">True,</span> <span class="pre">'no':</span> <span class="pre">False,</span> <span class="pre">'y':</span> <span class="pre">True,</span> <span class="pre">'n':</span> <span class="pre">False,</span> <span class="pre">'true':</span> <span class="pre">True,</span> <span class="pre">'false':</span> <span class="pre">False}),</span> <span class="pre">path=PathVars(active=False),</span> <span class="pre">file=FileVars(active=False),</span> <span class="pre">url=UrlVars(active=False),</span> <span class="pre">timeseries=TimeseriesVars(active=False,</span> <span class="pre">sortby=None,</span> <span class="pre">autocorrelation=0.7,</span> <span class="pre">lags=[1,</span> <span class="pre">7,</span> <span class="pre">12,</span> <span class="pre">24,</span> <span class="pre">30],</span> <span class="pre">significance=0.05,</span> <span class="pre">pacf_acf_lag=100))</span></em><a class="headerlink" href="#ydata_profiling.config.Settings.vars" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="ydata_profiling.config.Univariate.html#ydata_profiling.config.Univariate" title="ydata_profiling.config.Univariate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Univariate</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Univariate(num=NumVars(quantiles=[0.05,</span> <span class="pre">0.25,</span> <span class="pre">0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.95],</span> <span class="pre">skewness_threshold=20,</span> <span class="pre">low_categorical_threshold=5,</span> <span class="pre">chi_squared_threshold=0.999),</span> <span class="pre">text=TextVars(length=True,</span> <span class="pre">words=True,</span> <span class="pre">characters=True,</span> <span class="pre">redact=False,</span> <span class="pre">categorical_threshold=50,</span> <span class="pre">percentage_cat_threshold=0.5),</span> <span class="pre">cat=CatVars(length=True,</span> <span class="pre">characters=True,</span> <span class="pre">words=True,</span> <span class="pre">cardinality_threshold=50,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">n_obs=5,</span> <span class="pre">chi_squared_threshold=0.999,</span> <span class="pre">coerce_str_to_date=False,</span> <span class="pre">redact=False,</span> <span class="pre">histogram_largest=50,</span> <span class="pre">stop_words=[]),</span> <span class="pre">image=ImageVars(active=False,</span> <span class="pre">exif=True,</span> <span class="pre">hash=True),</span> <span class="pre">bool=BoolVars(n_obs=3,</span> <span class="pre">imbalance_threshold=0.5,</span> <span class="pre">mappings={'t':</span> <span class="pre">True,</span> <span class="pre">'f':</span> <span class="pre">False,</span> <span class="pre">'yes':</span> <span class="pre">True,</span> <span class="pre">'no':</span> <span class="pre">False,</span> <span class="pre">'y':</span> <span class="pre">True,</span> <span class="pre">'n':</span> <span class="pre">False,</span> <span class="pre">'true':</span> <span class="pre">True,</span> <span class="pre">'false':</span> <span class="pre">False}),</span> <span class="pre">path=PathVars(active=False),</span> <span class="pre">file=FileVars(active=False),</span> <span class="pre">url=UrlVars(active=False),</span> <span class="pre">timeseries=TimeseriesVars(active=False,</span> <span class="pre">sortby=None,</span> <span class="pre">autocorrelation=0.7,</span> <span class="pre">lags=[1,</span> <span class="pre">7,</span> <span class="pre">12,</span> <span class="pre">24,</span> <span class="pre">30],</span> <span class="pre">significance=0.05,</span> <span class="pre">pacf_acf_lag=100))</span></em><a class="headerlink" href="#ydata_profiling.config.Settings.vars" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

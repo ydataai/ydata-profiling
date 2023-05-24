@@ -13,14 +13,17 @@
 
    .. autosummary::
    
-      category_is_numeric
-      category_to_numeric
       is_nullable
       numeric_is_category
       object_is_bool
       series_is_string
       string_is_bool
+      string_is_category
+      string_is_datetime
+      string_is_numeric
       string_to_bool
+      string_to_datetime
+      string_to_numeric
       to_bool
       to_category
       try_func

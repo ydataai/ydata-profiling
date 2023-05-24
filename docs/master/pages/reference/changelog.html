@@ -13,6 +13,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -84,6 +86,11 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">4.2.0 (2023-05-24)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bug-fixes">🐛 Bug fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#features">🎉 Features</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog-v4-1-2">Changelog v4.1.2</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#bug-fixes">🐛 Bug fixes</a></li>
 </ul>
@@ -273,6 +280,30 @@
              
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading"></a></h1>
+<section id="id1">
+<h2><a class="reference external" href="https://github.com/ydataai/ydata-profiling/compare/v4.1.2...v4.2.0">4.2.0</a> (2023-05-24)<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<section id="bug-fixes">
+<h3>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>add punctuation marks in all alerts (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1315">#1315</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/acb9f2194df8ce9066ad928c8f210dd2b3089045">acb9f21</a>)</p></li>
+<li><p>complete alerts information in json (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1339">#1339</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/4108709af06e1fe4eb36a698fa7763acc47f7417">4108709</a>)</p></li>
+<li><p>error for large integers in Series (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1308">#1308</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/50e44dd3c5a2b109f1275d8de27381559971e665">50e44dd</a>)</p></li>
+<li><p>infer all <code class="docutils literal notranslate"><span class="pre">Numeric</span></code> vars as <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> when tsmode=True (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1343">#1343</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/d750e00dd2943fc05d87358923e420a9d22864e6">d750e00</a>)</p></li>
+<li><p>json ignoring redact (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1341">#1341</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/9f5d4ba2fdb7207d771c61aba7d5bbdd6805b2a2">9f5d4ba</a>)</p></li>
+<li><p>lint complaints on list comprehension (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1327">#1327</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/621450d8273bf0b850febd89f0a01368f5228979">621450d</a>)</p></li>
+<li><p>old references links (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1328">#1328</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/7db5694be25e4a1dc0e8b37599d2140e68ce3bb9">7db5694</a>)</p></li>
+<li><p>requirements upper bounds (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1326">#1326</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/e6b3a499cf5a253c036767a68a8ba3c16b9365ca">e6b3a49</a>)</p></li>
+<li><p>revert infer all <code class="docutils literal notranslate"><span class="pre">Numeric</span></code> vars as <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> when tsmode=True (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1343">#1343</a>)” (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1346">#1346</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/40fb0c2f209d4be49d0dde0a0a437ef4e04c3328">40fb0c2</a>)</p></li>
+</ul>
+</section>
+<section id="features">
+<h3>🎉 Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>add string type for text variables (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1282">#1282</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/943a480212cd020724e5b70deb55aa5b6308a8ab">943a480</a>)</p></li>
+<li><p>description_wrapper (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1302">#1302</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/1ca3a93b005a680c4709c17dac27cd6d1ce048a7">1ca3a93</a>)</p></li>
+</ul>
+</section>
+</section>
 <section id="changelog-v4-1-2">
 <h2>Changelog v4.1.2<a class="headerlink" href="#changelog-v4-1-2" title="Permalink to this heading"></a></h2>
 <section id="bug-fixes">

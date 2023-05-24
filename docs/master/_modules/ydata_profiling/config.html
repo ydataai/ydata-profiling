@@ -12,6 +12,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -159,6 +161,17 @@
     <span class="n">chi_squared_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span></div>
 
 
+<span class="k">class</span> <span class="nc">TextVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">length</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">words</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">characters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">redact</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># if text has more than threshold categories, its not category</span>
+    <span class="n">categorical_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="c1"># if text has more than threshold % distinct values, its not category</span>
+    <span class="n">percentage_cat_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+
 <div class="viewcode-block" id="CatVars"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/ydata_profiling.config.CatVars.html#ydata_profiling.config.CatVars">[docs]</a><span class="k">class</span> <span class="nc">CatVars</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">length</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">characters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
@@ -220,6 +233,7 @@
 
 <div class="viewcode-block" id="Univariate"><a class="viewcode-back" href="../../pages/reference/api/_autosummary/ydata_profiling.config.Univariate.html#ydata_profiling.config.Univariate">[docs]</a><span class="k">class</span> <span class="nc">Univariate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">num</span><span class="p">:</span> <span class="n">NumVars</span> <span class="o">=</span> <span class="n">NumVars</span><span class="p">()</span>
+    <span class="n">text</span><span class="p">:</span> <span class="n">TextVars</span> <span class="o">=</span> <span class="n">TextVars</span><span class="p">()</span>
     <span class="n">cat</span><span class="p">:</span> <span class="n">CatVars</span> <span class="o">=</span> <span class="n">CatVars</span><span class="p">()</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ImageVars</span> <span class="o">=</span> <span class="n">ImageVars</span><span class="p">()</span>
     <span class="nb">bool</span><span class="p">:</span> <span class="n">BoolVars</span> <span class="o">=</span> <span class="n">BoolVars</span><span class="p">()</span>
@@ -509,7 +523,7 @@
         <span class="s2">&quot;sensitive&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;samples&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
             <span class="s2">&quot;duplicates&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;vars&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cat&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;redact&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
+            <span class="s2">&quot;vars&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cat&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;redact&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;redact&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
         <span class="p">},</span>
         <span class="s2">&quot;dark_mode&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="p">{</span>
