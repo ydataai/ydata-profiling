@@ -2,6 +2,7 @@ try:
     from importlib.metadata import version
 except ImportError:
     import pkg_resources
+
     def version(pkg: str) -> str:
         return pkg_resources.get_distribution(pkg).version
 
