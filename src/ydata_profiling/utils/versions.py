@@ -1,4 +1,9 @@
-from importlib.metadata import version
+import sys
+try:
+    from importlib.metadata import version
+except ImportError:
+    import pkg_resources
+    version = lambda x: pkg_resources.get_distribution(x).version
 
 
 def pandas_version() -> list:
