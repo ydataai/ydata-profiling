@@ -1,8 +1,10 @@
 import sys
+
 try:
     from importlib.metadata import version
 except ImportError:
     import pkg_resources
+
     version = lambda x: pkg_resources.get_distribution(x).version
 
 
