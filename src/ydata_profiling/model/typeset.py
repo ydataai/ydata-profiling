@@ -4,6 +4,7 @@ import warnings
 from functools import partial, wraps
 from typing import Callable, Sequence, Set
 from urllib.parse import urlparse
+import datetime
 
 import pandas as pd
 import visions
@@ -120,7 +121,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         @series_not_empty
         @series_handle_nulls
         def contains_op(series: pd.Series, state: dict) -> bool:
-            return pdt.is_string_dtype(series) and series_is_string(series, state)
+            return not pdt.is_categorical_dtype(series) and pdt.is_string_dtype(series) and series_is_string(series, state)
 
     class DateTime(visions.VisionsBaseType):
         @staticmethod
@@ -139,7 +140,11 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         @series_not_empty
         @series_handle_nulls
         def contains_op(series: pd.Series, state: dict) -> bool:
-            return pdt.is_datetime64_any_dtype(series)
+            is_datetime = pdt.is_datetime64_any_dtype(series)
+            if is_datetime:
+                return True
+            has_builtin_datetime = series.dropna().apply(type).isin([datetime.date, datetime.datetime]).all()
+            return has_builtin_datetime
 
     class Categorical(visions.VisionsBaseType):
         """Type for categorical columns.
