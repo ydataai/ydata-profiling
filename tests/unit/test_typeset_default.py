@@ -1,9 +1,9 @@
 import os
+from typing import Dict
 
 import numpy as np
 import pandas as pd
 import pytest
-from typing import Dict
 from visions.test.utils import (
     contains,
     convert,
@@ -18,6 +18,7 @@ from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.profile_report import ProfileReport
 
+
 def get_series() -> Dict[str, pd.Series]:
     """
     Taken from Vision to remove the `complex_series_nan` that causes an exception due to a bug
@@ -31,13 +32,14 @@ def get_series() -> Dict[str, pd.Series]:
     sequences = get_builtin_sequences()
     sequences.update(get_numpy_sequences())
 
-    del sequences['complex_series_nan']
+    del sequences["complex_series_nan"]
 
     test_series = {name: pd.Series(sequence) for name, sequence in sequences.items()}
     test_series.update(get_pandas_sequences())
     assert all(isinstance(v, pd.Series) for v in test_series.values())
 
     return test_series
+
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -78,7 +80,7 @@ contains_map = {
         "float_series6",
         "complex_series",
         "complex_series_py",
-        #"complex_series_nan",
+        # "complex_series_nan",
         "complex_series_py_nan",
         "complex_series_nan_2",
         "complex_series_float",
@@ -370,7 +372,6 @@ convert_map = [
     (Categorical, Text, {"categorical_string_series"}),
     (Categorical, Numeric, {"categorical_float_series"}),
 ]
-
 
 
 @pytest.mark.parametrize(**get_convert_cases(series, convert_map, my_typeset_default))

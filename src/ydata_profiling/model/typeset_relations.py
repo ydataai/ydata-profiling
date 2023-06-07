@@ -9,6 +9,7 @@ from visions.backends.pandas.series_utils import series_handle_nulls
 from ydata_profiling.config import Settings
 from ydata_profiling.utils.versions import is_pandas_1
 
+
 def is_nullable(series: pd.Series, state: dict) -> bool:
     return series.count() > 0
 
@@ -76,7 +77,11 @@ def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
     threshold = k.vars.text.categorical_threshold
     return (
         1 <= n_unique <= threshold
-        and (n_unique / series.size < unique_threshold if unique_threshold <= 1 else n_unique / series.size <= unique_threshold)
+        and (
+            n_unique / series.size < unique_threshold
+            if unique_threshold <= 1
+            else n_unique / series.size <= unique_threshold
+        )
         and not string_is_bool(series, state, k.vars.bool.mappings)
     )
 
@@ -109,7 +114,7 @@ def string_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
 def string_to_datetime(series: pd.Series, state: dict) -> pd.Series:
     if is_pandas_1():
         return series.astype("datetime64")
-    return pd.to_datetime(series, format='mixed')
+    return pd.to_datetime(series, format="mixed")
 
 
 def string_to_numeric(series: pd.Series, state: dict) -> pd.Series:
