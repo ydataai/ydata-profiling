@@ -5,6 +5,7 @@ on:
   push:
     branches: 
     - develop
+  pull_request:
 
 
 jobs:
@@ -30,18 +31,15 @@ jobs:
 
     - name: Extract semantic version
       id: semantic
-      run: echo ::set-output name=value::$(echo ${{ steps.latest_tag.outputs.tag }} | sed -r 's|([0-9]+.[0-9]+.[0-9]+).*|\1|g')
-
-    - name: Computed Semantic Version
-      run: echo ${{ steps.semantic.outputs.value }}
+      run: echo "value=$(echo ${{ steps.latest_tag.outputs.tag }} | sed -r 's|([0-9]+.[0-9]+.[0-9]+).*|\1|g')" >> $GITHUB_OUTPUT
 
     - name: Count number or releases for tag
       id: build_number
-      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.value }}.pre) + 1))"
+      run: echo "value=$(($(git tag | grep -c ${{ steps.semantic.outputs.value }}.pre) + 1))" >> $GITHUB_OUTPUT
 
     - name: Compute version
       id: version
-      run: echo "::set-output name=value::${{ steps.semantic.outputs.value }}.pre${{ steps.build_number.outputs.value }}"
+      run: echo "value=${{ steps.semantic.outputs.value }}.pre${{ steps.build_number.outputs.value }}" >> $GITHUB_OUTPUT
 
 
   prerelease-tag:
@@ -52,9 +50,9 @@ jobs:
     - prepare
 
     steps:
-    - uses: simpleactions/create-tag@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+    - uses: actions/checkout@v3
+    - uses: rickstaa/action-create-tag@v1
       with:
-        tag: ${{ needs.prepare.outputs.version }}
+        tag: hellov2
         message: ${{  github.event.head_commit.message }}
+        github_token: ${{ secrets.ACCESS_TOKEN }}

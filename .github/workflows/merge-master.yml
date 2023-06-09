@@ -34,11 +34,11 @@ jobs:
 
     - name: Count number or releases for tag
       id: build_number
-      run: echo "::set-output name=value::$(($(git tag | grep -c ${{ steps.semantic.outputs.new_release_version }}.rc) + 1))"
+      run: echo "value=$(($(git tag | grep -c ${{ steps.semantic.outputs.new_release_version }}.rc) + 1))" >> $GITHUB_OUTPUT
 
     - name: Compute version
       id: version
-      run: echo "::set-output name=value::${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}"
+      run: echo "value=${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}" >> $GITHUB_OUTPUT
 
 
   docs-changelog:
