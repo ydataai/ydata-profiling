@@ -712,7 +712,8 @@ def _prepare_heatmap_data(
     )
 
     df = df.groupby([entity_column, "__bins"])[sortbykey].count()
-    df = df.reset_index().pivot(entity_column, "__bins", sortbykey).T
+    df = df.reset_index().pivot_table(entity_column, "__bins", sortbykey).T
+
     if selected_entities:
         df = df[selected_entities].T
     else:
