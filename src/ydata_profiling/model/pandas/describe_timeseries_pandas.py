@@ -114,7 +114,7 @@ def get_fft_peaks(
     pos_fft = fft.loc[fft["ampl"] > 0]
     median = pos_fft["ampl"].median()
     pos_fft_above_med = pos_fft[pos_fft["ampl"] > median]
-    mad = pos_fft_above_med["ampl"].mad()
+    mad = abs(pos_fft_above_med["ampl"] - pos_fft_above_med["ampl"].mean()).mean()
 
     threshold = median + mad * mad_threshold
 
