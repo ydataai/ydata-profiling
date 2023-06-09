@@ -51,9 +51,7 @@ jobs:
 
     steps:
     - uses: ydataai/create-tag@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         tag: hellov14
-        message: ${{  github.event.head_commit.message }}
+        message: "hello"
         github_token: ${{ secrets.ACCESS_TOKEN }}
