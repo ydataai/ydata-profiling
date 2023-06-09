@@ -5,7 +5,6 @@ on:
   push:
     branches: 
     - develop
-  pull_request:
 
 
 jobs:
@@ -52,6 +51,6 @@ jobs:
     steps:
     - uses: ydataai/create-tag@v1.0.0
       with:
-        tag: hellov14
-        message: "hello"
+        tag: ${{ needs.prepare.outputs.version }}
+        message: ${{  github.event.head_commit.message }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
