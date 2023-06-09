@@ -3,7 +3,7 @@ try:
 except ImportError:
     import pkg_resources
 
-    def version(pkg: str) -> str:
+    def version(pkg: str) -> str:  # type: ignore
         return pkg_resources.get_distribution(pkg).version
 
 
