@@ -8,7 +8,7 @@ except ImportError:
 
 
 def pandas_version() -> list:
-    return map(int, version("pandas").split("."))
+    return list(map(int, version("pandas").split(".")))
 
 
 def pandas_major_version() -> int:
@@ -16,4 +16,4 @@ def pandas_major_version() -> int:
 
 
 def is_pandas_1() -> bool:
-    return pandas_major_version == 1
+    return pandas_major_version() == 1
