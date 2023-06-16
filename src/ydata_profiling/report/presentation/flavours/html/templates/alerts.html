@@ -19,7 +19,7 @@
                                 {% if not alert._is_empty %}
                                     {% include 'alerts/alert_' + alert.alert_type.name | lower  + '.html'  %}
                                 {% else %}
-                                    <em>Alert not present in {{ style._labels[idx] }}</em>
+                                    <em>Alert not present in this dataset</em>
                                 {% endif %}
                             </td>
                         {% endfor %}
