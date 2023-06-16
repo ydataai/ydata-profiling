@@ -72,6 +72,8 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
+    - if: startsWith(runner.os, 'macOS')
+      run: brew install lbzip2 
     - uses: actions/cache@v3
       if: startsWith(runner.os, 'Windows')
       with:
