@@ -42,8 +42,3 @@ JSON outputs
 -------------------
 
 When exporting the Profile Report as a JSON it is important to understand what each keys refer to. The table below summarizes that information for ease of integration with other applications.
-
-.. csv-table::
-   :file: ../tables/json_outputs_info.csv
-   :widths: 50, 350
-   :header-rows: 1
