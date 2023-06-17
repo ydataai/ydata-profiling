@@ -3,7 +3,7 @@
     <br/>
     <small>{{ var_type }}</small>
 </p>
-{% if alerts | length > 1 %}
+{% if alerts | length > 0 %}
     {% if alerts[0].__class__.__name__ == 'list' %}
         {% set n_labels = style.labels | length %}
         <table width="100%">
