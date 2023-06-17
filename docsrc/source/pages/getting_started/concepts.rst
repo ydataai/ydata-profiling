@@ -37,3 +37,13 @@ The **Alerts** section of the report includes a comprehensive and automatic list
    :header-rows: 1
 
 Information on the default values and the specific parameters/thresholds used in the computation of these alerts, as well as settings to disable specific ones, can be consulted in :doc:`../advanced_usage/available_settings`. 
+
+JSON outputs
+-------------------
+
+When exporting the Profile Report as a JSON it is important to understand what each keys refer to. The table below summarizes that information for ease of integration with other applications.
+
+.. csv-table::
+   :file: ../tables/json_outputs_info.csv
+   :widths: 50, 350
+   :header-rows: 1

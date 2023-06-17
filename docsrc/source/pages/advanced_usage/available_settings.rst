@@ -101,11 +101,14 @@ Correlations
 ------------
 
 Settings regarding correlation metrics and thresholds.    
-The default value is `auto`. The `auto` correlation returns a comprehensive correlation matrix whose coefficients depend on the datatype of the columns:
+The default value is `auto`, but the following correlation matrices are available:
 
-- numerical to numerical variable: Spearman correlation coefficient
-- categorical to categorical variable: Cramer's V association coefficient
-- numerical to categorical: Cramer's V association coefficient with the numerical variable discretized automatically
+.. csv-table::
+   :file: ../tables/corr_matrices.csv
+   :widths: 30, 200
+   :header-rows: 1
+
+For each correlation matrix you can use the following configurations:
 
 .. csv-table::
    :file: ../tables/config_correlations.csv
