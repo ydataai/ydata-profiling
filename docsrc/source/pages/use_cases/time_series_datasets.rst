@@ -25,7 +25,7 @@ The following syntax can be used to generate a profile under the assumption that
     #Filtering time-series to profile a single site
     site =  df[df['Site Num']==3003]
 
-    profile = ProfileReport(df, tsmode=True, sortby="Date", title="Time-Series EDA")
+    profile = ProfileReport(df, tsmode=True, sortby="Date Local", title="Time-Series EDA")
 
     profile.to_file("report_timeseries.html")
 
