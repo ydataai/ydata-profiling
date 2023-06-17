@@ -7,6 +7,7 @@ from pandas.api import types as pdt
 from visions.backends.pandas.series_utils import series_handle_nulls
 
 from ydata_profiling.config import Settings
+from ydata_profiling.utils.versions import is_pandas_1
 
 
 def is_nullable(series: pd.Series, state: dict) -> bool:
@@ -67,7 +68,7 @@ def series_is_string(series: pd.Series, state: dict) -> bool:
 
 @series_handle_nulls
 def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
-    """String is category, if following conditions are met
+    """String is category, if the following conditions are met
     - has at least one and less or equal distinct values as threshold
     - (distinct values / count of all values) is less than threshold
     - is not bool"""
@@ -76,7 +77,11 @@ def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
     threshold = k.vars.text.categorical_threshold
     return (
         1 <= n_unique <= threshold
-        and n_unique / series.size < unique_threshold
+        and (
+            n_unique / series.size < unique_threshold
+            if unique_threshold <= 1
+            else n_unique / series.size <= unique_threshold
+        )
         and not string_is_bool(series, state, k.vars.bool.mappings)
     )
 
@@ -85,7 +90,7 @@ def string_is_category(series: pd.Series, state: dict, k: Settings) -> bool:
 def string_is_datetime(series: pd.Series, state: dict) -> bool:
     """If we can transform data to datetime and at least one is valid date."""
     try:
-        return not series.astype("datetime64").isna().all()
+        return not string_to_datetime(series, state).isna().all()
     except:  # noqa: E722
         return False
 
@@ -107,7 +112,9 @@ def string_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
 
 
 def string_to_datetime(series: pd.Series, state: dict) -> pd.Series:
-    return series.astype("datetime64")
+    if is_pandas_1():
+        return series.astype("datetime64")
+    return pd.to_datetime(series, format="mixed")
 
 
 def string_to_numeric(series: pd.Series, state: dict) -> pd.Series:

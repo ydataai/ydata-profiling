@@ -1,9 +1,9 @@
 import os
+from typing import Dict
 
 import numpy as np
 import pandas as pd
 import pytest
-from visions.test.series import get_series
 from visions.test.utils import (
     contains,
     convert,
@@ -18,6 +18,29 @@ from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.profile_report import ProfileReport
 
+
+def get_series() -> Dict[str, pd.Series]:
+    """
+    Taken from Vision to remove the `complex_series_nan` that causes an exception due to a bug
+    in pandas 2 and numpy with the value `np.nan * 0j` and  `complex(np.nan, np.nan)`.
+    See: https://github.com/numpy/numpy/issues/12919
+    """
+    from visions.backends.numpy.sequences import get_sequences as get_numpy_sequences
+    from visions.backends.pandas.sequences import get_sequences as get_pandas_sequences
+    from visions.backends.python.sequences import get_sequences as get_builtin_sequences
+
+    sequences = get_builtin_sequences()
+    sequences.update(get_numpy_sequences())
+
+    del sequences["complex_series_nan"]
+
+    test_series = {name: pd.Series(sequence) for name, sequence in sequences.items()}
+    test_series.update(get_pandas_sequences())
+    assert all(isinstance(v, pd.Series) for v in test_series.values())
+
+    return test_series
+
+
 base_path = os.path.abspath(os.path.dirname(__file__))
 
 series = get_series()
@@ -26,6 +49,7 @@ del series["categorical_complex_series"]
 my_config = Settings()
 my_config.vars.num.low_categorical_threshold = 0
 my_typeset_default = ProfilingTypeSet(my_config)
+
 
 type_map = {str(k): k for k in my_typeset_default.types}
 Numeric = type_map["Numeric"]
@@ -56,7 +80,7 @@ contains_map = {
         "float_series6",
         "complex_series",
         "complex_series_py",
-        "complex_series_nan",
+        # "complex_series_nan",
         "complex_series_py_nan",
         "complex_series_nan_2",
         "complex_series_float",
@@ -114,6 +138,7 @@ contains_map = {
         "datetime",
         "timestamp_series_nat",
         "date_series_nat",
+        "date",
     },
     Unsupported: {
         "module",
@@ -142,7 +167,6 @@ contains_map = {
         "callable",
         "mixed_integer",
         "mixed_list",
-        "date",
         "time",
         "empty",
         "empty_bool",
@@ -261,7 +285,7 @@ inference_map = {
     "ip_str": Text,
     "ip_missing": Unsupported,
     "date_series_nat": DateTime,
-    "date": Unsupported,
+    "date": DateTime,
     "time": Unsupported,
     "categorical_char": Categorical,
     "ordinal": Categorical,

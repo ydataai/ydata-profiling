@@ -22,8 +22,8 @@ The following syntax can be used to generate a profile under the assumption that
 
     df = pd.read_csv(file_name, index_col=[0])
 
-    #Filtering time-series to profile a single site
-    site =  df[df['Site Num']==3003]
+    # Filtering time-series to profile a single site
+    site = df[df["Site Num"] == 3003]
 
     profile = ProfileReport(df, tsmode=True, sortby="Date Local", title="Time-Series EDA")
 
@@ -51,24 +51,26 @@ In some cases you might be already aware of what variables are expected to be ti
 
     df = pd.read_csv(file_name, index_col=[0])
 
-    #Filtering time-series to profile a single site
-    site =  df[df['Site Num']==3003]
+    # Filtering time-series to profile a single site
+    site = df[df["Site Num"] == 3003]
 
-    #Setting what variables are time series
-    type_schema={
+    # Setting what variables are time series
+    type_schema = {
         "NO2 Mean": "timeseries",
         "NO2 1st Max Value": "timeseries",
-        'NO2 1st Max Hour': "timeseries",
+        "NO2 1st Max Hour": "timeseries",
         "NO2 AQI": "timeseries",
         "cos": "numeric",
         "cat": "numeric",
     }
 
-    profile = ProfileReport(df,
-                            tsmode=True,
-                            type_schema=type_schema,
-                            sortby="Date Local",
-                            title="Time-Series EDA for site 3003")
+    profile = ProfileReport(
+        df,
+        tsmode=True,
+        type_schema=type_schema,
+        sortby="Date Local",
+        title="Time-Series EDA for site 3003",
+    )
 
     profile.to_file("report_timeseries.html")
 
