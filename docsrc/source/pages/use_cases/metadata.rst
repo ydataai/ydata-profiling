@@ -76,7 +76,7 @@ Alternatively, column descriptions can be loaded from a JSON file:
             variable={"descriptions": definitions}, show_variable_description=False
         )
 
-        report.to_file("report.html")
+        report.to_file('report.html')
 
 Dataset type schema
 ----------------
@@ -86,7 +86,7 @@ When using ``ydata-profiling`` ProfileReport, users can set the type_schema prop
 By default, the type_schema is automatically inferred with visions (Add here the link).
 
 .. code-block:: python
-        :caption: Generate a report with descriptions per variable from a JSON definitions file
+        :caption: Set the variable type schema to Generate the profile report
 
         import json
         import pandas as pd
@@ -95,14 +95,19 @@ By default, the type_schema is automatically inferred with visions (Add here the
         from ydata_profiling.utils.cache import cache_file
 
         file_name = cache_file(
-            "titanic.csv",
-            "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv",
+        "titanic.csv",
+        "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv",
         )
         df = pd.read_csv(file_name)
 
-        type_schema = {"Survived": "categorical", "Embarked": "categorical"}
+        type_schema={
+            "Survived": "categorical",
+            "Embarked": "categorical"
+        }
 
-        # We can set the type_schema only for the variables that we are certain of their types. All the other will be automatically inferred.
-        report = ProfileReport(df, title="Titanic EDA", type_schema=type_schema)
+        #We can set the type_schema only for the variables that we are certain of their types. All the other will be automatically inferred.
+        report = ProfileReport(df,
+                               title="Titanic EDA",
+                               type_schema=type_schema)
 
-        report.to_file("report.html")
+        report.to_file('report.html')
