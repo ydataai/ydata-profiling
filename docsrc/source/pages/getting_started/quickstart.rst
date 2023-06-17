@@ -87,9 +87,7 @@ Information about all available options and arguments can be viewed through the 
 Deeper profiling
 ----------------
 
-The contents, behaviour and appearance of the report are easily customizable. The example code below loads the `explorative configuration file <https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_explorative.yaml>`_, 
-which includes many features for text analysis (length distribution, word distribution and character/unicode information), files (file size, creation time) and images (dimensions, EXIF information). 
-The exact settings used in this explorative configuration file can be compared with the `default configuration file <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_default.yaml>`_.
+The contents, behaviour and appearance of the report are easily customizable. The example below used the explorative mode, a lightweight data profiling option.
 
 .. code-block:: python
 

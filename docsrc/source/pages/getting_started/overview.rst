@@ -13,13 +13,13 @@ Overview
   :alt: Code Coverage
   :target: https://codecov.io/gh/ydataai/pandas-profiling
 
-.. image:: https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg
+.. image:: https://img.shields.io/github/release/ydata-profiling/ydata-profiling.svg
   :alt: Release Version
-  :target: https://github.com/ydataai/pandas-profiling/releases
+  :target: https://github.com/ydataai/ydata-profiling/releases
 
-.. image:: https://img.shields.io/pypi/pyversions/pandas-profiling
+.. image:: https://img.shields.io/pypi/pyversions/ydata-profiling
   :alt: Python Version
-  :target: https://pypi.org/project/pandas-profiling/
+  :target: https://pypi.org/project/ydata-profiling/
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
   :alt: Code style: black

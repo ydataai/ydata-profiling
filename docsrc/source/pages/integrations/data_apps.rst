@@ -2,7 +2,7 @@
 Interactive applications
 ========================
 
-The ``pandas-profiling`` report, through several of its interfaces, can be integrated in interactive data applications such as those developed with `Streamlit <https://streamlit.io>`_ or `Panel <https://panel.holoviz.org>`_.
+The ``ydata-profiling`` report, through several of its interfaces, can be integrated in interactive data applications such as those developed with `Streamlit <https://streamlit.io>`_ or `Panel <https://panel.holoviz.org>`_.
 
 Streamlit
 ---------
@@ -16,7 +16,7 @@ Streamlit
 
 .. code-block:: python
   import pandas as pd
-  import pandas_profiling
+  import ydata_profiling
   import streamlit as st
   from streamlit_pandas_profiling import st_profile_report
 
@@ -29,7 +29,7 @@ Streamlit
   st.write(df)
   st_profile_report(pr)
 
-You can install the `pandas-profiling component <https://github.com/Ghasel/streamlit-pandas-profiling>`_ for Streamlit with pip:
+You can install the `ydata-profiling component <https://github.com/Ghasel/streamlit-pandas-profiling>`_ for Streamlit with pip:
 
 .. code-block:: console
 
@@ -39,7 +39,7 @@ You can install the `pandas-profiling component <https://github.com/Ghasel/strea
 Dash
 ----
 
-`Dash <hhttps://github.com/plotly/dash>`_ is a Python framework for building machine learning & data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where ``ydata-profiling`` also focuses. Inline access to the insights provided by ``pandas-profiling`` can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:
+`Dash <hhttps://github.com/plotly/dash>`_ is a Python framework for building machine learning & data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where ``ydata-profiling`` also focuses. Inline access to the insights provided by ``ydata-profiling`` can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:
 
 Load HTML version of report as an asset 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

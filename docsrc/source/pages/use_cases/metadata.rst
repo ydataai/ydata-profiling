@@ -1,10 +1,10 @@
 ======================================
-Dataset metadata and data dictionaries
+Dataset metadata, data dictionaries and configurations
 ======================================
 
 Dataset metadata
 ----------------
-When sharing reports with coworkers or publishing online, it might be important to include metadata of the dataset, such as author, copyright holder or descriptions. ``pandas-profiling`` allows complementing a report with that information. Inspired by `schema.org's Dataset <https://schema.org/Dataset>`_, the currently supported properties are *description*, *creator*, *author*, *url*, *copyright_year* and *copyright_holder*.
+When sharing reports with coworkers or publishing online, it might be important to include metadata of the dataset, such as author, copyright holder or descriptions. ``ydata-profiling`` allows complementing a report with that information. Inspired by `schema.org's Dataset <https://schema.org/Dataset>`_, the currently supported properties are *description*, *creator*, *author*, *url*, *copyright_year* and *copyright_holder*.
 
 The following example shows how to generate a report with a *description*, *copyright_holder* *copyright_year*, *creator* and *url*. In the generated report, these properties are found in the *Overview*, under *About*.
 
@@ -25,7 +25,7 @@ The following example shows how to generate a report with a *description*, *copy
 Column descriptions
 -------------------
 
-In addition to providing dataset details, often users want to include column-specific descriptions when sharing reports with team members and stakeholders. ``pandas-profiling`` supports creating these descriptions, so that the report includes a built-in data dictionary. By default, the descriptions are presented in the *Overview* section of the report, next to each variable.
+In addition to providing dataset details, often users want to include column-specific descriptions when sharing reports with team members and stakeholders. ``ydata-profiling`` supports creating these descriptions, so that the report includes a built-in data dictionary. By default, the descriptions are presented in the *Overview* section of the report, next to each variable.
 
 .. code-block:: python
     :caption: Generate a report with per-variable descriptions
@@ -60,7 +60,7 @@ Alternatively, column descriptions can be loaded from a JSON file:
 
         import json
         import pandas as pd
-        import pandas_profiling
+        import ydata_profiling
 
         definition_file = dataset_column_definition.json
 
@@ -75,5 +75,39 @@ Alternatively, column descriptions can be loaded from a JSON file:
         report = df.profile_report(
             variable={"descriptions": definitions}, show_variable_description=False
         )
+
+        report.to_file('report.html')
+
+Dataset type schema
+----------------
+
+In addition to providing dataset details, users often want to include set type schemas. This is particularly important when integrating ``ydata-profiling`` generation with the information already in a data catalog.
+When using ``ydata-profiling`` ProfileReport, users can set the type_schema property to control the generated profiling data types.
+By default, the type_schema is automatically inferred with visions (Add here the link).
+
+.. code-block:: python
+        :caption: Generate a report with descriptions per variable from a JSON definitions file
+
+        import json
+        import pandas as pd
+
+        from ydata_profiling import ProfileReport
+        from ydata_profiling.utils.cache import cache_file
+
+        file_name = cache_file(
+        "titanic.csv",
+        "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv",
+        )
+        df = pd.read_csv(file_name)
+
+        type_schema={
+            "Survived": "categorical",
+            "Embarked": "categorical"
+        }
+
+        #We can set the type_schema only for the variables that we are certain of their types. All the other will be automatically inferred.
+        report = ProfileReport(df,
+                               title="Titanic EDA",
+                               type_schema=type_schema)
 
         report.to_file('report.html')
