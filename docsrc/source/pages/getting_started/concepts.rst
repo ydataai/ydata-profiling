@@ -17,7 +17,7 @@ Types, when going beyond the the logical data types such as integer, floats, etc
 - File
 - Image
 
-Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``ydata-profiling``'s default typeset `here <https://github.com/ydataai/ydata-profiling/blob/develop/src/pandas_profiling/model/typeset.py>`_.
+Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``ydata-profiling``'s default typeset `here <https://github.com/ydataai/ydata-profiling/blob/develop/src/ydata_profiling/model/typeset.py>`_.
 
 Data quality alerts
 -------------------
@@ -36,4 +36,4 @@ The **Alerts** section of the report includes a comprehensive and automatic list
    :widths: 50, 350
    :header-rows: 1
 
-Information on the default values and the specific parameters/thresholds used in the computation of these alerts, as well as settings to disable specific ones, can be consulted in :doc:`../advanced_usage/available_settings`. 
+Information on the default values and the specific parameters/thresholds used in the computation of these alerts, as well as settings to disable specific ones, can be consulted in :doc:`../advanced_usage/available_settings`.

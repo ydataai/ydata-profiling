@@ -50,6 +50,32 @@ Settings related with the information displayed for each variable.
 
   profile.to_file("report.html")
 
+Setting dataset schema type
+---------------------------
+
+Configure the schema type for a given dataset.
+
+.. code-block:: python
+  :caption: Set the variable type schema to Generate the profile report
+
+  import json
+  import pandas as pd
+
+  from ydata_profiling import ProfileReport
+  from ydata_profiling.utils.cache import cache_file
+
+  file_name = cache_file(
+      "titanic.csv",
+      "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv",
+  )
+  df = pd.read_csv(file_name)
+
+  type_schema = {"Survived": "categorical", "Embarked": "categorical"}
+
+  # We can set the type_schema only for the variables that we are certain of their types. All the other will be automatically inferred.
+  report = ProfileReport(df, title="Titanic EDA", type_schema=type_schema)
+
+  report.to_file("report.html")
 
 Missing data overview plots
 ---------------------------
@@ -75,11 +101,14 @@ Correlations
 ------------
 
 Settings regarding correlation metrics and thresholds.    
-The default value is `auto`. The `auto` correlation returns a comprehensive correlation matrix whose coefficients depend on the datatype of the columns:
+The default value is `auto`, but the following correlation matrices are available:
 
-- numerical to numerical variable: Spearman correlation coefficient
-- categorical to categorical variable: Cramer's V association coefficient
-- numerical to categorical: Cramer's V association coefficient with the numerical variable discretized automatically
+.. csv-table::
+   :file: ../tables/corr_matrices.csv
+   :widths: 30, 200
+   :header-rows: 1
+
+For each correlation matrix you can use the following configurations:
 
 .. csv-table::
    :file: ../tables/config_correlations.csv

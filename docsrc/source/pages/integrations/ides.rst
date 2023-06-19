@@ -21,7 +21,7 @@ PyCharm
 
   .. code-block:: console
 
-    $ where pandas_profiling
+    $ where ydata_profiling
     (example) C:\ProgramData\Anaconda3\Scripts\ydata_profiling.exe
 
 3. In PyCharm, go to *Settings* (or *Preferences* on macOS) > *Tools* > *External tools*
@@ -35,7 +35,7 @@ PyCharm
     - Working Directory: ``$ProjectFileDir$``
 
 
-.. image:: https://pandas-profiling.ydata.ai/docs/assets/pycharm-integration.png ##change this image
+.. image:: https://ydata-profiling.ydata.ai/docs/assets/pycharm-integration.png ##change this image
   :alt: PyCharm Integration
   :width: 400
   :align: center
