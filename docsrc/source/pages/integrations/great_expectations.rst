@@ -6,10 +6,10 @@ Great Expectations
    **Great expectation integration**
     - Great expectations integration is not longer supported.
     - You can recreate the integration with the follow packages versions:
-     - pandas-profiling==2.1.0
+     - ydata-profiling==2.1.0
      - great-expectations==0.13.4
 
-`Great Expectations <https://www.greatexpectations.io>`_ is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically *unit tests for your data*. ``pandas-profiling`` features a method to create a suite of Expectations based on the results of your ``ProfileReport``!
+`Great Expectations <https://www.greatexpectations.io>`_ is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically *unit tests for your data*. ``ydata-profiling`` features a method to create a suite of Expectations based on the results of your ``ProfileReport``!
 
 About Great Expectations
 -------------------------
@@ -25,12 +25,12 @@ Great Expectations renders Expectations to clean, human-readable documentation c
 For more information about Great Expectations, check out the `Great Expectations documentation <https://docs.greatexpectations.io/en/latest/>`_ and join the `Great Expectations Slack channel <https://www.greatexpectations.io/slack>`_ for help.
 
 
-Creating Expectation Suites with pandas-profiling
+Creating Expectation Suites with ydata-profiling
 -------------------------------------------------
 
 An *Expectation Suite* is simply a set of Expectations. You can create Expectation Suites by writing out individual statements, such as the one above, or by automatically generating them based on profiler results.
 
-``pandas-profiling`` provides a simple ``to_expectation_suite()`` method that returns a Great Expectations ``ExpectationSuite`` object which contains a set of Expectations.
+``ydata-profiling`` provides a simple ``to_expectation_suite()`` method that returns a Great Expectations ``ExpectationSuite`` object which contains a set of Expectations.
 
 **Pre-requisites**: In order to run the ``to_expectation_suite()`` method, you will need to install Great Expectations with ``pip install great_expectations``
 
@@ -39,7 +39,7 @@ If you would like to use the additional features such as saving the Suite and bu
 .. code-block:: python
 
     import pandas as pd
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     df = pd.read_csv("titanic.csv")
 
@@ -75,13 +75,13 @@ You can also configure each feature individually in the function call:
         handler=handler,
     )
 
-See `the Great Expectations Examples <https://github.com/ydataai/pandas-profiling/blob/master/examples/features/great_expectations_example.py>`_ for complete examples.
+See `the Great Expectations Examples <https://github.com/ydataai/ydata-profiling/blob/master/examples/features/great_expectations_example.py>`_ for complete examples.
 
 
 Included Expectation types
 --------------------------
 
-The ``to_expectation_suite`` method returns a default set of Expectations if ``pandas-profiling`` determines that the assertion holds true for the profiled dataset. The Expectation types depend on each column's datatype:
+The ``to_expectation_suite`` method returns a default set of Expectations if ``ydata-profiling`` determines that the assertion holds true for the profiled dataset. The Expectation types depend on each column's datatype:
 
 **All columns**
 
@@ -108,7 +108,7 @@ The ``to_expectation_suite`` method returns a default set of Expectations if ``p
 * ``expect_file_to_exist``
 
 
-The default logic is straight forward and can be found in `expectation_algorithms.py <https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/model/expectation_algorithms.py>`_.
+The default logic is straight forward and can be found in `expectation_algorithms.py <https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/model/expectation_algorithms.py>`_.
 
 Rolling your own Expectation Generation Logic
 ---------------------------------------------
