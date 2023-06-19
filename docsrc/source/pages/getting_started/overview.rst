@@ -13,19 +13,25 @@ Overview
   :alt: Code Coverage
   :target: https://codecov.io/gh/ydataai/pandas-profiling
 
-.. image:: https://img.shields.io/github/release/pandas-profiling/pandas-profiling.svg
+.. image:: https://img.shields.io/github/release/ydata-profiling/ydata-profiling.svg
   :alt: Release Version
-  :target: https://github.com/ydataai/pandas-profiling/releases
+  :target: https://github.com/ydataai/ydata-profiling/releases
 
-.. image:: https://img.shields.io/pypi/pyversions/pandas-profiling
+.. image:: https://img.shields.io/pypi/pyversions/ydata-profiling
   :alt: Python Version
-  :target: https://pypi.org/project/pandas-profiling/
+  :target: https://pypi.org/project/ydata-profiling/
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
   :alt: Code style: black
   :target: https://github.com/python/black
 
-``pandas-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, pandas-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
+.. NOTE::
+   **🎁 Latest features**
+    - Looking for how you can do an EDA for Time-Series 🕛 ? Check `this blogpost <https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913>`_
+    - You want to compare 2 datasets and get a report? Check `this blogpost <https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e>`_
+    - For more on PySpark dataframes profiling `check this blogpost <https://www.databricks.com/blog/2023/04/03/pandas-profiling-now-supports-apache-spark.html>`_
+
+``ydata-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
@@ -47,10 +53,4 @@ The report contains three additional sections:
 * **Alerts**: a comprehensive and automatic list of potential data quality issues (high correlation, imbalance, skewness, uniformity, zeros, missing values, constant values, between others) 
 * **Reproduction**: technical details about the analysis (time, version and configuration)
 
-The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks. 
-
-
-.. NOTE::
-   **🎁 Latest features**
-    - Looking for how you can do an EDA for Time-Series 🕛 ? Check `this blogpost <https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913>`_
-    - You want to compare 2 datasets and get a report? Check `this blogpost <https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e>`_
+The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks.

@@ -8,7 +8,7 @@ Dataset Comparison
     - Profiling compare is not *(yet!)* available for Spark Dataframes
 
 
-``pandas-profiling`` can be used to compare multiple version of the same dataset.
+``ydata-profiling`` can be used to compare multiple version of the same dataset.
 This is useful when comparing data from multiple time periods, such as two years.
 Another common scenario is to view the dataset profile for training, validation and test sets in machine learning.
 
@@ -16,7 +16,7 @@ The following syntax can be used to compare two datasets:
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport
+    from ydata_profiling import ProfileReport
 
     train_df = pd.read_csv("train.csv")
     train_report = ProfileReport(train_df, title="Train")
@@ -36,7 +36,7 @@ In order to compare more than two reports, the following syntax can be used:
 
 .. code-block:: python
 
-    from pandas_profiling import ProfileReport, compare
+    from ydata_profiling import ProfileReport, compare
 
     comparison_report = compare([train_report, validation_report, test_report])
 
