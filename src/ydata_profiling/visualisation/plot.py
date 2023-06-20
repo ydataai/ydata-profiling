@@ -38,10 +38,10 @@ def _plot_word_cloud(
             background_color="white", random_state=123, width=300, height=200, scale=2
         ).generate_from_frequencies(word_dict)
 
-        ax = plot.add_subplot(1, len(series), i+1)
+        ax = plot.add_subplot(1, len(series), i + 1)
         ax.imshow(wordcloud)
-        ax.axis('off')
-        
+        ax.axis("off")
+
     return plot
 
 
