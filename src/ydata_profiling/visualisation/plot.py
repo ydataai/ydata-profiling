@@ -26,7 +26,7 @@ def format_fn(tick_val: int, tick_pos: Any) -> str:
 
 
 def _plot_word_cloud(
-    series: pd.Series | List[pd.Series],
+    series: Union[pd.Series, List[pd.Series]],
     figsize: tuple = (6, 4),
 ) -> plt.Figure:
     if not isinstance(series, list):
