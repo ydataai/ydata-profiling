@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Other DataFrame libraries" href="../integrations/other_dataframe_libraries.html" />
-    <link rel="prev" title="Dataset metadata and data dictionaries" href="metadata.html" /> 
+    <link rel="prev" title="Dataset metadata, data dictionaries and configurations" href="metadata.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="comparing_datasets.html">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Customizing the report’s appearance</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#customizing-the-report-s-theme">Customizing the report’s theme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#customizing-the-visualizations">Customizing the visualizations</a><ul>
@@ -127,7 +127,7 @@
              
   <section id="customizing-the-report-s-appearance">
 <h1>Customizing the report’s appearance<a class="headerlink" href="#customizing-the-report-s-appearance" title="Permalink to this heading"></a></h1>
-<p>In some situations, a user might want to customize the appearance of the report to match personal preferences or a corporate brand. <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> offers two major customization dimensions: the <strong>styling of the HTML report</strong> and the <strong>styling of the visualizations and plots</strong> contained within.</p>
+<p>In some situations, a user might want to customize the appearance of the report to match personal preferences or a corporate brand. <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> offers two major customization dimensions: the <strong>styling of the HTML report</strong> and the <strong>styling of the visualizations and plots</strong> contained within.</p>
 <section id="customizing-the-report-s-theme">
 <h2>Customizing the report’s theme<a class="headerlink" href="#customizing-the-report-s-theme" title="Permalink to this heading"></a></h2>
 <p>Several aspects of the report can be customized. The table below shows the available settings:</p>
@@ -218,7 +218,7 @@ An example would be:</p>
 <section id="colour-palettes">
 <h3>Colour palettes<a class="headerlink" href="#colour-palettes" title="Permalink to this heading"></a></h3>
 <p>The palettes used in visualizations like correlation matrices and missing values overview can also be customized via the <code class="docutils literal notranslate"><span class="pre">plot</span></code> argument. To customize the palette used by the correlation matrix, use the <code class="docutils literal notranslate"><span class="pre">correlation</span></code> key:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
 <span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
     <span class="n">df</span><span class="p">,</span>
@@ -229,7 +229,7 @@ An example would be:</p>
 </pre></div>
 </div>
 <p>Similarly, the palette for <em>Missing values</em> can be changed using <code class="docutils literal notranslate"><span class="pre">missing</span></code> argument:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
 <span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span>
     <span class="n">df</span><span class="p">,</span>
@@ -239,7 +239,7 @@ An example would be:</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> accepts all <code class="docutils literal notranslate"><span class="pre">cmap</span></code> values (colormaps) accepted by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>. The list of available colourmaps can <a class="reference external" href="https://matplotlib.org/stable/tutorials/colors/colormaps.html">be accessed here</a>. Alternatively, it is possible to create <a class="reference external" href="https://matplotlib.org/stable/gallery/color/custom_cmap.html">custom palettes</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> accepts all <code class="docutils literal notranslate"><span class="pre">cmap</span></code> values (colormaps) accepted by <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>. The list of available colourmaps can <a class="reference external" href="https://matplotlib.org/stable/tutorials/colors/colormaps.html">be accessed here</a>. Alternatively, it is possible to create <a class="reference external" href="https://matplotlib.org/stable/gallery/color/custom_cmap.html">custom palettes</a>.</p>
 </section>
 </section>
 </section>
@@ -248,7 +248,7 @@ An example would be:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="metadata.html" class="btn btn-neutral float-left" title="Dataset metadata and data dictionaries" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="metadata.html" class="btn btn-neutral float-left" title="Dataset metadata, data dictionaries and configurations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../integrations/other_dataframe_libraries.html" class="btn btn-neutral float-right" title="Other DataFrame libraries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

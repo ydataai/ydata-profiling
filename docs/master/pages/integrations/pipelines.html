@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
@@ -122,7 +122,7 @@
              
   <section id="pipelines">
 <h1>Pipelines<a class="headerlink" href="#pipelines" title="Permalink to this heading"></a></h1>
-<p>With Python, command-line and Jupyter interfaces, <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect, allowing it to easily becomes a building block of data ingestion and analysis pipelines. Integration with <a class="reference external" href="https://github.com/dagster-io/dagster">Dagster</a> or <a class="reference external" href="https://github.com/prefecthq/prefect">Prefect</a> can be achieved in a similar way as with Airflow.</p>
+<p>With Python, command-line and Jupyter interfaces, <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> integrates seamlessly with DAG execution tools like Airflow, Dagster, Kedro and Prefect, allowing it to easily becomes a building block of data ingestion and analysis pipelines. Integration with <a class="reference external" href="https://github.com/dagster-io/dagster">Dagster</a> or <a class="reference external" href="https://github.com/prefecthq/prefect">Prefect</a> can be achieved in a similar way as with Airflow.</p>
 <section id="airflow">
 <h2>Airflow<a class="headerlink" href="#airflow" title="Permalink to this heading"></a></h2>
 <p>Integration with Airflow can be easily achieved through the <a class="reference external" href="https://airflow.apache.org/docs/stable/_api/airflow/operators/bash_operator/index.html">BashOperator</a> or the <a class="reference external" href="https://airflow.apache.org/docs/stable/_api/airflow/operators/python_operator/index.html#airflow.operators.python_operator.PythonOperator">PythonOperator</a>.</p>
@@ -135,7 +135,7 @@
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the Python interface</span>
-<span class="kn">import</span> <span class="nn">pandas_profiling</span>
+<span class="kn">import</span> <span class="nn">ydata_profiling</span>
 
 
 <span class="k">def</span> <span class="nf">profile_data</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">report_file</span><span class="p">):</span>

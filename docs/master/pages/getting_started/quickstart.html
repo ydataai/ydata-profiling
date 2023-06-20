@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
@@ -184,9 +184,7 @@
 </section>
 <section id="deeper-profiling">
 <h2>Deeper profiling<a class="headerlink" href="#deeper-profiling" title="Permalink to this heading"></a></h2>
-<p>The contents, behaviour and appearance of the report are easily customizable. The example code below loads the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/src/ydata_profiling/config_explorative.yaml">explorative configuration file</a>,
-which includes many features for text analysis (length distribution, word distribution and character/unicode information), files (file size, creation time) and images (dimensions, EXIF information).
-The exact settings used in this explorative configuration file can be compared with the <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_default.yaml">default configuration file</a>.</p>
+<p>The contents, behaviour and appearance of the report are easily customizable. The example below used the explorative mode, a lightweight data profiling option.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Profiling Report&quot;</span><span class="p">,</span> <span class="n">explorative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>

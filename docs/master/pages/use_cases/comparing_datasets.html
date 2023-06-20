@@ -21,7 +21,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Dataset metadata and data dictionaries" href="metadata.html" />
+    <link rel="next" title="Dataset metadata, data dictionaries and configurations" href="metadata.html" />
     <link rel="prev" title="Handling sensitive data" href="sensitive_data.html" /> 
 </head>
 
@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
@@ -128,11 +128,11 @@
 </dd>
 </dl>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> can be used to compare multiple version of the same dataset.
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> can be used to compare multiple version of the same dataset.
 This is useful when comparing data from multiple time periods, such as two years.
 Another common scenario is to view the dataset profile for training, validation and test sets in machine learning.</p>
 <p>The following syntax can be used to compare two datasets:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
 <span class="n">train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;train.csv&quot;</span><span class="p">)</span>
 <span class="n">train_report</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">train_df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Train&quot;</span><span class="p">)</span>
@@ -148,7 +148,7 @@ Another common scenario is to view the dataset profile for training, validation 
 The colors are configured in <code class="docutils literal notranslate"><span class="pre">settings.html.style.primary_colors</span></code>.
 The numeric precision parameter <code class="docutils literal notranslate"><span class="pre">settings.report.precision</span></code> can be played with to obtain some additional space in reports.</p>
 <p>In order to compare more than two reports, the following syntax can be used:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span><span class="p">,</span> <span class="n">compare</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span><span class="p">,</span> <span class="n">compare</span>
 
 <span class="n">comparison_report</span> <span class="o">=</span> <span class="n">compare</span><span class="p">([</span><span class="n">train_report</span><span class="p">,</span> <span class="n">validation_report</span><span class="p">,</span> <span class="n">test_report</span><span class="p">])</span>
 
@@ -170,7 +170,7 @@ As a rule of thumb, the value 10 can be used for a single report and 8 for compa
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="sensitive_data.html" class="btn btn-neutral float-left" title="Handling sensitive data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="metadata.html" class="btn btn-neutral float-right" title="Dataset metadata and data dictionaries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="metadata.html" class="btn btn-neutral float-right" title="Dataset metadata, data dictionaries and configurations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -64,7 +64,7 @@ This can be done via ``pip``:
 
 .. code-block::
 
-  pip install pandas-profiling[notebook]
+  pip install ydata-profiling[notebook]
   jupyter nbextension enable --py widgetsnbextension
 
 Or via ``conda``: 

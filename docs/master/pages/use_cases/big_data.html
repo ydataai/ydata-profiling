@@ -55,16 +55,16 @@
 <p class="caption" role="heading"><span class="caption-text">Use cases</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Profiling large datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pyspark">Pyspark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#minimal-mode">Minimal mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-the-dataset">Sample the dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#disable-expensive-computations">Disable expensive computations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pyspark">Pyspark</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#concurrency">Concurrency</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="comparing_datasets.html">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
@@ -127,6 +127,29 @@
 <h1>Profiling large datasets<a class="headerlink" href="#profiling-large-datasets" title="Permalink to this heading"></a></h1>
 <p>By default, <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> comprehensively summarizes the input dataset in a way that gives the most insights for data analysis. For small datasets, these computations can be performed in <em>quasi</em> real-time. For larger datasets, deciding upfront which calculations to make might be required.
 Whether a computation scales to a large datasets not only depends on the exact size of the detaset, but also on its complexity and on whether fast computations are available. If the computation time of the profiling becomes a bottleneck, <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> offers several alternatives to overcome it.</p>
+<section id="pyspark">
+<h2>Pyspark<a class="headerlink" href="#pyspark" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://spark.apache.org/">Spark</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt><strong>Minimal mode</strong></dt><dd><ul class="simple">
+<li><p>This mode was introduced in version v4.0.0</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> now supports Spark Dataframes profiling. You can find an example of the integration <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/master/examples/features/spark_example.py">here</a>.</p>
+<p><strong>Features supported:</strong>
+- Univariate variables analysis
+- Head and Tail dataset sample
+- Correlation matrices: Pearson and Spearman</p>
+<p><em>Coming soon</em>
+- Missing values analysis
+- Interactions
+- Improved histogram computation</p>
+<p>Keep an eye on the <a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues">GitHub</a> page to follow the updates on the implementation of <a class="reference external" href="https://github.com/orgs/ydataai/projects/16/views/2">Pyspark Dataframes support</a>.</p>
+</section>
 <section id="minimal-mode">
 <h2>Minimal mode<a class="headerlink" href="#minimal-mode" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> includes a minimal configuration file where the most expensive computations are turned off by default.
@@ -157,7 +180,7 @@ This is the recommended starting point for larger datasets.</p>
 <span class="n">profile</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The reader of the report might want to know that the profile is generated using a sample from the data. This can be done by adding a description to the report (see <a class="reference internal" href="metadata.html"><span class="doc">Dataset metadata and data dictionaries</span></a> for details).</p>
+<p>The reader of the report might want to know that the profile is generated using a sample from the data. This can be done by adding a description to the report (see <a class="reference internal" href="metadata.html"><span class="doc">Dataset metadata, data dictionaries and configurations</span></a> for details).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Disclaimer: this profiling report was generated using a sample of 5</span><span class="si">% o</span><span class="s2">f the original dataset.&quot;</span>
 <span class="n">sample</span> <span class="o">=</span> <span class="n">large_dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 
@@ -188,33 +211,10 @@ This is the recommended starting point for larger datasets.</p>
 </div>
 <p>The setting controlling this, <code class="docutils literal notranslate"><span class="pre">ìnteractions.targets</span></code>, can be changed via multiple interfaces (configuration files or environment variables). For details, see <a class="reference internal" href="../advanced_usage/changing_settings.html"><span class="doc">Changing settings</span></a>.</p>
 </section>
-<section id="pyspark">
-<h2>Pyspark<a class="headerlink" href="#pyspark" title="Permalink to this heading"></a></h2>
-<p><a class="reference external" href="https://spark.apache.org/">Spark</a></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<dl class="simple">
-<dt><strong>Minimal mode</strong></dt><dd><ul class="simple">
-<li><p>This mode was introduced in version v4.0.0</p></li>
-</ul>
-</dd>
-</dl>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> now supports Spark Dataframes profiling. You can find an example of the integration <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/master/examples/features/spark_example.py">here</a>.</p>
-<p><strong>Features supported:</strong>
-- Univariate variables analysis
-- Head and Tail dataset sample
-- Correlation matrices: Pearson and Spearman</p>
-<p><em>Coming soon</em>
-- Missing values analysis
-- Interactions
-- Improved histogram computation</p>
-<p>Keep an eye on the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues">GitHub</a> page to follow the updates on the implementation of <a class="reference external" href="https://github.com/orgs/ydataai/projects/16/views/2">Pyspark Dataframes support</a>.</p>
-</section>
 <section id="concurrency">
 <h2>Concurrency<a class="headerlink" href="#concurrency" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> is a project under active development. One of the highly desired features is the addition of a scalable backend such as <a class="reference external" href="https://github.com/modin-project/modin">Modin</a> or <a class="reference external" href="https://dask.org/">Dask</a>.</p>
-<p>Keep an eye on the <a class="reference external" href="https://github.com/ydataai/pandas-profiling/issues">GitHub</a> page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is <a class="reference external" href="https://github.com/ydataai/pandas-profiling/projects/3">currently underway</a>.</p>
+<p>Keep an eye on the <a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues">GitHub</a> page to follow the updates on the implementation of a concurrent and highly scalable backend. Specifically, development of a Spark backend is <a class="reference external" href="https://github.com/ydataai/ydata-profiling/projects/3">currently underway</a>.</p>
 </section>
 </section>
 

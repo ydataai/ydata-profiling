@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
@@ -127,7 +127,7 @@
              
   <section id="interactive-applications">
 <h1>Interactive applications<a class="headerlink" href="#interactive-applications" title="Permalink to this heading"></a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> report, through several of its interfaces, can be integrated in interactive data applications such as those developed with <a class="reference external" href="https://streamlit.io">Streamlit</a> or <a class="reference external" href="https://panel.holoviz.org">Panel</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> report, through several of its interfaces, can be integrated in interactive data applications such as those developed with <a class="reference external" href="https://streamlit.io">Streamlit</a> or <a class="reference external" href="https://panel.holoviz.org">Panel</a>.</p>
 <section id="id1">
 <h2>Streamlit<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://www.streamlit.io">Streamlit</a> is an open-source Python library made to build web-apps for machine learning and data science.</p>
@@ -136,14 +136,14 @@
 <p>This feature is only available for versions previous to ydata-profiling (&lt;=3.6.2).</p>
 </div>
 <img alt="https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif" src="https://user-images.githubusercontent.com/9756388/140196751-69b0a361-99ed-4fc3-8282-cb0cd1fb0d59.gif" />
-<p>You can install the <a class="reference external" href="https://github.com/Ghasel/streamlit-pandas-profiling">pandas-profiling component</a> for Streamlit with pip:</p>
+<p>You can install the <a class="reference external" href="https://github.com/Ghasel/streamlit-pandas-profiling">ydata-profiling component</a> for Streamlit with pip:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install streamlit-pandas-profiling</span>
 </pre></div>
 </div>
 </section>
 <section id="dash">
 <h2>Dash<a class="headerlink" href="#dash" title="Permalink to this heading"></a></h2>
-<p><a class="reference external" href="hhttps://github.com/plotly/dash">Dash</a> is a Python framework for building machine learning &amp; data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> also focuses. Inline access to the insights provided by <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:</p>
+<p><a class="reference external" href="hhttps://github.com/plotly/dash">Dash</a> is a Python framework for building machine learning &amp; data science web apps, built on top of Plotly.js, React and Flask. It is commonly used for interactive data exploration, precisely where <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> also focuses. Inline access to the insights provided by <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> can help guide the exploratory work allowed by Dash. To integrate a Profiling Report inside a Dash app, two options exist:</p>
 <section id="load-html-version-of-report-as-an-asset">
 <h3>Load HTML version of report as an asset<a class="headerlink" href="#load-html-version-of-report-as-an-asset" title="Permalink to this heading"></a></h3>
 <p>Assuming the HTML version of the report is in <code class="docutils literal notranslate"><span class="pre">report.html</span></code>, move it to a folder called <code class="docutils literal notranslate"><span class="pre">assets</span></code>. The snippet below shows a simple Dash app, <code class="docutils literal notranslate"><span class="pre">app.py</span></code>, embedding this report:</p>

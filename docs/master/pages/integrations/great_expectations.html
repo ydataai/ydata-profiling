@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
@@ -65,7 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="other_dataframe_libraries.html">Other DataFrame libraries</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Great Expectations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#about-great-expectations">About Great Expectations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-expectation-suites-with-pandas-profiling">Creating Expectation Suites with pandas-profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-expectation-suites-with-ydata-profiling">Creating Expectation Suites with ydata-profiling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#included-expectation-types">Included Expectation types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rolling-your-own-expectation-generation-logic">Rolling your own Expectation Generation Logic</a></li>
 </ul>
@@ -133,14 +133,14 @@
 </ul>
 <blockquote>
 <div><ul class="simple">
-<li><p>pandas-profiling==2.1.0</p></li>
+<li><p>ydata-profiling==2.1.0</p></li>
 <li><p>great-expectations==0.13.4</p></li>
 </ul>
 </div></blockquote>
 </dd>
 </dl>
 </div>
-<p><a class="reference external" href="https://www.greatexpectations.io">Great Expectations</a> is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically <em>unit tests for your data</em>. <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> features a method to create a suite of Expectations based on the results of your <code class="docutils literal notranslate"><span class="pre">ProfileReport</span></code>!</p>
+<p><a class="reference external" href="https://www.greatexpectations.io">Great Expectations</a> is a Python-based open-source library for validating, documenting, and profiling your data. It helps you to maintain data quality and improve communication about data between teams. With Great Expectations, you can assert what you expect from the data you load and transform, and catch data issues quickly – Expectations are basically <em>unit tests for your data</em>. <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> features a method to create a suite of Expectations based on the results of your <code class="docutils literal notranslate"><span class="pre">ProfileReport</span></code>!</p>
 <section id="about-great-expectations">
 <h2>About Great Expectations<a class="headerlink" href="#about-great-expectations" title="Permalink to this heading"></a></h2>
 <p><em>Expectations</em> are assertions about your data. In Great Expectations, those assertions are expressed in a declarative language in the form of simple, human-readable Python methods. For example, in  order to assert that you want values in a column <code class="docutils literal notranslate"><span class="pre">passenger_count</span></code> in your dataset to be integers between 1 and 6, you can say:</p>
@@ -151,14 +151,14 @@
 <p>Great Expectations renders Expectations to clean, human-readable documentation called <em>Data Docs</em>. These HTML docs contain both your Expectation Suites as well as your data validation results each time validation is run – think of it as a continuously updated data quality report.</p>
 <p>For more information about Great Expectations, check out the <a class="reference external" href="https://docs.greatexpectations.io/en/latest/">Great Expectations documentation</a> and join the <a class="reference external" href="https://www.greatexpectations.io/slack">Great Expectations Slack channel</a> for help.</p>
 </section>
-<section id="creating-expectation-suites-with-pandas-profiling">
-<h2>Creating Expectation Suites with pandas-profiling<a class="headerlink" href="#creating-expectation-suites-with-pandas-profiling" title="Permalink to this heading"></a></h2>
+<section id="creating-expectation-suites-with-ydata-profiling">
+<h2>Creating Expectation Suites with ydata-profiling<a class="headerlink" href="#creating-expectation-suites-with-ydata-profiling" title="Permalink to this heading"></a></h2>
 <p>An <em>Expectation Suite</em> is simply a set of Expectations. You can create Expectation Suites by writing out individual statements, such as the one above, or by automatically generating them based on profiler results.</p>
-<p><code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> provides a simple <code class="docutils literal notranslate"><span class="pre">to_expectation_suite()</span></code> method that returns a Great Expectations <code class="docutils literal notranslate"><span class="pre">ExpectationSuite</span></code> object which contains a set of Expectations.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> provides a simple <code class="docutils literal notranslate"><span class="pre">to_expectation_suite()</span></code> method that returns a Great Expectations <code class="docutils literal notranslate"><span class="pre">ExpectationSuite</span></code> object which contains a set of Expectations.</p>
 <p><strong>Pre-requisites</strong>: In order to run the <code class="docutils literal notranslate"><span class="pre">to_expectation_suite()</span></code> method, you will need to install Great Expectations with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">great_expectations</span></code></p>
 <p>If you would like to use the additional features such as saving the Suite and building Data Docs, you will also need to configure a Great Expectations Data Context by running <code class="docutils literal notranslate"><span class="pre">great_expectations</span> <span class="pre">init</span></code> in your project’s directory.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pandas_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;titanic.csv&quot;</span><span class="p">)</span>
 
@@ -189,11 +189,11 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>See <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/examples/features/great_expectations_example.py">the Great Expectations Examples</a> for complete examples.</p>
+<p>See <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/master/examples/features/great_expectations_example.py">the Great Expectations Examples</a> for complete examples.</p>
 </section>
 <section id="included-expectation-types">
 <h2>Included Expectation types<a class="headerlink" href="#included-expectation-types" title="Permalink to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">to_expectation_suite</span></code> method returns a default set of Expectations if <code class="docutils literal notranslate"><span class="pre">pandas-profiling</span></code> determines that the assertion holds true for the profiled dataset. The Expectation types depend on each column’s datatype:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">to_expectation_suite</span></code> method returns a default set of Expectations if <code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> determines that the assertion holds true for the profiled dataset. The Expectation types depend on each column’s datatype:</p>
 <p><strong>All columns</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">expect_column_values_to_not_be_null</span></code></p></li>
@@ -218,7 +218,7 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">expect_file_to_exist</span></code></p></li>
 </ul>
-<p>The default logic is straight forward and can be found in <a class="reference external" href="https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/model/expectation_algorithms.py">expectation_algorithms.py</a>.</p>
+<p>The default logic is straight forward and can be found in <a class="reference external" href="https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/model/expectation_algorithms.py">expectation_algorithms.py</a>.</p>
 </section>
 <section id="rolling-your-own-expectation-generation-logic">
 <h2>Rolling your own Expectation Generation Logic<a class="headerlink" href="#rolling-your-own-expectation-generation-logic" title="Permalink to this heading"></a></h2>

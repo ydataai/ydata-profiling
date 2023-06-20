@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata and data dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
@@ -75,6 +75,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Available settings</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general-settings">General settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#variable-summary-settings">Variable summary settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-dataset-schema-type">Setting dataset schema type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#missing-data-overview-plots">Missing data overview plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#correlations">Correlations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#interactions">Interactions</a></li>
@@ -284,6 +285,33 @@
 </div>
 </div>
 </section>
+<section id="setting-dataset-schema-type">
+<h2>Setting dataset schema type<a class="headerlink" href="#setting-dataset-schema-type" title="Permalink to this heading"></a></h2>
+<p>Configure the schema type for a given dataset.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Set the variable type schema to Generate the profile report</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">ydata_profiling</span> <span class="kn">import</span> <span class="n">ProfileReport</span>
+<span class="kn">from</span> <span class="nn">ydata_profiling.utils.cache</span> <span class="kn">import</span> <span class="n">cache_file</span>
+
+<span class="n">file_name</span> <span class="o">=</span> <span class="n">cache_file</span><span class="p">(</span>
+    <span class="s2">&quot;titanic.csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+
+<span class="n">type_schema</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Survived&quot;</span><span class="p">:</span> <span class="s2">&quot;categorical&quot;</span><span class="p">,</span> <span class="s2">&quot;Embarked&quot;</span><span class="p">:</span> <span class="s2">&quot;categorical&quot;</span><span class="p">}</span>
+
+<span class="c1"># We can set the type_schema only for the variables that we are certain of their types. All the other will be automatically inferred.</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Titanic EDA&quot;</span><span class="p">,</span> <span class="n">type_schema</span><span class="o">=</span><span class="n">type_schema</span><span class="p">)</span>
+
+<span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
 <section id="missing-data-overview-plots">
 <h2>Missing data overview plots<a class="headerlink" href="#missing-data-overview-plots" title="Permalink to this heading"></a></h2>
 <p>Settings related with the missing data section and the visualizations it can include.</p>
@@ -319,8 +347,8 @@
 </tr>
 </tbody>
 </table>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Configuration example: disable heatmap for large datasets</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Configuration example: disable heatmap for large datasets</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
     <span class="n">missing_diagrams</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">&quot;heatmap&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -334,12 +362,42 @@
 <section id="correlations">
 <h2>Correlations<a class="headerlink" href="#correlations" title="Permalink to this heading"></a></h2>
 <p>Settings regarding correlation metrics and thresholds.
-The default value is <cite>auto</cite>. The <cite>auto</cite> correlation returns a comprehensive correlation matrix whose coefficients depend on the datatype of the columns:</p>
-<ul class="simple">
-<li><p>numerical to numerical variable: Spearman correlation coefficient</p></li>
-<li><p>categorical to categorical variable: Cramer’s V association coefficient</p></li>
-<li><p>numerical to categorical: Cramer’s V association coefficient with the numerical variable discretized automatically</p></li>
-</ul>
+The default value is <cite>auto</cite>, but the following correlation matrices are available:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 87%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">auto</span></code></p></td>
+<td><p>Calculates the column pairwise correlation depending on the type schema:
+- numerical to numerical variable: Spearman correlation coefficient
+- categorical to categorical variable: Cramer’s V association coefficient 
+- numerical to categorical: Cramer’s V association coefficient with the numerical variable discretized automatically</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spearman</span></code></p></td>
+<td><p>Spearman’s correlation measures the strength and direction of monotonic association between two variables. Great to evaluate the strength of the relation between categorical or ordinal variables.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pearson</span></code></p></td>
+<td><p>The Pearson correlation coefficient is the most common way of measuring a linear correlation. It is a number between –1 and 1 that measures the strength and direction of the relationship between two variables.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kendall</span></code></p></td>
+<td><p>Kendall rank correlation coefficient is a statistic used to measure the ordinal association between two measured quantities. Kendall’s is often used when data doesn’t meet one of the requirements of Pearson’s correlation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">phi_k</span></code></p></td>
+<td><p>Phi K is especially suitable for working with mixed-type variables. Using this coefficiente we can find (un)expected correlation and evaluate their statistical significance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cramers</span></code></p></td>
+<td><p>Cramers is a correlation matrix that is commonly used to examine the association between categorical variables when there is more than 2x2 contingency.</p></td>
+</tr>
+</tbody>
+</table>
+<p>For each correlation matrix you can use the following configurations:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 5%" />

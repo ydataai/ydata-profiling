@@ -1,0 +1,13 @@
+# [4.3.0](https://github.com/ydataai/ydata-profiling/compare/v4.2.0...v4.3.0) (2023-06-20)
+
+
+#### 🐛 Bug fixes
+
+* **actions:** update create-tag action ([#1360](https://github.com/ydataai/ydata-profiling/issues/1360)) ([deee44e](https://github.com/ydataai/ydata-profiling/commit/deee44e068297b4778705975c18c0590fbb96975))
+* alert not shown for vars with a single alert ([#1362](https://github.com/ydataai/ydata-profiling/issues/1362)) ([98e3124](https://github.com/ydataai/ydata-profiling/commit/98e312463c08faeecfd777c243455184fe18e0a7))
+* incorrect alert comparison message ([#1364](https://github.com/ydataai/ydata-profiling/issues/1364)) ([54445be](https://github.com/ydataai/ydata-profiling/commit/54445beab85d7a2100d095912d8eafa960966d72))
+
+
+#### 🎉 Features
+
+* support for pandas v2.0 ([#1353](https://github.com/ydataai/ydata-profiling/issues/1353)) ([a62e520](https://github.com/ydataai/ydata-profiling/commit/a62e52070b6e8a169060abf3472ed0c04dee824b))

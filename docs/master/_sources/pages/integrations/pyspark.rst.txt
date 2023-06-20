@@ -67,6 +67,24 @@ Install ydata-profiling
 .. code-block::
     pip install ydata-profiling[pyspark]
 
+Profiling with Spark - Supported Features
+-----------------------------------------
+.. NOTE::
+   **Minimal mode**
+    - This mode was introduced in version v4.0.0
+
+``ydata-profiling`` now supports Spark Dataframes profiling. You can find an example of the integration `here <https://github.com/ydataai/ydata-profiling/blob/master/examples/features/spark_example.py>`_.
+
+**Features supported:**
+    - Univariate variables analysis
+    - Head and Tail dataset sample
+    - Correlation matrices: Pearson and Spearman
+
+*Coming soon*
+    - Missing values analysis
+    - Interactions
+    - Improved histogram computation
+
 Profiling with Spark DataFrames
 -------------------------------
 

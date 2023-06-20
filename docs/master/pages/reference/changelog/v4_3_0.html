@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.3.0 (2023-06-20) &mdash; ydata-profiling 0.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #e32212" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ydata-profiling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use cases</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/big_data.html">Profiling large datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/sensitive_data.html">Handling sensitive data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/other_dataframe_libraries.html">Other DataFrame libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/great_expectations.html">Great Expectations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/data_apps.html">Interactive applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/pipelines.html">Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/cloud_services.html">Cloud services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/ides.html">IDEs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations/pyspark.html">⚡ Pyspark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/available_settings.html">Available settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/changing_settings.html">Changing settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/multiple_runs.html">Caching results throughout multiple runs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_usage/corr_mat_access.html">Accessing the values of correlation matrices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support and contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support_contrib/help_troubleshoot.html">Help &amp; Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support_contrib/common_issues.html">Common issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support_contrib/contribution_guidelines.html">Contribution Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../announcements.html">Past Announcements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #e32212" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ydata-profiling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">4.3.0 (2023-06-20)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/pages/reference/changelog/v4_3_0.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><a class="reference external" href="https://github.com/ydataai/ydata-profiling/compare/v4.2.0...v4.3.0">4.3.0</a> (2023-06-20)<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h1>
+<section id="bug-fixes">
+<h2>🐛 Bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>actions:</strong> update create-tag action (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1360">#1360</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/deee44e068297b4778705975c18c0590fbb96975">deee44e</a>)</p></li>
+<li><p>alert not shown for vars with a single alert (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1362">#1362</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/98e312463c08faeecfd777c243455184fe18e0a7">98e3124</a>)</p></li>
+<li><p>incorrect alert comparison message (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1364">#1364</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/54445beab85d7a2100d095912d8eafa960966d72">54445be</a>)</p></li>
+</ul>
+</section>
+<section id="features">
+<h2>🎉 Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>support for pandas v2.0 (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/issues/1353">#1353</a>) (<a class="reference external" href="https://github.com/ydataai/ydata-profiling/commit/a62e52070b6e8a169060abf3472ed0c04dee824b">a62e520</a>)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, YData Labs Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
