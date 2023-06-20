@@ -21,7 +21,7 @@ jobs:
         numpy: ["numpy"]
         include:
           - os: macos-latest
-            python-version: 3.7
+            python-version: 3.7.16
             pandas: "pandas>1.1"
             numpy: "numpy"
 #          - os: windows-2016
@@ -29,7 +29,7 @@ jobs:
 #            pandas: "pandas>1.1"
 #            numpy: "numpy"
           - os: ubuntu-22.04
-            python-version: 3.7
+            python-version: 3.7.16
             pandas: "pandas>1.1"
             numpy: "numpy"
           - os: ubuntu-22.04
