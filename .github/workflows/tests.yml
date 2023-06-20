@@ -73,7 +73,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - if: startsWith(runner.os, 'macOS')
-      run: brew install bzip2 
+      run: |
+        brew install bzip2 
+        echo 'export PATH="/usr/local/opt/bzip2/bin:$PATH"' >> /Users/runner/.bash_profile
     - uses: actions/cache@v3
       if: startsWith(runner.os, 'Windows')
       with:
