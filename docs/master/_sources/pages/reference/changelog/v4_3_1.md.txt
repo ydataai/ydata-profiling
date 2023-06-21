@@ -1,0 +1,8 @@
+### Changelog v4.3.1
+
+
+#### 🐛 Bug fixes
+
+* **actions:** pin python 3.7 to 3.7.16 ([#1368](https://github.com/ydataai/ydata-profiling/issues/1368)) ([9553a5b](https://github.com/ydataai/ydata-profiling/commit/9553a5bad22cef0643b9c02dddf2e64d59deab8b))
+* **actions:** uses ydata/create-tag ([#1371](https://github.com/ydataai/ydata-profiling/issues/1371)) ([cfb020d](https://github.com/ydataai/ydata-profiling/commit/cfb020d9ad0ce7ef3be53962763b7a57b88732f9))
+* comparison report failing for text type ([#1369](https://github.com/ydataai/ydata-profiling/issues/1369)) ([6461e16](https://github.com/ydataai/ydata-profiling/commit/6461e16a300136a21dc7b0df16031023b78db7de))
