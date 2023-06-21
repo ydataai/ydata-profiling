@@ -26,16 +26,22 @@ def format_fn(tick_val: int, tick_pos: Any) -> str:
 
 
 def _plot_word_cloud(
-    series: pd.Series,
+    series: Union[pd.Series, List[pd.Series]],
     figsize: tuple = (6, 4),
 ) -> plt.Figure:
-    word_dict = series.to_dict()
-    wordcloud = WordCloud(
-        background_color="white", random_state=123, width=300, height=200, scale=2
-    ).generate_from_frequencies(word_dict)
-    plt.figure(figsize=figsize)
-    plot = plt.imshow(wordcloud, interpolation="bilinear")
-    plt.axis("off")
+    if not isinstance(series, list):
+        series = [series]
+    plot = plt.figure(figsize=figsize)
+    for i, series_data in enumerate(series):
+        word_dict = series_data.to_dict()
+        wordcloud = WordCloud(
+            background_color="white", random_state=123, width=300, height=200, scale=2
+        ).generate_from_frequencies(word_dict)
+
+        ax = plot.add_subplot(1, len(series), i + 1)
+        ax.imshow(wordcloud)
+        ax.axis("off")
+
     return plot
 
 
