@@ -116,7 +116,7 @@ jobs:
     - prepare
 
     steps:
-    - uses: simpleactions/create-tag@v1.0.0
+    - uses: ydata/create-tag@v1.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
