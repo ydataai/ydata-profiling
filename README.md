@@ -13,7 +13,7 @@
 <p align="center">
   <a href="https://ydata-profiling.ydata.ai/docs/master/">Documentation</a>
   |
-  <a href="https://discord.com/invite/mw7xjJ7b7s">Discord</a>
+  <a href="https://tiny.ydata.ai/dcai-ydata-profiling">Discord</a>
   | 
   <a href="https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling">Stack Overflow</a>
   |
@@ -245,7 +245,7 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling): ideal for asking questions on how to use the package
 - [GitHub Issues](https://github.com/ydataai/ydata-profiling/issues): bugs, proposals for changes, feature requests
-- [Discord](https://discord.com/invite/mw7xjJ7b7s): ideal for projects discussions, ask questions, collaborations, general chat
+- [Discord](https://tiny.ydata.ai/dcai-ydata-profiling): ideal for projects discussions, ask questions, collaborations, general chat
 - [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
 
 > ❗ Before reporting an issue on GitHub, check out [Common Issues](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
@@ -253,7 +253,7 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 ## 🤝🏽 Contributing
 Learn how to get involved in the [Contribution Guide](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
 
-A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://discord.com/invite/mw7xjJ7b7s).
+A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://tiny.ydata.ai/dcai-ydata-profiling).
 
 
 A big thank you to all our amazing contributors! 
