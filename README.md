@@ -29,6 +29,9 @@
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
+⭐️ **Looking for a solution fully integrated with your systems and data flows?**
+Learn how to optimize your data preparation workflows with guided data exploration in YData Fabric. Try the [Community Version](https://ydata.ai/ydata-fabric-free-trial).
+
 
 ## ▶️ Quickstart
 
@@ -57,6 +60,9 @@ To generate the standard profiling report, merely run:
 ```python
 profile = ProfileReport(df, title="Profiling Report")
 ```
+
+⭐️ **Want to run data profiling directly from your databases?**
+If you're looking for a seamless profiling experience in your organization's datasbases, check YData Fabric's [Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle. etc.), object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. From single profiling to a trustable and scalable Data Catalog for data teams.
 
 ## Key features
 
