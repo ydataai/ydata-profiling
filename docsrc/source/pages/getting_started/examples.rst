@@ -30,6 +30,8 @@ The following example reports showcase the potentialities of the package across 
 
 - `HCC <https://github.com/ydataai/ydata-profiling/tree/master/examples/hcc>`_ (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
 
+- `Vehicle Insurance Fraud <https://ydata.ai/resources/synthetic-data-for-aligning-ml-models-to-business-value>`_ (Exploring YData Fabric's `Data Catalog <https://ydata.ai/products/data_catalog>`_ to highlight data quality issues during EDA)
+
 .. |nasa_binder| image:: https://mybinder.org/badge_logo.svg
  :alt: Open in Binder
  :target: https://mybinder.org/v2/gh/ydataai/ydata-profiling/master?filepath=examples%2Fmeteorites%2Fmeteorites.ipynb
