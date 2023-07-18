@@ -29,7 +29,7 @@
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
-⭐️ **Looking for a solution fully integrated with your systems and data flows?**
+⭐️ **Looking for a solution fully integrated with your systems and data flows?**<br>
 Learn how to optimize your data preparation workflows with guided data exploration in YData Fabric. Try the [Community Version](https://ydata.ai/ydata-fabric-free-trial).
 
 
@@ -60,9 +60,6 @@ To generate the standard profiling report, merely run:
 ```python
 profile = ProfileReport(df, title="Profiling Report")
 ```
-
-⭐️ **Want to run data profiling directly from your databases?**
-If you're looking for a seamless profiling experience in your organization's datasbases, check YData Fabric's [Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle. etc.), object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. From single profiling to a trustable and scalable Data Catalog for data teams.
 
 ## Key features
 
@@ -104,6 +101,7 @@ YData-profiling can be used to deliver a variety of different use-case. The docu
 | [Handling sensitive data](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset              |
 | [Dataset metadata and data dictionaries](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries         |
 | [Customizing the report's appearance](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations            |
+| [Profiling from multiple tables (databases)](https://ydata.ai/resources/unlocking-the-power-of-a-data-catalog-for-your-business) | For a seamless profiling experience in your organization's databases, check YData Fabric's [Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle. etc.), object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others.           |
 
 ### Using inside Jupyter Notebooks
 
@@ -171,6 +169,7 @@ The following example reports showcase the potentialities of the package across 
 * [Coal prices](https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
 * [USA Air Quality](https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
 * [HCC](https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
+* [Vehicle Insurance Fraud](https://ydata.ai/resources/synthetic-data-for-aligning-ml-models-to-business-value) (Exploring YData Fabric's [Data Catalog](https://ydata.ai/products/data_catalog) to highlight data quality issues during EDA)
 
 ## 🛠️ Installation
 Additional details, including information about widget support, are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
