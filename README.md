@@ -29,9 +29,8 @@
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
-⭐️ **Looking for a solution fully integrated with your systems and data flows?**<br>
-Learn how to optimize your data preparation workflows with guided data exploration in YData Fabric. Try the [Community Version](https://ydata.ai/ydata-fabric-free-trial).
-
+> **Looking for a scalable solution that can fully integrate with your database systems?**<br>
+Leverage YData Fabric Data Catalog to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.) and leverage an interactive and guided profiling experience in Fabric. Check out the [Community Version](https://ydata.ai/ydata-fabric-free-trial).
 
 ## ▶️ Quickstart
 
