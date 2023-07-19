@@ -5,3 +5,7 @@
 .autodoc_pydantic_collapsable_json {
   cursor: pointer;
   }
+
+.autodoc_pydantic_collapsable_erd {
+  cursor: pointer;
+  }
