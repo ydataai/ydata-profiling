@@ -113,7 +113,7 @@ def string_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
 
 def string_to_datetime(series: pd.Series, state: dict) -> pd.Series:
     if is_pandas_1():
-        return series.astype("datetime64")
+        return series.astype("datetime64", errors='ignore')
     return pd.to_datetime(series, format="mixed")
 
 
