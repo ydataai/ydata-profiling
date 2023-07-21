@@ -25,15 +25,15 @@ Overview
   :alt: Code style: black
   :target: https://github.com/python/black
 
+``ydata-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
+
+The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
+
 .. NOTE::
    **🎁 Latest features**
     - Looking for how you can do an EDA for Time-Series 🕛 ? Check `this blogpost <https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913>`_
     - You want to compare 2 datasets and get a report? Check `this blogpost <https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e>`_
     - For more on PySpark dataframes profiling `check this blogpost <https://www.databricks.com/blog/2023/04/03/pandas-profiling-now-supports-apache-spark.html>`_
-
-``ydata-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
-
-The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
 Key features
 ------------
