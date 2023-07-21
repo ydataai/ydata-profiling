@@ -35,6 +35,11 @@ Overview
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
+.. NOTE::
+   **Looking for a scalable solution that can fully integrate with your database systems?**
+   Leverage `YData Fabric Data Catalog <https://ydata.ai/products/data_catalog>`_ to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.), 
+   and leverage an interactive and guided profiling experience in Fabric. Check out the `Community Version <https://ydata.ai/ydata-fabric-free-trial>`_.
+
 Key features
 ------------
 - **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
