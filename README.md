@@ -100,7 +100,6 @@ YData-profiling can be used to deliver a variety of different use-case. The docu
 | [Handling sensitive data](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset              |
 | [Dataset metadata and data dictionaries](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries         |
 | [Customizing the report's appearance](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations            |
-| [Profiling Databases](https://ydata.ai/resources/unlocking-the-power-of-a-data-catalog-for-your-business) | For a seamless profiling experience in your organization's databases, check YData Fabric's [Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others.           |
 
 ### Using inside Jupyter Notebooks
 
@@ -142,10 +141,10 @@ profile.to_file("your_report.json")
 
 ### Using in the command line
 
-For standard formatted CSV files (which can be read directly by pandas without additional settings), the `pandas_profiling` executable can be used in the command line. The example below generates a report named _Example Profiling Report_, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
+For standard formatted CSV files (which can be read directly by pandas without additional settings), the `ydata_profiling` executable can be used in the command line. The example below generates a report named _Example Profiling Report_, using a configuration file called `default.yaml`, in the file `report.html` by processing a `data.csv` dataset.
 
 ```sh
-pandas_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
+ydata_profiling --title "Example Profiling Report" --config_file default.yaml data.csv report.html
 ```
 
 Additional details on the CLI are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/quickstart.html#command-line-usage).
@@ -168,7 +167,6 @@ The following example reports showcase the potentialities of the package across 
 * [Coal prices](https://ydata-profiling.ydata.ai/examples/master/features/flatly_report.html) (simple pricing evolution datasets, showcasing the theming options)
 * [USA Air Quality](https://github.com/ydataai/pandas-profiling/tree/master/examples/usaairquality) (Time-series air quality dataset EDA example)
 * [HCC](https://github.com/ydataai/pandas-profiling/tree/master/examples/hcc) (Open dataset from healthcare, showcasing compare between two sets of data, before and after preprocessing)
-* [Vehicle Insurance Fraud](https://ydata.ai/resources/synthetic-data-for-aligning-ml-models-to-business-value) (Exploring YData Fabric's [Data Catalog](https://ydata.ai/products/data_catalog) to highlight data quality issues during EDA)
 
 ## 🛠️ Installation
 Additional details, including information about widget support, are available [on the documentation](https://ydata-profiling.ydata.ai/docs/master/pages/getting_started/installation.html).
@@ -233,7 +231,7 @@ You need [Python 3](https://python3statement.org/) to run the package. Other dep
 
 ## 🔗 Integrations
 
-To maximize its usefulness in real world contexts, `pandas-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
+To maximize its usefulness in real world contexts, `ydata-profiling` has a set of implicit and explicit integrations with a variety of other actors in the Data Science ecosystem: 
 
 | Integration type | Description |
 |---|---|
@@ -241,8 +239,8 @@ To maximize its usefulness in real world contexts, `pandas-profiling` has a set 
 | [Great Expectations](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html) | Generating [Great Expectations](https://greatexpectations.io) expectations suites directly from a profiling report |
 | [Interactive applications](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/data_apps.html) | Embedding profiling reports in [Streamlit](http://streamlit.io), [Dash](http://dash.plotly.com) or [Panel](https://panel.holoviz.org) applications |
 | [Pipelines](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pipelines.html) | Integration with DAG workflow execution tools like [Airflow](https://airflow.apache.org) or [Kedro](https://kedro.org) |
-| [Cloud services](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html) | Using `pandas-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
-| [IDEs](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/ides.html) | Using `pandas-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/) |
+| [Cloud services](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html) | Using `ydata-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
+| [IDEs](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/ides.html) | Using `ydata-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/) |
 
 ## 🙋 Support
 Need help? Want to share a perspective? Report a bug? Ideas for collaborations? Reach out via the following channels:
@@ -250,7 +248,9 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas-profiling+or+ydata-profiling): ideal for asking questions on how to use the package
 - [GitHub Issues](https://github.com/ydataai/ydata-profiling/issues): bugs, proposals for changes, feature requests
 - [Discord](https://tiny.ydata.ai/dcai-ydata-profiling): ideal for projects discussions, ask questions, collaborations, general chat
-- [Email](mailto:developers@ydata.ai): project collaborations or sponsoring
+
+> **Need Help?**<br>
+Get your questions answered with a product owner by [booking a Pawsome chat](https://meetings.hubspot.com/fabiana-clemente)! 🐼
 
 > ❗ Before reporting an issue on GitHub, check out [Common Issues](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
 
