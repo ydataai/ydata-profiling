@@ -25,6 +25,8 @@ Overview
   :alt: Code style: black
   :target: https://github.com/python/black
 
+|
+
 ``ydata-profiling`` primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas `df.describe()` function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as **html** and **json**.
 
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
