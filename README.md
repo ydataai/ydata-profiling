@@ -98,6 +98,7 @@ YData-profiling can be used to deliver a variety of different use-case. The docu
 | [Handling sensitive data](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset              |
 | [Dataset metadata and data dictionaries](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries         |
 | [Customizing the report's appearance](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations            |
+| [Profiling Databases](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/profiling_databases.html) | For a seamless profiling experience in your organization's databases, check [YData Fabric Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others.  
 
 ### Using inside Jupyter Notebooks
 
