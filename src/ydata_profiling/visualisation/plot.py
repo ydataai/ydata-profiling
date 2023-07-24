@@ -575,7 +575,7 @@ def _plot_timeseries(
 def mini_ts_plot(
     config: Settings,
     series: Union[list, pd.Series],
-    figsize: Tuple[float, float] = (3, 2.25)
+    figsize: Tuple[float, float] = (3, 2.25),
 ) -> str:
     """Plot an time-series plot of the data.
     Args:
