@@ -199,11 +199,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             and report_config.vars.timeseries.active
             and report_config.vars.timeseries.sortby
         ):
-            return df.sort_values(by=report_config.vars.timeseries.sortby).reset_index(
-                drop=True
-            )
-        else:
-            return df
+            df = df.sort_values(by=report_config.vars.timeseries.sortby)
+            df = df.set_index(report_config.vars.timeseries.sortby, drop=False)
+            df.index.name = None
+
+        return df
 
     def invalidate_cache(self, subset: Optional[str] = None) -> None:
         """Invalidate report cache. Useful after changing setting.

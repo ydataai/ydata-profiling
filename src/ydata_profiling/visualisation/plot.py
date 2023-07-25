@@ -9,6 +9,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
+from matplotlib.dates import AutoDateLocator, ConciseDateFormatter
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
@@ -544,6 +545,18 @@ def create_comparison_color_list(config: Settings) -> List[str]:
     return colors
 
 
+def _format_ts_date_axis(
+    series: pd.Series,
+    axis: matplotlib.axis.Axis,
+) -> matplotlib.axis.Axis:
+    if isinstance(series.index, pd.DatetimeIndex):
+        locator = AutoDateLocator()
+        axis.xaxis.set_major_locator(locator)
+        axis.xaxis.set_major_formatter(ConciseDateFormatter(locator))
+
+    return axis
+
+
 def _plot_timeseries(
     config: Settings,
     series: Union[list, pd.Series],
@@ -564,10 +577,13 @@ def _plot_timeseries(
         colors = create_comparison_color_list(config)
 
         for serie, color, label in zip(series, colors, labels):
-            serie.plot(color=color, label=label, alpha=0.5)
+            ax = serie.plot(color=color, label=label, alpha=0.75)
+            _format_ts_date_axis(serie, ax)
 
     else:
-        series.plot(color=config.html.style.primary_colors[0])
+        ax = series.plot(color=config.html.style.primary_colors[0])
+        _format_ts_date_axis(series, ax)
+
     return plot
 
 
