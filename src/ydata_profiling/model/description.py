@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 
 
 @dataclass
@@ -39,11 +39,41 @@ class BaseAnalysis:
 
 
 @dataclass
+class TimeIndexAnalysis:
+    """Description of timeseries index analysis module of report.
+    """
+
+    n_series: int
+    length: int
+    start: Any
+    end: Any
+    period: float # uses avg since the series can have varying periods
+    frequency: Optional[str]
+    
+    def __init__(
+        self,
+        n_series: int,
+        length: int,
+        start: Any,
+        end: Any,
+        period: float,
+        frequency: Optional[str] = None,
+    ) -> None:
+        self.n_series = n_series
+        self.length = length
+        self.start = start
+        self.end = end
+        self.period = period
+        self.frequency = frequency
+
+
+@dataclass
 class BaseDescription:
     """Description of DataFrame.
 
     Attributes:
         analysis (BaseAnalysis): Base info about report. Title, start time and end time of description generating.
+        time_index_analysis (Optional[TimeIndexAnalysis]): Description of timeseries index analysis module of report.
         table (Any): DataFrame statistic. Base information about DataFrame.
         variables (Dict[str, Any]): Description of variables (columns) of DataFrame. Key is column name, value is description dictionary.
         scatter (Any): Pairwise scatter for all variables. Plot interactions between variables.
@@ -56,6 +86,7 @@ class BaseDescription:
     """
 
     analysis: BaseAnalysis
+    time_index_analysis: Optional[TimeIndexAnalysis]
     table: Any
     variables: Dict[str, Any]
     scatter: Any

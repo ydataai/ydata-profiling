@@ -14,6 +14,7 @@ from ydata_profiling.model.correlations import (
     get_active_correlations,
 )
 from ydata_profiling.model.dataframe import check_dataframe, preprocess
+from ydata_profiling.model.description import TimeIndexAnalysis
 from ydata_profiling.model.duplicates import get_duplicates
 from ydata_profiling.model.missing import get_missing_active, get_missing_diagram
 from ydata_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
@@ -21,6 +22,7 @@ from ydata_profiling.model.sample import get_custom_sample, get_sample
 from ydata_profiling.model.summarizer import BaseSummarizer
 from ydata_profiling.model.summary import get_series_descriptions
 from ydata_profiling.model.table import get_table_stats
+from ydata_profiling.model.timeseries_index import get_time_index_description
 from ydata_profiling.utils.progress_bar import progress
 from ydata_profiling.version import __version__
 
@@ -158,6 +160,11 @@ def describe(
             config, table_stats, series_description, correlations
         )
 
+        #if config.vars.timeseries.active: # TODO handle spark side of things
+        #    timeseries_index = get_time_index_description(
+        #        config, df, table_stats, series_description
+        #    )
+
         pbar.set_postfix_str("Get reproduction details")
         package = {
             "ydata_profiling_version": __version__,
@@ -169,10 +176,19 @@ def describe(
 
         date_end = datetime.utcnow()
 
+    # FIXME: this is the debug call to avoid the parallel processing    
+    if config.vars.timeseries.active: # TODO handle spark side of things
+        timeseries_index = get_time_index_description(
+            df, table_stats
+        )
     analysis = BaseAnalysis(config.title, date_start, date_end)
+    timeseries_analysis = None
+    if config.vars.timeseries.active: # TODO handle spark side of things
+        timeseries_analysis = TimeIndexAnalysis(**timeseries_index)
 
     description = BaseDescription(
         analysis=analysis,
+        timeseries_analysis=timeseries_analysis,
         table=table_stats,
         variables=series_description,
         scatter=scatter_matrix,

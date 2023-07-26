@@ -19,6 +19,7 @@ from ydata_profiling.model.pandas import (
     sample_pandas,
     summary_pandas,
     table_pandas,
+    timeseries_index_pandas,
 )
 
 __all__ = [
@@ -43,4 +44,5 @@ __all__ = [
     "sample_pandas",
     "summary_pandas",
     "table_pandas",
+    "timeseries_index_pandas",
 ]
