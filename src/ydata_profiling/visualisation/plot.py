@@ -9,6 +9,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
+from matplotlib.dates import AutoDateLocator, ConciseDateFormatter
 from matplotlib.patches import Patch
 from matplotlib.ticker import FuncFormatter
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
@@ -544,6 +545,18 @@ def create_comparison_color_list(config: Settings) -> List[str]:
     return colors
 
 
+def _format_ts_date_axis(
+    series: pd.Series,
+    axis: matplotlib.axis.Axis,
+) -> matplotlib.axis.Axis:
+    if isinstance(series.index, pd.DatetimeIndex):
+        locator = AutoDateLocator()
+        axis.xaxis.set_major_locator(locator)
+        axis.xaxis.set_major_formatter(ConciseDateFormatter(locator))
+
+    return axis
+
+
 def _plot_timeseries(
     config: Settings,
     series: Union[list, pd.Series],
@@ -564,23 +577,31 @@ def _plot_timeseries(
         colors = create_comparison_color_list(config)
 
         for serie, color, label in zip(series, colors, labels):
-            serie.plot(color=color, label=label)
+            ax = serie.plot(color=color, label=label, alpha=0.75)
+            _format_ts_date_axis(serie, ax)
 
     else:
-        series.plot(color=config.html.style.primary_colors[0])
+        ax = series.plot(color=config.html.style.primary_colors[0])
+        _format_ts_date_axis(series, ax)
 
     return plot
 
 
 @manage_matplotlib_context()
-def mini_ts_plot(config: Settings, series: Union[list, pd.Series]) -> str:
+def mini_ts_plot(
+    config: Settings,
+    series: Union[list, pd.Series],
+    figsize: Tuple[float, float] = (3, 2.25),
+) -> str:
     """Plot an time-series plot of the data.
     Args:
-      series: The data to plot.
+        config: profiling settings.
+        series: The data to plot.
+        figsize: The size of the figure (width, height) in inches, default (3, 2.25)
     Returns:
-      The resulting timeseries plot encoded as a string.
+        The resulting timeseries plot encoded as a string.
     """
-    plot = _plot_timeseries(config, series, figsize=(3, 2.25))
+    plot = _plot_timeseries(config, series, figsize=figsize)
     plot.xaxis.set_tick_params(rotation=45)
     plt.rc("ytick", labelsize=3)
 
