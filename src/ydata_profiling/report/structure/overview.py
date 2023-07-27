@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from urllib.parse import quote
 
@@ -14,6 +15,7 @@ from ydata_profiling.report.formatters import (
     list_args,
 )
 from ydata_profiling.report.presentation.core import Alerts, Container, Table
+from ydata_profiling.report.presentation.core import Image as ImageWidget
 from ydata_profiling.report.presentation.core.renderable import Renderable
 
 
@@ -266,6 +268,68 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
     )
 
 
+
+def get_timeseries_items(config: Settings, summary: BaseDescription) -> Container:
+    def format_tsindex_limit(limit):
+        if isinstance(limit, datetime):
+            return limit.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            return fmt_number(limit)
+
+    table_stats = [
+        {
+            "name": "Number of series",
+            "value": fmt_number(summary.time_index_analysis.n_series),
+        },
+        {
+            "name": "Time series length",
+            "value": fmt_number(summary.time_index_analysis.length),
+        },
+        {
+            "name": "Starting point",
+            "value": format_tsindex_limit(summary.time_index_analysis.start),
+        },
+        {
+            "name": "Ending point",
+            "value": format_tsindex_limit(summary.time_index_analysis.end),
+        },
+        {
+            "name": "Period",
+            "value": fmt_number(summary.time_index_analysis.period),
+        },  
+    ]
+
+    if summary.time_index_analysis.frequency:
+        table_stats.append(
+            {
+                "name": "Frequency",
+                "value": summary.time_index_analysis.frequency,
+            }  
+        )
+
+    ts_info = Table(
+        table_stats,
+        name="Timeseries overview",
+        style=config.html.style
+    )
+
+    timeseries = ImageWidget(
+        summary.time_index_analysis.plot,
+        image_format=config.plot.image_format,
+        alt="ts_plot",
+        name="ts_plot",
+        anchor_id="ts_plot_overview",
+        caption="will this have any captioning?",
+    )
+
+    return Container(
+        [ts_info, timeseries],
+        anchor_id="timeseries_overview",
+        name="Time Series",
+        sequence_type="grid",
+    )
+
+
 def get_dataset_items(config: Settings, summary: BaseDescription, alerts: list) -> list:
     """Returns the dataset overview (at the top of the report)
 
@@ -292,6 +356,9 @@ def get_dataset_items(config: Settings, summary: BaseDescription, alerts: list) 
 
     if len(column_details) > 0:
         items.append(get_dataset_column_definitions(config, column_details))
+
+    if summary.time_index_analysis:
+        items.append(get_timeseries_items(config, summary))
 
     if alerts:
         items.append(get_dataset_alerts(config, alerts))
