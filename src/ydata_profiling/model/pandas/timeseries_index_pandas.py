@@ -1,8 +1,9 @@
 """Compute statistical description of datasets."""
 import pandas as pd
 import numpy as np
-from ydata_profiling.config import Settings
 
+from pandas.api.types import is_numeric_dtype
+from ydata_profiling.config import Settings
 from ydata_profiling.model.timeseries_index import get_time_index_description
 
 
@@ -12,6 +13,9 @@ def pandas_get_time_index_description(
     df: pd.DataFrame,
     table_stats: dict,
 ) -> dict:
+    if not (is_numeric_dtype(df.index) or isinstance(df.index, pd.DatetimeIndex)):
+        return {}
+
     n_series = table_stats["types"].get("TimeSeries", 0)
     length = table_stats["n"]
     start = df.index.min()
