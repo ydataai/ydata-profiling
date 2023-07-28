@@ -572,9 +572,26 @@ def plot_overview_timeseries(
     """
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111)
-    for col, data in variables.items():
-        if data["type"] == "TimeSeries":
-            ax = data["series"].plot(ax=ax, label=col)
+
+    col = next(iter(variables))
+    if isinstance(variables[col]["type"], list):
+        colors = create_comparison_color_list(config)
+        line_styles = ["-", "--"]
+        for col, data in variables.items():
+            if all(iter([t == "TimeSeries" for t in data["type"]])):
+                for i, series in enumerate(data["series"]):
+                    series.plot(
+                        ax=ax,
+                        label=col,
+                        linestyle=line_styles[i],
+                        color=colors[i],
+                        alpha=0.65,
+                    )
+    else:
+        for col, data in variables.items():
+            if data["type"] == "TimeSeries":
+                data["series"].plot(ax=ax, label=col)
+
     plt.legend(loc="upper right")
     return plot_360_n0sc0pe(config)
 
