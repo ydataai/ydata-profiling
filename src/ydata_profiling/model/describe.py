@@ -160,10 +160,8 @@ def describe(
             config, table_stats, series_description, correlations
         )
 
-        #if config.vars.timeseries.active: # TODO handle spark side of things
-        #    timeseries_index = get_time_index_description(
-        #        config, df, table_stats, series_description
-        #    )
+        if config.vars.timeseries.active:
+            tsindex_description = get_time_index_description(config, df, table_stats)
 
         pbar.set_postfix_str("Get reproduction details")
         package = {
@@ -176,11 +174,6 @@ def describe(
 
         date_end = datetime.utcnow()
 
-    # FIXME: this is the debug call to avoid the parallel processing    
-    if config.vars.timeseries.active: # TODO handle spark side of things
-        tsindex_description = get_time_index_description(
-            config, df, table_stats
-        )
     analysis = BaseAnalysis(config.title, date_start, date_end)
     time_index_analysis = None
     if config.vars.timeseries.active and tsindex_description:

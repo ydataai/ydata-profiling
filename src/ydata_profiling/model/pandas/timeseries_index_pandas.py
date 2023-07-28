@@ -1,8 +1,8 @@
 """Compute statistical description of datasets."""
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 from pandas.api.types import is_numeric_dtype
+
 from ydata_profiling.config import Settings
 from ydata_profiling.model.timeseries_index import get_time_index_description
 
@@ -28,7 +28,7 @@ def pandas_get_time_index_description(
     else:
         freq = None
         period = abs(np.diff(df.index)).mean()
-    
+
     return {
         "n_series": n_series,
         "length": length,

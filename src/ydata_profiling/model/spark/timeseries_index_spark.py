@@ -1,7 +1,7 @@
 """Compute statistical description of datasets."""
 from pyspark.sql import DataFrame
-from ydata_profiling.config import Settings
 
+from ydata_profiling.config import Settings
 from ydata_profiling.model.timeseries_index import get_time_index_description
 
 

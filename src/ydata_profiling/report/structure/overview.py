@@ -14,8 +14,9 @@ from ydata_profiling.report.formatters import (
     fmt_timespan,
     list_args,
 )
-from ydata_profiling.report.presentation.core import Alerts, Container, Table
+from ydata_profiling.report.presentation.core import Alerts, Container
 from ydata_profiling.report.presentation.core import Image as ImageWidget
+from ydata_profiling.report.presentation.core import Table
 from ydata_profiling.report.presentation.core.renderable import Renderable
 from ydata_profiling.visualisation.plot import plot_overview_timeseries
 
@@ -269,7 +270,6 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
     )
 
 
-
 def get_timeseries_items(config: Settings, summary: BaseDescription) -> Container:
     def format_tsindex_limit(limit):
         if isinstance(limit, datetime):
@@ -297,7 +297,7 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         {
             "name": "Period",
             "value": fmt_number(summary.time_index_analysis.period),
-        },  
+        },
     ]
 
     if summary.time_index_analysis.frequency:
@@ -305,14 +305,10 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
             {
                 "name": "Frequency",
                 "value": summary.time_index_analysis.frequency,
-            }  
+            }
         )
 
-    ts_info = Table(
-        table_stats,
-        name="Timeseries statistics",
-        style=config.html.style
-    )
+    ts_info = Table(table_stats, name="Timeseries statistics", style=config.html.style)
 
     timeseries = ImageWidget(
         plot_overview_timeseries(config, summary.variables),

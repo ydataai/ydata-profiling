@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Optional, Union
 
 
 @dataclass
@@ -41,14 +41,23 @@ class BaseAnalysis:
 @dataclass
 class TimeIndexAnalysis:
     """Description of timeseries index analysis module of report.
+
+    Attributes:
+        n_series (int): Number of time series identified in the dataset.
+        length (int): Number of data points in the time series.
+        start (Any): Starting point of the time series.
+        end (Any): Ending point of the time series.
+        period (float): Average interval between data points in the time series.
+        frequency (Optional[str]): A string alias given to useful common time series frequencies, e.g. H - hours.
     """
+
     n_series: int
     length: int
     start: Any
     end: Any
-    period: float # uses avg since the series can have varying periods
+    period: float
     frequency: Optional[str]
-    
+
     def __init__(
         self,
         n_series: int,
