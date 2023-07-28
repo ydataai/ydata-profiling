@@ -12,6 +12,5 @@ def get_time_index_description(
     config: Settings,
     df: Any,
     table_stats: dict,
-    variables: dict,
 ) -> dict:
     raise NotImplementedError()

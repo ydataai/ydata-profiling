@@ -179,7 +179,7 @@ def describe(
     # FIXME: this is the debug call to avoid the parallel processing    
     if config.vars.timeseries.active: # TODO handle spark side of things
         tsindex_description = get_time_index_description(
-            config, df, table_stats, variables
+            config, df, table_stats
         )
     analysis = BaseAnalysis(config.title, date_start, date_end)
     time_index_analysis = None

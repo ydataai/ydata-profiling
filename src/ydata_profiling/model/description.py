@@ -47,7 +47,6 @@ class TimeIndexAnalysis:
     start: Any
     end: Any
     period: float # uses avg since the series can have varying periods
-    plot: Any
     frequency: Optional[str]
     
     def __init__(
@@ -57,7 +56,6 @@ class TimeIndexAnalysis:
         start: Any,
         end: Any,
         period: float,
-        plot: Any,
         frequency: Optional[str] = None,
     ) -> None:
         self.n_series = n_series
@@ -66,7 +64,6 @@ class TimeIndexAnalysis:
         self.end = end
         self.period = period
         self.frequency = frequency
-        self.plot = plot
 
 
 @dataclass

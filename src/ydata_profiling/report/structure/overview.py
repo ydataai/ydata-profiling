@@ -17,6 +17,7 @@ from ydata_profiling.report.formatters import (
 from ydata_profiling.report.presentation.core import Alerts, Container, Table
 from ydata_profiling.report.presentation.core import Image as ImageWidget
 from ydata_profiling.report.presentation.core.renderable import Renderable
+from ydata_profiling.visualisation.plot import plot_overview_timeseries
 
 
 def get_dataset_overview(config: Settings, summary: BaseDescription) -> Renderable:
@@ -314,12 +315,11 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
     )
 
     timeseries = ImageWidget(
-        summary.time_index_analysis.plot,
+        plot_overview_timeseries(config, summary.variables),
         image_format=config.plot.image_format,
         alt="ts_plot",
         name="ts_plot",
         anchor_id="ts_plot_overview",
-        caption="will this have any captioning?",
     )
 
     return Container(
