@@ -1,10 +1,11 @@
 from datetime import datetime
-from typing import List
+from typing import Any, List
 from urllib.parse import quote
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
+from ydata_profiling.model.description import TimeIndexAnalysis
 from ydata_profiling.report.formatters import (
     fmt,
     fmt_bytesize,
@@ -271,12 +272,13 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
 
 
 def get_timeseries_items(config: Settings, summary: BaseDescription) -> Container:
-    def format_tsindex_limit(limit):
+    def format_tsindex_limit(limit: Any) -> str:
         if isinstance(limit, datetime):
             return limit.strftime("%Y-%m-%d %H:%M:%S")
         else:
             return fmt_number(limit)
 
+    assert isinstance(summary.time_index_analysis, TimeIndexAnalysis)
     table_stats = [
         {
             "name": "Number of series",

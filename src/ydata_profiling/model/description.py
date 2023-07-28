@@ -43,20 +43,20 @@ class TimeIndexAnalysis:
     """Description of timeseries index analysis module of report.
 
     Attributes:
-        n_series (int): Number of time series identified in the dataset.
-        length (int): Number of data points in the time series.
+        n_series (Union[int, List[int]): Number of time series identified in the dataset.
+        length (Union[int, List[int]): Number of data points in the time series.
         start (Any): Starting point of the time series.
         end (Any): Ending point of the time series.
-        period (float): Average interval between data points in the time series.
-        frequency (Optional[str]): A string alias given to useful common time series frequencies, e.g. H - hours.
+        period (Union[float, List[float]): Average interval between data points in the time series.
+        frequency (Union[Optional[str], List[Optional[str]]): A string alias given to useful common time series frequencies, e.g. H - hours.
     """
 
-    n_series: int
-    length: int
+    n_series: Union[int, List[int]]
+    length: Union[int, List[int]]
     start: Any
     end: Any
-    period: float
-    frequency: Optional[str]
+    period: Union[float, List[float]]
+    frequency: Union[Optional[str], List[Optional[str]]]
 
     def __init__(
         self,
