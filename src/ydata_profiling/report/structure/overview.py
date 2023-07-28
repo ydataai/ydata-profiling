@@ -310,7 +310,7 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
 
     ts_info = Table(
         table_stats,
-        name="Timeseries overview",
+        name="Timeseries statistics",
         style=config.html.style
     )
 

@@ -11,4 +11,4 @@ def spark_get_time_index_description(
     df: DataFrame,
     table_stats: dict,
 ) -> dict:
-    raise NotImplementedError()
+    return {}
