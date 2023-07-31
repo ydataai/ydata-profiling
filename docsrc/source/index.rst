@@ -30,6 +30,7 @@
 
    pages/integrations/other_dataframe_libraries
    pages/integrations/great_expectations
+    pages/integrations/bytewax
    pages/integrations/data_apps
    pages/integrations/pipelines
    pages/integrations/cloud_services
