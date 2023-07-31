@@ -15,8 +15,7 @@ from ydata_profiling.utils.compat import pandas_version_info
 @pytest.mark.skipif(
     pandas_version_info() <= (1, 1, 0), reason="requires pandas 1.1.1 or higher"
 )
-@pytest.mark.skip()  # file not available anymore
-def test_issue545(get_data_file):
+def test_issue545():
     file_name = Path(__file__).parents[0] / "data/sample_eda_df.pkl"
 
     sample_eda_df = pd.read_pickle(str(file_name))
