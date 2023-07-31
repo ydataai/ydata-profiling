@@ -316,12 +316,25 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         plot_overview_timeseries(config, summary.variables),
         image_format=config.plot.image_format,
         alt="ts_plot",
-        name="ts_plot",
+        name="preview",
         anchor_id="ts_plot_overview",
+    )
+    timeseries_scaled = ImageWidget(
+        plot_overview_timeseries(config, summary.variables, scale=True),
+        image_format=config.plot.image_format,
+        alt="ts_plot_scaled",
+        name="scaled",
+        anchor_id="ts_plot_scaled_overview",
+    )
+    ts_tab = Container(
+        [timeseries, timeseries_scaled],
+        anchor_id="ts_plot_overview",
+        name="",
+        sequence_type="tabs",
     )
 
     return Container(
-        [ts_info, timeseries],
+        [ts_info, ts_tab],
         anchor_id="timeseries_overview",
         name="Time Series",
         sequence_type="grid",
