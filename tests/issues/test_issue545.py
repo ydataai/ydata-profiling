@@ -3,9 +3,10 @@ Test for issue 545:
 https://github.com/ydataai/ydata-profiling/issues/545
 """
 
+from pathlib import Path
+
 import pandas as pd
 import pytest
-from pathlib import Path
 
 from ydata_profiling import ProfileReport
 from ydata_profiling.utils.compat import pandas_version_info
@@ -15,7 +16,7 @@ from ydata_profiling.utils.compat import pandas_version_info
     pandas_version_info() <= (1, 1, 0), reason="requires pandas 1.1.1 or higher"
 )
 def test_issue545(get_data_file):
-    file_name = Path(__file__).parents[0] / 'data/sample_eda_df.pkl'
+    file_name = Path(__file__).parents[0] / "data/sample_eda_df.pkl"
 
     sample_eda_df = pd.read_pickle(str(file_name))
     sample_profile = ProfileReport(
