@@ -61,15 +61,18 @@ Profile streaming snapshots
 
   from bytewax.window import EventClockConfig, TumblingWindow
 
+
   # This is the accumulator function, and outputs a list of readings
   def acc_values(acc, reading):
       acc.append(reading)
       return acc
 
+
   # This function instructs the event clock on how to retrieve the
   # event's datetime from the input.
   def get_time(reading):
       return reading["ts"]
+
 
   # Configure the `fold_window` operator to use the event time.
   cc = EventClockConfig(get_time, wait_for_system_duration=timedelta(seconds=30))
