@@ -281,8 +281,16 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         anchor_id=f"{varid}acf_pacf",
     )
 
+    ts_plot = Image(
+        mini_ts_plot(config, summary["series"], figsize=(7, 3)),
+        image_format=image_format,
+        alt="Time-series plot",
+        name="Time-series",
+        anchor_id=f"{varid}_ts_plot",
+    )
+
     template_variables["bottom"] = Container(
-        [statistics, hist, fq, evs, acf_pacf],
+        [statistics, hist, ts_plot, fq, evs, acf_pacf],
         sequence_type="tabs",
         anchor_id=f"{varid}bottom",
     )
