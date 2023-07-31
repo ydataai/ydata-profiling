@@ -356,6 +356,8 @@ def compare(
 
     res["analysis"]["title"] = _compare_title(res["analysis"]["title"])
     res["alerts"] = _create_placehoder_alerts(res["alerts"])
+    if not any(res["time_index_analysis"]):
+        res["time_index_analysis"] = None
     profile = ProfileReport(None, config=_config)
     profile._description_set = from_dict(data_class=BaseDescription, data=res)
     return profile

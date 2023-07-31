@@ -13,6 +13,7 @@ from ydata_profiling.model.spark import (
     sample_spark,
     summary_spark,
     table_spark,
+    timeseries_index_spark,
 )
 
 __all__ = [
@@ -31,4 +32,5 @@ __all__ = [
     "sample_spark",
     "summary_spark",
     "table_spark",
+    "timeseries_index_spark",
 ]

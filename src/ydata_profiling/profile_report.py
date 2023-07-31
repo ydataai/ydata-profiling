@@ -197,11 +197,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             df is not None
             and isinstance(df, pd.DataFrame)
             and report_config.vars.timeseries.active
-            and report_config.vars.timeseries.sortby
         ):
-            df = df.sort_values(by=report_config.vars.timeseries.sortby)
-            df = df.set_index(report_config.vars.timeseries.sortby, drop=False)
-            df.index.name = None
+            if report_config.vars.timeseries.sortby:
+                df = df.sort_values(by=report_config.vars.timeseries.sortby)
+                df = df.set_index(report_config.vars.timeseries.sortby, drop=False)
+                df.index.name = None
+            else:
+                df = df.sort_index()
 
         return df
 
