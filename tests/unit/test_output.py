@@ -17,6 +17,7 @@ def test_json(data):
     data = json.loads(report_json)
     assert set(data.keys()) == {
         "analysis",
+        "time_index_analysis",
         "correlations",
         "duplicates",
         "alerts",

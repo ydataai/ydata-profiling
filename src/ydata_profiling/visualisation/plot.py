@@ -557,6 +557,45 @@ def _format_ts_date_axis(
     return axis
 
 
+@manage_matplotlib_context()
+def plot_overview_timeseries(
+    config: Settings,
+    variables: Any,
+    figsize: tuple = (6, 4),
+) -> matplotlib.figure.Figure:
+    """Plot an line plot from the data and return the AxesSubplot object.
+    Args:
+        series: The data to plot
+        figsize: The size of the figure (width, height) in inches, default (6,4)
+    Returns:
+        The TimeSeries lineplot.
+    """
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_subplot(111)
+
+    col = next(iter(variables))
+    if isinstance(variables[col]["type"], list):
+        colors = create_comparison_color_list(config)
+        line_styles = ["-", "--"]
+        for col, data in variables.items():
+            if all(iter([t == "TimeSeries" for t in data["type"]])):
+                for i, series in enumerate(data["series"]):
+                    series.plot(
+                        ax=ax,
+                        label=col,
+                        linestyle=line_styles[i],
+                        color=colors[i],
+                        alpha=0.65,
+                    )
+    else:
+        for col, data in variables.items():
+            if data["type"] == "TimeSeries":
+                data["series"].plot(ax=ax, label=col)
+
+    plt.legend(loc="upper right")
+    return plot_360_n0sc0pe(config)
+
+
 def _plot_timeseries(
     config: Settings,
     series: Union[list, pd.Series],

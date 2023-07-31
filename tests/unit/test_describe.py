@@ -546,6 +546,7 @@ def test_describe_df(column, describe_data, expected_results, summarizer):
 
     assert {
         "analysis",
+        "time_index_analysis",
         "table",
         "variables",
         "scatter",
