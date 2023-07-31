@@ -23,6 +23,13 @@
    pages/use_cases/metadata
    pages/use_cases/custom_report_appearance
 
+.. toctree::
+    :maxdepth: 3
+   :caption: Data Catalog with Profiling (Self-hosted)
+   :hidden:
+
+    pages/data_catalog/collaborative_data_profiling
+
 
 .. toctree::
    :maxdepth: 3
