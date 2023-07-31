@@ -562,11 +562,13 @@ def plot_overview_timeseries(
     config: Settings,
     variables: Any,
     figsize: tuple = (6, 4),
+    scale: bool = False,
 ) -> matplotlib.figure.Figure:
     """Plot an line plot from the data and return the AxesSubplot object.
     Args:
-        series: The data to plot
-        figsize: The size of the figure (width, height) in inches, default (6,4)
+        variables: The data to plot.
+        figsize: The size of the figure (width, height) in inches, default (6,4).
+        scale: Scale series values between [0,1]. Defaults to False.
     Returns:
         The TimeSeries lineplot.
     """
@@ -580,6 +582,8 @@ def plot_overview_timeseries(
         for col, data in variables.items():
             if all(iter([t == "TimeSeries" for t in data["type"]])):
                 for i, series in enumerate(data["series"]):
+                    if scale:
+                        series = (series - series.min()) / (series.max() - series.min())
                     series.plot(
                         ax=ax,
                         label=col,
