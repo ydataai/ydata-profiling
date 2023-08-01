@@ -24,7 +24,7 @@
    pages/use_cases/custom_report_appearance
 
 .. toctree::
-    :maxdepth: 3
+   :maxdepth: 3
    :caption: Data Catalog with Profiling (Self-hosted)
    :hidden:
 
@@ -38,7 +38,7 @@
 
    pages/integrations/other_dataframe_libraries
    pages/integrations/great_expectations
-    pages/integrations/bytewax
+   pages/integrations/bytewax
    pages/integrations/data_apps
    pages/integrations/pipelines
    pages/integrations/cloud_services
