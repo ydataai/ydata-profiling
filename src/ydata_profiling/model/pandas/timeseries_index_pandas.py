@@ -4,6 +4,7 @@ import pandas as pd
 from pandas.api.types import is_numeric_dtype
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model.pandas.utils_pandas import get_period_and_frequency
 from ydata_profiling.model.timeseries_index import get_time_index_description
 
 
@@ -21,10 +22,7 @@ def pandas_get_time_index_description(
     start = df.index.min()
     end = df.index.max()
     if isinstance(df.index, pd.DatetimeIndex):
-        freq = df.index.inferred_freq
-        delta = abs(np.diff(df.index)).mean()
-        delta = delta.astype(f"timedelta64[{df.index.inferred_freq}]")
-        period = delta.astype(float)
+        period, freq = get_period_and_frequency(df.index)
     else:
         freq = None
         period = abs(np.diff(df.index)).mean()

@@ -14,7 +14,12 @@ from ydata_profiling.report.presentation.core import (
     VariableInfo,
 )
 from ydata_profiling.report.structure.variables.render_common import render_common
-from ydata_profiling.visualisation.plot import histogram, mini_ts_plot, plot_acf_pacf
+from ydata_profiling.visualisation.plot import (
+    histogram,
+    mini_ts_plot,
+    plot_acf_pacf,
+    plot_timeseries_gap_analysis,
+)
 
 
 def render_timeseries(config: Settings, summary: dict) -> dict:
@@ -289,8 +294,16 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         anchor_id=f"{varid}_ts_plot",
     )
 
+    ts_gap = Image(
+        plot_timeseries_gap_analysis(config, summary["gap_analysis"], figsize=(7, 3)),
+        image_format=image_format,
+        alt="Gap analysis",
+        name="Gap analysis",
+        anchor_id=f"{varid}_gap_analysis",
+    )
+
     template_variables["bottom"] = Container(
-        [statistics, hist, ts_plot, fq, evs, acf_pacf],
+        [statistics, hist, ts_plot, ts_gap, fq, evs, acf_pacf],
         sequence_type="tabs",
         anchor_id=f"{varid}bottom",
     )
