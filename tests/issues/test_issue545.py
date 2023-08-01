@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-from pathlib import Path
 
 from ydata_profiling import ProfileReport
 from ydata_profiling.utils.compat import pandas_version_info
