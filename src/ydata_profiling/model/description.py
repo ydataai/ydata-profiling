@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 
 @dataclass
@@ -39,11 +39,49 @@ class BaseAnalysis:
 
 
 @dataclass
+class TimeIndexAnalysis:
+    """Description of timeseries index analysis module of report.
+
+    Attributes:
+        n_series (Union[int, List[int]): Number of time series identified in the dataset.
+        length (Union[int, List[int]): Number of data points in the time series.
+        start (Any): Starting point of the time series.
+        end (Any): Ending point of the time series.
+        period (Union[float, List[float]): Average interval between data points in the time series.
+        frequency (Union[Optional[str], List[Optional[str]]): A string alias given to useful common time series frequencies, e.g. H - hours.
+    """
+
+    n_series: Union[int, List[int]]
+    length: Union[int, List[int]]
+    start: Any
+    end: Any
+    period: Union[float, List[float]]
+    frequency: Union[Optional[str], List[Optional[str]]]
+
+    def __init__(
+        self,
+        n_series: int,
+        length: int,
+        start: Any,
+        end: Any,
+        period: float,
+        frequency: Optional[str] = None,
+    ) -> None:
+        self.n_series = n_series
+        self.length = length
+        self.start = start
+        self.end = end
+        self.period = period
+        self.frequency = frequency
+
+
+@dataclass
 class BaseDescription:
     """Description of DataFrame.
 
     Attributes:
         analysis (BaseAnalysis): Base info about report. Title, start time and end time of description generating.
+        time_index_analysis (Optional[TimeIndexAnalysis]): Description of timeseries index analysis module of report.
         table (Any): DataFrame statistic. Base information about DataFrame.
         variables (Dict[str, Any]): Description of variables (columns) of DataFrame. Key is column name, value is description dictionary.
         scatter (Any): Pairwise scatter for all variables. Plot interactions between variables.
@@ -56,6 +94,7 @@ class BaseDescription:
     """
 
     analysis: BaseAnalysis
+    time_index_analysis: Optional[TimeIndexAnalysis]
     table: Any
     variables: Dict[str, Any]
     scatter: Any

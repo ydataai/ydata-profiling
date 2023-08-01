@@ -14,6 +14,7 @@ from ydata_profiling.model.correlations import (
     get_active_correlations,
 )
 from ydata_profiling.model.dataframe import check_dataframe, preprocess
+from ydata_profiling.model.description import TimeIndexAnalysis
 from ydata_profiling.model.duplicates import get_duplicates
 from ydata_profiling.model.missing import get_missing_active, get_missing_diagram
 from ydata_profiling.model.pairwise import get_scatter_plot, get_scatter_tasks
@@ -21,6 +22,7 @@ from ydata_profiling.model.sample import get_custom_sample, get_sample
 from ydata_profiling.model.summarizer import BaseSummarizer
 from ydata_profiling.model.summary import get_series_descriptions
 from ydata_profiling.model.table import get_table_stats
+from ydata_profiling.model.timeseries_index import get_time_index_description
 from ydata_profiling.utils.progress_bar import progress
 from ydata_profiling.version import __version__
 
@@ -158,6 +160,9 @@ def describe(
             config, table_stats, series_description, correlations
         )
 
+        if config.vars.timeseries.active:
+            tsindex_description = get_time_index_description(config, df, table_stats)
+
         pbar.set_postfix_str("Get reproduction details")
         package = {
             "ydata_profiling_version": __version__,
@@ -170,9 +175,13 @@ def describe(
         date_end = datetime.utcnow()
 
     analysis = BaseAnalysis(config.title, date_start, date_end)
+    time_index_analysis = None
+    if config.vars.timeseries.active and tsindex_description:
+        time_index_analysis = TimeIndexAnalysis(**tsindex_description)
 
     description = BaseDescription(
         analysis=analysis,
+        time_index_analysis=time_index_analysis,
         table=table_stats,
         variables=series_description,
         scatter=scatter_matrix,

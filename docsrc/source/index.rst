@@ -19,8 +19,16 @@
    pages/use_cases/big_data
    pages/use_cases/sensitive_data
    pages/use_cases/comparing_datasets
+   pages/use_cases/profiling_databases
    pages/use_cases/metadata
    pages/use_cases/custom_report_appearance
+
+.. toctree::
+    :maxdepth: 3
+   :caption: Data Catalog with Profiling (Self-hosted)
+   :hidden:
+
+    pages/data_catalog/collaborative_data_profiling
 
 
 .. toctree::
@@ -30,6 +38,7 @@
 
    pages/integrations/other_dataframe_libraries
    pages/integrations/great_expectations
+    pages/integrations/bytewax
    pages/integrations/data_apps
    pages/integrations/pipelines
    pages/integrations/cloud_services

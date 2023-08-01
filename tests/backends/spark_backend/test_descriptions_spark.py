@@ -379,6 +379,7 @@ def test_describe_spark_df(
 
     assert {
         "analysis",
+        "time_index_analysis",
         "table",
         "variables",
         "scatter",
