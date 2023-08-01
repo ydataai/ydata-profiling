@@ -24,7 +24,7 @@ jobs:
         echo "sonar.projectKey=${{ github.event.repository.name }}" > sonar-project.properties
 
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v1.2.0
+      uses: sonarsource/sonarqube-scan-action@v2.0.0
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
