@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/big_data.html">Profiling large datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/sensitive_data.html">Handling sensitive data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/comparing_datasets.html">Dataset Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases/profiling_databases.html">Profiling Databases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/metadata.html">Dataset metadata, data dictionaries and configurations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../use_cases/custom_report_appearance.html">Customizing the report’s appearance</a></li>
 </ul>
@@ -127,6 +128,11 @@
 <a class="reference external image-reference" href="https://github.com/ydataai/ydata-profiling/releases"><img alt="Release Version" src="https://img.shields.io/github/release/ydata-profiling/ydata-profiling.svg" /></a>
 <a class="reference external image-reference" href="https://pypi.org/project/ydata-profiling/"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/ydata-profiling" /></a>
 <a class="reference external image-reference" href="https://github.com/python/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas <cite>df.describe()</cite> function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as <strong>html</strong> and <strong>json</strong>.</p>
+<p>The package outputs a simple and digested analysis of a dataset, including <strong>time-series</strong> and <strong>text</strong>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <dl class="simple">
@@ -138,8 +144,6 @@
 </dd>
 </dl>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">ydata-profiling</span></code> primary goal is to provide a one-line Exploratory Data Analysis (EDA) experience in a consistent and fast solution. Like pandas <cite>df.describe()</cite> function, that is so handy, ydata-profiling delivers an extended analysis of a DataFrame while alllowing the data analysis to be exported in different formats such as <strong>html</strong> and <strong>json</strong>.</p>
-<p>The package outputs a simple and digested analysis of a dataset, including <strong>time-series</strong> and <strong>text</strong>.</p>
 <section id="key-features">
 <h2>Key features<a class="headerlink" href="#key-features" title="Permalink to this heading"></a></h2>
 <ul class="simple">
@@ -160,6 +164,12 @@
 <li><p><strong>Reproduction</strong>: technical details about the analysis (time, version and configuration)</p></li>
 </ul>
 <p>The package can be used via code but also directly as a CLI utility. The generated interactive report can be consumed and shared as regular HTML or embedded in an interactive way inside Jupyter Notebooks.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Looking for a scalable solution that can fully integrate with your database systems?</strong>
+Leverage <a class="reference external" href="https://ydata.ai/products/data_catalog">YData Fabric Data Catalog</a> to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.),
+and leverage an interactive and guided profiling experience in Fabric. Check out the <a class="reference external" href="https://ydata.ai/ydata-fabric-free-trial">Community Version</a>.</p>
+</div>
 </section>
 </section>
 

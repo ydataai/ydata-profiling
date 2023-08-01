@@ -26,6 +26,7 @@
       missing_heatmap
       missing_matrix
       plot_acf_pacf
+      plot_overview_timeseries
       plot_word_cloud
       scatter_complex
       scatter_pairwise
