@@ -142,7 +142,7 @@ def get_fft_peaks(
     return threshold, orig_peaks, peaks
 
 
-def gap_analysis(series: pd.Series) -> pd.Series:
+def compute_gap_stats(series: pd.Series) -> pd.Series:
     """Computes the intertevals in the series normalized by the period.
 
     Args:
@@ -159,12 +159,25 @@ def gap_analysis(series: pd.Series) -> pd.Series:
     gap.index.name = None
 
     if isinstance(series.index, pd.DatetimeIndex):
-        period, freq = get_period_and_frequency(series.index)
-        period = pd.Timedelta(f"{period} {freq}")
+        period, frequency = get_period_and_frequency(series.index)
+        period = pd.Timedelta(f"{period} {frequency}")
+        base_frequency = pd.Timedelta(f"1 {frequency}")
     else:
         period = np.abs(np.diff(series.index)).mean()
+        base_frequency = 1
 
-    return gap.diff() / period
+    gap = gap.diff()
+    stats = {
+        "period": period / base_frequency,
+        "min": gap.min() / base_frequency,
+        "max": gap.max() / base_frequency,
+        "mean": gap.mean() / base_frequency,
+        "std": gap.std() / base_frequency,
+        "normalized_diff": gap / period,
+    }
+    if isinstance(series.index, pd.DatetimeIndex):
+        stats["frequency"] = frequency
+    return stats
 
 
 @describe_timeseries_1d.register
@@ -190,6 +203,6 @@ def pandas_describe_timeseries_1d(
     stats["stationary"] = is_stationary and not stats["seasonal"]
     stats["addfuller"] = p_value
     stats["series"] = series
-    stats["gap_analysis"] = gap_analysis(series)
+    stats["gap_stats"] = compute_gap_stats(series)
 
     return config, series, stats

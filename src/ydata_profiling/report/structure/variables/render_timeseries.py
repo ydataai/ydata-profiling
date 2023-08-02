@@ -22,6 +22,74 @@ from ydata_profiling.visualisation.plot import (
 )
 
 
+def _render_gap_tab(config: Settings, summary: dict) -> Container:
+    gap_stats = [
+        {
+            "name": "period",
+            "value": fmt_numeric(
+                summary["gap_stats"]["period"], precision=config.report.precision
+            ),
+        },
+    ]
+    if "frequency" in summary["gap_stats"]:
+        gap_stats.append(
+            {
+                "name": "frequency",
+                "value": summary["gap_stats"]["frequency"],
+            }
+        )
+    gap_stats.extend(
+        [
+            {
+                "name": "min inverval",
+                "value": fmt_numeric(
+                    summary["gap_stats"]["min"], precision=config.report.precision
+                ),
+            },
+            {
+                "name": "max inverval",
+                "value": fmt_numeric(
+                    summary["gap_stats"]["max"], precision=config.report.precision
+                ),
+            },
+            {
+                "name": "mean inverval",
+                "value": fmt_numeric(
+                    summary["gap_stats"]["mean"], precision=config.report.precision
+                ),
+            },
+            {
+                "name": "interval std",
+                "value": fmt_numeric(
+                    summary["gap_stats"]["std"], precision=config.report.precision
+                ),
+            },
+        ]
+    )
+    gap_table = Table(
+        gap_stats,
+        name="Intervals statistics",
+        style=config.html.style,
+    )
+
+    gap_plot = Image(
+        plot_timeseries_gap_analysis(
+            config, summary["gap_stats"]["normalized_diff"], figsize=(7, 3)
+        ),
+        image_format=config.plot.image_format,
+        alt="Gap plot",
+        name="",
+        anchor_id=f"{summary['varid']}_gap_plot",
+    )
+    return Container(
+        [gap_table, gap_plot],
+        image_format=config.plot.image_format,
+        sequence_type="grid",
+        name="Gap analysis",
+        anchor_id=f"{summary['varid']}_gap_analysis",
+    )
+
+
 def render_timeseries(config: Settings, summary: dict) -> dict:
     varid = summary["varid"]
     template_variables = render_common(config, summary)
@@ -294,13 +362,7 @@ def render_timeseries(config: Settings, summary: dict) -> dict:
         anchor_id=f"{varid}_ts_plot",
     )
 
-    ts_gap = Image(
-        plot_timeseries_gap_analysis(config, summary["gap_analysis"], figsize=(7, 3)),
-        image_format=image_format,
-        alt="Gap analysis",
-        name="Gap analysis",
-        anchor_id=f"{varid}_gap_analysis",
-    )
+    ts_gap = _render_gap_tab(config, summary)
 
     template_variables["bottom"] = Container(
         [statistics, hist, ts_plot, ts_gap, fq, evs, acf_pacf],
