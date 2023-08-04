@@ -561,7 +561,7 @@ def _format_ts_date_axis(
 def plot_timeseries_gap_analysis(
     config: Settings,
     series: Union[pd.Series, List[pd.Series]],
-    figsize: tuple = (6, 4),
+    figsize: tuple = (6, 3),
 ) -> matplotlib.figure.Figure:
     """Plot an line plot from the data and return the AxesSubplot object.
     Args:
