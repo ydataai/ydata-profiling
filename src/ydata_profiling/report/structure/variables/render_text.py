@@ -12,6 +12,7 @@ from ydata_profiling.report.presentation.core.variable_info import VariableInfo
 from ydata_profiling.report.structure.variables.render_categorical import (
     _get_n,
     freq_table,
+    render_categorical,
     render_categorical_frequency,
     render_categorical_length,
     render_categorical_unicode,
@@ -21,6 +22,10 @@ from ydata_profiling.visualisation.plot import plot_word_cloud
 
 
 def render_text(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
+    if config.vars.text.redact:
+        render = render_categorical(config, summary)
+        return render
+
     varid = summary["varid"]
     words = config.vars.text.words
     characters = config.vars.text.characters
