@@ -147,10 +147,11 @@ def render_variables_section(
                 variable_type = list(types)[0]
             else:
                 # This logic may be treated by the typeset
-                if (types == {"Numeric", "Categorical"}) or types == {
-                    "Categorical",
-                    "Unsupported",
-                }:
+                if (
+                    types == {"Numeric", "Categorical"}
+                    or types == {"Categorical", "Unsupported"}
+                    or types == {"Categorical", "Text"}
+                ):
                     # Treating numeric as categorical, if one is unsupported, still render as categorical
                     variable_type = "Categorical"
                 else:
