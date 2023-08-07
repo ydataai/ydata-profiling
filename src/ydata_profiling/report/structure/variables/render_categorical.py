@@ -339,10 +339,14 @@ def render_categorical(config: Settings, summary: dict) -> dict:
 
     template_variables = render_common(config, summary)
 
+    type_name = summary["type"]
+    if isinstance(type_name, list):
+        type_name = type_name[0]
+
     info = VariableInfo(
         summary["varid"],
         summary["varname"],
-        "Categorical",
+        type_name,
         summary["alerts"],
         summary["description"],
         style=config.html.style,
