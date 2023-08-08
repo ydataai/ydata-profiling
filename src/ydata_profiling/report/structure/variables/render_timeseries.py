@@ -74,7 +74,7 @@ def _render_gap_tab(config: Settings, summary: dict) -> Container:
 
     gap_plot = Image(
         plot_timeseries_gap_analysis(
-            config, summary["gap_stats"]["normalized_diff"]
+            config, summary["gap_stats"]["series"], summary["gap_stats"]["gaps"]
         ),
         image_format=config.plot.image_format,
         alt="Gap plot",

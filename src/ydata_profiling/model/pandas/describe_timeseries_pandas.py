@@ -155,7 +155,6 @@ def compute_gap_stats(series: pd.Series) -> pd.Series:
     gap = series.dropna()
     index_name = gap.index.name if gap.index.name else "index"
     gap = gap.reset_index()[index_name]
-    gap.index = gap
     gap.index.name = None
 
     if isinstance(series.index, pd.DatetimeIndex):
@@ -166,14 +165,20 @@ def compute_gap_stats(series: pd.Series) -> pd.Series:
         period = np.abs(np.diff(series.index)).mean()
         base_frequency = 1
 
-    gap = gap.diff()
+    diff = gap.diff()
+    anchors = gap[diff > period].index
+    gaps = []
+    for i in anchors:
+        gaps.append(gap.loc[gap.index[[i - 1, i]]].values)
+
     stats = {
         "period": period / base_frequency,
-        "min": gap.min() / base_frequency,
-        "max": gap.max() / base_frequency,
-        "mean": gap.mean() / base_frequency,
-        "std": gap.std() / base_frequency,
-        "normalized_diff": gap / period,
+        "min": diff.min() / base_frequency,
+        "max": diff.max() / base_frequency,
+        "mean": diff.mean() / base_frequency,
+        "std": diff.std() / base_frequency,
+        "series": series,
+        "gaps": gaps,
     }
     if isinstance(series.index, pd.DatetimeIndex):
         stats["frequency"] = frequency

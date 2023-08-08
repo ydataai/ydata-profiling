@@ -561,6 +561,7 @@ def _format_ts_date_axis(
 def plot_timeseries_gap_analysis(
     config: Settings,
     series: Union[pd.Series, List[pd.Series]],
+    gaps: Union[pd.Series, List[pd.Series]],
     figsize: tuple = (6, 3),
 ) -> matplotlib.figure.Figure:
     """Plot an line plot from the data and return the AxesSubplot object.
@@ -573,10 +574,12 @@ def plot_timeseries_gap_analysis(
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111)
 
+    colors = create_comparison_color_list(config)
     if isinstance(series, list):
-        colors = create_comparison_color_list(config)
+        min_ = min(s.min() for s in series)
+        max_ = max(s.max() for s in series)
         labels = config.html.style._labels
-        for serie, color, label in zip(series, colors, labels):
+        for serie, gaps_, color, label in zip(series, gaps, colors, labels):
             serie.plot(
                 ax=ax,
                 label=label,
@@ -585,12 +588,17 @@ def plot_timeseries_gap_analysis(
             )
             _format_ts_date_axis(serie, ax)
             ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+            for gap in gaps_:
+                ax.fill_between(x=gap, y1=min_, y2=max_, color=color, alpha=0.25)
     else:
         series.plot(ax=ax)
         _format_ts_date_axis(series, ax)
         ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
-    plt.ylabel("gap (#periods)")
+        for gap in gaps:
+            ax.fill_between(
+                x=gap, y1=series.min(), y2=series.max(), color=colors[0], alpha=0.25
+            )
 
     return plot_360_n0sc0pe(config)
 
