@@ -55,14 +55,14 @@ vars:
         n_obs: 3
         # string to boolean mapping dict
         mappings:
-            t: true
-            f: false
-            yes: true
-            no: false
-            y: true
-            n: false
-            true: true
-            false: false
+            "t": true
+            "f": false
+            "yes": true
+            "no": false
+            "y": true
+            "n": false
+            "true": true
+            "false": false
     path:
         active: false
     file:

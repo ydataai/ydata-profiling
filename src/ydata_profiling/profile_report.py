@@ -124,15 +124,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             for condition, key in groups:
                 if condition:
                     cfg = cfg.update(Config.get_arg_groups(key))
-            report_config = cfg.update(report_config.dict(exclude_defaults=True))
+            report_config = cfg.update(report_config.model_dump(exclude_defaults=True))
 
         if len(kwargs) > 0:
             shorthands, kwargs = Config.shorthands(kwargs)
-            report_config = (
-                Settings()
-                .update(shorthands)
-                .update(report_config.dict(exclude_defaults=True))
-            )
+            cfg = Settings()
+            cfg = cfg.update(shorthands)
+            report_config = cfg.update(report_config.model_dump(exclude_defaults=True))
 
         if kwargs:
             report_config = report_config.update(kwargs)
@@ -191,7 +189,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
     @staticmethod
     def __initialize_dataframe(
-        df: Optional[Union[pd.DataFrame, sDataFrame]], report_config: Settings
+        df: Optional[Union[pd.DataFrame, sDataFrame]],
+        report_config: Union[Settings, SparkSettings],
     ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
         if (
             df is not None

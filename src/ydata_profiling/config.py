@@ -4,26 +4,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import yaml
-from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
-
-
-def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
-    """
-    Recursive merge dictionaries.
-
-    :param dict1: Base dictionary to merge.
-    :param dict2: Dictionary to merge on top of base dictionary.
-    :return: Merged dictionary
-    """
-    for key, val in dict1.items():
-        if isinstance(val, dict):
-            dict2_node = dict2.setdefault(key, {})
-            _merge_dictionaries(val, dict2_node)
-        else:
-            if key not in dict2:
-                dict2[key] = val
-
-    return dict2
+from pydantic import BaseModel, Field, PrivateAttr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Dataset(BaseModel):
@@ -287,8 +269,7 @@ class Report(BaseModel):
 
 class Settings(BaseSettings):
     # Default prefix to avoid collisions with environment variables
-    class Config:
-        env_prefix = "profile_"
+    model_config = SettingsConfigDict(env_prefix="profile_")
 
     # Title of the document
     title: str = "Pandas Profiling Report"
@@ -348,11 +329,11 @@ class Settings(BaseSettings):
     # Report rendering
     report: Report = Report()
     html: Html = Html()
-    notebook = Notebook()
+    notebook: Notebook = Notebook()
 
     def update(self, updates: dict) -> "Settings":
-        update = _merge_dictionaries(self.dict(), updates)
-        return self.parse_obj(self.copy(update=update))
+        update = self.model_copy(update=updates)
+        return Settings(**update.model_dump(warnings=False))
 
     @staticmethod
     def from_file(config_file: Union[Path, str]) -> "Settings":
@@ -366,20 +347,25 @@ class Settings(BaseSettings):
         with open(config_file) as f:
             data = yaml.safe_load(f)
 
-        return Settings().parse_obj(data)
+        return Settings().model_validate(data)
 
 
-class SparkSettings(Settings):
+class SparkSettings(BaseSettings):
     """
     Setting class with the standard report configuration for Spark DataFrames
     All the supported analysis are set to true
     """
 
+    model_config = SettingsConfigDict(env_prefix="profile_")
+
+    # Title of the document
+    title: str = "Pyspark Profiling Report"
+
     vars: Univariate = Univariate()
 
     vars.num.low_categorical_threshold = 0
 
-    infer_dtypes = False
+    infer_dtypes: bool = False
 
     correlations: Dict[str, Correlation] = {
         "spearman": Correlation(key="spearman", calculate=True),
