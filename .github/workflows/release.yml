@@ -4,7 +4,7 @@ name: Release
 on:
   release:
     types:
-      - released
+    - released
 
 
 jobs:
@@ -89,67 +89,3 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
-
-  docs_and_examples:
-    name: Documentation and Examples
-    runs-on: ubuntu-22.04
-    
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Configurating Git
-      run: |
-        git config user.email "azory@ydata.ai"
-        git config user.name "Azory YData Bot"
-        git config core.autocrlf false
-
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.8
-
-    - name: Install pip dependencies
-      run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
-        pip install -r requirements-test.txt
-
-    - name: Install the package
-      run: |
-        make install
-
-    - name: Update examples
-      run: make examples
-
-    - name: Build the documentation
-      run: make docs
-
-    - name: Move the changes to the gh-pages branch (release branch)
-      run: |
-        mv docs master
-        mkdir docs
-        mv master docs/master
-        mv examples/ master
-        mkdir examples
-        mv master examples/master
-        git add -f docs/master
-        git add -f examples/master
-        git stash push -- docs/master examples/master
-        git fetch origin gh-pages
-        git checkout -f gh-pages
-        touch .nojekyll
-        git add .nojekyll
-        rm -rf docs/master
-        rm -rf examples/master
-        git add docs/
-        git add examples/
-        git stash apply
-        git commit -m "[skip ci] Updating documentation and examples" -a || true
-
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        branch: gh-pages
-        directory: .
-        github_token: ${{ secrets.ACCESS_TOKEN }}
