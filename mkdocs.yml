@@ -13,8 +13,9 @@ theme:
   language: en
   font: 'Roboto'
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: ydata
+    - scheme: ydata
+      media: "(prefers-color-scheme: light)"
+      primary: custom
   logo: 'https://assets.ydata.ai/logo_notext_nbg.png'
   features:
     - content.code.annotate
