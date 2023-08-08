@@ -11,7 +11,7 @@ from matplotlib.collections import PolyCollection
 from matplotlib.colors import Colormap, LinearSegmentedColormap, ListedColormap, rgb2hex
 from matplotlib.dates import AutoDateLocator, ConciseDateFormatter
 from matplotlib.patches import Patch
-from matplotlib.ticker import FuncFormatter
+from matplotlib.ticker import FuncFormatter, MaxNLocator
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from typeguard import typechecked
 from wordcloud import WordCloud
@@ -555,6 +555,52 @@ def _format_ts_date_axis(
         axis.xaxis.set_major_formatter(ConciseDateFormatter(locator))
 
     return axis
+
+
+@manage_matplotlib_context()
+def plot_timeseries_gap_analysis(
+    config: Settings,
+    series: Union[pd.Series, List[pd.Series]],
+    gaps: Union[pd.Series, List[pd.Series]],
+    figsize: tuple = (6, 3),
+) -> matplotlib.figure.Figure:
+    """Plot an line plot from the data and return the AxesSubplot object.
+    Args:
+        variables: The data to plot.
+        figsize: The size of the figure (width, height) in inches, default (6,4).
+    Returns:
+        The TimeSeries lineplot.
+    """
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_subplot(111)
+
+    colors = create_comparison_color_list(config)
+    if isinstance(series, list):
+        min_ = min(s.min() for s in series)
+        max_ = max(s.max() for s in series)
+        labels = config.html.style._labels
+        for serie, gaps_, color, label in zip(series, gaps, colors, labels):
+            serie.plot(
+                ax=ax,
+                label=label,
+                color=color,
+                alpha=0.65,
+            )
+            _format_ts_date_axis(serie, ax)
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+            for gap in gaps_:
+                ax.fill_between(x=gap, y1=min_, y2=max_, color=color, alpha=0.25)
+    else:
+        series.plot(ax=ax)
+        _format_ts_date_axis(series, ax)
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+        for gap in gaps:
+            ax.fill_between(
+                x=gap, y1=series.min(), y2=series.max(), color=colors[0], alpha=0.25
+            )
+
+    return plot_360_n0sc0pe(config)
 
 
 @manage_matplotlib_context()

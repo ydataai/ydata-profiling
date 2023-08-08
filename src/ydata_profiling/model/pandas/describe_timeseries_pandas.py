@@ -7,6 +7,7 @@ from scipy.signal import find_peaks
 from statsmodels.tsa.stattools import adfuller
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model.pandas.utils_pandas import get_period_and_frequency
 from ydata_profiling.model.summary_algorithms import (
     describe_numeric_1d,
     describe_timeseries_1d,
@@ -141,6 +142,49 @@ def get_fft_peaks(
     return threshold, orig_peaks, peaks
 
 
+def compute_gap_stats(series: pd.Series) -> pd.Series:
+    """Computes the intertevals in the series normalized by the period.
+
+    Args:
+        series (pd.Series): time series data to analysis.
+
+    Returns:
+        A series with the gaps intervals.
+    """
+
+    gap = series.dropna()
+    index_name = gap.index.name if gap.index.name else "index"
+    gap = gap.reset_index()[index_name]
+    gap.index.name = None
+
+    if isinstance(series.index, pd.DatetimeIndex):
+        period, frequency = get_period_and_frequency(series.index)
+        period = pd.Timedelta(f"{period} {frequency}")
+        base_frequency = pd.Timedelta(f"1 {frequency}")
+    else:
+        period = np.abs(np.diff(series.index)).mean()
+        base_frequency = 1
+
+    diff = gap.diff()
+    anchors = gap[diff > period].index
+    gaps = []
+    for i in anchors:
+        gaps.append(gap.loc[gap.index[[i - 1, i]]].values)
+
+    stats = {
+        "period": period / base_frequency,
+        "min": diff.min() / base_frequency,
+        "max": diff.max() / base_frequency,
+        "mean": diff.mean() / base_frequency,
+        "std": diff.std() / base_frequency,
+        "series": series,
+        "gaps": gaps,
+    }
+    if isinstance(series.index, pd.DatetimeIndex):
+        stats["frequency"] = frequency
+    return stats
+
+
 @describe_timeseries_1d.register
 @series_hashable
 @series_handle_nulls
@@ -164,5 +208,6 @@ def pandas_describe_timeseries_1d(
     stats["stationary"] = is_stationary and not stats["seasonal"]
     stats["addfuller"] = p_value
     stats["series"] = series
+    stats["gap_stats"] = compute_gap_stats(series)
 
     return config, series, stats
