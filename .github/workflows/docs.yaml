@@ -40,7 +40,7 @@ jobs:
     - name: Extract major and minor version
       id: version
       run: |
-        echo "value=`echo ${{ steps.latest_tag.outputs.tag }} | sed -r 's|([0-9]+.[0-9]+).*|\1|g'`" >> $GITHUB_OUTPUT
+        echo "value=`echo ${{ steps.latest_tag.outputs.tag }} | sed -r 's|v([0-9]+.[0-9]+).*|\1|g'`" >> $GITHUB_OUTPUT
 
 
   publish-docs:
