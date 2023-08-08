@@ -133,7 +133,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             report_config = cfg.update(report_config.model_dump(exclude_defaults=True))
 
         if kwargs:
-            report_config = report_config.update(kwargs)
+            report_config = report_config.merge(kwargs)
 
         report_config.vars.timeseries.active = tsmode
         if tsmode and sortby:

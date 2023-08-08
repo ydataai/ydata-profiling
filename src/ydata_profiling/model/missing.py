@@ -57,7 +57,7 @@ def get_missing_active(config: Settings, table_stats: dict) -> Dict[str, Any]:
         name: settings
         for name, settings in missing_map.items()
         if (
-            name in config.missing_diagrams
+            config.missing_diagrams[name]
             and table_stats["n_vars_with_missing"] >= settings["min_missing"]
         )
         and (

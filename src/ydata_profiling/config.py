@@ -8,6 +8,25 @@ from pydantic import BaseModel, Field, PrivateAttr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def _merge_dict(dict1: dict, dict2: dict) -> dict:
+    """
+    Recursive merge dictionaries.
+
+    :param dict1: Base dictionary to merge.
+    :param dict2: Dictionary to merge on top of base dictionary.
+    :return: Merged dictionary
+    """
+    for key, val in dict1.items():
+        if isinstance(val, dict):
+            dict2_node = dict2.setdefault(key, {})
+            _merge_dict(val, dict2_node)
+        else:
+            if key not in dict2:
+                dict2[key] = val
+
+    return dict2
+
+
 class Dataset(BaseModel):
     """Metadata of the dataset"""
 
@@ -334,6 +353,10 @@ class Settings(BaseSettings):
     def update(self, updates: dict) -> "Settings":
         update = self.model_copy(update=updates)
         return Settings(**update.model_dump(warnings=False))
+
+    def merge(self, updates: dict) -> "Settings":
+        updated = _merge_dict(self.model_dump(exclude_defaults=False), updates)
+        return Settings(**updated)
 
     @staticmethod
     def from_file(config_file: Union[Path, str]) -> "Settings":
