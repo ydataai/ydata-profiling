@@ -2,6 +2,9 @@
 Changelog
 =========
 
+.. include:: changelog/v4_5_0.md
+   :parser: myst_parser.sphinx_
+
 .. include:: changelog/v4_4_0.md
    :parser: myst_parser.sphinx_
 
