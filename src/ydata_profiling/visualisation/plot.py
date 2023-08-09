@@ -645,7 +645,8 @@ def plot_overview_timeseries(
                     series = (series - series.min()) / (series.max() - series.min())
                 series.plot(ax=ax, label=col, alpha=0.65)
 
-    plt.legend(loc="upper right")
+    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+    plt.subplots_adjust(right=0.7)
     return plot_360_n0sc0pe(config)
 
 
