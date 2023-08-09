@@ -312,11 +312,13 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
 
     ts_info = Table(table_stats, name="Timeseries statistics", style=config.html.style)
 
+    dpi_bak = config.plot.dpi
+    config.plot.dpi = 300
     timeseries = ImageWidget(
         plot_overview_timeseries(config, summary.variables),
         image_format=config.plot.image_format,
         alt="ts_plot",
-        name="preview",
+        name="original",
         anchor_id="ts_plot_overview",
     )
     timeseries_scaled = ImageWidget(
@@ -326,6 +328,7 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         name="scaled",
         anchor_id="ts_plot_scaled_overview",
     )
+    config.plot.dpi = dpi_bak
     ts_tab = Container(
         [timeseries, timeseries_scaled],
         anchor_id="ts_plot_overview",
