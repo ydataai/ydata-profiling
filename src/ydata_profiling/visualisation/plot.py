@@ -640,7 +640,10 @@ def plot_overview_timeseries(
     else:
         for col, data in variables.items():
             if data["type"] == "TimeSeries":
-                data["series"].plot(ax=ax, label=col)
+                series = data["series"]
+                if scale:
+                    series = (series - series.min()) / (series.max() - series.min())
+                series.plot(ax=ax, label=col, alpha=0.65)
 
     plt.legend(loc="upper right")
     return plot_360_n0sc0pe(config)
