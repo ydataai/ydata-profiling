@@ -373,16 +373,11 @@ class Settings(BaseSettings):
         return Settings().model_validate(data)
 
 
-class SparkSettings(BaseSettings):
+class SparkSettings(Settings):
     """
     Setting class with the standard report configuration for Spark DataFrames
     All the supported analysis are set to true
     """
-
-    model_config = SettingsConfigDict(env_prefix="profile_")
-
-    # Title of the document
-    title: str = "Pyspark Profiling Report"
 
     vars: Univariate = Univariate()
 
