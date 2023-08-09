@@ -23,14 +23,8 @@ from ydata_profiling.visualisation.plot import (
 
 
 def _render_gap_tab(config: Settings, summary: dict) -> Container:
-    gap_stats = [
-        {
-            "name": "period",
-            "value": fmt_numeric(
-                summary["gap_stats"]["period"], precision=config.report.precision
-            ),
-        },
-    ]
+    gap_stats = []
+
     if "frequency" in summary["gap_stats"]:
         gap_stats.append(
             {
