@@ -166,7 +166,7 @@ def compute_gap_stats(series: pd.Series) -> pd.Series:
         base_frequency = 1
 
     diff = gap.diff()
-    anchors = gap[diff > period].index
+    anchors = gap[diff > 2 * period].index
     gaps = []
     for i in anchors:
         gaps.append(gap.loc[gap.index[[i - 1, i]]].values)

@@ -25,47 +25,31 @@ from ydata_profiling.visualisation.plot import (
 def _render_gap_tab(config: Settings, summary: dict) -> Container:
     gap_stats = [
         {
-            "name": "period",
+            "name": "min inverval",
             "value": fmt_numeric(
-                summary["gap_stats"]["period"], precision=config.report.precision
+                summary["gap_stats"]["min"], precision=config.report.precision
+            ),
+        },
+        {
+            "name": "max inverval",
+            "value": fmt_numeric(
+                summary["gap_stats"]["max"], precision=config.report.precision
+            ),
+        },
+        {
+            "name": "mean inverval",
+            "value": fmt_numeric(
+                summary["gap_stats"]["mean"], precision=config.report.precision
+            ),
+        },
+        {
+            "name": "interval std",
+            "value": fmt_numeric(
+                summary["gap_stats"]["std"], precision=config.report.precision
             ),
         },
     ]
-    if "frequency" in summary["gap_stats"]:
-        gap_stats.append(
-            {
-                "name": "frequency",
-                "value": summary["gap_stats"]["frequency"],
-            }
-        )
-    gap_stats.extend(
-        [
-            {
-                "name": "min inverval",
-                "value": fmt_numeric(
-                    summary["gap_stats"]["min"], precision=config.report.precision
-                ),
-            },
-            {
-                "name": "max inverval",
-                "value": fmt_numeric(
-                    summary["gap_stats"]["max"], precision=config.report.precision
-                ),
-            },
-            {
-                "name": "mean inverval",
-                "value": fmt_numeric(
-                    summary["gap_stats"]["mean"], precision=config.report.precision
-                ),
-            },
-            {
-                "name": "interval std",
-                "value": fmt_numeric(
-                    summary["gap_stats"]["std"], precision=config.report.precision
-                ),
-            },
-        ]
-    )
+
     gap_table = Table(
         gap_stats,
         name="Intervals statistics",
