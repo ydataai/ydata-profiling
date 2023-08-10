@@ -23,6 +23,7 @@ from ydata_profiling.visualisation.plot import (
 
 
 def _render_gap_tab(config: Settings, summary: dict) -> Container:
+    frequency = summary["gap_stats"]["frequency"]
     gap_stats = [
         {
             "name": "number of gaps",
@@ -34,25 +35,25 @@ def _render_gap_tab(config: Settings, summary: dict) -> Container:
             "name": "min",
             "value": fmt_numeric(
                 summary["gap_stats"]["min"], precision=config.report.precision
-            ),
+            ) + f" {frequency}" if frequency else "",
         },
         {
             "name": "max",
             "value": fmt_numeric(
                 summary["gap_stats"]["max"], precision=config.report.precision
-            ),
+            ) + f" {frequency}" if frequency else "",
         },
         {
             "name": "mean",
             "value": fmt_numeric(
                 summary["gap_stats"]["mean"], precision=config.report.precision
-            ),
+            ) + f" {frequency}" if frequency else "",
         },
         {
             "name": "std",
             "value": fmt_numeric(
                 summary["gap_stats"]["std"], precision=config.report.precision
-            ),
+            ) + f" {frequency}" if frequency else "",
         },
     ]
 
