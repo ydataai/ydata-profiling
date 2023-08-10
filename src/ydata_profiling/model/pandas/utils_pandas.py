@@ -37,8 +37,15 @@ def get_period_and_frequency(index: pd.DatetimeIndex) -> Tuple[float, str]:
         frequency = "Days"
         period = delta / pd.Timedelta(days=1)
     elif delta.seconds > 0:
-        frequency = "Seconds"
-        period = delta / pd.Timedelta(seconds=1)
+        if delta.seconds >= 3600:
+            frequency = "Hours"
+            period = delta / pd.Timedelta(seconds=3600)
+        elif delta.seconds >= 60:
+            frequency = "Minutes"
+            period = delta / pd.Timedelta(seconds=60)
+        else:
+            frequency = "Seconds"
+            period = delta / pd.Timedelta(seconds=1)
     elif delta.microseconds > 0:
         frequency = "Microseconds"
         period = delta / pd.Timedelta(microseconds=1)
