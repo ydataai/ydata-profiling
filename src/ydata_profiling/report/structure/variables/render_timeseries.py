@@ -25,25 +25,31 @@ from ydata_profiling.visualisation.plot import (
 def _render_gap_tab(config: Settings, summary: dict) -> Container:
     gap_stats = [
         {
-            "name": "min inverval",
+            "name": "number of gaps",
+            "value": fmt_numeric(
+                len(summary["gap_stats"]["gaps"]), precision=config.report.precision
+            ),
+        },
+        {
+            "name": "min",
             "value": fmt_numeric(
                 summary["gap_stats"]["min"], precision=config.report.precision
             ),
         },
         {
-            "name": "max inverval",
+            "name": "max",
             "value": fmt_numeric(
                 summary["gap_stats"]["max"], precision=config.report.precision
             ),
         },
         {
-            "name": "mean inverval",
+            "name": "mean",
             "value": fmt_numeric(
                 summary["gap_stats"]["mean"], precision=config.report.precision
             ),
         },
         {
-            "name": "interval std",
+            "name": "std",
             "value": fmt_numeric(
                 summary["gap_stats"]["std"], precision=config.report.precision
             ),
@@ -52,7 +58,7 @@ def _render_gap_tab(config: Settings, summary: dict) -> Container:
 
     gap_table = Table(
         gap_stats,
-        name="Intervals statistics",
+        name="Gap statistics",
         style=config.html.style,
     )
 

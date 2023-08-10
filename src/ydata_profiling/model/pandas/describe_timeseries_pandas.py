@@ -161,22 +161,28 @@ def compute_gap_stats(series: pd.Series) -> pd.Series:
         period, frequency = get_period_and_frequency(series.index)
         period = pd.Timedelta(f"{period} {frequency}")
         base_frequency = pd.Timedelta(f"1 {frequency}")
+        zero = pd.Timedelta(0)
     else:
         period = np.abs(np.diff(series.index)).mean()
         base_frequency = 1
+        zero = 0
 
     diff = gap.diff()
-    anchors = gap[diff > 2 * period].index
+    non_zero_diff = diff[diff > zero]
+    gap_tolerance = 2
+    min_gap_size = gap_tolerance * non_zero_diff.mean()
+    gap_stats = non_zero_diff[non_zero_diff > min_gap_size]
+    anchors = gap[diff > min_gap_size].index
     gaps = []
     for i in anchors:
         gaps.append(gap.loc[gap.index[[i - 1, i]]].values)
 
     stats = {
         "period": period / base_frequency,
-        "min": diff.min() / base_frequency,
-        "max": diff.max() / base_frequency,
-        "mean": diff.mean() / base_frequency,
-        "std": diff.std() / base_frequency,
+        "min": gap_stats.min() / base_frequency,
+        "max": gap_stats.max() / base_frequency,
+        "mean": gap_stats.mean() / base_frequency,
+        "std": gap_stats.std() / base_frequency,
         "series": series,
         "gaps": gaps,
     }
