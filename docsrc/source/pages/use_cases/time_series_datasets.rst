@@ -4,7 +4,7 @@ Time-Series data
 
 ``ydata-profiling`` can be used for a quick Exploratory Data Analysis on time-series data. This is useful for a quick understading on the behaviour of time dependent variables regarding behaviours such as time plots, seasonality, trends, stationarity and data gaps.
 
-Combined with the profiling reports compare, you're able to compare the evolution and data behaviour through time, in terms of time-series specific statistics such as PACF and ACF plots. It also provides features to help the identification of gaps in the time series caused by missing data either rows containing NaNs or similar values, or by entries missing in the time index.
+Combined with the profiling reports compare, you're able to compare the evolution and data behaviour through time, in terms of time-series specific statistics such as PACF and ACF plots. It also provides the identification of gaps in the time series, caused either by missing values or by entries missing in the time index.
 
 The following syntax can be used to generate a profile under the assumption that the dataset includes time dependent features:
 
