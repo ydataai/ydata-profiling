@@ -23,7 +23,7 @@ from ydata_profiling.visualisation.plot import (
 
 
 def _render_gap_tab(config: Settings, summary: dict) -> Container:
-    frequency = summary["gap_stats"]["frequency"]
+    frequency = summary["gap_stats"].get("frequency", "")
     gap_stats = [
         {
             "name": "number of gaps",
