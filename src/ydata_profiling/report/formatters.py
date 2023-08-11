@@ -6,6 +6,7 @@ from datetime import timedelta
 from typing import Any, Callable, Dict, List, Optional, Union
 
 import numpy as np
+import pandas as pd
 from markupsafe import escape
 
 
@@ -216,6 +217,20 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
                 result = result[:max_units]
             # Format the timespan in a readable way.
             return concatenate(result)
+
+
+def fmt_timespan_timedelta(
+    delta: Any, detailed: bool = False, max_units: int = 3, precision: int = 10
+) -> str:
+    if isinstance(delta, pd.Timedelta):
+        num_seconds = delta.total_seconds()
+        if delta.microseconds > 0:
+            num_seconds += delta.microseconds * 1e-6
+        if delta.nanoseconds > 0:
+            num_seconds += delta.nanoseconds * 1e-9
+        return fmt_timespan(num_seconds, detailed, max_units)
+    else:
+        return fmt_numeric(delta, precision)
 
 
 @list_args

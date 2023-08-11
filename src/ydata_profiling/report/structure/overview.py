@@ -13,6 +13,7 @@ from ydata_profiling.report.formatters import (
     fmt_numeric,
     fmt_percent,
     fmt_timespan,
+    fmt_timespan_timedelta,
     list_args,
 )
 from ydata_profiling.report.presentation.core import Alerts, Container
@@ -298,17 +299,9 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         },
         {
             "name": "Period",
-            "value": fmt_number(summary.time_index_analysis.period),
+            "value": fmt_timespan_timedelta(summary.time_index_analysis.period),
         },
     ]
-
-    if summary.time_index_analysis.frequency:
-        table_stats.append(
-            {
-                "name": "Frequency",
-                "value": summary.time_index_analysis.frequency,
-            }
-        )
 
     ts_info = Table(table_stats, name="Timeseries statistics", style=config.html.style)
 
@@ -318,14 +311,14 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         plot_overview_timeseries(config, summary.variables),
         image_format=config.plot.image_format,
         alt="ts_plot",
-        name="original",
+        name="Original",
         anchor_id="ts_plot_overview",
     )
     timeseries_scaled = ImageWidget(
         plot_overview_timeseries(config, summary.variables, scale=True),
         image_format=config.plot.image_format,
         alt="ts_plot_scaled",
-        name="scaled",
+        name="Scaled",
         anchor_id="ts_plot_scaled_overview",
     )
     config.plot.dpi = dpi_bak

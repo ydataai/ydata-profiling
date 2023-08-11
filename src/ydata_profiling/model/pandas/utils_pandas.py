@@ -1,7 +1,4 @@
-from typing import Tuple
-
 import numpy as np
-import pandas as pd
 
 
 def weighted_median(data: np.ndarray, weights: np.ndarray) -> int:
@@ -28,21 +25,3 @@ def weighted_median(data: np.ndarray, weights: np.ndarray) -> int:
         else:
             w_median = s_data[idx + 1]
     return w_median
-
-
-def get_period_and_frequency(index: pd.DatetimeIndex) -> Tuple[float, str]:
-    delta = abs(np.diff(index)).mean()
-    delta = pd.Timedelta(delta)
-    if delta.days > 0:
-        frequency = "Days"
-        period = delta / pd.Timedelta(days=1)
-    elif delta.seconds > 0:
-        frequency = "Seconds"
-        period = delta / pd.Timedelta(seconds=1)
-    elif delta.microseconds > 0:
-        frequency = "Microseconds"
-        period = delta / pd.Timedelta(microseconds=1)
-    else:
-        frequency = "Nanoseconds"
-        period = delta.nanoseconds / pd.Timedelta(nanoseconds=1)
-    return period, frequency
