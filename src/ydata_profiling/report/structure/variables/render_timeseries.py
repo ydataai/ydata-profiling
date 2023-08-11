@@ -33,19 +33,27 @@ def _render_gap_tab(config: Settings, summary: dict) -> Container:
         },
         {
             "name": "min",
-            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["min"]),
+            "value": fmt_timespan_timedelta(
+                summary["gap_stats"]["min"], precision=config.report.precision
+            ),
         },
         {
             "name": "max",
-            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["max"]),
+            "value": fmt_timespan_timedelta(
+                summary["gap_stats"]["max"], precision=config.report.precision
+            ),
         },
         {
             "name": "mean",
-            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["mean"]),
+            "value": fmt_timespan_timedelta(
+                summary["gap_stats"]["mean"], precision=config.report.precision
+            ),
         },
         {
             "name": "std",
-            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["std"]),
+            "value": fmt_timespan_timedelta(
+                summary["gap_stats"]["std"], precision=config.report.precision
+            ),
         },
     ]
 
