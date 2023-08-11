@@ -2,9 +2,9 @@
 Time-Series data
 ==================
 
-``pandas-profiling`` can be used for a quick Exploratory Data Analysis on time-series data. This is useful for a quick understading on the behaviour of time dependent variables regarding behaviours such as time plots, seasonality, trends and stationarity.
+``ydata-profiling`` can be used for a quick Exploratory Data Analysis on time-series data. This is useful for a quick understading on the behaviour of time dependent variables regarding behaviours such as time plots, seasonality, trends, stationarity and data gaps.
 
-Combined with the profiling reports compare, you're able to compare the evolution and data behaviour through time, in terms of time-series specific statistics such as PACF and ACF plots.
+Combined with the profiling reports compare, you're able to compare the evolution and data behaviour through time, in terms of time-series specific statistics such as PACF and ACF plots. It also provides the identification of gaps in the time series, caused either by missing values or by entries missing in the time index.
 
 The following syntax can be used to generate a profile under the assumption that the dataset includes time dependent features:
 
@@ -60,8 +60,6 @@ In some cases you might be already aware of what variables are expected to be ti
         "NO2 1st Max Value": "timeseries",
         "NO2 1st Max Hour": "timeseries",
         "NO2 AQI": "timeseries",
-        "cos": "numeric",
-        "cat": "numeric",
     }
 
     profile = ProfileReport(

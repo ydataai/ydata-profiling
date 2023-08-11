@@ -22,6 +22,7 @@
    pages/use_cases/profiling_databases
    pages/use_cases/metadata
    pages/use_cases/custom_report_appearance
+   pages/use_cases/time_series_datasets
 
 .. toctree::
    :maxdepth: 3
