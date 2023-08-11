@@ -2,8 +2,6 @@ from datetime import datetime
 from typing import Any, List
 from urllib.parse import quote
 
-import pandas as pd
-
 from ydata_profiling.config import Settings
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
@@ -301,7 +299,7 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         },
         {
             "name": "Period",
-            "value": fmt_timespan_timedelta(summary.time_index_analysis.period)
+            "value": fmt_timespan_timedelta(summary.time_index_analysis.period),
         },
     ]
 
