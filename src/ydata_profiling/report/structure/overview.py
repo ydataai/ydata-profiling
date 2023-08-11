@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import Any, List
 from urllib.parse import quote
 
+import pandas as pd
+
 from ydata_profiling.config import Settings
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import AlertType
@@ -298,17 +300,11 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         },
         {
             "name": "Period",
-            "value": fmt_number(summary.time_index_analysis.period),
+            "value": fmt_timespan(summary.time_index_analysis.period)
+            if isinstance(summary.time_index_analysis.period, pd.Timedelta)
+            else fmt_number(summary.time_index_analysis.period),
         },
     ]
-
-    if summary.time_index_analysis.frequency:
-        table_stats.append(
-            {
-                "name": "Frequency",
-                "value": summary.time_index_analysis.frequency,
-            }
-        )
 
     ts_info = Table(table_stats, name="Timeseries statistics", style=config.html.style)
 

@@ -5,6 +5,7 @@ from ydata_profiling.report.formatters import (
     fmt_monotonic,
     fmt_numeric,
     fmt_percent,
+    fmt_timespan_timedelta,
 )
 from ydata_profiling.report.presentation.core import (
     Container,
@@ -23,8 +24,6 @@ from ydata_profiling.visualisation.plot import (
 
 
 def _render_gap_tab(config: Settings, summary: dict) -> Container:
-    frequency = summary["gap_stats"].get("frequency", "")
-    suffix = f" {frequency}" if frequency else ""
     gap_stats = [
         {
             "name": "number of gaps",
@@ -34,31 +33,19 @@ def _render_gap_tab(config: Settings, summary: dict) -> Container:
         },
         {
             "name": "min",
-            "value": fmt_numeric(
-                summary["gap_stats"]["min"], precision=config.report.precision
-            )
-            + suffix,
+            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["min"]),
         },
         {
             "name": "max",
-            "value": fmt_numeric(
-                summary["gap_stats"]["max"], precision=config.report.precision
-            )
-            + suffix,
+            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["max"]),
         },
         {
             "name": "mean",
-            "value": fmt_numeric(
-                summary["gap_stats"]["mean"], precision=config.report.precision
-            )
-            + suffix,
+            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["mean"]),
         },
         {
             "name": "std",
-            "value": fmt_numeric(
-                summary["gap_stats"]["std"], precision=config.report.precision
-            )
-            + suffix,
+            "value": fmt_timespan_timedelta(config, summary["gap_stats"]["std"]),
         },
     ]
 

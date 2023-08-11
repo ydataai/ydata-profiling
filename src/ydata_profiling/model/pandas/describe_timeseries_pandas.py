@@ -7,7 +7,6 @@ from scipy.signal import find_peaks
 from statsmodels.tsa.stattools import adfuller
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.pandas.utils_pandas import get_period_and_frequency
 from ydata_profiling.model.summary_algorithms import (
     describe_numeric_1d,
     describe_timeseries_1d,
@@ -142,6 +141,25 @@ def get_fft_peaks(
     return threshold, orig_peaks, peaks
 
 
+def identify_gaps(
+    gap: pd.Series, is_datetime: bool, gap_tolerance: int = 2
+) -> Tuple[pd.Series, list]:
+    zero = pd.Timedelta(0) if is_datetime else 0
+    diff = gap.diff()
+
+    non_zero_diff = diff[diff > zero]
+    min_gap_size = gap_tolerance * non_zero_diff.mean()
+
+    gap_stats = non_zero_diff[non_zero_diff > min_gap_size]
+    anchors = gap[diff > min_gap_size].index
+
+    gaps = []
+    for i in anchors:
+        gaps.append(gap.loc[gap.index[[i - 1, i]]].values)
+
+    return gap_stats, gaps
+
+
 def compute_gap_stats(series: pd.Series) -> pd.Series:
     """Computes the intertevals in the series normalized by the period.
 
@@ -157,37 +175,17 @@ def compute_gap_stats(series: pd.Series) -> pd.Series:
     gap = gap.reset_index()[index_name]
     gap.index.name = None
 
-    if isinstance(series.index, pd.DatetimeIndex):
-        period, frequency = get_period_and_frequency(series.index)
-        period = pd.Timedelta(f"{period} {frequency}")
-        base_frequency = pd.Timedelta(f"1 {frequency}")
-        zero = pd.Timedelta(0)
-    else:
-        period = np.abs(np.diff(series.index)).mean()
-        base_frequency = 1
-        zero = 0
-
-    diff = gap.diff()
-    non_zero_diff = diff[diff > zero]
-    gap_tolerance = 2
-    min_gap_size = gap_tolerance * non_zero_diff.mean()
-    gap_stats = non_zero_diff[non_zero_diff > min_gap_size]
-    anchors = gap[diff > min_gap_size].index
-    gaps = []
-    for i in anchors:
-        gaps.append(gap.loc[gap.index[[i - 1, i]]].values)
+    is_datetime = isinstance(series.index, pd.DatetimeIndex)
+    gap_stats, gaps = identify_gaps(gap, is_datetime)
 
     stats = {
-        "period": period / base_frequency,
-        "min": gap_stats.min() / base_frequency,
-        "max": gap_stats.max() / base_frequency,
-        "mean": gap_stats.mean() / base_frequency,
-        "std": gap_stats.std() / base_frequency,
+        "min": gap_stats.min(),
+        "max": gap_stats.max(),
+        "mean": gap_stats.mean(),
+        "std": gap_stats.std(),
         "series": series,
         "gaps": gaps,
     }
-    if isinstance(series.index, pd.DatetimeIndex):
-        stats["frequency"] = frequency
     return stats
 
 
