@@ -182,7 +182,7 @@ def compute_gap_stats(series: pd.Series) -> pd.Series:
         "min": gap_stats.min(),
         "max": gap_stats.max(),
         "mean": gap_stats.mean(),
-        "std": gap_stats.std(),
+        "std": gap_stats.std() if len(gap_stats) > 1 else 0,
         "series": series,
         "gaps": gaps,
     }

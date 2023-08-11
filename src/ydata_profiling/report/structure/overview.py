@@ -15,6 +15,7 @@ from ydata_profiling.report.formatters import (
     fmt_numeric,
     fmt_percent,
     fmt_timespan,
+    fmt_timespan_timedelta,
     list_args,
 )
 from ydata_profiling.report.presentation.core import Alerts, Container
@@ -300,9 +301,7 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         },
         {
             "name": "Period",
-            "value": fmt_timespan(summary.time_index_analysis.period)
-            if isinstance(summary.time_index_analysis.period, pd.Timedelta)
-            else fmt_number(summary.time_index_analysis.period),
+            "value": fmt_timespan_timedelta(summary.time_index_analysis.period)
         },
     ]
 
