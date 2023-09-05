@@ -4,10 +4,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import yaml
-from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
+from pydantic import BaseModel, Field, PrivateAttr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
+def _merge_dict(dict1: dict, dict2: dict) -> dict:
     """
     Recursive merge dictionaries.
 
@@ -18,7 +19,7 @@ def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
     for key, val in dict1.items():
         if isinstance(val, dict):
             dict2_node = dict2.setdefault(key, {})
-            _merge_dictionaries(val, dict2_node)
+            _merge_dict(val, dict2_node)
         else:
             if key not in dict2:
                 dict2[key] = val
@@ -287,8 +288,7 @@ class Report(BaseModel):
 
 class Settings(BaseSettings):
     # Default prefix to avoid collisions with environment variables
-    class Config:
-        env_prefix = "profile_"
+    model_config = SettingsConfigDict(env_prefix="profile_")
 
     # Title of the document
     title: str = "Pandas Profiling Report"
@@ -348,11 +348,15 @@ class Settings(BaseSettings):
     # Report rendering
     report: Report = Report()
     html: Html = Html()
-    notebook = Notebook()
+    notebook: Notebook = Notebook()
 
     def update(self, updates: dict) -> "Settings":
-        update = _merge_dictionaries(self.dict(), updates)
-        return self.parse_obj(self.copy(update=update))
+        update = self.model_copy(update=updates)
+        return Settings(**update.model_dump(warnings=False))
+
+    def merge(self, updates: dict) -> "Settings":
+        updated = _merge_dict(self.model_dump(exclude_defaults=False), updates)
+        return Settings(**updated)
 
     @staticmethod
     def from_file(config_file: Union[Path, str]) -> "Settings":
@@ -366,7 +370,7 @@ class Settings(BaseSettings):
         with open(config_file) as f:
             data = yaml.safe_load(f)
 
-        return Settings().parse_obj(data)
+        return Settings().model_validate(data)
 
 
 class SparkSettings(Settings):
@@ -379,7 +383,7 @@ class SparkSettings(Settings):
 
     vars.num.low_categorical_threshold = 0
 
-    infer_dtypes = False
+    infer_dtypes: bool = False
 
     correlations: Dict[str, Correlation] = {
         "spearman": Correlation(key="spearman", calculate=True),

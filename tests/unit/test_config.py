@@ -26,8 +26,8 @@ def test_config_shorthands():
 
 def test_config_env(monkeypatch):
     monkeypatch.setenv("PROFILE_TITLE", "Testing Title")
-    monkeypatch.setenv("PROFILE_PLOT", '{"dpi": 1000}')
+    monkeypatch.setenv("PROFILE_SAMPLES", '{"tail": 3}')
 
     r = ProfileReport()
     assert r.config.title == "Testing Title"
-    assert r.config.plot.dpi == 1000
+    assert r.config.samples.tail == 3
