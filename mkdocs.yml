@@ -5,13 +5,37 @@ edit_uri: ""
 dev_addr: 0.0.0.0:1235
 site_dir: "static/docs"
 nav:
-  - Getting started:
+  - Welcome:
     - 'index.md'
-    - Overview: 'index.md'
+  - Getting Started:
+    - Installation: 'getting-started/installation.md'
+    - Quickstart: 'getting-started/quickstart.md'
+    - Profiling overview: 'getting-started/concepts.md'
+    - Examples: 'getting-started/examples.md'
+  - Features:
+    - Accessing profile values: 'features/profile_values.md'
+  - Advanced settings:
+    -  General settings: 'advanced_settings/available_settings.md'
+    -  Changing settings: 'advanced_settings/changing_settings.md'
+    -  Caching: 'advanced_settings/caching.md'
+  - Integrations:
+    -  Other dataframes: 'integrations/other_dataframe_libraries.md'
+    -  Pyspark: 'integrations/pyspark.md'
+    -  Interactive applications: 'integrations/interactive_applications.md'
+    -  IDEs: 'integrations/ides.md'
+    -  Great Expectations: 'integrations/great_expectations.md'
+    -  Bytewax: 'integrations/bytewax.md'
+  - Support & Contributions:
+    - Contribution guidelines: 'support-contribution/contribution_guidelines.md'
+    - Supports & Troubleshoot: 'support-contribution/help_troubleshoot.md'
+    - Common issues guide: 'support-contribution/common_issues.md'
+  - Reference:
+    - 'reference/resources.md'
+    - History & community: 'reference/history.md'
+
 theme:
   name: material
   language: en
-  font: 'Roboto'
   palette:
     - scheme: ydata
       media: "(prefers-color-scheme: light)"
@@ -94,6 +118,8 @@ extra:
 watch:
   - src
 plugins:
+  - table-reader
+  - badges
   - search:
         lang: en
   - autorefs
