@@ -20,7 +20,7 @@ jobs:
       version: v${{ steps.version.outputs.value }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
 
@@ -49,7 +49,7 @@ jobs:
     needs: prepare
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         token: ${{ secrets.ACCESS_TOKEN }}
