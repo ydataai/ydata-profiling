@@ -3,7 +3,7 @@
 Start by loading your pandas `DataFrame` as you normally would, e.g. by
 using:
 
-``` python
+``` python linenums="1"
 import numpy as np
 import pandas as pd
 from ydata_profiling import ProfileReport
@@ -49,9 +49,9 @@ and use the `to_file()` function:
 profile.to_file("your_report.html")
 ```
 
-Alternatively, the report\'s data can be obtained as a JSON file:
+Alternatively, the report's data can be obtained as a JSON file:
 
-``` python
+``` python linenums="1" title="Save your profile report as a JSON file"
 # As a JSON string
 json_data = profile.to_json()
 

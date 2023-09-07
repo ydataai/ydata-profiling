@@ -1,5 +1,13 @@
 #Concepts
 
+!!! question "Text/corpus data - your input is needed!"
+
+    `ydata-profiling` team is considering the support of a new set of features for corpus data
+    and we want to hear from you! We're particularly interested in understanding why you think
+    these features would be useful, and your input will help us prioritize and refine this development.
+
+    👉 Upvote [add here link for the request form]
+
 ## Data Structures supported
 
 The profiling offers comprehensive insights into various types of data, including tabular, time-series text and image data. 
@@ -70,12 +78,17 @@ allowing users to quickly identify which variables have the most significant amo
 Check how you can configure your missing data visualization. 
                 
 ## Outliers **
-[Add here the visualization for the outliers]
+
+<figure markdown>     
+   ![Outliers profiling](../_static/img/outliers.png){width="700"}
+   <figcaption>Outliers identification</figcaption>
+</figure>
+
 This section provides a comprehensive profiling over the potential dataset outliers. You can validate and observe outliers presence and deviation from the general distribution of numerical variables
 based on observed variance. 
 The identification of outliers allows the data analyst or scientist to assess whether they are genuine data anomalies or erroneous entries, allowing for informed decisions on whether to retain, transform, or exclude these points in further analyses.
 
-Find more about the outlier section in Fabric. 
+Feature limited to user of the [cloud hosted solution](https://ydata.ai/ydata-fabric-free-trial).
 
 ## Preview data 
 For a quick overview of the data, ydata-profiling provides the following sections that can be easily configure by the user:

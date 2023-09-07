@@ -8,12 +8,19 @@ nav:
   - Welcome:
     - 'index.md'
   - Getting Started:
+    - Overview: 'getting-started/concepts.md'
     - Installation: 'getting-started/installation.md'
     - Quickstart: 'getting-started/quickstart.md'
-    - Profiling overview: 'getting-started/concepts.md'
     - Examples: 'getting-started/examples.md'
   - Features:
     - Accessing profile values: 'features/profile_values.md'
+    - Dataset metadata: 'features/metadata.md'
+    - Datasets catalog **: 'features/collaborative_data_profiling.md'
+    - Sensitive data: 'features/sensitive_data.md'
+    - Time-series: 'features/time_series_datasets.md'
+    - Comparing datasets: 'features/comparing_datasets.md'
+    - Big data: 'features/big_data.md'
+    - Customize reports: 'features/custom_reports.md'
   - Advanced settings:
     -  General settings: 'advanced_settings/available_settings.md'
     -  Changing settings: 'advanced_settings/changing_settings.md'
@@ -22,6 +29,7 @@ nav:
     -  Other dataframes: 'integrations/other_dataframe_libraries.md'
     -  Pyspark: 'integrations/pyspark.md'
     -  Interactive applications: 'integrations/interactive_applications.md'
+    -  Pipelines: 'integrations/pipelines.md'
     -  IDEs: 'integrations/ides.md'
     -  Great Expectations: 'integrations/great_expectations.md'
     -  Bytewax: 'integrations/bytewax.md'

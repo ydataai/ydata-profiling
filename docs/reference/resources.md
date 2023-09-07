@@ -14,6 +14,7 @@ Feel free to contribute it via a pull request on GitHub.
     (30+ notebooks)
 -   Pycaret: [Intermediate Level Tutorials include
     pandas-profiling](https://github.com/pycaret/pycaret)
+-   Google BigQuery integration Notebook: [Building a propensity model for financial services on Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb)
 
 ## Articles
 
