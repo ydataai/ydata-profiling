@@ -5,6 +5,10 @@
     transform: none;
 }
 
+.md-content {
+  --md-typeset-a-color: #002b9e;
+}
+
 @media {
   .md-button--ydata {
       --md-primary-fg-color: #E32212;
@@ -40,3 +44,5 @@
     --md-footer-fg-color--light: hsla(0, 0%, 100%, 0.7);
     --md-footer-fg-color--lighter: hsla(0, 0%, 100%, 0.3);
   }
+
+

@@ -8,8 +8,7 @@ Pandas](https://pandas.pydata.org/docs/user_guide/io.html).
 If you have data in another framework of the Python Data ecosystem, you
 can use `ydata-profiling` by converting to a pandas `DataFrame`, as
 direct integrations are not yet supported. Large datasets might require
-sampling (as seen in `../use_cases/big_data`{.interpreted-text
-role="doc"}).
+sampling (as seen in our documentation on [how to profile large datasets](../features/big_data.md)).
 
 ```python linenums="1" title="Dask to Pandas"
 # Convert dask DataFrame to a pandas DataFrame
