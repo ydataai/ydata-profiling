@@ -19,7 +19,10 @@ values or by entries missing in the time index.
     You can find the a [otebook with the
     [full code in our examples folder](https://github.com/ydataai/ydata-profiling/tree/develop/examples/usaairquality).
 
-(add here a gif with a time-series profiling)
+<figure markdown>     
+   ![Time-series profiling](../_static/img/time-series_profiling.gif){width="800"}
+   <figcaption>Time-series profiling report</figcaption>
+</figure>
 
 ## Profiling time-series dataset
 
@@ -90,7 +93,10 @@ PACF and ACF plots (also computed in your time-series profiling).
 
 ### Time-series missing gaps
 
-(add here an image for the time-series gaps)
+<figure markdown>     
+   ![Time-series gap analysis](../_static/img/ts_gap_analysis.png){width="800"}
+   <figcaption>Time-series missing data visualization</figcaption>
+</figure>
 
 As a data scientist, one of the critical aspects of working with time-series data
 is understanding and analyzing time-series gaps. Time-series gaps refer to the

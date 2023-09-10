@@ -57,6 +57,7 @@ YData-profiling can be used to deliver a variety of different applications. The 
 Looking for how to use certain features or how to intgrate `ydata-profiling` in your currect stack and workflows,
 check our step-by-step tutorials. 
 
+- **How to master exploratory data analysis with ydata-profiling?** Check this [step-by-step tutorial](https://medium.com/ydata-ai/auditing-data-quality-with-pandas-profiling-b1bf1919f856).
 - **Looking on how to do exploratory data analysis for Time-series 🕛?** Check how to in this 
 [blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
 To learn more about this feature [check the documentation](features/time_series_datasets.md).

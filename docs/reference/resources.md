@@ -10,14 +10,18 @@ Feel free to contribute it via a pull request on GitHub.
     services on Google
     Cloud](https://cloud.google.com/solutions/building-a-propensity-model-for-financial-services-on-gcp)
 -   Kaggle: [Notebooks using
-    pandas-profiling](https://www.kaggle.com/search?q=%22pandas-profiling%22+kernelLanguage%3APython)
-    (30+ notebooks)
+    ydata-profiling (previously cally pandas-profiling)](https://www.kaggle.com/search?q=ydata-profiling)
+    (100+ notebooks)
 -   Pycaret: [Intermediate Level Tutorials include
     pandas-profiling](https://github.com/pycaret/pycaret)
 -   Google BigQuery integration Notebook: [Building a propensity model for financial services on Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb)
 
 ## Articles
 
+- [Pandas-profiling now supports spark](https://www.databricks.com/blog/2023/04/03/pandas-profiling-now-supports-apache-spark.html)
+  (Fabiana, Miriam and Corey, Apr 3, 2023)
+- [How to an EDA on Time-series data](https://ydata.ai/resources/how-to-do-an-eda-for-time-series)
+  (Fabiana Clemente, Oct 21, 2022)
 -   [Evaluation of freely available data profiling tools for health data
     research application: a functional evaluation
     review](https://bmjopen.bmj.com/content/12/5/e054186.abstract/) (Ben
@@ -64,6 +68,8 @@ Feel free to contribute it via a pull request on GitHub.
 
 ## Videos
 
+- [How to install ydata-profiling with conda and Python 3.11](https://www.youtube.com/watch?v=fvXZcpTwbtA)
+  (Fabiana Clemente, June 2023, 2023)
 -   [Installing Anaconda, Creating a virtual environment and installing
     pandas-profiling in it](https://www.youtube.com/watch?v=q2E8RLsznaA)
     (Abhiram R - EverythingPython, Jan 25, 2022)
