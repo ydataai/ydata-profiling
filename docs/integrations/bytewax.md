@@ -109,6 +109,7 @@ analyze:
 import pandas as pd
 from ydata_profiling import ProfileReport
 
+
 def profile(device_id__readings):
     print(device_id__readings)
     device_id, readings = device_id__readings
@@ -124,6 +125,7 @@ def profile(device_id__readings):
 
     profile.to_file(f"Ts_Profile_{device_id}-{start_time}.html")
     return f"device {device_id} profiled at hour {start_time}"
+
 
 flow.map(profile)
 ```
