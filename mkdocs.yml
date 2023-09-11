@@ -3,7 +3,6 @@ repo_url: https://github.com/ydataai/ydata-profiling
 repo_name: ydataai/ydata-profiling
 dev_addr: 0.0.0.0:1235
 site_dir: static/docs
-site_url: https://ydata.ai/docs/profiling
 nav:
   - Welcome:
     - 'index.md'
