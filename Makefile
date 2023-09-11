@@ -41,8 +41,10 @@ install-spark-ci:
 	--output ${SPARK_DIRECTORY}/spark.tgz
 	cd ${SPARK_DIRECTORY} && tar -xvzf spark.tgz && mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark
 
-publish-docs: ### Publishes the documentation
-	mike deploy --push --update-aliases $(version) latest
+publish-docs: examples ### Publishes the documentation
+	mkdir docs/examples
+	rsync -R examples/*/*.html docs
+	# mike deploy --push --update-aliases $(version) latest
 
 lint:
 	pre-commit run --all-files
