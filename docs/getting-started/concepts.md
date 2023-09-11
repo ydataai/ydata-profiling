@@ -31,7 +31,10 @@ Types, when going beyond the logical data types such as integer, floats, etc,  a
 - File
 - Image
 
-Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. User customized summarizations and type definitions are fully supported, with PRs supporting new data types for specific use cases more than welcome. For reference, you can check the implementation of ``ydata-profiling``'s default typeset `here <https://github.com/ydataai/ydata-profiling/blob/develop/src/ydata_profiling/model/typeset.py>`_.
+Appropriate typesets can both improve the overall expressiveness and reduce the complexity of the analysis/code. 
+User customized summarizations and type definitions are fully supported, with PRs supporting new data types
+for specific use cases more than welcome. For reference, you can check the implementation of ``ydata-profiling``'s
+default typeset [here](https://github.com/ydataai/ydata-profiling/blob/develop/src/ydata_profiling/model/typeset.py).
 
 ## Data quality alerts
 <figure markdown>     
@@ -45,11 +48,15 @@ The **Alerts** section of the report includes a comprehensive and automatic list
 
 {{ read_csv('./data_quality_alerts.csv') }}
 
-Information on the default values and the specific parameters/thresholds used in the computation of these alerts, as well as settings to disable specific ones, can be consulted in :doc:`../advanced_usage/available_settings`.  (update the link)
+Information on the default values and the specific parameters/thresholds used in the computation of these alerts, 
+as well as settings to disable specific ones, can be consulted in the [documentation](../advanced_settings/available_settings.md).
 
 ## Univariate profiling                                
-[update this image with the univariate profiling experience]
-![Data quality warnings](../_static/img/warnings_section.png){ align=center, width=100%}     
+
+<figure markdown>     
+   ![Univariate profiling ydata-profiling](../_static/img/univariate_profiling.png){width="700"}
+   <figcaption>Univariate profiling metrics and visualization</figcaption>
+</figure>
 
 This section provides a comprehensive overview of individual variables within a given dataset, this feature is particularly useful for exploratory data analysis (EDA)
 as it automatically calculated detailed statistics, visualizations, and insights for each variable in the dataset. It offers information such as data type, missing values, unique values, basic descriptive statistics
@@ -59,7 +66,11 @@ For more details about the different metrics and visualizations check the Univar
 
 ## Multivariate profiling
 
-[Add here the visualization]
+<figure markdown>     
+   ![Multivariate profiling ydata-profiling](../_static/img/multivariate_profiling.png){width="700"}
+   <figcaption>Multivariate profiling metrics and visualization</figcaption>
+</figure>
+
 This section provides essentials insights into the relationships between variables through correlations matrices and interactions. 
 The correlation view computes and presents correlation coefficients between pairs of numerical variables, helping to identify potential linear relationships.
 This assists data analysts and scientists in understanding how variables change together and highlights possible multicollinearity issues.
@@ -70,7 +81,7 @@ This can be crucial in identifying hidden patterns that might not be captured th
 Check the section about interactions configuration and correlation matrix metrics for more details.  
 
 ## Missing data
-[Add here the visualization]
+
 This section offers valuable insights into the presence and distribution of missing data within a dataset. It can be particularly helpful for data preprocessing and quality assesment as
 provides a comprehensive summary of missing values across variables, indicating the percentage of missing data for each variable. Additionally, it displays a visual representation of missing data patterns through bar plots and heatmaps, 
 allowing users to quickly identify which variables have the most significant amount of missing information.
