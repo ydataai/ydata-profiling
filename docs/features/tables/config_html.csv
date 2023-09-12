@@ -1,0 +1,9 @@
+Parameter,Type,Default,Description
+``html.minify_html``,bool,``True``,"If ``True``, the output HTML is minified using the ``htmlmin`` package."
+``html.use_local_assets``,bool,``True``,"If ``True``, all assets (stylesheets, scripts, images) are stored locally. If ``False``, a CDN is used for some stylesheets and scripts."
+``html.inline``,boolean,``True``,"If ``True``, all assets are contained in the report. If ``False``, then a web export is created, where all assets are stored in the '[REPORT_NAME]_assets/' directory."
+``html.navbar_show``,boolean,``True``,"Whether to include a navigation bar in the report"
+``html.style.theme``,string,``None``,"Select a *bootswatch* theme. Available options: *flatly* (dark) and *united* (orange)"
+``html.style.logo``,string,"","A base64 encoded logo, to display in the navigation bar."
+``html.style.primary_color``,string,"*#337ab7*","The primary color to use in the report."
+``html.style.full_width``,boolean,``False``,"By default, the width of the report is fixed. If set to ``True``, the full width of the screen is used."
