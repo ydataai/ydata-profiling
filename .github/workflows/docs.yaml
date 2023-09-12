@@ -77,7 +77,7 @@ jobs:
     - name: Install doc dependencies
       run: |
         python -m pip install --upgrade pip
-        make install-doc
+        make install-docs
 
     - name: Publish
       run: make publish-docs version=${{ needs.prepare.outputs.version }}
