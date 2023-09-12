@@ -1,6 +1,5 @@
 name: Pull Request
 
-
 on:
   push:
     branches:
@@ -18,7 +17,7 @@ jobs:
         fetch-depth: 0
 
     - uses: wagoid/commitlint-github-action@v5
-    
+
   lint:
     if: github.actor != 'renovate[bot]'
     name: Lint source code
@@ -40,7 +39,7 @@ jobs:
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: "3.10"
 
     - uses: actions/cache@v3
       name: Cache pip dependencies
@@ -81,3 +80,36 @@ jobs:
       with:
         branch: ${{ github.head_ref }}
         github_token: ${{ secrets.ACCESS_TOKEN }}
+
+  validate-docs:
+    name: Validate Docs
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Cache pip dependencies
+      id: cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -r requirements-dev.txt
+        python -m pip install -r requirements-test.txt
+        python -m pip install -r requirements-docs.txt
+      
+    - name: Install the package
+      run: make install
+
+    - name: Build docs
+      run: mkdocs build

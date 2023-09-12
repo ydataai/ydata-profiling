@@ -41,71 +41,6 @@ jobs:
       run: echo "value=${{ steps.semantic.outputs.new_release_version }}.rc${{ steps.build_number.outputs.value }}" >> $GITHUB_OUTPUT
 
 
-  docs-changelog:
-    if: needs.prepare.outputs.new_release == 'true'
-    name: Update changelog on docs 
-    runs-on: ubuntu-22.04
-
-    needs: prepare
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.ACCESS_TOKEN }}
-
-    - name: Calculate changelog path
-      id: path
-      run: echo "value=$(echo "${{ needs.prepare.outputs.release }}" | sed "s/\./_/g").md" >> $GITHUB_OUTPUT
-
-    - name: Configure Git
-      run: |
-        git config user.email "azory@ydata.ai"
-        git config user.name "Azory YData Bot"
-        git config core.autocrlf false
-
-    - name: Write changelog to file
-      uses: DamianReeves/write-file-action@master
-      with:
-        path: docsrc/source/pages/reference/changelog/${{ steps.path.outputs.value }}
-        contents: ${{ needs.prepare.outputs.release_notes }}
-        write-mode: overwrite
-
-    - name: Add changelog to docs
-      run: |
-        cd docsrc/source/pages/reference
-        sed -i -e 's/## \[.*/### Changelog ${{ needs.prepare.outputs.release }}/g' \
-            -e 's/### Bug Fixes/#### 🐛 Bug fixes/g' \
-            -e 's/### Features/#### 🎉 Features/g' \
-            -e 's/### BREAKING CHANGES/#### 🚨 Breaking changes/g' \
-            -e 's/### Documentation/#### 📖 Documentation/g' \
-            changelog/${{ steps.path.outputs.value }}
-
-        grep -q ".. include:: changelog/${{ steps.path.outputs.value }}" changelog.rst || sed -i "4 a\\
-        .. include:: changelog\/${{ steps.path.outputs.value }}\\
-           :parser: myst_parser.sphinx_\\
-
-        " changelog.rst
-
-    - name: Commit changelog
-      id: commit
-      run: |
-        if [[ `git status --porcelain` ]]; then
-          echo "CHANGES=true" >> $GITHUB_OUTPUT
-          git add docsrc/source/pages/reference/changelog/${{ steps.path.outputs.value  }}
-          git commit -m "[skip ci] Update changelogs" -a
-        else
-          echo "CHANGES=false" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Push changes
-      uses: ad-m/github-push-action@v0.6.0
-      if: ${{ steps.commit.outputs.CHANGES == 'true' }}
-      with:
-        branch: ${{ github.ref }}
-        github_token: ${{ secrets.ACCESS_TOKEN }}
-   
-
   prerelease-tag:
     if: needs.prepare.outputs.new_release == 'true'
 
@@ -132,7 +67,6 @@ jobs:
 
     needs:
     - prepare
-    - docs-changelog
 
     steps:
     - name: Delete Previous drafts

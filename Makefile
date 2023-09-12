@@ -1,10 +1,7 @@
 .PHONY: docs examples
 
 docs:
-	rm -rf docs/
-	mkdir docs/
-	# sphinx
-	cd docsrc/ && make github
+	mkdocs build
 
 test:
 	pytest tests/unit/
@@ -34,12 +31,20 @@ package:
 install:
 	pip install -e .[notebook]
 
+install-docs: install ### Installs regular and docs dependencies
+	pip install -r requirements-docs.txt
+
 install-spark-ci:
 	sudo apt-get update
 	sudo apt-get -y install openjdk-8-jdk
 	curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
 	--output ${SPARK_DIRECTORY}/spark.tgz
 	cd ${SPARK_DIRECTORY} && tar -xvzf spark.tgz && mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark
+
+publish-docs: examples ### Publishes the documentation
+	mkdir docs/examples
+	rsync -R examples/*/*.html docs
+	mike deploy --push --update-aliases $(version) latest
 
 lint:
 	pre-commit run --all-files

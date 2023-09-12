@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.venv
 env/
 build/
 develop-eggs/
@@ -77,7 +78,7 @@ playground/
 # build data
 examples/*/*.html
 examples/*/*.csv
-docs/
+static/docs
 docsrc/_build/
 docsrc/source/pages/api/_autosummary/
 
