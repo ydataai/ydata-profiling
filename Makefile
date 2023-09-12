@@ -44,7 +44,7 @@ install-spark-ci:
 publish-docs: examples ### Publishes the documentation
 	mkdir docs/examples
 	rsync -R examples/*/*.html docs
-	# mike deploy --push --update-aliases $(version) latest
+	mike deploy --push --update-aliases $(version) latest
 
 lint:
 	pre-commit run --all-files
