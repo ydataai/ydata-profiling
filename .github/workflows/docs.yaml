@@ -7,8 +7,9 @@ on:
     paths:
     - .github/workflows/docs.yaml
     - docs/**
+    - examples/**
     - mkdocs.yml
-    - pyproject.toml
+    - requirements-docs.txt
     branches:
     - main
   release:
