@@ -67,7 +67,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         dark_mode: bool = False,
         orange_mode: bool = False,
         sample: Optional[dict] = None,
-        config_file: Union[Path, str] = None,
+        config_file: Optional[Union[Path, str]] = None,
         lazy: bool = True,
         typeset: Optional[VisionsTypeset] = None,
         summarizer: Optional[BaseSummarizer] = None,
