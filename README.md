@@ -84,7 +84,7 @@ The report contains three additional sections:
 - Looking for how you can do an EDA for Time-Series 🕛 ? Check [this blogpost](https://towardsdatascience.com/how-to-do-an-eda-for-time-series-cbb92b3b1913).
 - You want to compare 2 datasets and get a report? Check [this blogpost](https://medium.com/towards-artificial-intelligence/how-to-compare-2-dataset-with-pandas-profiling-2ae3a9d7695e)
 
-### ⚡ Spark
+### ⚡️ Spark
 
 Spark support has been released, but we are always looking for an extra pair of hands 👐.
 [Check current work in progress!](https://github.com/ydataai/ydata-profiling/projects/3).
