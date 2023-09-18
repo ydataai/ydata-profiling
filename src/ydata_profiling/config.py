@@ -50,17 +50,16 @@ class TextVars(BaseModel):
     words: bool = True
     characters: bool = True
     redact: bool = False
-    # if text has more than threshold categories, its not category
-    categorical_threshold: int = 50
-    # if text has more than threshold % distinct values, its not category
-    percentage_cat_threshold: float = 0.5
 
 
 class CatVars(BaseModel):
     length: bool = True
     characters: bool = True
     words: bool = True
+    # if var has more than threshold categories, it's a text var
     cardinality_threshold: int = 50
+    # if var has more than threshold % distinct values, it's a text var
+    percentage_cat_threshold: float = 0.5
     imbalance_threshold: float = 0.5
     n_obs: int = 5
     # Set to zero to disable
