@@ -1,6 +1,6 @@
 scipy>=1.4.1, <1.12
 pandas>1.1, <2.1, !=1.4.0
-matplotlib>=3.2, <4
+matplotlib>=3.2, <=3.7.3
 pydantic>=1.8.1, <2
 PyYAML>=5.0.0, <6.1
 jinja2>=2.11.1, <3.2

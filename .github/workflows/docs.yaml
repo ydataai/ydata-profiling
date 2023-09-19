@@ -1,0 +1,84 @@
+name: Publish Documentation
+
+
+
+on:
+  push:
+    paths:
+    - .github/workflows/docs.yaml
+    - docs/**
+    - examples/**
+    - mkdocs.yml
+    - requirements-docs.txt
+    branches:
+    - main
+  release:
+    types:
+    - released
+
+
+
+jobs:
+  prepare:
+    name: Get Current version
+    runs-on: ubuntu-22.04
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Find Latest Tag
+      id: latest_tag
+      uses: oprypin/find-latest-tag@v1.1.1
+      with:
+        repository: ${{ github.repository }}
+        regex: '^v\d+\.\d+\.\d+$'
+
+    - name: Extract major and minor version
+      id: version
+      run: |
+        echo "value=`echo ${{ steps.latest_tag.outputs.tag }} | sed -r 's|v([0-9]+.[0-9]+).*|\1|g'`" >> $GITHUB_OUTPUT
+
+
+  publish-docs:
+    name: Publish Docs
+    runs-on: ubuntu-22.04
+
+    needs:
+    - prepare
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Configurating Git
+      run: |
+        git config user.email "azory@ydata.ai"
+        git config user.name "Azory YData Bot"
+        git config core.autocrlf false
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Cache pip dependencies
+      id: cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+
+    - name: Install doc dependencies
+      run: |
+        python -m pip install --upgrade pip
+        make install-docs
+
+    - name: Publish
+      run: make publish-docs version=${{ needs.prepare.outputs.version }}

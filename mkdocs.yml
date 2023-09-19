@@ -1,0 +1,150 @@
+site_name: "YData Profiling"
+repo_url: https://github.com/ydataai/ydata-profiling
+repo_name: ydataai/ydata-profiling
+dev_addr: 0.0.0.0:1235
+site_dir: static/docs
+nav:
+  - Welcome:
+    - 'index.md'
+  - Getting Started:
+    - Overview: 'getting-started/concepts.md'
+    - Installation: 'getting-started/installation.md'
+    - Quickstart: 'getting-started/quickstart.md'
+    - Examples: 'getting-started/examples.md'
+  - Features:
+    - Dataset metadata: 'features/metadata.md'
+    - Datasets catalog **: 'features/collaborative_data_profiling.md'
+    - Sensitive data: 'features/sensitive_data.md'
+    - Time-series: 'features/time_series_datasets.md'
+    - Comparing datasets: 'features/comparing_datasets.md'
+    - Big data: 'features/big_data.md'
+    - Customize reports: 'features/custom_reports.md'
+    - Accessing profile values: 'features/profile_values.md'
+  - Advanced settings:
+    -  General settings: 'advanced_settings/available_settings.md'
+    -  Changing settings: 'advanced_settings/changing_settings.md'
+    -  Caching: 'advanced_settings/caching.md'
+  - Integrations:
+    -  Other dataframes: 'integrations/other_dataframe_libraries.md'
+    -  Pyspark: 'integrations/pyspark.md'
+    -  Interactive applications: 'integrations/interactive_applications.md'
+    -  Pipelines: 'integrations/pipelines.md'
+    -  IDEs: 'integrations/ides.md'
+    -  Great Expectations: 'integrations/great_expectations.md'
+    -  Bytewax: 'integrations/bytewax.md'
+  - Support & Contributions:
+    - Contribution guidelines: 'support-contribution/contribution_guidelines.md'
+    - Supports & Troubleshoot: 'support-contribution/help_troubleshoot.md'
+    - Common issues guide: 'support-contribution/common_issues.md'
+  - Reference:
+    - 'reference/resources.md'
+    - History & community: 'reference/history.md'
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: ydata
+      media: "(prefers-color-scheme: light)"
+      primary: custom
+  logo: 'https://assets.ydata.ai/oss/ydata-profiling_red.png'
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.footer
+    - header.autohide
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - toc.follow
+    - toc.integrate
+  icon:
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+markdown_extensions:
+  - def_list
+  - meta
+  - footnotes
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.betterem
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - tables
+extra_css:
+  - stylesheets/extra.css
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+extra:
+  version:
+    provider: mike
+  generator: false
+  social:
+    - icon: fontawesome/solid/globe
+      link: https://www.ydata.ai
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/ydataai
+
+watch:
+  - src
+plugins:
+  - table-reader
+  - badges
+  - search:
+        lang: en
+  - autorefs
+  - mkdocstrings:
+      custom_templates: templates
+      default_handler: python
+      handlers:
+        python:
+          selection:
+            filters: ["!^_", "!^__"]
+          import:
+          - https://docs.python.org/3/objects.inv
+          - http://pandas.pydata.org/pandas-docs/stable/objects.inv
+          setup_commands:
+            - import sys
+            - sys.path.append('../src')
+          merge_init_into_class: yes
+          show_submodules: no
