@@ -1,3 +1,7 @@
+VENV = .venv
+PYTHON = $(VENV)/bin/python
+ACTIVATE = . $(VENV)/bin/activate
+
 .PHONY: docs examples
 
 docs:
@@ -10,7 +14,7 @@ test:
 	ydata_profiling -h
 
 test_spark:
-	pytest --spark_home=${SPARK_HOME} tests/backends/spark_backend/
+	pytest tests/backends/spark_backend/
 	ydata_profiling -h
 
 test_cov:
@@ -28,18 +32,22 @@ package:
 	python setup.py sdist bdist_wheel
 	twine check dist/*
 
+install_dev:
+	rm -rf $(VENV)
+	python -m venv $(VENV)
+	$(PYTHON) -m pip install -e ".[dev, test]"
+
+install_test_pandas:
+	pip install -e ".[test, notebook]"
+
+install_test_spark:
+	pip install -e ".[spark, test, notebook]"
+
 install:
 	pip install -e .[notebook]
 
 install-docs: install ### Installs regular and docs dependencies
-	pip install -r requirements-docs.txt
-
-install-spark-ci:
-	sudo apt-get update
-	sudo apt-get -y install openjdk-8-jdk
-	curl https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
-	--output ${SPARK_DIRECTORY}/spark.tgz
-	cd ${SPARK_DIRECTORY} && tar -xvzf spark.tgz && mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark
+	pip install -e ".[docs]"
 
 publish-docs: examples ### Publishes the documentation
 	mkdir docs/examples
