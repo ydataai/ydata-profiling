@@ -212,7 +212,7 @@ jobs:
       - run: |
           pip install --upgrade pip setuptools wheel
           make install_test_spark
-      - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }} pyspark=="${{ matrix.spark }}"
+      - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}" "pyspark==${{ matrix.spark }}"
       # Make sure the proper version of pandas is install after everything
       - run: |
           pip show pandas numpy pyspark
