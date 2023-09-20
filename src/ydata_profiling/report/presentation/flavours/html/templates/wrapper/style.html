@@ -19,17 +19,17 @@
     {% else %}
         {% if theme is not none %}
             {% if theme.value == 'flatly' %}
-                <link href="{{ file_name }}_assets/css/flatly.bootstrap.min.css" rel="stylesheet" />
+                <link href="{{ assets_prefix }}/css/flatly.bootstrap.min.css" rel="stylesheet" />
             {% elif theme.value == 'united' %}
-                <link href="{{ file_name }}_assets/css/united.bootstrap.min.css" rel="stylesheet" />
+                <link href="{{ assets_prefix }}/css/united.bootstrap.min.css" rel="stylesheet" />
             {% elif theme.value == 'simplex' %}
-                <link href="{{ file_name }}_assets/css/simplex.bootstrap.min.css" rel="stylesheet" />
+                <link href="{{ assets_prefix }}/css/simplex.bootstrap.min.css" rel="stylesheet" />
             {% elif theme.value == 'cosmo' %}
-                <link href="{{ file_name }}_assets/css/cosmo.bootstrap.min.css" rel="stylesheet" />
+                <link href="{{ assets_prefix }}/css/cosmo.bootstrap.min.css" rel="stylesheet" />
             {% endif %}
         {% else %}
-            <link rel="stylesheet" href="{{ file_name }}_assets/css/bootstrap.min.css" />
-            <link rel="stylesheet" href="{{ file_name }}_assets/css/bootstrap-theme.min.css" />
+            <link rel="stylesheet" href="{{ assets_prefix }}/css/bootstrap.min.css" />
+            <link rel="stylesheet" href="{{ assets_prefix }}/css/bootstrap-theme.min.css" />
         {% endif %}
     {% endif %}
 {% else %}
@@ -52,5 +52,5 @@
 {%- if inline -%}
     <style>{% include 'wrapper/assets/style.css' %}</style>
 {% else %}
-    <link rel="stylesheet" href="{{ file_name }}_assets/css/style.css" />
+    <link rel="stylesheet" href="{{ assets_prefix }}/css/style.css" />
 {% endif %}
