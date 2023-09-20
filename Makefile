@@ -35,6 +35,7 @@ package:
 install_dev:
 	rm -rf $(VENV)
 	python -m venv $(VENV)
+	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -e ".[dev, test]"
 
 install_test_pandas:

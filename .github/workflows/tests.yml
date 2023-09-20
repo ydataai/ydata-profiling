@@ -81,9 +81,9 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-        pip install -r requirements-test.txt
-    - run: make install
+        make install_test_pandas
+
+    - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
 
     - run: make test
 
@@ -129,9 +129,9 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-        pip install -r requirements-test.txt
-    - run: make install
+        make install_test_pandas
+        
+    - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
 
     - run: make test_cov
 
@@ -144,9 +144,9 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-        pip install -r requirements-test.txt
-    - run: make install
+        make install_test_pandas
+        
+    - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
     - run: make test_cov
     - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
 
@@ -181,7 +181,6 @@ jobs:
       SPARK_VERSION: ${{ matrix.spark }}
       HADOOP_VERSION: ${{ matrix.hadoop }}
       SPARK_DIRECTORY: ${{ github.workspace }}/../
-      SPARK_HOME: ${{ github.workspace }}/../spark/
     steps:
       - uses: actions/checkout@v4
       - name: Setup python
@@ -212,15 +211,16 @@ jobs:
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
       - run: |
           pip install --upgrade pip setuptools wheel
-          pip install pytest-spark>=0.6.0 pyarrow==1.0.1 pyspark=="${{ matrix.spark }}"
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-          pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
+          make install_test_spark
+      - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }} pyspark=="${{ matrix.spark }}"
+      # Make sure the proper version of pandas is install after everything
+      - run: |
+          pip show pandas numpy pyspark
       - if: ${{ matrix.spark != '3.0.1' }}
         run: echo "ARROW_PRE_0_15_IPC_FORMAT=1" >> $GITHUB_ENV
       - run: echo "SPARK_LOCAL_IP=127.0.0.1" >> $GITHUB_ENV
-      - run: make install
-      - run: make install-spark-ci
-      - run: pip install -r requirements-spark.txt # Make sure the proper version of pandas is install after everything
+      - run: |
+          sudo apt-get update
+          sudo apt-get -y install openjdk-8-jdk
       - run: make test_spark
 
