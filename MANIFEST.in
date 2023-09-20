@@ -1,6 +1,3 @@
-# Requirements
-include requirements*.txt
-
 # Include license, Readme, etc.
 include LICENSE
 include *.md

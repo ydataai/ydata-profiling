@@ -215,19 +215,13 @@ Download the source code by cloning the repository or click on [Download ZIP](ht
 Install it by navigating to the proper directory and running:
 
 ```sh
-pip install -e .
+make install_dev
 ```
+Than activate .venv with command `source .venv/bin/activate`. 
 
 The profiling report is written in HTML and CSS, which means a modern browser is required. 
 
-You need [Python 3](https://python3statement.org/) to run the package. Other dependencies can be found in the requirements files:
-
-| Filename | Requirements|
-|----------|-------------|
-| [requirements.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements.txt) | Package requirements|
-| [requirements-dev.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-dev.txt)  |  Requirements for development|
-| [requirements-test.txt](https://github.com/ydataai/pandas-profiling/blob/master/requirements-test.txt) | Requirements for testing|
-| [setup.py](https://github.com/ydataai/pandas-profiling/blob/master/setup.py) | Requirements for widgets etc. |
+You need [Python 3](https://python3statement.org/) to run the package. Other dependencies can be found in the pyproject.toml file
 
 ## 🔗 Integrations
 
