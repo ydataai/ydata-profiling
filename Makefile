@@ -38,7 +38,7 @@ install_dev:
 	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -e ".[dev, test]"
 
-install_test_pandas:
+install_test:
 	pip install -e ".[test, notebook]"
 
 install_test_spark:

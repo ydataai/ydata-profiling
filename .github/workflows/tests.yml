@@ -81,7 +81,7 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        make install_test_pandas
+        make install_test
 
     - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
 
@@ -129,7 +129,7 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        make install_test_pandas
+        make install_test
         
     - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
 
@@ -144,7 +144,7 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        make install_test_pandas
+        make install_test
         
     - run: pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
     - run: make test_cov
