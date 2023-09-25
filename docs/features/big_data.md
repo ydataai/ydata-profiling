@@ -56,7 +56,7 @@ profile.to_file("output.html")
 ```
 
 This configuration file can be found here:
-[config_minimal.yaml](https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_minimal.yaml).
+[config_minimal.yaml](https://github.com/ydataai/ydata-profiling/blob/master/src/ydata_profiling/config_minimal.yaml).
 More details on settings and configuration are available in
 `../advanced_usage/available_settings`{.interpreted-text role="doc"}.
 
