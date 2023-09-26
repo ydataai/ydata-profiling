@@ -52,6 +52,7 @@ def to_category(series: pd.Series, state: dict) -> pd.Series:
     val = series.astype(str)
     if hasnans:
         val = val.replace("nan", np.nan)
+        val = val.replace("<NA>", np.nan)
 
     return val.astype("string")
 
