@@ -148,6 +148,7 @@ class Histogram(BaseModel):
     # Maximum number of bins (when bins=0)
     max_bins: int = 250
     x_axis_labels: bool = True
+    density: bool = False
 
 
 class CatFrequencyPlot(BaseModel):
