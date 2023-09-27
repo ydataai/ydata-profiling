@@ -10,7 +10,7 @@ report and no individual records are shown:
 report = df.profile_report(sensitive=True)
 ```
 
-Additionally, `pandas-profiling` does not send data to external
+Additionally, `ydata-profiling` does not send data to external
 services, making it suitable for private data.
 
 ## Sample and duplicates
