@@ -2,18 +2,19 @@
 
 .. include:: ../../README.md
 """
+
 # ignore numba warnings
 import warnings  # isort:skip # noqa
 from numba.core.errors import NumbaDeprecationWarning  # isort:skip # noqa
 
 warnings.simplefilter("ignore", category=NumbaDeprecationWarning)
 
-import importlib.util
+import importlib.util  # isort:skip # noqa
 
-from ydata_profiling.compare_reports import compare
-from ydata_profiling.controller import pandas_decorator
-from ydata_profiling.profile_report import ProfileReport
-from ydata_profiling.version import __version__
+from ydata_profiling.compare_reports import compare  # isort:skip # noqa
+from ydata_profiling.controller import pandas_decorator  # isort:skip # noqa
+from ydata_profiling.profile_report import ProfileReport  # isort:skip # noqa
+from ydata_profiling.version import __version__  # isort:skip # noqa
 
 # backend
 import ydata_profiling.model.pandas  # isort:skip  # noqa
