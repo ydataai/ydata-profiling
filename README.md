@@ -60,7 +60,7 @@ To generate the standard profiling report, merely run:
 profile = ProfileReport(df, title="Profiling Report")
 ```
 
-## Key features
+## 📊 Key features
 
 - **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
 - **Warnings**: A summary of the problems/challenges in the data that you might need to work on (*missing data*, *inaccuracies*, *skewness*, etc.)
