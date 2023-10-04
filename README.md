@@ -60,7 +60,7 @@ To generate the standard profiling report, merely run:
 profile = ProfileReport(df, title="Profiling Report")
 ```
 
-## Key features
+## 📊 Key features
 
 - **Type inference**: automatic detection of columns' data types (*Categorical*, *Numerical*, *Date*, etc.)
 - **Warnings**: A summary of the problems/challenges in the data that you might need to work on (*missing data*, *inaccuracies*, *skewness*, etc.)
@@ -94,13 +94,13 @@ YData-profiling can be used to deliver a variety of different use-case. The docu
 
 | Use case | Description                                                                                 |
 |----------|---------------------------------------------------------------------------------------------|
-| [Comparing datasets](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/comparing_datasets.html )                        | Comparing multiple version of the same dataset                                              |
-| [Profiling a Time-Series dataset](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/time_series_datasets.html)               | Generating a report for a time-series dataset with a single line of code                    |
-|[Profiling large datasets](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/big_data.html )                            | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
-| [Handling sensitive data](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/sensitive_data.html )                       | Generating reports which are mindful about sensitive data in the input dataset              |
-| [Dataset metadata and data dictionaries](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/metadata.html)               | Complementing the report with dataset details and column-specific data dictionaries         |
-| [Customizing the report's appearance](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/custom_report_appearance.html ) | Changing the appearance of the report's page and of the contained visualizations            |
-| [Profiling Databases](https://ydata-profiling.ydata.ai/docs/master/pages/use_cases/profiling_databases.html) | For a seamless profiling experience in your organization's databases, check [Fabric Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. |
+| [Comparing datasets](https://docs.profiling.ydata.ai/latest/features/comparing_datasets)                        | Comparing multiple version of the same dataset                                              |
+| [Profiling a Time-Series dataset](https://docs.profiling.ydata.ai/latest/features/time_series_datasets)               | Generating a report for a time-series dataset with a single line of code                    |
+|[Profiling large datasets](https://docs.profiling.ydata.ai/latest/features/big_data)                            | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
+| [Handling sensitive data](https://docs.profiling.ydata.ai/latest/features/sensitive_data)                       | Generating reports which are mindful about sensitive data in the input dataset              |
+| [Dataset metadata and data dictionaries](https://docs.profiling.ydata.ai/latest/features/metadata)               | Complementing the report with dataset details and column-specific data dictionaries         |
+| [Customizing the report's appearance](https://docs.profiling.ydata.ai/latest/features/custom_reports) | Changing the appearance of the report's page and of the contained visualizations            |
+| [Profiling Databases](https://docs.profiling.ydata.ai/latest/features/collaborative_data_profiling) | For a seamless profiling experience in your organization's databases, check [Fabric Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. |
 ### Using inside Jupyter Notebooks
 
 There are two interfaces to consume the report inside a Jupyter notebook: through widgets and through an embedded HTML report.
@@ -235,9 +235,9 @@ To maximize its usefulness in real world contexts, `ydata-profiling` has a set o
 
 | Integration type | Description |
 |---|---|
-| [Other DataFrame libraries](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/other_dataframe_libraries.html) | How to compute the profiling of data stored in libraries other than pandas |
+| [Other DataFrame libraries](https://docs.profiling.ydata.ai/latest/integrations/other_dataframe_libraries) | How to compute the profiling of data stored in libraries other than pandas |
 | [Great Expectations](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/great_expectations.html) | Generating [Great Expectations](https://greatexpectations.io) expectations suites directly from a profiling report |
-| [Interactive applications](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/data_apps.html) | Embedding profiling reports in [Streamlit](http://streamlit.io), [Dash](http://dash.plotly.com) or [Panel](https://panel.holoviz.org) applications |
+| [Interactive applications](https://docs.profiling.ydata.ai/latest/integrations/interactive_applications) | Embedding profiling reports in [Streamlit](http://streamlit.io), [Dash](http://dash.plotly.com) or [Panel](https://panel.holoviz.org) applications |
 | [Pipelines](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/pipelines.html) | Integration with DAG workflow execution tools like [Airflow](https://airflow.apache.org) or [Kedro](https://kedro.org) |
 | [Cloud services](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/cloud_services.html) | Using `ydata-profiling` in hosted computation services like [Lambda](https://lambdalabs.com), [Google Cloud](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/propensity-model/bqml/bqml_kfp_retail_propensity_to_purchase.ipynb) or [Kaggle](https://www.kaggle.com/code) |
 | [IDEs](https://ydata-profiling.ydata.ai/docs/master/pages/integrations/ides.html) | Using `ydata-profiling` directly from integrated development environments such as [PyCharm](https://www.jetbrains.com/pycharm/) |
@@ -252,7 +252,7 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 > **Need Help?**<br>
 > Get your questions answered with a product owner by [booking a Pawsome chat](https://meetings.hubspot.com/fabiana-clemente)! 🐼
 
-> ❗ Before reporting an issue on GitHub, check out [Common Issues](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
+> ❗ Before reporting an issue on GitHub, check out [Common Issues](https://docs.profiling.ydata.ai/latest/support-contribution/common_issues).
 
 ## 🤝🏽 Contributing
 Learn how to get involved in the [Contribution Guide](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
