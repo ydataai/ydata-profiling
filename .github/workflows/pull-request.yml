@@ -75,7 +75,7 @@ jobs:
         fi
 
     - name: Push changes
-      uses: ad-m/github-push-action@v0.6.0
+      uses: ad-m/github-push-action@v0.8.0
       if: always() && steps.commit.outputs.CHANGES == 'true'
       with:
         branch: ${{ github.head_ref }}
