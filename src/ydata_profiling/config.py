@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import yaml
-from pydantic import BaseModel, BaseSettings, Field, PrivateAttr
+from pydantic.v1 import BaseModel, BaseSettings, Field, PrivateAttr
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
@@ -348,7 +348,7 @@ class Settings(BaseSettings):
     # Report rendering
     report: Report = Report()
     html: Html = Html()
-    notebook = Notebook()
+    notebook: Notebook = Notebook()
 
     def update(self, updates: dict) -> "Settings":
         update = _merge_dictionaries(self.dict(), updates)
@@ -366,7 +366,7 @@ class Settings(BaseSettings):
         with open(config_file) as f:
             data = yaml.safe_load(f)
 
-        return Settings().parse_obj(data)
+        return Settings.parse_obj(data)
 
 
 class SparkSettings(Settings):
@@ -379,7 +379,7 @@ class SparkSettings(Settings):
 
     vars.num.low_categorical_threshold = 0
 
-    infer_dtypes = False
+    infer_dtypes: bool = False
 
     correlations: Dict[str, Correlation] = {
         "spearman": Correlation(key="spearman", calculate=True),
