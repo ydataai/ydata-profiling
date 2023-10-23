@@ -1,7 +1,7 @@
 from typing import List, Optional, TypeVar
 
 from multimethod import multimethod
-from pydantic.main import BaseModel
+from pydantic.v1 import BaseModel
 
 from ydata_profiling.config import Settings
 
