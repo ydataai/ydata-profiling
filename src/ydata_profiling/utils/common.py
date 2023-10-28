@@ -13,8 +13,8 @@ def update(d: dict, u: Mapping) -> dict:
     """Recursively update a dict.
 
     Args:
-        d: Dictionary to update.
-        u: Dictionary with values to use.
+        d: The dictionary to update.
+        u: The dictionary with values to use.
 
     Returns:
         The merged dictionary.
