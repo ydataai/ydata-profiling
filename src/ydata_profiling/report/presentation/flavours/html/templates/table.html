@@ -18,7 +18,7 @@
                 <tr{% if 'alert' in row and row['alert'] %} class="alert"{% endif %}>
                     <th>{{ row['name'] }}</th>
                     {% if row['value'].__class__.__name__ == 'list' %}
-                        {% for value in row['value'] +%}
+                        {% for value in row['value'] %}
                             <td style="white-space:pre white-space:nowrap">{{ value }}{% if loop.last and 'hint' in row %} {{ row['hint'] }}{% endif %}</td>
                         {% endfor %}
                     {% else %}
