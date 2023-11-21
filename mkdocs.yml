@@ -134,7 +134,6 @@ plugins:
         lang: en
   - autorefs
   - mkdocstrings:
-      custom_templates: templates
       default_handler: python
       handlers:
         python:

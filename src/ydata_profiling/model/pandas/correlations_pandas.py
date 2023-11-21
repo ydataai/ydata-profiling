@@ -104,6 +104,7 @@ def pandas_cramers_compute(
     if len(categoricals) <= 1:
         return None
 
+    categoricals = sorted(categoricals)
     matrix = np.zeros((len(categoricals), len(categoricals)))
     np.fill_diagonal(matrix, 1.0)
     correlation_matrix = pd.DataFrame(
@@ -183,7 +184,8 @@ def pandas_auto_compute(
     df_discretized = Discretizer(
         DiscretizationType.UNIFORM, n_bins=config.correlations["auto"].n_bins
     ).discretize_dataframe(df)
-    columns_tested = numerical_columns + categorical_columns
+    columns_tested = sorted(numerical_columns + categorical_columns)
+
     correlation_matrix = pd.DataFrame(
         np.ones((len(columns_tested), len(columns_tested))),
         index=columns_tested,
