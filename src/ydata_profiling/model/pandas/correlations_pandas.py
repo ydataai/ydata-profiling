@@ -104,6 +104,7 @@ def pandas_cramers_compute(
     if len(categoricals) <= 1:
         return None
 
+    categoricals = sorted(categoricals)
     matrix = np.zeros((len(categoricals), len(categoricals)))
     np.fill_diagonal(matrix, 1.0)
     correlation_matrix = pd.DataFrame(
