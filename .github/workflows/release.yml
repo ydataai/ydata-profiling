@@ -67,7 +67,7 @@ jobs:
         name: built-artifacts
         path: dist/
 
-    - uses: AButler/upload-release-assets@v2.0
+    - uses: AButler/upload-release-assets@v3.0
       with:
         files: "dist/*"
         repo-token: ${{ secrets.ACCESS_TOKEN }}
@@ -85,7 +85,7 @@ jobs:
         name: built-artifacts
         path: dist/
 
-    - uses: pypa/gh-action-pypi-publish@v1.8.10
+    - uses: pypa/gh-action-pypi-publish@v1.8.11
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
