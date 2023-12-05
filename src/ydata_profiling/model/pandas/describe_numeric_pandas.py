@@ -63,15 +63,15 @@ def numeric_stats_numpy(
             "skewness": series.skew(),
             "sum": np.dot(index_values, vc.values),
         }
-    else: # Empty numerical series
+    else:  # Empty numerical series
         return {
             "mean": np.nan,
-            "std": 0.,
-            "variance": 0.,
+            "std": 0.0,
+            "variance": 0.0,
             "min": np.nan,
             "max": np.nan,
-            "kurtosis": 0.,
-            "skewness": 0.,
+            "kurtosis": 0.0,
+            "skewness": 0.0,
             "sum": 0,
         }
 

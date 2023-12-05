@@ -249,7 +249,7 @@ def render_real(config: Settings, summary: dict) -> dict:
             [x[0] for x in summary.get("histogram", [])],
             [x[1] for x in summary.get("histogram", [])],
         )
-        bins = len(summary['histogram'][0][1]) - 1 if 'histogram' in summary else 0
+        bins = len(summary["histogram"][0][1]) - 1 if "histogram" in summary else 0
         hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={bins})"
     else:
         hist_data = histogram(config, *summary["histogram"])
