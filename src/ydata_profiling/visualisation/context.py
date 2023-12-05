@@ -81,5 +81,7 @@ def manage_matplotlib_context() -> Any:
     finally:
         deregister_matplotlib_converters()  # revert to original unit registries
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=matplotlib.MatplotlibDeprecationWarning)
+            warnings.filterwarnings(
+                "ignore", category=matplotlib.MatplotlibDeprecationWarning
+            )
             matplotlib.rcParams.update(originalRcParams)  # revert to original rcParams
