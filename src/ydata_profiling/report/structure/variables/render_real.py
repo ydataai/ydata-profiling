@@ -118,12 +118,12 @@ def render_real(config: Settings, summary: dict) -> dict:
         style=config.html.style,
     )
 
-    if isinstance(summary["histogram"], list):
+    if isinstance(summary.get("histogram", []), list):
         mini_histo = Image(
             mini_histogram(
                 config,
-                [x[0] for x in summary["histogram"]],
-                [x[1] for x in summary["histogram"]],
+                [x[0] for x in summary.get("histogram", [])],
+                [x[1] for x in summary.get("histogram", [])],
             ),
             image_format=image_format,
             alt="Mini histogram",
@@ -243,13 +243,14 @@ def render_real(config: Settings, summary: dict) -> dict:
         sequence_type="grid",
     )
 
-    if isinstance(summary["histogram"], list):
+    if isinstance(summary.get("histogram", []), list):
         hist_data = histogram(
             config,
-            [x[0] for x in summary["histogram"]],
-            [x[1] for x in summary["histogram"]],
+            [x[0] for x in summary.get("histogram", [])],
+            [x[1] for x in summary.get("histogram", [])],
         )
-        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][0][1]) - 1})"
+        bins = len(summary['histogram'][0][1]) - 1 if 'histogram' in summary else 0
+        hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={bins})"
     else:
         hist_data = histogram(config, *summary["histogram"])
         hist_caption = f"<strong>Histogram with fixed size bins</strong> (bins={len(summary['histogram'][1]) - 1})"

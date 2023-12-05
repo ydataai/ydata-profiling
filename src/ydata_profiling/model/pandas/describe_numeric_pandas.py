@@ -50,19 +50,30 @@ def numeric_stats_numpy(
     index_values = vc.index.values
 
     # FIXME: can be performance optimized by using weights in std, var, kurt and skew...
-
-    return {
-        "mean": np.average(index_values, weights=vc.values),
-        "std": np.std(present_values, ddof=1),
-        "variance": np.var(present_values, ddof=1),
-        "min": np.min(index_values),
-        "max": np.max(index_values),
-        # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
-        "kurtosis": series.kurt(),
-        # Unbiased skew normalized by N-1
-        "skewness": series.skew(),
-        "sum": np.dot(index_values, vc.values),
-    }
+    if len(index_values):
+        return {
+            "mean": np.average(index_values, weights=vc.values),
+            "std": np.std(present_values, ddof=1),
+            "variance": np.var(present_values, ddof=1),
+            "min": np.min(index_values),
+            "max": np.max(index_values),
+            # Unbiased kurtosis obtained using Fisher's definition (kurtosis of normal == 0.0). Normalized by N-1.
+            "kurtosis": series.kurt(),
+            # Unbiased skew normalized by N-1
+            "skewness": series.skew(),
+            "sum": np.dot(index_values, vc.values),
+        }
+    else: # Empty numerical series
+        return {
+            "mean": np.nan,
+            "std": 0.,
+            "variance": 0.,
+            "min": np.nan,
+            "max": np.nan,
+            "kurtosis": 0.,
+            "skewness": 0.,
+            "sum": 0,
+        }
 
 
 @describe_numeric_1d.register
@@ -151,13 +162,14 @@ def pandas_describe_numeric_1d(
     else:
         stats["monotonic"] = 0
 
-    stats.update(
-        histogram_compute(
-            config,
-            value_counts[~infinity_index].index.values,
-            summary["n_distinct"],
-            weights=value_counts[~infinity_index].values,
+    if len(value_counts[~infinity_index].index.values) > 0:
+        stats.update(
+            histogram_compute(
+                config,
+                value_counts[~infinity_index].index.values,
+                summary["n_distinct"],
+                weights=value_counts[~infinity_index].values,
+            )
         )
-    )
 
     return config, series, stats

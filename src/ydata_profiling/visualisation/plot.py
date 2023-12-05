@@ -73,14 +73,15 @@ def _plot_histogram(
         plot = fig.add_subplot(111)
 
         for idx in reversed(list(range(n_labels))):
-            diff = np.diff(bins[idx])
-            plot.bar(
-                bins[idx][:-1] + diff / 2,  # type: ignore
-                series[idx],
-                diff,
-                facecolor=config.html.style.primary_colors[idx],
-                alpha=0.6,
-            )
+            if len(bins):
+                diff = np.diff(bins[idx])
+                plot.bar(
+                    bins[idx][:-1] + diff / 2,  # type: ignore
+                    series[idx],
+                    diff,
+                    facecolor=config.html.style.primary_colors[idx],
+                    alpha=0.6,
+                )
 
             if date:
                 plot.xaxis.set_major_formatter(FuncFormatter(format_fn))
