@@ -67,7 +67,7 @@ jobs:
         name: built-artifacts
         path: dist/
 
-    - uses: AButler/upload-release-assets@v2.0
+    - uses: AButler/upload-release-assets@v3.0
       with:
         files: "dist/*"
         repo-token: ${{ secrets.ACCESS_TOKEN }}
