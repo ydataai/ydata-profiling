@@ -3,7 +3,6 @@ import warnings
 from typing import Any
 
 import matplotlib
-import matplotlib.cbook
 import seaborn as sns
 from pandas.plotting import (
     deregister_matplotlib_converters,
@@ -82,5 +81,7 @@ def manage_matplotlib_context() -> Any:
     finally:
         deregister_matplotlib_converters()  # revert to original unit registries
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
+            warnings.filterwarnings(
+                "ignore", category=matplotlib.MatplotlibDeprecationWarning
+            )
             matplotlib.rcParams.update(originalRcParams)  # revert to original rcParams
