@@ -30,7 +30,7 @@
 The package outputs a simple and digested analysis of a dataset, including **time-series** and **text**.
 
 > **Looking for a scalable solution that can fully integrate with your database systems?**<br>
-> Leverage YData Fabric Data Catalog to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.) and leverage an interactive and guided profiling experience in Fabric. Check out the [Community Version](https://ydata.ai/ydata-fabric-free-trial).
+> Leverage YData Fabric Data Catalog to connect to different databases and storages (Oracle, snowflake, PostGreSQL, GCS, S3, etc.) and leverage an interactive and guided profiling experience in Fabric. Check out the [Community Version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
 
 ## ▶️ Quickstart
 
