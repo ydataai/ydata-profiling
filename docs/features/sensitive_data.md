@@ -56,3 +56,7 @@ pd.read_csv("filename.csv", dtype={"phone": str})
 Note that the type detection is hard. That is why
 [visions](https://github.com/dylan-profiler/visions), a type system to
 help developers solve these cases, was developed.
+
+## Automated PII classification & management
+
+You can find more details about this feature [here](pii_identification_management.md).

@@ -1,16 +1,19 @@
-# Data Catalog - A collaborative experience to profile datasets & relational databases
+# Data Catalog **
+A collaborative experience to profile datasets & relational databases
 
-!!! note "Data Catalog with data quality profiling"
+!!! info "** YData's Enterprise feature"
+    
+    This feature is only available for users of [YData Fabric](https://ydata.ai).
 
-    [Sign-up Fabric community](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community) to try the **data catalog**
-    and **collaborative** experience for datasets and database profiling at scale!
+    [Sign-up Fabric community](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community) to try the **Data catalog**
 
 [YData Fabric](https://ydata.ai/products/fabric) is a Data-Centric AI
 development platform. YData Fabric provides all capabilities of
 ydata-profiling in a hosted environment combined with a guided UI
 experience.
 
-[Fabric's Data Catalog](https://ydata.ai/products/data_catalog)
+[Fabric's Data Catalog](https://ydata.ai/products/data_catalog), 
+a scalable and interactive version of ydata-profiling,
 provides a comprehensive and powerful tool designed to enable data
 professionals, including data scientists and data engineers, to manage
 and understand data within an organization. The Data Catalog act as a
