@@ -9,14 +9,15 @@ understanding and preparing data for analysis in a single line of code! If you'r
 
 !!! tip "Advent of Code - Get featured on ydata-profiling"
 
-    *“I want to get into open source, but I don’t know how.”* - Does this sound familiar to you? Have you been wanting to get more involved with open-source software, but no one’s given you an entry point?
+    *“I want to get into open source, but I don’t know how.”* - Does this sound familiar to you? Have you been wanting to
+    get more involved with open-source software, but no one’s given you an entry point?
     
     That's why we joined [The Advent of code this year](https://zilliz.com/advent-of-code). Contribute to ydata-profiling and win some 🐼🐼 swag!
 
     How can you be part of it?
     
     - Give us some love with a Github ⭐
-    - Write an article or create a tutorial like other [members the communit already did.](https://medium.com/@seckindinc/data-profiling-with-python-36497d3a1261)
+    - Write an article or create a tutorial like other [members the community already did.](https://medium.com/@seckindinc/data-profiling-with-python-36497d3a1261)
     - Feeling adventurous? Contribute with a PR. We have a list of [great issues to get you started.](https://github.com/ydataai/ydata-profiling/issues?q=label%3A%22getting+started+%E2%98%9D%22+)
 
 ![ydata-profiling report](_static/img/ydata-profiling.gif)
@@ -55,15 +56,16 @@ YData-profiling can be used to deliver a variety of different applications. The 
 
     Check out the [free Community Version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
 
-| Features & functionalities                                                   | Description                                                                                 |
-|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
-| [Comparing datasets](features/comparing_datasets.md)                         | Comparing multiple version of the same dataset                                              |
-| [Profiling a Time-Series dataset](features/time_series_datasets.md)          | Generating a report for a time-series dataset with a single line of code                    |
-| [Profiling large datasets](features/big_data.md)                             | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
-| [Handling sensitive data](features/sensitive_data.md)                        | Generating reports which are mindful about sensitive data in the input dataset              |
-| [Dataset metadata and data dictionaries](features/metadata.md)               | Complementing the report with dataset details and column-specific data dictionaries         |
-| [Customizing the report's appearance](features/custom_report_appearance.md ) | Changing the appearance of the report's page and of the contained visualizations            |
-| [Profiling Databases **](features/collaborative_data_profiling.md)           | For a seamless profiling experience in your organization's databases, check [Fabric Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. |
+| Features & functionalities                                                       | Description                                                                                 |
+|----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| [Comparing datasets](features/comparing_datasets.md)                             | Comparing multiple version of the same dataset                                              |
+| [Profiling a Time-Series dataset](features/time_series_datasets.md)              | Generating a report for a time-series dataset with a single line of code                    |
+| [Profiling large datasets](features/big_data.md)                                 | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
+| [Handling sensitive data](features/sensitive_data.md)                            | Generating reports which are mindful about sensitive data in the input dataset              |
+| [Dataset metadata and data dictionaries](features/metadata.md)                   | Complementing the report with dataset details and column-specific data dictionaries         |
+| [Customizing the report's appearance](features/custom_report_appearance.md )     | Changing the appearance of the report's page and of the contained visualizations            |
+| [Profiling Relational databases **](features/collaborative_data_profiling.md)    | For a seamless profiling experience in your organization's databases, check [Fabric Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. |
+| [PII classification & management **](features/pii_identification_management.md ) | Changing the appearance of the report's page and of the contained visualizations            |
 
 ### Tutorials
 
