@@ -640,6 +640,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -719,6 +721,26 @@
   
   <span class="md-ellipsis">
     Sensitive data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/pii_identification_management/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Automated PII classification & management **
   </span>
   
 
@@ -1361,11 +1383,17 @@ YData-profiling is a leading tool in the data understanding step of the data sci
 <p><code>ydata-profiling</code> is a leading package for data profiling, that automates and standardizes the generation of detailed reports, 
 complete with statistics and visualizations. The significance of the package lies in how it streamlines the process of
 understanding and preparing data for analysis in a single line of code! If you're ready to get started see the <a href="getting-started/quickstart/">quickstart</a>!</p>
-<div class="admonition question">
-<p class="admonition-title">Scalable solution to integrate with database systems?</p>
-<p>Leverage YData Fabric Data Catalog to connect to different databases and storages <strong>(Oracle, snowflake, PostGreSQL, GCS, S3, etc.)</strong>
-and leverage an interactive and guided profiling experience in <a href="https://ydata.ai/products/fabric">Fabric</a>. </p>
-<p>Check out the <a href="https://ydata.ai/ydata-fabric-free-trial">Community Version</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Advent of Code - Get featured on ydata-profiling</p>
+<p><em>“I want to get into open source, but I don’t know how.”</em> - Does this sound familiar to you? Have you been wanting to
+get more involved with open-source software, but no one’s given you an entry point?</p>
+<p>That's why we joined <a href="https://zilliz.com/advent-of-code">The Advent of code this year</a>. Contribute to ydata-profiling and win some 🐼🐼 swag!</p>
+<p>How can you be part of it?</p>
+<ul>
+<li>Give us some love with a Github ⭐</li>
+<li>Write an article or create a tutorial like other <a href="https://medium.com/@seckindinc/data-profiling-with-python-36497d3a1261">members the community already did.</a></li>
+<li>Feeling adventurous? Contribute with a PR. We have a list of <a href="https://github.com/ydataai/ydata-profiling/issues?q=label%3A%22getting+started+%E2%98%9D%22+">great issues to get you started.</a></li>
+</ul>
 </div>
 <p><img alt="ydata-profiling report" src="_static/img/ydata-profiling.gif" /></p>
 <h2 id="why-use-ydata-profiling">Why use ydata-profiling?</h2>
@@ -1394,6 +1422,12 @@ as it supports both Pandas Dataframes and <a href="integrations/pyspark/">Spark 
 <p>To learn more about the package check out <a href="getting-started/concepts/">concepts overview</a>.</p>
 <h2 id="features-functionalities-integrations">📝 Features, functionalities &amp; integrations</h2>
 <p>YData-profiling can be used to deliver a variety of different applications. The documentation includes guides, tips and tricks for tackling them:</p>
+<div class="admonition question">
+<p class="admonition-title">Data Catalog with data profiling for databases &amp; storages</p>
+<p>Need to profile directly from databases and data storages <strong>(Oracle, snowflake, PostGreSQL, GCS, S3, etc.)</strong>?</p>
+<p>Try <a href="https://ydata.ai/products/data_catalog">YData Fabric Data Catalog</a> for interactive and scalable data profiling</p>
+<p>Check out the <a href="http://ydata.ai/register?utm_source=ydata-profiling&amp;utm_medium=documentation&amp;utm_campaign=YData%20Fabric%20Community">free Community Version</a>.</p>
+</div>
 <table>
 <thead>
 <tr>
@@ -1427,13 +1461,17 @@ as it supports both Pandas Dataframes and <a href="integrations/pyspark/">Spark 
 <td>Changing the appearance of the report's page and of the contained visualizations</td>
 </tr>
 <tr>
-<td><a href="features/collaborative_data_profiling/">Profiling Databases **</a></td>
+<td><a href="features/collaborative_data_profiling/">Profiling Relational databases **</a></td>
 <td>For a seamless profiling experience in your organization's databases, check <a href="https://ydata.ai/products/data_catalog">Fabric Data Catalog</a>, which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others.</td>
+</tr>
+<tr>
+<td><a href="features/pii_identification_management/">PII classification &amp; management **</a></td>
+<td>Automated PII classification and management through an UI experience</td>
 </tr>
 </tbody>
 </table>
 <h3 id="tutorials">Tutorials</h3>
-<p>Looking for how to use certain features or how to intgrate <code>ydata-profiling</code> in your currect stack and workflows,
+<p>Looking for how to use certain features or how to integrate <code>ydata-profiling</code> in your currect stack and workflows,
 check our step-by-step tutorials. </p>
 <ul>
 <li><strong>How to master exploratory data analysis with ydata-profiling?</strong> Check this <a href="https://medium.com/ydata-ai/auditing-data-quality-with-pandas-profiling-b1bf1919f856">step-by-step tutorial</a>.</li>
