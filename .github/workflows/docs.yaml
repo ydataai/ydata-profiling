@@ -11,7 +11,7 @@ on:
     - mkdocs.yml
     - requirements-docs.txt
     branches:
-    - main
+    - master
   release:
     types:
     - released
