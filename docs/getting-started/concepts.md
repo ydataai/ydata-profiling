@@ -99,7 +99,7 @@ This section provides a comprehensive profiling over the potential dataset outli
 based on observed variance. 
 The identification of outliers allows the data analyst or scientist to assess whether they are genuine data anomalies or erroneous entries, allowing for informed decisions on whether to retain, transform, or exclude these points in further analyses.
 
-Feature limited to user of the [cloud hosted solution](https://ydata.ai/ydata-fabric-free-trial).
+Feature limited to user of the [cloud hosted solution](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
 
 ## Preview data 
 For a quick overview of the data, ydata-profiling provides the following sections that can be easily configure by the user:

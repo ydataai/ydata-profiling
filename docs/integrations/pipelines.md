@@ -13,7 +13,7 @@ similar way as with Airflow.
 !!! tip "Fabric Community version"
     
     [YData Fabric](https://ydata.ai/products/fabric) has a community version that you can start using today to create data workflows with pipelines. 
-    [Sign up here](https://ydata.ai/ydata-fabric-free-trial) and start building your pipelines. ydata-profiling is installed by default in all YData images.
+    [Sign up here](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community) and start building your pipelines. ydata-profiling is installed by default in all YData images.
 
 ![ydata-profiling in a pipeline](../_static/img/profiling_pipelines.png)
 

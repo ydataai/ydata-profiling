@@ -1,9 +1,9 @@
-# Data quality Profiling with a Collaborative experience
+# Data Catalog - A collaborative experience to profile datasets & relational databases
 
-!!! note
+!!! note "Data Catalog with data quality profiling"
 
-    [Sign-up Fabric community](https://ydata.ai/ydata-fabric-free-trial) to try the **data catalog**
-    and **collaborative** experience for data profiling at scale!
+    [Sign-up Fabric community](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community) to try the **data catalog**
+    and **collaborative** experience for datasets and database profiling at scale!
 
 [YData Fabric](https://ydata.ai/products/fabric) is a Data-Centric AI
 development platform. YData Fabric provides all capabilities of
@@ -42,6 +42,10 @@ An interactive experience that allows to drill-down in a comprehensive data prof
 and relationship analysis, providing deep insights into data structure,
 distributions and interactions for improved data preparation.
 
+<p style="text-align:center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/9EupCg5YQLE?si=Tuu68p6sj_RzxTBn&amp;clip=UgkxGNvIAcxUiqBSepTZzP2-4evffzjU7aHX&amp;clipt=EJbiBxinoAg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</p>
+
 ### Data quality indexes 
 
 Access and navigate indicators and data quality statistics, such as completeness, uniqueness
@@ -61,4 +65,4 @@ users and per project. YData Fabric Data Catalog helps in maintaining
 regulatory compliance by identifying any sensitive data.
 
 Try today the Catalog experience in with [Fabric Community
-version](https://ydata.ai/ydata-fabric-free-trial)!
+version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community)!
