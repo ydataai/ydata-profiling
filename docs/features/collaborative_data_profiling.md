@@ -1,4 +1,4 @@
-# Data Catalog Enterprise **
+# Data Catalog **
 A collaborative experience to profile datasets & relational databases
 
 !!! info "** YData's Enterprise feature"
@@ -6,7 +6,6 @@ A collaborative experience to profile datasets & relational databases
     This feature is only available for users of [YData Fabric](https://ydata.ai).
 
     [Sign-up Fabric community](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community) to try the **Data catalog**
-    and **collaborative** experience for datasets and database profiling at scale!
 
 [YData Fabric](https://ydata.ai/products/fabric) is a Data-Centric AI
 development platform. YData Fabric provides all capabilities of

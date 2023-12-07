@@ -65,7 +65,7 @@ YData-profiling can be used to deliver a variety of different applications. The 
 | [Dataset metadata and data dictionaries](features/metadata.md)                   | Complementing the report with dataset details and column-specific data dictionaries         |
 | [Customizing the report's appearance](features/custom_report_appearance.md )     | Changing the appearance of the report's page and of the contained visualizations            |
 | [Profiling Relational databases **](features/collaborative_data_profiling.md)    | For a seamless profiling experience in your organization's databases, check [Fabric Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. |
-| [PII classification & management **](features/pii_identification_management.md ) | Changing the appearance of the report's page and of the contained visualizations            |
+| [PII classification & management **](features/pii_identification_management.md ) | Automated PII classification and management through an UI experience          |
 
 ### Tutorials
 
