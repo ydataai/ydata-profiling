@@ -56,4 +56,4 @@ users and per project. YData Fabric Data Catalog helps in maintinaing
 regulatory compliance by identifying any sensitive data.
 
 Try today the Catalog experience in with [Fabric Community
-version](https://ydata.ai/ydata-fabric-free-trial)!
+version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community)!

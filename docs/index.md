@@ -7,12 +7,17 @@ YData-profiling is a leading tool in the data understanding step of the data sci
 complete with statistics and visualizations. The significance of the package lies in how it streamlines the process of
 understanding and preparing data for analysis in a single line of code! If you're ready to get started see the [quickstart](getting-started/quickstart.md)!
 
-!!! question "Scalable solution to integrate with database systems?"
+!!! tip "Advent of Code - Get featured on ydata-profiling"
 
-    Leverage YData Fabric Data Catalog to connect to different databases and storages **(Oracle, snowflake, PostGreSQL, GCS, S3, etc.)**
-    and leverage an interactive and guided profiling experience in [Fabric](https://ydata.ai/products/fabric). 
+    *“I want to get into open source, but I don’t know how.”* - Does this sound familiar to you? Have you been wanting to get more involved with open-source software, but no one’s given you an entry point?
+    
+    That's why we joined [The Advent of code this year](https://zilliz.com/advent-of-code). Contribute to ydata-profiling and win some 🐼🐼 swag!
 
-    Check out the [Community Version](https://ydata.ai/ydata-fabric-free-trial).
+    How can you be part of it?
+    
+    - Give us some love with a Github ⭐
+    - Write an article or create a tutorial like other [members the communit already did.](https://medium.com/@seckindinc/data-profiling-with-python-36497d3a1261)
+    - Feeling adventurous? Contribute with a PR. We have a list of [great issues to get you started.](https://github.com/ydataai/ydata-profiling/issues?q=label%3A%22getting+started+%E2%98%9D%22+)
 
 ![ydata-profiling report](_static/img/ydata-profiling.gif)
 
@@ -42,6 +47,14 @@ To learn more about the package check out [concepts overview](getting-started/co
 ## 📝 Features, functionalities & integrations
 YData-profiling can be used to deliver a variety of different applications. The documentation includes guides, tips and tricks for tackling them:
 
+!!! question "Data Catalog with data profiling for databases & storages"
+
+    Need to profile directly from databases and data storages **(Oracle, snowflake, PostGreSQL, GCS, S3, etc.)**?
+    
+    Try [YData Fabric Data Catalog](https://ydata.ai/products/data_catalog) for interactive and scalable data profiling
+
+    Check out the [free Community Version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community).
+
 | Features & functionalities                                                   | Description                                                                                 |
 |------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
 | [Comparing datasets](features/comparing_datasets.md)                         | Comparing multiple version of the same dataset                                              |
@@ -54,7 +67,7 @@ YData-profiling can be used to deliver a variety of different applications. The 
 
 ### Tutorials
 
-Looking for how to use certain features or how to intgrate `ydata-profiling` in your currect stack and workflows,
+Looking for how to use certain features or how to integrate `ydata-profiling` in your currect stack and workflows,
 check our step-by-step tutorials. 
 
 - **How to master exploratory data analysis with ydata-profiling?** Check this [step-by-step tutorial](https://medium.com/ydata-ai/auditing-data-quality-with-pandas-profiling-b1bf1919f856).
