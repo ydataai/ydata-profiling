@@ -87,7 +87,7 @@ def spark_get_series_descriptions(
         column, df = args
         return column, describe_1d(config, df.select(column), summarizer, typeset)
 
-    # Rename the df column names to prevent potential conflicts 
+    # Rename the df column names to prevent potential conflicts
     for col in df.columns:
         df = df.withColumnRenamed(col, f"{col}_customer")
 
