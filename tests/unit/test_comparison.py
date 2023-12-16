@@ -66,5 +66,6 @@ def test_generate_comparison():
 
     p1 = ProfileReport(df1, title="p1")
     p2 = ProfileReport(df2, title="p1")
-    html = p1.compare(p2).to_html()
+    _compare = p1.compare(p2)
+    html = _compare.to_html()
     assert len(html) > 0
