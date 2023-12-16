@@ -4,12 +4,13 @@ import pandas as pd
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summary_algorithms import describe_counts
+from ydata_profiling.model.var_description.default import VarDescription
 
 
 @describe_counts.register
 def pandas_describe_counts(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings, series: pd.Series, summary: VarDescription
+) -> Tuple[Settings, pd.Series, VarDescription]:
     """Counts the values in a series (with and without NaN, distinct).
 
     Args:
@@ -27,7 +28,7 @@ def pandas_describe_counts(
     except:  # noqa: E722
         hashable = False
 
-    summary["hashable"] = hashable
+    summary.hashable = hashable
 
     if hashable:
         value_counts_with_nan = value_counts_with_nan[value_counts_with_nan > 0]
@@ -58,6 +59,6 @@ def pandas_describe_counts(
         ordering = False
 
     summary["ordering"] = ordering
-    summary["n_missing"] = n_missing
+    summary.n_missing = n_missing
 
     return config, series, summary
