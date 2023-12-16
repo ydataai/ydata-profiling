@@ -8,6 +8,7 @@ from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summarizer import BaseSummarizer
+from ydata_profiling.model.var_description.default import VarDescription
 
 
 @multimethod
@@ -16,7 +17,7 @@ def describe_1d(
     series: Any,
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
-) -> dict:
+) -> VarDescription:
     raise NotImplementedError()
 
 
@@ -27,5 +28,5 @@ def get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> dict:
+) -> dict[str, VarDescription]:
     raise NotImplementedError()
