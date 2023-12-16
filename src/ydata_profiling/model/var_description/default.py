@@ -34,6 +34,10 @@ class VarDescription(VarCounts):
         """To support old dict like interface."""
         return self.var_specific.get(key, default)
 
+    def pop(self, key: str, default: Any = None) -> Any:
+        """To support old dict like interface."""
+        return self.var_specific.pop(key, default)
+
     def __iter__(self) -> Iterator:
         """To support old dict like interface."""
         return self.var_specific.__iter__()
