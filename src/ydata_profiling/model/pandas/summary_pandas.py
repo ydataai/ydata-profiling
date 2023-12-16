@@ -2,7 +2,7 @@
 
 import multiprocessing
 import multiprocessing.pool
-from typing import Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 import pandas as pd
@@ -65,7 +65,7 @@ def pandas_get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> dict[str, VarDescription]:
+) -> Dict[str, VarDescription]:
     def multiprocess_1d(args: tuple) -> Tuple[str, VarDescription]:
         """Wrapper to process series in parallel.
 

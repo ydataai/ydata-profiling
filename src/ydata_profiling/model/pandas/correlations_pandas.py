@@ -2,7 +2,7 @@
 
 import itertools
 import warnings
-from typing import Callable, Optional
+from typing import Callable, Dict, Optional
 
 import numpy as np
 import pandas as pd
@@ -89,9 +89,9 @@ def _pairwise_cramers(col_1: pd.Series, col_2: pd.Series) -> float:
     return _cramers_corrected_stat(pd.crosstab(col_1, col_2), correction=True)
 
 
-@Cramers.compute.register(Settings, pd.DataFrame, dict[str, VarDescription])
+@Cramers.compute.register(Settings, pd.DataFrame, Dict[str, VarDescription])
 def pandas_cramers_compute(
-    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
+    config: Settings, df: pd.DataFrame, summary: Dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
@@ -130,9 +130,9 @@ def pandas_cramers_compute(
     return correlation_matrix
 
 
-@PhiK.compute.register(Settings, pd.DataFrame, dict[str, VarDescription])
+@PhiK.compute.register(Settings, pd.DataFrame, Dict[str, VarDescription])
 def pandas_phik_compute(
-    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
+    config: Settings, df: pd.DataFrame, summary: Dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     df_cols_dict = {i: list(df.columns).index(i) for i in df.columns}
 
@@ -166,9 +166,9 @@ def pandas_phik_compute(
     return correlation
 
 
-@Auto.compute.register(Settings, pd.DataFrame, dict[str, VarDescription])
+@Auto.compute.register(Settings, pd.DataFrame, Dict[str, VarDescription])
 def pandas_auto_compute(
-    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
+    config: Settings, df: pd.DataFrame, summary: Dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
     numerical_columns = [

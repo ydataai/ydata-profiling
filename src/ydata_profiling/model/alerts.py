@@ -701,7 +701,7 @@ def check_correlation_alerts(config: Settings, correlations: dict) -> List[Alert
 def get_alerts(
     config: Settings,
     table_stats: dict,
-    series_description: dict[str, VarDescription],
+    series_description: Dict[str, VarDescription],
     correlations: dict,
 ) -> List[Alert]:
     alerts: List[Alert] = check_table_alerts(table_stats)

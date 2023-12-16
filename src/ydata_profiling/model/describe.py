@@ -73,7 +73,7 @@ def describe(
 
         # Variable-specific
         pbar.total += len(df.columns)
-        series_description: dict[str, VarDescription] = get_series_descriptions(
+        series_description: Dict[str, VarDescription] = get_series_descriptions(
             config, df, summarizer, typeset, pbar
         )
 
