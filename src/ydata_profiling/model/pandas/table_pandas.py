@@ -1,4 +1,5 @@
 from collections import Counter
+from typing import Dict
 
 import pandas as pd
 
@@ -9,7 +10,7 @@ from ydata_profiling.model.var_description.default import VarDescription
 
 @get_table_stats.register
 def pandas_get_table_stats(
-    config: Settings, df: pd.DataFrame, variable_stats: dict[str, VarDescription]
+    config: Settings, df: pd.DataFrame, variable_stats: Dict[str, VarDescription]
 ) -> dict:
     """General statistics for the DataFrame.
 

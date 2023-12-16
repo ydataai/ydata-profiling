@@ -1,6 +1,6 @@
 """Compute statistical description of datasets."""
 
-from typing import Any
+from typing import Any, Dict
 
 from multimethod import multimethod
 from tqdm import tqdm
@@ -28,5 +28,5 @@ def get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> dict[str, VarDescription]:
+) -> Dict[str, VarDescription]:
     raise NotImplementedError()
