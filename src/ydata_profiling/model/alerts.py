@@ -170,7 +170,10 @@ class ConstantAlert(Alert):
     ):
         super().__init__(
             alert_type=AlertType.CONSTANT,
-            values={"n_distinct": values["n_distinct"]},
+            values={
+                "n_distinct": values["n_distinct"],
+                "value_counts_without_nan": values.value_counts_without_nan,
+            },
             column_name=column_name,
             is_empty=is_empty,
         )

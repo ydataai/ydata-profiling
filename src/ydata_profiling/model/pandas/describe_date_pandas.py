@@ -30,7 +30,7 @@ def pandas_describe_date_1d(
     Returns:
         A dict containing calculated series description values.
     """
-    if summary["value_counts_without_nan"].empty:
+    if summary.value_counts_without_nan.empty:
         values = series.values
         summary.update(
             {
