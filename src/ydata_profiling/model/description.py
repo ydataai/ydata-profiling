@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Union
 
+from pandas import Timedelta
+
 
 @dataclass
 class BaseAnalysis:
@@ -55,7 +57,7 @@ class TimeIndexAnalysis:
     length: Union[int, List[int]]
     start: Any
     end: Any
-    period: Union[float, List[float]]
+    period: Union[float, List[float], Timedelta, List[Timedelta]]
     frequency: Union[Optional[str], List[Optional[str]]]
 
     def __init__(
