@@ -4,8 +4,6 @@ import warnings
 from pathlib import Path
 from typing import Any, Optional, Union
 
-from PIL import Image
-
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import pkg_resources

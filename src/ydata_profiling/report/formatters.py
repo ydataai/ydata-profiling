@@ -219,6 +219,7 @@ def fmt_timespan(num_seconds: Any, detailed: bool = False, max_units: int = 3) -
             return concatenate(result)
 
 
+@list_args
 def fmt_timespan_timedelta(
     delta: Any, detailed: bool = False, max_units: int = 3, precision: int = 10
 ) -> str:

@@ -68,3 +68,35 @@ def test_generate_comparison():
     p2 = ProfileReport(df2, title="p1")
     html = p1.compare(p2).to_html()
     assert len(html) > 0
+
+
+def test_compare_timeseries(test_output_dir):
+    data = {
+        "feature_A": {
+            pd.Timestamp("2023-04-03 00:00:00"): 53321.6700520833,
+            pd.Timestamp("2023-04-03 01:00:00"): 53552.70312500002,
+            pd.Timestamp("2023-04-03 02:00:00"): 48905.89615885409,
+            pd.Timestamp("2023-04-03 03:00:00"): 46832.90592447904,
+            pd.Timestamp("2023-04-03 04:00:00"): 51819.66223958326,
+        }
+    }
+
+    df1 = pd.DataFrame.from_dict(data)
+    df2 = pd.DataFrame.from_dict(data)
+
+    latest_training_report = ProfileReport(
+        df1,
+        title="Report 1",
+        tsmode=True,
+    )
+    production_training_report = ProfileReport(
+        df2,
+        title="Report 2",
+        tsmode=True,
+    )
+
+    comparison_report = compare([latest_training_report, production_training_report])
+    output_file = test_output_dir / "comparison.html"
+    comparison_report.to_file(output_file)
+    assert (test_output_dir / "comparison.html").exists(), "Output file does not exist"
+    assert comparison_report is not None
