@@ -3,8 +3,9 @@ import json
 import warnings
 from pathlib import Path
 from typing import Any, Optional, Union
+
 from PIL import Image
-import warnings
+
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import pkg_resources
@@ -103,11 +104,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             type_schema: optional dict containing pairs of `column name`: `type`
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
-        
 
         self.__validate_inputs(df, minimal, tsmode, config_file, lazy)
-        
-        
+
         if config_file or minimal:
             if not config_file:
                 config_file = get_config("config_minimal.yaml")
@@ -352,9 +351,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             pillow_version = pkg_resources.get_distribution("Pillow").version
-        version_tuple = tuple(map(int, pillow_version.split('.')))
+        version_tuple = tuple(map(int, pillow_version.split(".")))
         if version_tuple < (9, 5, 0):
-            warnings.warn("Try running command: 'pip install --upgrade Pillow' to avoid ValueError")
+            warnings.warn(
+                "Try running command: 'pip install --upgrade Pillow' to avoid ValueError"
+            )
 
         if not isinstance(output_file, Path):
             output_file = Path(str(output_file))

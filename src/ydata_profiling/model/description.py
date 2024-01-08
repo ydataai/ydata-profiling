@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Union
+
 from pandas import Timedelta
+
 
 @dataclass
 class BaseAnalysis:
