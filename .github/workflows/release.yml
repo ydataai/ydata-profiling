@@ -24,7 +24,7 @@ jobs:
       with:
         python-version: "3.10"
       
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       name: Cache pip dependencies
       with:
         path: ~/.cache/pip
