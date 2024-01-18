@@ -58,21 +58,21 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
     
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'Linux')
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'macOS')
       with:
         path: ~/Library/Caches/pip
         key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'Windows')
       with:
         path: ~\AppData\Local\pip\Cache
@@ -106,21 +106,21 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'Linux')
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'macOS')
       with:
         path: ~/Library/Caches/pip
         key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'Windows')
       with:
         path: ~\AppData\Local\pip\Cache
@@ -135,7 +135,7 @@ jobs:
 
     - run: make test_cov
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'Windows')
       with:
         path: ~\AppData\Local\pip\Cache
@@ -189,21 +189,21 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         if: startsWith(runner.os, 'Linux')
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.pandas }}-pip-\
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         if: startsWith(runner.os, 'macOS')
         with:
           path: ~/Library/Caches/pip
           key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         if: startsWith(runner.os, 'Windows')
         with:
           path: ~\AppData\Local\pip\Cache
