@@ -3,6 +3,7 @@ Test for issue 1529:
 https://github.com/ydataai/ydata-profiling/issues/1529
 """
 import pandas as pd
+import json
 
 from ydata_profiling import ProfileReport
 
@@ -23,9 +24,7 @@ def test_issue1529():
         current_dataset, title="Current dataset report"
     )
     comparison_report = previous_dataset_report.compare(current_dataset_report)
-    json = comparison_report.to_json()
-    assert json is not None and len(json) > 0
-    assert (
-        json["analysis"]["title"]
-        == "<em>Comparing</em> Previous dataset report <em>and</em> Current dataset report"
-    )
+    json_str = comparison_report.to_json()
+    compare_dict = json.loads(json_str)
+    assert compare_dict is not None and len(compare_dict) > 0
+    assert compare_dict["analysis"]["title"] == "<em>Comparing</em> Previous dataset report <em>and</em> Current dataset report"
