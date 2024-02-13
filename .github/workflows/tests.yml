@@ -85,6 +85,7 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
+        virtualenv --upgrade-embed-wheels
         pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
         pip install -r requirements-test.txt
     - run: make install
