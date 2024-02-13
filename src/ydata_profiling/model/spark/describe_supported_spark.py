@@ -28,6 +28,6 @@ def describe_supported_spark(
     n_unique = summary["value_counts"].where("count == 1").count()
     summary["is_unique"] = n_unique == count
     summary["n_unique"] = n_unique
-    summary["p_unique"] = n_unique / count if count > 0 else 0
+    summary["p_unique"] = n_unique / count
 
     return config, series, summary
