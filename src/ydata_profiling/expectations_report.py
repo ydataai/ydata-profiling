@@ -79,7 +79,7 @@ class ExpectationsReport:
         if not data_context:
             data_context = ge.data_context.DataContext()
 
-        suite = data_context.create_expectation_suite(
+        suite = data_context.add_expectation_suite(
             suite_name, overwrite_existing=True
         )
 
