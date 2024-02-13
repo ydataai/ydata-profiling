@@ -80,7 +80,7 @@ class ExpectationsReport:
             data_context = ge.data_context.DataContext()
 
         suite = data_context.add_expectation_suite(
-            suite_name, overwrite_existing=True
+            suite_name
         )
 
         # Instantiate an in-memory pandas dataset
