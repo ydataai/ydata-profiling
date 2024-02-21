@@ -28,7 +28,7 @@ def _render_gap_tab(config: Settings, summary: dict) -> Container:
         {
             "name": "number of gaps",
             "value": fmt_numeric(
-                len(summary["gap_stats"]["gaps"]), precision=config.report.precision
+                summary["gap_stats"]["n_gaps"], precision=config.report.precision
             ),
         },
         {
