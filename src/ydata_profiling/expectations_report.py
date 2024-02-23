@@ -79,9 +79,7 @@ class ExpectationsReport:
         if not data_context:
             data_context = ge.data_context.DataContext()
 
-        suite = data_context.add_expectation_suite(
-            suite_name, overwrite_existing=True
-        )
+        suite = data_context.add_expectation_suite(suite_name, overwrite_existing=True)
 
         # Instantiate an in-memory pandas dataset
         batch = ge.dataset.PandasDataset(self.df, expectation_suite=suite)
