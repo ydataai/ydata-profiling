@@ -177,14 +177,16 @@ def compute_gap_stats(series: pd.Series) -> pd.Series:
 
     is_datetime = isinstance(series.index, pd.DatetimeIndex)
     gap_stats, gaps = identify_gaps(gap, is_datetime)
+    has_gaps = len(gap_stats) > 0
 
     stats = {
-        "min": gap_stats.min(),
-        "max": gap_stats.max(),
-        "mean": gap_stats.mean(),
+        "min": gap_stats.min() if has_gaps else 0,
+        "max": gap_stats.max() if has_gaps else 0,
+        "mean": gap_stats.mean() if has_gaps else 0,
         "std": gap_stats.std() if len(gap_stats) > 1 else 0,
         "series": series,
         "gaps": gaps,
+        "n_gaps": len(gaps),
     }
     return stats
 

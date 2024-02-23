@@ -273,7 +273,8 @@ def get_dataset_alerts(config: Settings, alerts: list) -> Alerts:
 
 
 def get_timeseries_items(config: Settings, summary: BaseDescription) -> Container:
-    def format_tsindex_limit(limit: Any) -> str:
+    @list_args
+    def fmt_tsindex_limit(limit: Any) -> str:
         if isinstance(limit, datetime):
             return limit.strftime("%Y-%m-%d %H:%M:%S")
         else:
@@ -291,11 +292,11 @@ def get_timeseries_items(config: Settings, summary: BaseDescription) -> Containe
         },
         {
             "name": "Starting point",
-            "value": format_tsindex_limit(summary.time_index_analysis.start),
+            "value": fmt_tsindex_limit(summary.time_index_analysis.start),
         },
         {
             "name": "Ending point",
-            "value": format_tsindex_limit(summary.time_index_analysis.end),
+            "value": fmt_tsindex_limit(summary.time_index_analysis.end),
         },
         {
             "name": "Period",
