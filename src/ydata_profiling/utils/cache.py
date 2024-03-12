@@ -1,7 +1,7 @@
 """Dataset cache utility functions"""
 import zipfile
 from pathlib import Path
-from urllib import request
+from requests import get as get_file
 
 from ydata_profiling.utils.paths import get_data_path
 
@@ -24,8 +24,8 @@ def cache_file(file_name: str, url: str) -> Path:
 
     # If not exists, download and create file
     if not file_path.exists():
-        response = request.urlopen(url)
-        file_path.write_bytes(response.read())
+        response = get_file(url, allow_redirects=True)
+        file_path.write_bytes(response.content)
 
     return file_path
 
