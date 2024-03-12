@@ -49,7 +49,7 @@ def cache_zipped_file(file_name: str, url: str) -> Path:
 
     # If not exists, download and create file
     if not file_path.exists():
-        tmp_path = cache_file('tmp.zip', url)
+        tmp_path = cache_file("tmp.zip", url)
 
         with zipfile.ZipFile(tmp_path, "r") as zip_file:
             zip_file.extract(file_path.name, data_path)
