@@ -27,7 +27,7 @@ def cache_file(file_name: str, url: str) -> Path:
     if not file_path.exists():
         response = get_file(url, allow_redirects=True)
         response.raise_for_status()
-        
+
         file_path.write_bytes(response.content)
 
     return file_path
