@@ -1,6 +1,7 @@
 """Dataset cache utility functions"""
 import zipfile
 from pathlib import Path
+
 from requests import get as get_file
 
 from ydata_profiling.utils.paths import get_data_path
