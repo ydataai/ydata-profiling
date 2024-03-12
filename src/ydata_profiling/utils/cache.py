@@ -55,7 +55,7 @@ def cache_zipped_file(file_name: str, url: str) -> Path:
         response.raise_for_status()
 
         tmp_path = data_path / "tmp.zip"
-        tmp_path.write_bytes(response.read())
+        tmp_path.write_bytes(response.content)
 
         with zipfile.ZipFile(tmp_path, "r") as zip_file:
             zip_file.extract(file_path.name, data_path)
