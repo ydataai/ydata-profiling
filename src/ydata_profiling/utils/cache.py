@@ -26,6 +26,8 @@ def cache_file(file_name: str, url: str) -> Path:
     # If not exists, download and create file
     if not file_path.exists():
         response = get_file(url, allow_redirects=True)
+        response.raise_for_status()
+        
         file_path.write_bytes(response.content)
 
     return file_path
@@ -49,7 +51,8 @@ def cache_zipped_file(file_name: str, url: str) -> Path:
 
     # If not exists, download and create file
     if not file_path.exists():
-        response = request.urlopen(url)
+        response = get_file(url, allow_redirects=True)
+        response.raise_for_status()
 
         tmp_path = data_path / "tmp.zip"
         tmp_path.write_bytes(response.read())
