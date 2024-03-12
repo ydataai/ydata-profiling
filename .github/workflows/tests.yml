@@ -89,7 +89,9 @@ jobs:
 
   coverage:
     name: Coverage | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
-    runs-on: ${{ matrix.os }}
+    runs-on:
+    - self-hosted
+    - small
     strategy:
       matrix:
         os: [ ubuntu-22.04 ]
