@@ -42,7 +42,7 @@ def test_to_expectations_suite_context_save_and_build_data_docs(mod, context, df
     mod.data_context.DataContext.assert_not_called()
     mod.dataset.PandasDataset.assert_called_once()
 
-    context.create_expectation_suite.assert_called_once()
+    context.add_expectation_suite.assert_called_once()
     context.save_expectation_suite.assert_called_once()
     context.build_data_docs.assert_called_once()
     context.open_data_docs.assert_called_once()
@@ -60,7 +60,7 @@ def test_to_expectations_suite_context_no_save_and_build_data_docs(mod, context,
     mod.data_context.DataContext.assert_not_called()
     mod.dataset.PandasDataset.assert_called_once()
 
-    context.create_expectation_suite.assert_called_once()
+    context.add_expectation_suite.assert_called_once()
     context.save_expectation_suite.assert_called_once()
     context.build_data_docs.assert_called_once()
     context.open_data_docs.assert_called_once()
@@ -78,7 +78,7 @@ def test_to_expectations_suite_context_no_save_and_no_build_data_docs(mod, conte
     mod.data_context.DataContext.assert_not_called()
     mod.dataset.PandasDataset.assert_called_once()
 
-    context.create_expectation_suite.assert_called_once()
+    context.add_expectation_suite.assert_called_once()
     context.save_expectation_suite.assert_not_called()
     context.build_data_docs.assert_not_called()
     context.open_data_docs.assert_not_called()
@@ -92,7 +92,7 @@ def test_to_expectations_suite_title(context, df):
         run_validation=False,
     )
 
-    context.create_expectation_suite.assert_called_once_with(
+    context.add_expectation_suite.assert_called_once_with(
         "expectations-dataset", overwrite_existing=True
     )
 
