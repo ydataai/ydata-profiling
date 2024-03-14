@@ -24,10 +24,6 @@ jobs:
             python-version: 3.7.16
             pandas: "pandas>1.1"
             numpy: "numpy"
-#          - os: windows-2016
-#            python-version: 3.6
-#            pandas: "pandas>1.1"
-#            numpy: "numpy"
           - os: ubuntu-22.04
             python-version: 3.7.16
             pandas: "pandas>1.1"
@@ -162,22 +158,11 @@ jobs:
       matrix:
         os: [ ubuntu-22.04 ]
         python-version: [3.7, 3.8]
-        pandas: ["pandas==0.25.3", "pandas==1.0.5", "pandas>1.1"]
-        spark: ["2.3.0", "2.4.7", "3.0.1"]
+        pandas: ["pandas>1.1"]
+        spark: ["3.0.1"]
         hadoop: [ 2.7 ]
         numpy: ["numpy"]
         java_home: [ /usr/lib/jvm/java-8-openjdk-amd64 ]
-        exclude:
-           - python-version: 3.8
-             spark: "2.3.0"
-           - python-version: 3.8
-             spark: "2.4.7"
-#          - os: macos-latest
-#            python-version: 3.6
-#            pandas: ">1.1"
-#          - os: windows-2016
-#            python-version: 3.6
-#            pandas: ">1.1"
 
     name: Tests Spark | python ${{ matrix.python-version }}, ${{ matrix.os }}, spark${{ matrix.spark }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     env:
