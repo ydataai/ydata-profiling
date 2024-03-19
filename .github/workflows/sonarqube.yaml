@@ -1,30 +1,30 @@
-name: SonarQube
+#name: SonarQube
 
 
 
-on:
-  push:
-    branches:
-    - master
+#on:
+#  push:
+#    branches:
+#    - master
 
 
 
-jobs:
-  sonarqube:
-    name: SonarQube
-    runs-on: ubuntu-22.04
+#jobs:
+#  sonarqube:
+#    name: SonarQube
+#    runs-on: ubuntu-22.04
 
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+#    steps:
+#    - uses: actions/checkout@v4
+#      with:
+#        fetch-depth: 0
 
-    - name: SonarQube file
-      run: |
-        echo "sonar.projectKey=${{ github.event.repository.name }}" > sonar-project.properties
+#    - name: SonarQube file
+#      run: |
+#        echo "sonar.projectKey=${{ github.event.repository.name }}" > sonar-project.properties
 
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v2.0.1
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+#    - name: SonarQube Scan
+#      uses: sonarsource/sonarqube-scan-action@v2.0.1
+#      env:
+#        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
