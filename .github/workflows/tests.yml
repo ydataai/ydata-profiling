@@ -3,6 +3,8 @@ name: Multi-software test
 
 on:
   pull_request:
+    types:
+    - ready_for_review
   push:
     branches: 
     - master
