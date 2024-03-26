@@ -87,11 +87,17 @@ def spark_get_series_descriptions(
         column, df = args
         return column, describe_1d(config, df.select(column), summarizer, typeset)
 
+    # Rename the df column names to prevent potential conflicts
+    for col in df.columns:
+        df = df.withColumnRenamed(col, f"{col}_customer")
+
     args = [(name, df) for name in df.columns]
     with multiprocessing.pool.ThreadPool(12) as executor:
         for i, (column, description) in enumerate(
             executor.imap_unordered(multiprocess_1d, args)
         ):
+            if column.endswith("_customer"):
+                column = column[:-9]
             pbar.set_postfix_str(f"Describe variable:{column}")
 
             # summary clean up for spark
@@ -99,7 +105,7 @@ def spark_get_series_descriptions(
 
             series_description[column] = description
             pbar.update()
-        series_description = {k: series_description[k] for k in df.columns}
+        series_description = {k[:-9]: series_description[k[:-9]] for k in df.columns}
 
     # Mapping from column name to variable type
     series_description = sort_column_names(series_description, config.sort)
