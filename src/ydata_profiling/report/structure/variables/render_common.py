@@ -9,6 +9,9 @@ def render_common(config: Settings, summary: dict) -> dict:
     n_extreme_obs = config.n_extreme_obs
     n_freq_table_max = config.n_freq_table_max
 
+    if "value_counts_index_sorted" not in summary:
+        raise ValueError(f"column {summary['varname']!r} has an unsortable index")
+
     template_variables = {
         # TODO: with nan
         "freq_table_rows": freq_table(
