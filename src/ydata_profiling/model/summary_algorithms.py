@@ -57,7 +57,7 @@ def chi_square(
         bins = np.histogram_bin_edges(values, bins="auto")
         histogram, _ = np.histogram(values, bins=bins)
     if len(histogram) == 0 or np.sum(histogram) == 0:
-        return {"statistic": np.nan, "pvalue": np.nan}
+        return {"statistic": 0, "pvalue": 0}
     return dict(chisquare(histogram)._asdict())
 
 
