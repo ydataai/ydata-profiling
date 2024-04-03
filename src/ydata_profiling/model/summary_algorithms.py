@@ -34,6 +34,8 @@ def histogram_compute(
     weights: Optional[np.ndarray] = None,
 ) -> dict:
     stats = {}
+    if len(finite_values) == 0:
+        return {name: []}
     hist_config = config.plot.histogram
     bins_arg = "auto" if hist_config.bins == 0 else min(hist_config.bins, n_unique)
     bins = np.histogram_bin_edges(finite_values, bins=bins_arg)
@@ -54,6 +56,8 @@ def chi_square(
     if histogram is None:
         bins = np.histogram_bin_edges(values, bins="auto")
         histogram, _ = np.histogram(values, bins=bins)
+    if len(histogram) == 0 or np.sum(histogram) == 0:
+        return {"statistic": np.nan, "pvalue": np.nan}
     return dict(chisquare(histogram)._asdict())
 
 

@@ -195,10 +195,12 @@ def length_summary_vc(vc: pd.Series) -> dict:
 
     summary = {
         "max_length": np.max(length_counts.index),
-        "mean_length": np.average(length_counts.index, weights=length_counts.values),
+        "mean_length": np.average(
+            length_counts.index, weights=length_counts.values
+            )  if not length_counts.empty else np.nan,
         "median_length": weighted_median(
             length_counts.index.values, weights=length_counts.values
-        ),
+        ) if not length_counts.empty else np.nan,
         "min_length": np.min(length_counts.index),
         "length_histogram": length_counts,
     }
