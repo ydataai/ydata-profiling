@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import numpy as np
 import pandas as pd
 
 from ydata_profiling.config import Settings
@@ -26,9 +27,17 @@ def pandas_describe_boolean_1d(
         A dict containing calculated series description values.
     """
 
-    value_counts = summary["value_counts_without_nan"]
-    summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
-
-    summary["imbalance"] = column_imbalance_score(value_counts, len(value_counts))
+    value_counts: pd.Series = summary["value_counts_without_nan"]
+    if not value_counts.empty:
+        summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
+        summary["imbalance"] = column_imbalance_score(value_counts, len(value_counts))
+    else:
+        summary.update(
+            {
+                "top": np.nan,
+                "freq": 0,
+                "imbalance": 0,
+            }
+        )
 
     return config, series, summary
