@@ -7,8 +7,16 @@ YData-profiling is a leading tool in the data understanding step of the data sci
 complete with statistics and visualizations. The significance of the package lies in how it streamlines the process of
 understanding and preparing data for analysis in a single line of code! If you're ready to get started see the [quickstart](getting-started/quickstart.md)!
 
-!!! tip "Advent of Code - Get featured on ydata-profiling"
-
+!!! tip "Profiling and scale and for databases"
+    
+    Take your data profiling to the next level - try ydata-profiling at scale and for databases! 
+    
+    Experience enterprise-level scalability and database support while enjoying the familiar open-source features you love. 
+    Dive into large datasets with ease and ensure data quality like never before. Try [YData Fabric community version](https://ydata.ai/register)! 
+    
+    Take your data profiling to the next level - try ydata-profiling at scale and for databases! 
+    
+    Experience enterprise-level scalability and database support while enjoying the familiar open-source features you love. Dive into large datasets with ease and ensure data quality like never before. Join the community and take your data analysis to new heights!
     *“I want to get into open source, but I don’t know how.”* - Does this sound familiar to you? Have you been wanting to
     get more involved with open-source software, but no one’s given you an entry point?
     
