@@ -1,7 +1,7 @@
 from typing import Tuple
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.pandas.imbalance_pandas import column_imbalance_score
@@ -32,10 +32,12 @@ def pandas_describe_boolean_1d(
         summary.update({"top": value_counts.index[0], "freq": value_counts.iloc[0]})
         summary["imbalance"] = column_imbalance_score(value_counts, len(value_counts))
     else:
-        summary.update({
-            "top": np.nan,
-            "freq": 0,
-            "imbalance": 0,
-        })
+        summary.update(
+            {
+                "top": np.nan,
+                "freq": 0,
+                "imbalance": 0,
+            }
+        )
 
     return config, series, summary

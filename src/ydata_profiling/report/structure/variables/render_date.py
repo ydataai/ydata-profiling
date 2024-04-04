@@ -103,7 +103,7 @@ def render_date(config: Settings, summary: Dict[str, Any]) -> Dict[str, Any]:
         )
 
     # Bottom
-    n_bins = len(summary['histogram'][1]) - 1 if summary['histogram'] else 0
+    n_bins = len(summary["histogram"][1]) - 1 if summary["histogram"] else 0
     bottom = Container(
         [
             Image(
