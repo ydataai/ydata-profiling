@@ -16,7 +16,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: wagoid/commitlint-github-action@v6
+    - uses: wagoid/commitlint-github-action@v5
 
   lint:
     if: github.actor != 'renovate[bot]'
