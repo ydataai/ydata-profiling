@@ -5,6 +5,9 @@
             <div class="row header">
                 <a class="anchor-pos" id="{{ section.content['anchor_id'] }}"></a>
                 <h1 class="page-header">{{ section.content['name'] }}</h1>
+                {% if section.content['name'] == 'Overview' %}
+                <p class="text-muted text-right">Brought to you by <a href="https://ydata.ai/?utm_source=opensource&utm_medium=ydataprofiling&utm_campaign=report">YData</a></p>
+                {% endif %}
             </div>
             <div class="section-items">
                 {{ html }}
