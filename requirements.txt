@@ -15,7 +15,7 @@ phik>=0.11.1,<0.13
 requests>=2.24.0, <3
 # Progress bar
 tqdm>=4.48.2, <5
-seaborn>=0.10.1, <0.13
+seaborn>=0.10.1, <0.14
 multimethod>=1.4, <2
 # metrics
 statsmodels>=0.13.2, <1
