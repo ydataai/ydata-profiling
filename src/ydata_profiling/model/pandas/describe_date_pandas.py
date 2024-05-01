@@ -29,16 +29,26 @@ def pandas_describe_date_1d(
     Returns:
         A dict containing calculated series description values.
     """
-    summary.update(
-        {
-            "min": pd.Timestamp.to_pydatetime(series.min()),
-            "max": pd.Timestamp.to_pydatetime(series.max()),
-        }
-    )
+    if summary["value_counts_without_nan"].empty:
+        values = series.values
+        summary.update(
+            {
+                "min": pd.NaT,
+                "max": pd.NaT,
+                "range": 0,
+            }
+        )
+    else:
+        summary.update(
+            {
+                "min": pd.Timestamp.to_pydatetime(series.min()),
+                "max": pd.Timestamp.to_pydatetime(series.max()),
+            }
+        )
 
-    summary["range"] = summary["max"] - summary["min"]
+        summary["range"] = summary["max"] - summary["min"]
 
-    values = series.values.astype(np.int64) // 10**9
+        values = series.values.astype(np.int64) // 10**9
 
     if config.vars.num.chi_squared_threshold > 0.0:
         summary["chi_squared"] = chi_square(values)
