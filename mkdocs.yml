@@ -25,6 +25,7 @@ nav:
     -  General settings: 'advanced_settings/available_settings.md'
     -  Changing settings: 'advanced_settings/changing_settings.md'
     -  Caching: 'advanced_settings/caching.md'
+    -  Analytics: 'advanced_settings/analytics.md'
   - Integrations:
     -  Other dataframes: 'integrations/other_dataframe_libraries.md'
     -  Pyspark: 'integrations/pyspark.md'
