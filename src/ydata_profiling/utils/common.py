@@ -111,15 +111,14 @@ def analytics_features(dataframe, datatype: bool, report_type: bool):
         python_version = ".".join(platform.python_version().split(".")[:2])
 
         try:
-            request_syntax = f"{endpoint}version={package_version}" \
-                             f"&python_version={python_version}" \
-                             f"&report_type={report_type}" \
-                             f"&dataframe={dataframe}" \
-                             f"&datatype={datatype}" \
-                             f"&os={platform.system()}" \
-                             f"&gpu={str(gpu_present)}"
+            request_message = f"{endpoint}version={package_version}" \
+                                 f"&python_version={python_version}" \
+                                 f"&report_type={report_type}" \
+                                 f"&dataframe={dataframe}" \
+                                 f"&datatype={datatype}" \
+                                 f"&os={platform.system()}" \
+                                 f"&gpu={str(gpu_present)}"
 
-            #requests.get(request_syntax)
-            print(request_syntax)
+            requests.get(request_message)
         except Exception:
             pass
