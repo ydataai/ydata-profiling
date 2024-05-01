@@ -12,7 +12,8 @@ on:
 jobs:
   sonarqube:
     name: SonarQube
-    runs-on: ubuntu-22.04
+    runs-on: 
+    - ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
@@ -24,7 +25,7 @@ jobs:
         echo "sonar.projectKey=${{ github.event.repository.name }}" > sonar-project.properties
 
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v2.0.1
+      uses: sonarsource/sonarqube-scan-action@v2.0.2
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

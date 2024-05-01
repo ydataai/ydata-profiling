@@ -7,18 +7,12 @@ YData-profiling is a leading tool in the data understanding step of the data sci
 complete with statistics and visualizations. The significance of the package lies in how it streamlines the process of
 understanding and preparing data for analysis in a single line of code! If you're ready to get started see the [quickstart](getting-started/quickstart.md)!
 
-!!! tip "Advent of Code - Get featured on ydata-profiling"
-
-    *“I want to get into open source, but I don’t know how.”* - Does this sound familiar to you? Have you been wanting to
-    get more involved with open-source software, but no one’s given you an entry point?
+!!! tip "Profiling and scale and for databases"
     
-    That's why we joined [The Advent of code this year](https://zilliz.com/advent-of-code). Contribute to ydata-profiling and win some 🐼🐼 swag!
-
-    How can you be part of it?
+    Take your data profiling to the next level - try ydata-profiling at scale and for databases! 
     
-    - Give us some love with a Github ⭐
-    - Write an article or create a tutorial like other [members the community already did.](https://medium.com/@seckindinc/data-profiling-with-python-36497d3a1261)
-    - Feeling adventurous? Contribute with a PR. We have a list of [great issues to get you started.](https://github.com/ydataai/ydata-profiling/issues?q=label%3A%22getting+started+%E2%98%9D%22+)
+    Experience enterprise-level scalability and database support while enjoying the familiar open-source features you love. 
+    Dive into large datasets with ease and ensure data quality like never before. Try [YData Fabric community version](https://ydata.ai/register)! 
 
 ![ydata-profiling report](_static/img/ydata-profiling.gif)
 

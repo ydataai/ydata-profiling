@@ -29,7 +29,7 @@ setup(
     url="https://github.com/ydataai/ydata-profiling",
     license="MIT",
     description="Generate profile report for pandas DataFrame",
-    python_requires=">=3.7, <3.12",
+    python_requires=">=3.7, <3.13",
     install_requires=requirements,
     extras_require={
         "notebook": [
@@ -63,6 +63,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
     keywords="pandas data-science data-analysis python jupyter ipython",
     long_description=long_description,
