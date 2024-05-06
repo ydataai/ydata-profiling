@@ -11,7 +11,6 @@ from imghdr import tests
 from pathlib import Path
 from typing import Mapping
 
-import pandas as pd
 import requests
 
 from ydata_profiling.version import __version__
