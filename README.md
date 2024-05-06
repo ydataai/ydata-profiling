@@ -220,7 +220,7 @@ pip install -e .
 
 The profiling report is written in HTML and CSS, which means a modern browser is required. 
 
-You need [Python 3](https://python3statement.org/) to run the package. Other dependencies can be found in the requirements files:
+You need [Python 3](https://python3statement.github.io/) to run the package. Other dependencies can be found in the requirements files:
 
 | Filename | Requirements|
 |----------|-------------|
