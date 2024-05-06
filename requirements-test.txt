@@ -1,5 +1,5 @@
 pytest
-coverage~=7.5
+coverage>=6.5, <8
 codecov
 pytest-cov
 pytest-spark
