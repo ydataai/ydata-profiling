@@ -1,12 +1,8 @@
 """Common util functions (e.g. missing in Python)."""
-import os
-import subprocess
-import platform
-
-import pandas as pd
-import requests
-
 import collections.abc
+import os
+import platform
+import subprocess
 import zipfile
 from datetime import datetime, timedelta
 
@@ -15,7 +11,11 @@ from imghdr import tests
 from pathlib import Path
 from typing import Mapping
 
+import pandas as pd
+import requests
+
 from ydata_profiling.version import __version__
+
 
 def update(d: dict, u: Mapping) -> dict:
     """Recursively update a dict.
@@ -97,8 +97,9 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
     else:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
 
+
 def analytics_features(dataframe, datatype: bool, report_type: bool):
-    endpoint= "https://packages.ydata.ai/ydata-profiling?"
+    endpoint = "https://packages.ydata.ai/ydata-profiling?"
 
     if os.getenv("YDATA_PROFILING_NO_ANALYTICS") != True:
         package_version = __version__
@@ -111,13 +112,15 @@ def analytics_features(dataframe, datatype: bool, report_type: bool):
         python_version = ".".join(platform.python_version().split(".")[:2])
 
         try:
-            request_message = f"{endpoint}version={package_version}" \
-                                 f"&python_version={python_version}" \
-                                 f"&report_type={report_type}" \
-                                 f"&dataframe={dataframe}" \
-                                 f"&datatype={datatype}" \
-                                 f"&os={platform.system()}" \
-                                 f"&gpu={str(gpu_present)}"
+            request_message = (
+                f"{endpoint}version={package_version}"
+                f"&python_version={python_version}"
+                f"&report_type={report_type}"
+                f"&dataframe={dataframe}"
+                f"&datatype={datatype}"
+                f"&os={platform.system()}"
+                f"&gpu={str(gpu_present)}"
+            )
 
             requests.get(request_message)
         except Exception:
