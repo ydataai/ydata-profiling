@@ -46,6 +46,10 @@ from ydata_profiling.serialize_report import SerializeReport
 from ydata_profiling.utils.dataframe import hash_dataframe
 from ydata_profiling.utils.paths import get_config
 
+from ydata_profiling.utils.logger import ProfilingLogger
+
+logger = ProfilingLogger(name='ReportLogger')
+
 
 @typechecked
 class ProfileReport(SerializeReport, ExpectationsReport):
@@ -199,6 +203,10 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     def __initialize_dataframe(
         df: Optional[Union[pd.DataFrame, sDataFrame]], report_config: Settings
     ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
+
+        logger.info_def_report(dataframe=type(df),
+                               timeseries=report_config.vars.timeseries.active)
+
         if (
             df is not None
             and isinstance(df, pd.DataFrame)
