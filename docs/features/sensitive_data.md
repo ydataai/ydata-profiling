@@ -60,3 +60,5 @@ help developers solve these cases, was developed.
 ## Automated PII classification & management
 
 You can find more details about this feature [here](pii_identification_management.md).
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

@@ -7,3 +7,5 @@ If you modify the configuration in-between runs, either a new ``ProfileReport`` 
 - *rendering* to invalidate previously rendered reports (HTML, JSON or widgets)
 - *report* to remove the caching of the report's structure
 - *None* (default) to invalidate all caches
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

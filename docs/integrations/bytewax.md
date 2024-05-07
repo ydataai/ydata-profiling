@@ -186,3 +186,5 @@ Now you're all set to start exploring your data streams! Bytewax takes
 care of all the processes necessary to handle and structure data streams
 into snapshots, which can then be summarized and compared with
 ydata-profiling through a comprehensive report of data characteristics.
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

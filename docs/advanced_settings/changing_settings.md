@@ -85,3 +85,5 @@ os.environ("PROFILE_TITLE")='My Custom Profiling Report'
 
 profile = ProfileReport(df)
 ```
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

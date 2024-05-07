@@ -1,5 +1,7 @@
 # Profiling large datasets
 
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />
+
 By default, `ydata-profiling` comprehensively summarizes the input
 dataset in a way that gives the most insights for data analysis. For
 small datasets, these computations can be performed in *quasi*

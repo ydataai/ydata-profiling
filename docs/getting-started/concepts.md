@@ -1,4 +1,4 @@
-#Concepts
+# Concepts
 
 !!! question "Text/corpus data - your input is needed!"
 
@@ -106,3 +106,5 @@ For a quick overview of the data, ydata-profiling provides the following section
 - First n records of a given dataset
 - Last n records of a given dataset
 - A table containing observed duplicates (exact matches)
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />
