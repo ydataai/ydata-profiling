@@ -8,16 +8,9 @@ import pandas as pd
 
 from ydata_profiling.utils.common import analytics_features
 
-
 class ProfilingLogger(logging.Logger):
     def __init__(self, name, level=logging.INFO):
         super().__init__(name, level)
-
-    def info(
-        self,
-        msg: object,
-    ) -> None:
-        super().info(f"[PROFILING] - {msg}.")
 
     def info_def_report(self, dataframe, timeseries: bool):
         if dataframe == pd.DataFrame:
