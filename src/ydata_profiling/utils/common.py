@@ -102,7 +102,10 @@ def analytics_features(dataframe: str, datatype: str, report_type: str) -> None:
     endpoint = "https://packages.ydata.ai/ydata-profiling?"
     package_version = __version__
 
-    if bool(os.getenv("YDATA_PROFILING_NO_ANALYTICS")) is not True and package_version!='0.0.dev0':
+    if (
+        bool(os.getenv("YDATA_PROFILING_NO_ANALYTICS")) is not True
+        and package_version != "0.0.dev0"
+    ):
         try:
             subprocess.check_output("nvidia-smi")
             gpu_present = True
