@@ -95,7 +95,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         Args:
             df: a pandas or spark.sql DataFrame
             minimal: minimal mode is a default configuration with minimal computation
-            ts_mode: activates time-series analysis for all the numerical variables from the dataset. Only available for pd.DataFrame
+            ts_mode: activates time-series analysis for all the numerical variables from the dataset.
+            Only available for pd.DataFrame
             sort_by: ignored if ts_mode=False. Order the dataset by a provided column.
             sensitive: hides the values for categorical and text variables for report privacy
             config_file: a config file (.yml), mutually exclusive with `minimal`

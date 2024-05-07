@@ -37,7 +37,7 @@ class BaseAnalysis:
                 for i in range(len(self.date_start))
             ]
         else:
-            raise ValueError()
+            raise TypeError()
 
 
 @dataclass
