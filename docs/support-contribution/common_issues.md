@@ -42,3 +42,5 @@ computation.
 Related StackOverflow questions:
 -   [MemoryError when using ydata_profiling
     profile_report](https://stackoverflow.com/questions/67342168/memoryerror-when-using-pandas-profiling-profile-report)
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

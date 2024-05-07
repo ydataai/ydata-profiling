@@ -127,3 +127,5 @@ in Panel, see \`this GitHub issue
 \<https://github.com/ydataai/ydata-profiling/issues/491\>]{.title-ref}\_
 and [this integration
 example](https://awesome-panel.org/pandas_profiling_app).
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

@@ -57,3 +57,5 @@ regulatory compliance by identifying any sensitive data.
 
 Try today the Catalog experience in with [Fabric Community
 version](http://ydata.ai/register?utm_source=ydata-profiling&utm_medium=documentation&utm_campaign=YData%20Fabric%20Community)!
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2d9fcb48-0fa6-43d8-a0ba-fdad344050fd" />

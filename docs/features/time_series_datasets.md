@@ -152,3 +152,5 @@ profile.to_file("report_timeseries.html")
 ```
 
 For more questions and suggestions around time-series analysis reach us out at the [Data-Centric AI community](https://datacentricai.community/).
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

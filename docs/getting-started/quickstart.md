@@ -99,3 +99,5 @@ profile = ProfileReport(df, title="Profiling Report", explorative=True)
 On the CLI utility `ydata_profiling`, this mode can be activated with
 the `-e` flag. Learn more about configuring `ydata-profiling` on the
 `../advanced_usage/available_settings`{.interpreted-text role="doc"}.
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

@@ -128,3 +128,5 @@ The notebook example can be found
 [here](https://github.com/ydataai/ydata-profiling/tree/master/examples/integrations/databricks_example.ipynb).
 
 Stay tuned - we are going to update the documentation soon!
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=c3c3ddfc-4c47-4192-9105-5dac1ffa3a49" />

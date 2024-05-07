@@ -1,5 +1,6 @@
 # Dataset Comparison
 
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />
 !!! note "Dataframes compare support"
 
     Profiling compare is supported from
