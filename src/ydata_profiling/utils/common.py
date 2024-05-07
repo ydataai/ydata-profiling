@@ -98,10 +98,10 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
 
 
-def analytics_features(dataframe, datatype: str, report_type: str):
+def analytics_features(dataframe: str, datatype: str, report_type: str) -> None:
     endpoint = "https://packages.ydata.ai/ydata-profiling?"
 
-    if os.getenv("YDATA_PROFILING_NO_ANALYTICS") != True:
+    if bool(os.getenv("YDATA_PROFILING_NO_ANALYTICS")) is not True:
         package_version = __version__
 
         try:

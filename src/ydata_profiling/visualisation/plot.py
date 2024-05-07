@@ -743,7 +743,7 @@ def _plot_acf_pacf(
 
     for ax in axes:
         for item in ax.collections:
-            if type(item) == PolyCollection:
+            if type(item) is PolyCollection:
                 item.set_facecolor(color)
 
     return plot_360_n0sc0pe(config)
