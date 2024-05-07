@@ -78,3 +78,5 @@ Install these with e.g.
 ````console
   pip install -U ydata-profiling[notebook,unicode, pyspark]
 ````
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

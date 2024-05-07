@@ -46,3 +46,5 @@ across a wide range of dataset and data types:
 -   [HCC](https://github.com/ydataai/ydata-profiling/tree/master/examples/hcc)
     (Open dataset from healthcare, showcasing compare between two sets
     of data, before and after preprocessing)
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

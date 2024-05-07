@@ -90,3 +90,5 @@ Similarly, the palette for *Missing values* can be changed using ``missing`` arg
 ``ydata-profiling`` accepts all ``cmap`` values (colormaps) accepted by ``matplotlib``.
 The list of available colour maps can [be accessed here](https://matplotlib.org/stable/tutorials/colors/colormaps.html>).
 Alternatively, it is possible to create [custom palettes](https://matplotlib.org/stable/gallery/color/custom_cmap.html>).
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

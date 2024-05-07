@@ -56,4 +56,4 @@ Data governance involves establishing policies and processes to ensure high data
 A PII management solution enhances data governance efforts by providing a centralized hub for overseeing PII classifications,
 metadata, and related policies.
 
-
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2d9fcb48-0fa6-43d8-a0ba-fdad344050fd" />

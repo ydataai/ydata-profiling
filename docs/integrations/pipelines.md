@@ -100,3 +100,5 @@ profiling_task2 = PythonOperator(
 
 There is a community created [Kedro
 plugin](https://github.com/BrickFrog/kedro-pandas-profiling) available.
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2d9fcb48-0fa6-43d8-a0ba-fdad344050fd" />

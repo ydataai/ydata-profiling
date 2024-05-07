@@ -39,3 +39,5 @@ width="400px"}
 
 To use the PyCharm Integration, right click on any dataset file and
 *External Tools* \ *Data Profiling*.
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />
