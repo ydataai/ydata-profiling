@@ -7,6 +7,7 @@
 [![Release Version](https://img.shields.io/github/release/ydataai/pandas-profiling.svg)](https://github.com/ydataai/pandas-profiling/releases)
 [![Python Version](https://img.shields.io/pypi/pyversions/ydata-profiling)](https://pypi.org/project/ydata-profiling/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=cb7e69df-af81-4352-809a-d4251756affc" />
 
 <p align="center"><img width="300" src="https://assets.ydata.ai/oss/ydata-profiling_black.png" alt="YData Profiling Logo"></p>
 
