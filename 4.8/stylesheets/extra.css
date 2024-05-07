@@ -1,0 +1,48 @@
+.md-typeset .md-annotation__index > ::before {
+    content: attr(data-md-annotation-id);
+}
+.md-typeset :focus-within > .md-annotation__index > ::before {
+    transform: none;
+}
+
+.md-content {
+  --md-typeset-a-color: #002b9e;
+}
+
+@media {
+  .md-button--ydata {
+      --md-primary-fg-color: #E32212;
+      --md-primary-bg-color: #E32212;
+  }
+}
+
+:root {
+    /* Primary color shades */
+    --md-primary-fg-color: #040404;
+    --md-primary-fg-color--light: #040404;
+    --md-primary-fg-color--dark: #040404;
+    --md-primary-bg-color: hsla(0, 0%, 100%, 1);
+    --md-primary-bg-color--light: hsla(0, 0%, 100%, 0.7);
+    --md-text-link-color: #E32212;
+
+    /* Accent color shades */
+    --md-accent-fg-color: #E32212;
+    --md-accent-fg-color--transparent: hsla(189, 100%, 37%, 0.1);
+    --md-accent-bg-color: hsla(0, 0%, 100%, 1);
+    --md-accent-bg-color--light: hsla(0, 0%, 100%, 0.7);
+  }
+
+  :root > * {
+    /* Code block color shades */
+    --md-code-bg-color: hsla(0, 0%, 96%, 1);
+    --md-code-fg-color: hsla(200, 18%, 26%, 1);
+
+    /* Footer */
+    --md-footer-bg-color: #040404;
+    --md-footer-bg-color--dark: hsla(0, 0%, 0%, 0.32);
+    --md-footer-fg-color: hsla(0, 0%, 100%, 1);
+    --md-footer-fg-color--light: hsla(0, 0%, 100%, 0.7);
+    --md-footer-fg-color--lighter: hsla(0, 0%, 100%, 0.3);
+  }
+
+
