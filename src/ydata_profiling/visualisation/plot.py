@@ -27,6 +27,7 @@ def format_fn(tick_val: int, tick_pos: Any) -> str:
 
 
 def _plot_word_cloud(
+    config: Settings,
     series: Union[pd.Series, List[pd.Series]],
     figsize: tuple = (6, 4),
 ) -> plt.Figure:
@@ -36,7 +37,12 @@ def _plot_word_cloud(
     for i, series_data in enumerate(series):
         word_dict = series_data.to_dict()
         wordcloud = WordCloud(
-            background_color="white", random_state=123, width=300, height=200, scale=2
+            font_path=config.plot.font_path,
+            background_color="white",
+            random_state=123,
+            width=300,
+            height=200,
+            scale=2,
         ).generate_from_frequencies(word_dict)
 
         ax = plot.add_subplot(1, len(series), i + 1)
@@ -124,7 +130,7 @@ def _plot_histogram(
 
 @manage_matplotlib_context()
 def plot_word_cloud(config: Settings, word_counts: pd.Series) -> str:
-    _plot_word_cloud(series=word_counts)
+    _plot_word_cloud(config=config, series=word_counts)
     return plot_360_n0sc0pe(config)
 
 

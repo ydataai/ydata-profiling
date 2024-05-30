@@ -173,6 +173,7 @@ class Plot(BaseModel):
     histogram: Histogram = Histogram()
     scatter_threshold: int = 1000
     cat_freq: CatFrequencyPlot = CatFrequencyPlot()
+    font_path: Optional[Union[Path, str]] = None
 
 
 class Theme(Enum):
