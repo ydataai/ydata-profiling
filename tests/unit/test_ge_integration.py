@@ -93,7 +93,7 @@ def test_to_expectations_suite_title(context, df):
     )
 
     context.add_expectation_suite.assert_called_once_with(
-        "expectations-dataset", overwrite_existing=True
+        "expectations-dataset"
     )
 
 
