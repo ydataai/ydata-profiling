@@ -833,12 +833,12 @@ def _prepare_heatmap_data(
     )
 
     df = df.groupby([entity_column, "__bins"])[sortbykey].count()
-    df = df.reset_index().pivot_table(entity_column, "__bins", sortbykey).T
+    df = df.reset_index().pivot_table(values=sortbykey, index="__bins", columns=entity_column).T
 
     if selected_entities:
-        df = df[selected_entities].T
+        df = df[selected_entities]
     else:
-        df = df.T[:max_entities]
+        df = df[:max_entities]
 
     return df
 
