@@ -11,7 +11,7 @@ from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import Alert
 from ydata_profiling.profile_report import ProfileReport
 
-
+import os
 def _should_wrap(v1: Any, v2: Any) -> bool:
     if isinstance(v1, (list, dict)):
         return False
