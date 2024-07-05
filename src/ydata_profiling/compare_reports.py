@@ -11,7 +11,6 @@ from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.alerts import Alert
 from ydata_profiling.profile_report import ProfileReport
 
-import os
 def _should_wrap(v1: Any, v2: Any) -> bool:
     if isinstance(v1, (list, dict)):
         return False
@@ -28,10 +27,10 @@ def _should_wrap(v1: Any, v2: Any) -> bool:
 
 
 def _update_merge_dict(d1: Any, d2: Any) -> dict:
-    # Unwrap d1 and d2 in new dictionary to keep non-shared keys with **d1, **d2
-    # Next unwrap a dict that treats shared keys
-    # If two keys have an equal value, we take that value as new value
-    # If the values are not equal, we recursively merge them
+    # Unwrap d1 and d2 in new dictionary to keep non-shared keys with **d1, **d2.
+    # Next unwrap a dict that treats shared keys.
+    # If two keys have an equal value, we take that value as new value.
+    # If the values are not equal, we recursively merge them.
 
     return {
         **d1,
