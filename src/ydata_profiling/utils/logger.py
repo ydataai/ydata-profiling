@@ -10,10 +10,10 @@ from ydata_profiling.utils.common import analytics_features
 
 
 class ProfilingLogger(logging.Logger):
-    def __init__(self, name: str, level: int =logging.INFO):
+    def __init__(self, name: str, level: int = logging.INFO):
         super().__init__(name, level)
 
-    def info_def_report(self, dataframe, timeseries: bool) -> None: # type: ignore
+    def info_def_report(self, dataframe, timeseries: bool) -> None:  # type: ignore
         if dataframe is pd.DataFrame:
             dataframe = "pandas"
             report_type = "regular"

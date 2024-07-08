@@ -92,9 +92,7 @@ def test_to_expectations_suite_title(context, df):
         run_validation=False,
     )
 
-    context.add_expectation_suite.assert_called_once_with(
-        "expectations-dataset"
-    )
+    context.add_expectation_suite.assert_called_once_with("expectations-dataset")
 
 
 def test_to_expectation_suite_no_context(mod, df):

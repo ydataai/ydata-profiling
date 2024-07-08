@@ -97,4 +97,3 @@ def test_timeseries_heatmap(dataframe: pd.DataFrame):
     df = _prepare_heatmap_data(dataframe, "entity")
     plot = _create_timeseries_heatmap(df)
     assert isinstance(plot, Axes)
-
