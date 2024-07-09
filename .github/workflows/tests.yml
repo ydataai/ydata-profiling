@@ -7,6 +7,8 @@ on:
     - master
     - develop
 
+env:
+  YDATA_PROFILING_NO_ANALYTICS: false
 
 jobs:
   test:
@@ -81,6 +83,7 @@ jobs:
         pip install --upgrade pip setuptools wheel
         pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
         pip install -r requirements-test.txt
+    - run: echo "YDATA_PROFILING_NO_ANALYTICS=False" >> $GITHUB_ENV
     - run: make install
 
     - run: make test
@@ -129,7 +132,7 @@ jobs:
         pip install --upgrade pip setuptools wheel
         pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
         pip install -r requirements-test.txt
-        echo $YDATA_PROFILING_NO_ANALYTICS
+        echo "YDATA_PROFILING_NO_ANALYTICS=False" >> $GITHUB_ENV
     - run: make install
 
     - run: make test_cov
