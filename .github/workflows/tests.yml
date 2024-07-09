@@ -3,7 +3,7 @@ name: Multi-software test
 on:
   pull_request:
   push:
-    branches: 
+    branches:
     - master
     - develop
 
@@ -19,7 +19,7 @@ jobs:
         pandas: ["pandas>1.1"]
         numpy: ["numpy"]
         matplotlib: ["matplotlib<3.9"]
-        analytics: False
+        analytics: "False"
         include:
           - os: ubuntu-22.04
             python-version: 3.7.16
