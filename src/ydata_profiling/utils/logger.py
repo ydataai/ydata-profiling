@@ -17,7 +17,7 @@ class ProfilingLogger(logging.Logger):
         if isinstance(dataframe, pd.DataFrame):
             dataframe = "pandas"
             report_type = "regular"
-        elif isinstance(dataframe, None):
+        elif dataframe is None:
             dataframe = "pandas"
             report_type = "compare"
         else:
