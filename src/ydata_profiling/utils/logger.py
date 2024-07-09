@@ -13,11 +13,11 @@ class ProfilingLogger(logging.Logger):
     def __init__(self, name: str, level: int = logging.INFO):
         super().__init__(name, level)
 
-    def info_def_report(self, dataframe, timeseries: bool) -> None:  # type: ignore
-        if dataframe is pd.DataFrame:
+    def info_def_report(self, dataframe, timeseries: bool) -> None:  # noqa: ANN001
+        if isinstance(dataframe, pd.DataFrame):
             dataframe = "pandas"
             report_type = "regular"
-        elif dataframe is type(None):
+        elif isinstance(dataframe, None):
             dataframe = "pandas"
             report_type = "compare"
         else:
