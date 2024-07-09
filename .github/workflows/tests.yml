@@ -1,8 +1,5 @@
 name: Multi-software test
 
-env:
-  YDATA_PROFILING_NO_ANALYTICS: False
-  
 on:
   pull_request:
   push:
