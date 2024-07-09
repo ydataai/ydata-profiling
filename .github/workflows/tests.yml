@@ -25,7 +25,7 @@ jobs:
             python-version: 3.7.16
             pandas: "pandas>1.1"
             numpy: "numpy"
-            matplotlib: "matplotlib<3.9"
+            matplotlib: "matplotlib<3.6"
           - os: ubuntu-22.04
             python-version: 3.8
             pandas: "pandas>1.1"
