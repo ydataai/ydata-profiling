@@ -12,9 +12,13 @@ If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can 
 ```python linenums="1"
     import sys
     !{sys.executable} -m pip install -U ydata-profiling[notebook]
+    !pip install jupyter-contrib-nbextensions
+```
+Afterwards you can run the following command
+
+```python linenums="1"
     !jupyter nbextension enable --py widgetsnbextension
 ```
-
 You may have to restart the kernel or runtime for the package to work.
 
 ## Using conda
