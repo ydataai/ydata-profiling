@@ -198,7 +198,8 @@ def pandas_auto_compute(
 
         method = (
             _pairwise_spearman
-            if any(elem in categorical_columns for elem in [col_1_name, col_2_name]) is False
+            if any(elem in categorical_columns for elem in [col_1_name, col_2_name])
+            is False
             else _pairwise_cramers
         )
 
