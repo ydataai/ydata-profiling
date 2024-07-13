@@ -26,21 +26,24 @@ from ydata_profiling.model.pandas.discretize_pandas import (
 def pandas_spearman_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
-    return df.corr(method="spearman")
+    df_aux = df.select_dtypes(include="number").copy()
+    return df_aux.corr(method="spearman")
 
 
 @Pearson.compute.register(Settings, pd.DataFrame, dict)
 def pandas_pearson_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
-    return df.corr(method="pearson")
+    df_aux = df.select_dtypes(include="number").copy()
+    return df_aux.corr(method="pearson")
 
 
 @Kendall.compute.register(Settings, pd.DataFrame, dict)
 def pandas_kendall_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
-    return df.corr(method="kendall")
+    df_aux = df.select_dtypes(include="number").copy()
+    return df_aux.corr(method="kendall")
 
 
 def _cramers_corrected_stat(confusion_matrix: pd.DataFrame, correction: bool) -> float:
@@ -195,7 +198,7 @@ def pandas_auto_compute(
 
         method = (
             _pairwise_spearman
-            if col_1_name and col_2_name not in categorical_columns
+            if any(elem in categorical_columns for elem in [col_1_name, col_2_name]) is False
             else _pairwise_cramers
         )
 
