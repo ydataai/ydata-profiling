@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.29">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.76a95c52.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -205,7 +205,7 @@
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
@@ -1565,19 +1565,22 @@
 <p><div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">    pip install -U ydata-profiling</span>
 </code></pre></div>
 If you are in a notebook (locally, LambdaLabs, Google Colab or Kaggle), you can run:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<p><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
 <span class="normal"><a href="#__codelineno-1-2">2</a></span>
 <span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>    <span class="kn">import</span> <span class="nn">sys</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="err">!</span><span class="p">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">}</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">ydata</span><span class="o">-</span><span class="n">profiling</span><span class="p">[</span><span class="n">notebook</span><span class="p">]</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="err">!</span><span class="n">jupyter</span> <span class="n">nbextension</span> <span class="n">enable</span> <span class="o">--</span><span class="n">py</span> <span class="n">widgetsnbextension</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">jupyter</span><span class="o">-</span><span class="n">contrib</span><span class="o">-</span><span class="n">nbextensions</span>
 </code></pre></div></td></tr></table></div>
-<p>You may have to restart the kernel or runtime for the package to work.</p>
+Afterwards you can run the following command</p>
+<p><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a>    <span class="err">!</span><span class="n">jupyter</span> <span class="n">nbextension</span> <span class="n">enable</span> <span class="o">--</span><span class="n">py</span> <span class="n">widgetsnbextension</span>
+</code></pre></div></td></tr></table></div>
+You may have to restart the kernel or runtime for the package to work.</p>
 <h2 id="using-conda">Using conda</h2>
 <p><a href="https://anaconda.org/conda-forge/ydata-profiling">ydata-profiling through Conda</a></p>
 <p>A new conda environment containing the module can be created via: </p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="go">    conda env create -n ydata-profiling</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">    conda activate ydata-profiling</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">    conda install -c conda-forge ydata-profiling</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="go">    conda env create -n ydata-profiling</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">    conda activate ydata-profiling</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="go">    conda install -c conda-forge ydata-profiling</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -1588,21 +1591,21 @@ Omitting it **will not** lead to an error, as an outdated package lives on the `
 <h2 id="widgets-in-jupyter-notebooklab">Widgets in Jupyter Notebook/Lab</h2>
 <p>For the Jupyter widgets extension (used for progress bars and the interactive widget-based report) to work, you might need to install and activate the corresponding extensions. 
 This can be done via <code>pip</code>: </p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="go">  pip install ydata-profiling[notebook]</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">  jupyter nbextension enable --py widgetsnbextension</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="go">  pip install ydata-profiling[notebook]</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">  jupyter nbextension enable --py widgetsnbextension</span>
 </code></pre></div>
 <p>Or via <code>conda</code>:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="go">  conda install -c conda-forge ipywidgets</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="go">  conda install -c conda-forge ipywidgets</span>
 </code></pre></div></p>
 <p>In most cases, this will also automatically configure Jupyter Notebook and Jupyter Lab (<code>&gt;=3.0</code>). For older versions of both or in more complex
 environment configurations, refer to <a href="https://ipywidgets.readthedocs.io/en/stable/user_install.html">the official ipywidgets documentation</a>.</p>
 <h2 id="from-source">From source</h2>
 <p>Download the source code by cloning the repository or by clicking on <a href="https://github.com/ydataai/ydata-profiling/archive/master.zip">Download ZIP</a>.
 Install it by navigating to the uncompressed directory and running:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="go">   python setup.py install</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="go">   python setup.py install</span>
 </code></pre></div>
 <p>This can also be done via the following one-liner: </p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="go">  pip install https://github.com/ydataai/ydata-profiling/archive/master.zip</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="go">  pip install https://github.com/ydataai/ydata-profiling/archive/master.zip</span>
 </code></pre></div>
 <h2 id="extras">Extras</h2>
 <p>The package declares some "extras", sets of additional dependencies.</p>
@@ -1612,7 +1615,7 @@ Install it by navigating to the uncompressed directory and running:</p>
 <li><code>[pyspark]</code>: support for pyspark engine to run the profile on big datasets</li>
 </ul>
 <p>Install these with e.g.
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="go">  pip install -U ydata-profiling[notebook,unicode, pyspark]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="go">  pip install -U ydata-profiling[notebook,unicode, pyspark]</span>
 </code></pre></div></p>
 <p><img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" /></p>
 
@@ -1733,7 +1736,7 @@ Install it by navigating to the uncompressed directory and running:</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.instant", "navigation.tracking", "navigation.top", "navigation.footer", "header.autohide", "navigation.tabs", "navigation.sections", "navigation.indexes", "toc.follow", "toc.integrate"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js"></script>
       
