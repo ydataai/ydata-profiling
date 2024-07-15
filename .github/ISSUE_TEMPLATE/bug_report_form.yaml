@@ -9,7 +9,7 @@ body:
       value: |
         Thanks for taking the time to fill out this bug report!
         Provide a concise summary of the issue in the title field above.
-        The [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/help_troubleshoot.html) contains instructions on creating bug reports.
+        The [documentation](https://docs.profiling.ydata.ai/latest/support-contribution/help_troubleshoot/) contains instructions on creating bug reports.
   - type: textarea
     id: current-behavior
     attributes:
@@ -62,7 +62,7 @@ body:
     id: dependencies
     attributes:
       label: Dependencies
-      description: Please report versions of relevant dependencies (e.g. via `pip freeze` or `conda list`, [more information](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/help_troubleshoot.html))
+      description: Please report versions of relevant dependencies (e.g. via `pip freeze` or `conda list`, [more information](https://docs.profiling.ydata.ai/latest/support-contribution/help_troubleshoot/))
       placeholder: |
         pandas==1.4.2
         numpy==2.3.4
@@ -86,12 +86,12 @@ body:
         Please complete the checklist below to ensure the bug report is helpful and can be addressed effectively
         
         Tips:
-          - Help for writing better bug reports is available in the [documentation](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/help_troubleshoot.html).
+          - Help for writing better bug reports is available in the [documentation](https://docs.profiling.ydata.ai/latest/support-contribution/help_troubleshoot/).
           - If the description consists of multiple non-related bugs, you are encouraged to create separate issues.
       options:
         - label: There is not yet another bug report for this issue in the [issue tracker](https://github.com/ydataai/pandas-profiling/issues)
           required: true
         - label: The problem is reproducible from this bug report. [This guide](http://matthewrocklin.com/blog/work/2018/02/28/minimal-bug-reports) can help to craft a minimal bug report.
           required: true
-        - label: The issue has not been resolved by the entries listed under [Common Issues](https://pandas-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
+        - label: The issue has not been resolved by the entries listed under [Common Issues](https://docs.profiling.ydata.ai/latest/support-contribution/contribution_guidelines/).
           required: true

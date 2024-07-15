@@ -125,7 +125,7 @@ Yes! We have fantastic new coming with a full tutorial on how you can
 use ydata-profiling in Databricks Notebooks.
 
 The notebook example can be found
-[here](https://github.com/ydataai/ydata-profiling/tree/master/examples/integrations/databricks_example.ipynb).
+[here](https://github.com/ydataai/ydata-profiling/tree/master/examples/integrations/databricks).
 
 Stay tuned - we are going to update the documentation soon!
 
