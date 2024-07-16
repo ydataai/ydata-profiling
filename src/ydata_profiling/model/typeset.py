@@ -122,7 +122,7 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         @series_handle_nulls
         def contains_op(series: pd.Series, state: dict) -> bool:
             return (
-                not pdt.is_categorical_dtype(series)
+                not isinstance(series.dtype, pd.CategoricalDtype)
                 and pdt.is_string_dtype(series)
                 and series_is_string(series, state)
             )
@@ -205,9 +205,9 @@ def typeset_types(config: Settings) -> Set[visions.VisionsBaseType]:
         @series_not_empty
         @series_handle_nulls
         def contains_op(series: pd.Series, state: dict) -> bool:
-            is_valid_dtype = pdt.is_categorical_dtype(series) and not pdt.is_bool_dtype(
-                series
-            )
+            is_valid_dtype = isinstance(
+                series.dtype, pd.CategoricalDtype
+            ) and not pdt.is_bool_dtype(series)
             if is_valid_dtype:
                 return True
             return False
