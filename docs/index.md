@@ -58,7 +58,7 @@ YData-profiling can be used to deliver a variety of different applications. The 
 | [Profiling large datasets](features/big_data.md)                                 | Tips on how to prepare data and configure `ydata-profiling` for working with large datasets |
 | [Handling sensitive data](features/sensitive_data.md)                            | Generating reports which are mindful about sensitive data in the input dataset              |
 | [Dataset metadata and data dictionaries](features/metadata.md)                   | Complementing the report with dataset details and column-specific data dictionaries         |
-| [Customizing the report's appearance](features/custom_report_appearance.md )     | Changing the appearance of the report's page and of the contained visualizations            |
+| [Customizing the report's appearance](features/custom_reports.md )               | Changing the appearance of the report's page and of the contained visualizations            |
 | [Profiling Relational databases **](features/collaborative_data_profiling.md)    | For a seamless profiling experience in your organization's databases, check [Fabric Data Catalog](https://ydata.ai/products/data_catalog), which allows to consume data from different types of storages such as RDBMs (Azure SQL, PostGreSQL, Oracle, etc.) and object storages (Google Cloud Storage, AWS S3, Snowflake, etc.), among others. |
 | [PII classification & management **](features/pii_identification_management.md ) | Automated PII classification and management through an UI experience          |
 
@@ -85,13 +85,13 @@ Need help? Want to share a perspective? Report a bug? Ideas for collaborations? 
 
 !!! tip "Help us prioritizing - before reporting, double check, it is always better to upvote!"
     
-    Before reporting an issue on GitHub, check out [Common Issues](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/common_issues.html).
+    Before reporting an issue on GitHub, check out [Common Issues](https://docs.profiling.ydata.ai/latest/support-contribution/common_issues/).
 
     If you want to validate if your request was prioritized check the [project pipeline details]()
 
 ## 🤝🏽 Contributing
 
-Learn how to get involved in the [Contribution Guide](https://ydata-profiling.ydata.ai/docs/master/pages/support_contrib/contribution_guidelines.html).
+Learn how to get involved in the [Contribution Guide](support-contribution/contribution_guidelines.md).
 
 A low-threshold place to ask questions or start contributing is the [Data Centric AI Community's Discord](https://tiny.ydata.ai/dcai-ydata-profiling).
 

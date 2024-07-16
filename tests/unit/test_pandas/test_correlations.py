@@ -66,7 +66,7 @@ def test_numeric_auto_equals_spearman(test_config, test_dataframe, test_summary)
     }
     auto_result = pandas_auto_compute(test_config, df, summary)
     spearman_result = pandas_spearman_compute(test_config, df, summary)
-    assert auto_result.iloc[0][1] == pytest.approx(spearman_result.iloc[0][1], 0.01)
+    assert auto_result.iloc[1, 0] == pytest.approx(spearman_result.iloc[1, 0], 0.01)
 
 
 def test_categorical_auto_equals_equals_cramers(
@@ -80,4 +80,4 @@ def test_categorical_auto_equals_equals_cramers(
     }
     auto_result = pandas_auto_compute(test_config, df, summary)
     cramers_result = pandas_cramers_compute(test_config, df, summary)
-    assert auto_result.iloc[0][1] == pytest.approx(cramers_result.iloc[0][1], 0.01)
+    assert auto_result.iloc[1, 0] == pytest.approx(cramers_result.iloc[1, 0], 0.01)
