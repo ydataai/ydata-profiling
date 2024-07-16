@@ -380,8 +380,8 @@ def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
                     name="Variables",
                     anchor_id="variables-dropdown",
                     id="variables-dropdown",
-                    is_row=True,
-                    classes=["dropdown-toggle"],
+                    is_row=False,
+                    classes=["dropdown-toggle", "dropdown-variables"],
                     items=list(summary.variables),
                     item=Container(
                         render_variables_section(config, summary),
