@@ -2,8 +2,6 @@
 Test for issue 1631:
 https://github.com/ydataai/ydata-profiling/issues/1631
 """
-import json
-
 import pandas as pd
 
 from ydata_profiling import ProfileReport
