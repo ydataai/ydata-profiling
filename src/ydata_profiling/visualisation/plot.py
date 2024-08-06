@@ -557,9 +557,14 @@ def _format_ts_date_axis(
     axis: matplotlib.axis.Axis,
 ) -> matplotlib.axis.Axis:
     if isinstance(series.index, pd.DatetimeIndex):
-        locator = AutoDateLocator()
-        axis.xaxis.set_major_locator(locator)
-        axis.xaxis.set_major_formatter(ConciseDateFormatter(locator))
+        ax_bak = copy.deepcopy(axis)
+        try:
+            locator = AutoDateLocator()
+            axis.xaxis.set_major_locator(locator)
+            axis.xaxis.set_major_formatter(ConciseDateFormatter(locator))
+            axis.xaxis.get_major_ticks()
+        except Exception:
+            axis = ax_bak
 
     return axis
 
@@ -592,7 +597,6 @@ def plot_timeseries_gap_analysis(
                 label=label,
                 color=color,
                 alpha=0.65,
-                x_compat=True,
             )
             _format_ts_date_axis(serie, ax)
             ax.yaxis.set_major_locator(MaxNLocator(integer=True))
@@ -678,11 +682,11 @@ def _plot_timeseries(
         colors = create_comparison_color_list(config)
 
         for serie, color, label in zip(series, colors, labels):
-            ax = serie.plot(color=color, label=label, alpha=0.75, x_compat=True)
+            ax = serie.plot(color=color, label=label, alpha=0.75)
             _format_ts_date_axis(serie, ax)
 
     else:
-        ax = series.plot(color=config.html.style.primary_colors[0], x_compat=True)
+        ax = series.plot(color=config.html.style.primary_colors[0])
         _format_ts_date_axis(series, ax)
 
     return plot
