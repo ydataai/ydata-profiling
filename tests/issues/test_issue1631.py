@@ -20,7 +20,7 @@ def test_issue1631(test_output_dir):
     df = pd.DataFrame(data)
     df["datetime"] = pd.to_datetime(df["datetime"], errors="raise")
     df.set_index("datetime", inplace=True)
-    profile = ProfileReport(df, tsmode=True)
+    profile = ProfileReport(df, tsmode=True, type_schema={"value": "timeseries"})
     output_file = test_output_dir / "issue1631.html"
     profile.to_file(output_file)
 
