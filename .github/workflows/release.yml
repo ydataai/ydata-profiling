@@ -82,7 +82,7 @@ jobs:
         name: built-artifacts
         path: dist/
 
-    - uses: pypa/gh-action-pypi-publish@v1.9.0
+    - uses: pypa/gh-action-pypi-publish@v1.10.0
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
