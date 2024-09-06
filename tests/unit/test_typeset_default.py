@@ -1,6 +1,5 @@
 import os
 from typing import Dict, Sequence
-
 from urllib.parse import urlparse
 
 import numpy as np
@@ -19,6 +18,7 @@ from tests.unit.test_utils import patch_arg
 from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.profile_report import ProfileReport
+
 
 def get_sequences() -> Dict[str, Sequence]:
     sequences = {
@@ -75,6 +75,7 @@ def get_sequences() -> Dict[str, Sequence]:
         ],
     }
     return sequences
+
 
 def get_series() -> Dict[str, pd.Series]:
     """
