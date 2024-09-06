@@ -10,7 +10,7 @@ from ydata_profiling import ProfileReport
 
 def test_issue664():
     n = 10000
-    df = pd.DataFrame({"a": [np.NaN] * n, "b": ["b"] * n, "c": [pd.NaT] * n})
+    df = pd.DataFrame({"a": [np.nan] * n, "b": ["b"] * n, "c": [pd.NaT] * n})
     df = df.fillna(value=np.nan)
 
     profile = ProfileReport(

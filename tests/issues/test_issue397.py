@@ -12,7 +12,7 @@ def test_issue397():
     # Note: warnings are expected with np.inf values
     df = pd.DataFrame.from_dict(
         {
-            "float-inf": pd.Series([np.inf, 3.0, 4.0, np.NINF], dtype="float"),
+            "float-inf": pd.Series([np.inf, 3.0, 4.0, -np.inf], dtype="float"),
             "integer": pd.Series([3, 4, 5, 6], dtype="int"),
             "float": pd.Series([3.0, 4.0, np.nan, 6], dtype="float"),
             "integer-inf": pd.Series([3, np.inf, 5, 7]),
