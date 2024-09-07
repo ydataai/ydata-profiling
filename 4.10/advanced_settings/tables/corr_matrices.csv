@@ -1,0 +1,10 @@
+Parameter,Description
+``auto``,"Calculates the column pairwise correlation depending on the type schema:
+- numerical to numerical variable: Spearman correlation coefficient
+- categorical to categorical variable: Cramer's V association coefficient 
+- numerical to categorical: Cramer's V association coefficient with the numerical variable discretized automatically "
+``spearman``,Spearman's correlation measures the strength and direction of monotonic association between two variables. Great to evaluate the strength of the relation between categorical or ordinal variables. 
+``pearson``,The Pearson correlation coefficient is the most common way of measuring a linear correlation. It is a number between –1 and 1 that measures the strength and direction of the relationship between two variables.
+``kendall``,Kendall rank correlation coefficient is a statistic used to measure the ordinal association between two measured quantities. Kendall's is often used when data doesn't meet one of the requirements of Pearson's correlation.
+``phi_k``,Phi K is especially suitable for working with mixed-type variables. Using this coefficient we can find (un)expected correlation and evaluate their statistical significance.
+``cramers``,Cramers is a correlation matrix that is commonly used to examine the association between categorical variables when there is more than 2x2 contingency.
