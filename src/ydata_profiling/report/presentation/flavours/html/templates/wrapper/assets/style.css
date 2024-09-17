@@ -303,6 +303,13 @@ select.multiple{
     padding: 1em;
 }
 
+/* specific styles */
+
+.dropdown-variables {
+    float: left;
+    margin: 24px 0 8px 12px;
+}
+
 /* not printing tabs */
 @media print {
     .tab-content > .tab-pane, .collapse {
