@@ -85,7 +85,7 @@ def test_summarizer_image(config: Settings):
         pps.summarize(
             config,
             pd.Series(
-                [os.path.abspath(base_path + r"../../../docsrc/assets/logo_header.png")]
+                [os.path.abspath(base_path + r"../../../docs/_static/img/cli.png")]
             ),
             "Image",
         )
