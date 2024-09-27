@@ -13,7 +13,7 @@ on:
 jobs:
   package:
     name: Build and Package
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
@@ -56,7 +56,7 @@ jobs:
   
   publish-pypi:
     name: Publish packages to PyPi
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs: package
 
