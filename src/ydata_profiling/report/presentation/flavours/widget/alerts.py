@@ -4,6 +4,7 @@ from ipywidgets import HTML, Button, widgets
 
 from ydata_profiling.report.presentation.core import Alerts
 from ydata_profiling.report.presentation.flavours.html import templates
+from ydata_profiling.utils.styles import get_alert_styles
 
 
 def get_row(items: List[widgets.Widget]) -> widgets.GridBox:
@@ -13,25 +14,7 @@ def get_row(items: List[widgets.Widget]) -> widgets.GridBox:
 
 class WidgetAlerts(Alerts):
     def render(self) -> widgets.GridBox:
-        styles = {
-            "constant": "warning",
-            "unsupported": "warning",
-            "type_date": "warning",
-            "high_cardinality": "danger",
-            "unique": "danger",
-            "uniform": "danger",
-            "infinite": "info",
-            "zeros": "info",
-            "truncated": "info",
-            "missing": "info",
-            "skewed": "info",
-            "imbalance": "info",
-            "high_correlation": "",
-            "duplicates": "",
-            "empty": "",
-            "non_stationary": "",
-            "seasonal": "",
-        }
+        styles = get_alert_styles()
 
         items = []
         for alert in self.content["alerts"]:

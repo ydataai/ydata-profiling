@@ -1,0 +1,22 @@
+def get_alert_styles() -> dict:
+    return {
+        "constant": "warning",
+        "constant_length": "primary",
+        "duplicates": "secondary",
+        "empty": "info",
+        "high_cardinality": "danger",
+        "high_correlation": "secondary",
+        "infinite": "info",
+        "imbalance": "primary",
+        "missing": "info",
+        "non_stationary": "secondary",
+        "rejected": "danger",
+        "seasonal": "secondary",
+        "skewed": "info",
+        "truncated": "info",
+        "type_date": "warning",
+        "uniform": "danger",
+        "unique": "danger",
+        "unsupported": "warning",
+        "zeros": "info",
+    }
