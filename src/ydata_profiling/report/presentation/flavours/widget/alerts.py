@@ -29,10 +29,15 @@ class WidgetAlerts(Alerts):
                     )
                 )
             )
+
+            style_name = styles[type_name]
+            if style_name not in ('primary', 'success', 'info', 'warning', 'danger'):
+                style_name = ''
+
             items.append(
                 Button(
                     description=type_name.replace("_", " ").capitalize(),
-                    button_style=styles[type_name],
+                    button_style=style_name,
                     disabled=True,
                 )
             )
