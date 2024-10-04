@@ -51,9 +51,8 @@ def create_html_assets(config: Settings, output_file: Path) -> None:
             css.append(f"wrapper/assets/{theme.value}.bootstrap.min.css")
         else:
             css.append("wrapper/assets/bootstrap.min.css")
-            css.append("wrapper/assets/bootstrap-theme.min.css")
-        js.append("wrapper/assets/jquery-3.7.1.min.js")
-        js.append("wrapper/assets/bootstrap.min.js")
+
+        js.append("wrapper/assets/bootstrap.bundle.min.js")
 
     css.append("wrapper/assets/style.css")
     js.append("wrapper/assets/script.js")

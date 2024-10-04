@@ -11,17 +11,17 @@
     {% endif %}
     <div class="row {% if classes %}{{ classes }}{% else %}variable{% endif %}"{% if id %} id="{{ id }}"{% endif %}{{ border }}>
         <div class="col-sm-{{ c1 }}">
-            <select class="form-control multiple"
+            <select class="form-select tab-select"
                     role="tablist"
                     id="select-{{ id }}"
                     multiple>
                 {% for tab in tabs %}
-                    <option role="presentation"
-                            {% if loop.first %} class="active"{% endif %}
-                            data-target="#{{ anchor_id }}-{{ tab.anchor_id }}"
-                            aria-controls="{{ anchor_id }}-{{ tab.anchor_id }}"
+                    <option class="tab-select-option {% if loop.first %}active{% endif %}"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-pane-{{ anchor_id }}-{{ tab.anchor_id }}"
                             role="tab"
-                            data-toggle="tab">
+                            aria-controls="tab-pane-{{ anchor_id }}-{{ tab.anchor_id }}"
+                            aria-selected="{% if loop.first %}true{% else %}false{% endif %}">
                         {{ tab.name | fmt_badge }}
                     </option>
                 {% endfor %}
@@ -29,9 +29,9 @@
         </div>
         <div class="tab-content col-sm-{{ c2 }}">
             {% for tab in tabs %}
-                <div role="tabpanel"
-                     class="tab-pane col-sm-12{% if loop.first %} active{% endif %}"
-                     id="{{ anchor_id }}-{{ tab.anchor_id }}">
+                <div class="tab-pane col-sm-12 {% if loop.first %}show active{% endif %}"
+                     id="tab-pane-{{ anchor_id }}-{{ tab.anchor_id }}"
+                     role="tabpanel">
                     {{ tab.render() }}
                 </div>
             {% endfor %}

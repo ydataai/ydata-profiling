@@ -1,7 +1,7 @@
-<p class="h4" title="{{ var_name }}">
+<p class="item-header h4" title="{{ var_name }}">
     <a href="#pp_var_{{ anchor_id }}">{{ var_name }}</a>
     <br/>
-    <small>{{ var_type }}</small>
+    <span class="fs-6 text-body-secondary">{{ var_type }}</span>
 </p>
 {% if alerts | length > 0 %}
     {% if alerts[0].__class__.__name__ == 'list' %}
@@ -20,9 +20,9 @@
                     <td valign="top" width="{{ 100 / n_labels }}%">
                         {% if alerts[idx] | length > 0 %}
                             <p>
-                            {% for alert in alerts[idx] %}
-                                <code>{{ alert }}</code>&nbsp
-                            {% endfor %}
+                                {% for alert in alerts[idx] %}
+                                    {{ alert }}&nbsp
+                                {% endfor %}
                             </p>
                         {% else %}
                             <em>No alerts</em>
@@ -35,9 +35,9 @@
     {% else %}
         {% if alerts | length > 0 %}
             <p>
-            {% for alert in alerts %}
-                <code>{{ alert }}</code>&nbsp
-            {% endfor %}
+                {% for alert in alerts %}
+                    {{ alert }}&nbsp
+                {% endfor %}
             </p>
         {% else %}
             <em>No alerts</em>

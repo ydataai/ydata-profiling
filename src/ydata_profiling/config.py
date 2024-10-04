@@ -191,7 +191,7 @@ class Style(BaseModel):
         return self.primary_colors[0]
 
     # Primary color used for comparisons (default: blue, red, green)
-    primary_colors: List[str] = ["#377eb8", "#e41a1c", "#4daf4a"]
+    primary_colors: List[str] = ["#0d6efd", "#dc3545", "#198754"]
 
     # Base64-encoded logo image
     logo: str = ""

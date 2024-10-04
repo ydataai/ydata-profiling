@@ -44,7 +44,7 @@ def test_html_export_svg(test_output_dir):
     profile.to_file(report)
     assert report.exists()
     assets_dir = test_output_dir / "export_svg_assets"
-    check_assets(assets_dir, "svg", n_css=3, n_js=3)
+    check_assets(assets_dir, "svg", n_css=2, n_js=2)
 
 
 def test_html_export_png(test_output_dir):
@@ -65,7 +65,7 @@ def test_html_export_png(test_output_dir):
     profile.to_file(report)
     assert report.exists()
     assets_dir = test_output_dir / "export_png_assets"
-    check_assets(assets_dir, "png", n_css=3, n_js=3)
+    check_assets(assets_dir, "png", n_css=2, n_js=2)
 
 
 def test_html_export_cdn(test_output_dir):
@@ -109,7 +109,7 @@ def test_html_export_theme(test_output_dir):
     profile.to_file(report)
     assert report.exists()
     assets_dir = test_output_dir / "united_assets"
-    check_assets(assets_dir, "svg", n_css=2, n_js=3)
+    check_assets(assets_dir, "svg", n_css=2, n_js=2)
 
 
 def test_multiple_times(test_output_dir):
@@ -156,5 +156,5 @@ def test_subdir(test_output_dir):
     profile.to_file(report)
     assert report.exists()
     assets_dir = subdir_path / "subdir_assets"
-    check_assets(assets_dir, "svg", n_css=3, n_js=3)
+    check_assets(assets_dir, "svg", n_css=2, n_js=2)
     assert subdir_path.joinpath("test.py").exists()

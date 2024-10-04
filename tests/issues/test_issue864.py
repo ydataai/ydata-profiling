@@ -4,7 +4,6 @@ https://github.com/ydataai/ydata-profiling/issues/
 
 Validate Extreme Values sub-tabs state the correct number of extreme values shown.
 """
-import fnmatch
 import random
 
 import pandas as pd
@@ -25,13 +24,10 @@ def test_issue864():
         profile.config.n_extreme_obs = n_extreme_obs
         profile.invalidate_cache()
 
-        reg_min = f"*<a href=* aria-controls=* role=tab data-toggle=tab>Minimum {n_extreme_obs} values</a>*"
-        reg_max = f"*<a href=* aria-controls=* role=tab data-toggle=tab>Maximum {n_extreme_obs} values</a>*"
-
         html = profile.to_html()
 
-        assert fnmatch.fnmatch(html, reg_min)
-        assert fnmatch.fnmatch(html, reg_max)
+        assert f">Minimum {n_extreme_obs} values<" in html
+        assert f">Maximum {n_extreme_obs} values<" in html
 
     test_with_value(5)
     test_with_value(10)
