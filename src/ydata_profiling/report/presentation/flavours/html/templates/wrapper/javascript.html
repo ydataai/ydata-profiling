@@ -1,20 +1,17 @@
 {% if offline %}
     {% if inline %}
         <script>
-        {% include 'wrapper/assets/jquery-3.7.1.min.js' %}
-        {% include 'wrapper/assets/bootstrap.min.js' %}
+        {% include 'wrapper/assets/bootstrap.bundle.min.js' %}
         </script>
         <script>
         {% include 'wrapper/assets/script.js' %}
         </script>
     {% else %}
-        <script src="{{ assets_prefix }}/js/jquery-3.7.1.min.js"></script>
-        <script src="{{ assets_prefix }}/js/bootstrap.min.js"></script>
+        <script src="{{ assets_prefix }}/js/bootstrap.bundle.min.js"></script>
         <script src="{{ assets_prefix }}/js/script.js"></script>
     {% endif %}
 {% else %}
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script>
     {% include 'wrapper/assets/script.js' %}
     </script>

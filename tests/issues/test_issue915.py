@@ -3,8 +3,6 @@ Test for issue 915:
 https://github.com/ydataai/pandas-profiling/issues/915
 Error for series with large integers.
 """
-import fnmatch
-
 import pandas as pd
 
 from pandas_profiling import ProfileReport
@@ -19,13 +17,10 @@ def test_issue915():
         df_profile.config.n_extreme_obs = n_extreme_obs
         df_profile.invalidate_cache()
 
-        reg_min = f"*<a href=* aria-controls=* role=tab data-toggle=tab>Minimum {n_extreme_obs} values</a>*"
-        reg_max = f"*<a href=* aria-controls=* role=tab data-toggle=tab>Maximum {n_extreme_obs} values</a>*"
-
         profile_html = df_profile.to_html()
 
-        assert fnmatch.fnmatch(profile_html, reg_min)
-        assert fnmatch.fnmatch(profile_html, reg_max)
+        assert f">Minimum {n_extreme_obs} values<" in profile_html
+        assert f">Maximum {n_extreme_obs} values<" in profile_html
 
     test_with_value(5)
     test_with_value(100)

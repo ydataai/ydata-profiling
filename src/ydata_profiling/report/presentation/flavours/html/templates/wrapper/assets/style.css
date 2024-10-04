@@ -1,50 +1,207 @@
+/* Variable */
+
+:root {
+    --navbar-height: 56px;
+    --navbar-brand-height: 32px;
+    --default-padding: 1rem;
+    --default-margin: 1rem;
+    --tab-select-padding: 0.4rem;
+}
+
+/* Common */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+
+a {
+    text-decoration: none;
+}
+
+.row .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.row > * {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+div[class*="col-"] + div[class*="col-"] {
+    padding-left: var(--default-padding) !important;
+}
+
+div[class*="col-12"] + div[class*="col-"],
+div[class*="col-sm-12"] + div[class*="col-"],
+div[class*="col-md-12"] + div[class*="col-"],
+div[class*="col-lg-12"] + div[class*="col-"],
+div[class*="col-xl-12"] + div[class*="col-"],
+div[class*="col-xxl-12"] + div[class*="col-"] {
+    padding-left: 0 !important;
+}
+
+div[class*="col-"] + div[class*="col-12"],
+div[class*="col-"] + div[class*="col-sm-12"],
+div[class*="col-"] + div[class*="col-md-12"],
+div[class*="col-"] + div[class*="col-lg-12"],
+div[class*="col-"] + div[class*="col-xl-12"],
+div[class*="col-"] + div[class*="col-xxl-12"] {
+    padding-left: 0 !important;
+}
+
+/* Anchor */
+
+a.anchor-pos {
+    visibility: hidden;
+}
+
+/* Navbar */
+
+nav {
+    height: var(--navbar-height);
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.navbar-brand > img {
+    max-height: var(--navbar-brand-height);
+}
+
 {% if nav == True %}
-body {
-  padding-top: 80px;
+html {
+    scroll-padding-top: var(--navbar-height);
 }
 {% endif %}
-.content .container-fluid{
-    margin-left: 20px !important;
-    margin-right: 20px !important;
-    margin-bottom: 20px;
+
+/* Nav */
+
+.nav {
+    margin-bottom: var(--default-margin);
 }
 
-.page-header{
-    border:0 !important;
+/* Section */
+
+.section-header {
+    margin-top: var(--default-margin);
+    margin-bottom: var(--default-margin);
 }
 
-.row.variable, .section-items > .row {
-    border: 1px solid #e1e1e8;
-    border-top: hidden;
-}
-
-.row.spacing {
-    padding: 2em 1em;
-}
-
-.row.header {
-    border-bottom: 1px solid #e1e1e8;
-    /*background-color: #f5f5f5;*/
-    padding-left: 2em;
-}
-
-
-.dl-horizontal dt {
-    text-align: left;
-    padding-right: 1em;
-    white-space: normal;
-}
-
-.dl-horizontal dd {
+.section-items > .row {
+    padding: var(--default-padding);
     margin-left: 0;
+    margin-right: 0;
+    margin-bottom: var(--default-margin);
+    border: solid var(--bs-border-color) 1px;
+    border-radius: var(--bs-border-radius);
 }
 
-.col-md-12 {
-    padding-left: 2em;
+.item-header {
+    margin-top: .5rem;
+    margin-bottom: .5rem;
 }
 
-.indent {
-    margin-left: 1em;
+#variables-dropdown {
+    width: auto;
+    margin-top: var(--default-margin);
+    margin-bottom: var(--default-margin);
+}
+
+/* Table */
+
+th, td {
+    vertical-align: middle;
+}
+
+#correlation-table-container th,
+#correlation-table-container td,
+#sample-container th,
+#sample-container td  {
+    white-space: nowrap;
+}
+
+/* Frequency Table */
+
+.freq.table{
+    table-layout: fixed;
+}
+
+.freq:not(.mini) tr td:nth-child(1),
+.freq:not(.mini) tr th:nth-child(1){
+    width: auto;
+    max-width: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.freq:not(.mini) tr td:nth-child(2),
+.freq:not(.mini) tr td:nth-child(3),
+.freq:not(.mini) tr th:nth-child(2),
+.freq:not(.mini) tr th:nth-child(3){
+    width: 200px;
+    text-align: right;
+}
+
+.freq:not(.mini) tr td:nth-child(4),
+.freq:not(.mini) tr th:nth-child(4){
+    width: 200px;
+}
+
+.freq .bar {
+    float: left;
+    width: 0;
+    height: 100%;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 3px;
+    margin-right: 4px;
+}
+
+.other .bar {
+    background-color: var(--bs-secondary);
+}
+
+.missing .bar {
+    background-color: var(--bs-danger);
+}
+
+{% for idx in range(style._labels | length + 1) %}
+.freq.table-{{ idx }} .bar {
+    background-color: {{ style.primary_colors[idx] }};
+}
+{% endfor %}
+
+/* Frequency Mini Table */
+
+table.freq.mini {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 4px;
+}
+
+.freq.mini th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 5rem;
+    font-weight: 400;
+    text-align: right;
+    padding-right: 0.5rem;
+}
+
+.freq.mini td {
+    width: 50%;
+}
+
+/* Image */
+
+.img-responsive{
+    max-width: 99%;
+    min-width: 99%;
 }
 
 .center-img {
@@ -53,308 +210,44 @@ body {
     display: block;
 }
 
-/* Table example_values */
-table.example_values {
-    border: 0;
+/* Tooltip */
+
+span[data-bs-toggle="tooltip"] {
+    cursor: help;
 }
 
-.example_values th {
-    border: 0;
-    padding: 0;
-    color: #555;
-    font-weight: 600;
+/* Color */
+
+.alert-info,
+.alert-info > th,
+.alert-info > td {
+    color: var(--bs-danger);
 }
 
-.example_values tr, .example_values td {
-    border: 0;
-    padding: 0;
-    color: #555;
+#tab-pane-overview-alerts code,
+#tab-pane-overview-alerts span[data-bs-toggle="tooltip"] {
+    color: var(--bs-link-color);
 }
 
-table.correlation-table {
-    width: 98%  /* To avoid an unnecessary overflow. */
-}
+/* Tab */
 
-/* STATS */
-table.stats, table.sample, table.duplicate, table.correlation-table{
-    border: 0;
-}
-
-.stats tr, .sample tr, .duplicate tr, .correlation-table tr {
-    border: 0;
-}
-
-.stats th, .stats td{
-    color: #555;
-    border: 0;
-}
-
-.stats th {
-    padding: 0 2em 0 0;
-    font-weight: 600;
-}
-
-.stats td {
-    padding: 1px;
-}
-
-
-/* Sample table */
-table.sample, table.duplicate, table.correlation-table {
-    margin-bottom: 2em;
-    margin-left: 1em;
-}
-
-.sample td, .sample th, .duplicate td, .duplicate th, .correlation-table td, .correlation-table th {
-    padding: 0.5em;
-    white-space: nowrap;
-    border: 0;
-
-}
-
-.sample thead, .duplicate thead, .correlation-table thead {
-    border-top: 0;
-    border-bottom: 2px solid #ddd;
-}
-
-.sample td, .duplicate td {
-    width: 100%;
-} 
-
-/* There is no good solution available to make the divs equal height and then center ... */
-.histogram {
-    margin-top: 3em;
-}
-
-/* Freq table */
-table.freq {
-    margin-bottom: 2em;
-    border: 0;
-}
-
-table.freq th, table.freq tr, table.freq td {
-    border: 0;
-    padding: 0;
-}
-
-.freq thead {
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-}
-
-/* Freq mini */
-.freq.mini td {
-    width: 50%;
-    padding: 1px;
-    font-size: 12px;
-
-}
-
-table.freq.mini {
-    width: 100%;
-}
-
-.freq.mini th {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 5em;
-    font-weight: 400;
-    text-align: right;
-    padding-right: 0.5em;
-}
-
-/* Message classes */
-.missing {
-    color: #a94442;
-}
-
-.alert, .alert > th, .alert > td {
-    color: #a94442;
-}
-
-.ignore {
-    opacity: 0.4;
-}
-
-/* Bars in tables */
-.freq.table{
-    table-layout: fixed;
-}
-
-.freq:not(.mini) tr td:nth-child(1), .freq:not(.mini) tr th:nth-child(1){
-    width: auto;
-    max-width: none;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.freq:not(.mini) tr td:nth-child(2), .freq:not(.mini) tr td:nth-child(3), .freq:not(.mini) tr th:nth-child(2), .freq:not(.mini) tr th:nth-child(3){
-    width: 100px;
-    text-align: right;
-}
-.freq:not(.mini) tr td:nth-child(4), .freq:not(.mini) tr th:nth-child(4){
-    width:200px;
-}
-
-.freq .bar {
-    float: left;
-    width: 0;
+.tab-select {
     height: 100%;
-    line-height: 20px;
-    color: #fff;
-    text-align: center;
-    border-radius: 3px;
-    margin-right: 4px;
+    padding: var(--tab-select-padding) !important;
 }
 
-.other .bar {
-    background-color: #999;
+.tab-select-option {
+    padding: var(--tab-select-padding) !important;
+    border-radius: var(--bs-border-radius-sm) !important;
 }
 
-.missing .bar {
-    background-color: #a94442;
+.tab-select-option.active,
+.tab-select:focus option:checked {
+    background: var(--bs-primary-bg-subtle) linear-gradient(0deg, var(--bs-primary-bg-subtle) 0%, var(--bs-primary-bg-subtle) 100%);
+    color: var(--bs-primary-text-emphasis);
 }
 
-.tooltip-inner {
-    width: 100%;
-    white-space: nowrap;
-    text-align: left;
+.tab-select-option:hover {
+    background: var(--bs-secondary-bg-subtle);
+    color: var(--bs-secondary-text-emphasis);
 }
-
-.extrapadding {
-    padding: 2em;
-}
-
-.variable .h4 {
-    text-overflow: ellipsis;
-    display:inline-block;
-    width: calc(90%); /* The trick is here! */
-    overflow:hidden;
-}
-
-.variable.ignore .h4{
-    text-decoration: line-through;
-}
-
-.table-responsive{
-    overflow: scroll;
-    width: 100%;
-    overflow-y: hidden;
-}
-.img-responsive{
-    max-width: 99%;
-    min-width: 99%;
-}
-.footer-text{
-    padding:20px;
-}
-
-table.list-warnings td{
-    padding-right:10px;
-}
-
-a.anchor-pos {
-    display: block;
-    position: relative;
-    top: -70px;
-    visibility: hidden;
-}
-
-a.anchor-pos-variable{
-    /*top: -70px;*/
-}
-
-#sample-container, #duplicate-container {
-    overflow: auto;
-    width: 100%;
-    overflow-y: hidden;
-}
-
-#correlation-table-container {
-    max-height: 400px;
-    overflow: auto;
-}
-
-#overview-content td, #overview-content th{
-    border-top: 0;
-    line-height: 1;
-}
-
-.variable-description{
-    color: #777;
-    font-size: 10pt;
-    margin-top: 10px;
-    font-style: italic;
-}
-
-select.multiple{
-    width: 180px;
-    height: 500px;
-    margin: 10px 0;
-}
-
-.named-list-item{
-    padding: 1em;
-}
-
-/* specific styles */
-
-.dropdown-variables {
-    float: left;
-    margin: 24px 0 8px 12px;
-}
-
-/* not printing tabs */
-@media print {
-    .tab-content > .tab-pane, .collapse {
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        /*page-break-after: always;*/
-        page-break-after: right;
-        page-break-before: avoid;
-    }
-
-    .nav-pills, .nav-tabs, button[data-toggle="collapse"], .mini, .col-sm-3 img {
-        display:none !important;
-    }
-
-    a[download="config.yml"]:after {
-        content: none !important;
-    }
-
-    .row {
-        border: 0 !important;
-    }
-}
-
-.text-placeholder {
-    display: inline-block;
-    background-color: #444;
-    height: 12px;
-    border-radius: 100px;
-    margin: 5px 0;
-    min-width: 200px;
-    opacity: .1;
-}
-
-{% for idx in range(style._labels | length + 1) %}
-    .freq.table-{{ idx }} .bar {
-        background-color: {{ style.primary_colors[idx] }};
-    }
-{% endfor %}
-{% if style._labels | length > 1 %}
-    /* Report comparison */
-    /* Full-sized frequency table */
-    table.freq:not(.mini){
-        width:{{ 90 / (style._labels | length) }}%;
-        margin: {{ 4 / (style._labels | length) }}%;
-        float:left;
-    }
-{% endif %}
