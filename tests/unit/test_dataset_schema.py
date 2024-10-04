@@ -25,13 +25,13 @@ def test_dataset_schema():
 
     html = report.to_html()
 
-    assert "<p class=h4>Dataset</p>" in html
+    assert ">Dataset<" in html
     for key in metadata.keys():
         if not key.startswith("copyright_") and key != "url":
             assert f"<th>{key.capitalize()}</th>" in html
     assert "<tr><th>Copyright</th><td>(c) RandoCorp LLC 2020</td></tr>"
     assert '<tr><th>URL</th><td><a href="http://www.dataset-sources.com/data/dataset.dat">http://www.dataset-sources.com/data/dataset.dat</a></td></tr>'
-    assert "<p class=h4>Reproduction</p>" in html
+    assert ">Reproduction<" in html
 
 
 def test_dataset_schema_empty():
@@ -47,5 +47,5 @@ def test_dataset_schema_empty():
 
     html = report.to_html()
 
-    assert "<p class=h4>Dataset</p>" not in html
-    assert "<div class=col-sm-12><p class=h4>Reproduction</p>" in html
+    assert ">Dataset<" not in html
+    assert ">Reproduction<" in html

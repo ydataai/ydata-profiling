@@ -1,36 +1,38 @@
-{% if name %}
-    <p class="h4">{{ name }}</p>
-{% endif %}
-{% if rows | length > 0 %}
-    <table class="table table-condensed stats">
-        {% if rows[0]['value'].__class__.__name__ == 'list' %}
-            <thead>
-                <tr>
-                    <th>&nbsp;</th>
-                    {% for v in rows[0]['value'] %}
-                        <th style="color: {{ style.primary_colors[loop.index0] }};">{{ style._labels[loop.index0] }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-        {% endif %}
-        <tbody>
-            {% for row in rows %}
-                <tr{% if 'alert' in row and row['alert'] %} class="alert"{% endif %}>
-                    <th>{{ row['name'] }}</th>
-                    {% if row['value'].__class__.__name__ == 'list' %}
-                        {% for value in row['value'] %}
-                            <td style="white-space:pre white-space:nowrap">{{ value }}{% if loop.last and 'hint' in row %} {{ row['hint'] }}{% endif %}</td>
+<div class="table-responsive">
+    {% if name %}
+        <p class="h4 item-header">{{ name }}</p>
+    {% endif %}
+    {% if rows | length > 0 %}
+        <table class="table table-striped">
+            {% if rows[0]['value'].__class__.__name__ == 'list' %}
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        {% for v in rows[0]['value'] %}
+                            <th style="white-space: pre; color: {{ style.primary_colors[loop.index0] }};">{{ style._labels[loop.index0] }}</th>
                         {% endfor %}
-                    {% else %}
-                        <td style="white-space:pre white-space:nowrap">{{ row['value'] }}{% if 'hint' in row %} {{ row['hint'] }}{% endif %}</td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
-{% if caption %}
-    <div class="caption text-center text-muted">
-        {{ caption }}
-    </div>
-{% endif %}
+                    </tr>
+                </thead>
+            {% endif %}
+            <tbody>
+                {% for row in rows %}
+                    <tr{% if 'alert' in row and row['alert'] %} class="alert-info"{% endif %}>
+                        <th>{{ row['name'] }}</th>
+                        {% if row['value'].__class__.__name__ == 'list' %}
+                            {% for value in row['value'] %}
+                                <td style="white-space: nowrap;">{{ value }}{% if loop.last and 'hint' in row %} {{ row['hint'] }}{% endif %}</td>
+                            {% endfor %}
+                        {% else %}
+                            <td style="white-space: nowrap;">{{ row['value'] }}{% if 'hint' in row %} {{ row['hint'] }}{% endif %}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if caption %}
+        <div class="caption text-center text-body-secondary">
+            {{ caption }}
+        </div>
+    {% endif %}
+</div>

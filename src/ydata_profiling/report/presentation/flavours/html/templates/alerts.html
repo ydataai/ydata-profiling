@@ -1,6 +1,6 @@
 <div class="col-sm-12">
-    <table class="table table-condensed list-warnings">
-        <p class="h4">Alerts</p>
+    <table class="table table-striped">
+        <p class="h4 item-header">Alerts</p>
         {% if alerts is mapping %}
             <thead>
                 <tr>
@@ -13,7 +13,7 @@
             {% for key, value in alerts.items() %}
                 {% set a = value | first %}
                 {% if a.alert_type.name != "REJECTED" %}
-                    <tr{% if loop.first %} style="border-top:0"{% endif %}>
+                    <tr>
                         {% for alert in value %}
                             <td>
                                 {% if not alert._is_empty %}
@@ -24,7 +24,7 @@
                             </td>
                         {% endfor %}
                         <td>
-                            <span class="label label-{{ styles[a.alert_type.name | lower] }}">{{ a.alert_type_name }}</span>
+                            <span class="badge text-bg-{{ styles[a.alert_type.name | lower] }}">{{ a.alert_type_name | replace("_", " ") | capitalize }}</span>
                         </td>
                     </tr>
                 {% endif %}
@@ -32,10 +32,12 @@
         {% else %}
             {% for alert in alerts %}
                 {% if alert.alert_type.name != "REJECTED" %}
-                    <tr{% if loop.first %} style="border-top:0"{% endif %}>
-                        <td>{% include 'alerts/alert_' + alert.alert_type.name | lower  + '.html'  %}</td>
+                    <tr>
                         <td>
-                            <span class="label label-{{ styles[alert.alert_type.name | lower] }}">{{ alert.alert_type.name | lower | capitalize | replace("_", " ") }}</span>
+                            {% include 'alerts/alert_' + alert.alert_type.name | lower  + '.html'  %}
+                        </td>
+                        <td>
+                            <span class="badge text-bg-{{ styles[alert.alert_type.name | lower] }}">{{ alert.alert_type.name | replace("_", " ") | capitalize }}</span>
                         </td>
                     </tr>
                 {% endif %}
