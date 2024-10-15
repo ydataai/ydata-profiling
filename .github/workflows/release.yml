@@ -10,7 +10,7 @@ on:
 jobs:
   package:
     name: Build and Package
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
@@ -54,7 +54,7 @@ jobs:
 
   upload-assets:
     name: Upload Assets to Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs: package
 
@@ -72,7 +72,7 @@ jobs:
   
   publish-pypi:
     name: Publish packages to PyPi
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs: package
 
@@ -82,7 +82,7 @@ jobs:
         name: built-artifacts
         path: dist/
 
-    - uses: pypa/gh-action-pypi-publish@v1.10.2
+    - uses: pypa/gh-action-pypi-publish@v1.10.3
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
