@@ -410,7 +410,7 @@ class Config:
             "duplicates": None,
             "vars": {"cat": {"redact": True}, "text": {"redact": True}},
         },
-        "dark_mode": {
+        "blue_header": {
             "html": {
                 "style": {
                     "theme": Theme.flatly,
@@ -418,7 +418,7 @@ class Config:
                 }
             }
         },
-        "orange_mode": {
+        "orange_header": {
             "html": {
                 "style": {
                     "theme": Theme.united,
