@@ -120,8 +120,8 @@ class Alert:
 
     def fmt(self) -> str:
         # TODO: render in template
-        style = self._styles.get(self.alert_type.name.lower(), 'secondary')
-        hint = ''
+        style = self._styles.get(self.alert_type.name.lower(), "secondary")
+        hint = ""
 
         if self.alert_type == AlertType.HIGH_CORRELATION and self.values is not None:
             num = len(self.values["fields"])
@@ -129,7 +129,9 @@ class Alert:
             corr = self.values["corr"]
             hint = f'data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This variable has a high {corr} correlation with {num} fields: {title}"'
 
-        return f'<span class="badge text-bg-{style}" {hint}>{self.alert_type_name}</span>'
+        return (
+            f'<span class="badge text-bg-{style}" {hint}>{self.alert_type_name}</span>'
+        )
 
     def _get_description(self) -> str:
         """Return a human level description of the alert.

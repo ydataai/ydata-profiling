@@ -336,4 +336,8 @@ def help(title: str, url: Optional[str] = None) -> str:
 
 @list_args
 def fmt_badge(value: str) -> str:
-    return re.sub(r"\((\d+)\)", r'<span class="badge text-bg-secondary align-text-top">\1</span>', value)
+    return re.sub(
+        r"\((\d+)\)",
+        r'<span class="badge text-bg-secondary align-text-top">\1</span>',
+        value,
+    )
