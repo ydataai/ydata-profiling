@@ -72,8 +72,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         sortby: Optional[str] = None,
         sensitive: bool = False,
         explorative: bool = False,
-        dark_mode: bool = False,
-        orange_mode: bool = False,
         sample: Optional[dict] = None,
         config_file: Optional[Union[Path, str]] = None,
         lazy: bool = True,
@@ -125,8 +123,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         groups = [
             (explorative, "explorative"),
             (sensitive, "sensitive"),
-            (dark_mode, "dark_mode"),
-            (orange_mode, "orange_mode"),
         ]
 
         if any(condition for condition, _ in groups):
