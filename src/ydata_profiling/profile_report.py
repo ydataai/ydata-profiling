@@ -139,9 +139,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if len(kwargs) > 0:
             shorthands, kwargs = Config.shorthands(kwargs)
             report_config = report_config.update(
-                Settings()
-                .update(shorthands)
-                .dict(exclude_defaults=True)
+                Settings().update(shorthands).dict(exclude_defaults=True)
             )
 
         if kwargs:

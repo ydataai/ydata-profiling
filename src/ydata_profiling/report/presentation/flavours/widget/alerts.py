@@ -31,8 +31,8 @@ class WidgetAlerts(Alerts):
             )
 
             style_name = styles[type_name]
-            if style_name not in ('primary', 'success', 'info', 'warning', 'danger'):
-                style_name = ''
+            if style_name not in ("primary", "success", "info", "warning", "danger"):
+                style_name = ""
 
             items.append(
                 Button(
