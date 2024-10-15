@@ -410,7 +410,7 @@ class Config:
             "duplicates": None,
             "vars": {"cat": {"redact": True}, "text": {"redact": True}},
         },
-        "dark_mode": {
+        "flatly_theme": {
             "html": {
                 "style": {
                     "theme": Theme.flatly,
@@ -418,7 +418,7 @@ class Config:
                 }
             }
         },
-        "orange_mode": {
+        "united_theme": {
             "html": {
                 "style": {
                     "theme": Theme.united,
