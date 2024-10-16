@@ -31,7 +31,7 @@ def string_is_bool(series: pd.Series, state: dict, k: Dict[str, bool]) -> bool:
     def tester(s: pd.Series, state: dict) -> bool:
         return s.str.lower().isin(k.keys()).all()
 
-    if pdt.is_categorical_dtype(series):
+    if isinstance(series.dtype, pd.CategoricalDtype):
         return False
 
     return tester(series, state)
