@@ -1,11 +1,17 @@
 """Configuration for the package."""
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import yaml
 from pydantic.v1 import BaseModel, BaseSettings, Field, PrivateAttr
 
+try:
+    # typing only available in python 3.8+
+    from typing import Literal
+    AutoLagType = Literal["AIC", "BIC", "t-stat"]
+except:
+    AutoLagType = str
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
     """
@@ -112,7 +118,7 @@ class TimeseriesVars(BaseModel):
     lags: List[int] = [1, 7, 12, 24, 30]
     significance: float = 0.05
     pacf_acf_lag: int = 100
-    autolag: Optional[Literal["AIC", "BIC", "t-stat"]] = "AIC"
+    autolag: Optional[AutoLagType] = "AIC"
     maxlag: Optional[int] = None
 
 
