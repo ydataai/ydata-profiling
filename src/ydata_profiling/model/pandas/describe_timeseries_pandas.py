@@ -20,7 +20,7 @@ def stationarity_test(config: Settings, series: pd.Series) -> Tuple[bool, float]
     adfuller_test = adfuller(
         series.dropna(),
         autolag=config.vars.timeseries.autolag,
-        maxlag=config.vars.timeseries.maxlag
+        maxlag=config.vars.timeseries.maxlag,
     )
     p_value = adfuller_test[1]
 
