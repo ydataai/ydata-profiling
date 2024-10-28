@@ -1,14 +1,16 @@
-{%if is_row%}
-<div class="row spacing">
-{%endif%}
-  <select name="{{ name }}" id="{{ id }}" class = "{{ classes }}">
-    <option value="">Select Columns</option>
-    {% for item in items %}
-      <option value="{{ item }}">{{ item }}</option>
-    {% endfor %}
-  </select>
-{%if is_row%}
-  </div>
-{%endif%}
+{% if is_row %}
+    <div class="row">
+{% endif %}
+    <select name="{{ name }}" id="{{ id }}" class = "{{ classes }}">
+        <option value="">Select Columns</option>
+        {% for item in items %}
+            <option value="{{ item }}">
+                {{ item }}
+            </option>
+        {% endfor %}
+    </select>
+{% if is_row %}
+    </div>
+{% endif %}
 
 {{ item.render() }}

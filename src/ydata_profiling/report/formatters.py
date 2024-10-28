@@ -329,11 +329,15 @@ def help(title: str, url: Optional[str] = None) -> str:
         HTML formatted help badge
     """
     if url is not None:
-        return f'<a title="{title}" href="{url}"><span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span></a>'
+        return f'<a href="{url}"><span class="badge text-bg-secondary float-end" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{title}">?</span></a>'
     else:
-        return f'<span class="badge pull-right" style="color:#fff;background-color:#337ab7;" title="{title}">?</span>'
+        return f'<span class="badge text-bg-secondary float-end" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{title}">?</span>'
 
 
 @list_args
 def fmt_badge(value: str) -> str:
-    return re.sub(r"\((\d+)\)", r'<span class="badge">\1</span>', value)
+    return re.sub(
+        r"\((\d+)\)",
+        r'<span class="badge text-bg-secondary align-text-top">\1</span>',
+        value,
+    )

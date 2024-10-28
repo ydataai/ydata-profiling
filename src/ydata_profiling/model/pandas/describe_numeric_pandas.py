@@ -139,6 +139,7 @@ def pandas_describe_numeric_1d(
         }
     )
     stats["iqr"] = stats["75%"] - stats["25%"]
+
     stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
     stats["p_zeros"] = stats["n_zeros"] / summary.n
     stats["p_infinite"] = summary["n_infinite"] / summary.n

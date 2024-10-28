@@ -72,8 +72,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         sortby: Optional[str] = None,
         sensitive: bool = False,
         explorative: bool = False,
-        dark_mode: bool = False,
-        orange_mode: bool = False,
         sample: Optional[dict] = None,
         config_file: Optional[Union[Path, str]] = None,
         lazy: bool = True,
@@ -125,8 +123,6 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         groups = [
             (explorative, "explorative"),
             (sensitive, "sensitive"),
-            (dark_mode, "dark_mode"),
-            (orange_mode, "orange_mode"),
         ]
 
         if any(condition for condition, _ in groups):
@@ -134,14 +130,12 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             for condition, key in groups:
                 if condition:
                     cfg = cfg.update(Config.get_arg_groups(key))
-            report_config = cfg.update(report_config.dict(exclude_defaults=True))
+            report_config = report_config.update(cfg.dict(exclude_defaults=True))
 
         if len(kwargs) > 0:
             shorthands, kwargs = Config.shorthands(kwargs)
-            report_config = (
-                Settings()
-                .update(shorthands)
-                .update(report_config.dict(exclude_defaults=True))
+            report_config = report_config.update(
+                Settings().update(shorthands).dict(exclude_defaults=True)
             )
 
         if kwargs:

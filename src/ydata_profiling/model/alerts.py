@@ -9,7 +9,9 @@ import pandas as pd
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.correlations import perform_check_correlation
+
 from ydata_profiling.model.var_description.default import VarDescription
+from ydata_profiling.utils.styles import get_alert_styles
 
 
 def fmt_percent(value: float, edge_cases: bool = True) -> str:
@@ -107,10 +109,11 @@ class Alert:
         self.values = values or {}
         self.column_name = column_name
         self._is_empty = is_empty
+        self._styles = get_alert_styles()
 
     @property
     def alert_type_name(self) -> str:
-        return self.alert_type.name.replace("_", " ").lower().title()
+        return self.alert_type.name.replace("_", " ").capitalize()
 
     @property
     def anchor_id(self) -> Optional[str]:
@@ -120,13 +123,18 @@ class Alert:
 
     def fmt(self) -> str:
         # TODO: render in template
-        name = self.alert_type.name.replace("_", " ")
-        if name == "HIGH CORRELATION" and self.values is not None:
+        style = self._styles.get(self.alert_type.name.lower(), "secondary")
+        hint = ""
+
+        if self.alert_type == AlertType.HIGH_CORRELATION and self.values is not None:
             num = len(self.values["fields"])
             title = ", ".join(self.values["fields"])
             corr = self.values["corr"]
-            name = f'<abbr title="This variable has a high {corr} correlation with {num} fields: {title}">HIGH CORRELATION</abbr>'
-        return name
+            hint = f'data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This variable has a high {corr} correlation with {num} fields: {title}"'
+
+        return (
+            f'<span class="badge text-bg-{style}" {hint}>{self.alert_type_name}</span>'
+        )
 
     def _get_description(self) -> str:
         """Return a human level description of the alert.

@@ -17,12 +17,15 @@ from ydata_profiling.model.var_description.default import VarDescription
 
 
 def stationarity_test(config: Settings, series: pd.Series) -> Tuple[bool, float]:
-    significance_threshold = config.vars.timeseries.significance
-
     # make sure the data has no missing values
-    adfuller_test = adfuller(series.dropna())
+    adfuller_test = adfuller(
+        series.dropna(),
+        autolag=config.vars.timeseries.autolag,
+        maxlag=config.vars.timeseries.maxlag,
+    )
     p_value = adfuller_test[1]
 
+    significance_threshold = config.vars.timeseries.significance
     return p_value < significance_threshold, p_value
 
 

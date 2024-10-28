@@ -381,7 +381,7 @@ def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
                     anchor_id="variables-dropdown",
                     id="variables-dropdown",
                     is_row=False,
-                    classes=["dropdown-toggle", "dropdown-variables"],
+                    classes=["form-select"],
                     items=list(summary.variables),
                     item=Container(
                         render_variables_section(config, summary),

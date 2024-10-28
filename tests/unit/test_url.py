@@ -24,5 +24,5 @@ def test_urls(get_data_file):
         explorative=True,
     )
 
-    assert "<small>URL</small>" in profile.to_html(), "URL not detected"
-    assert "<th>URL</th>" in profile.to_html(), "URL not detected"
+    assert "URL</span>" in profile.to_html(), "URL not detected"
+    assert "URL</th>" in profile.to_html(), "URL not detected"

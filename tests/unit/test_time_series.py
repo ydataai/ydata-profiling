@@ -37,24 +37,20 @@ def html_profile() -> str:
 def test_timeseries_identification(html_profile: str):
     assert "<th>TimeSeries</th>" in html_profile, "TimeSeries not detected"
     assert (
-        '<tr><th>TimeSeries</th><td style="white-space:pre white-space:nowrap">8</td></tr>'
+        '<tr><th>TimeSeries</th><td style="white-space: nowrap;">8</td></tr>'
         in html_profile
     ), "TimeSeries incorrectly identified"
 
 
 def test_timeseries_autocorrelation_tab(html_profile: str):
+    assert ">Autocorrelation<" in html_profile, "TimeSeries not detected"
     assert (
-        "role=tab data-toggle=tab>Autocorrelation<" in html_profile
-    ), "TimeSeries not detected"
-    assert (
-        html_profile.count("role=tab data-toggle=tab>Autocorrelation<") == 8
+        html_profile.count(">Autocorrelation<") == 8
     ), "TimeSeries autocorrelation tabs incorrectly generated"
 
 
 def test_timeseries_seasonality(html_profile: str):
+    assert ">Seasonal<" in html_profile, "Seasonality incorrectly identified"
     assert (
-        html_profile.count("<code>SEASONAL</code>") == 2
-    ), "Seasonality incorrectly identified"
-    assert (
-        html_profile.count(">Seasonal</span>") == 2
+        html_profile.count(">Seasonal<") == 4
     ), "Seasonality warning incorrectly identified"
