@@ -6,9 +6,11 @@ import logging
 
 import pandas as pd
 
-from ydata_profiling.utils.common import (calculate_nrows,
-                                          analytics_features,
-                                          is_running_in_databricks)
+from ydata_profiling.utils.common import (
+    analytics_features,
+    calculate_nrows,
+    is_running_in_databricks,
+)
 
 
 class ProfilingLogger(logging.Logger):
@@ -20,22 +22,26 @@ class ProfilingLogger(logging.Logger):
         if isinstance(df, pd.DataFrame):
             dataframe = "pandas"
             report_type = "regular"
-            nrows=len(df)
+            nrows = len(df)
         elif df is None:
             dataframe = "pandas"
             report_type = "compare"
-            nrows=len(df)
+            nrows = len(df)
         else:
             dataframe = "spark"
             report_type = "regular"
-            nrows=calculate_nrows(df)
+            nrows = calculate_nrows(df)
 
-        dbx=is_running_in_databricks()
+        dbx = is_running_in_databricks()
         datatype = "timeseries" if timeseries else "tabular"
 
         analytics_features(
-            dataframe=dataframe, datatype=datatype, report_type=report_type,
-            nrows=nrows, ncols=ncols, dbx=dbx
+            dataframe=dataframe,
+            datatype=datatype,
+            report_type=report_type,
+            nrows=nrows,
+            ncols=ncols,
+            dbx=dbx,
         )
 
         super().info(

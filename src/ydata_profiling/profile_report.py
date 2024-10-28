@@ -199,7 +199,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
 
         logger.info_def_report(
-            df=df, timeseries=report_config.vars.timeseries.active,
+            df=df,
+            timeseries=report_config.vars.timeseries.active,
         )
 
         if (

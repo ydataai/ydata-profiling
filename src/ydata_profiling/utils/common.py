@@ -99,12 +99,9 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
 
 
-def analytics_features(dataframe: str,
-                       datatype: str,
-                       report_type: str,
-                       ncols: int,
-                       nrows:int,
-                       dbx: str) -> None:
+def analytics_features(
+    dataframe: str, datatype: str, report_type: str, ncols: int, nrows: int, dbx: str
+) -> None:
     endpoint = "https://packages.ydata.ai/ydata-profiling?"
     package_version = __version__
 
@@ -136,12 +133,14 @@ def analytics_features(dataframe: str,
 
             requests.get(request_message)
 
+
 def is_running_in_databricks():
-    mask = 'DATABRICKS_RUNTIME_VERSION' in os.environ
-    if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
-        return os.environ['DATABRICKS_RUNTIME_VERSION']
+    mask = "DATABRICKS_RUNTIME_VERSION" in os.environ
+    if "DATABRICKS_RUNTIME_VERSION" in os.environ:
+        return os.environ["DATABRICKS_RUNTIME_VERSION"]
     else:
         return str(mask)
+
 
 def calculate_nrows(df):
     """
@@ -152,10 +151,15 @@ def calculate_nrows(df):
     try:
         n_partitions = df.rdd.getNumPartitions()
 
-        nrows = df.rdd.mapPartitionsWithIndex(
-            lambda idx, partition: [sum(1 for _ in partition)] if idx == 0 else [0]
-        ).collect()[0] * n_partitions
+        nrows = (
+            df.rdd.mapPartitionsWithIndex(
+                lambda idx, partition: [sum(1 for _ in partition)] if idx == 0 else [0]
+            ).collect()[0]
+            * n_partitions
+        )
     except:
-        nrows = 0  # returns 0 in case it was not possible to compute it from the partition
+        nrows = (
+            0  # returns 0 in case it was not possible to compute it from the partition
+        )
 
     return nrows
