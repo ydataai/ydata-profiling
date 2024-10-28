@@ -22,19 +22,18 @@ class ProfilingLogger(logging.Logger):
             ncols = len(df.columns)
         except AttributeError:
             ncols=0
-            
+
+        nrows = calculate_nrows(df)
+
         if isinstance(df, pd.DataFrame):
             dataframe = "pandas"
             report_type = "regular"
-            nrows = len(df)
         elif df is None:
             dataframe = "pandas"
             report_type = "compare"
-            nrows = len(df)
         else:
             dataframe = "spark"
             report_type = "regular"
-            nrows = calculate_nrows(df)
 
         dbx = is_running_in_databricks()
         datatype = "timeseries" if timeseries else "tabular"
