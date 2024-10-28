@@ -18,7 +18,11 @@ class ProfilingLogger(logging.Logger):
         super().__init__(name, level)
 
     def info_def_report(self, df, timeseries: bool) -> None:  # noqa: ANN001
-        ncols = len(df.columns)
+        try:
+            ncols = len(df.columns)
+        except AttributeError:
+            ncols=0
+            
         if isinstance(df, pd.DataFrame):
             dataframe = "pandas"
             report_type = "regular"
