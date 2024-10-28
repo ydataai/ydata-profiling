@@ -158,10 +158,12 @@ def calculate_nrows(df):
             n_partitions = df.rdd.getNumPartitions()
 
             nrows = (
-                    df.rdd.mapPartitionsWithIndex(
-                        lambda idx, partition: [sum(1 for _ in partition)] if idx == 0 else [0]
-                    ).collect()[0]
-                    * n_partitions
+                df.rdd.mapPartitionsWithIndex(
+                    lambda idx, partition: [sum(1 for _ in partition)]
+                    if idx == 0
+                    else [0]
+                ).collect()[0]
+                * n_partitions
             )
         except:
             nrows = 0
