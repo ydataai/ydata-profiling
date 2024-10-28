@@ -21,7 +21,7 @@ class ProfilingLogger(logging.Logger):
         try:
             ncols = len(df.columns)
         except AttributeError:
-            ncols=0
+            ncols = 0
 
         nrows = calculate_nrows(df)
 
