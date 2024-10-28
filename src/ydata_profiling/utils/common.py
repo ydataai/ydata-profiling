@@ -148,18 +148,22 @@ def calculate_nrows(df):
 
     Returns: int, approximate number of rows
     """
-    try:
-        n_partitions = df.rdd.getNumPartitions()
+    if isinstance(df, pd.DataFrame):
+        if df is not None:
+            nrows = len(df)
+        else:
+            nrows = 0
+    else:
+        try:
+            n_partitions = df.rdd.getNumPartitions()
 
-        nrows = (
-            df.rdd.mapPartitionsWithIndex(
-                lambda idx, partition: [sum(1 for _ in partition)] if idx == 0 else [0]
-            ).collect()[0]
-            * n_partitions
-        )
-    except:
-        nrows = (
-            0  # returns 0 in case it was not possible to compute it from the partition
-        )
+            nrows = (
+                    df.rdd.mapPartitionsWithIndex(
+                        lambda idx, partition: [sum(1 for _ in partition)] if idx == 0 else [0]
+                    ).collect()[0]
+                    * n_partitions
+            )
+        except:
+            nrows = 0
 
     return nrows
