@@ -12,6 +12,7 @@ from imghdr import tests
 from pathlib import Path
 from typing import Mapping
 
+import pandas as pd
 import requests
 
 from ydata_profiling.version import __version__
@@ -98,7 +99,12 @@ def convert_timestamp_to_datetime(timestamp: int) -> datetime:
         return datetime(1970, 1, 1) + timedelta(seconds=int(timestamp))
 
 
-def analytics_features(dataframe: str, datatype: str, report_type: str) -> None:
+def analytics_features(dataframe: str,
+                       datatype: str,
+                       report_type: str,
+                       ncols: int,
+                       nrows:int,
+                       dbx: str) -> None:
     endpoint = "https://packages.ydata.ai/ydata-profiling?"
     package_version = __version__
 
@@ -120,9 +126,36 @@ def analytics_features(dataframe: str, datatype: str, report_type: str) -> None:
                 f"&python_version={python_version}"
                 f"&report_type={report_type}"
                 f"&dataframe={dataframe}"
+                f"&ncols={ncols}"
+                f"&nrows={nrows}"
                 f"&datatype={datatype}"
                 f"&os={platform.system()}"
                 f"&gpu={str(gpu_present)}"
+                f"&dbx={dbx}"
             )
 
             requests.get(request_message)
+
+def is_running_in_databricks():
+    mask = 'DATABRICKS_RUNTIME_VERSION' in os.environ
+    if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
+        return os.environ['DATABRICKS_RUNTIME_VERSION']
+    else:
+        return str(mask)
+
+def calculate_nrows(df):
+    """
+    Calculates the approx. number of rows spark dataframes
+
+    Returns: int, approximate number of rows
+    """
+    try:
+        n_partitions = df.rdd.getNumPartitions()
+
+        nrows = df.rdd.mapPartitionsWithIndex(
+            lambda idx, partition: [sum(1 for _ in partition)] if idx == 0 else [0]
+        ).collect()[0] * n_partitions
+    except:
+        nrows = 0  # returns 0 in case it was not possible to compute it from the partition
+
+    return nrows
