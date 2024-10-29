@@ -7,6 +7,12 @@ on:
     - master
 
 
+permissions:
+  id-token: write
+  contents: read
+  packages: read
+
+
 jobs:
   prepare:
     name: Calculate Version and Build Number
