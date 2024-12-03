@@ -595,10 +595,6 @@ def test_decribe_series_type_schema(config, summarizer):
     result = describe(config, df, summarizer, typeset)
 
     assert result.variables["date"]["type"] == "DateTime"
-    assert result.variables["date"]["n_missing"] == 2
-
-    typeset = ProfilingTypeSet(config)
-    result = describe(config, df, summarizer, typeset)
-
-    assert result.variables["date"]["type"] == "DateTime"
-    assert result.variables["date"]["n_missing"] == 2
+    assert result.variables["date"]["n_missing"] == 0
+    assert result.variables["date"]["n_invalid_dates"] == 2
+    assert result.variables["date"]["p_invalid_dates"] == 0.5
