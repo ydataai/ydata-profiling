@@ -14,7 +14,7 @@ from ydata_profiling.model.summary_algorithms import (
 from ydata_profiling.model.typeset_relations import is_pandas_1
 
 
-def string_to_datetime(series: pd.Series) -> pd.Series:
+def to_datetime(series: pd.Series) -> pd.Series:
     if is_pandas_1():
         return pd.to_datetime(series, errors="coerce")
     return pd.to_datetime(series, format="mixed", errors="coerce")
@@ -37,7 +37,7 @@ def pandas_describe_date_1d(
         A dict containing calculated series description values.
     """
     og_series = series.dropna()
-    series = string_to_datetime(og_series)
+    series = to_datetime(og_series)
     invalid_values = og_series[series.isna()]
 
     series = series.dropna()
