@@ -67,9 +67,11 @@ def pandas_describe_date_1d(
         summary["chi_squared"] = chi_square(values)
 
     summary.update(histogram_compute(config, values, series.nunique()))
-    summary.update({
-        "invalid_dates": invalid_values.nunique(),
-        "n_invalid_dates": len(invalid_values),
-        "p_invalid_dates": len(invalid_values) / summary["n"],
-    })
+    summary.update(
+        {
+            "invalid_dates": invalid_values.nunique(),
+            "n_invalid_dates": len(invalid_values),
+            "p_invalid_dates": len(invalid_values) / summary["n"],
+        }
+    )
     return config, values, summary
