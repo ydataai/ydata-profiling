@@ -44,9 +44,6 @@ def pandas_describe_1d(
         and series.name in typeset.type_schema
     ):
         vtype = typeset.type_schema[series.name]
-        infered_vtype = typeset.infer_type(series)
-        if vtype == infered_vtype:
-            series = typeset.cast_to_inferred(series)
 
     elif config.infer_dtypes:
         # Infer variable types

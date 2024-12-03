@@ -114,8 +114,8 @@ def string_is_numeric(series: pd.Series, state: dict, k: Settings) -> bool:
 
 def string_to_datetime(series: pd.Series, state: dict) -> pd.Series:
     if is_pandas_1():
-        return pd.to_datetime(series, errors="coerce")
-    return pd.to_datetime(series, format="mixed", errors="coerce")
+        return pd.to_datetime(series)
+    return pd.to_datetime(series, format="mixed")
 
 
 def string_to_numeric(series: pd.Series, state: dict) -> pd.Series:
