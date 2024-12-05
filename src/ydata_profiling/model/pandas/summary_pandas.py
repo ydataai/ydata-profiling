@@ -42,6 +42,7 @@ def pandas_describe_1d(
         isinstance(typeset, ProfilingTypeSet)
         and typeset.type_schema
         and series.name in typeset.type_schema
+        and not series.isna().all()
     ):
         vtype = typeset.type_schema[series.name]
 
