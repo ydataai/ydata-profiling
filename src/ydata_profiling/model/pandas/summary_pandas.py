@@ -49,10 +49,7 @@ def pandas_describe_1d(
     has_cast_type = _is_cast_type_defined(typeset, series.name)
     cast_type = str(typeset.type_schema[series.name]) if has_cast_type else None
 
-    if (
-        has_cast_type
-        and not series.isna().all()
-    ):
+    if has_cast_type and not series.isna().all():
         vtype = typeset.type_schema[series.name]
 
     elif config.infer_dtypes:
@@ -71,6 +68,7 @@ def pandas_describe_1d(
     summary["cast_type"] = cast_type
 
     return summary
+
 
 @get_series_descriptions.register
 def pandas_get_series_descriptions(
