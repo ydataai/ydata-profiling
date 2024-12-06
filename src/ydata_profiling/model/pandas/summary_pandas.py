@@ -16,6 +16,14 @@ from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.utils.dataframe import sort_column_names
 
 
+def _is_cast_type_defined(typeset: VisionsTypeset, series: str) -> bool:
+    return (
+        isinstance(typeset, ProfilingTypeSet)
+        and typeset.type_schema
+        and series in typeset.type_schema
+    )
+
+
 @describe_1d.register
 def pandas_describe_1d(
     config: Settings,
@@ -38,11 +46,10 @@ def pandas_describe_1d(
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
 
-    if (
-        isinstance(typeset, ProfilingTypeSet)
-        and typeset.type_schema
-        and series.name in typeset.type_schema
-    ):
+    has_cast_type = _is_cast_type_defined(typeset, series.name)
+    cast_type = str(typeset.type_schema[series.name]) if has_cast_type else None
+
+    if has_cast_type and not series.isna().all():
         vtype = typeset.type_schema[series.name]
 
     elif config.infer_dtypes:
@@ -55,7 +62,12 @@ def pandas_describe_1d(
         vtype = typeset.detect_type(series)
 
     typeset.type_schema[series.name] = vtype
-    return summarizer.summarize(config, series, dtype=vtype)
+    summary = summarizer.summarize(config, series, dtype=vtype)
+    # Cast type is only used on unsupported columns rendering pipeline
+    # to indicate the correct variable type when inference is not possible
+    summary["cast_type"] = cast_type
+
+    return summary
 
 
 @get_series_descriptions.register
