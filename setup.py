@@ -41,7 +41,7 @@ setup(
         ],
         "numba": [
             "numba>=0.56.0, <1",
-        ]
+        ],
     },
     package_data={
         "ydata_profiling": ["py.typed"],

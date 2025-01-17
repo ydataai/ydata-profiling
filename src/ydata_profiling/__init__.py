@@ -22,6 +22,7 @@ if spec is not None:
 spec_numba = importlib.util.find_spec("numba")
 if spec_numba is not None:
     from numba.core.errors import NumbaDeprecationWarning  # isort:skip # noqa
+
     warnings.simplefilter("ignore", category=NumbaDeprecationWarning)
 
 __all__ = [
