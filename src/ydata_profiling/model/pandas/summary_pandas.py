@@ -13,6 +13,7 @@ from ydata_profiling.config import Settings
 from ydata_profiling.model.summarizer import BaseSummarizer
 from ydata_profiling.model.summary import describe_1d, get_series_descriptions
 from ydata_profiling.model.typeset import ProfilingTypeSet
+from ydata_profiling.utils.compat import optional_option_context
 from ydata_profiling.utils.dataframe import sort_column_names
 
 
@@ -40,7 +41,7 @@ def pandas_describe_1d(
     """
 
     # Make sure pd.NA is not in the series
-    with pd.option_context("future.no_silent_downcasting", True):
+    with optional_option_context("future.no_silent_downcasting", True):
         series = series.fillna(np.nan)
 
     has_cast_type = _is_cast_type_defined(typeset, series.name)
