@@ -1,4 +1,13 @@
+import sys
 from pathlib import Path
+
+# Ensure setuptools is installed for Python 3.12+
+if sys.version_info >= (3, 12):
+    try:
+        import setuptools
+    except ImportError:
+        import subprocess
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "setuptools"])
 
 from setuptools import find_packages, setup
 
