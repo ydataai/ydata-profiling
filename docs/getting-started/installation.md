@@ -2,6 +2,8 @@
 
 ## Using pip
 
+[Requires Python 3.12 or below.](https://github.com/ydataai/ydata-profiling/issues/1695)
+
 You can install using the ``pip`` package manager by running:
 
 ```console
