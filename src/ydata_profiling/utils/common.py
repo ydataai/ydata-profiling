@@ -1,4 +1,5 @@
 """Common util functions (e.g. missing in Python)."""
+
 import collections.abc
 import contextlib
 import os
@@ -165,7 +166,7 @@ def calculate_nrows(df):
                 ).collect()[0]
                 * n_partitions
             )
-        except:
+        except Exception:
             nrows = 0
 
     return nrows
