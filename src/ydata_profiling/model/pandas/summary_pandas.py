@@ -17,7 +17,7 @@ from ydata_profiling.utils.dataframe import sort_column_names
 
 
 def _is_cast_type_defined(typeset: VisionsTypeset, series: str) -> bool:
-    return bool(
+    return (
         isinstance(typeset, ProfilingTypeSet)
         and typeset.type_schema
         and series in typeset.type_schema
