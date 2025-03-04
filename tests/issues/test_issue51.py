@@ -18,10 +18,10 @@ def test_issue51(get_data_file):
     df = pd.read_pickle(str(file_name))
 
     report = ProfileReport(
-        df, title="Pandas Profiling Report", progress_bar=False, explorative=True
+        df, title="YData Profiling Report", progress_bar=False, explorative=True
     )
     assert (
-        "<title>Pandas Profiling Report</title>" in report.to_html()
+        "<title>YData Profiling Report</title>" in report.to_html()
     ), "Profile report should be generated."
 
 
@@ -35,13 +35,13 @@ def test_issue51_similar():
     )
 
     report = ProfileReport(
-        df, title="Pandas Profiling Report", progress_bar=False, explorative=True
+        df, title="YData Profiling Report", progress_bar=False, explorative=True
     )
     report.config.vars.num.low_categorical_threshold = 0
     # FIXME: assert correlation values (report.description_set["correlations"])
 
     assert (
-        "<title>Pandas Profiling Report</title>" in report.to_html()
+        "<title>YData Profiling Report</title>" in report.to_html()
     ), "Profile report should be generated."
 
 
@@ -56,7 +56,7 @@ def test_issue51_empty():
 
     report = ProfileReport(
         df,
-        title="Pandas Profiling Report",
+        title="YData Profiling Report",
         progress_bar=False,
         explorative=True,
     )
@@ -80,7 +80,7 @@ def test_issue51_identical():
     )
 
     report = ProfileReport(
-        df, title="Pandas Profiling Report", progress_bar=False, explorative=True
+        df, title="YData Profiling Report", progress_bar=False, explorative=True
     )
     report.config.vars.num.low_categorical_threshold = 0
     # this should not return any correlation value as the variables are identical constants

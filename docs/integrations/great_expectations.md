@@ -72,7 +72,7 @@ from ydata_profiling import ProfileReport
 
 df = pd.read_csv("titanic.csv")
 
-profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
+profile = ProfileReport(df, title="YData Profiling Report", explorative=True)
 
 # Obtain an Expectation Suite with a set of default Expectations
 # By default, this also profiles the dataset, saves the suite, runs validation, and builds Data Docs
