@@ -61,12 +61,12 @@ jobs:
     - run: make test
 
   coverage:
-    name: Coverage | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
-    runs-on: ${{ matrix.os }}
+    name: Coverage
     strategy:
       matrix:
         os: [ ubuntu-22.04 ]
         python-version: [ 3.12 ]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
@@ -122,14 +122,13 @@ jobs:
     - run: make test_cov
     - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
 
-
   test_spark:
     runs-on: ${{ matrix.os }}
     continue-on-error: True
     strategy:
       matrix:
         os: [ ubuntu-22.04 ]
-        python-version: [3.9]
+        python-version: [3.8]
         pandas: ["pandas>1.1"]
         spark: ["3.0.1"]
         hadoop: [ 2.7 ]
