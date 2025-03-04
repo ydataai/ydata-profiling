@@ -1,15 +1,11 @@
 from pathlib import Path
 
-from setuptools import find_packages, setup
+from setuptools import setup
 
 # Read the contents of README file
 source_root = Path(".")
 with (source_root / "README.md").open(encoding="utf-8") as f:
     long_description = f.read()
-
-# Read the requirements
-with (source_root / "requirements.txt").open(encoding="utf8") as f:
-    requirements = f.readlines()
 
 try:
     version = (source_root / "VERSION").read_text().rstrip("\n")
@@ -24,29 +20,14 @@ setup(
     version=version,
     author="YData Labs Inc",
     author_email="opensource@ydata.ai",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
     url="https://github.com/ydataai/ydata-profiling",
     license="MIT",
     description="Generate profile report for pandas DataFrame",
     python_requires=">=3.7, <3.13",
     install_requires=requirements,
-    extras_require={
-        "notebook": [
-            "jupyter>=1.0.0",
-            "ipywidgets>=7.5.1",
-        ],
-        "unicode": [
-            "tangled-up-in-unicode==0.2.0",
-        ],
-        "numba": [
-            "numba>=0.56.0, <1",
-        ],
-    },
     package_data={
         "ydata_profiling": ["py.typed"],
     },
-    include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Software Development :: Build Tools",
@@ -70,11 +51,5 @@ setup(
     keywords="pandas data-science data-analysis python jupyter ipython",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    entry_points={
-        "console_scripts": [
-            "ydata_profiling = ydata_profiling.controller.console:main",
-            "pandas_profiling = ydata_profiling.controller.console:main",
-        ]
-    },
     options={"bdist_wheel": {"universal": True}},
 )
