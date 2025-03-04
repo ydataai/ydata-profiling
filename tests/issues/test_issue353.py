@@ -15,7 +15,7 @@ def test_issue353():
 
     profile = ProfileReport(
         df,
-        title="Pandas Profiling Report",
+        title="YData Profiling Report",
         html={"style": {"full_width": True}},
         progress_bar=False,
     )

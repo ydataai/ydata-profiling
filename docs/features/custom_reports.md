@@ -28,7 +28,7 @@ An example would be:
 ```python linenums="1" title="Customize plots rendering"
 profile = ProfileReport(
     planets,
-    title="Pandas Profiling Report",
+    title="YData Profiling Report",
     explorative=True,
     plot={"dpi": 200, "image_format": "png"},
 )
@@ -68,7 +68,7 @@ the palette used by the correlation matrix, use the ``correlation`` key:
 
   profile = ProfileReport(
       df,
-      title="Pandas Profiling Report",
+      title="YData Profiling Report",
       explorative=True,
       plot={"correlation": {"cmap": "RdBu_r", "bad": "#000000"}},
   )
@@ -81,7 +81,7 @@ Similarly, the palette for *Missing values* can be changed using ``missing`` arg
 
   profile = ProfileReport(
       df,
-      title="Pandas Profiling Report",
+      title="YData Profiling Report",
       explorative=True,
       plot={"missing": {"cmap": "RdBu_r"}},
   )
