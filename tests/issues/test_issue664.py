@@ -24,4 +24,6 @@ def test_issue664_alt():
 
     profile = ProfileReport(test)
     assert len(profile.to_html()) > 0
+
+
 YData
