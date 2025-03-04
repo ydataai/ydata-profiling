@@ -14,7 +14,7 @@ def test_issue664():
     df = df.fillna(value=np.nan)
 
     profile = ProfileReport(
-        df, title="Pandas Profiling Report", explorative=True, minimal=True
+        df, title="YData Profiling Report", explorative=True, minimal=True
     )
     _ = profile.get_description()
 
