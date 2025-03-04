@@ -12,14 +12,14 @@ env:
 
 jobs:
   test:
-    name: Tests | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
-    runs-on: ${{ matrix.os }}
+    name: Tests
     strategy:
       matrix:
       os: [ ubuntu-22.04 ]
       python-version: ["3.9", "3.10", "3.11", "3.12" ]
       pandas: [ "pandas>1.1" ]
       numpy: [ "numpy>=1.21" ]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
