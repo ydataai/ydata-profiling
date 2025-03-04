@@ -9,7 +9,7 @@ authors = [
 ]
 description="Generate profile report for pandas DataFrame"
 readme = "README.md"
-requires-python=">=3.9, <3.13"
+requires-python=">=3.7, <3.13"
 keywords=["pandas", "data-science", "data-analysis", "python", "jupyter", "ipython"]
 license = {text = "MIT"}
 classifiers=[
