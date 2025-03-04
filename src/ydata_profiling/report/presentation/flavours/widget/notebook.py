@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from IPython.core.display import HTML
+    from IPython.display import HTML
     from IPython.lib.display import IFrame
 
 from ydata_profiling import ProfileReport
@@ -22,7 +22,7 @@ def get_notebook_iframe_srcdoc(config: Settings, profile: ProfileReport) -> "HTM
     Returns:
         IPython HTML object.
     """
-    from IPython.core.display import HTML
+    from IPython.display import HTML
 
     width = config.notebook.iframe.width
     height = config.notebook.iframe.height
