@@ -4,6 +4,7 @@ codecov
 pytest-cov
 pytest-spark
 nbval
+ipython<9
 pyarrow
 twine>=3.1.1
 kaggle
