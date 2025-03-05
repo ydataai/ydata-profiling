@@ -1,4 +1,4 @@
-from IPython.core.display import display
+from IPython.display import display
 from ipywidgets import Output, widgets
 
 from ydata_profiling.report.presentation.core.correlation_table import CorrelationTable

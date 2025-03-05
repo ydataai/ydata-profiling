@@ -105,7 +105,7 @@ def _placeholders(reports: List[BaseDescription]) -> None:
 def _update_titles(reports: List[ProfileReport]) -> None:
     """Redefine title of reports with the default one."""
     for idx, report in enumerate(reports):
-        if report.config.title == "Pandas Profiling Report":
+        if report.config.title == "YData Profiling Report":
             report.config.title = f"Dataset {chr(65 + idx)}"
 
 

@@ -34,9 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-        python -m pip install -r requirements-dev.txt
-        python -m pip install -r requirements-test.txt
+        python -m pip install ".[dev,test]"
     
     - name: Install
       run: make install
@@ -66,7 +64,7 @@ jobs:
         name: built-artifacts
         path: dist/
 
-    - uses: pypa/gh-action-pypi-publish@v1.10.3
+    - uses: pypa/gh-action-pypi-publish@v1.12.4
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}

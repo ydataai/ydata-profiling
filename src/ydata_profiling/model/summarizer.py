@@ -43,7 +43,7 @@ class BaseSummarizer(Handler):
 
 
 class PandasProfilingSummarizer(BaseSummarizer):
-    """The default Pandas Profiling summarizer"""
+    """The default YData Profiling summarizer"""
 
     def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
         summary_map: Dict[str, List[Callable]] = {

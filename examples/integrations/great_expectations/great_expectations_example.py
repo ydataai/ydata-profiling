@@ -11,7 +11,7 @@ file_name = cache_file(
 
 df = pd.read_csv(file_name)
 
-profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
+profile = ProfileReport(df, title="YData Profiling Report", explorative=True)
 
 # Example 1
 # Obtain expectation suite, this includes profiling the dataset, saving the expectation suite, validating the

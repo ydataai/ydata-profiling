@@ -13,7 +13,7 @@ def render_generic(config: Settings, summary: VarDescription) -> dict:
     info = VariableInfo(
         anchor_id=summary["varid"],
         alerts=summary["alerts"],
-        var_type="Unsupported",
+        var_type=summary["cast_type"] or "Unsupported",
         var_name=summary["varname"],
         description=summary["description"],
         style=config.html.style,

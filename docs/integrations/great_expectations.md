@@ -72,7 +72,7 @@ from ydata_profiling import ProfileReport
 
 df = pd.read_csv("titanic.csv")
 
-profile = ProfileReport(df, title="Pandas Profiling Report", explorative=True)
+profile = ProfileReport(df, title="YData Profiling Report", explorative=True)
 
 # Obtain an Expectation Suite with a set of default Expectations
 # By default, this also profiles the dataset, saves the suite, runs validation, and builds Data Docs
@@ -106,7 +106,7 @@ suite = profile.to_expectation_suite(
 ```
 
 See [the Great Expectations
-Examples](https://github.com/ydataai/ydata-profiling/blob/master/examples/features/great_expectations_example.py)
+Examples](https://github.com/ydataai/ydata-profiling/blob/master/examples/integrations/great_expectations/great_expectations_example.py)
 for complete examples.
 
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=baa0e45f-0c03-4190-9646-9d8ea2640ba2" />

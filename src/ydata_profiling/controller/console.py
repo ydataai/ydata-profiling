@@ -55,7 +55,7 @@ def parse_args(args: Optional[List[Any]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--title",
         type=str,
-        default="Pandas Profiling Report",
+        default="YData Profiling Report",
         help="Title for the report",
     )
 

@@ -26,7 +26,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: ${{ github.head_ref }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.event.pull_request.head.ref }}
         fetch-depth: 0
         persist-credentials: false
 
@@ -52,9 +53,7 @@ jobs:
     - name: Install pip dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-        python -m pip install -r requirements-dev.txt
-        python -m pip install -r requirements-test.txt
+        python -m pip install ".[dev,test]"
 
     - name: Install the package
       run: make install
@@ -103,10 +102,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-        python -m pip install -r requirements-dev.txt
-        python -m pip install -r requirements-test.txt
-        python -m pip install -r requirements-docs.txt
+        python -m pip install ".[dev,test,docs]"
       
     - name: Install the package
       run: make install

@@ -12,42 +12,14 @@ env:
 
 jobs:
   test:
-    name: Tests | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
-    runs-on: ${{ matrix.os }}
+    name: Tests
     strategy:
       matrix:
         os: [ ubuntu-22.04 ]
-        python-version: [ 3.8 ]
-        pandas: ["pandas>1.1"]
-        numpy: ["numpy"]
-        matplotlib: ["matplotlib<3.9"]
-        include:
-          - os: ubuntu-22.04
-            python-version: 3.7.16
-            pandas: "pandas>1.1"
-            numpy: "numpy"
-            matplotlib: "matplotlib<3.6"
-          - os: ubuntu-22.04
-            python-version: 3.8
-            pandas: "pandas>1.1"
-            numpy: "numpy"
-            matplotlib: "matplotlib<3.9"
-          - os: ubuntu-22.04
-            python-version: 3.9
-            pandas: "pandas>1.1"
-            numpy: "numpy"
-          - os: ubuntu-22.04
-            python-version: "3.10"
-            pandas: "pandas>1.1"
-            numpy: "numpy"
-          - os: ubuntu-22.04
-            python-version: "3.11"
-            pandas: "pandas>1.1"
-            numpy: "numpy"
-          - os: ubuntu-22.04
-            python-version: "3.12"
-            pandas: "pandas>1.1"
-            numpy: "numpy"
+        python-version: ["3.9", "3.10", "3.11", "3.12" ]
+        pandas: [ "pandas>1.1" ]
+        numpy: [ "numpy>=1.21" ]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
@@ -81,22 +53,21 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-        pip install -r requirements-test.txt
+        pip install ".[test]" "${{ matrix.pandas }}" "${{ matrix.numpy }}"
     - run: echo "YDATA_PROFILING_NO_ANALYTICS=False" >> $GITHUB_ENV
     - run: make install
 
     - run: make test
 
   coverage:
-    name: Coverage | python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
+    name: Coverage
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-22.04 ]
-        python-version: [ 3.8 ]
-        pandas: [ "pandas>1.1"]
-        numpy: ["numpy"]
+        os: [ubuntu-22.04]
+        python-version: ["3.12"]
+        pandas: [ "pandas>1.1" ]
+        numpy: [ "numpy>=1.21" ]
 
     steps:
     - uses: actions/checkout@v4
@@ -130,8 +101,7 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-        pip install -r requirements-test.txt
+        pip install ".[test]" "${{ matrix.pandas }}" "${{ matrix.numpy }}"
         echo "YDATA_PROFILING_NO_ANALYTICS=False" >> $GITHUB_ENV
     - run: make install
 
@@ -146,12 +116,10 @@ jobs:
           ${{ runner.os }}-${{ matrix.pandas }}-pip-
     - run: |
         pip install --upgrade pip setuptools wheel
-        pip install -r requirements.txt "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-        pip install -r requirements-test.txt
+        pip install ".[test]" "${{ matrix.pandas }}" "${{ matrix.numpy }}"
     - run: make install
     - run: make test_cov
     - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
-
 
   test_spark:
     runs-on: ${{ matrix.os }}
@@ -159,7 +127,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-22.04 ]
-        python-version: [3.7, 3.8]
+        python-version: [3.8]
         pandas: ["pandas>1.1"]
         spark: ["3.0.1"]
         hadoop: [ 2.7 ]
@@ -205,14 +173,13 @@ jobs:
       - run: |
           pip install --upgrade pip setuptools wheel
           pip install pytest-spark>=0.6.0 pyarrow==1.0.1 pyspark=="${{ matrix.spark }}"
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
+          pip install ".[test]"
           pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
       - if: ${{ matrix.spark != '3.0.1' }}
         run: echo "ARROW_PRE_0_15_IPC_FORMAT=1" >> $GITHUB_ENV
       - run: echo "SPARK_LOCAL_IP=127.0.0.1" >> $GITHUB_ENV
       - run: make install
       - run: make install-spark-ci
-      - run: pip install -r requirements-spark.txt # Make sure the proper version of pandas is install after everything
+      - run: pip install ".[spark]" # Make sure the proper version of pandas is install after everything
       - run: make test_spark
 

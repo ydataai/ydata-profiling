@@ -14,7 +14,7 @@ df = pd.DataFrame(np.random.rand(100, 5), columns=["a", "b", "c", "d", "e"])
 To generate the standard profiling report, merely run:
 
 ``` python
-profile = ProfileReport(df, title="Pandas Profiling Report")
+profile = ProfileReport(df, title="YData Profiling Report")
 ```
 
 ## Using inside Jupyter Notebooks

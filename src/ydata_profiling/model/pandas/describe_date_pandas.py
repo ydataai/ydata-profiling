@@ -11,8 +11,8 @@ from ydata_profiling.model.summary_algorithms import (
     series_handle_nulls,
     series_hashable,
 )
-from ydata_profiling.model.var_description.default import VarDescription
 
+from ydata_profiling.model.var_description.default import VarDescription
 
 @describe_date_1d.register
 @series_hashable
@@ -30,6 +30,7 @@ def pandas_describe_date_1d(
     Returns:
         A dict containing calculated series description values.
     """
+
     if summary.value_counts_without_nan.empty:
         values = series.values
         summary.update(
@@ -54,5 +55,12 @@ def pandas_describe_date_1d(
     if config.vars.num.chi_squared_threshold > 0.0:
         summary["chi_squared"] = chi_square(values)
 
-    summary.update(histogram_compute(config, values, summary["n_distinct"]))
+    summary.update(histogram_compute(config, values, series.nunique()))
+    summary.update(
+        {
+            "invalid_dates": invalid_values.nunique(),
+            "n_invalid_dates": len(invalid_values),
+            "p_invalid_dates": len(invalid_values) / summary["n"],
+        }
+    )
     return config, values, summary

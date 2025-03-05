@@ -19,7 +19,7 @@ def test_issue416():
 
     profile = ydata_profiling.ProfileReport(
         df,
-        title="Pandas Profiling Report",
+        title="YData Profiling Report",
         html={"style": {"full_width": True}},
         explorative=True,
         progress_bar=False,

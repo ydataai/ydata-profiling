@@ -665,7 +665,7 @@ def check_variable_alerts(
     alerts += generic_alerts(description)
 
     if description["type"] == "Unsupported":
-        alerts += unsupported_alerts(description)
+        alerts += unsupported_alerts()
     else:
         alerts += supported_alerts(description)
 

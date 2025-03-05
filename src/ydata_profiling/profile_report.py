@@ -199,7 +199,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     ) -> Optional[Union[pd.DataFrame, sDataFrame]]:
 
         logger.info_def_report(
-            dataframe=type(df), timeseries=report_config.vars.timeseries.active
+            df=df,
+            timeseries=report_config.vars.timeseries.active,
         )
 
         if (
@@ -508,7 +509,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         Notes:
             This constructions solves problems with conflicting stylesheets and navigation links.
         """
-        from IPython.core.display import display
+        from IPython.display import display
 
         from ydata_profiling.report.presentation.flavours.widget.notebook import (
             get_notebook_iframe,
@@ -531,7 +532,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         except ModuleNotFoundError:
             pass
 
-        from IPython.core.display import display
+        from IPython.display import display
 
         display(self.widgets)
 
