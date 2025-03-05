@@ -2,7 +2,7 @@
     References and information regarding ydata-profiling and ydata-sdk
 """
 import sys
-from IPython.core.display import HTML, display
+from IPython.display import HTML, display
 
 _displayed_banner = False
 
