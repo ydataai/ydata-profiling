@@ -14,7 +14,7 @@ def in_jupyter_notebook() -> bool:
     """Check if the code is running inside a Jupyter Notebook"""
     from IPython import get_ipython
 
-    isiPython = False if get_ipython() is None else True
+    isiPython = not get_ipython() is None
     return isiPython
 
 
