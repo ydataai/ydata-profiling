@@ -10,7 +10,7 @@ title = "Upgrade to ydata-sdk"
 info_text = "Improve your data and profiling with ydata-sdk, featuring data quality scoring, redundancy detection, outlier identification, text validation, and synthetic data generation."
 
 
-def in_jupyter_notebook():
+def in_jupyter_notebook()->bool:
     """Check if the code is running inside a Jupyter Notebook"""
     try:
         from IPython import get_ipython
@@ -20,7 +20,7 @@ def in_jupyter_notebook():
         return False
 
 
-def display_banner():
+def display_banner()->None:
     global _displayed_banner
     if in_jupyter_notebook() and not _displayed_banner:
         banner_html = f"""
