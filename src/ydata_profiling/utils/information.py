@@ -12,12 +12,10 @@ info_text = "Improve your data and profiling with ydata-sdk, featuring data qual
 
 def in_jupyter_notebook()->bool:
     """Check if the code is running inside a Jupyter Notebook"""
-    try:
-        from IPython import get_ipython
+    from IPython import get_ipython
 
-        return get_ipython() is not None
-    except ImportError:
-        return False
+    isiPython = False if get_ipython() is None else True
+    return isiPython
 
 
 def display_banner()->None:
