@@ -31,7 +31,7 @@ def display_banner() -> None:
         """
         display(HTML(banner_html))
     else:
-        print(f"\033[1;34m{title}\033[0m")  # Bold blue title in terminal
-        print(info_text)
-        print(f"Register at {link}")
+        print(f"\033[1;34m{title}\033[0m") #noqa: T201
+        print(info_text) #noqa: T201
+        print(f"Register at {link}") #noqa: T201
         _displayed_banner = True
