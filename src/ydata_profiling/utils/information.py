@@ -1,7 +1,6 @@
 """
     References and information regarding ydata-profiling and ydata-sdk
 """
-import sys
 from IPython.display import HTML, display
 
 _displayed_banner = False
