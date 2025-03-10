@@ -3,8 +3,6 @@
 """
 import importlib.util
 
-
-
 _displayed_banner = False
 
 link = "https://ydata.ai/register"
@@ -16,6 +14,7 @@ def in_jupyter_notebook() -> bool:
     """Check if the code is running inside a Jupyter Notebook"""
     if importlib.util.find_spec("IPython") is not None:
         from IPython import get_ipython
+
         isiPython = not get_ipython() is None
     else:
         isiPython = False
@@ -26,6 +25,7 @@ def display_banner() -> None:
     global _displayed_banner
     if in_jupyter_notebook() and not _displayed_banner:
         from IPython.display import HTML, display
+
         banner_html = f"""
         <div>
             <ins><a href="{link}">{title}</a></ins>
