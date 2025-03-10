@@ -1,7 +1,7 @@
 """
     References and information regarding ydata-profiling and ydata-sdk
 """
-from IPython.display import HTML, display
+import importlib.util
 
 _displayed_banner = False
 
@@ -12,15 +12,20 @@ info_text = "Improve your data and profiling with ydata-sdk, featuring data qual
 
 def in_jupyter_notebook() -> bool:
     """Check if the code is running inside a Jupyter Notebook"""
-    from IPython import get_ipython
+    if importlib.util.find_spec("IPython") is not None:
+        from IPython import get_ipython
 
-    isiPython = not get_ipython() is None
+        isiPython = not get_ipython() is None
+    else:
+        isiPython = False
     return isiPython
 
 
 def display_banner() -> None:
     global _displayed_banner
     if in_jupyter_notebook() and not _displayed_banner:
+        from IPython.display import HTML, display
+
         banner_html = f"""
         <div>
             <ins><a href="{link}">{title}</a></ins>
