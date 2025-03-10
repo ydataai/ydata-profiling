@@ -210,6 +210,7 @@ class DuplicatesAlert(Alert):
         else:
             return "Dataset has no duplicated rows"
 
+
 class NearDuplicatesAlert(Alert):
     def __init__(
         self,
