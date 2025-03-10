@@ -20,23 +20,39 @@ def in_jupyter_notebook() -> bool:
         isiPython = False
     return isiPython
 
+class DisplayInfo():
+
+    def __init__(self,
+                 title: str,
+                 info_text: str,
+                 link: str = 'ttps://ydata.ai/register',):
+        self.title=title
+        self.link=link
+        self.info_text=info_text
+
+    def display_message(self) -> None:
+        """
+        Display an HTML message in case the user is in a Jupyter Notebook
+        """
+        if in_jupyter_notebook():
+            from IPython.display import HTML, display
+            info = f"""
+            <div>
+                <ins><a href="{self.link}">{self.title}</a></ins>
+                <p>
+                    {self.info_text}
+                </p>
+            </div>
+            """
+            display(HTML(info))
+        else:
+            info = f"\033[1;34m{self.title}\033[0m" + '\n' + f'{self.info_text}'+'\n'+f"Register at {self.link}"
+            print(info)
 
 def display_banner() -> None:
     global _displayed_banner
-    if in_jupyter_notebook() and not _displayed_banner:
-        from IPython.display import HTML, display
+    banner_info = DisplayInfo(title=title, info_text=info_text)
 
-        banner_html = f"""
-        <div>
-            <ins><a href="{link}">{title}</a></ins>
-            <p>
-                {info_text}
-            </p>
-        </div>
-        """
-        display(HTML(banner_html))
-    else:
-        print(f"\033[1;34m{title}\033[0m")  # noqa: T201
-        print(info_text)  # noqa: T201
-        print(f"Register at {link}")  # noqa: T201
+    if not _displayed_banner:
+        banner_info.display_message()
         _displayed_banner = True

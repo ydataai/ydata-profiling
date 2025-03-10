@@ -18,6 +18,9 @@ from ydata_profiling.model.summary_algorithms import (
 )
 
 
+from ydata_profiling.utils.information import in_jupyter_notebook, DisplayInfo
+
+
 def get_character_counts_vc(vc: pd.Series) -> pd.Series:
     series = pd.Series(vc.index, index=vc)
     characters = series[series != ""].apply(list)
@@ -261,5 +264,10 @@ def pandas_describe_categorical_1d(
 
     if config.vars.cat.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
+
+    if config.vars.cat.dirty_categories:
+        display_info = DisplayInfo(title='Identify dirty categories with ydata-sdk',
+                                    info_text='This feature is only available for ydata-sdk users. Register to give try it.')
+        display_info.display_message()
 
     return config, series, summary

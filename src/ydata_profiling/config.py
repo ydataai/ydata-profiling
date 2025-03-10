@@ -68,7 +68,8 @@ class CatVars(BaseModel):
     redact: bool = False
     histogram_largest: int = 50
     stop_words: List[str] = []
-
+    dirty_categories: bool = True
+    dirty_categories_threshold: float = 0.85
 
 class BoolVars(BaseModel):
     n_obs: int = 3
