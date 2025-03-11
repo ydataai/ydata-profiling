@@ -276,8 +276,7 @@ class HighCardinalityAlert(Alert):
         else:
             return f"[{self.column_name}] has a high cardinality"
 
-
-class HighCardinalityAlert(Alert):
+class DirtyCategoryAlert(Alert):
     def __init__(
         self,
         values: Optional[Dict] = None,
