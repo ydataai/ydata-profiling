@@ -56,7 +56,7 @@ class DisplayInfo:
                 + "\n"
                 + f"Register at {self.link}"
             )
-            print(info) # noqa: T201
+            print(info)  # noqa: T201
 
 
 def display_banner() -> None:
