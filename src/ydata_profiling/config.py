@@ -71,6 +71,7 @@ class CatVars(BaseModel):
     dirty_categories: bool = True
     dirty_categories_threshold: float = 0.85
 
+
 class BoolVars(BaseModel):
     n_obs: int = 3
     imbalance_threshold: float = 0.5

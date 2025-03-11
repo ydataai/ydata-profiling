@@ -20,15 +20,17 @@ def in_jupyter_notebook() -> bool:
         isiPython = False
     return isiPython
 
-class DisplayInfo():
 
-    def __init__(self,
-                 title: str,
-                 info_text: str,
-                 link: str = 'ttps://ydata.ai/register',):
-        self.title=title
-        self.link=link
-        self.info_text=info_text
+class DisplayInfo:
+    def __init__(
+        self,
+        title: str,
+        info_text: str,
+        link: str = "ttps://ydata.ai/register",
+    ):
+        self.title = title
+        self.link = link
+        self.info_text = info_text
 
     def display_message(self) -> None:
         """
@@ -36,6 +38,7 @@ class DisplayInfo():
         """
         if in_jupyter_notebook():
             from IPython.display import HTML, display
+
             info = f"""
             <div>
                 <ins><a href="{self.link}">{self.title}</a></ins>
@@ -46,8 +49,15 @@ class DisplayInfo():
             """
             display(HTML(info))
         else:
-            info = f"\033[1;34m{self.title}\033[0m" + '\n' + f'{self.info_text}'+'\n'+f"Register at {self.link}"
+            info = (
+                f"\033[1;34m{self.title}\033[0m"
+                + "\n"
+                + f"{self.info_text}"
+                + "\n"
+                + f"Register at {self.link}"
+            )
             print(info)
+
 
 def display_banner() -> None:
     global _displayed_banner
