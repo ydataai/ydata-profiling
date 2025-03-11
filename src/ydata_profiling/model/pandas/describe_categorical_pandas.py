@@ -16,7 +16,7 @@ from ydata_profiling.model.summary_algorithms import (
     series_handle_nulls,
     series_hashable,
 )
-from ydata_profiling.utils.information import DisplayInfo, in_jupyter_notebook
+from ydata_profiling.utils.information import DisplayInfo
 
 
 def get_character_counts_vc(vc: pd.Series) -> pd.Series:
@@ -269,7 +269,7 @@ def pandas_describe_categorical_1d(
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
     if config.vars.cat.dirty_categories:
-        if not _displayed_catvar_banner:
+        if not _displayed_catvar_banner: # noqa: SIM102
             display_info = DisplayInfo(
                 title="Identify dirty categories with ydata-sdk",
                 info_text="This feature is only available for ydata-sdk users. Register to give try it.",
