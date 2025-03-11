@@ -268,8 +268,8 @@ def pandas_describe_categorical_1d(
     if config.vars.cat.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
 
-    if config.vars.cat.dirty_categories:
-        if not _displayed_catvar_banner:  # noqa: SIM102
+    if config.vars.cat.dirty_categories: # noqa: SIM102
+        if not _displayed_catvar_banner:
             display_info = DisplayInfo(
                 title="Identify dirty categories with ydata-sdk",
                 info_text="This feature is only available for ydata-sdk users. Register to give try it.",
