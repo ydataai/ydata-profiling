@@ -52,6 +52,9 @@ class AlertType(Enum):
     DUPLICATES = auto()
     """This variable contains duplicates."""
 
+    NEAR_DUPLICATES = auto()
+    """This variable contains duplicates."""
+
     SKEWED = auto()
     """This variable is highly skewed."""
 
@@ -69,6 +72,9 @@ class AlertType(Enum):
 
     UNIQUE = auto()
     """This variable has unique values."""
+
+    DIRTY_CATEGORY = auto()
+    """This variable is a categories with potential fuzzy values, and for that reason might incur in consistency issues."""
 
     CONSTANT_LENGTH = auto()
     """This variable has a constant length."""
@@ -205,7 +211,29 @@ class DuplicatesAlert(Alert):
         if self.values is not None:
             return f"Dataset has {self.values['n_duplicates']} ({fmt_percent(self.values['p_duplicates'])}) duplicate rows"
         else:
-            return "Dataset has duplicated values"
+            return "Dataset has no duplicated rows"
+
+
+class NearDuplicatesAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = None,
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            alert_type=AlertType.NEAR_DUPLICATES,
+            values=values,
+            column_name=column_name,
+            fields={"n_near_dups"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            return f"Dataset has {self.values['n_near_dups']} ({fmt_percent(self.values['p_near_dups'])}) near duplicate rows"
+        else:
+            return "Dataset has no near duplicated rows"
 
 
 class EmptyAlert(Alert):
@@ -247,6 +275,28 @@ class HighCardinalityAlert(Alert):
             return f"[{self.column_name}] has {self.values['n_distinct']:} ({fmt_percent(self.values['p_distinct'])}) distinct values"
         else:
             return f"[{self.column_name}] has a high cardinality"
+
+
+class DirtyCategoryAlert(Alert):
+    def __init__(
+        self,
+        values: Optional[Dict] = None,
+        column_name: Optional[str] = None,
+        is_empty: bool = False,
+    ):
+        super().__init__(
+            alert_type=AlertType.DIRTY_CATEGORY,
+            values=values,
+            column_name=column_name,
+            fields={"n_fuzzy_vals"},
+            is_empty=is_empty,
+        )
+
+    def _get_description(self) -> str:
+        if self.values is not None:
+            return f"[{self.column_name}] has {self.values['n_fuzzy_vals']} fuzzy values: {fmt_percent(self.values['p_fuzzy_vals'])} per category"
+        else:
+            return f"[{self.column_name}] no dirty categories values."
 
 
 class HighCorrelationAlert(Alert):

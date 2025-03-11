@@ -16,6 +16,7 @@ from ydata_profiling.model.summary_algorithms import (
     series_handle_nulls,
     series_hashable,
 )
+from ydata_profiling.utils.information import DisplayInfo
 
 
 def get_character_counts_vc(vc: pd.Series) -> pd.Series:
@@ -210,6 +211,9 @@ def length_summary_vc(vc: pd.Series) -> dict:
     return summary
 
 
+_displayed_catvar_banner = False
+
+
 @describe_categorical_1d.register
 @series_hashable
 @series_handle_nulls
@@ -226,6 +230,8 @@ def pandas_describe_categorical_1d(
     Returns:
         A dict containing calculated series description values.
     """
+    # Global info banner
+    global _displayed_catvar_banner
 
     # Make sure we deal with strings (Issue #100)
     series = series.astype(str)
@@ -261,5 +267,14 @@ def pandas_describe_categorical_1d(
 
     if config.vars.cat.words:
         summary.update(word_summary_vc(value_counts, config.vars.cat.stop_words))
+
+    if config.vars.cat.dirty_categories:  # noqa: SIM102
+        if not _displayed_catvar_banner:
+            display_info = DisplayInfo(
+                title="Identify dirty categories with ydata-sdk",
+                info_text="This feature is only available for ydata-sdk users. Register to give try it.",
+            )
+            display_info.display_message()
+            _displayed_catvar_banner = True
 
     return config, series, summary
