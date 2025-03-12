@@ -3,17 +3,8 @@ import warnings
 import pandas as pd
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.dataframe import check_dataframe, preprocess
 from ydata_profiling.utils.dataframe import rename_index
 
-
-@check_dataframe.register
-def pandas_check_dataframe(df: pd.DataFrame) -> None:
-    if not isinstance(df, pd.DataFrame):
-        warnings.warn("df is not of type pandas.DataFrame")
-
-
-@preprocess.register
 def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     """Preprocess the dataframe
 

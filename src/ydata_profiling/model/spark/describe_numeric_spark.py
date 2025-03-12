@@ -6,7 +6,6 @@ from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summary_algorithms import (
-    describe_numeric_1d,
     histogram_compute,
 )
 
@@ -27,7 +26,6 @@ def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
     return df.agg(*expr).first().asDict()
 
 
-@describe_numeric_1d.register
 def describe_numeric_1d_spark(
     config: Settings, df: DataFrame, summary: dict
 ) -> Tuple[Settings, DataFrame, dict]:

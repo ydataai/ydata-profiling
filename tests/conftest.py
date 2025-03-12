@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summarizer import PandasProfilingSummarizer
+from ydata_profiling.model.summarizer import ProfilingSummarizer
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.utils.cache import cache_file
 
@@ -37,7 +37,7 @@ def test_output_dir(tmpdir_factory):
 
 @pytest.fixture(scope="function")
 def summarizer(typeset):
-    return PandasProfilingSummarizer(typeset)
+    return ProfilingSummarizer(typeset)
 
 
 @pytest.fixture(scope="function")
