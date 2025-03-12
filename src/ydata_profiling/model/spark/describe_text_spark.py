@@ -3,10 +3,7 @@ from typing import Tuple
 from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summary_algorithms import describe_text_1d
 
-
-@describe_text_1d.register
 def describe_text_1d_spark(
     config: Settings, df: DataFrame, summary: dict
 ) -> Tuple[Settings, DataFrame, dict]:

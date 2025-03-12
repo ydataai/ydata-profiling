@@ -13,7 +13,7 @@ from ydata_profiling.model.correlations import (
     calculate_correlation,
     get_active_correlations,
 )
-from ydata_profiling.model.dataframe import check_dataframe, preprocess
+from ydata_profiling.model.dataframe import preprocess
 from ydata_profiling.model.description import TimeIndexAnalysis
 from ydata_profiling.model.duplicates import get_duplicates
 from ydata_profiling.model.missing import get_missing_active, get_missing_diagram
@@ -56,7 +56,6 @@ def describe(
     if df is None:
         raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
 
-    check_dataframe(df)
     df = preprocess(config, df)
 
     number_of_tasks = 5

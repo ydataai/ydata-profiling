@@ -3,27 +3,34 @@ from typing import Any, Callable, Dict, List, Type, Union
 
 import numpy as np
 import pandas as pd
+from jinja2.nodes import Import
 from visions import VisionsBaseType, VisionsTypeset
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model.pandas.describe_supported_pandas import pandas_describe_supported
+
+from ydata_profiling.model.summary_algorithms import (describe_url_1d, describe_path_1d, describe_file_1d,
+                                                      describe_image_1d, describe_timeseries_1d)
+from ydata_profiling.utils.backend import is_pyspark_installed
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.handler import Handler
-from ydata_profiling.model.summary_algorithms import (
-    describe_boolean_1d,
-    describe_categorical_1d,
-    describe_counts,
-    describe_date_1d,
-    describe_file_1d,
-    describe_generic,
-    describe_image_1d,
-    describe_numeric_1d,
-    describe_path_1d,
-    describe_supported,
-    describe_text_1d,
-    describe_timeseries_1d,
-    describe_url_1d,
-)
+from ydata_profiling.model.summary_algorithms import describe_supported, \
+    describe_generic  # Check what is this method used for
 
+from ydata_profiling.model.pandas import (
+    pandas_describe_boolean_1d,
+    pandas_describe_categorical_1d,
+    pandas_describe_counts,
+    pandas_describe_date_1d,
+    pandas_describe_file_1d,
+    pandas_describe_generic,
+    pandas_describe_image_1d,
+    pandas_describe_numeric_1d,
+    pandas_describe_path_1d,
+    pandas_describe_text_1d,
+    pandas_describe_timeseries_1d,
+    pandas_describe_url_1d,
+)
 
 class BaseSummarizer(Handler):
     """A base summarizer
@@ -34,57 +41,72 @@ class BaseSummarizer(Handler):
     def summarize(
         self, config: Settings, series: pd.Series, dtype: Type[VisionsBaseType]
     ) -> dict:
-        """
+        """Generates the summary for a given series"""
+        return self.handle(str(dtype), config, series, {"type": str(dtype)})
 
-        Returns:
-            object:
-        """
-        _, _, summary = self.handle(str(dtype), config, series, {"type": str(dtype)})
-        return summary
+#Revisit this with the correct support for Spark as well.
+class ProfilingSummarizer(BaseSummarizer):
+    """A summarizer for Pandas DataFrames."""
 
+    def __init__(self, typeset: VisionsTypeset, use_spark: bool = False):
+        self.use_spark = use_spark and is_pyspark_installed()
+        self._summary_map = self._create_summary_map()
+        super().__init__(self._summary_map, typeset)
 
-class PandasProfilingSummarizer(BaseSummarizer):
-    """The default YData Profiling summarizer"""
+    @property
+    def summary_map(self) -> Dict[str, List[Callable]]:
+        """Allows users to modify the summary map after initialization."""
+        return self._summary_map
 
-    def __init__(self, typeset: VisionsTypeset, *args, **kwargs):
-        summary_map: Dict[str, List[Callable]] = {
-            "Unsupported": [
-                describe_counts,
-                describe_generic,
-                describe_supported,
-            ],
-            "Numeric": [
-                describe_numeric_1d,
-            ],
-            "DateTime": [
-                describe_date_1d,
-            ],
-            "Text": [
-                describe_text_1d,
-            ],
-            "Categorical": [
-                describe_categorical_1d,
-            ],
-            "Boolean": [
-                describe_boolean_1d,
-            ],
-            "URL": [
-                describe_url_1d,
-            ],
-            "Path": [
-                describe_path_1d,
-            ],
-            "File": [
-                describe_file_1d,
-            ],
-            "Image": [
-                describe_image_1d,
-            ],
-            "TimeSeries": [
-                describe_timeseries_1d,
-            ],
+    def _create_summary_map(self) -> Dict[str, List[Callable]]:
+        """Creates the summary map for Pandas summarization."""
+        if self.use_spark:
+            from ydata_profiling.model.spark import (
+                describe_boolean_1d_spark,
+                describe_categorical_1d_spark,
+                describe_counts_spark,
+                describe_generic_spark,
+                describe_numeric_1d_spark,
+                describe_supported_spark,
+                describe_date_1d_spark,
+                describe_text_1d_spark,
+            )
+
+            print('importing the spark functions instead')
+            summary_map = {
+                "Unsupported": [
+                    describe_counts_spark,
+                    describe_generic_spark,
+                    describe_supported_spark,
+                ],
+                "Numeric": [describe_numeric_1d_spark],
+                "DateTime": [describe_date_1d_spark],
+                "Text": [describe_text_1d_spark],
+                "Categorical": [describe_categorical_1d_spark],
+                "Boolean": [describe_boolean_1d_spark],
+                "URL": [describe_url_1d],
+                "Path": [describe_path_1d],
+                "File": [describe_file_1d],
+                "Image": [describe_image_1d],
+                "TimeSeries": [describe_timeseries_1d]
+            }
+        else:
+            summary_map = {
+            "Unsupported": [pandas_describe_counts,
+                            pandas_describe_generic,
+                            pandas_describe_supported],
+            "Numeric": [pandas_describe_numeric_1d],
+            "DateTime": [pandas_describe_date_1d],
+            "Text": [pandas_describe_text_1d],
+            "Categorical": [pandas_describe_categorical_1d],
+            "Boolean": [pandas_describe_boolean_1d],
+            "URL": [pandas_describe_url_1d],
+            "Path": [pandas_describe_path_1d],
+            "File": [pandas_describe_file_1d],
+            "Image": [pandas_describe_image_1d],
+            "TimeSeries": [pandas_describe_timeseries_1d],
         }
-        super().__init__(summary_map, typeset, *args, **kwargs)
+        return summary_map
 
 
 def format_summary(summary: Union[BaseDescription, dict]) -> dict:
@@ -175,5 +197,4 @@ def redact_summary(summary: dict, config: Settings) -> dict:
             config.vars.text.redact and col["type"] == "Text"
         ):
             col = _redact_column(col)
-
     return summary
