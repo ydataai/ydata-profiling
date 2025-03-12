@@ -1,6 +1,6 @@
 """Organize the calculation of statistics for each series in this DataFrame."""
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 import pandas as pd
 from tqdm.auto import tqdm
@@ -29,7 +29,7 @@ from ydata_profiling.version import __version__
 
 def describe(
     config: Settings,
-    df: pd.DataFrame,
+    df: Union[pd.DataFrame, "pyspark.sql.DataFrame"],
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     sample: Optional[dict] = None,
@@ -52,9 +52,19 @@ def describe(
             - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
+    # ** Validate Input types **
+    if not isinstance(config, Settings):
+        raise TypeError(f"`config` must be of type `Settings`, got {type(config)}")
 
-    if df is None:
-        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
+    # Validate df input type
+    if not isinstance(df, pd.DataFrame):
+        try:
+            from pyspark.sql import DataFrame as SparkDataFrame
+            if not isinstance(df, SparkDataFrame):
+                raise TypeError(f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}")
+        except ImportError:
+            raise TypeError(f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
+                            f"If using Spark, make sure PySpark is installed.")
 
     df = preprocess(config, df)
 

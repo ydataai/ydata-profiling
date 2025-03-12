@@ -1,10 +1,9 @@
 """Correlations between variables."""
 import warnings
-from typing import Dict, List, Optional, Sized
+from typing import Dict, List, Optional, Sized, Type
 
 import numpy as np
 import pandas as pd
-from multimethod import multimethod
 
 from ydata_profiling.config import Settings
 
@@ -13,53 +12,51 @@ try:
 except ImportError:
     from pandas.errors import DataError
 
+class CorrelationBackend:
+    """Helper class to select and cache the appropriate correlation backend (Pandas or Spark)."""
 
-class Correlation:
-    @staticmethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
+    def __init__(self, df: Sized):
+        """Determine backend once and store it for all correlation computations."""
+        if isinstance(df, pd.DataFrame):
+            from ydata_profiling.model.pandas import correlations_pandas as backend
+        else:
+            from ydata_profiling.model.spark import correlations_spark as backend
 
+        self.backend = backend
+
+    def get_method(self, method_name: str):
+        """Retrieve the appropriate correlation method class from the backend."""
+        if hasattr(self.backend, method_name):
+            return getattr(self.backend, method_name)
+        raise AttributeError(f"Correlation method '{method_name}' is not available in the backend.")
+
+class Correlation():
+    def compute(self, config: Settings, df: Sized, summary: dict, backend: CorrelationBackend) -> Optional[Sized]:
+        """Computes correlation using the correct backend (Pandas or Spark)."""
+        try:
+            method = backend.get_method(self._method_name)
+            return method(config, df, summary)
+        except AttributeError:
+            raise NotImplementedError()
 
 class Auto(Correlation):
-    @staticmethod
-    @multimethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
-
+    """Automatically selects the appropriate correlation method based on the DataFrame type."""
+    _method_name = 'auto_compute'
 
 class Spearman(Correlation):
-    @staticmethod
-    @multimethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
-
+    _method_name = "spearman_compute"
 
 class Pearson(Correlation):
-    @staticmethod
-    @multimethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
-
+    _method_name = "pearson_compute"
 
 class Kendall(Correlation):
-    @staticmethod
-    @multimethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
-
+    _method_name = "kendall_compute"
 
 class Cramers(Correlation):
-    @staticmethod
-    @multimethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
-
+    _method_name = "cramers_compute"
 
 class PhiK(Correlation):
-    @staticmethod
-    @multimethod
-    def compute(config: Settings, df: Sized, summary: dict) -> Optional[Sized]:
-        raise NotImplementedError()
+    _method_name = "phik_compute"
 
 
 def warn_correlation(correlation_name: str, error: str) -> None:
@@ -88,6 +85,8 @@ def calculate_correlation(
     Returns:
         The correlation matrices for the given correlation measures. Return None if correlation is empty.
     """
+    backend = CorrelationBackend(df)
+
     correlation_measures = {
         "auto": Auto,
         "pearson": Pearson,
@@ -99,16 +98,11 @@ def calculate_correlation(
 
     correlation = None
     try:
-        correlation = correlation_measures[correlation_name].compute(
-            config, df, summary
-        )
+        correlation = correlation_measures[correlation_name]().compute(config, df, summary, backend)
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
         warn_correlation(correlation_name, str(e))
 
-    if correlation is not None and len(correlation) <= 0:
-        correlation = None
-
-    return correlation
+    return correlation if correlation is not None and len(correlation) > 0 else None
 
 
 def perform_check_correlation(

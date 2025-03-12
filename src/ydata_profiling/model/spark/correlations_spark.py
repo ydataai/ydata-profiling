@@ -14,36 +14,35 @@ from pyspark.sql.types import ArrayType, DoubleType, StructField, StructType
 from ydata_profiling.config import Settings
 from ydata_profiling.model.correlations import Cramers, Kendall, Pearson, PhiK, Spearman
 
-SPARK_CORRELATION_PEARSON = "pearson"
-SPARK_CORRELATION_SPEARMAN = "spearman"
+CORRELATION_PEARSON = "pearson"
+CORRELATION_SPEARMAN = "spearman"
 
 
-@Spearman.compute.register(Settings, DataFrame, dict)
-def spark_spearman_compute(
+def spearman_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     # Get the numerical cols for index and column names
     # Spark only computes Spearman natively for the above dtypes
-    matrix, num_cols = _compute_spark_corr_natively(
-        df, summary, corr_type=SPARK_CORRELATION_SPEARMAN
+    matrix, num_cols = _compute_corr_natively(
+        df, summary, corr_type=CORRELATION_SPEARMAN
     )
     return pd.DataFrame(matrix, index=num_cols, columns=num_cols)
 
 
 @Pearson.compute.register(Settings, DataFrame, dict)
-def spark_pearson_compute(
+def pearson_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
 
     # Get the numerical cols for index and column names
     # Spark only computes Pearson natively for the above dtypes
-    matrix, num_cols = _compute_spark_corr_natively(
-        df, summary, corr_type=SPARK_CORRELATION_PEARSON
+    matrix, num_cols = _compute_corr_natively(
+        df, summary, corr_type=CORRELATION_PEARSON
     )
     return pd.DataFrame(matrix, index=num_cols, columns=num_cols)
 
 
-def _compute_spark_corr_natively(
+def _compute_corr_natively(
     df: DataFrame, summary: dict, corr_type: str
 ) -> ArrayType:
     """
@@ -77,21 +76,20 @@ def _compute_spark_corr_natively(
 
 
 @Kendall.compute.register(Settings, DataFrame, dict)
-def spark_kendall_compute(
+def kendall_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     raise NotImplementedError()
 
 
 @Cramers.compute.register(Settings, DataFrame, dict)
-def spark_cramers_compute(
+def cramers_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     raise NotImplementedError()
 
 
-@PhiK.compute.register(Settings, DataFrame, dict)
-def spark_phi_k_compute(
+def phi_k_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
 
@@ -127,7 +125,7 @@ def spark_phi_k_compute(
 
     # create the pandas grouped map function to do vectorized kendall within spark itself
     @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
-    def spark_phik(pdf: pd.DataFrame) -> pd.DataFrame:
+    def phik(pdf: pd.DataFrame) -> pd.DataFrame:
         correlation = phik.phik_matrix(df=pdf, interval_cols=list(intcols))
         return correlation
 
@@ -135,7 +133,7 @@ def spark_phi_k_compute(
     if len(groupby_df.head(1)) > 0:
         # perform correlation in spark, and get the results back in pandas
         df = pd.DataFrame(
-            groupby_df.groupby("groupby").apply(spark_phik).toPandas().values,
+            groupby_df.groupby("groupby").apply(phik).toPandas().values,
             columns=selcols,
             index=selcols,
         )
