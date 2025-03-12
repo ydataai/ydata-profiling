@@ -6,6 +6,7 @@ from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
 
+
 def date_stats_spark(df: DataFrame, summary: dict) -> dict:
     column = df.columns[0]
 

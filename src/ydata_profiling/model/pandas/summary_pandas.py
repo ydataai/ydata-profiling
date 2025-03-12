@@ -17,6 +17,7 @@ from ydata_profiling.utils.dataframe import sort_column_names
 def _is_cast_type_defined(typeset: VisionsTypeset, series: str) -> bool:
     return isinstance(typeset, ProfilingTypeSet) and series in typeset.type_schema
 
+
 def pandas_describe_1d(
     config: Settings,
     series: pd.Series,
@@ -76,12 +77,17 @@ def pandas_get_series_descriptions(
         pbar.update()
         return name, description
 
-    pool_size = config.pool_size if config.pool_size > 0 else multiprocessing.cpu_count()
+    pool_size = (
+        config.pool_size if config.pool_size > 0 else multiprocessing.cpu_count()
+    )
 
     series_description = {}
 
     with ThreadPoolExecutor(max_workers=pool_size) as executor:
-        future_to_col = {executor.submit(describe_column, name, series): name for name, series in df.items()}
+        future_to_col = {
+            executor.submit(describe_column, name, series): name
+            for name, series in df.items()
+        }
 
         for future in tqdm(future_to_col.keys(), total=len(future_to_col)):
             name, description = future.result()

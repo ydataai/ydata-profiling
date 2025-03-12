@@ -12,6 +12,7 @@ try:
 except ImportError:
     from pandas.errors import DataError
 
+
 class CorrelationBackend:
     """Helper class to select and cache the appropriate correlation backend (Pandas or Spark)."""
 
@@ -28,32 +29,44 @@ class CorrelationBackend:
         """Retrieve the appropriate correlation method class from the backend."""
         if hasattr(self.backend, method_name):
             return getattr(self.backend, method_name)
-        raise AttributeError(f"Correlation method '{method_name}' is not available in the backend.")
+        raise AttributeError(
+            f"Correlation method '{method_name}' is not available in the backend."
+        )
 
-class Correlation():
-    def compute(self, config: Settings, df: Sized, summary: dict, backend: CorrelationBackend) -> Optional[Sized]:
+
+class Correlation:
+    def compute(
+        self, config: Settings, df: Sized, summary: dict, backend: CorrelationBackend
+    ) -> Optional[Sized]:
         """Computes correlation using the correct backend (Pandas or Spark)."""
         try:
             method = backend.get_method(self._method_name)
             return method(config, df, summary)
-        except AttributeError:
-            raise NotImplementedError()
+        except AttributeError as ex:
+            raise NotImplementedError() from ex
+
 
 class Auto(Correlation):
     """Automatically selects the appropriate correlation method based on the DataFrame type."""
-    _method_name = 'auto_compute'
+
+    _method_name = "auto_compute"
+
 
 class Spearman(Correlation):
     _method_name = "spearman_compute"
 
+
 class Pearson(Correlation):
     _method_name = "pearson_compute"
+
 
 class Kendall(Correlation):
     _method_name = "kendall_compute"
 
+
 class Cramers(Correlation):
     _method_name = "cramers_compute"
+
 
 class PhiK(Correlation):
     _method_name = "phik_compute"
@@ -98,7 +111,9 @@ def calculate_correlation(
 
     correlation = None
     try:
-        correlation = correlation_measures[correlation_name]().compute(config, df, summary, backend)
+        correlation = correlation_measures[correlation_name]().compute(
+            config, df, summary, backend
+        )
     except (ValueError, AssertionError, TypeError, DataError, IndexError) as e:
         warn_correlation(correlation_name, str(e))
 

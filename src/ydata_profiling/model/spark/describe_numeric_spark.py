@@ -5,9 +5,7 @@ import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summary_algorithms import (
-    histogram_compute,
-)
+from ydata_profiling.model.summary_algorithms import histogram_compute
 
 
 def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:

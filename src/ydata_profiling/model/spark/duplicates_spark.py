@@ -5,6 +5,7 @@ from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
 
+
 def get_duplicates_spark(
     config: Settings, df: DataFrame, supported_columns: Sequence
 ) -> Tuple[Dict[str, Any], Optional[DataFrame]]:

@@ -8,6 +8,7 @@ from ydata_profiling.visualisation.missing import (
     plot_missing_matrix,
 )
 
+
 def missing_bar(config: Settings, df: pd.DataFrame) -> str:
     notnull_counts = len(df) - df.isnull().sum()
     return plot_missing_bar(
@@ -17,6 +18,7 @@ def missing_bar(config: Settings, df: pd.DataFrame) -> str:
         columns=list(df.columns),
     )
 
+
 def missing_matrix(config: Settings, df: pd.DataFrame) -> str:
     return plot_missing_matrix(
         config,
@@ -24,6 +26,7 @@ def missing_matrix(config: Settings, df: pd.DataFrame) -> str:
         notnull=df.notnull().values,
         nrows=len(df),
     )
+
 
 def missing_heatmap(config: Settings, df: pd.DataFrame) -> str:
     # Remove completely filled or completely empty variables.

@@ -42,9 +42,7 @@ def pearson_compute(
     return pd.DataFrame(matrix, index=num_cols, columns=num_cols)
 
 
-def _compute_corr_natively(
-    df: DataFrame, summary: dict, corr_type: str
-) -> ArrayType:
+def _compute_corr_natively(df: DataFrame, summary: dict, corr_type: str) -> ArrayType:
     """
     This function exists as pearson and spearman correlation computations have the
     exact same workflow. The syntax is Correlation.corr(dataframe, method="pearson" OR "spearman"),

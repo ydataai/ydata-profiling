@@ -7,16 +7,8 @@ from jinja2.nodes import Import
 from visions import VisionsBaseType, VisionsTypeset
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.pandas.describe_supported_pandas import pandas_describe_supported
-
-from ydata_profiling.model.summary_algorithms import (describe_url_1d, describe_path_1d, describe_file_1d,
-                                                      describe_image_1d, describe_timeseries_1d)
-from ydata_profiling.utils.backend import is_pyspark_installed
 from ydata_profiling.model import BaseDescription
 from ydata_profiling.model.handler import Handler
-from ydata_profiling.model.summary_algorithms import describe_supported, \
-    describe_generic  # Check what is this method used for
-
 from ydata_profiling.model.pandas import (
     pandas_describe_boolean_1d,
     pandas_describe_categorical_1d,
@@ -31,6 +23,20 @@ from ydata_profiling.model.pandas import (
     pandas_describe_timeseries_1d,
     pandas_describe_url_1d,
 )
+from ydata_profiling.model.pandas.describe_supported_pandas import (
+    pandas_describe_supported,
+)
+from ydata_profiling.model.summary_algorithms import (  # Check what is this method used for
+    describe_file_1d,
+    describe_generic,
+    describe_image_1d,
+    describe_path_1d,
+    describe_supported,
+    describe_timeseries_1d,
+    describe_url_1d,
+)
+from ydata_profiling.utils.backend import is_pyspark_installed
+
 
 class BaseSummarizer(Handler):
     """A base summarizer
@@ -44,7 +50,8 @@ class BaseSummarizer(Handler):
         """Generates the summary for a given series"""
         return self.handle(str(dtype), config, series, {"type": str(dtype)})
 
-#Revisit this with the correct support for Spark as well.
+
+# Revisit this with the correct support for Spark as well.
 class ProfilingSummarizer(BaseSummarizer):
     """A summarizer for Pandas DataFrames."""
 
@@ -65,14 +72,14 @@ class ProfilingSummarizer(BaseSummarizer):
                 describe_boolean_1d_spark,
                 describe_categorical_1d_spark,
                 describe_counts_spark,
+                describe_date_1d_spark,
                 describe_generic_spark,
                 describe_numeric_1d_spark,
                 describe_supported_spark,
-                describe_date_1d_spark,
                 describe_text_1d_spark,
             )
 
-            print('importing the spark functions instead')
+            print("importing the spark functions instead")
             summary_map = {
                 "Unsupported": [
                     describe_counts_spark,
@@ -88,24 +95,26 @@ class ProfilingSummarizer(BaseSummarizer):
                 "Path": [describe_path_1d],
                 "File": [describe_file_1d],
                 "Image": [describe_image_1d],
-                "TimeSeries": [describe_timeseries_1d]
+                "TimeSeries": [describe_timeseries_1d],
             }
         else:
             summary_map = {
-            "Unsupported": [pandas_describe_counts,
-                            pandas_describe_generic,
-                            pandas_describe_supported],
-            "Numeric": [pandas_describe_numeric_1d],
-            "DateTime": [pandas_describe_date_1d],
-            "Text": [pandas_describe_text_1d],
-            "Categorical": [pandas_describe_categorical_1d],
-            "Boolean": [pandas_describe_boolean_1d],
-            "URL": [pandas_describe_url_1d],
-            "Path": [pandas_describe_path_1d],
-            "File": [pandas_describe_file_1d],
-            "Image": [pandas_describe_image_1d],
-            "TimeSeries": [pandas_describe_timeseries_1d],
-        }
+                "Unsupported": [
+                    pandas_describe_counts,
+                    pandas_describe_generic,
+                    pandas_describe_supported,
+                ],
+                "Numeric": [pandas_describe_numeric_1d],
+                "DateTime": [pandas_describe_date_1d],
+                "Text": [pandas_describe_text_1d],
+                "Categorical": [pandas_describe_categorical_1d],
+                "Boolean": [pandas_describe_boolean_1d],
+                "URL": [pandas_describe_url_1d],
+                "Path": [pandas_describe_path_1d],
+                "File": [pandas_describe_file_1d],
+                "Image": [pandas_describe_image_1d],
+                "TimeSeries": [pandas_describe_timeseries_1d],
+            }
         return summary_map
 
 

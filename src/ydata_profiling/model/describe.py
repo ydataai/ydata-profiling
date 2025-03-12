@@ -60,11 +60,16 @@ def describe(
     if not isinstance(df, pd.DataFrame):
         try:
             from pyspark.sql import DataFrame as SparkDataFrame
+
             if not isinstance(df, SparkDataFrame):
-                raise TypeError(f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}")
-        except ImportError:
-            raise TypeError(f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
-                            f"If using Spark, make sure PySpark is installed.")
+                raise TypeError(
+                    f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}"
+                )
+        except ImportError as ex:
+            raise TypeError(
+                f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
+                f"If using Spark, make sure PySpark is installed."
+            ) from ex
 
     df = preprocess(config, df)
 

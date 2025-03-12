@@ -1,10 +1,11 @@
 import concurrent.futures
-import requests
-import numpy as np
-import pandas as pd
 from functools import partial
 from gzip import decompress
 from typing import Tuple
+
+import numpy as np
+import pandas as pd
+import requests
 
 from ydata_profiling.model.summary import describe_1d
 
@@ -97,7 +98,9 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
     def run_multiprocess(config, df):
         """Runs describe1d in parallel using ThreadPoolExecutor."""
         args = [(column, series) for column, series in df.items()]
-        process_func = partial(mock_multiprocess_1d, config=config, summarizer=summarizer, typeset=typeset)
+        process_func = partial(
+            mock_multiprocess_1d, config=config, summarizer=summarizer, typeset=typeset
+        )
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             results = list(executor.map(lambda x: process_func(x), args))
@@ -111,4 +114,6 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
         run_multiprocess(config, df)
 
     except ValueError as ex:
-        raise RuntimeError("Parallel describe1d execution raised ValueError unexpectedly!") from ex
+        raise RuntimeError(
+            "Parallel describe1d execution raised ValueError unexpectedly!"
+        ) from ex

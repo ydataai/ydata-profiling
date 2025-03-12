@@ -255,7 +255,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     @property
     def summarizer(self) -> BaseSummarizer:
         if self._summarizer is None:
-            self._summarizer = ProfilingSummarizer(self.typeset, use_spark=False) #need to improve this logic
+            self._summarizer = ProfilingSummarizer(
+                self.typeset, use_spark=False
+            )  # need to improve this logic
         return self._summarizer
 
     @property

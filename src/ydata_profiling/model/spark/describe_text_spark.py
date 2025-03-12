@@ -4,6 +4,7 @@ from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
 
+
 def describe_text_1d_spark(
     config: Settings, df: DataFrame, summary: dict
 ) -> Tuple[Settings, DataFrame, dict]:

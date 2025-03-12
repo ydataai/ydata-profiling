@@ -1,7 +1,10 @@
 import warnings
+
 from pyspark.sql import DataFrame
 from pyspark.sql.types import MapType
+
 from ydata_profiling.config import Settings
+
 
 def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
     """Preprocess the Spark DataFrame by removing MapType columns.
@@ -16,7 +19,9 @@ def spark_preprocess(config: Settings, df: DataFrame) -> DataFrame:
         The preprocessed DataFrame without MapType columns.
     """
     # Identify MapType columns
-    columns_to_remove = [field.name for field in df.schema.fields if isinstance(field.dataType, MapType)]
+    columns_to_remove = [
+        field.name for field in df.schema.fields if isinstance(field.dataType, MapType)
+    ]
 
     if columns_to_remove:
         warnings.warn(

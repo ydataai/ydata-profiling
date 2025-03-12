@@ -25,7 +25,13 @@ PANDAS_MODULES = [
 # Dynamically import and expose functions from modules
 for module_name in PANDAS_MODULES:
     module = importlib.import_module(f"ydata_profiling.model.pandas.{module_name}")
-    globals().update({name: getattr(module, name) for name in dir(module) if not name.startswith("_")})
+    globals().update(
+        {
+            name: getattr(module, name)
+            for name in dir(module)
+            if not name.startswith("_")
+        }
+    )
 
 # Explicitly list exposed names for clarity
 __all__ = [

@@ -5,6 +5,7 @@ import pandas as pd
 from ydata_profiling.config import Settings
 from ydata_profiling.utils.dataframe import rename_index
 
+
 def pandas_preprocess(config: Settings, df: pd.DataFrame) -> pd.DataFrame:
     """Preprocess the dataframe
 

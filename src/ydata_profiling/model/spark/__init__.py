@@ -17,13 +17,19 @@ SPLARK_MODULES = [
     "summary_spark",
     "table_spark",
     "timeseries_index_spark",
-    "describe_text_spark"
+    "describe_text_spark",
 ]
 
 # Load modules dynamically
 for module_name in SPLARK_MODULES:
     module = importlib.import_module(f"ydata_profiling.model.spark.{module_name}")
-    globals().update({name: getattr(module, name) for name in dir(module) if not name.startswith("_")})
+    globals().update(
+        {
+            name: getattr(module, name)
+            for name in dir(module)
+            if not name.startswith("_")
+        }
+    )
 
 # Explicitly list all available functions
 __all__ = [

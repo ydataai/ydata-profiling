@@ -8,7 +8,6 @@ import pandas as pd
 from scipy import stats
 
 from ydata_profiling.config import Settings
-
 from ydata_profiling.model.pandas.discretize_pandas import (
     DiscretizationType,
     Discretizer,
@@ -21,11 +20,13 @@ def spearman_compute(
     df_aux = df.select_dtypes(include="number").copy()
     return df_aux.corr(method="spearman")
 
+
 def pearson_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     df_aux = df.select_dtypes(include="number").copy()
     return df_aux.corr(method="pearson")
+
 
 def kendall_compute(
     config: Settings, df: pd.DataFrame, summary: dict
@@ -74,6 +75,7 @@ def _pairwise_spearman(col_1: pd.Series, col_2: pd.Series) -> float:
 def _pairwise_cramers(col_1: pd.Series, col_2: pd.Series) -> float:
     return _cramers_corrected_stat(pd.crosstab(col_1, col_2), correction=True)
 
+
 def cramers_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
@@ -112,6 +114,7 @@ def cramers_compute(
             )
         correlation_matrix.loc[name1, name2] = correlation_matrix.loc[name2, name1]
     return correlation_matrix
+
 
 def phik_compute(
     config: Settings, df: pd.DataFrame, summary: dict

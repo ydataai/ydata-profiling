@@ -6,6 +6,7 @@ from ydata_profiling.config import Settings
 
 T = TypeVar("T")
 
+
 @multimethod
 def get_duplicates(
     config: Settings, df: T, supported_columns: Sequence

@@ -1,9 +1,11 @@
-import warnings
 import importlib
+import warnings
 from typing import Any, Callable, Dict, Optional, Sized
 
 import pandas as pd
+
 from ydata_profiling.config import Settings
+
 
 class MissingDataBackend:
     """Helper class to select and cache the appropriate missing-data backend (Pandas or Spark)."""
@@ -21,27 +23,37 @@ class MissingDataBackend:
         """Retrieve the appropriate missing-data function from the backend module."""
         try:
             return getattr(self.module, method_name)
-        except AttributeError:
-            raise AttributeError(f"Missing-data function '{method_name}' is not available in {self.backend_module}.")
+        except AttributeError as ex:
+            raise AttributeError(
+                f"Missing-data function '{method_name}' is not available in {self.backend_module}."
+            ) from ex
 
-class MissingData():
-    _method_name=None
-    def compute(self, config: Settings, df: Sized, backend: MissingDataBackend) -> Optional[Sized]:
+
+class MissingData:
+    _method_name = None
+
+    def compute(
+        self, config: Settings, df: Sized, backend: MissingDataBackend
+    ) -> Optional[Sized]:
         """Computes correlation using the correct backend (Pandas or Spark)."""
         try:
             method = backend.get_method(self._method_name)
             return method(config, df)
-        except AttributeError:
-            raise NotImplementedError()
+        except AttributeError as ex:
+            raise NotImplementedError() from ex
+
 
 class MissingBar(MissingData):
-    _method_name = 'missing_bar'
+    _method_name = "missing_bar"
+
 
 class MissingMatrix(MissingData):
-    _method_name = 'missing_matrix'
+    _method_name = "missing_matrix"
+
 
 class MissingHeatmap(MissingData):
-    _method_name = 'missing_heatmap'
+    _method_name = "missing_heatmap"
+
 
 def get_missing_active(config: Settings, table_stats: dict) -> Dict[str, Any]:
     """

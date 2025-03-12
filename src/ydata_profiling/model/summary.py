@@ -2,29 +2,34 @@
 import importlib
 from typing import Any
 
+import pandas as pd
 from tqdm import tqdm
 from visions import VisionsTypeset
 
-import pandas as pd
-
-spec = importlib.util.find_spec('pyspark')
+spec = importlib.util.find_spec("pyspark")
 if spec is None:
     from typing import TypeVar
+
     sparkDataFrame = TypeVar("sparkDataFrame")
     sparkDataFrame = TypeVar("sparkSeries")
 else:
     from pyspark.sql import DataFrame as sparkDataFrame
     from pyspark.pandas import Series as sparkSeries
 
-    from ydata_profiling.model.spark.summary_spark import spark_get_series_descriptions, spark_describe_1d
-
+    from ydata_profiling.model.spark.summary_spark import (
+        spark_get_series_descriptions,
+        spark_describe_1d,
+    )
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model.pandas.summary_pandas import (
+    pandas_describe_1d,
+    pandas_get_series_descriptions,
+)
 from ydata_profiling.model.summarizer import BaseSummarizer
 
-from ydata_profiling.model.pandas.summary_pandas import pandas_get_series_descriptions, pandas_describe_1d
-
 # If could be doing this with a mapping instead?
+
 
 def describe_1d(
     config: Settings,
@@ -43,10 +48,11 @@ def describe_1d(
     """
     if isinstance(series, pd.Series):
         return pandas_describe_1d(config, series, summarizer, typeset)
-    elif isinstance(series, pd.DataFrame): #add here to validate the spark dataframe
+    elif isinstance(series, pd.DataFrame):  # add here to validate the spark dataframe
         return spark_describe_1d(config, series, summarizer, typeset)
     else:
         raise TypeError(f"Unsupported series type: {type(series)}")
+
 
 def get_series_descriptions(
     config: Settings,

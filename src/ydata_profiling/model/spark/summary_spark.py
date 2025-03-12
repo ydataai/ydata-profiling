@@ -75,6 +75,7 @@ def get_series_descriptions_spark(
 
     Returns: A dict with the series descriptions for each column of a Dataset
     """
+
     def describe_column(name: str) -> Tuple[str, dict]:
         """Process a single Spark column using Spark's execution model."""
         description = spark_describe_1d(config, df.select(name), summarizer, typeset)
@@ -82,7 +83,9 @@ def get_series_descriptions_spark(
         pbar.update()
 
         # Clean up Spark-specific metadata
-        description.pop("value_counts", None)  # Use `.pop()` with default to avoid KeyError
+        description.pop(
+            "value_counts", None
+        )  # Use `.pop()` with default to avoid KeyError
         return name, description
 
     series_description = dict(df.columns.map(lambda col: (col, describe_column(col))))
