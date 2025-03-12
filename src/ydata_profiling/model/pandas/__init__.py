@@ -2,6 +2,7 @@ import importlib
 
 # List of modules in the 'pandas' model that should be imported explicitly
 PANDAS_MODULES = [
+    "correlations_pandas",
     "describe_generic_pandas",
     "describe_boolean_pandas",
     "describe_categorical_pandas",

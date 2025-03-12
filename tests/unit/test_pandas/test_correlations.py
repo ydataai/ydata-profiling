@@ -4,9 +4,9 @@ import pytest
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.pandas.correlations_pandas import (
-    pandas_auto_compute,
-    pandas_cramers_compute,
-    pandas_spearman_compute,
+    auto_compute as pandas_auto_compute,
+    cramers_compute as pandas_cramers_compute,
+    spearman_compute as pandas_spearman_compute,
 )
 
 

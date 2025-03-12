@@ -3,7 +3,6 @@ from typing import Any
 import importlib
 
 import pandas as pd
-from multimethod import multimethod
 
 spec = importlib.util.find_spec('pyspark')
 if spec is None:
