@@ -14,7 +14,6 @@ if spec is None:
     sparkSeries = TypeVar("sparkSeries")  # type: ignore
 else:
     from pyspark.sql import DataFrame as sparkDataFrame  # type: ignore
-    from pyspark.pandas import Series as sparkSeries  # type: ignore
 
     from ydata_profiling.model.spark.summary_spark import (
         get_series_descriptions_spark,
@@ -46,7 +45,7 @@ def describe_1d(
     """
     if isinstance(series, pd.Series):
         return pandas_describe_1d(config, series, summarizer, typeset)
-    elif isinstance(series, sparkSeries):
+    elif isinstance(series, sparkDataFrame):
         return spark_describe_1d(config, series, summarizer, typeset)
     else:
         raise TypeError(f"Unsupported series type: {type(series)}")
