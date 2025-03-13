@@ -4,12 +4,12 @@ import pytest
 from ydata_profiling.config import Settings
 from ydata_profiling.model.correlations import Kendall
 from ydata_profiling.model.pandas.correlations_pandas import (
-    pandas_pearson_compute,
-    pandas_spearman_compute,
+    pearson_compute as pandas_pearson_compute,
+    spearman_compute as pandas_spearman_compute,
 )
 from ydata_profiling.model.spark.correlations_spark import (
-    spark_pearson_compute,
-    spark_spearman_compute,
+    pearson_compute as spark_pearson_compute,
+    spearman_compute as spark_spearman_compute,
 )
 
 
