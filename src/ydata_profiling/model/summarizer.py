@@ -27,15 +27,12 @@ from ydata_profiling.model.pandas.describe_supported_pandas import (
 )
 from ydata_profiling.model.summary_algorithms import (  # Check what is this method used for
     describe_file_1d,
-    describe_generic,
     describe_image_1d,
     describe_path_1d,
-    describe_supported,
     describe_timeseries_1d,
     describe_url_1d,
 )
 from ydata_profiling.utils.backend import is_pyspark_installed
-
 
 class BaseSummarizer(Handler):
     """A base summarizer

@@ -9,7 +9,7 @@ from tqdm import tqdm
 from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summarizer import BaseSummarizer
+from ydata_profiling.model.summarizer import "BaseSummarizer"
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.utils.dataframe import sort_column_names
 
@@ -21,7 +21,7 @@ def _is_cast_type_defined(typeset: VisionsTypeset, series: str) -> bool:
 def pandas_describe_1d(
     config: Settings,
     series: pd.Series,
-    summarizer: BaseSummarizer,
+    summarizer: "BaseSummarizer",
     typeset: VisionsTypeset,
 ) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
@@ -66,7 +66,7 @@ def pandas_describe_1d(
 def pandas_get_series_descriptions(
     config: Settings,
     df: pd.DataFrame,
-    summarizer: BaseSummarizer,
+    summarizer: "BaseSummarizer",
     typeset: VisionsTypeset,
     pbar: tqdm,
 ) -> dict:
