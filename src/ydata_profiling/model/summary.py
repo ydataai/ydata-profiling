@@ -10,11 +10,11 @@ spec = importlib.util.find_spec("pyspark")
 if spec is None:
     from typing import TypeVar
 
-    sparkDataFrame = TypeVar("sparkDataFrame")
-    sparkSeries = TypeVar("sparkSeries")
+    sparkDataFrame = TypeVar("sparkDataFrame") # type: ignore
+    sparkSeries = TypeVar("sparkSeries") # type: ignore
 else:
-    from pyspark.sql import DataFrame as sparkDataFrame
-    from pyspark.pandas import Series as sparkSeries
+    from pyspark.sql import DataFrame as sparkDataFrame # type: ignore
+    from pyspark.pandas import Series as sparkSeries # type: ignore
 
     from ydata_profiling.model.spark.summary_spark import (
         get_series_descriptions_spark,

@@ -57,13 +57,14 @@ def describe(
         raise TypeError(f"`config` must be of type `Settings`, got {type(config)}")
 
     # Validate df input type
+
     if not isinstance(df, pd.DataFrame):
         try:
             from pyspark.sql import DataFrame as SparkDataFrame  # type: ignore
 
             if not isinstance(df, SparkDataFrame):
                 raise TypeError(
-                    f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}"
+                    f"`df` must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
                 )
         except ImportError as ex:
             raise TypeError(
