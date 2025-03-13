@@ -9,7 +9,6 @@ from tqdm import tqdm
 from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summarizer import BaseSummarizer
 from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.utils.dataframe import sort_column_names
 
