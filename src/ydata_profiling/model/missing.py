@@ -30,7 +30,7 @@ class MissingDataBackend:
 
 
 class MissingData:
-    _method_name :str = ''
+    _method_name: str = ""
 
     def compute(
         self, config: Settings, df: Sized, backend: MissingDataBackend

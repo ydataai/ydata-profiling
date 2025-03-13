@@ -9,7 +9,7 @@ if spec is None:
 
     sparkDataFrame = TypeVar("sparkDataFrame")
 else:
-    from pyspark.sql import DataFrame as sparkDataFrame # type: ignore
+    from pyspark.sql import DataFrame as sparkDataFrame  # type: ignore
     from ydata_profiling.model.spark.dataframe_spark import spark_preprocess
 
 from ydata_profiling.config import Settings
@@ -27,7 +27,7 @@ def preprocess(config: Settings, df: Any) -> Any:
     """
     if isinstance(df, pd.DataFrame):
         df = pandas_preprocess(config=config, df=df)
-    elif isinstance(df, sparkDataFrame): # type: ignore
+    elif isinstance(df, sparkDataFrame):  # type: ignore
         df = spark_preprocess(config=config, df=df)
     else:
         return NotImplementedError()

@@ -39,7 +39,8 @@ class CorrelationBackend:
 
 
 class Correlation:
-    _method_name: str = ''
+    _method_name: str = ""
+
     def compute(
         self, config: Settings, df: Sized, summary: dict, backend: CorrelationBackend
     ) -> Optional[Sized]:
