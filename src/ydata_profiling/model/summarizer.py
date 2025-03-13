@@ -3,7 +3,6 @@ from typing import Any, Callable, Dict, List, Type, Union
 
 import numpy as np
 import pandas as pd
-from jinja2.nodes import Import
 from visions import VisionsBaseType, VisionsTypeset
 
 from ydata_profiling.config import Settings

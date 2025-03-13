@@ -11,13 +11,13 @@ if spec is None:
     from typing import TypeVar
 
     sparkDataFrame = TypeVar("sparkDataFrame")
-    sparkDataFrame = TypeVar("sparkSeries")
+    sparkSeries = TypeVar("sparkSeries")
 else:
     from pyspark.sql import DataFrame as sparkDataFrame
     from pyspark.pandas import Series as sparkSeries
 
     from ydata_profiling.model.spark.summary_spark import (
-        spark_get_series_descriptions,
+        get_series_descriptions_spark,
         spark_describe_1d,
     )
 
@@ -27,9 +27,6 @@ from ydata_profiling.model.pandas.summary_pandas import (
     pandas_get_series_descriptions,
 )
 from ydata_profiling.model.summarizer import BaseSummarizer
-
-# If could be doing this with a mapping instead?
-
 
 def describe_1d(
     config: Settings,
@@ -48,7 +45,7 @@ def describe_1d(
     """
     if isinstance(series, pd.Series):
         return pandas_describe_1d(config, series, summarizer, typeset)
-    elif isinstance(series, pd.DataFrame):  # add here to validate the spark dataframe
+    elif isinstance(series, sparkSeries):
         return spark_describe_1d(config, series, summarizer, typeset)
     else:
         raise TypeError(f"Unsupported series type: {type(series)}")
@@ -64,6 +61,6 @@ def get_series_descriptions(
     if isinstance(df, pd.DataFrame):
         return pandas_get_series_descriptions(config, df, summarizer, typeset, pbar)
     elif isinstance(df, sparkDataFrame):
-        return spark_get_series_descriptions(config, df, summarizer, typeset, pbar)
+        return get_series_descriptions_spark(config, df, summarizer, typeset, pbar)
     else:
         raise TypeError(f"Unsupported dataframe type: {type(df)}")

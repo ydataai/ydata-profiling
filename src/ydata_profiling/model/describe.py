@@ -59,7 +59,7 @@ def describe(
     # Validate df input type
     if not isinstance(df, pd.DataFrame):
         try:
-            from pyspark.sql import DataFrame as SparkDataFrame
+            from pyspark.sql import DataFrame as SparkDataFrame # type: ignore
 
             if not isinstance(df, SparkDataFrame):
                 raise TypeError(

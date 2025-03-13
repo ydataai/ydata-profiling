@@ -15,7 +15,7 @@ if not is_pyspark_installed():
 
     sDataFrame = TypeVar("sDataFrame")
 else:
-    from pyspark.sql import DataFrame as sDataFrame
+    from pyspark.sql import DataFrame as sDataFrame # type: ignore
 
 from dataclasses import asdict, is_dataclass
 
