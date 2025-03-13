@@ -9,7 +9,6 @@ from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summarizer import BaseSummarizer
-from ydata_profiling.model.summary import describe_1d, get_series_descriptions
 from ydata_profiling.utils.dataframe import sort_column_names
 
 
