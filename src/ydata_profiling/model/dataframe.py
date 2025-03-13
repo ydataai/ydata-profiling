@@ -8,10 +8,8 @@ if spec is None:
     from typing import TypeVar
 
     sparkDataFrame = TypeVar("sparkDataFrame")
-    sparkDataFrame = TypeVar("sparkSeries")
 else:
     from pyspark.sql import DataFrame as sparkDataFrame
-    from pyspark.pandas import Series as sparkSeries
     from ydata_profiling.model.spark.dataframe_spark import spark_preprocess
 
 from ydata_profiling.config import Settings

@@ -38,9 +38,10 @@ class MissingData:
         """Computes correlation using the correct backend (Pandas or Spark)."""
         try:
             method = backend.get_method(self._method_name)
-            return method(config, df)
         except AttributeError as ex:
             raise NotImplementedError() from ex
+        else:
+            return method(config, df)
 
 
 class MissingBar(MissingData):
@@ -127,11 +128,6 @@ def get_missing_diagram(
 
     try:
         result = missing_func.compute(config, df, backend)
-        return {
-            "name": settings["name"],
-            "caption": settings["caption"],
-            "matrix": result,
-        }
     except ValueError as e:
         warnings.warn(
             f"""There was an attempt to generate the {settings['name']} missing values diagrams, but this failed.
@@ -142,3 +138,9 @@ def get_missing_diagram(
         (include the error message: '{e}')"""
         )
         return None
+    else:
+        return {
+            "name": settings["name"],
+            "caption": settings["caption"],
+            "matrix": result,
+        }

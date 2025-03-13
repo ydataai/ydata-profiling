@@ -41,9 +41,10 @@ class Correlation:
         """Computes correlation using the correct backend (Pandas or Spark)."""
         try:
             method = backend.get_method(self._method_name)
-            return method(config, df, summary)
         except AttributeError as ex:
             raise NotImplementedError() from ex
+        else:
+            return method(config, df, summary)
 
 
 class Auto(Correlation):
