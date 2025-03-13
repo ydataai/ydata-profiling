@@ -28,6 +28,7 @@ from ydata_profiling.model.pandas.summary_pandas import (
 )
 from ydata_profiling.model.summarizer import BaseSummarizer
 
+
 def describe_1d(
     config: Settings,
     series: Any,

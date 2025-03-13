@@ -14,6 +14,7 @@ from ydata_profiling.model.summary_algorithms import (
     series_hashable,
 )
 
+
 @series_hashable
 @series_handle_nulls
 def pandas_describe_text_1d(
