@@ -20,7 +20,7 @@ def _is_cast_type_defined(typeset: VisionsTypeset, series: str) -> bool:
 def pandas_describe_1d(
     config: Settings,
     series: pd.Series,
-    summarizer: "BaseSummarizer",
+    summarizer: "BaseSummarizer", # type:ignore
     typeset: VisionsTypeset,
 ) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
@@ -38,11 +38,11 @@ def pandas_describe_1d(
     # Make sure pd.NA is not in the series
     series = series.fillna(np.nan)
 
-    has_cast_type = _is_cast_type_defined(typeset, series.name)
-    cast_type = str(typeset.type_schema[series.name]) if has_cast_type else None
+    has_cast_type = _is_cast_type_defined(typeset, series.name) # type:ignore
+    cast_type = str(typeset.type_schema[series.name]) if has_cast_type else None # type:ignore
 
     if has_cast_type and not series.isna().all():
-        vtype = typeset.type_schema[series.name]
+        vtype = typeset.type_schema[series.name] # type:ignore
 
     elif config.infer_dtypes:
         # Infer variable types
@@ -53,7 +53,7 @@ def pandas_describe_1d(
         # [new dtypes, changed using `astype` function are now considered]
         vtype = typeset.detect_type(series)
 
-    typeset.type_schema[series.name] = vtype
+    typeset.type_schema[series.name] = vtype # type:ignore
     summary = summarizer.summarize(config, series, dtype=vtype)
     # Cast type is only used on unsupported columns rendering pipeline
     # to indicate the correct variable type when inference is not possible
@@ -65,7 +65,7 @@ def pandas_describe_1d(
 def pandas_get_series_descriptions(
     config: Settings,
     df: pd.DataFrame,
-    summarizer: "BaseSummarizer",
+    summarizer: "BaseSummarizer", # type:ignore
     typeset: VisionsTypeset,
     pbar: tqdm,
 ) -> dict:
@@ -84,7 +84,7 @@ def pandas_get_series_descriptions(
 
     with ThreadPoolExecutor(max_workers=pool_size) as executor:
         future_to_col = {
-            executor.submit(describe_column, name, series): name
+            executor.submit(describe_column, name, series): name # type:ignore
             for name, series in df.items()
         }
 
