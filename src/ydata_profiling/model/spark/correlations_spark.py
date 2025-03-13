@@ -2,7 +2,6 @@
 from typing import Optional
 
 import pandas as pd
-import phik
 import pyspark
 from packaging import version
 from pyspark.ml.feature import VectorAssembler
@@ -12,11 +11,9 @@ from pyspark.sql.functions import PandasUDFType, lit, pandas_udf
 from pyspark.sql.types import ArrayType, DoubleType, StructField, StructType
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.correlations import Cramers, Kendall, Pearson, PhiK, Spearman
 
 CORRELATION_PEARSON = "pearson"
 CORRELATION_SPEARMAN = "spearman"
-
 
 def spearman_compute(
     config: Settings, df: DataFrame, summary: dict
@@ -29,7 +26,6 @@ def spearman_compute(
     return pd.DataFrame(matrix, index=num_cols, columns=num_cols)
 
 
-@Pearson.compute.register(Settings, DataFrame, dict)
 def pearson_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
@@ -72,15 +68,12 @@ def _compute_corr_natively(df: DataFrame, summary: dict, corr_type: str) -> Arra
     )
     return matrix, interval_columns
 
-
-@Kendall.compute.register(Settings, DataFrame, dict)
 def kendall_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     raise NotImplementedError()
 
 
-@Cramers.compute.register(Settings, DataFrame, dict)
 def cramers_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
