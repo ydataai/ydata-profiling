@@ -15,6 +15,7 @@ from ydata_profiling.config import Settings
 CORRELATION_PEARSON = "pearson"
 CORRELATION_SPEARMAN = "spearman"
 
+
 def spearman_compute(
     config: Settings, df: DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
@@ -67,6 +68,7 @@ def _compute_corr_natively(df: DataFrame, summary: dict, corr_type: str) -> Arra
         Correlation.corr(df_vector, vector_col, method=corr_type).head()[0].toArray()
     )
     return matrix, interval_columns
+
 
 def kendall_compute(
     config: Settings, df: DataFrame, summary: dict
