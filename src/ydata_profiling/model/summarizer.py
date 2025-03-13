@@ -34,6 +34,7 @@ from ydata_profiling.model.summary_algorithms import (  # Check what is this met
 )
 from ydata_profiling.utils.backend import is_pyspark_installed
 
+
 class BaseSummarizer(Handler):
     """A base summarizer
 
