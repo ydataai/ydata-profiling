@@ -79,8 +79,6 @@ def missing_matrix(config: Settings, df: DataFrame) -> str:
         nrows=len(df),
     )
 
-
-@missing_heatmap.register
 def missing_heatmap(config: Settings, df: DataFrame) -> str:
     df = MissingnoBarSparkPatch(df, columns=df.columns, original_df_size=df.count())
 

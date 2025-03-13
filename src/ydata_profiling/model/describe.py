@@ -63,7 +63,7 @@ def describe(
             from pyspark.sql import DataFrame as SparkDataFrame  # type: ignore
 
             if not isinstance(df, SparkDataFrame):  # noqa: TC301
-                raise TypeError(
+                raise TypeError( # noqa: TC301
                     f"`df` must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
                 )
         except ImportError as ex:
