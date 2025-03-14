@@ -45,7 +45,7 @@ def describe_1d(
     """
     if isinstance(series, pd.Series):
         return pandas_describe_1d(config, series, summarizer, typeset)
-    elif isinstance(series, sparkDataFrame):
+    elif isinstance(series, sparkDataFrame): # type: ignore
         return spark_describe_1d(config, series, summarizer, typeset)
     else:
         raise TypeError(f"Unsupported series type: {type(series)}")
@@ -60,7 +60,7 @@ def get_series_descriptions(
 ) -> dict:
     if isinstance(df, pd.DataFrame):
         return pandas_get_series_descriptions(config, df, summarizer, typeset, pbar)
-    elif isinstance(df, sparkDataFrame):
+    elif isinstance(df, sparkDataFrame): # type: ignore
         return get_series_descriptions_spark(config, df, summarizer, typeset, pbar)
     else:
         raise TypeError(f"Unsupported dataframe type: {type(df)}")

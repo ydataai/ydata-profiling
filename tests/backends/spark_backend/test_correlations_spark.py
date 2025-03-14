@@ -2,7 +2,6 @@ import pandas as pd
 import pytest
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.correlations import Kendall
 from ydata_profiling.model.pandas.correlations_pandas import (
     pearson_compute as pandas_pearson_compute,
 )
@@ -80,6 +79,6 @@ def test_kendall_spark(correlation_data_cat):
     cfg = Settings()
 
     with pytest.raises(NotImplementedError):
-        res_spark = kendall_compute(config=cfg,
-                                    df=correlation_data_cat,
-                                    summary={})
+        kendall_compute(config=cfg,
+                        df=correlation_data_cat,
+                        summary={})
