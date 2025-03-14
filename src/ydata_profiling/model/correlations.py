@@ -1,6 +1,6 @@
 """Correlations between variables."""
 import warnings
-from typing import Dict, List, Optional, Sized, Type
+from typing import Dict, List, Optional, Sized
 
 import numpy as np
 import pandas as pd

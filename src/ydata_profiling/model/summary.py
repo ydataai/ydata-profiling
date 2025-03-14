@@ -6,20 +6,6 @@ import pandas as pd
 from tqdm import tqdm
 from visions import VisionsTypeset
 
-spec = importlib.util.find_spec("pyspark")
-if spec is None:
-    from typing import TypeVar
-
-    sparkDataFrame = TypeVar("sparkDataFrame")  # type: ignore
-    sparkSeries = TypeVar("sparkSeries")  # type: ignore
-else:
-    from pyspark.sql import DataFrame as sparkDataFrame  # type: ignore
-
-    from ydata_profiling.model.spark.summary_spark import (
-        get_series_descriptions_spark,
-        spark_describe_1d,
-    )
-
 from ydata_profiling.config import Settings
 from ydata_profiling.model.pandas.summary_pandas import (
     pandas_describe_1d,
@@ -27,6 +13,19 @@ from ydata_profiling.model.pandas.summary_pandas import (
 )
 from ydata_profiling.model.summarizer import BaseSummarizer
 
+spec = importlib.util.find_spec("pyspark")
+if spec is None:
+    from typing import TypeVar # noqa: E402
+
+    sparkDataFrame = TypeVar("sparkDataFrame")  # type: ignore
+    sparkSeries = TypeVar("sparkSeries")  # type: ignore
+else:
+    from pyspark.sql import DataFrame as sparkDataFrame  # noqa: E402
+
+    from ydata_profiling.model.spark.summary_spark import ( # noqa: E402
+        get_series_descriptions_spark,
+        spark_describe_1d,
+    )
 
 def describe_1d(
     config: Settings,
