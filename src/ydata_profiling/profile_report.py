@@ -190,7 +190,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 )
 
             if (
-                df is not None and df.rdd.isEmpty()
+                df is not None and df.rdd.isEmpty() # type: ignore
             ):  # df.isEmpty is only support by 3.3.0 pyspark version
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."

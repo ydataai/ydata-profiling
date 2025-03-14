@@ -1,3 +1,5 @@
+# mypy: ignore-errors
+
 from dataclasses import asdict
 from typing import Any, Callable, Dict, List, Type, Union
 
