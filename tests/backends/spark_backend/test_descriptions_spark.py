@@ -44,7 +44,7 @@ def describe_data():
             datetime.date(2011, 7, 4),
             datetime.datetime(2022, 1, 1, 13, 57),
             datetime.datetime(1990, 12, 9),
-            np.nan,
+            None,
             datetime.datetime(1990, 12, 9),
             datetime.datetime(1970, 12, 9),
             datetime.datetime(1972, 1, 2),

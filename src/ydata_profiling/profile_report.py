@@ -108,6 +108,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         self.__validate_inputs(df, minimal, tsmode, config_file, lazy)
 
+        self._df_type = type(df)
+
         if config_file or minimal:
             if not config_file:
                 config_file = get_config("config_minimal.yaml")
@@ -255,9 +257,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     @property
     def summarizer(self) -> BaseSummarizer:
         if self._summarizer is None:
+            use_spark = False
+            if self._df_type is not pd.DataFrame:
+                use_spark=True
+
             self._summarizer = ProfilingSummarizer(
-                self.typeset, use_spark=False
-            )  # need to improve this logic
+                self.typeset, use_spark=use_spark
+            )
         return self._summarizer
 
     @property

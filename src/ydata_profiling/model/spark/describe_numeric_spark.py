@@ -60,7 +60,7 @@ def describe_numeric_1d_spark(
         n_infinite = n_infinite["count"]
     summary["n_infinite"] = n_infinite
 
-    n_zeros = value_counts.where(f"{df.columns[0]} = 0").first()
+    n_zeros = value_counts.where(f"`{df.columns[0]}` = 0").first()
     if n_zeros is None:
         n_zeros = 0
     else:
@@ -68,7 +68,7 @@ def describe_numeric_1d_spark(
     summary["n_zeros"] = n_zeros
 
     n_negative = (
-        value_counts.where(f"{df.columns[0]} < 0")
+        value_counts.where(f"`{df.columns[0]}` < 0")
         .agg(F.sum(F.col("count")).alias("count"))
         .first()
     )

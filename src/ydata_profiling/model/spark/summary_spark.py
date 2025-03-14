@@ -87,7 +87,7 @@ def get_series_descriptions_spark(
         )  # Use `.pop()` with default to avoid KeyError
         return name, description
 
-    series_description = dict(df.columns.map(lambda col: (col, describe_column(col))))
+    series_description = {col: describe_column(col)[1] for col in df.columns}
 
     # Sort and return descriptions
     return sort_column_names(series_description, config.sort)
