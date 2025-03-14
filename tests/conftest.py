@@ -45,6 +45,10 @@ def test_output_dir(tmpdir_factory):
 def summarizer(typeset):
     return ProfilingSummarizer(typeset)
 
+@pytest.fixture(scope="function")
+def summarizer_spark(typeset):
+    return ProfilingSummarizer(typeset, use_spark=True)
+
 
 @pytest.fixture(scope="function")
 def config():

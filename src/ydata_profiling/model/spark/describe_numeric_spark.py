@@ -120,6 +120,7 @@ def describe_numeric_1d_spark(
     # display in pandas display
     # the alternative is to do this in spark natively, but it is not trivial
     infinity_values = [np.inf, -np.inf]
+
     infinity_index = summary["value_counts_without_nan"].index.isin(infinity_values)
 
     summary.update(

@@ -41,10 +41,10 @@ def describe_data():
         "s1": np.ones(9),
         "s2": ["some constant text $ % value {obj} " for _ in range(1, 10)],
         "somedate": [
-            datetime.date(2011, 7, 4),
+            datetime.datetime(2011, 7, 4),
             datetime.datetime(2022, 1, 1, 13, 57),
             datetime.datetime(1990, 12, 9),
-            None,
+            pd.NaT,
             datetime.datetime(1990, 12, 9),
             datetime.datetime(1970, 12, 9),
             datetime.datetime(1972, 1, 2),
@@ -237,6 +237,7 @@ def expected_results():
             "range": check_is_NaN,
             "skewness": check_is_NaN,
             "std": check_is_NaN,
+            "std": check_is_NaN,
             "sum": check_is_NaN,
             "variance": check_is_NaN,
         },
@@ -357,7 +358,7 @@ def test_describe_spark_df(
     column,
     describe_data,
     expected_results,
-    summarizer,
+    summarizer_spark,
     typeset,
     spark_session,
 ):
@@ -373,9 +374,12 @@ def test_describe_spark_df(
         describe_data[column] = [
             True if i else False for i in describe_data[column]  # noqa: SIM210
         ]
-    sdf = spark_session.createDataFrame(pd.DataFrame({column: describe_data[column]}))
+    pdf= pd.DataFrame({column: describe_data[column]})# Convert to Pandas DataFrame
+    # Ensure NaNs are replaced with None (Spark does not support NaN in non-float columns)
+    pdf = pdf.where(pd.notna(pdf), None)
+    sdf = spark_session.createDataFrame(pdf)
 
-    results = describe(cfg, sdf, summarizer, typeset)
+    results = describe(cfg, sdf, summarizer_spark, typeset)
 
     assert {
         "analysis",
@@ -395,7 +399,7 @@ def test_describe_spark_df(
         if v == check_is_NaN:
             # test_condition should be True if column not in results, or the result is a nan value
             test_condition = k not in results.variables[column] or pd.isna(
-                results.variables[column].get(k, np.NaN)
+                results.variables[column].get(k, np.nan)
             )
         elif isinstance(v, float):
             test_condition = (

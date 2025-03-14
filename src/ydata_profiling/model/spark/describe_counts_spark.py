@@ -2,6 +2,7 @@
     Pyspark counts
 """
 from typing import Tuple
+import pandas as pd
 
 from ydata_profiling.config import Settings
 
@@ -50,22 +51,32 @@ def describe_counts_spark(
 
     column = series.columns[0]
 
-    # Compute value counts without NaNs
-    value_counts_no_nan = (
-        value_counts
-        .filter(F.col(column).isNotNull())  # Exclude NaNs
-        .filter(~F.isnan(F.col(column)))  # Remove implicit NaNs (if numeric column)
-        .groupBy(column)  # Group by unique values
-        .count()  # Count occurrences
-        .orderBy(F.desc("count"))  # Sort in descending order
-        .limit(200)  # Limit for performance
-    )
 
-    # Convert to Pandas Series (after collecting)
-    summary["value_counts_without_nan"] = (
-        value_counts_no_nan.toPandas()
-        .set_index(column)["count"]  # Set index to the column values
-        .squeeze()  # Convert DataFrame to Pandas Series
-    )
+    if series.dtypes[0][1] in ('int', 'float', 'bigint', 'double'):
+        value_counts_no_nan = (
+            value_counts
+            .filter(F.col(column).isNotNull())  # Exclude NaNs
+            .filter(~F.isnan(F.col(column)))  # Remove implicit NaNs (if numeric column)
+            .groupBy(column)  # Group by unique values
+            .count()  # Count occurrences
+            .orderBy(F.desc("count"))  # Sort in descending order
+            .limit(200)  # Limit for performance
+        )
+    else:
+        value_counts_no_nan = (
+            value_counts
+            .filter(F.col(column).isNotNull())  # Exclude NULLs
+            .groupBy(column)  # Group by unique timestamp values
+            .count()  # Count occurrences
+            .orderBy(F.desc("count"))  # Sort by most frequent timestamps
+            .limit(200)  # Limit for performance
+        )
+
+    # Convert to Pandas Series, forcing proper structure
+    if value_counts_no_nan.count() > 0:
+        pdf = value_counts_no_nan.toPandas().set_index(column)["count"]
+        summary["value_counts_without_nan"] = pd.Series(pdf)  # Ensures it's always a Series
+    else:
+        summary["value_counts_without_nan"] = pd.Series(dtype=int)  # Ensures an empty Series
 
     return config, series, summary
