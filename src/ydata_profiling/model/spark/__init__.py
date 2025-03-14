@@ -1,7 +1,7 @@
 import importlib
 
 # Dynamically import all modules inside the Spark folder
-SPLARK_MODULES = [
+SPARK_MODULES = [
     "correlations_spark",
     "dataframe_spark",
     "describe_boolean_spark",
@@ -21,7 +21,7 @@ SPLARK_MODULES = [
 ]
 
 # Load modules dynamically
-for module_name in SPLARK_MODULES:
+for module_name in SPARK_MODULES:
     module = importlib.import_module(f"ydata_profiling.model.spark.{module_name}")
     globals().update(
         {
@@ -29,7 +29,7 @@ for module_name in SPLARK_MODULES:
             for name in dir(module)
             if not name.startswith("_")
         }
-    )
+    ) # type: ignore
 
 # Explicitly list all available functions
 __all__ = [
