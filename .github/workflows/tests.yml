@@ -167,7 +167,6 @@ jobs:
       - name: Run Tests
         run: |
           make install
-          make install-spark-ci
           pip install ".[spark]"
           make test_spark
 
