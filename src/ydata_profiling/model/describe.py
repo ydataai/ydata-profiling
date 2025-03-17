@@ -1,6 +1,6 @@
 """Organize the calculation of statistics for each series in this DataFrame."""
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 import pandas as pd
 from tqdm.auto import tqdm
@@ -13,7 +13,7 @@ from ydata_profiling.model.correlations import (
     calculate_correlation,
     get_active_correlations,
 )
-from ydata_profiling.model.dataframe import check_dataframe, preprocess
+from ydata_profiling.model.dataframe import preprocess
 from ydata_profiling.model.description import TimeIndexAnalysis
 from ydata_profiling.model.duplicates import get_duplicates
 from ydata_profiling.model.missing import get_missing_active, get_missing_diagram
@@ -29,11 +29,11 @@ from ydata_profiling.version import __version__
 
 def describe(
     config: Settings,
-    df: pd.DataFrame,
+    df: Union[pd.DataFrame, "pyspark.sql.DataFrame"],  # type: ignore
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     sample: Optional[dict] = None,
-) -> BaseDescription:
+) -> BaseDescription:  # noqa: TC301
     """Calculate the statistics for each series in this DataFrame.
 
     Args:
@@ -52,11 +52,26 @@ def describe(
             - alerts: direct special attention to these patterns in your data.
             - package: package details.
     """
+    # ** Validate Input types **
+    if not isinstance(config, Settings):
+        raise TypeError(f"`config` must be of type `Settings`, got {type(config)}")
 
-    if df is None:
-        raise ValueError("Can not describe a `lazy` ProfileReport without a DataFrame.")
+    # Validate df input type
 
-    check_dataframe(df)
+    if not isinstance(df, pd.DataFrame):
+        try:
+            from pyspark.sql import DataFrame as SparkDataFrame  # type: ignore
+
+            if not isinstance(df, SparkDataFrame):  # noqa: TC301
+                raise TypeError(  # noqa: TC301
+                    f"`df` must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
+                )
+        except ImportError as ex:
+            raise TypeError(
+                f"`df must be either a `pandas.DataFrame` or a `pyspark.sql.DataFrame`, but got {type(df)}."
+                f"If using Spark, make sure PySpark is installed."
+            ) from ex
+
     df = preprocess(config, df)
 
     number_of_tasks = 5

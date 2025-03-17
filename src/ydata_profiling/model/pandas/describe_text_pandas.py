@@ -9,14 +9,12 @@ from ydata_profiling.model.pandas.describe_categorical_pandas import (
     word_summary_vc,
 )
 from ydata_profiling.model.summary_algorithms import (
-    describe_text_1d,
     histogram_compute,
     series_handle_nulls,
     series_hashable,
 )
 
 
-@describe_text_1d.register
 @series_hashable
 @series_handle_nulls
 def pandas_describe_text_1d(

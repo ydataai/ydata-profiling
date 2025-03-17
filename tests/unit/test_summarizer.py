@@ -2,14 +2,14 @@ import os
 
 import pandas as pd
 
-from ydata_profiling.model.summarizer import PandasProfilingSummarizer, format_summary
+from ydata_profiling.model.summarizer import ProfilingSummarizer, format_summary
 from ydata_profiling.model.typeset import ProfilingTypeSet
 
 base_path = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_summarizer(config):
-    pps = PandasProfilingSummarizer(typeset=ProfilingTypeSet(config))
+    pps = ProfilingSummarizer(typeset=ProfilingTypeSet(config))
 
     _ = format_summary(pps.summarize(config, pd.Series([1, 2, 3, 4, 5]), "Unsupported"))
     _ = format_summary(pps.summarize(config, pd.Series([1, 2, 3, 4, 5]), "Numeric"))

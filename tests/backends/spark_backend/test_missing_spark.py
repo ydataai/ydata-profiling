@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.spark.missing_spark import spark_missing_bar
+from ydata_profiling.model.spark.missing_spark import missing_bar
 
 
 @pytest.fixture
@@ -23,6 +23,6 @@ def missing_data(spark_session):
 
 def test_spark_missing_bar(missing_data):
     cfg = Settings()
-    a = spark_missing_bar(cfg, missing_data)
+    a = missing_bar(cfg, missing_data)
 
     Path("test.svg").write_text(a)

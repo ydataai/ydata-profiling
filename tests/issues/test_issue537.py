@@ -1,24 +1,4 @@
-"""
-Test for issue 537:
-https://github.com/ydataai/ydata-profiling/issues/537
-
-ValueError: shape mismatch: value array of shape (136,) could not be broadcast to indexing result of shape (135,)
-
-Problem :
-ValueError is raised when running ProfileReport on large datasets and with multiprocessing on (pool_size >1).
-This is likely due to the series.fillna(np.nan, inplace=True) in summary.py seems to be performing multiple in-place
-mutations to the underlying DataFrame object through the passed series reference, resulting in some kind of race
-condition where two of the processes try to write to the DataFrame at the same time and the ValueError then occurs.
- This is also why changing the pool_size to 1 fixes the issue, and why the error doesn't always occur -
- you probably need enough data and threads to hit the race condition.
-
-Solution :
-Replace series.fillna(np.nan, inplace=True) with series = series.fillna(np.nan) , negating any side effects from mutation.
-
-
-"""
-
-import multiprocessing
+import concurrent.futures
 from functools import partial
 from gzip import decompress
 from typing import Tuple
@@ -32,14 +12,15 @@ from ydata_profiling.model.summary import describe_1d
 
 def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:
     """Wrapper to process series in parallel.
-        copy of multiprocess_1d function in get_series_descriptions, summary.py
 
     Args:
-        column: The name of the column.
-        series: The series values.
+        args: Tuple containing (column name, series).
+        config: Profiling configuration.
+        summarizer: The summarizer instance.
+        typeset: The data typeset.
 
     Returns:
-        A tuple with column and the series description.
+        A tuple with column name and its profile description.
     """
     column, series = args
     return column, describe_1d(config, series, summarizer, typeset)
@@ -47,21 +28,20 @@ def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:
 
 def test_multiprocessing_describe1d(config, summarizer, typeset):
     """
-    this test serves to get a large dataset, and ensure that even across parallelised describe1d operations,
-    there is no ValueError raised. Previously, series.fillna(np.nan,inplace=True) was used instead of
-    series = series.fillna(np.nan) in model.summary.describe1d, resulting in a race condition where the underlying
-    df was being mutated by two threads at the same time creating a ValueError. This test checks that this does not
-    occur again by running a parallelised describe1d and testing if a ValueError is raised.
-
+    This test ensures that parallelized describe1d operations do not cause a ValueError due to
+    race conditions when modifying series data in place.
     """
 
     def download_and_process_data():
+        """Downloads and processes the dataset into a Pandas DataFrame."""
         response = requests.get("https://ndownloader.figshare.com/files/5976042")
-        assert response.status_code == 200
+        response.raise_for_status()  # Ensure successful download
+
         file = decompress(response.content)
         text = file.decode()
-        split_text = [i.split(",") for i in filter(lambda x: x, text.split("\n"))]
-        dt = [
+        split_text = [row.split(",") for row in text.split("\n") if row]
+
+        dtype_mapping = [
             ("duration", int),
             ("protocol_type", "S4"),
             ("service", "S11"),
@@ -105,31 +85,35 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
             ("dst_host_srv_rerror_rate", float),
             ("labels", "S16"),
         ]
-        DT = np.dtype(dt)
-        split_text = np.asarray(split_text, dtype=object)
-        for j in range(42):
-            split_text[:, j] = split_text[:, j].astype(DT[j])
-        df = pd.DataFrame(split_text)
-        return df
+
+        dtype = np.dtype(dtype_mapping)
+        split_text = np.array(split_text, dtype=object)
+
+        # Convert each column to its appropriate type
+        for j, (_, col_dtype) in enumerate(dtype_mapping):
+            split_text[:, j] = split_text[:, j].astype(col_dtype)
+
+        return pd.DataFrame(split_text)
 
     def run_multiprocess(config, df):
-        pool = multiprocessing.pool.ThreadPool(10)
+        """Runs describe1d in parallel using ThreadPoolExecutor."""
         args = [(column, series) for column, series in df.items()]
-        results = pool.imap_unordered(
-            partial(
-                mock_multiprocess_1d,
-                config=config,
-                summarizer=summarizer,
-                typeset=typeset,
-            ),
-            args,
+        process_func = partial(
+            mock_multiprocess_1d, config=config, summarizer=summarizer, typeset=typeset
         )
-        pool.close()
-        pool.join()
-        list(results)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            results = list(executor.map(lambda x: process_func(x), args))
+
+        return results
 
     try:
         df = download_and_process_data()
+        assert not df.empty, "Dataset failed to download or process correctly."
+
         run_multiprocess(config, df)
+
     except ValueError as ex:
-        raise RuntimeError("myFunc() raised ValueError unexpectedly!") from ex
+        raise RuntimeError(
+            "Parallel describe1d execution raised ValueError unexpectedly!"
+        ) from ex

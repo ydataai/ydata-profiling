@@ -95,7 +95,6 @@ test = [
     "coverage>=6.5, <8",
     "codecov",
     "pytest-cov",
-    "pytest-spark",
     "nbval",
     "pyarrow",
     "twine>=3.1.1",

@@ -4,17 +4,18 @@ import warnings
 from pathlib import Path
 from typing import Any, Optional, Union
 
+from ydata_profiling.utils.backend import is_pyspark_installed
+
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import pkg_resources
 
-try:
-    from pyspark.sql import DataFrame as sDataFrame
-except:  # noqa: E722
+if not is_pyspark_installed():
     from typing import TypeVar
 
-    sDataFrame = TypeVar("sDataFrame")  # type: ignore
-
+    sDataFrame = TypeVar("sDataFrame")
+else:
+    from pyspark.sql import DataFrame as sDataFrame  # type: ignore
 
 from dataclasses import asdict, is_dataclass
 
@@ -32,7 +33,7 @@ from ydata_profiling.model.describe import describe as describe_df
 from ydata_profiling.model.sample import Sample
 from ydata_profiling.model.summarizer import (
     BaseSummarizer,
-    PandasProfilingSummarizer,
+    ProfilingSummarizer,
     format_summary,
     redact_summary,
 )
@@ -106,6 +107,8 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """
 
         self.__validate_inputs(df, minimal, tsmode, config_file, lazy)
+
+        self._df_type = type(df)
 
         if config_file or minimal:
             if not config_file:
@@ -187,7 +190,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 )
 
             if (
-                df is not None and df.rdd.isEmpty()
+                df is not None and df.rdd.isEmpty() # type: ignore
             ):  # df.isEmpty is only support by 3.3.0 pyspark version
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
@@ -254,7 +257,13 @@ class ProfileReport(SerializeReport, ExpectationsReport):
     @property
     def summarizer(self) -> BaseSummarizer:
         if self._summarizer is None:
-            self._summarizer = PandasProfilingSummarizer(self.typeset)
+            use_spark = False
+            if self._df_type is not pd.DataFrame:
+                use_spark=True
+
+            self._summarizer = ProfilingSummarizer(
+                self.typeset, use_spark=use_spark
+            )
         return self._summarizer
 
     @property

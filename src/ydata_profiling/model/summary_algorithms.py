@@ -46,7 +46,6 @@ def histogram_compute(
     stats[name] = np.histogram(
         finite_values, bins=bins, weights=weights, density=config.plot.histogram.density
     )
-
     return stats
 
 
@@ -101,7 +100,6 @@ def named_aggregate_summary(series: pd.Series, key: str) -> dict:
     }
 
     return summary
-
 
 @multimethod
 def describe_counts(

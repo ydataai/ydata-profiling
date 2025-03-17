@@ -9,11 +9,9 @@ from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summarizer import BaseSummarizer
-from ydata_profiling.model.summary import describe_1d, get_series_descriptions
 from ydata_profiling.utils.dataframe import sort_column_names
 
 
-@describe_1d.register
 def spark_describe_1d(
     config: Settings,
     series: DataFrame,
@@ -64,50 +62,32 @@ def spark_describe_1d(
     return summarizer.summarize(config, series, dtype=vtype)
 
 
-@get_series_descriptions.register
-def spark_get_series_descriptions(
+def get_series_descriptions_spark(
     config: Settings,
     df: DataFrame,
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
 ) -> dict:
-    series_description = {}
+    """
+    Compute series descriptions/statistics for a Spark DataFrame.
 
-    def multiprocess_1d(args: tuple) -> Tuple[str, dict]:
-        """Wrapper to process series in parallel.
+    Returns: A dict with the series descriptions for each column of a Dataset
+    """
 
-        Args:
-            column: The name of the column.
-            series: The series values.
+    def describe_column(name: str) -> Tuple[str, dict]:
+        """Process a single Spark column using Spark's execution model."""
+        description = spark_describe_1d(config, df.select(name), summarizer, typeset)
+        pbar.set_postfix_str(f"Describe variable: {name}")
+        pbar.update()
 
-        Returns:
-            A tuple with column and the series description.
-        """
-        column, df = args
-        return column, describe_1d(config, df.select(column), summarizer, typeset)
+        # Clean up Spark-specific metadata
+        description.pop(
+            "value_counts", None
+        )  # Use `.pop()` with default to avoid KeyError
+        return name, description
 
-    # Rename the df column names to prevent potential conflicts
-    for col in df.columns:
-        df = df.withColumnRenamed(col, f"{col}_customer")
+    series_description = {col: describe_column(col)[1] for col in df.columns}
 
-    args = [(name, df) for name in df.columns]
-    with multiprocessing.pool.ThreadPool(12) as executor:
-        for i, (column, description) in enumerate(
-            executor.imap_unordered(multiprocess_1d, args)
-        ):
-            if column.endswith("_customer"):
-                column = column[:-9]
-            pbar.set_postfix_str(f"Describe variable:{column}")
-
-            # summary clean up for spark
-            description.pop("value_counts")
-
-            series_description[column] = description
-            pbar.update()
-        series_description = {k[:-9]: series_description[k[:-9]] for k in df.columns}
-
-    # Mapping from column name to variable type
-    series_description = sort_column_names(series_description, config.sort)
-
-    return series_description
+    # Sort and return descriptions
+    return sort_column_names(series_description, config.sort)

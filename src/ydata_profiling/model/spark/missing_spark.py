@@ -4,7 +4,6 @@ import numpy as np
 from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.missing import missing_bar, missing_heatmap, missing_matrix
 from ydata_profiling.visualisation.missing import (
     plot_missing_bar,
     plot_missing_heatmap,
@@ -54,8 +53,7 @@ class MissingnoBarSparkPatch:
         return self.original_df_size
 
 
-@missing_bar.register
-def spark_missing_bar(config: Settings, df: DataFrame) -> str:
+def missing_bar(config: Settings, df: DataFrame) -> str:
     import pyspark.sql.functions as F
 
     # FIXME: move to univariate
@@ -72,8 +70,7 @@ def spark_missing_bar(config: Settings, df: DataFrame) -> str:
     )
 
 
-@missing_matrix.register
-def spark_missing_matrix(config: Settings, df: DataFrame) -> str:
+def missing_matrix(config: Settings, df: DataFrame) -> str:
     df = MissingnoBarSparkPatch(df, columns=df.columns, original_df_size=df.count())
     return plot_missing_matrix(
         config,
@@ -83,8 +80,7 @@ def spark_missing_matrix(config: Settings, df: DataFrame) -> str:
     )
 
 
-@missing_heatmap.register
-def spark_missing_heatmap(config: Settings, df: DataFrame) -> str:
+def missing_heatmap(config: Settings, df: DataFrame) -> str:
     df = MissingnoBarSparkPatch(df, columns=df.columns, original_df_size=df.count())
 
     # Remove completely filled or completely empty variables.

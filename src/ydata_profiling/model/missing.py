@@ -1,25 +1,59 @@
+import importlib
 import warnings
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Sized
 
 import pandas as pd
-from multimethod import multimethod
 
 from ydata_profiling.config import Settings
 
 
-@multimethod
-def missing_bar(config: Settings, df: Any) -> str:
-    raise NotImplementedError()
+class MissingDataBackend:
+    """Helper class to select and cache the appropriate missing-data backend (Pandas or Spark)."""
+
+    def __init__(self, df: Sized):
+        """Determine backend once and store it for all missing-data computations."""
+        if isinstance(df, pd.DataFrame):
+            self.backend_module = "ydata_profiling.model.pandas.missing_pandas"
+        else:
+            self.backend_module = "ydata_profiling.model.spark.missing_spark"
+
+        self.module = importlib.import_module(self.backend_module)
+
+    def get_method(self, method_name: str) -> Callable:
+        """Retrieve the appropriate missing-data function from the backend module."""
+        try:
+            return getattr(self.module, method_name)
+        except AttributeError as ex:
+            raise AttributeError(
+                f"Missing-data function '{method_name}' is not available in {self.backend_module}."
+            ) from ex
 
 
-@multimethod
-def missing_matrix(config: Settings, df: Any) -> str:
-    raise NotImplementedError()
+class MissingData:
+    _method_name: str = ""
+
+    def compute(
+        self, config: Settings, df: Sized, backend: MissingDataBackend
+    ) -> Optional[Sized]:
+        """Computes correlation using the correct backend (Pandas or Spark)."""
+        try:
+            method = backend.get_method(self._method_name)
+        except AttributeError as ex:
+            raise NotImplementedError() from ex
+        else:
+            return method(config, df)
 
 
-@multimethod
-def missing_heatmap(config: Settings, df: Any) -> str:
-    raise NotImplementedError()
+class MissingBar(MissingData):
+    _method_name = "missing_bar"
+
+
+class MissingMatrix(MissingData):
+    _method_name = "missing_matrix"
+
+
+class MissingHeatmap(MissingData):
+    _method_name = "missing_heatmap"
 
 
 def get_missing_active(config: Settings, table_stats: dict) -> Dict[str, Any]:
@@ -32,24 +66,25 @@ def get_missing_active(config: Settings, table_stats: dict) -> Dict[str, Any]:
     Returns:
 
     """
+
     missing_map = {
         "bar": {
             "min_missing": 0,
             "name": "Count",
             "caption": "A simple visualization of nullity by column.",
-            "function": missing_bar,
+            "function": MissingBar(),
         },
         "matrix": {
             "min_missing": 0,
             "name": "Matrix",
             "caption": "Nullity matrix is a data-dense display which lets you quickly visually pick out patterns in data completion.",
-            "function": missing_matrix,
+            "function": MissingMatrix(),
         },
         "heatmap": {
             "min_missing": 2,
             "name": "Heatmap",
             "caption": "The correlation heatmap measures nullity correlation: how strongly the presence or absence of one variable affects the presence of another.",
-            "function": missing_heatmap,
+            "function": MissingHeatmap(),
         },
     }
 
@@ -72,26 +107,6 @@ def get_missing_active(config: Settings, table_stats: dict) -> Dict[str, Any]:
     return missing_map
 
 
-def handle_missing(name: str, fn: Callable) -> Callable:
-    def inner(*args, **kwargs) -> Any:
-        def warn_missing(missing_name: str, error: str) -> None:
-            warnings.warn(
-                f"""There was an attempt to generate the {missing_name} missing values diagrams, but this failed.
-To hide this warning, disable the calculation
-(using `df.profile_report(missing_diagrams={{"{missing_name}": False}}`)
-If this is problematic for your use case, please report this as an issue:
-https://github.com/ydataai/ydata-profiling/issues
-(include the error message: '{error}')"""
-            )
-
-        try:
-            return fn(*args, *kwargs)
-        except ValueError as e:
-            warn_missing(name, str(e))
-
-    return inner
-
-
 def get_missing_diagram(
     config: Settings, df: pd.DataFrame, settings: Dict[str, Any]
 ) -> Optional[Dict[str, Any]]:
@@ -105,18 +120,27 @@ def get_missing_diagram(
     Returns:
         A dictionary containing the base64 encoded plots for each diagram that is active in the config (matrix, bar, heatmap).
     """
+    backend = MissingDataBackend(df)
 
-    if len(df) == 0:
+    missing_func = settings.get("function")
+    if missing_func is None:
+        return None  # No function defined, skip execution
+
+    try:
+        result = missing_func.compute(config, df, backend)
+    except ValueError as e:
+        warnings.warn(
+            f"""There was an attempt to generate the {settings['name']} missing values diagrams, but this failed.
+        To hide this warning, disable the calculation
+        (using `df.profile_report(missing_diagrams={{"{settings['name']}": False}}`)
+        If this is problematic for your use case, please report this as an issue:
+        https://github.com/ydataai/ydata-profiling/issues
+        (include the error message: '{e}')"""
+        )
         return None
-
-    result = handle_missing(settings["name"], settings["function"])(config, df)
-    if result is None:
-        return None
-
-    missing = {
-        "name": settings["name"],
-        "caption": settings["caption"],
-        "matrix": result,
-    }
-
-    return missing
+    else:
+        return {
+            "name": settings["name"],
+            "caption": settings["caption"],
+            "matrix": result,
+        }

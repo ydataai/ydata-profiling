@@ -5,9 +5,8 @@ from pyspark.sql import DataFrame
 from ydata_profiling.config import Settings
 from ydata_profiling.model.table import get_table_stats
 
-
 @get_table_stats.register
-def spark_get_table_stats(
+def get_table_stats_spark(
     config: Settings, df: DataFrame, variable_stats: dict
 ) -> dict:
     """General statistics for the DataFrame.

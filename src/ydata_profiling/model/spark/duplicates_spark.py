@@ -6,9 +6,8 @@ from pyspark.sql import DataFrame
 from ydata_profiling.config import Settings
 from ydata_profiling.model.duplicates import get_duplicates
 
-
-@get_duplicates.register(Settings, DataFrame, Sequence)
-def spark_get_duplicates(
+@get_duplicates.register
+def get_duplicates_spark(
     config: Settings, df: DataFrame, supported_columns: Sequence
 ) -> Tuple[Dict[str, Any], Optional[DataFrame]]:
     """Obtain the most occurring duplicate rows in the DataFrame.
