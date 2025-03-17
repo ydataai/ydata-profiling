@@ -127,12 +127,12 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-22.04 ]
-        python-version: [3.8]
+        python-version: ["3.9", "3.10", "3.11"]
         pandas: ["pandas>1.1"]
-        spark: ["3.0.1"]
-        hadoop: [ 2.7 ]
+        spark: ["3.4.4", "3.5.5"]
+        hadoop: [ 3.7 ]
         numpy: ["numpy"]
-        java_home: [ /usr/lib/jvm/java-8-openjdk-amd64 ]
+        java_home: [ /usr/lib/jvm/java-11-openjdk-amd64 ]
 
     name: Tests Spark | python ${{ matrix.python-version }}, ${{ matrix.os }}, spark${{ matrix.spark }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
     env:
@@ -172,7 +172,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.pandas }}-pip-
       - run: |
           pip install --upgrade pip setuptools wheel
-          pip install pytest-spark>=0.6.0 pyarrow==1.0.1 pyspark=="${{ matrix.spark }}"
+          pip install pyarrow>4.0.0 pyspark=="${{ matrix.spark }}"
           pip install ".[test]"
           pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
       - if: ${{ matrix.spark != '3.0.1' }}
