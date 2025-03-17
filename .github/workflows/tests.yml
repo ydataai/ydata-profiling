@@ -167,6 +167,6 @@ jobs:
       - name: Run Tests
         run: |
           make install
-          pip install ".[spark]"
+          pip install ".[spark, test]"
           make test_spark
 
