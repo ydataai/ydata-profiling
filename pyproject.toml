@@ -60,7 +60,7 @@ dependencies = [
     "imagehash==4.3.1",
     "wordcloud>=1.9.3",
     "dacite>=1.8",
-    "numba>=0.56.0, <1",
+    "numba>=0.56.0, <=0.61",
 ]
 
 dynamic = ["version"]
