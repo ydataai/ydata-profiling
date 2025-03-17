@@ -84,10 +84,10 @@ dev = [
 # note that if you are using pyspark 2.3 or 2.4 and pyarrow >= 0.15, you might need to
 # set ARROW_PRE_0_15_IPC_FORMAT=1 in your conf/spark-env.sh for toPandas functions to work properly
 spark = [
-    "pyspark>=2.3.0",
-    "pyarrow>=2.0.0",
-    "pandas>1.1, <2, !=1.4.0",
-    "numpy>=1.16.0,<1.24",
+    "pyspark>=3.0.*",
+    "pyarrow>=4.0.0",
+    "pandas>1.1",
+    "numpy>=1.16.0",
     "visions[type_image_path]>=0.7.5, <0.7.7",
 ]
 test = [
