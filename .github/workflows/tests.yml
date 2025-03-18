@@ -122,64 +122,51 @@ jobs:
     - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
 
   test_spark:
-    runs-on: ${{ matrix.os }}
-    continue-on-error: True
+    runs-on: ubuntu-22.04
+    continue-on-error: false
     strategy:
       matrix:
-        os: [ ubuntu-22.04 ]
-        python-version: [3.8]
-        pandas: ["pandas>1.1"]
-        spark: ["3.0.1"]
-        hadoop: [ 2.7 ]
-        numpy: ["numpy"]
-        java_home: [ /usr/lib/jvm/java-8-openjdk-amd64 ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
+        pyspark-version: [ "3.4" , "3.5" ]
 
-    name: Tests Spark | python ${{ matrix.python-version }}, ${{ matrix.os }}, spark${{ matrix.spark }}, ${{ matrix.pandas }}, ${{ matrix.numpy }}
-    env:
-      JAVA_HOME: ${{ matrix.java_home }}
-      SPARK_VERSION: ${{ matrix.spark }}
-      HADOOP_VERSION: ${{ matrix.hadoop }}
-      SPARK_DIRECTORY: ${{ github.workspace }}/../
-      SPARK_HOME: ${{ github.workspace }}/../spark/
-      YDATA_PROFILING_NO_ANALYTICS: ${{ matrix.analytics }}
+    name: Tests Spark | Python ${{ matrix.python-version }} | PySpark ${{ matrix.pyspark-version }}
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup python
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Java (OpenJDK 11)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jdk
+          echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" >> $GITHUB_ENV
+          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
+          java -version
+
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - uses: actions/cache@v4
-        if: startsWith(runner.os, 'Linux')
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.pyspark-version }}-${{ hashFiles('requirements/*.txt', 'setup.cfg', 'pyproject.toml') }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-\
-      - uses: actions/cache@v4
-        if: startsWith(runner.os, 'macOS')
-        with:
-          path: ~/Library/Caches/pip
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
-      - uses: actions/cache@v4
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ runner.os }}-${{ matrix.pandas }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.pandas }}-pip-
-      - run: |
-          pip install --upgrade pip setuptools wheel
-          pip install pytest-spark>=0.6.0 pyarrow==1.0.1 pyspark=="${{ matrix.spark }}"
+            pip-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install pyarrow>4.0.0 pyspark=="${{ matrix.pyspark-version }}" --no-cache-dir
+          echo "ARROW_PRE_0_15_IPC_FORMAT=1" >> $GITHUB_ENV
+          echo "SPARK_LOCAL_IP=127.0.0.1" >> $GITHUB_ENV
+
+      - name: Run Tests
+        run: |
+          make install
           pip install ".[test]"
-          pip install "${{ matrix.pandas }}" "${{ matrix.numpy }}"
-      - if: ${{ matrix.spark != '3.0.1' }}
-        run: echo "ARROW_PRE_0_15_IPC_FORMAT=1" >> $GITHUB_ENV
-      - run: echo "SPARK_LOCAL_IP=127.0.0.1" >> $GITHUB_ENV
-      - run: make install
-      - run: make install-spark-ci
-      - run: pip install ".[spark]" # Make sure the proper version of pandas is install after everything
-      - run: make test_spark
+          make test_spark
 

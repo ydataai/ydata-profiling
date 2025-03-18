@@ -41,15 +41,15 @@ def describe_data():
         "s1": np.ones(9),
         "s2": ["some constant text $ % value {obj} " for _ in range(1, 10)],
         "somedate": [
-            datetime.datetime(2011, 7, 4),
-            datetime.datetime(2022, 1, 1, 13, 57),
-            datetime.datetime(1990, 12, 9),
+            datetime.date(2011, 7, 4),
+            datetime.date(2011, 7, 2),
+            datetime.date(1990, 12, 9),
             pd.NaT,
-            datetime.datetime(1990, 12, 9),
-            datetime.datetime(1970, 12, 9),
-            datetime.datetime(1972, 1, 2),
-            datetime.datetime(1970, 12, 9),
-            datetime.datetime(1970, 12, 9),
+            datetime.date(1990, 12, 9),
+            datetime.date(1970, 12, 9),
+            datetime.date(1972, 1, 2),
+            datetime.date(1970, 12, 9),
+            datetime.date(1970, 12, 9),
         ],
         "bool_tf": [True, True, False, True, False, True, True, False, True],
         "bool_tf_with_nan": [
@@ -370,13 +370,14 @@ def test_describe_spark_df(
 
     if column == "mixed":
         describe_data[column] = [str(i) for i in describe_data[column]]
-    if column == "bool_tf_with_nan":
+    elif column == "bool_tf_with_nan":
         describe_data[column] = [
             True if i else False for i in describe_data[column]  # noqa: SIM210
         ]
     pdf = pd.DataFrame({column: describe_data[column]})  # Convert to Pandas DataFrame
     # Ensure NaNs are replaced with None (Spark does not support NaN in non-float columns)
     pdf = pdf.where(pd.notna(pdf), None)
+
     sdf = spark_session.createDataFrame(pdf)
 
     results = describe(cfg, sdf, summarizer_spark, typeset)
