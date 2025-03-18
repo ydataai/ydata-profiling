@@ -1,7 +1,7 @@
 """
     Auxiliary handler methods for data summary extraction
 """
-from typing import Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Sequence
 
 import networkx as nx
 from visions import VisionsTypeset
@@ -15,7 +15,7 @@ def compose(functions: Sequence[Callable]) -> Callable:
     :return: combined function applying all functions in order.
     """
 
-    def composed_function(*args) -> List[Callable]:
+    def composed_function(*args) -> List:
         result = args  # Start with the input arguments
         for func in functions:
             result = func(*result) if isinstance(result, tuple) else func(result)

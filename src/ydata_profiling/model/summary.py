@@ -20,7 +20,7 @@ if spec is None:
     sparkDataFrame = TypeVar("sparkDataFrame")  # type: ignore
     sparkSeries = TypeVar("sparkSeries")  # type: ignore
 else:
-    from pyspark.sql import DataFrame as sparkDataFrame  # noqa: E402
+    from pyspark.sql import DataFrame as sparkDataFrame  # type: ignore[name-defined]
 
     from ydata_profiling.model.spark.summary_spark import ( # noqa: E402
         get_series_descriptions_spark,
