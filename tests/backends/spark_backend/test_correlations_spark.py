@@ -15,6 +15,7 @@ from ydata_profiling.model.spark.correlations_spark import (
     spearman_compute as spark_spearman_compute,
 )
 
+
 @pytest.fixture
 def correlation_data_num(spark_session):
     correlation_testdata = pd.DataFrame(
@@ -79,6 +80,4 @@ def test_kendall_spark(correlation_data_cat):
     cfg = Settings()
 
     with pytest.raises(NotImplementedError):
-        kendall_compute(config=cfg,
-                        df=correlation_data_cat,
-                        summary={})
+        kendall_compute(config=cfg, df=correlation_data_cat, summary={})
