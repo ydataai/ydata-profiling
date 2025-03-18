@@ -2,6 +2,8 @@ import importlib
 from typing import Any
 
 import pandas as pd
+from ydata_profiling.config import Settings
+from ydata_profiling.model.pandas.dataframe_pandas import pandas_preprocess
 
 spec = importlib.util.find_spec("pyspark")
 if spec is None:
@@ -11,9 +13,6 @@ if spec is None:
 else:
     from pyspark.sql import DataFrame as sparkDataFrame  # type: ignore
     from ydata_profiling.model.spark.dataframe_spark import spark_preprocess
-
-from ydata_profiling.config import Settings
-from ydata_profiling.model.pandas.dataframe_pandas import pandas_preprocess
 
 
 def preprocess(config: Settings, df: Any) -> Any:

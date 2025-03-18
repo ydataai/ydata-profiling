@@ -20,7 +20,7 @@ def _is_cast_type_defined(typeset: VisionsTypeset, series: str) -> bool:
 def pandas_describe_1d(
     config: Settings,
     series: pd.Series,
-    summarizer: "BaseSummarizer",  # type:ignore
+    summarizer: "BaseSummarizer",  # noqa: F821
     typeset: VisionsTypeset,
 ) -> dict:
     """Describe a series (infer the variable type, then calculate type-specific values).
@@ -67,7 +67,7 @@ def pandas_describe_1d(
 def pandas_get_series_descriptions(
     config: Settings,
     df: pd.DataFrame,
-    summarizer: "BaseSummarizer",  # type:ignore
+    summarizer: "BaseSummarizer",  # noqa: F821
     typeset: VisionsTypeset,
     pbar: tqdm,
 ) -> dict:

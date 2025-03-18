@@ -29,7 +29,7 @@ from ydata_profiling.version import __version__
 
 def describe(
     config: Settings,
-    df: Union[pd.DataFrame, "pyspark.sql.DataFrame"],  # type: ignore
+    df: Union[pd.DataFrame, "pyspark.sql.DataFrame"],  # noqa: F821
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     sample: Optional[dict] = None,

@@ -1,7 +1,7 @@
 """
     Auxiliary handler methods for data summary extraction
 """
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Callable, Dict, List, Sequence
 
 import networkx as nx
 from visions import VisionsTypeset
