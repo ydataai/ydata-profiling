@@ -3,7 +3,7 @@
 """Correlations between variables."""
 
 import warnings
-from typing import Dict, List, Optional, Sized
+from typing import Dict, List, Optional, Sized, no_type_check
 
 import numpy as np
 import pandas as pd
@@ -19,6 +19,7 @@ except ImportError:
 class CorrelationBackend:
     """Helper class to select and cache the appropriate correlation backend (Pandas or Spark)."""
 
+    @no_type_check
     def __init__(self, df: Sized):
         """Determine backend once and store it for all correlation computations."""
         if isinstance(df, pd.DataFrame):
