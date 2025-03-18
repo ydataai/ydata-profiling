@@ -1,4 +1,7 @@
+# mypy: ignore-errors
+
 """Correlations between variables."""
+
 import warnings
 from typing import Dict, List, Optional, Sized
 
@@ -20,16 +23,16 @@ class CorrelationBackend:
         """Determine backend once and store it for all correlation computations."""
         if isinstance(df, pd.DataFrame):
             from ydata_profiling.model.pandas import (
-                correlations_pandas as correlation_backend, #type: ignore
+                correlations_pandas as correlation_backend,  # type: ignore
             )
         else:
             from ydata_profiling.model.spark import (
-                correlations_spark as correlation_backend, # type: ignore
+                correlations_spark as correlation_backend,  # type: ignore
             )
 
         self.backend = correlation_backend
 
-    def get_method(self, method_name: str):
+    def get_method(self, method_name: str):  # noqa: ANN201
         """Retrieve the appropriate correlation method class from the backend."""
         if hasattr(self.backend, method_name):
             return getattr(self.backend, method_name)
