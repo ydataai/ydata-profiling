@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 from ydata_profiling.config import Settings

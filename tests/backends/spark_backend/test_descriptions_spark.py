@@ -374,7 +374,7 @@ def test_describe_spark_df(
         describe_data[column] = [
             True if i else False for i in describe_data[column]  # noqa: SIM210
         ]
-    pdf= pd.DataFrame({column: describe_data[column]})# Convert to Pandas DataFrame
+    pdf = pd.DataFrame({column: describe_data[column]})  # Convert to Pandas DataFrame
     # Ensure NaNs are replaced with None (Spark does not support NaN in non-float columns)
     pdf = pdf.where(pd.notna(pdf), None)
     sdf = spark_session.createDataFrame(pdf)
