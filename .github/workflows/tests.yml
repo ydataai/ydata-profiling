@@ -127,7 +127,7 @@ jobs:
     strategy:
       matrix:
         python-version: [ "3.9", "3.10", "3.11", "3.12" ]
-        pyspark-version: [ "3.5.0" ]
+        pyspark-version: [ "3.4" , "3.5" ]
 
     name: Tests Spark | Python ${{ matrix.python-version }} | PySpark ${{ matrix.pyspark-version }}
 
