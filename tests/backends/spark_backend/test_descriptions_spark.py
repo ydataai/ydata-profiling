@@ -7,7 +7,6 @@ import pytest
 
 from ydata_profiling.config import SparkSettings
 from ydata_profiling.model.describe import describe
-from pyspark.sql.types import TimestampType
 
 check_is_NaN = "ydata_profiling.check_is_NaN"
 
