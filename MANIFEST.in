@@ -4,8 +4,6 @@ include requirements*.txt
 # Include license, Readme, etc.
 include LICENSE
 include *.md
-include mypy.ini
-include src/ydata_profiling/py.typed
 
 # Templates and static resources
 recursive-include src/ydata_profiling/report/presentation/flavours/html/templates *.html *.js *.css
@@ -20,7 +18,7 @@ recursive-include venv *.yml
 exclude .pre-commit-config.yaml
 exclude commitlint.config.js
 exclude .releaserc.json
-include Makefile make.bat
+exclude Makefile make.bat
 exclude docs examples tests docsrc .devcontainer
 recursive-exclude docs *
 recursive-exclude docsrc *
