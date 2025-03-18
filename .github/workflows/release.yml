@@ -72,15 +72,15 @@ jobs:
   publish-pypi:
     name: Publish packages to PyPi
     runs-on: ubuntu-22.04
-
     needs: package
-
+    permissions:
+      id-token: write
+      contents: read
     steps:
     - uses: actions/download-artifact@v4
       with:
         name: built-artifacts
         path: dist/
-
     - uses: pypa/gh-action-pypi-publish@release/v1
       with:
         packages-dir: dist/
