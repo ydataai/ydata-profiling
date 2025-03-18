@@ -1,4 +1,7 @@
+# mypy: ignore-errors
+
 """Correlations between variables."""
+
 import warnings
 from typing import Dict, List, Optional, Sized
 

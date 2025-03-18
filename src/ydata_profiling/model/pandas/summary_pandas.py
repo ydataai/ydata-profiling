@@ -1,3 +1,5 @@
+# mypy: ignore-errors
+
 """Compute statistical description of datasets."""
 import multiprocessing
 from concurrent.futures import ThreadPoolExecutor

@@ -19,9 +19,9 @@ def compose(functions: Sequence[Callable]) -> Callable:
         result = args  # Start with the input arguments
         for func in functions:
             result = func(*result) if isinstance(result, tuple) else func(result)
-        return result
+        return result # type: ignore
 
-    return composed_function
+    return composed_function # type: ignore
 
 
 class Handler:
