@@ -18,12 +18,12 @@ class CorrelationBackend:
     def __init__(self, df: Sized):
         """Determine backend once and store it for all correlation computations."""
         if isinstance(df, pd.DataFrame):
-            from ydata_profiling.model.pandas import (
-                correlations_pandas as correlation_backend, #type: ignore
+            from ydata_profiling.model.pandas import ( # type: ignore
+                correlations_pandas as correlation_backend,
             )
         else:
-            from ydata_profiling.model.spark import (
-                correlations_spark as correlation_backend, # type: ignore
+            from ydata_profiling.model.spark import ( # type: ignore
+                correlations_spark as correlation_backend,
             )
 
         self.backend = correlation_backend
