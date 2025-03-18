@@ -29,7 +29,7 @@ for module_name in SPARK_MODULES:
             for name in dir(module)
             if not name.startswith("_")
         }
-    ) # type: ignore
+    )  # type: ignore
 
 # Explicitly list all available functions
 __all__ = [

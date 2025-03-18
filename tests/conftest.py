@@ -1,11 +1,13 @@
 import shutil
 import sys
 from pathlib import Path
+
 import pytest
 
 try:
+    from pyspark import SparkConf, SparkContext
     from pyspark.sql import SparkSession
-    from pyspark import SparkContext, SparkConf
+
     has_spark = True
 except ImportError:
     has_spark = False
@@ -45,6 +47,7 @@ def test_output_dir(tmpdir_factory):
 def summarizer(typeset):
     return ProfilingSummarizer(typeset)
 
+
 @pytest.fixture(scope="function")
 def summarizer_spark(typeset):
     return ProfilingSummarizer(typeset, use_spark=True)
@@ -70,7 +73,7 @@ def pytest_runtest_setup(item):
         pytest.skip(f"cannot run on platform {plat}")
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def spark_context():
     """Fixture for SparkContext initialization.
 
@@ -94,7 +97,7 @@ def spark_context():
     sc.stop()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def spark_session(spark_context):
     """Fixture for SparkSession initialization.
 
