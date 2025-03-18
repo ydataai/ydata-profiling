@@ -21,7 +21,7 @@ on:
 jobs:
   prepare:
     name: Get Current version
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     outputs:
       version: ${{ steps.version.outputs.value }}
@@ -46,7 +46,7 @@ jobs:
 
   publish-docs:
     name: Publish Docs
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     needs:
     - prepare
@@ -66,7 +66,7 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.13"
+        python-version: "3.11"
 
     - name: Cache pip dependencies
       id: cache
