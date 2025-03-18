@@ -54,7 +54,7 @@ class BaseSummarizer(Handler):
 class ProfilingSummarizer(BaseSummarizer):
     """A summarizer for Pandas DataFrames."""
 
-    def __init__(self, typeset: VisionsTypeset, use_spark=False):
+    def __init__(self, typeset: VisionsTypeset, use_spark: bool=False):
         self.use_spark = use_spark and is_pyspark_installed()
         self._summary_map = self._create_summary_map()
         super().__init__(self._summary_map, typeset)

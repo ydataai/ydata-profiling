@@ -12,7 +12,6 @@ try:
 except ImportError:
     from pandas.errors import DataError
 
-
 class CorrelationBackend:
     """Helper class to select and cache the appropriate correlation backend (Pandas or Spark)."""
 
@@ -29,7 +28,7 @@ class CorrelationBackend:
 
         self.backend = correlation_backend
 
-    def get_method(self, method_name: str):
+    def get_method(self, method_name: str): # noqa: ANN201
         """Retrieve the appropriate correlation method class from the backend."""
         if hasattr(self.backend, method_name):
             return getattr(self.backend, method_name)

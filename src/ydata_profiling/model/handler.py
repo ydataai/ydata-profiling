@@ -15,7 +15,7 @@ def compose(functions: Sequence[Callable]) -> Callable:
     :return: combined function applying all functions in order.
     """
 
-    def composed_function(*args):
+    def composed_function(*args) -> List[Callable]:
         result = args  # Start with the input arguments
         for func in functions:
             result = func(*result) if isinstance(result, tuple) else func(result)
