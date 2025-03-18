@@ -190,7 +190,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 )
 
             if (
-                df is not None and df.rdd.isEmpty() # type: ignore
+                df is not None and df.rdd.isEmpty()  # type: ignore
             ):  # df.isEmpty is only support by 3.3.0 pyspark version
                 raise ValueError(
                     "DataFrame is empty. Please" "provide a non-empty DataFrame."
@@ -259,11 +259,9 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         if self._summarizer is None:
             use_spark = False
             if self._df_type is not pd.DataFrame:
-                use_spark=True
+                use_spark = True
 
-            self._summarizer = ProfilingSummarizer(
-                self.typeset, use_spark=use_spark
-            )
+            self._summarizer = ProfilingSummarizer(self.typeset, use_spark=use_spark)
         return self._summarizer
 
     @property

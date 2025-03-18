@@ -86,7 +86,6 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
             ("labels", "S16"),
         ]
 
-        dtype = np.dtype(dtype_mapping)
         split_text = np.array(split_text, dtype=object)
 
         # Convert each column to its appropriate type

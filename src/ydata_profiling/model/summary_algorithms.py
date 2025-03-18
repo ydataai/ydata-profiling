@@ -101,6 +101,7 @@ def named_aggregate_summary(series: pd.Series, key: str) -> dict:
 
     return summary
 
+
 @multimethod
 def describe_counts(
     config: Settings, series: Any, summary: dict
