@@ -1,7 +1,7 @@
 """Compute statistical description of datasets."""
 import multiprocessing
 from concurrent.futures import ThreadPoolExecutor
-from typing import Tuple, Any
+from typing import Any, Tuple
 
 import numpy as np
 import pandas as pd
@@ -13,6 +13,7 @@ from ydata_profiling.model.typeset import ProfilingTypeSet
 from ydata_profiling.utils.dataframe import sort_column_names
 
 BaseSummarizer: Any = "BaseSummarizer"  # type: ignore
+
 
 def _is_cast_type_defined(typeset: VisionsTypeset, series: str) -> bool:
     return isinstance(typeset, ProfilingTypeSet) and series in typeset.type_schema
