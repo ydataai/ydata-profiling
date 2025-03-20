@@ -16,8 +16,10 @@ def in_jupyter_notebook() -> bool:
     """Check if the code is running inside a Jupyter Notebook"""
     if importlib.util.find_spec("IPython") is not None:
         from IPython import get_ipython
+
         return get_ipython() is not None
     return False
+
 
 class DisplayInfo:
     def __init__(
