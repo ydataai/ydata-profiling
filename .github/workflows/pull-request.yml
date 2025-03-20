@@ -85,7 +85,7 @@ jobs:
 
   validate-docs:
     name: Validate Docs
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
@@ -93,7 +93,7 @@ jobs:
     - name: Setup Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.13'
+        python-version: '3.11'
 
     - name: Cache pip dependencies
       id: cache
