@@ -2,8 +2,10 @@
     References and information regarding ydata-profiling and ydata-sdk
 """
 import importlib.util
+import os
 
 _displayed_banner = False
+SUPPRESS_BANNER = bool(os.getenv("YDATA_SUPPRESS_BANNER", ""))
 
 link = "https://ydata.ai/register"
 title = "Upgrade to ydata-sdk"
@@ -14,12 +16,8 @@ def in_jupyter_notebook() -> bool:
     """Check if the code is running inside a Jupyter Notebook"""
     if importlib.util.find_spec("IPython") is not None:
         from IPython import get_ipython
-
-        isiPython = not get_ipython() is None
-    else:
-        isiPython = False
-    return isiPython
-
+        return get_ipython() is not None
+    return False
 
 class DisplayInfo:
     def __init__(
@@ -61,8 +59,8 @@ class DisplayInfo:
 
 def display_banner() -> None:
     global _displayed_banner
-    banner_info = DisplayInfo(title=title, info_text=info_text)
 
-    if not _displayed_banner:
+    if not _displayed_banner and not SUPPRESS_BANNER:
+        banner_info = DisplayInfo(title=title, info_text=info_text)
         banner_info.display_message()
         _displayed_banner = True
