@@ -16,7 +16,7 @@ permissions:
 jobs:
   prepare:
     name: Calculate Version and Build Number
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     outputs:
       build_number: ${{ steps.build_number.outputs.value }}
@@ -51,7 +51,7 @@ jobs:
     if: needs.prepare.outputs.new_release == 'true'
 
     name: Create Prerelease Tag
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare
@@ -69,7 +69,7 @@ jobs:
     if: needs.prepare.outputs.new_release == 'true'
 
     name: Draft Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
     - prepare
