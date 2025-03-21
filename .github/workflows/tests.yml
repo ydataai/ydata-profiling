@@ -122,7 +122,7 @@ jobs:
     - run: codecov -F py${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.pandas }}-${{ matrix.numpy }}
 
   test_spark:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     continue-on-error: false
     strategy:
       matrix:
