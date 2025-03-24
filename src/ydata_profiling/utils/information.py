@@ -26,7 +26,7 @@ class DisplayInfo:
         self,
         title: str,
         info_text: str,
-        link: str = "ttps://ydata.ai/register",
+        link: str = "https://ydata.ai/register",
     ):
         self.title = title
         self.link = link
@@ -63,6 +63,6 @@ def display_banner() -> None:
     global _displayed_banner
 
     if not _displayed_banner and not SUPPRESS_BANNER:
-        banner_info = DisplayInfo(title=title, info_text=info_text)
+        banner_info = DisplayInfo(title=title, info_text=info_text, link=link)
         banner_info.display_message()
         _displayed_banner = True
