@@ -1,16 +1,45 @@
 """
     HTML flavour mapping
 """
-from ydata_profiling.report.presentation.core import (Container, Variable, VariableInfo, Table, HTML, Root, Image,
-                                                      FrequencyTable, FrequencyTableSmall, Alerts, Duplicate,
-                                                      Dropdown, Sample, ToggleButton, Collapse,
-                                                      CorrelationTable, Scores)
-from ydata_profiling.report.presentation.flavours.html import (HTMLContainer, HTMLVariable, HTMLVariableInfo,
-                                                               HTMLTable, HTMLHTML, HTMLRoot, HTMLImage,
-                                                               HTMLFrequencyTable, HTMLFrequencyTableSmall,
-                                                               HTMLAlerts, HTMLDuplicate, HTMLDropdown, HTMLScores,
-                                                               HTMLSample, HTMLToggleButton, HTMLCollapse, HTMLCorrelationTable)
+from ydata_profiling.report.presentation.core import (
+    HTML,
+    Alerts,
+    Collapse,
+    Container,
+    CorrelationTable,
+    Dropdown,
+    Duplicate,
+    FrequencyTable,
+    FrequencyTableSmall,
+    Image,
+    Root,
+    Sample,
+    Scores,
+    Table,
+    ToggleButton,
+    Variable,
+    VariableInfo,
+)
 from ydata_profiling.report.presentation.flavours.flavours import register_flavour
+from ydata_profiling.report.presentation.flavours.html import (
+    HTMLHTML,
+    HTMLAlerts,
+    HTMLCollapse,
+    HTMLContainer,
+    HTMLCorrelationTable,
+    HTMLDropdown,
+    HTMLDuplicate,
+    HTMLFrequencyTable,
+    HTMLFrequencyTableSmall,
+    HTMLImage,
+    HTMLRoot,
+    HTMLSample,
+    HTMLScores,
+    HTMLTable,
+    HTMLToggleButton,
+    HTMLVariable,
+    HTMLVariableInfo,
+)
 
 html_mapping = {
     Container: HTMLContainer,

@@ -20,7 +20,7 @@ class HTMLContainer(Container):
                 tabs=self.content["items"],
                 anchor_id=self.content["anchor_id"],
                 nested=self.content["nested"],
-                oss=self.oss
+                oss=self.oss,
             )
         elif self.sequence_type == "tabs":
             return templates.template("sequence/tabs.html").render(
@@ -51,7 +51,8 @@ class HTMLContainer(Container):
                 subtitles=self.content.get("subtitles", False),
             )
         elif self.sequence_type == "scores":
-            return templates.template("sequence/scores.html").render(anchor_id=self.content["anchor_id"],
-                                                                     items=self.content["items"])
+            return templates.template("sequence/scores.html").render(
+                anchor_id=self.content["anchor_id"], items=self.content["items"]
+            )
         else:
             raise ValueError("Template not understood", self.sequence_type)

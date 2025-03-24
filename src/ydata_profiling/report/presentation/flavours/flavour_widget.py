@@ -1,14 +1,43 @@
 """
     Flavour widget
 """
-from ydata_profiling.report.presentation.core import (Container, Variable, VariableInfo, Table, HTML, Root, Image,
-                                                      FrequencyTable, FrequencyTableSmall, Alerts, Duplicate, Dropdown,
-                                                      Sample, ToggleButton, Collapse, CorrelationTable)
-from ydata_profiling.report.presentation.flavours.widget import (WidgetTable, WidgetContainer, WidgetVariable, WidgetVariableInfo,
-                                                                 WidgetHTML, WidgetRoot, WidgetImage, WidgetFrequencyTable, WidgetFrequencyTableSmall,
-                                                                 WidgetAlerts, WidgetDuplicate, WidgetDropdown, WidgetSample, WidgetToggleButton,
-                                                                 WidgetCollapse, WidgetCorrelationTable)
+from ydata_profiling.report.presentation.core import (
+    HTML,
+    Alerts,
+    Collapse,
+    Container,
+    CorrelationTable,
+    Dropdown,
+    Duplicate,
+    FrequencyTable,
+    FrequencyTableSmall,
+    Image,
+    Root,
+    Sample,
+    Table,
+    ToggleButton,
+    Variable,
+    VariableInfo,
+)
 from ydata_profiling.report.presentation.flavours.flavours import register_flavour
+from ydata_profiling.report.presentation.flavours.widget import (
+    WidgetAlerts,
+    WidgetCollapse,
+    WidgetContainer,
+    WidgetCorrelationTable,
+    WidgetDropdown,
+    WidgetDuplicate,
+    WidgetFrequencyTable,
+    WidgetFrequencyTableSmall,
+    WidgetHTML,
+    WidgetImage,
+    WidgetRoot,
+    WidgetSample,
+    WidgetTable,
+    WidgetToggleButton,
+    WidgetVariable,
+    WidgetVariableInfo,
+)
 
 widget_mapping = {
     Container: WidgetContainer,

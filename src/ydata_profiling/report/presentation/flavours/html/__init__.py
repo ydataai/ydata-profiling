@@ -16,6 +16,7 @@ from ydata_profiling.report.presentation.flavours.html.html import HTMLHTML
 from ydata_profiling.report.presentation.flavours.html.image import HTMLImage
 from ydata_profiling.report.presentation.flavours.html.root import HTMLRoot
 from ydata_profiling.report.presentation.flavours.html.sample import HTMLSample
+from ydata_profiling.report.presentation.flavours.html.scores import HTMLScores
 from ydata_profiling.report.presentation.flavours.html.table import HTMLTable
 from ydata_profiling.report.presentation.flavours.html.toggle_button import (
     HTMLToggleButton,
@@ -24,8 +25,6 @@ from ydata_profiling.report.presentation.flavours.html.variable import HTMLVaria
 from ydata_profiling.report.presentation.flavours.html.variable_info import (
     HTMLVariableInfo,
 )
-
-from ydata_profiling.report.presentation.flavours.html.scores import HTMLScores
 
 __all__ = [
     "HTMLCollapse",
@@ -44,5 +43,5 @@ __all__ = [
     "HTMLVariableInfo",
     "HTMLAlerts",
     "HTMLCorrelationTable",
-    "HTMLScores"
+    "HTMLScores",
 ]

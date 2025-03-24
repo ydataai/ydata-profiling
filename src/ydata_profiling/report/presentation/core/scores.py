@@ -1,8 +1,10 @@
 """
     Scores ItemRendered class
 """
-from typing import Any, Optional, List, Dict
+from typing import Any, Dict, List, Optional
+
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
+
 
 class Scores(ItemRenderer):
     def __init__(

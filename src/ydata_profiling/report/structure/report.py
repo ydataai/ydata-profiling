@@ -348,6 +348,7 @@ def get_interactions(config: Settings, interactions: dict) -> list:
         )
     return titems
 
+
 def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
     """Generate a HTML report from summary statistics and a given sample.
 
@@ -370,7 +371,7 @@ def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
                 sequence_type="overview_tabs",
                 name="Overview",
                 anchor_id="overview",
-                oss=not bool(os.getenv("YDATA_SUPPRESS_BANNER", ""))
+                oss=not bool(os.getenv("YDATA_SUPPRESS_BANNER", "")),
             ),
         ]
 
