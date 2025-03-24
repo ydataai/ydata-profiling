@@ -348,7 +348,6 @@ def get_interactions(config: Settings, interactions: dict) -> list:
         )
     return titems
 
-from ydata_profiling.report.presentation.core import Scores
 def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
     """Generate a HTML report from summary statistics and a given sample.
 
