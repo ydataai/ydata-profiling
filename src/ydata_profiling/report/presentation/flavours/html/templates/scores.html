@@ -1,0 +1,44 @@
+<style>
+  .progress {
+    height: 12px;
+    border-radius: 6px;
+  }
+
+  .overall-score {
+    font-size: 2.5rem;
+  }
+</style>
+
+<div class="container my-5">
+  <!-- Overall Score -->
+  <div class="row justify-content-center text-center mb-sm-3">
+    <div class="col-12">
+      <div class="card shadow-sm p-4">
+        <h5 class="text-muted mb-2">Overall Data Quality Score</h5>
+        <div class="overall-score fw-bold text-primary">{{ overall_score }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="row g-4 text-center">
+    {% for metric in items %}
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="card shadow-sm p-3 h-100">
+          <div class="h6 text-muted">{{ metric.name }}</div>
+          <div class="progress bg-light">
+            <div
+              class="progress-bar"
+              role="progressbar"
+              style="width: {{ metric.value }}%; background-color: {{ metric.color }};"
+              aria-valuenow="{{ metric.value }}"
+              aria-valuemin="0"
+              aria-valuemax="100">
+            </div>
+          </div>
+          <div class="fw-bold mt-2" style="color: {{ metric.color }};">{{ metric.value }}%</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

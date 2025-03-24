@@ -1,4 +1,4 @@
-"""Generate the report."""
+import os
 from typing import List, Sequence
 
 import pandas as pd
@@ -368,9 +368,10 @@ def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
         section_items: List[Renderable] = [
             Container(
                 get_dataset_items(config, summary, alerts),
-                sequence_type="tabs",
+                sequence_type="overview_tabs",
                 name="Overview",
                 anchor_id="overview",
+                oss=not bool(os.getenv("YDATA_SUPPRESS_BANNER", "")),
             ),
         ]
 

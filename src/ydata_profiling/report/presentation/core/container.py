@@ -12,11 +12,16 @@ class Container(Renderable):
         name: Optional[str] = None,
         anchor_id: Optional[str] = None,
         classes: Optional[str] = None,
+        oss: Optional[bool] = None,
         **kwargs,
     ):
         args = {"items": items, "nested": nested}
         args.update(**kwargs)
         super().__init__(args, name, anchor_id, classes)
+
+        if oss is not None:
+            self.oss = oss
+
         self.sequence_type = sequence_type
 
     def __str__(self) -> str:

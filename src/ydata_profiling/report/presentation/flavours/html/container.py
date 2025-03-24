@@ -1,3 +1,6 @@
+"""
+    Container class definition
+"""
 from ydata_profiling.report.presentation.core.container import Container
 from ydata_profiling.report.presentation.flavours.html import templates
 
@@ -11,6 +14,13 @@ class HTMLContainer(Container):
         elif self.sequence_type == "named_list":
             return templates.template("sequence/named_list.html").render(
                 anchor_id=self.content["anchor_id"], items=self.content["items"]
+            )
+        elif self.sequence_type == "overview_tabs":
+            return templates.template("sequence/overview_tabs.html").render(
+                tabs=self.content["items"],
+                anchor_id=self.content["anchor_id"],
+                nested=self.content["nested"],
+                oss=self.oss,
             )
         elif self.sequence_type == "tabs":
             return templates.template("sequence/tabs.html").render(
@@ -39,6 +49,10 @@ class HTMLContainer(Container):
                 batch_size=self.content["batch_size"],
                 titles=self.content.get("titles", True),
                 subtitles=self.content.get("subtitles", False),
+            )
+        elif self.sequence_type == "scores":
+            return templates.template("sequence/scores.html").render(
+                anchor_id=self.content["anchor_id"], items=self.content["items"]
             )
         else:
             raise ValueError("Template not understood", self.sequence_type)
