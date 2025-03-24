@@ -7,18 +7,18 @@ from typing import Dict, Type
 from ydata_profiling.report.presentation.core.renderable import Renderable
 
 
-_FLAVOUR_REGISTRY: Dict[str, Dict[Type[Renderable], Type[Renderable]]] = {}
+_FLAVOUR_REGISTRY: Dict[str, Dict[Renderable, Renderable]] = {}
 
-def register_flavour(name: str, mapping: Dict[Type[Renderable], Type[Renderable]]) -> None:
+def register_flavour(name: str, mapping: Dict[Renderable, Renderable]) -> None:
     _FLAVOUR_REGISTRY[name] = mapping
 
-def get_flavour_mapping(name: str) -> Dict[Type[Renderable], Type[Renderable]]:
+def get_flavour_mapping(name: str) -> Dict[Renderable, Renderable]:
     if name not in _FLAVOUR_REGISTRY:
         raise ValueError(f"Flavour '{name}' is not registered.")
     return _FLAVOUR_REGISTRY[name]
 
 def apply_renderable_mapping(
-    mapping: Dict[Type[Renderable], Type[Renderable]],
+    mapping: Dict[Renderable, Renderable],
     structure: Renderable,
     flavour_func: Root,
 ) -> None:
