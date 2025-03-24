@@ -2,8 +2,6 @@
     Scores ItemRendered class
 """
 from typing import Any, Optional, List, Dict
-
-from ydata_profiling.config import Style
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 class Scores(ItemRenderer):

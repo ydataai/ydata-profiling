@@ -20,7 +20,7 @@ def get_flavour_mapping(name: str) -> Dict[Type[Renderable], Type[Renderable]]:
 def apply_renderable_mapping(
     mapping: Dict[Type[Renderable], Type[Renderable]],
     structure: Renderable,
-    flavour_func,
+    flavour_func: Root,
 ) -> None:
     mapping[type(structure)].convert_to_class(structure, flavour_func)
 
