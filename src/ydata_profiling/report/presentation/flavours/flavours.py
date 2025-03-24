@@ -18,7 +18,7 @@ def get_flavour_mapping(name: str) -> dict:
 def apply_renderable_mapping(
     mapping: dict,
     structure: Renderable,
-    flavour_func: Root,
+    flavour_func, # noqa: ANN001
 ) -> None:
     mapping[type(structure)].convert_to_class(structure, flavour_func)
 
