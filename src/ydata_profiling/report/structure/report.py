@@ -1,4 +1,3 @@
-"""Generate the report."""
 import os
 from typing import List, Sequence
 

@@ -1,4 +1,6 @@
-import os
+"""
+    Container class definition
+"""
 from ydata_profiling.report.presentation.core.container import Container
 from ydata_profiling.report.presentation.flavours.html import templates
 
