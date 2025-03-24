@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 
-from ydata_profiling.report.presentation.core import Root
-
 class Renderable(ABC):
     def __init__(
         self,
@@ -39,5 +37,5 @@ class Renderable(ABC):
         return self.__class__.__name__
 
     @classmethod
-    def convert_to_class(cls, obj: "Renderable", flavour_func: Root) -> None:
+    def convert_to_class(cls, obj: "Renderable", flavour_func: "Renderable") -> None:
         obj.__class__ = cls
