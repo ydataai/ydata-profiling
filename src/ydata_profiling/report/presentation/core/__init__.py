@@ -1,4 +1,5 @@
 from ydata_profiling.report.presentation.core.alerts import Alerts
+from ydata_profiling.report.presentation.core.scores import Scores
 from ydata_profiling.report.presentation.core.collapse import Collapse
 from ydata_profiling.report.presentation.core.container import Container
 from ydata_profiling.report.presentation.core.correlation_table import CorrelationTable
@@ -34,4 +35,5 @@ __all__ = [
     "VariableInfo",
     "Alerts",
     "CorrelationTable",
+    "Scores"
 ]
