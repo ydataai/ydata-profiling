@@ -365,35 +365,15 @@ def get_report_structure(config: Settings, summary: BaseDescription) -> Root:
     ) as pbar:
         alerts = summary.alerts
 
-        scores_results = [Scores(
-            overall_score=98,
-            items=[{'name': 'test', 'value': 90, 'color': '#007bff'}, {'name': 'test', 'value': 90, 'color': '#ff5733'},
-                   {'name': 'test', 'value': 90, 'color': '#ff5733'}],
-            name='teste',
-            caption='validation',
-            anchor_id='validation'
-        )]
-
         section_items: List[Renderable] = [
             Container(
-                scores_results,
-                sequence_type="scores",
-                batch_size=1,
-                name="Data Quality scores",
-                anchor_id="test",
+                get_dataset_items(config, summary, alerts),
+                sequence_type="overview_tabs",
+                name="Overview",
+                anchor_id="overview",
+                oss=not bool(os.getenv("YDATA_SUPPRESS_BANNER", ""))
             ),
         ]
-
-        #Give it a try here to see how it goes
-        section_items.append(
-            Container(
-            get_dataset_items(config, summary, alerts),
-            sequence_type="overview_tabs",
-            name="Overview",
-            anchor_id="overview",
-            oss=not bool(os.getenv("YDATA_SUPPRESS_BANNER", ""))
-            ),
-        )
 
         if len(summary.variables) > 0:
             section_items.append(
