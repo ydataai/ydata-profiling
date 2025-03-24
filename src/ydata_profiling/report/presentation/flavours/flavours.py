@@ -25,14 +25,14 @@ def apply_renderable_mapping(
     mapping[type(structure)].convert_to_class(structure, flavour_func)
 
 def HTMLReport(structure: Root) -> Root:
-    from ydata_profiling.report.presentation.flavours import flavour_html
+    from ydata_profiling.report.presentation.flavours import flavour_html # noqa: F401
 
     mapping = get_flavour_mapping("html")
     apply_renderable_mapping(mapping, structure, flavour_func=HTMLReport)
     return structure
 
 def WidgetReport(structure: Root) -> Root:
-    from ydata_profiling.report.presentation.flavours import flavour_widget
+    from ydata_profiling.report.presentation.flavours import flavour_widget # noqa: F401
 
     mapping = get_flavour_mapping("widget")
     apply_renderable_mapping(mapping, structure, flavour_func=WidgetReport)
