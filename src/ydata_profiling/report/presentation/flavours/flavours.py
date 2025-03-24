@@ -2,23 +2,21 @@
     Flavours registry information
 """
 from ydata_profiling.report.presentation.core import Root
-
-from typing import Dict, Type
 from ydata_profiling.report.presentation.core.renderable import Renderable
 
 
-_FLAVOUR_REGISTRY: Dict[str, Dict[Renderable, Renderable]] = {}
+_FLAVOUR_REGISTRY: dict = {}
 
-def register_flavour(name: str, mapping: Dict[Renderable, Renderable]) -> None:
+def register_flavour(name: str, mapping: dict) -> None:
     _FLAVOUR_REGISTRY[name] = mapping
 
-def get_flavour_mapping(name: str) -> Dict[Renderable, Renderable]:
+def get_flavour_mapping(name: str) -> dict:
     if name not in _FLAVOUR_REGISTRY:
         raise ValueError(f"Flavour '{name}' is not registered.")
     return _FLAVOUR_REGISTRY[name]
 
 def apply_renderable_mapping(
-    mapping: Dict[Renderable, Renderable],
+    mapping: dict,
     structure: Renderable,
     flavour_func: Root,
 ) -> None:
