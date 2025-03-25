@@ -1,16 +1,19 @@
 import unittest
+
 import pandas as pd
+
 from ydata_profiling.utils.compat import optional_option_context, pandas_version_info
 
 
 class TestCompatUtils(unittest.TestCase):
-
     def test_pandas_version_info_format(self):
         version_info = pandas_version_info()
         self.assertIsInstance(version_info, tuple)
         self.assertTrue(all(isinstance(i, int) for i in version_info))
 
-        expected_prefix = tuple(int(x) for x in pd.__version__.split(".")[: len(version_info)])
+        expected_prefix = tuple(
+            int(x) for x in pd.__version__.split(".")[: len(version_info)]
+        )
         self.assertEqual(version_info, expected_prefix)
 
     def test_optional_option_context_with_existing_option(self):
