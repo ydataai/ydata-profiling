@@ -20,7 +20,7 @@ class Scores(ItemRenderer):
             "items": items,
             "overall_score": overall_score,
             "name": name,
-            "style": style
+            "style": style,
         }
 
         super().__init__("scores", content=content, **kwargs)
