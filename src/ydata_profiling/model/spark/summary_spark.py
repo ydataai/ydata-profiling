@@ -58,6 +58,9 @@ def spark_describe_1d(
             "timestamp": "DateTime",
         }[dtype]
 
+        column_name = series.columns[0]
+        vtype = typeset.type_schema.get(column_name, vtype)
+
     return summarizer.summarize(config, series, dtype=vtype)
 
 
