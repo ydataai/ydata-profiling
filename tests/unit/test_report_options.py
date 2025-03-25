@@ -1,9 +1,7 @@
 import pandas as pd
-import numpy as np
 import pytest
 
 from ydata_profiling import ProfileReport
-from ydata_profiling.config import Settings
 
 
 # Enhanced fixture with more diverse data types
