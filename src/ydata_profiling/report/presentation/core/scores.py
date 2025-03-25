@@ -3,6 +3,7 @@
 """
 from typing import Any, Dict, List, Optional
 
+from ydata_profiling.config import Style
 from ydata_profiling.report.presentation.core.item_renderer import ItemRenderer
 
 
@@ -11,15 +12,15 @@ class Scores(ItemRenderer):
         self,
         items: List[Dict],
         overall_score: float,
+        style: Style,
         name: Optional[str],
-        caption: Optional[str],
         **kwargs
     ):
         content = {
             "items": items,
             "overall_score": overall_score,
             "name": name,
-            "caption": caption,
+            "style": style
         }
 
         super().__init__("scores", content=content, **kwargs)
