@@ -81,7 +81,6 @@ def test_max_unique_categories(plot_type):
     # Test with different numbers of unique categories
     categories = {f"cat_{i}": 5 for i in range(10)}
     data = generate_cat_data_series(categories)
-    
     profile = generate_report(data)
     profile.config.plot.cat_freq.max_unique = 5
     profile.config.plot.cat_freq.type = plot_type

@@ -110,7 +110,6 @@ def test_timeseries_config_persistence():
     df = pd.DataFrame({'value': range(100)})
     profile = ProfileReport(df, tsmode=True)
     assert profile.config.vars.timeseries.active is True
-    
     # Test config after invalidating cache
     profile.invalidate_cache()
     assert profile.config.vars.timeseries.active is True
