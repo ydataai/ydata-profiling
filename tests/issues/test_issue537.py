@@ -36,11 +36,12 @@ def test_multiprocessing_describe1d(config, summarizer, typeset):
         """Downloads and processes the dataset into a Pandas DataFrame."""
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                          "AppleWebKit/537.36 (KHTML, like Gecko) "
-                          "Chrome/122.0.0.0 Safari/537.36"
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
         }
-        response = requests.get("https://ndownloader.figshare.com/files/5976042",
-                                headers=headers)
+        response = requests.get(
+            "https://ndownloader.figshare.com/files/5976042", headers=headers
+        )
 
         response.raise_for_status()  # Ensure successful download
 
