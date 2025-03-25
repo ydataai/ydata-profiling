@@ -10,6 +10,7 @@ from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
+from ydata_profiling.utils.compat import optional_option_context
 from ydata_profiling.utils.dataframe import sort_column_names
 
 BaseSummarizer: Any = "BaseSummarizer"  # type: ignore
@@ -38,7 +39,8 @@ def pandas_describe_1d(
     """
 
     # Make sure pd.NA is not in the series
-    series = series.fillna(np.nan)
+    with optional_option_context("future.no_silent_downcasting", True):
+        series = series.fillna(np.nan).infer_objects(copy=False)
 
     has_cast_type = _is_cast_type_defined(typeset, series.name)  # type:ignore
     cast_type = (
