@@ -1,5 +1,3 @@
-import pytest
-
 import concurrent.futures
 from functools import partial
 from gzip import decompress
@@ -7,6 +5,7 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
+import pytest
 import requests
 
 from ydata_profiling.model.summary import describe_1d
@@ -26,6 +25,7 @@ def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:
     """
     column, series = args
     return column, describe_1d(config, series, summarizer, typeset)
+
 
 @pytest.mark.skip("This test is no longer valid")
 def test_multiprocessing_describe1d(config, summarizer, typeset):
