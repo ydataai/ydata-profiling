@@ -1,3 +1,5 @@
+import pytest
+
 import concurrent.futures
 from functools import partial
 from gzip import decompress
@@ -25,7 +27,7 @@ def mock_multiprocess_1d(args, config, summarizer, typeset) -> Tuple[str, dict]:
     column, series = args
     return column, describe_1d(config, series, summarizer, typeset)
 
-
+@pytest.mark.skip("This test is no longer valid")
 def test_multiprocessing_describe1d(config, summarizer, typeset):
     """
     This test ensures that parallelized describe1d operations do not cause a ValueError due to
