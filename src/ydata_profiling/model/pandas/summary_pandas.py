@@ -1,7 +1,7 @@
 """Compute statistical description of datasets."""
 import multiprocessing
 from concurrent.futures import ThreadPoolExecutor
-from typing import Dict, Any, Tuple
+from typing import Any, Dict, Tuple
 
 import numpy as np
 import pandas as pd
@@ -10,8 +10,8 @@ from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
-from ydata_profiling.utils.compat import optional_option_context
 from ydata_profiling.model.var_description.default import VarDescription
+from ydata_profiling.utils.compat import optional_option_context
 from ydata_profiling.utils.dataframe import sort_column_names
 
 BaseSummarizer: Any = "BaseSummarizer"  # type: ignore

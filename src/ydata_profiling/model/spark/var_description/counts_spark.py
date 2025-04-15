@@ -1,14 +1,12 @@
 """
     Pyspark counts
 """
-from typing import Tuple
-
 import pandas as pd
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.var_description.counts import VarCounts
+from ydata_profiling.model.var_description.default import VarCounts
 
 
 def get_counts_spark(config: Settings, series: DataFrame) -> VarCounts:
@@ -21,16 +19,18 @@ def get_counts_spark(config: Settings, series: DataFrame) -> VarCounts:
     length = series.count()
 
     # Count occurrences of each value
-    value_counts = series.groupBy(series.columns).count()
+    value_counts = series.groupBy(series.columns[0]).count()
 
     # Sort by count descending, persist the result
-    value_counts = value_counts.sort("count", ascending=False).persist()
+    value_counts = value_counts.orderBy(F.desc("count")).persist()
 
     # Sort by column value ascending (for frequency tables)
-    value_counts_index_sorted = value_counts.sort(series.columns[0], ascending=True)
+    value_counts_index_sorted = value_counts.orderBy(F.asc(series.columns[0]))
 
     # Count missing values
-    n_missing = value_counts.where(value_counts[series.columns[0]].isNull()).first()
+    n_missing = (
+        value_counts.filter(F.col(series.columns[0]).isNull()).select("count").first()
+    )
     n_missing = n_missing["count"] if n_missing else 0
 
     # Convert top 200 values to Pandas for frequency table display
@@ -41,13 +41,32 @@ def get_counts_spark(config: Settings, series: DataFrame) -> VarCounts:
         .squeeze(axis="columns")
     )
 
-    value_counts_without_nan = (
-        value_counts.dropna()
-        .limit(200)
-        .toPandas()
-        .set_index(series.columns[0], drop=True)
-        .squeeze(axis="columns")
-    )
+    column = series.columns[0]
+
+    if series.dtypes[0][1] in ("int", "float", "bigint", "double"):
+        value_counts_no_nan = (
+            value_counts.filter(F.col(column).isNotNull())  # Exclude NaNs
+            .filter(~F.isnan(F.col(column)))  # Remove implicit NaNs (if numeric column)
+            .groupBy(column)  # Group by unique values
+            .count()  # Count occurrences
+            .orderBy(F.desc("count"))  # Sort in descending order
+            .limit(200)  # Limit for performance
+        )
+    else:
+        value_counts_no_nan = (
+            value_counts.filter(F.col(column).isNotNull())  # Exclude NULLs
+            .groupBy(column)  # Group by unique timestamp values
+            .count()  # Count occurrences
+            .orderBy(F.desc("count"))  # Sort by most frequent timestamps
+            .limit(200)  # Limit for performance
+        )
+
+        # Convert to Pandas Series, forcing proper structure
+    if value_counts_no_nan.count() > 0:
+        pdf = value_counts_no_nan.toPandas().set_index(column)["count"]
+        value_counts_without_nan = pd.Series(pdf)  # Ensures it's always a Series
+    else:
+        value_counts_without_nan = pd.Series(dtype=int)  # Ensures an empty Series
 
     # @chanedwin
     memory_size = 0
@@ -55,7 +74,7 @@ def get_counts_spark(config: Settings, series: DataFrame) -> VarCounts:
     return VarCounts(
         hashable=False,
         value_counts_without_nan=value_counts_without_nan,
-        value_counts_index_sorted=value_counts_index_sorted,
+        value_counts_index_sorted=top_200_sorted,
         ordering=False,
         n_missing=n_missing,
         n=length,

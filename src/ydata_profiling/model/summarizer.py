@@ -13,10 +13,8 @@ from ydata_profiling.model.handler import Handler
 from ydata_profiling.model.pandas import (
     pandas_describe_boolean_1d,
     pandas_describe_categorical_1d,
-    pandas_describe_counts,
     pandas_describe_date_1d,
     pandas_describe_file_1d,
-    pandas_describe_generic,
     pandas_describe_image_1d,
     pandas_describe_numeric_1d,
     pandas_describe_path_1d,
@@ -71,9 +69,7 @@ class ProfilingSummarizer(BaseSummarizer):
             from ydata_profiling.model.spark import (
                 describe_boolean_1d_spark,
                 describe_categorical_1d_spark,
-                describe_counts_spark,
                 describe_date_1d_spark,
-                describe_generic_spark,
                 describe_numeric_1d_spark,
                 describe_supported_spark,
                 describe_text_1d_spark,
@@ -81,8 +77,6 @@ class ProfilingSummarizer(BaseSummarizer):
 
             summary_map = {
                 "Unsupported": [
-                    describe_counts_spark,
-                    describe_generic_spark,
                     describe_supported_spark,
                 ],
                 "Numeric": [describe_numeric_1d_spark],
@@ -99,8 +93,6 @@ class ProfilingSummarizer(BaseSummarizer):
         else:
             summary_map = {
                 "Unsupported": [
-                    pandas_describe_counts,
-                    pandas_describe_generic,
                     pandas_describe_supported,
                 ],
                 "Numeric": [pandas_describe_numeric_1d],

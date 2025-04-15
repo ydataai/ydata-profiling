@@ -9,7 +9,6 @@ import pandas as pd
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.correlations import perform_check_correlation
-
 from ydata_profiling.model.var_description.default import VarDescription
 from ydata_profiling.utils.styles import get_alert_styles
 
@@ -690,7 +689,7 @@ def supported_alerts(summary: VarDescription) -> List[Alert]:
     return alerts
 
 
-def unsupported_alerts(summary: VarDescription) -> List[Alert]:
+def unsupported_alerts() -> List[Alert]:
     alerts: List[Alert] = [
         UnsupportedAlert(),
         RejectedAlert(),

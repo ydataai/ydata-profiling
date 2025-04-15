@@ -14,7 +14,6 @@ from ydata_profiling.model.pandas.summary_pandas import (
 from ydata_profiling.model.summarizer import BaseSummarizer
 from ydata_profiling.model.var_description.default import VarDescription
 
-
 spec = importlib.util.find_spec("pyspark")
 if spec is None:
     from typing import TypeVar  # noqa: E402

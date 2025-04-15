@@ -19,7 +19,7 @@ def get_default_spark_description(
 
     n_unique = var_counts.value_counts.where("count == 1").count()
     is_unique = n_unique == count
-    p_unique = n_unique / count  if count > 0 else 0
+    p_unique = n_unique / count if count > 0 else 0
 
     init_dict.update(
         {

@@ -16,8 +16,8 @@ from ydata_profiling.model.summary_algorithms import (
     series_handle_nulls,
     series_hashable,
 )
-from ydata_profiling.utils.information import DisplayInfo
 from ydata_profiling.model.var_description.default import VarDescription
+from ydata_profiling.utils.information import DisplayInfo
 
 
 def get_character_counts_vc(vc: pd.Series) -> pd.Series:

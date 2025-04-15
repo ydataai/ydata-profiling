@@ -32,7 +32,7 @@ def test_summarizer_base_types(config: Settings):
 
 def test_summarizer_url(config: Settings):
     config.vars.url.active = True
-    pps = PandasProfilingSummarizer(typeset=ProfilingTypeSet(config))
+    pps = ProfilingSummarizer(typeset=ProfilingTypeSet(config))
     _ = format_summary(
         pps.summarize(config, pd.Series(["https://www.example.com"]), "URL")
     )
@@ -40,7 +40,7 @@ def test_summarizer_url(config: Settings):
 
 def test_summarizer_path(config: Settings):
     config.vars.path.active = True
-    pps = PandasProfilingSummarizer(typeset=ProfilingTypeSet(config))
+    pps = ProfilingSummarizer(typeset=ProfilingTypeSet(config))
     _ = format_summary(
         pps.summarize(
             config,
@@ -60,7 +60,7 @@ def test_summarizer_path(config: Settings):
 def test_summarizer_file(config: Settings):
     config.vars.path.active = True
     config.vars.file.active = True
-    pps = PandasProfilingSummarizer(typeset=ProfilingTypeSet(config))
+    pps = ProfilingSummarizer(typeset=ProfilingTypeSet(config))
     _ = format_summary(
         pps.summarize(
             config,
@@ -80,7 +80,7 @@ def test_summarizer_image(config: Settings):
     config.vars.path.active = True
     config.vars.file.active = True
     config.vars.image.active = True
-    pps = PandasProfilingSummarizer(typeset=ProfilingTypeSet(config))
+    pps = ProfilingSummarizer(typeset=ProfilingTypeSet(config))
     _ = format_summary(
         pps.summarize(
             config,
