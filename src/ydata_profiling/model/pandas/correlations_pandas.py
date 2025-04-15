@@ -1,4 +1,5 @@
 """Correlations between variables."""
+
 import itertools
 import warnings
 from typing import Callable, Optional
@@ -12,6 +13,7 @@ from ydata_profiling.model.pandas.discretize_pandas import (
     DiscretizationType,
     Discretizer,
 )
+from ydata_profiling.model.var_description.default import VarDescription
 
 
 def spearman_compute(
@@ -77,7 +79,7 @@ def _pairwise_cramers(col_1: pd.Series, col_2: pd.Series) -> float:
 
 
 def cramers_compute(
-    config: Settings, df: pd.DataFrame, summary: dict
+    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
@@ -117,7 +119,7 @@ def cramers_compute(
 
 
 def phik_compute(
-    config: Settings, df: pd.DataFrame, summary: dict
+    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     df_cols_dict = {i: list(df.columns).index(i) for i in df.columns}
 
@@ -152,7 +154,7 @@ def phik_compute(
 
 
 def auto_compute(
-    config: Settings, df: pd.DataFrame, summary: dict
+    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
     numerical_columns = [
@@ -181,7 +183,6 @@ def auto_compute(
         columns=columns_tested,
     )
     for col_1_name, col_2_name in itertools.combinations(columns_tested, 2):
-
         method = (
             _pairwise_spearman
             if any(elem in categorical_columns for elem in [col_1_name, col_2_name])

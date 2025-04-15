@@ -3,7 +3,6 @@ import importlib
 # List of modules in the 'pandas' model that should be imported explicitly
 PANDAS_MODULES = [
     "correlations_pandas",
-    "describe_generic_pandas",
     "describe_boolean_pandas",
     "describe_categorical_pandas",
     "describe_url_pandas",
@@ -14,7 +13,6 @@ PANDAS_MODULES = [
     "describe_path_pandas",
     "describe_image_pandas",
     "describe_date_pandas",
-    "describe_counts_pandas",
     "duplicates_pandas",
     "sample_pandas",
     "table_pandas",
@@ -35,7 +33,6 @@ for module_name in PANDAS_MODULES:
 
 # Explicitly list exposed names for clarity
 __all__ = [
-    "pandas_describe_generic",
     "pandas_describe_boolean_1d",
     "pandas_describe_categorical_1d",
     "pandas_describe_url_1d",
@@ -46,7 +43,6 @@ __all__ = [
     "pandas_describe_path_1d",
     "pandas_describe_image_1d",
     "pandas_describe_date_1d",
-    "pandas_describe_counts",
     "pandas_get_duplicates",
     "pandas_get_sample",
     "pandas_get_table_stats",

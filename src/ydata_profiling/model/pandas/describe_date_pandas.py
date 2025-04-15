@@ -12,6 +12,7 @@ from ydata_profiling.model.summary_algorithms import (
     series_hashable,
 )
 from ydata_profiling.model.typeset_relations import is_pandas_1
+from ydata_profiling.model.var_description.default import VarDescription
 
 
 def to_datetime(series: pd.Series) -> pd.Series:
@@ -24,8 +25,8 @@ def to_datetime(series: pd.Series) -> pd.Series:
 @series_hashable
 @series_handle_nulls
 def pandas_describe_date_1d(
-    config: Settings, series: pd.Series, summary: dict
-) -> Tuple[Settings, pd.Series, dict]:
+    config: Settings, series: pd.Series, summary: VarDescription
+) -> Tuple[Settings, pd.Series, VarDescription]:
     """Describe a date series.
 
     Args:
@@ -36,13 +37,14 @@ def pandas_describe_date_1d(
     Returns:
         A dict containing calculated series description values.
     """
+
     og_series = series.dropna()
     series = to_datetime(og_series)
     invalid_values = og_series[series.isna()]
 
     series = series.dropna()
 
-    if summary["value_counts_without_nan"].empty:
+    if summary.value_counts_without_nan.empty:
         values = series.values
         summary.update(
             {
@@ -71,7 +73,7 @@ def pandas_describe_date_1d(
         {
             "invalid_dates": invalid_values.nunique(),
             "n_invalid_dates": len(invalid_values),
-            "p_invalid_dates": len(invalid_values) / summary["n"],
+            "p_invalid_dates": len(invalid_values) / summary.n,
         }
     )
     return config, values, summary

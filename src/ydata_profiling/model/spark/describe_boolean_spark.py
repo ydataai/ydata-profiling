@@ -3,11 +3,12 @@ from typing import Tuple
 from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
+from ydata_profiling.model.var_description.default import VarDescription
 
 
 def describe_boolean_1d_spark(
-    config: Settings, df: DataFrame, summary: dict
-) -> Tuple[Settings, DataFrame, dict]:
+    config: Settings, df: DataFrame, summary: VarDescription
+) -> Tuple[Settings, DataFrame, VarDescription]:
     """Describe a boolean series.
 
     Args:
@@ -18,7 +19,7 @@ def describe_boolean_1d_spark(
         A dict containing calculated series description values.
     """
 
-    value_counts = summary["value_counts"]
+    value_counts = summary.value_counts
 
     # get the most common boolean value and its frequency
     top = value_counts.first()

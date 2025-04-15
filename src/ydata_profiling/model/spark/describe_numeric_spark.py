@@ -6,9 +6,10 @@ from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.summary_algorithms import histogram_compute
+from ydata_profiling.model.var_description.default import VarDescription
 
 
-def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
+def numeric_stats_spark(df: DataFrame, summary: VarDescription) -> dict:
     column = df.columns[0]
 
     expr = [
@@ -25,8 +26,8 @@ def numeric_stats_spark(df: DataFrame, summary: dict) -> dict:
 
 
 def describe_numeric_1d_spark(
-    config: Settings, df: DataFrame, summary: dict
-) -> Tuple[Settings, DataFrame, dict]:
+    config: Settings, df: DataFrame, summary: VarDescription
+) -> Tuple[Settings, DataFrame, VarDescription]:
     """Describe a boolean series.
 
     Args:
@@ -47,7 +48,7 @@ def describe_numeric_1d_spark(
     summary["kurtosis"] = stats["kurtosis"]
     summary["sum"] = stats["sum"]
 
-    value_counts = summary["value_counts"]
+    value_counts = summary.value_counts
 
     n_infinite = (
         value_counts.where(F.col(df.columns[0]).isin([np.inf, -np.inf]))
@@ -102,12 +103,12 @@ def describe_numeric_1d_spark(
     ).stat.approxQuantile("abs_dev", [0.5], quantile_threshold)[0]
 
     # FIXME: move to fmt
-    summary["p_negative"] = summary["n_negative"] / summary["n"]
+    summary["p_negative"] = summary["n_negative"] / summary.n
     summary["range"] = summary["max"] - summary["min"]
     summary["iqr"] = summary["75%"] - summary["25%"]
     summary["cv"] = summary["std"] / summary["mean"] if summary["mean"] else np.NaN
-    summary["p_zeros"] = summary["n_zeros"] / summary["n"]
-    summary["p_infinite"] = summary["n_infinite"] / summary["n"]
+    summary["p_zeros"] = summary["n_zeros"] / summary.n
+    summary["p_infinite"] = summary["n_infinite"] / summary.n
 
     # TODO - enable this feature
     # because spark doesn't have an indexing system, there isn't really the idea of monotonic increase/decrease
@@ -121,14 +122,14 @@ def describe_numeric_1d_spark(
     # the alternative is to do this in spark natively, but it is not trivial
     infinity_values = [np.inf, -np.inf]
 
-    infinity_index = summary["value_counts_without_nan"].index.isin(infinity_values)
+    infinity_index = summary.value_counts_without_nan.index.isin(infinity_values)
 
     summary.update(
         histogram_compute(
             config,
-            summary["value_counts_without_nan"][~infinity_index].index.values,
+            summary.value_counts_without_nan[~infinity_index].index.values,
             summary["n_distinct"],
-            weights=summary["value_counts_without_nan"][~infinity_index].values,
+            weights=summary.value_counts_without_nan[~infinity_index].values,
         )
     )
 

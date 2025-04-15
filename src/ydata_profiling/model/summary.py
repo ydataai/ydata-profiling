@@ -12,6 +12,7 @@ from ydata_profiling.model.pandas.summary_pandas import (
     pandas_get_series_descriptions,
 )
 from ydata_profiling.model.summarizer import BaseSummarizer
+from ydata_profiling.model.var_description.default import VarDescription
 
 spec = importlib.util.find_spec("pyspark")
 if spec is None:
@@ -33,7 +34,7 @@ def describe_1d(
     series: Any,
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
-) -> dict:
+) -> VarDescription:
     """
     Add here the description and improve the documentation
     Args:
@@ -57,7 +58,7 @@ def get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> dict:
+) -> dict[str, VarDescription]:
     if isinstance(df, pd.DataFrame):
         return pandas_get_series_descriptions(config, df, summarizer, typeset, pbar)
     elif isinstance(df, sparkDataFrame):  # type: ignore

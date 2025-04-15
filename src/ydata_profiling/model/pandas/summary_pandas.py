@@ -10,6 +10,7 @@ from visions import VisionsTypeset
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.typeset import ProfilingTypeSet
+from ydata_profiling.model.var_description.default import VarDescription
 from ydata_profiling.utils.compat import optional_option_context
 from ydata_profiling.utils.dataframe import sort_column_names
 
@@ -25,7 +26,7 @@ def pandas_describe_1d(
     series: pd.Series,
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
-) -> dict:
+) -> VarDescription:
     """Describe a series (infer the variable type, then calculate type-specific values).
 
     Args:
@@ -74,8 +75,8 @@ def pandas_get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> dict:
-    def describe_column(name: str, series: pd.Series) -> Tuple[str, dict]:
+) -> dict[str, VarDescription]:
+    def describe_column(name: str, series: pd.Series) -> Tuple[str, VarDescription]:
         """Process a single series to get the column description."""
         pbar.set_postfix_str(f"Describe variable: {name}")
         description = pandas_describe_1d(config, series, summarizer, typeset)

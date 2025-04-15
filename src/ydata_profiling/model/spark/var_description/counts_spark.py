@@ -1,30 +1,22 @@
 """
     Pyspark counts
 """
-from typing import Tuple
-
 import pandas as pd
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summary_algorithms import describe_counts
+from ydata_profiling.model.var_description.default import VarCounts
 
 
-@describe_counts.register
-def describe_counts_spark(
-    config: Settings, series: DataFrame, summary: dict
-) -> Tuple[Settings, DataFrame, dict]:
-    """Counts the values in a series (with and without NaN, distinct).
-
+def get_counts_spark(config: Settings, series: DataFrame) -> VarCounts:
+    """Get a VarCounts object for a spark series.
     Args:
         config: Profiling settings.
         series: Spark DataFrame column for which we want to calculate the values.
         summary: Dictionary to store the summary results.
-
-    Returns:
-        Updated settings, input series, and summary dictionary.
     """
+    length = series.count()
 
     # Count occurrences of each value
     value_counts = series.groupBy(series.columns[0]).count()
@@ -49,10 +41,6 @@ def describe_counts_spark(
         .squeeze(axis="columns")
     )
 
-    summary["n_missing"] = n_missing
-    summary["value_counts"] = value_counts.persist()
-    summary["value_counts_index_sorted"] = top_200_sorted
-
     column = series.columns[0]
 
     if series.dtypes[0][1] in ("int", "float", "bigint", "double"):
@@ -73,15 +61,25 @@ def describe_counts_spark(
             .limit(200)  # Limit for performance
         )
 
-    # Convert to Pandas Series, forcing proper structure
+        # Convert to Pandas Series, forcing proper structure
     if value_counts_no_nan.count() > 0:
         pdf = value_counts_no_nan.toPandas().set_index(column)["count"]
-        summary["value_counts_without_nan"] = pd.Series(
-            pdf
-        )  # Ensures it's always a Series
+        value_counts_without_nan = pd.Series(pdf)  # Ensures it's always a Series
     else:
-        summary["value_counts_without_nan"] = pd.Series(
-            dtype=int
-        )  # Ensures an empty Series
+        value_counts_without_nan = pd.Series(dtype=int)  # Ensures an empty Series
 
-    return config, series, summary
+    # @chanedwin
+    memory_size = 0
+
+    return VarCounts(
+        hashable=False,
+        value_counts_without_nan=value_counts_without_nan,
+        value_counts_index_sorted=top_200_sorted,
+        ordering=False,
+        n_missing=n_missing,
+        n=length,
+        p_missing=n_missing / length,
+        count=length - n_missing,
+        memory_size=memory_size,
+        value_counts=value_counts.persist(),
+    )
