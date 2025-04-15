@@ -1,153 +1,43 @@
-from typing import Callable, Dict, Type
-
+"""
+    Flavours registry information
+"""
 from ydata_profiling.report.presentation.core import Root
 from ydata_profiling.report.presentation.core.renderable import Renderable
 
+_FLAVOUR_REGISTRY: dict = {}
+
+
+def register_flavour(name: str, mapping: dict) -> None:
+    _FLAVOUR_REGISTRY[name] = mapping
+
+
+def get_flavour_mapping(name: str) -> dict:
+    if name not in _FLAVOUR_REGISTRY:
+        raise ValueError(f"Flavour '{name}' is not registered.")
+    return _FLAVOUR_REGISTRY[name]
+
 
 def apply_renderable_mapping(
-    mapping: Dict[Type[Renderable], Type[Renderable]],
+    mapping: dict,
     structure: Renderable,
-    flavour: Callable,
+    flavour_func,  # noqa: ANN001
 ) -> None:
-    mapping[type(structure)].convert_to_class(structure, flavour)
-
-
-def get_html_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
-    """Workaround variable type annotations not being supported in Python 3.5
-
-    Returns:
-        type annotated mapping dict
-    """
-    from ydata_profiling.report.presentation.core import (
-        HTML,
-        Alerts,
-        Collapse,
-        Container,
-        CorrelationTable,
-        Dropdown,
-        Duplicate,
-        FrequencyTable,
-        FrequencyTableSmall,
-        Image,
-        Root,
-        Sample,
-        Table,
-        ToggleButton,
-        Variable,
-        VariableInfo,
-    )
-    from ydata_profiling.report.presentation.flavours.html import (
-        HTMLHTML,
-        HTMLAlerts,
-        HTMLCollapse,
-        HTMLContainer,
-        HTMLCorrelationTable,
-        HTMLDropdown,
-        HTMLDuplicate,
-        HTMLFrequencyTable,
-        HTMLFrequencyTableSmall,
-        HTMLImage,
-        HTMLRoot,
-        HTMLSample,
-        HTMLTable,
-        HTMLToggleButton,
-        HTMLVariable,
-        HTMLVariableInfo,
-    )
-
-    return {
-        Container: HTMLContainer,
-        Variable: HTMLVariable,
-        VariableInfo: HTMLVariableInfo,
-        Table: HTMLTable,
-        HTML: HTMLHTML,
-        Root: HTMLRoot,
-        Image: HTMLImage,
-        FrequencyTable: HTMLFrequencyTable,
-        FrequencyTableSmall: HTMLFrequencyTableSmall,
-        Alerts: HTMLAlerts,
-        Duplicate: HTMLDuplicate,
-        Dropdown: HTMLDropdown,
-        Sample: HTMLSample,
-        ToggleButton: HTMLToggleButton,
-        Collapse: HTMLCollapse,
-        CorrelationTable: HTMLCorrelationTable,
-    }
+    mapping[type(structure)].convert_to_class(structure, flavour_func)
 
 
 def HTMLReport(structure: Root) -> Root:
-    """Adds HTML flavour to Renderable
+    from ydata_profiling.report.presentation.flavours import flavour_html  # noqa: F401
 
-    Args:
-        structure:
-
-    Returns:
-
-    """
-    mapping = get_html_renderable_mapping()
-    apply_renderable_mapping(mapping, structure, flavour=HTMLReport)
+    mapping = get_flavour_mapping("html")
+    apply_renderable_mapping(mapping, structure, flavour_func=HTMLReport)
     return structure
 
 
-def get_widget_renderable_mapping() -> Dict[Type[Renderable], Type[Renderable]]:
-    from ydata_profiling.report.presentation.core import (
-        HTML,
-        Alerts,
-        Collapse,
-        Container,
-        CorrelationTable,
-        Dropdown,
-        Duplicate,
-        FrequencyTable,
-        FrequencyTableSmall,
-        Image,
-        Root,
-        Sample,
-        Table,
-        ToggleButton,
-        Variable,
-        VariableInfo,
-    )
-    from ydata_profiling.report.presentation.flavours.widget import (
-        WidgetAlerts,
-        WidgetCollapse,
-        WidgetContainer,
-        WidgetCorrelationTable,
-        WidgetDropdown,
-        WidgetDuplicate,
-        WidgetFrequencyTable,
-        WidgetFrequencyTableSmall,
-        WidgetHTML,
-        WidgetImage,
-        WidgetRoot,
-        WidgetSample,
-        WidgetTable,
-        WidgetToggleButton,
-        WidgetVariable,
-        WidgetVariableInfo,
-    )
-
-    return {
-        Container: WidgetContainer,
-        Variable: WidgetVariable,
-        VariableInfo: WidgetVariableInfo,
-        Table: WidgetTable,
-        HTML: WidgetHTML,
-        Root: WidgetRoot,
-        Image: WidgetImage,
-        FrequencyTable: WidgetFrequencyTable,
-        FrequencyTableSmall: WidgetFrequencyTableSmall,
-        Alerts: WidgetAlerts,
-        Duplicate: WidgetDuplicate,
-        Dropdown: WidgetDropdown,
-        Sample: WidgetSample,
-        ToggleButton: WidgetToggleButton,
-        Collapse: WidgetCollapse,
-        CorrelationTable: WidgetCorrelationTable,
-    }
-
-
 def WidgetReport(structure: Root) -> Root:
-    mapping = get_widget_renderable_mapping()
-    apply_renderable_mapping(mapping, structure, flavour=WidgetReport)
+    from ydata_profiling.report.presentation.flavours import (  # noqa: F401
+        flavour_widget,
+    )
+
+    mapping = get_flavour_mapping("widget")
+    apply_renderable_mapping(mapping, structure, flavour_func=WidgetReport)
     return structure

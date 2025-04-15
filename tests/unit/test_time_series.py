@@ -34,6 +34,20 @@ def html_profile() -> str:
     return profile.to_html()
 
 
+@pytest.fixture
+def sample_ts_df():
+    dates = pd.date_range(start="2023-01-01", periods=100, freq="D")
+    return pd.DataFrame(
+        {
+            "date": dates,
+            "value": np.sin(np.arange(100) * np.pi / 180)
+            + np.random.normal(0, 0.1, 100),
+            "trend": np.arange(100) * 0.1,
+            "category": ["A", "B"] * 50,
+        }
+    )
+
+
 def test_timeseries_identification(html_profile: str):
     assert "<th>TimeSeries</th>" in html_profile, "TimeSeries not detected"
     assert (
@@ -54,3 +68,55 @@ def test_timeseries_seasonality(html_profile: str):
     assert (
         html_profile.count(">Seasonal<") == 4
     ), "Seasonality warning incorrectly identified"
+
+
+def test_timeseries_with_sortby(sample_ts_df):
+    # Test time series with explicit sort column
+    profile = ProfileReport(sample_ts_df, tsmode=True, sortby="date")
+    html = profile.to_html()
+    assert "date" in html
+    assert profile.config.vars.timeseries.sortby == "date"
+
+
+def test_timeseries_without_sortby(sample_ts_df):
+    # Test time series without explicit sort column
+    profile = ProfileReport(sample_ts_df, tsmode=True)
+    html = profile.to_html()
+    assert profile.config.vars.timeseries.sortby is None
+    assert "TimeSeries" in html
+
+
+def test_invalid_sortby(sample_ts_df):
+    # Test with non-existent sort column
+    with pytest.raises(KeyError):
+        profile = ProfileReport(sample_ts_df, tsmode=True, sortby="nonexistent")
+        profile.to_html()
+
+
+def test_timeseries_with_missing_values(sample_ts_df):
+    # Introduce missing values
+    df_with_missing = sample_ts_df.copy()
+    df_with_missing.loc[10:20, "value"] = np.nan
+    profile = ProfileReport(df_with_missing, tsmode=True)
+    html = profile.to_html()
+    assert "Missing values" in html
+
+
+def test_non_numeric_timeseries():
+    # Test handling of non-numeric time series
+    dates = pd.date_range(start="2023-01-01", periods=100, freq="D")
+    df = pd.DataFrame({"date": dates, "category": ["A", "B", "C"] * 33 + ["A"]})
+    profile = ProfileReport(df, tsmode=True)
+    html = profile.to_html()
+    # Should not identify categorical column as time series
+    assert html.count(">Autocorrelation<") == 0
+
+
+def test_timeseries_config_persistence():
+    # Test that time series configuration persists
+    df = pd.DataFrame({"value": range(100)})
+    profile = ProfileReport(df, tsmode=True)
+    assert profile.config.vars.timeseries.active is True
+    # Test config after invalidating cache
+    profile.invalidate_cache()
+    assert profile.config.vars.timeseries.active is True

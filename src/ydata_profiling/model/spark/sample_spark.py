@@ -7,8 +7,8 @@ from ydata_profiling.config import Settings
 from ydata_profiling.model.sample import Sample, get_sample
 
 
-@get_sample.register(Settings, DataFrame)
-def spark_get_sample(config: Settings, df: DataFrame) -> List[Sample]:
+@get_sample.register
+def get_sample_spark(config: Settings, df: DataFrame) -> List[Sample]:
     """Obtains a sample from head and tail of the DataFrame
 
     Args:

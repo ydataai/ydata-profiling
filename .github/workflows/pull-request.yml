@@ -37,10 +37,10 @@ jobs:
         git config user.name "Azory YData Bot"
         git config core.autocrlf false
 
-    - name: Set up Python 3.8
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
 
     - uses: actions/cache@v4
       name: Cache pip dependencies
@@ -54,6 +54,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install ".[dev,test]"
+
+    - name: Install pre-commit hooks
+      run: pre-commit install --install-hooks
 
     - name: Install the package
       run: make install
@@ -87,10 +90,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup Python
+    - name: Setup Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
 
     - name: Cache pip dependencies
       id: cache
@@ -102,7 +105,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install ".[dev,test,docs]"
+        python -m pip install ".[docs]"
       
     - name: Install the package
       run: make install

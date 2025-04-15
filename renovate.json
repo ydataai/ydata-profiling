@@ -5,5 +5,16 @@
   ],
   "baseBranches": [
     "develop"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "actions",
+      "automerge": false,
+      "automergeType": "pr",
+      "ignoreTests": false,
+      "platformAutomerge": true
+    }
   ]
 }

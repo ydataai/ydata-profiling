@@ -9,14 +9,6 @@ import pandas as pd
 from scipy import stats
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.correlations import (
-    Auto,
-    Cramers,
-    Kendall,
-    Pearson,
-    PhiK,
-    Spearman,
-)
 from ydata_profiling.model.pandas.discretize_pandas import (
     DiscretizationType,
     Discretizer,
@@ -24,24 +16,21 @@ from ydata_profiling.model.pandas.discretize_pandas import (
 from ydata_profiling.model.var_description.default import VarDescription
 
 
-@Spearman.compute.register(Settings, pd.DataFrame, dict)
-def pandas_spearman_compute(
+def spearman_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     df_aux = df.select_dtypes(include="number").copy()
     return df_aux.corr(method="spearman")
 
 
-@Pearson.compute.register(Settings, pd.DataFrame, dict)
-def pandas_pearson_compute(
+def pearson_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     df_aux = df.select_dtypes(include="number").copy()
     return df_aux.corr(method="pearson")
 
 
-@Kendall.compute.register(Settings, pd.DataFrame, dict)
-def pandas_kendall_compute(
+def kendall_compute(
     config: Settings, df: pd.DataFrame, summary: dict
 ) -> Optional[pd.DataFrame]:
     df_aux = df.select_dtypes(include="number").copy()
@@ -89,9 +78,8 @@ def _pairwise_cramers(col_1: pd.Series, col_2: pd.Series) -> float:
     return _cramers_corrected_stat(pd.crosstab(col_1, col_2), correction=True)
 
 
-@Cramers.compute.register(Settings, pd.DataFrame, Dict[str, VarDescription])
-def pandas_cramers_compute(
-    config: Settings, df: pd.DataFrame, summary: Dict[str, VarDescription]
+def cramers_compute(
+    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
 
@@ -130,9 +118,8 @@ def pandas_cramers_compute(
     return correlation_matrix
 
 
-@PhiK.compute.register(Settings, pd.DataFrame, Dict[str, VarDescription])
-def pandas_phik_compute(
-    config: Settings, df: pd.DataFrame, summary: Dict[str, VarDescription]
+def phik_compute(
+    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     df_cols_dict = {i: list(df.columns).index(i) for i in df.columns}
 
@@ -166,9 +153,8 @@ def pandas_phik_compute(
     return correlation
 
 
-@Auto.compute.register(Settings, pd.DataFrame, Dict[str, VarDescription])
-def pandas_auto_compute(
-    config: Settings, df: pd.DataFrame, summary: Dict[str, VarDescription]
+def auto_compute(
+    config: Settings, df: pd.DataFrame, summary: dict[str, VarDescription]
 ) -> Optional[pd.DataFrame]:
     threshold = config.categorical_maximum_correlation_distinct
     numerical_columns = [

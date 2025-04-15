@@ -1,4 +1,6 @@
-from functools import reduce
+"""
+    Auxiliary handler methods for data summary extraction
+"""
 from typing import Any, Callable, Dict, List, Sequence
 
 import networkx as nx
@@ -7,22 +9,19 @@ from visions import VisionsTypeset
 
 def compose(functions: Sequence[Callable]) -> Callable:
     """
-    Compose a sequence of functions
+    Compose a sequence of functions.
+
     :param functions: sequence of functions
-    :return: combined functions, e.g. [f(x), g(x)] -> g(f(x))
+    :return: combined function applying all functions in order.
     """
 
-    def func(f: Callable, g: Callable) -> Callable:
-        def func2(*x) -> Any:
-            res = g(*x)
-            if type(res) == bool:
-                return f(*x)
-            else:
-                return f(*res)
+    def composed_function(*args) -> List[Any]:
+        result = args  # Start with the input arguments
+        for func in functions:
+            result = func(*result) if isinstance(result, tuple) else func(result)
+        return result  # type: ignore
 
-        return func2
-
-    return reduce(func, reversed(functions), lambda *x: x)
+    return composed_function  # type: ignore
 
 
 class Handler:
@@ -40,7 +39,6 @@ class Handler:
     ):
         self.mapping = mapping
         self.typeset = typeset
-
         self._complete_dag()
 
     def _complete_dag(self) -> None:
@@ -53,13 +51,13 @@ class Handler:
 
     def handle(self, dtype: str, *args, **kwargs) -> dict:
         """
-
         Returns:
-            object:
+            object: a tuple containing the config, the dataset series and the summary extracted
         """
         funcs = self.mapping.get(dtype, [])
         op = compose(funcs)
-        return op(*args)
+        summary = op(*args)[-1]
+        return summary
 
 
 def get_render_map() -> Dict[str, Callable]:

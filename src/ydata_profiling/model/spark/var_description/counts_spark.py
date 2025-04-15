@@ -1,34 +1,46 @@
+"""
+    Pyspark counts
+"""
+from typing import Tuple
+
+import pandas as pd
 from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
 
 from ydata_profiling.config import Settings
 from ydata_profiling.model.var_description.counts import VarCounts
 
 
 def get_counts_spark(config: Settings, series: DataFrame) -> VarCounts:
-    """Get a VarCounts object for a spark series."""
+    """Get a VarCounts object for a spark series.
+    Args:
+        config: Profiling settings.
+        series: Spark DataFrame column for which we want to calculate the values.
+        summary: Dictionary to store the summary results.
+    """
     length = series.count()
 
+    # Count occurrences of each value
     value_counts = series.groupBy(series.columns).count()
+
+    # Sort by count descending, persist the result
     value_counts = value_counts.sort("count", ascending=False).persist()
+
+    # Sort by column value ascending (for frequency tables)
     value_counts_index_sorted = value_counts.sort(series.columns[0], ascending=True)
 
+    # Count missing values
     n_missing = value_counts.where(value_counts[series.columns[0]].isNull()).first()
-    if n_missing is None:
-        n_missing = 0
-    else:
-        n_missing = n_missing["count"]
+    n_missing = n_missing["count"] if n_missing else 0
 
-    # FIXME: reduce to top-n and bottom-n
-    value_counts_index_sorted = (
+    # Convert top 200 values to Pandas for frequency table display
+    top_200_sorted = (
         value_counts_index_sorted.limit(200)
         .toPandas()
         .set_index(series.columns[0], drop=True)
         .squeeze(axis="columns")
     )
 
-    # this is necessary as freqtables requires value_counts_without_nan
-    # to be a pandas series. However, if we try to get everything into
-    # pandas we will definitly crash the server
     value_counts_without_nan = (
         value_counts.dropna()
         .limit(200)
@@ -37,7 +49,6 @@ def get_counts_spark(config: Settings, series: DataFrame) -> VarCounts:
         .squeeze(axis="columns")
     )
 
-    # FIXME: This is not correct, but used to fulfil render expectations
     # @chanedwin
     memory_size = 0
 

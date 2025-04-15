@@ -2,14 +2,17 @@ import pandas as pd
 import pytest
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.correlations import Kendall
 from ydata_profiling.model.pandas.correlations_pandas import (
-    pandas_pearson_compute,
-    pandas_spearman_compute,
+    pearson_compute as pandas_pearson_compute,
+)
+from ydata_profiling.model.pandas.correlations_pandas import (
+    spearman_compute as pandas_spearman_compute,
 )
 from ydata_profiling.model.spark.correlations_spark import (
-    spark_pearson_compute,
-    spark_spearman_compute,
+    pearson_compute as spark_pearson_compute,
+)
+from ydata_profiling.model.spark.correlations_spark import (
+    spearman_compute as spark_spearman_compute,
 )
 
 
@@ -72,9 +75,9 @@ def test_pearson_spark(correlation_data_num, correlation_var_types):
 
 
 def test_kendall_spark(correlation_data_cat):
+    from ydata_profiling.model.spark.correlations_spark import kendall_compute
+
     cfg = Settings()
-    res_pandas = Kendall.compute(cfg, correlation_data_cat.toPandas(), {})
 
     with pytest.raises(NotImplementedError):
-        res_spark = Kendall.compute(cfg, correlation_data_cat, {})
-        pd.testing.assert_frame_equal(res_pandas, res_spark)
+        kendall_compute(config=cfg, df=correlation_data_cat, summary={})

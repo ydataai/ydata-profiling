@@ -1,0 +1,33 @@
+{% if tabs | length > 0 %}
+    {% if oss %}
+        <p class="text-body-secondary text-end">Brought to you by <a href="https://ydata.ai/?utm_source=opensource&utm_medium=ydataprofiling&utm_campaign=report">YData</a></p>
+    {% endif %}
+    <div class="row item {% if classes %}{{ classes }}{% endif %}" {% if id %} id="{{ id }}"{% endif %}>
+        <ul class="nav nav-tabs tab-nav" role="tablist">
+            {% for tab in tabs %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {% if loop.first %}active{% endif %}"
+                            id="tab-{{ anchor_id }}-{{ tab.anchor_id }}"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-pane-{{ anchor_id }}-{{ tab.anchor_id }}"
+                            type="button"
+                            role="tab"
+                            aria-controls="tab-pane-{{ anchor_id }}-{{ tab.anchor_id }}"
+                            aria-selected="{% if loop.first %}true{% else %}false{% endif %}">{{ tab.name | fmt_badge }}</button>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="tab-content">
+            {% for tab in tabs %}
+                <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+                     id="tab-pane-{{ anchor_id }}-{{ tab.anchor_id }}"
+                     role="tabpanel"
+                     aria-labelledby="tab-pane-{{ anchor_id }}-{{ tab.anchor_id }}">
+                    <div class="row item">
+                        {{ tab.render() }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

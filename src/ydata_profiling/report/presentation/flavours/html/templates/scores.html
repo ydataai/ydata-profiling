@@ -1,0 +1,78 @@
+<style>
+  .progress {
+    height: 18px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .overall-score {
+    font-size: 2.5rem;
+  }
+
+  .metric-subtitle {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+
+  .dual-metric {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .dual-metric .metric {
+    min-width: 120px;
+  }
+
+  .card.metric-card {
+      min-height: 105px; /* Maior altura mínima do cartão */
+  }
+</style>
+
+<div class="container my-5">
+  <!-- Overall Score -->
+  <div class="row justify-content-center text-center mb-sm-3">
+    <div class="col-12">
+        <div class="card shadow-sm p-4">
+          <h5 class="text-muted mb-3">Overall Data Quality Score</h5>
+          <div class="dual-metric">
+            {% for i in range(overall_score | length) %}
+              <div class="metric">
+                {% if overall_score | length > 1 %}
+                <div class="metric-subtitle">{{ name[i]}}</div>
+                {% endif %}
+                <div class="overall-score fw-bold" style="color: {{ style.primary_color }}">{{ overall_score[i]}}</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+    <div class="row g-4 text-center">
+    {% for metric in items %}
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="card shadow-sm p-3 h-100 metric-card">
+          <div class="h6 text-muted mb-2">{{ metric.name }}</div>
+          {% for j in range(metric.submetrics| length) %}
+            {% if metric.submetrics | length > 1 %}
+              <div class="metric-subtitle text-start">{{ name[j] }}</div>
+            {% endif %}
+            <div class="progress mb-2 bg-light">
+              <div
+                class="progress-bar"
+                style="width: {{ metric.submetrics[j].value  }}%; background-color: {{ metric.submetrics[j].color}};">
+                {{ metric.submetrics[j].value }}%
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+

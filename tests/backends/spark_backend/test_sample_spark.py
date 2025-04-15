@@ -3,7 +3,7 @@ import pytest
 from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.spark.sample_spark import spark_get_sample
+from ydata_profiling.model.spark.sample_spark import get_sample_spark
 
 
 # FIXME: Move to data
@@ -43,7 +43,7 @@ def test_spark_get_sample(df):
     config.samples.random = 0
     config.samples.tail = 0
 
-    res = spark_get_sample(config, df)
+    res = get_sample_spark(config, df)
     assert len(res) == 1
     assert res[0].id == "head"
     assert len(res[0].data) == 17
@@ -53,7 +53,7 @@ def test_spark_get_sample(df):
     config.samples.random = 0
     config.samples.tail = 0
 
-    res = spark_get_sample(config, df)
+    res = get_sample_spark(config, df)
     assert len(res) == 0
 
 
@@ -63,5 +63,5 @@ def test_spark_sample_empty(df_empty):
     config.samples.random = 0
     config.samples.tail = 0
 
-    res = spark_get_sample(config, df_empty)
+    res = get_sample_spark(config, df_empty)
     assert len(res) == 0

@@ -3,11 +3,9 @@ from typing import Tuple
 from pyspark.sql import DataFrame
 
 from ydata_profiling.config import Settings
-from ydata_profiling.model.summary_algorithms import describe_boolean_1d
 from ydata_profiling.model.var_description.default import VarDescription
 
 
-@describe_boolean_1d.register
 def describe_boolean_1d_spark(
     config: Settings, df: DataFrame, summary: VarDescription
 ) -> Tuple[Settings, DataFrame, VarDescription]:
