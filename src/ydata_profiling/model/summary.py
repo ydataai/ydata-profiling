@@ -1,6 +1,6 @@
 """Compute statistical description of datasets."""
 import importlib
-from typing import Any, Dict
+from typing import Any
 
 import pandas as pd
 from tqdm import tqdm
@@ -58,7 +58,7 @@ def get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> Dict[str, VarDescription]:
+) -> dict[str, VarDescription]:
     if isinstance(df, pd.DataFrame):
         return pandas_get_series_descriptions(config, df, summarizer, typeset, pbar)
     elif isinstance(df, sparkDataFrame):  # type: ignore

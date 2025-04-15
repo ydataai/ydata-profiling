@@ -1,7 +1,7 @@
 """Compute statistical description of datasets."""
 import multiprocessing
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Dict, Tuple
+from typing import Any, Tuple
 
 import numpy as np
 import pandas as pd
@@ -75,7 +75,7 @@ def pandas_get_series_descriptions(
     summarizer: BaseSummarizer,
     typeset: VisionsTypeset,
     pbar: tqdm,
-) -> Dict[str, VarDescription]:
+) -> dict[str, VarDescription]:
     def describe_column(name: str, series: pd.Series) -> Tuple[str, VarDescription]:
         """Process a single series to get the column description."""
         pbar.set_postfix_str(f"Describe variable: {name}")
