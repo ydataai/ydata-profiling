@@ -30,7 +30,7 @@ A new conda environment containing the module can be created via:
 ```console
     conda env create -n ydata-profiling
     conda activate ydata-profiling
-    conda install -c conda-forge ydata-profiling
+    conda install anaconda::ydata-profiling
 ```
 
 !!! tip 
