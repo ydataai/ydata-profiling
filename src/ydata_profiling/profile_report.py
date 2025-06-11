@@ -5,10 +5,7 @@ from pathlib import Path
 from typing import Any, Optional, Union
 
 from ydata_profiling.utils.backend import is_pyspark_installed
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    import pkg_resources
+from importlib.metadata import version
 
 if not is_pyspark_installed():
     from typing import TypeVar
@@ -359,7 +356,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            pillow_version = pkg_resources.get_distribution("Pillow").version
+            pillow_version = version("Pillow")
         version_tuple = tuple(map(int, pillow_version.split(".")))
         if version_tuple < (9, 5, 0):
             warnings.warn(
