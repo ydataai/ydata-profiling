@@ -39,9 +39,8 @@ def histogram_compute(
     hist_config = config.plot.histogram
     bins_arg = "auto" if hist_config.bins == 0 else min(hist_config.bins, n_unique)
     bins = np.histogram_bin_edges(finite_values, bins=bins_arg)
-    if len(bins) > hist_config.max_bins:
+    if len(bins) > hist_config.max_bins + 1:
         bins = np.histogram_bin_edges(finite_values, bins=hist_config.max_bins)
-        weights = weights if weights and len(weights) == hist_config.max_bins else None
 
     stats[name] = np.histogram(
         finite_values, bins=bins, weights=weights, density=config.plot.histogram.density
