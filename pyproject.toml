@@ -3,7 +3,7 @@ build-backend = "setuptools.build_meta"
 requires = [
     "setuptools>=72.0.0,<80.0.0",
     "setuptools-scm>=8.0.0,<9.0.0",
-    "wheel>=0.38.4,<1.0.0"
+    "wheel>=0.38.4,<1.0.0",
 ]
 
 [packaging]
@@ -12,13 +12,18 @@ package_name = "ydata-profiling"
 [project]
 name = "ydata-profiling"
 requires-python = ">=3.7,<3.13"
-authors = [
-    {name = "YData Labs Inc", email = "opensource@ydata.ai"}
-]
+authors = [{ name = "YData Labs Inc", email = "opensource@ydata.ai" }]
 description = "Generate profile report for pandas DataFrame"
-keywords = ["pandas", "data-science", "data-analysis", "python", "jupyter", "ipython"]
+keywords = [
+    "pandas",
+    "data-science",
+    "data-analysis",
+    "python",
+    "jupyter",
+    "ipython",
+]
 readme = "README.md"
-license = {file = "LICENSE.md"}
+license = { file = "LICENSE.md" }
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Topic :: Software Development :: Build Tools",
@@ -70,9 +75,7 @@ dependencies = [
     "numba>=0.56.0, <=0.61",
 ]
 
-dynamic = [
-    "version",
-]
+dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
@@ -99,10 +102,7 @@ docs = [
     "mkdocs-badges",
 ]
 
-notebook = [
-    "jupyter>=1.0.0",
-    "ipywidgets>=7.5.1",
-]
+notebook = ["jupyter>=1.0.0", "ipywidgets>=7.5.1"]
 
 # this provides the recommended pyspark and pyarrow versions for spark to work on pandas-profiling
 # note that if you are using pyspark 2.3 or 2.4 and pyarrow >= 0.15, you might need to
@@ -121,14 +121,13 @@ test = [
     "codecov",
     "pytest-cov",
     "nbval",
+    "nbtest-gen",
     "pyarrow",
     "twine>=3.1.1",
     "kaggle",
 ]
 
-unicode= [
-    "tangled-up-in-unicode==0.2.0",
-]
+unicode = ["tangled-up-in-unicode==0.2.0"]
 
 [project.urls]
 Homepage = "https://ydata.ai"
