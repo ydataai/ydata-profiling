@@ -4,9 +4,9 @@ docs:
 	mkdocs build
 
 test:
+	pytest --nbtest tests/notebooks/
 	pytest tests/unit/
 	pytest tests/issues/
-	pytest --nbtest tests/notebooks/
 	ydata_profiling -h
 
 test_spark:
