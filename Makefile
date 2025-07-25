@@ -14,14 +14,9 @@ test_spark:
 	ydata_profiling -h
 
 test_cov:
+	pytest --cov=. --cov-append --nbtest tests/notebooks/
 	pytest --cov=. tests/unit/
 	pytest --cov=. --cov-append tests/issues/
-
-	# This environment variable allows NBTest assertions to be executed, as NBTest does not have coverage support.
-	export 'NBTEST_RUN_ASSERTS'='1'
-	pytest --cov=. --cov-append --nbval tests/notebooks/
-	export 'NBTEST_RUN_ASSERTS'='0'
-
 	ydata_profiling -h
 
 examples:
