@@ -9,7 +9,6 @@ import zipfile
 from datetime import datetime, timedelta
 
 # Image type detection
-import filetype
 from pathlib import Path
 from typing import Mapping
 
@@ -62,8 +61,6 @@ def extract_zip(outfile, effective_path):
             z.extractall(effective_path)
     except zipfile.BadZipFile as e:
         raise ValueError("Bad zip file") from e
-
-
 
 
 def convert_timestamp_to_datetime(timestamp: int) -> datetime:
