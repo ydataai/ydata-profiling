@@ -8,8 +8,8 @@ import subprocess
 import zipfile
 from datetime import datetime, timedelta
 
-# Monkeypatch bug in imagehdr
-from imghdr import tests
+# Image type detection
+import filetype
 from pathlib import Path
 from typing import Mapping
 
