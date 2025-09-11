@@ -11,7 +11,7 @@ package_name = "ydata-profiling"
 
 [project]
 name = "ydata-profiling"
-requires-python = ">=3.7,<3.13"
+requires-python = ">=3.7,<3.14"
 authors = [
     {name = "YData Labs Inc", email = "opensource@ydata.ai"}
 ]
