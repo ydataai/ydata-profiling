@@ -1,8 +1,8 @@
-import filetype
 from functools import partial
 from pathlib import Path
 from typing import Optional, Tuple, Union
 
+import filetype
 import imagehash
 import pandas as pd
 from PIL import ExifTags, Image
@@ -119,7 +119,7 @@ def extract_exif(image: Image) -> dict:
 
 def path_is_image(p: Path) -> bool:
     guess = filetype.guess(str(p))
-    return guess is not None and guess.mime.startswith('image/')
+    return guess is not None and guess.mime.startswith("image/")
 
 
 def count_duplicate_hashes(image_descriptions: dict) -> int:
