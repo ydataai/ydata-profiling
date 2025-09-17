@@ -29,8 +29,7 @@ def tdf(get_data_file):
     df["mixed"] = np.random.choice([1, "A"], df.shape[0])
 
     # Example: Highly correlated variables
-    df["reclat_city"] = df["reclat"] + \
-        np.random.normal(scale=5, size=(len(df)))
+    df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
 
     # Example: Duplicate observations
     duplicates_to_add = pd.DataFrame(df.iloc[0:10])

@@ -4,8 +4,7 @@ from ydata_profiling.utils.cache import cache_file
 
 
 def test_dataset_schema():
-    file_name = cache_file(
-        "auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
+    file_name = cache_file("auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
     df = pd.read_stata(file_name)
 
     metadata = {
@@ -38,8 +37,7 @@ def test_dataset_schema():
 
 
 def test_dataset_schema_empty():
-    file_name = cache_file(
-        "auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
+    file_name = cache_file("auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
     df = pd.read_stata(file_name)
 
     # Length left out due to correlation with weight.

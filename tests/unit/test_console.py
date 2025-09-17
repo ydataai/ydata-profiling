@@ -36,8 +36,7 @@ def test_console_minimal(console_data, test_output_dir):
 def test_console_explorative(console_data, test_output_dir):
     report = test_output_dir / "test_explorative.html"
     console.main(
-        ["-s", "--pool_size", "1", "--explorative",
-            str(console_data), str(report)]
+        ["-s", "--pool_size", "1", "--explorative", str(console_data), str(report)]
     )
     assert report.exists(), "Report should exist"
 
