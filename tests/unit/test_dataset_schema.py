@@ -4,7 +4,8 @@ from ydata_profiling.utils.cache import cache_file
 
 
 def test_dataset_schema():
-    file_name = cache_file("auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
+    file_name = cache_file(
+        "auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
     df = pd.read_stata(file_name)
 
     metadata = {
@@ -23,19 +24,22 @@ def test_dataset_schema():
         minimal=True,
     )
 
+    print(report.config.dataset.dict())
     html = report.to_html()
+    print([row for row in html.split("<tr") if "Creator" in row][:1])
 
     assert ">Dataset<" in html
     for key in metadata.keys():
         if not key.startswith("copyright_") and key != "url":
-            assert f"<th>{key.capitalize()}</th>" in html
+            assert f"<th>{key.capitalize()}<td" in html
     assert "<tr><th>Copyright</th><td>(c) RandoCorp LLC 2020</td></tr>"
     assert '<tr><th>URL</th><td><a href="http://www.dataset-sources.com/data/dataset.dat">http://www.dataset-sources.com/data/dataset.dat</a></td></tr>'
     assert ">Reproduction<" in html
 
 
 def test_dataset_schema_empty():
-    file_name = cache_file("auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
+    file_name = cache_file(
+        "auto2.dta", "http://www.stata-press.com/data/r15/auto2.dta")
     df = pd.read_stata(file_name)
 
     # Length left out due to correlation with weight.
