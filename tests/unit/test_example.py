@@ -8,7 +8,7 @@ from ydata_profiling.model import BaseDescription
 def test_example(get_data_file, test_output_dir):
     file_name = get_data_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
     # For reproducibility
@@ -29,7 +29,8 @@ def test_example(get_data_file, test_output_dir):
     df["mixed"] = np.random.choice([1, "A"], df.shape[0])
 
     # Example: Highly correlated variables
-    df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
+    df["reclat_city"] = df["reclat"] + \
+        np.random.normal(scale=5, size=(len(df)))
 
     # Example: Duplicate observations
     duplicates_to_add = pd.DataFrame(df.iloc[0:10].copy())
@@ -46,5 +47,6 @@ def test_example(get_data_file, test_output_dir):
     )
     profile.to_file(output_file)
     assert (test_output_dir / "profile.html").exists(), "Output file does not exist"
-    assert type(profile.get_description()) == BaseDescription, "Unexpected result"
+    assert type(profile.get_description()
+                ) == BaseDescription, "Unexpected result"
     assert "9</span>" in profile.to_html()

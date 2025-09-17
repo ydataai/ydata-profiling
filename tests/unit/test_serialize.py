@@ -9,7 +9,7 @@ from ydata_profiling.model import BaseDescription
 def test_load(get_data_file, test_output_dir):
     file_name = get_data_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
     # For reproducibility
@@ -30,7 +30,8 @@ def test_load(get_data_file, test_output_dir):
     df["mixed"] = np.random.choice([1, "A"], df.shape[0])
 
     # Example: Highly correlated variables
-    df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
+    df["reclat_city"] = df["reclat"] + \
+        np.random.normal(scale=5, size=(len(df)))
 
     # Example: Duplicate observations
     duplicates_to_add = pd.DataFrame(df.iloc[0:10].copy())
@@ -72,7 +73,8 @@ def test_load_error():
     warnings.filterwarnings("error")
 
     df = pd.DataFrame(
-        {"a": [1, 2, 3, 1, 1, 1], "b": [1, 2, 3, 4, 5, 6], "c": [1, 2, 3, 4, 5, 6]}
+        {"a": [1, 2, 3, 1, 1, 1], "b": [
+            1, 2, 3, 4, 5, 6], "c": [1, 2, 3, 4, 5, 6]}
     )
     profile1 = ProfileReport(df, minimal=True, progress_bar=False)
 
@@ -87,4 +89,5 @@ def test_load_error():
             data
         )
 
-    assert str(e.value) == "DataFrame does not match with the current ProfileReport."
+    assert str(
+        e.value) == "DataFrame does not match with the current ProfileReport."

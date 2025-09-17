@@ -10,7 +10,7 @@ from ydata_profiling.utils.paths import get_config
 def console_data(get_data_file):
     return get_data_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
 
@@ -36,7 +36,8 @@ def test_console_minimal(console_data, test_output_dir):
 def test_console_explorative(console_data, test_output_dir):
     report = test_output_dir / "test_explorative.html"
     console.main(
-        ["-s", "--pool_size", "1", "--explorative", str(console_data), str(report)]
+        ["-s", "--pool_size", "1", "--explorative",
+            str(console_data), str(report)]
     )
     assert report.exists(), "Report should exist"
 

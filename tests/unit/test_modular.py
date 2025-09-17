@@ -11,7 +11,7 @@ from ydata_profiling import ProfileReport
 def tdf(get_data_file):
     file_name = get_data_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
     df = pd.read_csv(file_name)
@@ -29,7 +29,8 @@ def tdf(get_data_file):
     df["mixed"] = np.random.choice([1, "A"], df.shape[0])
 
     # Example: Highly correlated variables
-    df["reclat_city"] = df["reclat"] + np.random.normal(scale=5, size=(len(df)))
+    df["reclat_city"] = df["reclat"] + \
+        np.random.normal(scale=5, size=(len(df)))
 
     # Example: Duplicate observations
     duplicates_to_add = pd.DataFrame(df.iloc[0:10])
