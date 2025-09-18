@@ -23,9 +23,7 @@ def test_dataset_schema():
         minimal=True,
     )
 
-    print(report.config.dataset.dict())
     html = report.to_html()
-    print([row for row in html.split("<tr") if "Creator" in row][:1])
 
     assert ">Dataset<" in html
     for key in metadata.keys():
