@@ -25,4 +25,4 @@ def test_urls(get_data_file):
     )
 
     assert "URL</span>" in profile.to_html(), "URL not detected"
-    assert "URL</th>" in profile.to_html(), "URL not detected"
+    assert "<th>URL<td" in profile.to_html(), "URL not detected"
