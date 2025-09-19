@@ -110,7 +110,12 @@ def spark_session(spark_context):
     """
     if not has_spark:
         pytest.skip("Skipping Spark tests because PySpark is not installed.")
-    spark = SparkSession.builder.config(conf=spark_context.getConf()).getOrCreate()
+    spark = (
+        SparkSession.builder.master("local[*]")
+        .appName("pytest")
+        .config("spark.sql.ansi.enabled", "false")  # <-- restore permissive casts
+        .getOrCreate()
+    )
 
     yield spark
 
