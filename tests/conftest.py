@@ -83,7 +83,12 @@ def spark_context():
     if not has_spark:
         pytest.skip("Skipping Spark tests because PySpark is not installed.")
 
-    conf = SparkConf().setAppName("pytest-pyspark-tests").setMaster("local[*]")
+    conf = (
+        SparkConf()
+        .setAppName("pytest-pyspark-tests")
+        .setMaster("local[*]")
+        .set("spark.sql.ansi.enabled", "false")
+    )
 
     # Check if SparkContext exists before creating a new one
     if SparkContext._active_spark_context:

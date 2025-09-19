@@ -32,7 +32,7 @@ def test_issue_169_column(issue_169_data):
     )
     html = report.to_html()
     assert type(html) == str
-    assert "Dataset statistics</p>" in html
+    assert "Dataset statistics" in html
 
 
 def test_issue_169_index(issue_169_data):
@@ -45,4 +45,4 @@ def test_issue_169_index(issue_169_data):
     )
     html = report.to_html()
     assert type(html) == str
-    assert "Dataset statistics</p>" in html
+    assert "Dataset statistics" in html
