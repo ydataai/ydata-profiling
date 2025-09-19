@@ -8,7 +8,7 @@ from ydata_profiling.model import BaseDescription
 def test_example(get_data_file, test_output_dir):
     file_name = get_data_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
     # For reproducibility
