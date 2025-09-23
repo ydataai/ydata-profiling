@@ -6,7 +6,7 @@
 }
 
 .badge {
-    display: flex;
+    display: inline-flex;
     width: max-content;
     color: var(--md-badge-text-color);
     margin-right: 15px;
@@ -17,8 +17,14 @@
 a.badge:hover,
 .badge-reflink:hover {
     text-decoration: underline;
+}
+
+/* Higher priority than material's '.md-typeset a' */
+.md-typeset .badge a,
+.md-typeset a.badge {
     color: var(--md-badge-text-color);
 }
+
 
 .badge-group {
     display: flex;
@@ -29,7 +35,7 @@ a.badge:hover,
     display: block;
 }
 
-.badge .title {
+.badge .title, .badge .title a {
     color: var(--md-badge-text-color);
     padding: var(--md-badge-padding-size);
     background-color: gray;
@@ -42,7 +48,7 @@ a.badge:hover,
     border-top-right-radius: var(--md-badge-rounded-size);
 }
 
-.badge .value {
+.badge .value, .badge .value a {
     color: var(--md-badge-text-color);
     padding: var(--md-badge-padding-size);
     background-color: var(--md-primary-fg-color, #2FA4E7);
