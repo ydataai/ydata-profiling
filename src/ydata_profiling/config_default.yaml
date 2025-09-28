@@ -221,3 +221,8 @@ html:
       - "#198754"
 
   full_width: false
+
+i18n:
+  locale: "en"
+  auto_detect: true
+  fallback_locale: "en"

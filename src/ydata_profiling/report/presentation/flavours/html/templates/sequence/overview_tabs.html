@@ -1,6 +1,6 @@
 {% if tabs | length > 0 %}
     {% if oss %}
-        <p class="text-body-secondary text-end">Brought to you by <a href="https://ydata.ai/?utm_source=opensource&utm_medium=ydataprofiling&utm_campaign=report">YData</a></p>
+        <p class="text-body-secondary text-end">{{ _('report.brought_to_you_by') | safe }}</p>
     {% endif %}
     <div class="row item {% if classes %}{{ classes }}{% endif %}" {% if id %} id="{{ id }}"{% endif %}>
         <ul class="nav nav-tabs tab-nav" role="tablist">

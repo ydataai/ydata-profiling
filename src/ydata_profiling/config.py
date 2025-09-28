@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import yaml
 from pydantic.v1 import BaseModel, BaseSettings, Field, PrivateAttr
+from ydata_profiling.i18n import set_locale, get_locale
 
 
 def _merge_dictionaries(dict1: dict, dict2: dict) -> dict:
@@ -290,6 +291,14 @@ class Report(BaseModel):
     precision: int = 8
 
 
+# Add a new configuration item in the Settings class
+class I18n(BaseModel):
+    """Internationalization settings"""
+    locale: str = "en"
+    auto_detect: bool = True
+    fallback_locale: str = "en"
+
+
 class Settings(BaseSettings):
     # Default prefix to avoid collisions with environment variables
     class Config:
@@ -355,6 +364,24 @@ class Settings(BaseSettings):
     html: Html = Html()
     notebook: Notebook = Notebook()
 
+    # Add internationalization configuration
+    i18n: I18n = I18n()
+
+    def __init__(self, **data):
+        # Check the current language setting before initialization
+        current_locale = get_locale()
+
+        super().__init__(**data)
+
+        # If no locale is explicitly specified and there is currently a non-default language setting,
+        # maintain the current setting
+        if 'i18n' not in data and current_locale != 'en':
+            self.i18n.locale = current_locale
+
+        # Set locale
+        if self.i18n.locale:
+            set_locale(self.i18n.locale)
+
     def update(self, updates: dict) -> "Settings":
         update = _merge_dictionaries(self.dict(), updates)
         return self.parse_obj(self.copy(update=update))
@@ -368,10 +395,21 @@ class Settings(BaseSettings):
         Returns:
             Settings
         """
+        # Save current language settings
+        current_locale = get_locale()
+
         with open(config_file) as f:
             data = yaml.safe_load(f)
 
-        return Settings.parse_obj(data)
+        settings = Settings.parse_obj(data)
+
+        # If no language is specified in the configuration file and there is currently a non-default language setting,
+        # maintain the current setting
+        if 'i18n' not in data and current_locale != 'en':
+            settings.i18n.locale = current_locale
+            set_locale(current_locale)
+
+        return settings
 
 
 class SparkSettings(Settings):

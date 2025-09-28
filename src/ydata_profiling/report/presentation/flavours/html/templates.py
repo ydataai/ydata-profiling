@@ -6,19 +6,32 @@ import jinja2
 
 from ydata_profiling.config import Settings
 from ydata_profiling.report.formatters import fmt, fmt_badge, fmt_numeric, fmt_percent
+from ydata_profiling.i18n import _
+from ydata_profiling.report.presentation.flavours.html.i18n_extension import I18nExtension
 
 # Initializing Jinja
 package_loader = jinja2.PackageLoader(
     "ydata_profiling", "report/presentation/flavours/html/templates"
 )
 jinja2_env = jinja2.Environment(
-    lstrip_blocks=True, trim_blocks=True, loader=package_loader
+    lstrip_blocks=True,
+    trim_blocks=True,
+    loader=package_loader,
+    extensions=[I18nExtension]    # Add internationalization extension
 )
+
+# Adding translation function to Jinja2 environment
+jinja2_env.globals['_'] = _
+jinja2_env.globals['gettext'] = _
+
 jinja2_env.filters["is_list"] = lambda x: isinstance(x, list)
 jinja2_env.filters["fmt_badge"] = fmt_badge
 jinja2_env.filters["fmt_percent"] = fmt_percent
 jinja2_env.filters["fmt_numeric"] = fmt_numeric
 jinja2_env.filters["fmt"] = fmt
+
+# Add translation filter
+jinja2_env.filters["trans"] = lambda key, **kwargs: _(key, **kwargs)
 
 
 def template(template_name: str) -> jinja2.Template:

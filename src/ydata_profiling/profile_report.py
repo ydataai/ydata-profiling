@@ -47,6 +47,7 @@ from ydata_profiling.serialize_report import SerializeReport
 from ydata_profiling.utils.dataframe import hash_dataframe
 from ydata_profiling.utils.logger import ProfilingLogger
 from ydata_profiling.utils.paths import get_config
+from ydata_profiling.i18n import _, set_locale, get_locale
 
 logger = ProfilingLogger(name="ReportLogger")
 
@@ -80,6 +81,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         summarizer: Optional[BaseSummarizer] = None,
         config: Optional[Settings] = None,
         type_schema: Optional[dict] = None,
+        locale: Optional[str] = None,
         **kwargs,
     ):
         """Generate a ProfileReport based on a pandas or spark.sql DataFrame
@@ -103,8 +105,21 @@ class ProfileReport(SerializeReport, ExpectationsReport):
             typeset: optional user typeset to use for type inference
             summarizer: optional user summarizer to generate custom summary output
             type_schema: optional dict containing pairs of `column name`: `type`
+            locale: language locale for report generation (e.g., 'en', 'zh')
             **kwargs: other arguments, for valid arguments, check the default configuration file.
         """
+        from ydata_profiling.i18n import set_locale, get_locale
+
+        # Save current language settings
+        current_locale = get_locale()
+
+        # If the locale parameter is explicitly specified, use it
+        if locale:
+            set_locale(locale)
+            target_locale = locale
+        else:
+            # Otherwise, use the current global language setting
+            target_locale = current_locale
 
         self.__validate_inputs(df, minimal, tsmode, config_file, lazy)
 
@@ -122,6 +137,11 @@ class ProfileReport(SerializeReport, ExpectationsReport):
                 report_config = Settings()
             else:
                 report_config = SparkSettings()
+
+        # Ensure that the language settings in the configuration are consistent with the target language
+        if target_locale != 'en':
+            report_config.i18n.locale = target_locale
+            set_locale(target_locale)
 
         groups = [
             (explorative, "explorative"),
@@ -143,6 +163,10 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         if kwargs:
             report_config = report_config.update(kwargs)
+
+        # Finally ensure the language setting is correct
+        report_config.i18n.locale = target_locale
+        set_locale(target_locale)
 
         report_config.vars.timeseries.active = tsmode
         if tsmode and sortby:
@@ -411,7 +435,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         report = self.report
 
         with tqdm(
-            total=1, desc="Render HTML", disable=not self.config.progress_bar
+            total=1, desc=_("rendering.html_progress"), disable=not self.config.progress_bar
         ) as pbar:
             html = HTMLReport(copy.deepcopy(report)).render(
                 nav=self.config.html.navbar_show,
@@ -440,7 +464,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
 
         with tqdm(
             total=1,
-            desc="Render widgets",
+            desc=_("rendering.widgets_progress"),
             disable=not self.config.progress_bar,
             leave=False,
         ) as pbar:
@@ -477,7 +501,7 @@ class ProfileReport(SerializeReport, ExpectationsReport):
         description = self.description_set
 
         with tqdm(
-            total=1, desc="Render JSON", disable=not self.config.progress_bar
+            total=1, desc=_("rendering.json_progress"), disable=not self.config.progress_bar
         ) as pbar:
             description_dict = format_summary(description)
             description_dict = encode_it(description_dict)

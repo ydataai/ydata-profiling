@@ -1,0 +1,104 @@
+{
+  "report": {
+    "title": "YData 数据分析报告",
+    "overview": "概览",
+    "variables": "变量",
+    "interactions": "交互分析",
+    "correlations": "相关性",
+    "missing_values": "缺失值",
+    "sample": "样本数据",
+    "duplicates": "重复数据",
+    "brought_to_you_by": "由 <a href=\"https://ydata.ai/?utm_source=opensource&utm_medium=ydataprofiling&utm_campaign=report\">YData</a> 为您提供",
+    "footer_text": "报告由 <a href=\"https://ydata.ai/?utm_source=opensource&utm_medium=pandasprofiling&utm_campaign=report\">YData</a> 生成。"
+  },
+  "overview": {
+    "dataset_info": "数据集信息",
+    "variable_types": "变量类型",
+    "dataset_statistics": "数据集统计",
+    "number_of_variables": "变量数量",
+    "number_of_observations": "观测数量",
+    "missing_cells": "缺失单元格",
+    "missing_cells_percentage": "缺失单元格百分比",
+    "duplicate_rows": "重复行",
+    "duplicate_rows_percentage": "重复行百分比",
+    "total_size_in_memory": "内存总大小",
+    "average_record_size": "平均记录内存大小"
+  },
+  "variables": {
+    "numeric": "数值型",
+    "categorical": "分类型",
+    "boolean": "布尔型",
+    "date": "日期型",
+    "text": "文本型",
+    "url": "网址型",
+    "path": "路径型",
+    "image": "图像型",
+    "distinct": "唯一值",
+    "distinct_percentage": "唯一值百分比",
+    "missing": "缺失值",
+    "missing_percentage": "缺失值百分比",
+    "memory_size": "内存大小",
+    "statistics": "统计信息",
+    "quantile_statistics": "分位数统计",
+    "common_values": "常见值",
+    "extreme_values": "极值",
+    "histogram": "直方图",
+    "min": "最小值",
+    "max": "最大值",
+    "mean": "均值",
+    "mode": "众数",
+    "standard_deviation": "标准差",
+    "sum": "总和",
+    "mad": "中位绝对偏差 (MAD)",
+    "coefficient_of_variation": "变异系数 (CV)",
+    "kurtosis": "峰度",
+    "skewness": "偏度",
+    "range": "范围",
+    "interquartile_range": "四分位距 (IQR)",
+    "length": "长度",
+    "sample": "样本"
+  },
+  "correlations": {
+    "pearson": "皮尔逊相关系数",
+    "spearman": "斯皮尔曼相关系数",
+    "kendall": "肯德尔相关系数",
+    "phi_k": "Phik相关系数 (φk)",
+    "cramers": "克拉默V系数 (φc)",
+    "auto": "自动"
+  },
+  "interactions": {
+    "scatter_plot": "散点图",
+    "variable": "变量"
+  },
+  "missing_values": {
+    "matrix": "矩阵图",
+    "bar_chart": "条形图",
+    "heatmap": "热力图",
+    "dendrogram": "树状图"
+  },
+  "alerts": {
+    "high_correlation": "高相关性",
+    "high_cardinality": "高基数",
+    "constant": "常量",
+    "zeros": "零值",
+    "missing": "缺失",
+    "skewed": "偏斜",
+    "infinite": "无穷值",
+    "type_date": "日期",
+    "uniform": "均匀分布",
+    "unique": "唯一值"
+  },
+  "formatting": {
+    "bytes": "{value} 字节",
+    "kb": "{value} KB",
+    "mb": "{value} MB",
+    "gb": "{value} GB",
+    "percentage": "{value}%"
+  },
+  "rendering": {
+    "generate_structure": "生成报告结构",
+    "html_progress": "渲染HTML报告",
+    "json_progress": "渲染JSON报告",
+    "widgets_progress": "渲染组件"
+  }
+}
