@@ -10,7 +10,7 @@ from ydata_profiling.utils.paths import get_config
 def console_data(get_data_file):
     return get_data_file(
         "meteorites.csv",
-        "https://data.nasa.gov/api/views/gh4g-9sfh/rows.csv?accessType=DOWNLOAD",
+        "https://data.nasa.gov/docs/legacy/meteorite_landings/Meteorite_Landings.csv",
     )
 
 

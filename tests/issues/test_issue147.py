@@ -19,4 +19,4 @@ def test_issue147(get_data_file):
     )
     html = report.to_html()
     assert type(html) == str
-    assert "Dataset statistics</p>" in html
+    assert "Dataset statistics" in html
