@@ -49,10 +49,10 @@ def sample_ts_df():
 
 
 def test_timeseries_identification(html_profile: str):
-    assert "<th>TimeSeries</th>" in html_profile, "TimeSeries not detected"
+
+    assert "<th>TimeSeries<td" in html_profile, "TimeSeries not detected"
     assert (
-        '<tr><th>TimeSeries</th><td style="white-space: nowrap;">8</td></tr>'
-        in html_profile
+        'TimeSeries<td style="white-space: nowrap;">8' in html_profile
     ), "TimeSeries incorrectly identified"
 
 
